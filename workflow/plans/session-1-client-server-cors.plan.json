@@ -1,0 +1,812 @@
+{
+  "schemaVersion": "slide-plan/v1",
+  "workflow": {
+    "status": "SIGNED_OFF",
+    "rev": 7,
+    "planNote": "Rev 7: style-tightening pass per STYLE_GUIDE.md corpus review (user: 'fix all'). Titles cut toward the 2-word corpus median (12 flagged; 8 retitled, doc-faithful/sanctioned ones kept), 3 colon titles removed, 2 excess question-titles removed (kept the sample-mirroring D2 question + the predict fixture), 7 leads compressed, takeaways pills cut to corpus 4-8w, practice tasks to fragments, quiz option + closer trimmed. Structure/order unchanged from Rev 6 (38 slides).",
+    "generationBlockedUntilSignOff": false,
+    "signOff": {
+      "decision": "fix all — style tightening approved",
+      "date": "2026-07-17",
+      "rev": 7
+    }
+  },
+  "session": {
+    "name": "Client–Server & CORS",
+    "course": "React + Django Integration",
+    "footerOnEverySlide": "Client–Server & CORS",
+    "trDoc": "Integration project/docs/session-1.md (rev 2026-07-16 15:20, unchanged)",
+    "sessionCode": "Integration project/session-1/{prefilled,final} — built, run, verified",
+    "nextUp": "The API Contract & JWT Login",
+    "deckTarget": "Web Slides/template, src/decks/session1Deck.tsx"
+  },
+  "sampleAlignment": [
+    "bare title slide -> welcome (session name only; brand slide precedes per stakeholder rule)",
+    "hook bridge ('You already know X | now let's Y') -> new hook slide from doc §1",
+    "question-style divider titles -> D1 'Where Do Our Products Come From?', D2 'How Does a Browser Talk to a Server?'",
+    "colon titles -> 'The Error: Three Phrases, Three Questions', 'The Fix: It Belongs to the Server'",
+    "'Think About This!' -> the console-fetch predict moment (doc §4)",
+    "'Quiz Time!' x2 -> doc §6 predicts (sign-off decision)",
+    "recap of sections -> Key Takeaways (same 4 agenda concepts, tick-pill UI)",
+    "standalone next-session teaser (bare title) -> 'Next Session: The API Contract & JWT Login'",
+    "'All the best!' closer -> thank-you slide title",
+    "eyebrow = section name on every content slide -> kicker carries the section name"
+  ],
+  "capabilities": [
+    "lucide bridge (template/src/ui/icons.tsx): 20 typed icons; icon-picker playground (workflow/icon-picker.html) is the browsing tool",
+    "custom SVG scenes: TwoAppsScene, CorsGate, EnvConfig (+ animated TwoApps, RequestFlow, AnalogyMap, ErrorMap)",
+    "verified real screenshots: django-json-200.png, products-from-django.png",
+    "Canva connector: live, but generated cover archived unused (below professional bar); no Canva art in deck",
+    "design skill (Gemini icon gen): available once API key is configured — not required by this plan"
+  ],
+  "assets": [
+    {
+      "name": "nxtwave-logo",
+      "status": "exists",
+      "slides": [
+        1
+      ]
+    },
+    {
+      "name": "TwoApps (animated) / TwoAppsScene (divider)",
+      "status": "exists",
+      "slides": [
+        5,
+        6
+      ]
+    },
+    {
+      "name": "concept-api",
+      "status": "exists — topical for D2",
+      "slides": [
+        11
+      ]
+    },
+    {
+      "name": "NetworkRows (doc meaning-table fallback)",
+      "status": "exists",
+      "slides": [
+        12
+      ]
+    },
+    {
+      "name": "AnalogyMap",
+      "status": "exists",
+      "slides": [
+        13,
+        23
+      ]
+    },
+    {
+      "name": "RequestFlow (animated)",
+      "status": "exists, motion verified",
+      "slides": [
+        14
+      ]
+    },
+    {
+      "name": "django-json-200.png",
+      "status": "captured & verified",
+      "slides": [
+        16
+      ]
+    },
+    {
+      "name": "CorsGate",
+      "status": "exists (built Rev 5)",
+      "slides": [
+        17
+      ]
+    },
+    {
+      "name": "ErrorMap",
+      "status": "exists",
+      "slides": [
+        20
+      ]
+    },
+    {
+      "name": "EnvConfig",
+      "status": "exists (built Rev 5)",
+      "slides": [
+        27
+      ]
+    },
+    {
+      "name": "products-from-django.png",
+      "status": "captured & verified",
+      "slides": [
+        31
+      ]
+    },
+    {
+      "name": "nova-mascots (fixtures)",
+      "status": "exists",
+      "slides": [
+        26,
+        32,
+        34,
+        35,
+        37
+      ]
+    },
+    {
+      "name": "lucide icons",
+      "status": "wired: eye/plus/pencil/trash, link/globe/plug, json/server/shield-check, devices, unlink, terminal/settings/server/book",
+      "slides": [
+        8,
+        9,
+        15,
+        21,
+        24,
+        28,
+        33
+      ]
+    }
+  ],
+  "slides": [
+    {
+      "n": 1,
+      "id": "brand",
+      "phase": "open",
+      "component": "BrandSlide",
+      "title": "Welcome! (brand mark only)",
+      "content": [
+        "logo hero, aurora, sparkles, wave base",
+        "no session/course text"
+      ],
+      "visual": {
+        "asset": "nxtwave-logo",
+        "why": "brand opener"
+      },
+      "transition": "fade",
+      "sourceRef": "-",
+      "sampleRef": "slide 01 (brand open)"
+    },
+    {
+      "n": 2,
+      "id": "welcome",
+      "phase": "open",
+      "component": "WelcomeSlide minimal",
+      "title": "Client–Server & CORS",
+      "content": [
+        "kicker WELCOME TO TODAY'S SESSION + bare session name"
+      ],
+      "visual": {
+        "asset": "typography",
+        "why": "sample title slides are bare"
+      },
+      "transition": "rise",
+      "sampleRef": "slide 02 (bare title)",
+      "sourceRef": "doc title"
+    },
+    {
+      "n": 3,
+      "id": "hook",
+      "phase": "open",
+      "component": "SlideBase typography",
+      "title": "You already built both apps",
+      "content": [
+        "'You already built the frontend — and the backend runs perfectly.'",
+        "'Now let's make them talk to each other.'"
+      ],
+      "visual": {
+        "asset": "typography (two-beat reveal)",
+        "why": "sample hook-bridge pattern"
+      },
+      "sampleRef": "slide 03 ('You already know… now let's…')",
+      "sourceRef": "§1"
+    },
+    {
+      "n": 4,
+      "id": "agenda",
+      "phase": "open",
+      "component": "AgendaSlide",
+      "title": "Today's Agenda",
+      "content": [
+        "lead: by the end, the products page renders products served by OUR Django",
+        "4 concepts + analogies (doc's own table), click-revealed"
+      ],
+      "visual": {
+        "asset": "numbered list",
+        "why": "agenda fixture"
+      },
+      "sampleRef": "slide 04 (agenda)",
+      "sourceRef": "doc Agenda"
+    },
+    {
+      "n": 5,
+      "id": "d1",
+      "phase": "D1 Getting Started (§1–§2)",
+      "component": "SectionBreakerImage",
+      "title": "Our Products, Not Theirs",
+      "content": [
+        "eyebrow: Getting Started"
+      ],
+      "visual": {
+        "asset": "TwoAppsScene",
+        "why": "the opening state: React→ccbp, Django unused, no wire"
+      },
+      "transition": "cover",
+      "sampleRef": "slide 05 (question divider)",
+      "sourceRef": "§1"
+    },
+    {
+      "n": 6,
+      "id": "two-apps",
+      "phase": "D1",
+      "component": "SlideBase + TwoApps animated",
+      "title": "Someone Else’s Server",
+      "content": [
+        "Django runs perfectly… and nothing calls it; broken connector lands last"
+      ],
+      "visual": {
+        "asset": "TwoApps",
+        "why": "the concept, animated"
+      },
+      "sourceRef": "§1"
+    },
+    {
+      "n": 7,
+      "id": "one-line-plan",
+      "phase": "D1",
+      "component": "ContentSlide + CodeBlock",
+      "title": "“One line. Five minutes.”",
+      "content": [
+        "the hardcoded apis.ccbp.in line",
+        "quote: find that URL, replace it",
+        "note: first, a boring obstacle"
+      ],
+      "visual": {
+        "asset": "code block",
+        "why": "the artifact under discussion"
+      },
+      "sourceRef": "§1"
+    },
+    {
+      "n": 8,
+      "id": "port-rule",
+      "phase": "D1",
+      "component": "ContentNoteSlide",
+      "title": "Both Want Port 3000",
+      "content": [
+        "manage.py defaults runserver to 3000 = Vite's port",
+        "rule: backend 8000, frontend 3000"
+      ],
+      "visual": {
+        "asset": "note + lucide 'plug'",
+        "why": "port = plug"
+      },
+      "icons": [
+        "plug"
+      ],
+      "sourceRef": "§2"
+    },
+    {
+      "n": 9,
+      "id": "rename",
+      "phase": "D1",
+      "component": "ProceduralSteps",
+      "title": "A Real Name First",
+      "content": [
+        "myproject → nxttrendz_backend in 4 places, click-revealed"
+      ],
+      "visual": {
+        "asset": "step rail + lucide book/terminal/settings/server",
+        "why": "each step's artifact"
+      },
+      "icons": [
+        "book",
+        "terminal",
+        "settings",
+        "server"
+      ],
+      "sourceRef": "§2"
+    },
+    {
+      "n": 10,
+      "id": "prove-it",
+      "phase": "D1",
+      "component": "ContentSlide + CodeBlock",
+      "title": "Two Servers, Side by Side",
+      "content": [
+        "runserver 8000 boots clean (doc's prove block)",
+        "lead-out: before redirecting a conversation, know what's being said"
+      ],
+      "visual": {
+        "asset": "terminal code",
+        "why": "the proof itself"
+      },
+      "sourceRef": "§2"
+    },
+    {
+      "n": 11,
+      "id": "d2",
+      "phase": "D2 Read the Conversation (§3)",
+      "component": "SectionBreakerImage",
+      "title": "How Does a Browser Talk to a Server?",
+      "content": [
+        "eyebrow: Client–Server model (the restaurant)"
+      ],
+      "visual": {
+        "asset": "concept-api",
+        "why": "browser↔server exchange"
+      },
+      "transition": "cover",
+      "sampleRef": "'How Do Web Apps Work?' question divider",
+      "sourceRef": "§3"
+    },
+    {
+      "n": 12,
+      "id": "network-tab",
+      "phase": "D2",
+      "component": "ContentSlide + NetworkRows",
+      "title": "Watch the Conversation",
+      "content": [
+        "DevTools → Network → reload; one row tells the story (4 meaning rows)"
+      ],
+      "visual": {
+        "asset": "NetworkRows",
+        "why": "the doc's observe-it moment"
+      },
+      "sourceRef": "§3"
+    },
+    {
+      "n": 13,
+      "id": "restaurant",
+      "phase": "D2",
+      "component": "SlideBase + AnalogyMap",
+      "title": "Like a Restaurant",
+      "content": [
+        "order→request · kitchen→server · dish→response · verdict→status code",
+        "verdict chips: 200/404/401/500 with doc's phrases"
+      ],
+      "visual": {
+        "asset": "AnalogyMap",
+        "why": "doc's analogy as a mapping"
+      },
+      "sourceRef": "§3"
+    },
+    {
+      "n": 14,
+      "id": "round-trip",
+      "phase": "D2",
+      "component": "SlideBase + RequestFlow",
+      "title": "The Page Asked. A Server Answered.",
+      "content": [
+        "looping GET → / ← 200 OK packets"
+      ],
+      "visual": {
+        "asset": "RequestFlow",
+        "why": "request/response made visible"
+      },
+      "sourceRef": "§3"
+    },
+    {
+      "n": 15,
+      "id": "verbs",
+      "phase": "D2",
+      "component": "ContentSlide",
+      "title": "The Verb of the Request",
+      "content": [
+        "GET read · POST create (login, cart) · PUT/PATCH update · DELETE remove"
+      ],
+      "visual": {
+        "asset": "lucide eye/plus/pencil/trash",
+        "why": "semantically exact per verb"
+      },
+      "icons": [
+        "eye",
+        "plus",
+        "pencil",
+        "trash"
+      ],
+      "sourceRef": "§3"
+    },
+    {
+      "n": 16,
+      "id": "django-serves",
+      "phase": "D2",
+      "component": "OnlyImageSlide",
+      "title": "Django Serves It Too",
+      "content": [
+        "caption: 200 + product JSON — time to swap"
+      ],
+      "visual": {
+        "asset": "django-json-200.png",
+        "why": "real verified proof"
+      },
+      "sourceRef": "§3"
+    },
+    {
+      "n": 17,
+      "id": "d3",
+      "phase": "D3 The Wall (§4–§6)",
+      "component": "SectionBreakerImage",
+      "title": "The One-Line Swap… and the Wall",
+      "content": [
+        "eyebrow: Origin & CORS"
+      ],
+      "visual": {
+        "asset": "CorsGate",
+        "why": "guard blocking an arrived response"
+      },
+      "transition": "cover",
+      "sourceRef": "§4"
+    },
+    {
+      "n": 18,
+      "id": "think-about",
+      "phase": "D3",
+      "component": "ContentSlide + CodeBlock",
+      "title": "Think About This!",
+      "content": [
+        "console: fetch('http://localhost:8000/api/products/')",
+        "Postman returned products for this exact URL. What will the browser do? (pause)"
+      ],
+      "visual": {
+        "asset": "code + predict callout",
+        "why": "sample's engagement-prompt pattern"
+      },
+      "checkpoint": "predict",
+      "sampleRef": "slide 14 'Think About This!'",
+      "sourceRef": "§4"
+    },
+    {
+      "n": 19,
+      "id": "the-wall",
+      "phase": "D3",
+      "component": "ContentSlide",
+      "title": "Not Products. Not a 404.",
+      "content": [
+        "verbatim CORS error",
+        "twist: Django terminal shows 200",
+        "pull-quote: only the browser stands between them"
+      ],
+      "visual": {
+        "asset": "error + terminal blocks",
+        "why": "the wall, real"
+      },
+      "sourceRef": "§4"
+    },
+    {
+      "n": 20,
+      "id": "error-map",
+      "phase": "D3",
+      "component": "ErrorMap",
+      "title": "Read the Error",
+      "content": [
+        "each phrase click-reveals its question"
+      ],
+      "visual": {
+        "asset": "ErrorMap",
+        "why": "doc's detective device"
+      },
+      "sampleRef": "colon-title pattern",
+      "sourceRef": "§5"
+    },
+    {
+      "n": 21,
+      "id": "origin-def",
+      "phase": "D3",
+      "component": "ContentNoteSlide",
+      "title": "Origin = Scheme + Host + Port",
+      "content": [
+        "flats in one building note",
+        "localhost vs 127.0.0.1 = different hosts"
+      ],
+      "visual": {
+        "asset": "lucide link/globe/plug",
+        "why": "scheme=link, host=globe, port=plug"
+      },
+      "icons": [
+        "link",
+        "globe",
+        "plug"
+      ],
+      "sourceRef": "§5 phrase 1"
+    },
+    {
+      "n": 22,
+      "id": "same-origin",
+      "phase": "D3",
+      "component": "SameOriginRows",
+      "title": "Same Origin — or Not?",
+      "content": [
+        "doc's 3 predict rows, all No; verdicts click-reveal"
+      ],
+      "visual": {
+        "asset": "predict rows",
+        "why": "doc's own predict exercise"
+      },
+      "checkpoint": "predict",
+      "sourceRef": "§5 phrase 1"
+    },
+    {
+      "n": 23,
+      "id": "guard",
+      "phase": "D3",
+      "component": "SlideBase + AnalogyMap",
+      "title": "The Browser: A Security Guard at the Gate",
+      "content": [
+        "delivery→200 · name check→header check · no name→no data",
+        "whys: Postman has no guard; static API always left the name"
+      ],
+      "visual": {
+        "asset": "AnalogyMap",
+        "why": "doc's guard analogy"
+      },
+      "sampleRef": "named-analogy pattern ('Backend as the Brain')",
+      "sourceRef": "§5 phrase 2"
+    },
+    {
+      "n": 24,
+      "id": "phrase-3",
+      "phase": "D3",
+      "component": "ContentSlide",
+      "title": "Fix It on the Server",
+      "content": [
+        "header lives on the response → responses come from servers",
+        "CORS definition verbatim"
+      ],
+      "visual": {
+        "asset": "lucide json/server/shield-check",
+        "why": "header=json, servers=server, name-at-gate=shield-check"
+      },
+      "icons": [
+        "json",
+        "server",
+        "shield-check"
+      ],
+      "sampleRef": "colon-title pattern",
+      "sourceRef": "§5 phrase 3"
+    },
+    {
+      "n": 25,
+      "id": "cors-fix",
+      "phase": "D3",
+      "component": "ContentSlide + CodeBlock",
+      "title": "Teach Django the Header",
+      "content": [
+        "pip install django-cors-headers + 3 edits (9-line block, all visible)",
+        "checkpoint: same fetch → products, header present"
+      ],
+      "visual": {
+        "asset": "code block",
+        "why": "the fix itself"
+      },
+      "sourceRef": "§6"
+    },
+    {
+      "n": 26,
+      "id": "quiz-1",
+      "phase": "D3",
+      "component": "QuizSlide (fixture)",
+      "title": "Quiz Time!",
+      "content": [
+        "Can a page at :5500 read this API now?",
+        "correct: No — the guard holds a list of names, not an open gate"
+      ],
+      "visual": {
+        "asset": "nova quiz mascot",
+        "why": "quiz fixture"
+      },
+      "checkpoint": "quiz",
+      "sampleRef": "slide 29 'Quiz Time!'",
+      "sourceRef": "§6 predict 2",
+      "signOffFlag": "restored per sample arc — Rev 5 had removed quizzes"
+    },
+    {
+      "n": 27,
+      "id": "d4",
+      "phase": "D4 Remove the Shortcut (§7–§8)",
+      "component": "SectionBreakerImage",
+      "title": "Remove the Shortcut",
+      "content": [
+        "eyebrow: Base URL & environment variables (one saved contact)"
+      ],
+      "visual": {
+        "asset": "EnvConfig",
+        "why": "one .env card feeding every request"
+      },
+      "transition": "cover",
+      "sourceRef": "§7"
+    },
+    {
+      "n": 28,
+      "id": "contact",
+      "phase": "D4",
+      "component": "ContentNoteSlide",
+      "title": "Save the Number Once",
+      "content": [
+        "the address will change: teammate's machine, deployment",
+        "phone-contact note; configuration, not code"
+      ],
+      "visual": {
+        "asset": "lucide devices",
+        "why": "the address moves across machines"
+      },
+      "icons": [
+        "devices"
+      ],
+      "sourceRef": "§7"
+    },
+    {
+      "n": 29,
+      "id": "env-helper",
+      "phase": "D4",
+      "component": "ContentSlide + CodeBlock",
+      "title": ".env + One Helper",
+      "content": [
+        ".env + src/api.js code",
+        "two Vite rules note (VITE_ prefix; restart after edits)"
+      ],
+      "visual": {
+        "asset": "code block",
+        "why": "the implementation"
+      },
+      "sourceRef": "§7"
+    },
+    {
+      "n": 30,
+      "id": "convert",
+      "phase": "D4",
+      "component": "ContentSlide + CodeBlock",
+      "title": "The Swap — Done Right",
+      "content": [
+        "before (apis.ccbp.in) / after (apiUrl('/api/products/'))"
+      ],
+      "visual": {
+        "asset": "before/after code",
+        "why": "the payoff edit"
+      },
+      "sourceRef": "§7"
+    },
+    {
+      "n": 31,
+      "id": "result-live",
+      "phase": "D4",
+      "component": "OnlyImageSlide",
+      "title": "Your Products, Your Server",
+      "content": [
+        "caption: one value re-points local↔production; 'true after all, just not the line we thought'"
+      ],
+      "visual": {
+        "asset": "products-from-django.png",
+        "why": "real verified result"
+      },
+      "transition": "rise",
+      "sourceRef": "§7–§8"
+    },
+    {
+      "n": 32,
+      "id": "quiz-2",
+      "phase": "close",
+      "component": "QuizSlide (fixture)",
+      "title": "Quiz Time!",
+      "content": [
+        "Does the request now work from Postman?",
+        "correct: Yes — it always did; no browser, no guard"
+      ],
+      "visual": {
+        "asset": "nova quiz mascot",
+        "why": "quiz fixture"
+      },
+      "checkpoint": "quiz",
+      "sampleRef": "slide 38 'Quiz Time!' (near end)",
+      "sourceRef": "§6 predict 1",
+      "signOffFlag": "restored per sample arc"
+    },
+    {
+      "n": 33,
+      "id": "crack",
+      "phase": "close",
+      "component": "ContentSlide",
+      "title": "A Crack in the Wall",
+      "content": [
+        "broken images, login dead — yet 200 OK. Who has the bug? Neither.",
+        "data.products vs data.results · image_url vs imageUrl · two languages"
+      ],
+      "visual": {
+        "asset": "lucide json/json/unlink",
+        "why": "shape mismatches + disconnection"
+      },
+      "icons": [
+        "json",
+        "json",
+        "unlink"
+      ],
+      "sourceRef": "§8"
+    },
+    {
+      "n": 34,
+      "id": "takeaways",
+      "phase": "close",
+      "component": "KeyTakeawaysSlide",
+      "title": "Key Takeaways",
+      "content": [
+        "lead: doc's story-so-far through-line",
+        "same 4 agenda concepts, outcome-phrased, tick-pill UI"
+      ],
+      "visual": {
+        "asset": "recap mascot + star pills",
+        "why": "recap fixture; echoes sample's section-recap"
+      },
+      "sampleRef": "slide 39 (section recap)",
+      "sourceRef": "§8"
+    },
+    {
+      "n": 35,
+      "id": "practice",
+      "phase": "close",
+      "component": "PracticeSlide",
+      "title": "Your Turn",
+      "content": [
+        "doc §8 checklist: ports+rename · cors-headers · console fetch JSON · .env+api.js · products render"
+      ],
+      "visual": {
+        "asset": "practice mascot",
+        "why": "practice fixture"
+      },
+      "sourceRef": "§8 checklist"
+    },
+    {
+      "n": 36,
+      "id": "next-session",
+      "phase": "close",
+      "component": "SectionBreaker (teaser)",
+      "title": "Next Session: The API Contract & JWT Login",
+      "content": [
+        "bare teaser title, sample style"
+      ],
+      "visual": {
+        "asset": "typography",
+        "why": "sample's standalone next-session slide"
+      },
+      "sampleRef": "slide 42 (bare next-session title)",
+      "sourceRef": "§8"
+    },
+    {
+      "n": 37,
+      "id": "feedback",
+      "phase": "close",
+      "component": "FeedbackSlide",
+      "title": "Your Feedback",
+      "content": [
+        "standard prompt + link"
+      ],
+      "visual": {
+        "asset": "feedback mascot",
+        "why": "feedback fixture"
+      },
+      "sourceRef": "-"
+    },
+    {
+      "n": 38,
+      "id": "thank-you",
+      "phase": "close",
+      "component": "ThankYouSlide",
+      "title": "All the best!",
+      "content": [
+        "close, sample's closer wording",
+        "one-line message: a request that finally lands"
+      ],
+      "visual": {
+        "asset": "thank-you fixture",
+        "why": "closer"
+      },
+      "transition": "zoom",
+      "sampleRef": "slides 43–44 closer",
+      "sourceRef": "-"
+    }
+  ],
+  "buildList": [
+    "NEW hook slide (3) — two-beat typography bridge",
+    "Retitle dividers/content to sample wording (question dividers, colon titles, Think About This!, All the best!)",
+    "Kicker = section name on every content slide (sample eyebrow rule)",
+    "RESTORE QuizSlide x2 (26, 32) — pending sign-off decision",
+    "NEW standalone next-session teaser slide (36)",
+    "Keep: all custom SVGs, screenshots, lucide icon layer (already regenerated)",
+    "Verify per workflow stage 6; snapshot + fresh source/HTML zips after"
+  ]
+}

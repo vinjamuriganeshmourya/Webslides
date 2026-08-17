@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #060c1c; /* dark stage behind the slide canvas */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* The slide canvas is a fixed 1280×720 stage that is scaled to fit the
+   viewport. Everything inside uses absolute px so it matches the PPTX. */
+@layer components {
+  .slide-canvas {
+    width: 1280px;
+    height: 720px;
+    position: relative;
+    overflow: hidden;
+    background: #ffffff;
+  }
+
+  /* Thin footer strip present on content/section slides */
+  .slide-footer-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 8px;
+    background: linear-gradient(90deg, #0b5fff 0%, #12b5a8 60%, #ff8a3d 130%);
+  }
+}
+
+/* Reduced-motion users get instant, non-animated slides */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

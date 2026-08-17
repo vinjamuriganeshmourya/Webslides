@@ -1,0 +1,62 @@
+CAPTURE T5  ·  installing WSL 2
+Slides: c8-steps-12
+Captured: 2026-08-12, Window VM, VS Code [Administrator], integrated terminal
+ONE-SHOT: true. Protected by snapshot "pre-docker-capture".
+
+Image: T5-wsl-install.png (full window, uncropped original)
+
+Why elevated: `wsl --install` enables two Windows optional features
+(Microsoft-Windows-Subsystem-Linux and VirtualMachinePlatform) and installs a
+kernel driver. That is machine-wide state, so Windows requires administrator
+rights. A VS Code terminal inherits VS Code's privileges, so VS Code itself was
+launched with "Run as administrator": title bar reads "nxttrendz [Administrator]".
+
+This is the ONLY command in the session that needs elevation. The Docker commands
+in Phase 4 do not, because Docker Desktop installs a service that runs elevated on
+your behalf and talks to the unelevated CLI over a named pipe. That engine/CLI
+split is itself part of what the session teaches, so the slide should say plainly
+that step 1 is the one elevated command and the rest are not.
+
+--- transcript (verbatim, for the Terminal component) ---
+
+PS C:\nxttrendz> wsl --install
+Downloading: Windows Subsystem for Linux 2.7.11
+Installing: Windows Subsystem for Linux 2.7.11
+Windows Subsystem for Linux 2.7.11 has been installed.
+Installing Windows optional component: VirtualMachinePlatform
+
+Deployment Image Servicing and Management tool
+Version: 10.0.26100.8972
+
+Image Version: 10.0.26200.9168
+
+Enabling feature(s)
+[==========================100.0%==========================]
+The operation completed successfully.
+The requested operation is successful. Changes will not be effective until the system is rebooted.
+The requested operation is successful. Changes will not be effective until the system is rebooted.
+
+--- crop and highlight guidance (hard rule 11) ---
+
+Crop to the terminal panel only. Keep the `PS <path>>` prompt.
+The output is long, and the line the slide actually rests on is the last one:
+"Changes will not be effective until the system is rebooted." So this capture
+DOES earn one highlight, on that reboot line, because the TR doc's next
+instruction is "Reboot when it asks" and students skip it.
+
+--- notes ---
+
+1. No Linux distribution was installed. On this Windows build `wsl --install`
+   fetched WSL 2.7.11 and enabled VirtualMachinePlatform, and stopped there.
+   That matches the TR doc's note, "You do not need to install a Linux
+   distribution or learn any Linux commands for this", which older guidance
+   often contradicts. No Ubuntu username or password prompt appeared.
+
+2. VirtualMachinePlatform enabling successfully is a second, independent
+   confirmation that VirtualBox nested virtualization is working. Without
+   `--nested-hw-virt on` this step is where the install would have failed.
+
+3. First attempt at this command did not run: `Ctrl+` toggled the already-open
+   terminal panel shut, so the keystrokes went to the workbench instead. The
+   one-shot state was not consumed. `Ctrl+Shift+`` (new terminal) is the safe
+   form, since it always opens and focuses a terminal.

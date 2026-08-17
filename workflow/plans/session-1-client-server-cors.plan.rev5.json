@@ -1,0 +1,730 @@
+{
+  "schemaVersion": "slide-plan/v1",
+  "workflow": {
+    "status": "SIGNED_OFF",
+    "rev": 5,
+    "planNote": "Rev 5: quiz slides removed per stakeholder (sign-off feedback). The doc's two §6 predict answers are preserved as a note on the cors-fix slide so the allow-list teaching point isn't lost. Renumbered; 34 slides. Otherwise identical to Rev 4 (TR doc rev 2026-07-16 15:20).",
+    "generationBlockedUntilSignOff": false,
+    "signOff": {
+      "decision": "Approve — generate",
+      "date": "2026-07-16",
+      "rev": 5
+    }
+  },
+  "session": {
+    "name": "Client–Server & CORS",
+    "course": "React + Django Integration",
+    "footerOnEverySlide": "Client–Server & CORS",
+    "trDoc": "Integration project/docs/session-1.md (rev 2026-07-16 15:20)",
+    "sessionCode": "Integration project/session-1/{prefilled,final} — built, run, verified",
+    "nextUp": "Session 2 — the API contract & JWT login",
+    "deckTarget": "Web Slides/template (React deck), src/decks/session1Deck.tsx"
+  },
+  "concepts": [
+    {
+      "n": 1,
+      "name": "Client–Server model",
+      "analogy": "A restaurant — order, kitchen, dish, verdict",
+      "taughtIn": "doc §3",
+      "divider": "D2"
+    },
+    {
+      "n": 2,
+      "name": "Origin",
+      "analogy": "Flats in one building — same building, different doors",
+      "taughtIn": "doc §5 phrase 1",
+      "divider": "D3"
+    },
+    {
+      "n": 3,
+      "name": "CORS",
+      "analogy": "The security guard at the gate",
+      "taughtIn": "doc §4–§6",
+      "divider": "D3"
+    },
+    {
+      "n": 4,
+      "name": "Base URL & environment variables",
+      "analogy": "One saved phone contact",
+      "taughtIn": "doc §7–§8",
+      "divider": "D4"
+    }
+  ],
+  "assets": [
+    {
+      "name": "nxtwave-logo",
+      "kind": "brand",
+      "status": "exists",
+      "slides": [
+        1
+      ]
+    },
+    {
+      "name": "TwoApps",
+      "kind": "custom-animated-visual",
+      "status": "exists — tweak: drop the :8000 port label (pre-setup Django is not on 8000, doc §2)",
+      "slides": [
+        4,
+        5
+      ]
+    },
+    {
+      "name": "concept-api",
+      "kind": "in-repo illustration",
+      "status": "exists — topical: browser↔server conversation (Concept 1)",
+      "slides": [
+        10
+      ]
+    },
+    {
+      "name": "network-tab-capture",
+      "kind": "real screenshot",
+      "status": "to attempt — real DevTools Network row; fallback: doc's 4-row meaning table as styled rows",
+      "slides": [
+        11
+      ]
+    },
+    {
+      "name": "AnalogyMap",
+      "kind": "custom component",
+      "status": "exists, alignment verified",
+      "slides": [
+        12,
+        22
+      ]
+    },
+    {
+      "name": "RequestFlow",
+      "kind": "custom animation",
+      "status": "exists, motion verified",
+      "slides": [
+        13
+      ]
+    },
+    {
+      "name": "django-json-200.png",
+      "kind": "real screenshot",
+      "status": "captured & verified (GET /api/products/ → 200 + JSON)",
+      "slides": [
+        15
+      ]
+    },
+    {
+      "name": "CorsGate",
+      "kind": "custom SVG",
+      "status": "to build — guard between arriving response and page; allow-list board :3000 ✓ / :5500 ✗",
+      "slides": [
+        16
+      ]
+    },
+    {
+      "name": "cors-error-console-capture",
+      "kind": "real screenshot",
+      "status": "to attempt — real console on prefilled state; fallback: doc-verbatim styled error block",
+      "slides": [
+        18
+      ]
+    },
+    {
+      "name": "annotated-error-map",
+      "kind": "in-house styled block",
+      "status": "to build — 3 phrases → 3 questions markup",
+      "slides": [
+        19
+      ]
+    },
+    {
+      "name": "EnvConfig",
+      "kind": "custom SVG",
+      "status": "to build — one .env card feeding every request pill",
+      "slides": [
+        25
+      ]
+    },
+    {
+      "name": "products-from-django.png",
+      "kind": "real screenshot",
+      "status": "captured & verified (products page, data from Django, images missing)",
+      "slides": [
+        29
+      ]
+    },
+    {
+      "name": "nova-mascots",
+      "kind": "same-type fixtures (recap/practice/feedback)",
+      "status": "exists — reuse allowed on fixture slides only",
+      "slides": [
+        31,
+        32,
+        33
+      ]
+    }
+  ],
+  "externalAssetsRule": "Freepik/free libraries allowed only with free license + attribution in assets-manifest + explicit per-download approval. None planned.",
+  "checkpointRhythm": {
+    "predictMoments": [
+      17,
+      21
+    ],
+    "session2Teaser": 30,
+    "quizzesNote": "quiz slides removed per stakeholder sign-off feedback; doc §6 predicts preserved on the cors-fix slide"
+  },
+  "slides": [
+    {
+      "n": 1,
+      "id": "brand",
+      "phase": "open",
+      "component": "BrandSlide (new)",
+      "title": "NxtWave branding only",
+      "content": [
+        "large NxtWave logo",
+        "course name"
+      ],
+      "visual": {
+        "asset": "nxtwave-logo",
+        "why": "the slide's content IS the brand"
+      },
+      "footer": false,
+      "transition": "fade",
+      "sourceRef": "-"
+    },
+    {
+      "n": 2,
+      "id": "welcome",
+      "phase": "open",
+      "component": "WelcomeSlide (bare-body variant)",
+      "title": "Client–Server & CORS",
+      "content": [
+        "kicker: WELCOME TO TODAY'S SESSION",
+        "title only — no body logo/course/presenter/meta (fixes double logo; footer alone carries it)"
+      ],
+      "visual": {
+        "asset": "none (typography)",
+        "why": "rule: only session name on welcome"
+      },
+      "transition": "zoom",
+      "sourceRef": "doc title"
+    },
+    {
+      "n": 3,
+      "id": "agenda",
+      "phase": "open",
+      "component": "AgendaSlide",
+      "title": "Today's Agenda",
+      "content": [
+        "lead = mission: products page renders products served by OUR Django backend",
+        "4 concepts with analogies (doc's own agenda table), click-revealed"
+      ],
+      "visual": {
+        "asset": "numbered-list UI",
+        "why": "agenda fixture"
+      },
+      "transition": "slide",
+      "sourceRef": "doc Agenda"
+    },
+    {
+      "n": 4,
+      "id": "d1-mission",
+      "phase": "D1 The Mission (§1–§2)",
+      "component": "SectionBreaker + custom visual",
+      "title": "The Mission — Our Products, Not Theirs",
+      "content": [
+        "divider"
+      ],
+      "visual": {
+        "asset": "TwoApps",
+        "why": "depicts the exact opening state: React→apis.ccbp.in, Django unused, no wire"
+      },
+      "transition": "cover",
+      "sourceRef": "§1"
+    },
+    {
+      "n": 5,
+      "id": "two-apps",
+      "phase": "D1",
+      "component": "SlideBase + TwoApps (animated)",
+      "title": "Every product comes from someone else's server",
+      "content": [
+        "Django runs perfectly… and nothing calls it",
+        "cards stagger in; broken connector lands last"
+      ],
+      "visual": {
+        "asset": "TwoApps",
+        "why": "the concept itself, animated"
+      },
+      "sourceRef": "§1"
+    },
+    {
+      "n": 6,
+      "id": "one-line-plan",
+      "phase": "D1",
+      "component": "ContentSlide + CodeBlock",
+      "title": "The plan writes itself",
+      "content": [
+        "hardcoded apis.ccbp.in line (code)",
+        "quote: Find that URL. Replace it. One line. Five minutes.",
+        "lead-out: first, a boring obstacle"
+      ],
+      "visual": {
+        "asset": "code block",
+        "why": "the artifact under discussion"
+      },
+      "sourceRef": "§1"
+    },
+    {
+      "n": 7,
+      "id": "port-rule",
+      "phase": "D1",
+      "component": "ContentNoteSlide",
+      "title": "Both want port 3000",
+      "content": [
+        "manage.py defaults runserver to 3000 = Vite's port (the why)",
+        "rule: backend 8000, frontend 3000 — always runserver 8000"
+      ],
+      "visual": {
+        "asset": "note fixture",
+        "why": "rule callout"
+      },
+      "sourceRef": "§2"
+    },
+    {
+      "n": 8,
+      "id": "rename",
+      "phase": "D1",
+      "component": "ProceduralStepsSlide",
+      "title": "A real name first: myproject → nxttrendz_backend",
+      "content": [
+        "4 places: folder / manage.py / settings.py / wsgi+asgi",
+        "steps click-revealed"
+      ],
+      "visual": {
+        "asset": "step rail",
+        "why": "procedure fixture"
+      },
+      "sourceRef": "§2"
+    },
+    {
+      "n": 9,
+      "id": "prove-it",
+      "phase": "D1",
+      "component": "ContentSlide + CodeBlock",
+      "title": "Two servers up",
+      "content": [
+        "runserver 8000 → boots clean, no \"No module named 'myproject'\" (doc rev 15:20 removed the grep line here)",
+        "lead-out: before redirecting a conversation, know what's being said in it"
+      ],
+      "visual": {
+        "asset": "terminal code",
+        "why": "the proof itself"
+      },
+      "sourceRef": "§2"
+    },
+    {
+      "n": 10,
+      "id": "d2-conversation",
+      "phase": "D2 Read the Conversation (§3, Concept 1)",
+      "component": "SectionBreakerImage",
+      "title": "Read the Conversation First",
+      "content": [
+        "divider + 📌 Concept 1 badge (restaurant)"
+      ],
+      "visual": {
+        "asset": "concept-api",
+        "why": "browser↔server exchange — exactly this concept"
+      },
+      "transition": "cover",
+      "sourceRef": "§3"
+    },
+    {
+      "n": 11,
+      "id": "network-tab",
+      "phase": "D2",
+      "component": "ContentSlide (+capture or styled rows)",
+      "title": "Don't take it on faith — watch it",
+      "content": [
+        "DevTools → Network → reload; one row tells the story",
+        "Method GET = the order placed · URL = which kitchen, which dish · Status 200 = the waiter's verdict · Response JSON = the dish"
+      ],
+      "visual": {
+        "asset": "network-tab-capture (attempt) / styled table fallback",
+        "why": "the doc's observe-it moment"
+      },
+      "sourceRef": "§3"
+    },
+    {
+      "n": 12,
+      "id": "restaurant",
+      "phase": "D2",
+      "component": "SlideBase + AnalogyMap",
+      "title": "Like a restaurant",
+      "content": [
+        "4 rows: order→request · kitchen→server · dish→response body · waiter's verdict→status code",
+        "verdict sub-text: 200 here's your order · 404 we don't serve that · 401 who's asking? · 500 fire in the kitchen"
+      ],
+      "visual": {
+        "asset": "AnalogyMap",
+        "why": "the doc's analogy drawn as a mapping"
+      },
+      "sourceRef": "§3"
+    },
+    {
+      "n": 13,
+      "id": "round-trip",
+      "phase": "D2",
+      "component": "SlideBase + RequestFlow",
+      "title": "The page asked. A server answered.",
+      "content": [
+        "looping packets: GET /api/products/ → · ← 200 OK JSON"
+      ],
+      "visual": {
+        "asset": "RequestFlow",
+        "why": "request/response made visible; replaces the removed Django-internals flowchart (not in doc)"
+      },
+      "sourceRef": "§3"
+    },
+    {
+      "n": 14,
+      "id": "verbs",
+      "phase": "D2",
+      "component": "ContentSlide",
+      "title": "Our routes will use all the verbs",
+      "content": [
+        "GET read · POST create (login, add to cart) · PUT/PATCH update · DELETE remove"
+      ],
+      "visual": {
+        "asset": "icon rows",
+        "why": "doc's verb list, doc's examples only"
+      },
+      "sourceRef": "§3"
+    },
+    {
+      "n": 15,
+      "id": "django-serves",
+      "phase": "D2",
+      "component": "OnlyImageSlide",
+      "title": "Django serves the same thing at :8000",
+      "content": [
+        "caption: the endpoint answers 200 + product JSON — time to swap"
+      ],
+      "visual": {
+        "asset": "django-json-200.png",
+        "why": "real, verified proof of the claim"
+      },
+      "sourceRef": "§3"
+    },
+    {
+      "n": 16,
+      "id": "d3-wall",
+      "phase": "D3 The Wall (§4–§6, Concepts 2 & 3)",
+      "component": "SectionBreakerImage",
+      "title": "The One-Line Swap… and the Wall",
+      "content": [
+        "divider + 📌 Concepts 2 & 3"
+      ],
+      "visual": {
+        "asset": "CorsGate (build)",
+        "why": "guard blocking an arrived response — the section's core mechanic; nothing in-repo fits"
+      },
+      "transition": "cover",
+      "sourceRef": "§4"
+    },
+    {
+      "n": 17,
+      "id": "swap-test",
+      "phase": "D3",
+      "component": "ContentSlide + CodeBlock",
+      "title": "Test the plan — no code edits",
+      "content": [
+        "console: fetch('http://localhost:8000/api/products/')",
+        "Postman returned products for this exact URL. Predict what the browser does. (pause)"
+      ],
+      "visual": {
+        "asset": "code block",
+        "why": "the experiment"
+      },
+      "checkpoint": "predict",
+      "sourceRef": "§4"
+    },
+    {
+      "n": 18,
+      "id": "the-wall",
+      "phase": "D3",
+      "component": "ContentSlide (+capture or styled block)",
+      "title": "Not products. Not a 404.",
+      "content": [
+        "verbatim CORS error",
+        "twist: Django terminal shows GET /api/products/ … 200",
+        "pull-quote: the only thing standing between them is the browser itself"
+      ],
+      "visual": {
+        "asset": "cors-error-console-capture (attempt) / doc-verbatim styled block",
+        "why": "the wall, shown for real"
+      },
+      "sourceRef": "§4"
+    },
+    {
+      "n": 19,
+      "id": "error-map",
+      "phase": "D3",
+      "component": "custom annotated block",
+      "title": "Read it like a detective",
+      "content": [
+        "3 phrases → 3 questions: from origin…? · blocked by CORS policy…? · No 'Access-Control-Allow-Origin' header…?",
+        "each phrase click-revealed"
+      ],
+      "visual": {
+        "asset": "annotated-error-map (build)",
+        "why": "the doc's central pedagogical device"
+      },
+      "sourceRef": "§5"
+    },
+    {
+      "n": 20,
+      "id": "origin-def",
+      "phase": "D3",
+      "component": "ContentNoteSlide",
+      "title": "Origin = scheme + host + port",
+      "content": [
+        "📌 Concept 2 · flats in one building — mail for flat 3000 isn't for flat 8000",
+        "note: localhost vs 127.0.0.1 = different hosts → different origins; expect surprises"
+      ],
+      "visual": {
+        "asset": "highlighted origin parts",
+        "why": "definition slide"
+      },
+      "sourceRef": "§5 phrase 1"
+    },
+    {
+      "n": 21,
+      "id": "same-origin",
+      "phase": "D3",
+      "component": "ContentSlide (reveal rows)",
+      "title": "Same origin — or not?",
+      "content": [
+        "doc's 3 rows, all No: port differs (our case) · scheme differs · host differs",
+        "revealed row-by-row after the class predicts"
+      ],
+      "visual": {
+        "asset": "predict table rows",
+        "why": "doc's own predict exercise"
+      },
+      "checkpoint": "predict",
+      "sourceRef": "§5 phrase 1"
+    },
+    {
+      "n": 22,
+      "id": "guard",
+      "phase": "D3",
+      "component": "SlideBase + AnalogyMap",
+      "title": "The delivery arrived — the guard won't hand it over",
+      "content": [
+        "📌 Concept 3 · rows: delivery arrives→Django's 200 · guard checks name→browser checks header · no name→page never sees data",
+        "whys: Postman/curl have no guard (why Postman worked) · static API always left the name (why never seen before)"
+      ],
+      "visual": {
+        "asset": "AnalogyMap",
+        "why": "the doc's guard analogy as a mapping"
+      },
+      "sourceRef": "§5 phrase 2"
+    },
+    {
+      "n": 23,
+      "id": "phrase-3",
+      "phase": "D3",
+      "component": "ContentSlide",
+      "title": "The error names the missing paperwork",
+      "content": [
+        "header lives on the RESPONSE → responses come from servers → the fix belongs to the server",
+        "CORS definition verbatim: response headers by which a server declares 'pages from this origin may read my responses'"
+      ],
+      "visual": {
+        "asset": "typography emphasis",
+        "why": "the logical pivot"
+      },
+      "sourceRef": "§5 phrase 3"
+    },
+    {
+      "n": 24,
+      "id": "cors-fix",
+      "phase": "D3",
+      "component": "ContentSlide + CodeBlock (capped)",
+      "title": "Teach Django to send the header",
+      "content": [
+        "pip install django-cors-headers",
+        "3 edits: app · middleware high · CORS_ALLOWED_ORIGINS ('the name left at the gate')",
+        "checkpoint: same fetch → products; response carries Access-Control-Allow-Origin",
+        "note — the doc's two predicts, kept as teaching points: Postman works now? yes — it always did (no browser, no guard) · can :5500 read it? no — the guard holds a list of names, not an open gate"
+      ],
+      "visual": {
+        "asset": "code block",
+        "why": "the fix itself"
+      },
+      "sourceRef": "§6"
+    },
+    {
+      "n": 25,
+      "id": "d4-shortcut",
+      "phase": "D4 Remove the Shortcut (§7–§8, Concept 4)",
+      "component": "SectionBreakerImage",
+      "title": "Remove the Shortcut",
+      "content": [
+        "divider + 📌 Concept 4"
+      ],
+      "visual": {
+        "asset": "EnvConfig (build)",
+        "why": "one .env card feeding every request — configuration made visible; nothing in-repo depicts it"
+      },
+      "transition": "cover",
+      "sourceRef": "§7"
+    },
+    {
+      "n": 26,
+      "id": "contact",
+      "phase": "D4",
+      "component": "ContentNoteSlide",
+      "title": "Save the number once",
+      "content": [
+        "the address will change: teammate's machine, deployment — editing every component isn't a plan",
+        "phone-contact analogy · quote: the API's address is configuration, not code"
+      ],
+      "visual": {
+        "asset": "note fixture",
+        "why": "the principle"
+      },
+      "sourceRef": "§7"
+    },
+    {
+      "n": 27,
+      "id": "env-helper",
+      "phase": "D4",
+      "component": "ContentSlide + CodeBlock",
+      "title": ".env + one helper",
+      "content": [
+        "code: VITE_API_BASE_URL + src/api.js (BASE_URL, apiUrl)",
+        "note — two Vite rules: only VITE_-prefixed vars reach the app · .env read once at startup → restart the dev server"
+      ],
+      "visual": {
+        "asset": "code block",
+        "why": "the implementation"
+      },
+      "sourceRef": "§7"
+    },
+    {
+      "n": 28,
+      "id": "convert",
+      "phase": "D4",
+      "component": "ContentSlide + CodeBlock",
+      "title": "The swap from Section 1 — done right",
+      "content": [
+        "before: hardcoded apis.ccbp.in · after: apiUrl('/api/products/') in AllProductsSection"
+      ],
+      "visual": {
+        "asset": "before/after code",
+        "why": "the payoff edit"
+      },
+      "sourceRef": "§7"
+    },
+    {
+      "n": 29,
+      "id": "result-live",
+      "phase": "D4",
+      "component": "OnlyImageSlide",
+      "title": "Products, served by your Django backend",
+      "content": [
+        "caption: one line re-points local ↔ production — 'the one-line swap turned out to be true after all, just not the line we thought'"
+      ],
+      "visual": {
+        "asset": "products-from-django.png",
+        "why": "real, verified mission-complete evidence"
+      },
+      "sourceRef": "§7–§8"
+    },
+    {
+      "n": 30,
+      "id": "crack",
+      "phase": "close",
+      "component": "ContentSlide",
+      "title": "A crack in the wall",
+      "content": [
+        "broken images, blank fields, login dead — yet Network says 200 OK. Who has the bug?",
+        "neither side: frontend reads data.products, Django sends data.results · frontend wants image_url, Django sends imageUrl — two correct programs, two languages",
+        "next: the API contract + JWT (Session 2)"
+      ],
+      "visual": {
+        "asset": "mismatch pairs (styled)",
+        "why": "the doc's Session-2 teaser, concrete beats kept"
+      },
+      "sourceRef": "§8"
+    },
+    {
+      "n": 31,
+      "id": "takeaways",
+      "phase": "close",
+      "component": "KeyTakeawaysSlide",
+      "title": "Key Takeaways",
+      "content": [
+        "lead = doc's story-so-far through-line",
+        "same 4 agenda concepts, outcome-phrased, tick-pill UI (different from agenda's numbered list): client–server verdict · origin parts · CORS allow-list · address is configuration"
+      ],
+      "visual": {
+        "asset": "nova recap mascot + tick pills",
+        "why": "recap fixture; UI intentionally differs from agenda"
+      },
+      "sourceRef": "§8"
+    },
+    {
+      "n": 32,
+      "id": "practice",
+      "phase": "close",
+      "component": "PracticeSlide (fixture)",
+      "title": "Your turn",
+      "content": [
+        "doc checklist: backend 8000 / frontend 3000, rename + grep clean · cors-headers app + middleware + allow-list · console fetch returns JSON · .env + api.js, no hardcoded host · products render from Django"
+      ],
+      "visual": {
+        "asset": "nova practice mascot",
+        "why": "practice fixture"
+      },
+      "sourceRef": "§8 checklist"
+    },
+    {
+      "n": 33,
+      "id": "feedback",
+      "phase": "close",
+      "component": "FeedbackSlide (fixture)",
+      "title": "Feedback",
+      "content": [
+        "standard prompt + link"
+      ],
+      "visual": {
+        "asset": "nova feedback mascot",
+        "why": "feedback fixture"
+      },
+      "sourceRef": "-"
+    },
+    {
+      "n": 34,
+      "id": "thank-you",
+      "phase": "close",
+      "component": "ThankYouSlide",
+      "title": "Thank you",
+      "content": [
+        "close + nextUp: Session 2 — the API contract & JWT login"
+      ],
+      "visual": {
+        "asset": "thank-you fixture",
+        "why": "closer"
+      },
+      "transition": "zoom",
+      "sourceRef": "§8"
+    }
+  ],
+  "buildList": [
+    "BrandSlide (slide 1) · bare-body welcome (2) · footer const → 'Client–Server & CORS' · agenda retitled 'Today's Agenda'",
+    "TwoApps tweak (drop :8000 pre-setup) · CorsGate SVG (16) · EnvConfig SVG (26) · annotated error-map block (19); register visuals in the Illustration registry",
+    "Capture attempts: Network-tab row (11) · CORS console error (18) — both with doc-faithful fallbacks",
+    "Removed per sign-off feedback: both quiz slides (was 25 & 31)",
+    "Removed from old deck: Django-internals FlowChart (not in doc)",
+    "Verification per workflow stage 6 (build, alignment measured, overflow caps, animation QA, footer check) · snapshot to versions/ after"
+  ]
+}

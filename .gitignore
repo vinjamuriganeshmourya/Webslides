@@ -1,0 +1,111 @@
+# Web Slides — repository-level ignores.
+#
+# One file for the whole repo, deliberately: the deck projects
+# (deployement_session_1_v1, deployement_session_1_v2, template, …) are all the
+# same shape, so the same rules apply to each. Patterns use `**/` so they match
+# at any depth and a new session project inherits them for free.
+#
+# The principle throughout: the thing that GENERATES an artefact is tracked, the
+# artefact is not. Everything ignored here rebuilds from what is committed.
+
+# ── dependencies ──────────────────────────────────────────────────────────
+**/node_modules/
+.pnp
+.pnp.js
+
+# ── build output ──────────────────────────────────────────────────────────
+**/dist/
+**/dist-ssr/
+**/dist-single/
+**/.vite/
+*.tsbuildinfo
+
+# ── archives ──────────────────────────────────────────────────────────────
+# ~340 MB of zipped snapshots and templates. Git stores them whole on every
+# change and they are all reconstructible from the projects themselves.
+*.zip
+*.tar
+*.tar.gz
+*.7z
+*.rar
+versions/
+
+# ── source decks and heavy binaries ───────────────────────────────────────
+# sample_ppts is ~240 MB of reference PowerPoint. Reference material, not
+# source: keep it on disk, out of the history.
+sample_ppts/
+*.pptx
+*.ppt
+*.mp4
+*.mov
+*.webm
+
+# ── generated deck exports ────────────────────────────────────────────────
+# The builders live beside their output; the builders are tracked.
+#   node <project>/workflow/export/build-project-html.mjs   -> deck.html
+#   node <project>/workflow/export/build-theme-module.mjs   -> nxtwaveDeck.js
+#   node <project>/workflow/export/build-content-data.mjs   -> deckData.js
+#   node <project>/workflow/export/build-player.mjs         -> deck-player.html
+#   python3 <project>/workflow/export/upload-assets.py      -> assets.json
+**/workflow/export/*
+!**/workflow/export/*.mjs
+!**/workflow/export/*.py
+!**/workflow/export/README.md
+
+# fonts.css is ~1.2 MB of embedded woff2, fetched from Google Fonts at build
+# time and folded into the self-contained builds. Without it those builds fall
+# back to system fonts, so regenerate rather than hand-edit.
+**/workflow/export/fonts.css
+
+# Slide renders, SVG exports, preview pages and sign-off sheets — all produced
+# by scripts, all measured in megabytes.
+**/workflow/slide-types/*.png
+**/workflow/slide-types/svg/
+**/workflow/slide-types/*.html
+**/workflow/preview/
+**/workflow/signoff/*.html
+
+# The generated halves of the slide-host module. `slideModule.tsx` is authored
+# and tracked; these two are written by build-theme-module.mjs.
+**/src/export/deckCss.ts
+**/src/export/revealSteps.ts
+
+# ── secrets — NEVER commit ────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+**/.env
+*.pem
+*.key
+*credentials*.json
+*service-account*.json
+
+# ── logs ──────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ── editor / OS ───────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*~
+
+# ── python ────────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ── QA scratch ────────────────────────────────────────────────────────────
+# qa.mjs and video-safe.mjs write screenshots beside the project when pointed at
+# a local path; throwaway, never review material.
+.playwright-mcp/
+qa-*.png
+shot*.mjs
+*.screenshot.png

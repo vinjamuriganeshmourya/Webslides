@@ -1,0 +1,368 @@
+# Design system rules — deployement_session_1_v2
+
+How to bring a Figma design into this codebase without fighting it. Written for
+agents working through the Figma MCP; every path is relative to this directory.
+
+This is a **presentation deck**, not an app. That single fact drives most of the
+rules below: there is no responsive layout, no router, no data layer. There is one
+fixed 1280×720 canvas, scaled to fit whatever screen it is projected on.
+
+---
+
+## 1. Token definitions
+
+Tokens live in **two files that must be edited together**.
+
+| File | Owns | Consumed by |
+|---|---|---|
+| `tailwind.config.ts` | The CSS side — every utility class | JSX `className` |
+| `src/design/tokens.ts` | The TypeScript mirror | inline SVG fills, Framer Motion configs, canvas math |
+
+`tokens.ts` says so at the top, and it is load-bearing:
+
+```ts
+/** Keep this in sync with tailwind.config.ts. */
+export const colors = {
+  brand: '#0B5FFF',
+  teal: '#12B5A8',
+  accent: '#FF8A3D',
+  ink: '#0B1A2B',
+  body: '#4A5B6B',
+  line: '#D8E3F5',
+  night: '#081026',
+  // …
+} as const
+```
+
+**Rule: a colour added to one must be added to the other.** SVG `fill` and
+`stroke` cannot read a Tailwind class, so anything that appears inside a drawn
+figure (`src/ui/characters/*`, `ContainerJourney`, `LayerStack`) reads from
+`tokens.ts`. Anything that appears as a background, border or text colour reads
+from Tailwind. Most colours need both.
+
+### Token shapes
+
+- **Colour** — Tailwind ramps (`brand.50`…`brand.900` plus `DEFAULT`) for the
+  three brand hues; flat values for semantic (`success`, `warning`, `danger`,
+  `info`) and neutrals (`ink`, `body`, `muted`, `line`, `surface`, `night`).
+- **Type scale** — fixed **px**, not `rem`, because the canvas is a fixed size:
+  ```ts
+  fontSize: {
+    kicker: ['15px', { lineHeight: '1.2', letterSpacing: '0.14em', fontWeight: '700' }],
+    'slide-title': ['34px', { lineHeight: '1.12', fontWeight: '700' }],
+    hero: ['64px', { lineHeight: '1.02', fontWeight: '800' }],
+    'body-lg': ['22px', { lineHeight: '1.5' }],
+  }
+  ```
+  Use `text-slide-title`, `text-body-lg` etc. **Do not** introduce `text-[27px]`
+  one-offs; if a Figma frame needs a size that is not on the scale, either map it
+  to the nearest step or add a named step to the scale.
+- **Radius** — `rounded-card` (18px), `rounded-xl2` (24px), `rounded-pill`.
+- **Shadow** — `shadow-card`, `shadow-card-soft`, `shadow-float`, `shadow-glow`.
+  All are blue-tinted (`rgba(11,95,255,…)`), not neutral black.
+- **Gradients** — named `backgroundImage` entries: `bg-brand-gradient`,
+  `bg-night-gradient`, `bg-brand-soft`, `bg-accent-gradient`, `bg-teal-gradient`.
+- **Easing** — `src/design/tokens.ts` exports the house curves. Use these rather
+  than inventing cubic-beziers per component:
+  ```ts
+  export const easing = {
+    soft: [0.22, 1, 0.36, 1],      // the house curve
+    swift: [0.4, 0, 0.2, 1],
+    springy: [0.34, 1.56, 0.64, 1],
+  }
+  ```
+
+There is **no token transformation pipeline** — no Style Dictionary, no
+generated CSS variables. The two files above are hand-maintained. When importing
+Figma variables, translate them into these two files by hand and keep the
+existing names; do not add a third source of truth.
+
+---
+
+## 2. Component library
+
+Three layers, and the distinction matters when placing new Figma work:
+
+```
+src/ui/       primitives and figures   — no slide layout, reusable anywhere
+src/slides/   slide TYPES              — one component per layout archetype
+src/decks/    deck CONTENT             — the actual session, data only
+```
+
+**`src/ui/`** — `SlideBase`, `SlideHeader`, `Callout`, `DataTable`, `CodeBlock`,
+`Terminal`, `Shot`, `LayerStack`, `MachineBoundary`, `ContainerJourney`,
+`primitives.tsx` (Kicker, Chip, NumberBadge), `content.tsx` (BulletList, Card,
+CardGrid, StatTile), `flow.tsx` (StepList, FlowChart). All re-exported from
+`src/ui/index.ts` — import from `@/ui`, not from the file.
+
+**`src/slides/`** — one component per layout: `ContentSlide`, `ContentNoteSlide`,
+`SectionBreakerSlide`, `AgendaSlide`, `QuizSlide`, `QuizTimeSlide`,
+`KeyTakeawaysSlide`, `ProceduralStepsSlide`, `ScenarioSlide`, `BrandSlide`,
+`WelcomeSlide`, `ThankYouSlide`, … Props for every one are declared in a single
+file, `src/slides/types.ts`.
+
+**`src/decks/deploymentSession1Deck.tsx`** — an array of `SlideDef`. Content
+only; no layout decisions:
+
+```tsx
+export const deploymentSession1Deck: SlideDef[] = [
+  {
+    id: 'c1-two-problems',        // stable — also the URL hash
+    section: 'Where Your App Lives',
+    label: 'Two problems',        // shown in the overview grid
+    element: <ContentSlide … />,
+    notes: 'Speaker notes, shown in the presenter overlay (press N).',
+  },
+]
+```
+
+**When a Figma frame arrives:** decide first whether it is a *new layout* or new
+*content in an existing layout*. Reuse a slide type wherever the structure
+matches; only add to `src/slides/` when the arrangement is genuinely new, and
+then add its props to `types.ts` and export it from `src/slides/index.ts`.
+
+There is no Storybook. The deck itself is the component gallery — run `npm run
+dev` and press `?all` (see §7).
+
+---
+
+## 3. Frameworks & libraries
+
+| Concern | Choice |
+|---|---|
+| UI | **React 19** (`react-jsx` transform, no `import React`) |
+| Animation | **framer-motion 11** |
+| Styling | **Tailwind CSS 3.4** + a small `src/index.css` |
+| Icons | hand-rolled SVG + **lucide-react** (pinned `1.24.0`) |
+| Build | **Vite 6** + `@vitejs/plugin-react` |
+| Language | **TypeScript 5.7**, `strict`, **`noUnusedLocals`**, `noUnusedParameters` |
+| Screenshot QA | **Playwright** (dev dependency, used by the harnesses) |
+
+`noUnusedLocals` is on, so **deleting a slide but leaving its import breaks the
+build**. `npm run build` runs `tsc -b` first for exactly this reason.
+
+Path alias `@/` → `src/`, declared in *both* `vite.config.ts` and
+`tsconfig.app.json`.
+
+Fonts load from Google Fonts in `index.html`: **Sora** (headings), **Inter**
+(body), **JetBrains Mono** (code). Match those when reading a Figma text style —
+if the design specifies a different family, raise it rather than silently
+substituting.
+
+---
+
+## 4. Asset management
+
+Everything served statically from `public/`, referenced by absolute path:
+
+```
+public/assets/logo-nxtwave.png     the ONE brand mark
+public/assets/tech/*.svg           third-party logos (docker, django, react, …)
+public/shots/*.png                 real screenshots used on slides
+```
+
+```tsx
+<img src="/assets/tech/docker.svg" alt="" draggable={false} />
+```
+
+No import-based asset pipeline, no CDN, no image optimisation step, no
+`srcset` — the canvas is a fixed size, so one resolution is enough. Vite copies
+`public/` verbatim.
+
+**Rules for adding assets:**
+- Third-party logos go in `public/assets/tech/` and must be the vendor's own
+  official file. Do not recolour them; where a light-on-dark version is needed,
+  ship the vendor's white variant as a separate file (see `docker-white.svg`).
+- Screenshots go in `public/shots/` and must be **real** captures, never mocked
+  or reconstructed. Render them through `src/ui/Shot.tsx`, which supplies the
+  frame and an optional percentage-based highlight box.
+- The NxtWave mark is only ever `src/ui/Logo.tsx`. It reverses to white on dark
+  grounds via a filter rather than a second asset:
+  ```tsx
+  style={onDark ? { filter: 'brightness(0) invert(1)' } : undefined}
+  ```
+
+---
+
+## 5. Icon system
+
+Two sources, one registry — `src/ui/icons.tsx`:
+
+1. **Hand-drawn**, on a 24-grid, `stroke="currentColor"`, `strokeWidth={2}`:
+   ```tsx
+   const base = (p: P) => ({
+     width: 24, height: 24, viewBox: '0 0 24 24',
+     fill: 'none', stroke: 'currentColor', strokeWidth: 2,
+     strokeLinecap: 'round', strokeLinejoin: 'round', ...p,
+   })
+   export const Check = (p: P) => <svg {...base(p)}><path d="M20 6 9 17l-5-5" /></svg>
+   ```
+2. **lucide-react** picks, re-exported through the same registry.
+
+Both land in one lookup so slide data can name an icon as a string:
+
+```tsx
+export const iconByName = { check: Check, bulb: Bulb, terminal: TerminalSquare, … }
+export type IconName = keyof typeof iconByName
+```
+
+**Naming:** lowercase kebab-case (`shield-check`, `json`, `devices`) — the *role*
+on a slide, not the Figma layer name. Colour comes from `currentColor`; never
+hardcode a fill on an icon.
+
+Characters and scene illustrations are **not** icons. They live in
+`src/ui/characters/` (`Nova.tsx`, `props.tsx`, `concepts.tsx`, `session1.tsx`)
+behind one component, `Illustration`, selected by an `IllustrationName` union.
+
+---
+
+## 6. Styling approach
+
+**Tailwind utilities in `className`.** No CSS Modules, no styled-components, no
+`.css` file per component. `src/index.css` holds only: the three `@tailwind`
+directives, `html/body/#root` reset, the `.slide-canvas` and `.slide-footer-bar`
+component classes, and a `prefers-reduced-motion` block.
+
+Inline `style` is legitimate in exactly three cases:
+1. values Tailwind cannot express (`gridTemplateColumns` from a prop, a computed
+   gradient),
+2. SVG paint,
+3. anything driven by a token variable at runtime.
+
+**No responsive design.** There are no breakpoints anywhere. The 1280×720 stage
+is scaled with a transform to fit the viewport; write fixed px and trust it.
+
+**Two hard layout rules that every new slide must satisfy:**
+
+1. **Video reservation.** The top-right `x 913..1280, y 0..220` is kept clear for
+   an instructor video composited in later. It is never drawn — slides simply do
+   not place content there. `pointer-events-none` decorative background is the
+   one exception the checker allows.
+2. **Header floor.** `SlideHeader` carries `min-h-[168px]` so body content never
+   starts above y≈216.
+
+**Motion** goes through `src/motion/`:
+- `Reveal.tsx` — `<RevealGroup stagger={0.1}>` + `<Reveal dir="up">` for entrance
+  choreography. `RevealGroup` is a `motion` component, so **a plain wrapper
+  `<div>` between it and its `<Reveal>` children breaks variant propagation** and
+  silently kills the stagger. Use auto-margins, not wrappers, to position groups.
+- `Stepper.tsx` — click-driven builds (`useReveal`, `<Step>`), and the `?all`
+  query flag that forces every step visible for QA.
+- `instant.ts` — `useInstant()`, true during Ctrl+←/→ jumps. Any component with
+  its own entrance must read it and mount at the final state when set, or it will
+  be the only thing moving on an otherwise still slide.
+
+Beware: **framer-motion writes an inline `transform` every frame, which replaces
+Tailwind's `-translate-x-1/2` utilities.** Centre animated elements with animated
+`x: '-50%'` values, not classes. This has caused three separate bugs in this repo.
+
+---
+
+## 7. Project structure
+
+```
+deployement_session_1_v2/
+├── index.html               font links + #root
+├── tailwind.config.ts       ← token source (CSS)
+├── vite.config.ts           @/ alias, dev server
+├── qa.mjs                   frame-overflow + footer-mark sweep
+├── video-safe.mjs           asserts the video rectangle stays clear
+├── public/                  assets, shots
+├── workflow/                plans, capture logs, sign-off pages
+└── src/
+    ├── index.css            the only stylesheet
+    ├── design/tokens.ts     ← token source (TS mirror)
+    ├── motion/              Reveal, Stepper, instant, presets
+    ├── deck/                the player: Deck, SlideStage, controls, nav hooks
+    ├── ui/                  primitives + figures  (barrel: index.ts)
+    │   └── characters/      Nova + illustration scenes
+    ├── slides/              slide types           (barrel: index.ts)
+    │   └── types.ts         ALL slide props, one file
+    └── decks/               deck content
+```
+
+**Organised by kind, not by feature.** A new slide type touches four files, in
+this order: `slides/types.ts` (props) → `slides/NewSlide.tsx` → `slides/index.ts`
+(export) → the deck array.
+
+### Commands
+
+```bash
+npm run dev                 # localhost:5173
+npm run build               # tsc -b && vite build
+npm run build:html          # ONE self-contained .html — see below
+npx tsc -b --noEmit         # fastest correctness check
+
+export CHROME_PATH=/opt/google/chrome/chrome
+node qa.mjs "http://localhost:5199/?all" 37         # overflow + logo per slide
+node video-safe.mjs "http://localhost:5199/?all" 37 # must print CLEAN
+```
+
+`?all` forces every build step and settles every once-only animation, so
+screenshots capture the finished slide. Both harnesses take the slide count as
+their last argument — **update it when slides are added or removed.**
+
+Expected `qa.mjs` baseline: slide 1 flagged for its `pointer-events-none`
+decorative blobs. Anything else is a regression.
+
+### The standalone HTML build
+
+`npm run build:html` emits **`dist-single/deployment-session-1.html`** — the whole
+deck in one file that opens by double-click, with no server and no network:
+
+1. `vite build -c vite.singlefile.config.ts` inlines all JS and CSS.
+2. `scripts/inline-assets.mjs` rewrites every `/assets/…` and `/shots/…` path to
+   a base64 data URI, then deletes the now-unreferenced copies Vite made of
+   `public/`. **This step is not optional** — §4 references assets by
+   *root-absolute* path, which under `file://` resolves to the filesystem root
+   and silently breaks every screenshot.
+3. `scripts/inline-fonts.mjs` embeds the three Google families as woff2 data
+   URIs and drops the `<link>`. It fails soft: no network at build time means a
+   deck that still works but falls back to system fonts.
+
+Nothing about the player changes — keyboard nav, `Ctrl+←/→` build steps, the
+`#/n` hash, fullscreen and the framer-motion transitions are all client-side and
+survive bundling untouched.
+
+```bash
+node preview.mjs dist-single/deployment-session-1.html workflow/preview 35
+node scripts/build-preview-page.mjs      # → workflow/preview/index.html
+```
+
+`preview.mjs` loads the built file over `file://` **with all http/https requests
+aborted**, so a deck that still reaches for a CDN fails the run rather than
+passing on a cached asset. It captures every slide with `?all` plus mid-flight
+transition frames, and reports broken images and console errors. Update its
+slide-count argument alongside `qa.mjs` and `video-safe.mjs`.
+
+---
+
+## 8. Rules that outrank visual fidelity
+
+Content rules live in `.claude/skills/slide-content-rules/SKILL.md` (workspace
+level) and win over a Figma frame's copy. The ones most often violated when
+transcribing a design:
+
+- **No em dashes.** No trailing full stops on titles, bullets, table cells, or
+  captions.
+- **One idea per slide.** If a Figma frame carries two, split it.
+- Text and its supporting visual **reveal together**, never text-then-picture.
+- Terminal output is rendered by `src/ui/Terminal.tsx`, never as a screenshot of
+  a terminal and never invented.
+- The deck header comment in `src/decks/deploymentSession1Deck.tsx` carries the
+  deck's own R1–R6 rules. Read it before editing that file.
+
+---
+
+## 9. Figma-specific notes for this account
+
+- The template file `Fw9qM2GY6DjedBCpG2ap4l` (NxtWave PPT Template) is **not
+  shared with this account as an editor**. `get_variable_defs`, `get_screenshot`
+  and `get_design_context` all return *"you don't have edit access to this
+  file"*. Colours have to come from an exported SVG or a shared screenshot
+  instead.
+- Creating a **new** file and drawing into it does work on the View seat
+  (`create_new_file` + `use_figma`).
+- There is a per-seat cap on Figma MCP calls. Budget them: inspect once, build in
+  a few large-but-valid steps, and prefer `await node.screenshot()` inside a
+  `use_figma` call over a separate `get_screenshot` round trip.

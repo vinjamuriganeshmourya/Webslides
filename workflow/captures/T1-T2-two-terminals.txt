@@ -1,0 +1,76 @@
+CAPTURES T1 + T2  ·  the student's two running terminals
+Slides: c1-two-terminals (both panels), c2-truths (T1's WARNING line)
+Captured: 2026-08-12, Window VM, VS Code integrated terminal, split panels
+ONE-SHOT: no
+
+Images:
+  T1-backend-vscode.png       backend panel alone, full window (uncropped original)
+  T1-T2-two-terminals.png     both panels side by side, full window (uncropped original)
+  T2-frontend-scrollback.png  frontend panel scrolled back to show the VITE banner
+
+Hard rule 3 compliance: captured in VS Code's integrated terminal, split into two
+panels, each with its own prompt path. The deck renders these as two separate
+Terminal components, never merged into one panel.
+
+Hard rule 11 compliance: crop the two panels out of the full window before use.
+Drop the file tree, tab bar, Copilot sidebar, taskbar and clock. Keep each
+`PS <path>>` prompt. A highlight box is NOT needed on T2, the crop is enough.
+On T1 the WARNING line is the claim on c2-truths, and it sits eight lines down a
+long output, so that one slide gets a single box or underline on the WARNING.
+
+Deck prompt path per decision 2: C:\nxttrendz\backend and C:\nxttrendz\frontend.
+Real capture paths were under C:\Users\vboxuser\Desktop\Projects\nxttrendz.
+Output text is path independent, so the Terminal component re-renders the
+approved short path. No output text is altered.
+
+--- T1 transcript · Terminal 1, the API (verbatim) ---
+
+PS C:\nxttrendz\backend> .\env\Scripts\activate
+(env) PS C:\nxttrendz\backend> python manage.py runserver
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+August 12, 2026 - 00:48:30
+Django version 6.1, using settings 'myproject.settings'
+Starting WSGI development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+
+WARNING: This is a development server. Do not use it in a production setting. Use a production WSGI or ASGI server instead.
+For more information on production servers see: https://docs.djangoproject.com/en/6.1/howto/deployment/
+
+--- T2 transcript · Terminal 2, the frontend (verbatim) ---
+
+PS C:\nxttrendz\frontend> npm run dev
+
+> vite-boilerplate@0.0.0 dev
+> npm exec vite
+
+  VITE v6.2.0  ready in 1268 ms
+
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: http://10.0.2.15:3000/
+  ➜  press h + enter to show help
+
+--- notes ---
+
+1. The TR doc previously claimed port 5173, the Vite default. This project sets
+   `port: 3000` in vite.config.js, so the doc was patched to 3000. This capture
+   is the evidence.
+
+2. `Network: http://10.0.2.15:3000/` is the VM's NAT address. Consider dropping
+   this line from the slide: it is real, but it invites the question "what is
+   that address", which belongs to Problem 2 and must not be opened here
+   (hard rule 4). Keeping only the `Local:` line stays in scope.
+
+3. Django reports `http://127.0.0.1:8000/` because the plain `runserver` form was
+   used deliberately, per the capture plan. The student's own history had
+   `runserver 0.0.0.0:8000`, which is a bind address and is the wrong thing to
+   teach at this point in the course.
+
+4. Accidental bonus capture available: running `.\env\Scripts\activate` and
+   `python manage.py runserver` from the project root instead of `backend`
+   produced "The term '.\env\Scripts\activate' is not recognized" and
+   "can't open file '...\nxttrendz\manage.py': [Errno 2] No such file or
+   directory". That is the wrong-folder error hard rule 3 exists for. Worth
+   capturing deliberately if a slide or callout wants it.

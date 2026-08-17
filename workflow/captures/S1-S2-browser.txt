@@ -1,0 +1,78 @@
+CAPTURES S1 + S2  ·  the integration working, from both ends
+Slides: c1-two-terminals (S1), c1-localhost (S1 + S2)
+Captured: 2026-08-12, Window VM, Microsoft Edge
+ONE-SHOT: no
+
+Images:
+  S1-app-working-products.png   React app at localhost:3000/products, logged in
+  S2-django-api-json.png        Django REST API at localhost:8000/api/products/
+
+--- S1 · what it shows ---
+
+URL:      localhost:3000/products
+Nav:      Home · Products · Cart · Logout   (Logout proves an authenticated session)
+Heading:  Exclusive Prime Deals
+Cards:    Front Load Machine   by Samsung   Rs 22490.00/-   4.5
+          True Wireless Earbuds by LG       Rs 13499.00/-   4.4
+          Virgin Avocado Oil   by ProV      Rs 4144.00/-    4.4
+
+This is the "every piece is correct" state the session opens on: React on 3000,
+DRF on 8000, JWT holding the session, real rows out of db.sqlite3.
+
+--- S2 · what it shows ---
+
+URL:      localhost:8000/api/products/
+Response: GET /api/products/
+          HTTP 200 OK
+          Allow: GET, POST, HEAD, OPTIONS
+          Content-Type: application/json
+          Vary: Accept
+
+          {
+              "count": 48,
+              "next": "http://localhost:8000/api/products/?page=2",
+              "previous": null,
+              "results": [
+                  {
+                      "id": 8,
+                      "title": "Embroidered Net Gown",
+                      "brand": "Manyavar",
+                      "price": "62990.00",
+                      "category": "Clothing",
+                      ...
+                  },
+                  ...
+
+Rendered by the DRF browsable API, which is what a browser gets from this
+endpoint. Useful rather than raw JSON here: the `HTTP 200 OK` line and the
+`Content-Type: application/json` line are visible, so the slide can point at the
+status without a devtools panel.
+
+--- crop and highlight guidance (hard rule 11) ---
+
+S1: crop to the browser address bar plus the product grid. Drop the tab strip,
+    favourites bar, Windows taskbar and clock. Keep the address bar, because
+    `localhost:3000` is the whole point of the slide that follows.
+    No highlight box needed. The crop already carries the claim.
+
+S2: crop to the address bar plus the response block down to the first product
+    object. Keep `localhost:8000` visible in the address bar.
+    On `c1-localhost`, where the claim is "two different ports on one machine",
+    add ONE box: around `localhost:8000` in the address bar, paired with S1's
+    `localhost:3000`. That is the one place a box earns its keep, because the
+    two captures differ by four characters and the eye needs pointing at them.
+
+--- notes ---
+
+1. Products initially failed to render and the page showed the empty-state
+   illustration. Resolved on the user's side before capture. S1 is a genuine
+   working state, not a partial one.
+
+2. S2 shows `"count": 48` and a `next` page link. If a slide claims "the product
+   list", note that the API is paginated and the first page is 12 of 48 items.
+   Do not write copy that implies the endpoint returns everything.
+
+3. `imageUrl` values point at `assets.ccbp.in`, a remote CDN. Harmless here, but
+   worth knowing: the app is not fully self-contained, so a container that
+   cannot reach the internet will render the grid without images. That is a
+   Problem 2 concern and must not be opened in this session (hard rule 4).

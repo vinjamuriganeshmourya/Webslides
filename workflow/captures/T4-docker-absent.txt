@@ -1,0 +1,30 @@
+CAPTURE T4  ·  docker is not installed yet
+Slides: c8-steps-34 (the "before" state)
+Captured: 2026-08-12, Window VM, before any Docker or WSL 2 install
+ONE-SHOT: true. Protected by snapshot "pre-docker-capture".
+
+Deck prompt path per decision 2: C:\nxttrendz
+Real capture path was C:\Users\vboxuser\Desktop\Projects\nxttrendz\frontend.
+The error text is path independent, so the Terminal component re-renders the
+approved short path. Nothing else is altered.
+
+--- transcript (verbatim, for the Terminal component) ---
+
+PS C:\nxttrendz> docker --version
+docker : The term 'docker' is not recognized as the name of a cmdlet, function, script file, or operable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+At line:1 char:1
++ docker --version
++ ~~~~~~
+    + CategoryInfo          : ObjectNotFound: (docker:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+--- notes ---
+
+Re-captured once. The first take had a `cls;` prefix on the same line, which
+made PowerShell report `char:6` and echo `cls; docker --version` as the
+offending line. Docker was still absent, so the command was simply re-run bare
+to keep the transcript honest rather than edited afterwards.
+
+Teaching value: this is the state every student is in at the start of the
+session, and it cannot be reproduced once Docker Desktop is installed.

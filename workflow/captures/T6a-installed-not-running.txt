@@ -1,0 +1,41 @@
+CAPTURE T6a  ·  installed and running are not the same thing
+Slides: c8-steps-34 (the point the TR doc calls "the step people skip")
+Captured: 2026-08-12, Window VM, right after Docker Desktop first launch
+ONE-SHOT: yes in practice. This state exists only in the window between the
+install finishing and the engine coming up, and cannot be reproduced afterwards
+without stopping the engine.
+
+--- transcript (verbatim) ---
+
+PS C:\nxttrendz> docker --version
+Docker version 29.7.2, build a7dcaa6
+
+PS C:\nxttrendz> docker info
+request returned 500 Internal Server Error for API route and version
+http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.55/info, check if the
+server supports the requested API version
+
+--- why this is the best evidence in the session ---
+
+The TR doc says, at Step 3: "This is the step people skip. Installed and running
+are not the same thing. The `docker` command does nothing at all unless the
+engine behind it is up."
+
+This pair proves it in two lines. `docker --version` answers instantly, because
+the CLI is a plain user-level binary on PATH. `docker info` fails, because it has
+to reach the engine across the named pipe
+`\\.\pipe\dockerDesktopLinuxEngine`, and nothing is listening yet.
+
+That is also a cleaner demonstration than the green-status screenshot the plan
+originally called for (S5 and S6): a status dot shows a colour, whereas this
+shows the actual mechanism, and it names the pipe that connects the two halves.
+
+Recommendation: put this transcript on `c8-steps-34` and treat S5 and S6 as
+supporting screenshots rather than the primary evidence.
+
+--- doc discrepancy ---
+
+The TR doc's example output is "Docker version 27.0.3, build 7d4bcd8".
+The real captured version is 29.7.2, build a7dcaa6. Version strings age, so the
+slide should either use the captured value or say plainly that the numbers will
+differ. Do not leave a stale version on the slide as though it were expected.
