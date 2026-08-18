@@ -140,13 +140,15 @@ export interface FeedbackSlideProps extends Base {
   link?: string
 }
 
-export interface QuizSlideProps extends Base {
-  kicker?: string
-  title?: ReactNode
-  question: ReactNode
-  options?: { label: ReactNode; correct?: boolean }[]
-  hint?: ReactNode
-}
+/*
+  There is no `QuizSlideProps`, and that is deliberate.
+
+  A quiz is NOT authored as a slide. Questions are delivered by an external quiz
+  component, so a deck's only quiz frame is the announcement one below, which
+  hands over to it. `QuizSlide` used to exist and render a question with four
+  lettered options; it was removed because having it in the kit meant decks kept
+  being written the wrong way.
+*/
 
 /** The quiz announcement frame. Carries no question by design. */
 export interface QuizTimeSlideProps extends Base {
@@ -158,5 +160,9 @@ export interface QuizTimeSlideProps extends Base {
 export interface ThankYouSlideProps extends Base {
   title?: ReactNode
   message?: ReactNode
-  nextUp?: ReactNode
+  /*
+    There is no `nextUp`. The Next session slide sits immediately before this one
+    and already names what is coming; a "Next up:" chip here as well gave the deck
+    two endings. Signpost the next session on that slide, not on this one.
+  */
 }

@@ -22,14 +22,14 @@ export function SectionBreakerSlide({
    */
   mark,
   markAlt = '',
-  tone = 'accent',
+  tone = 'nw',
   lesson,
 }: SectionBreakerProps) {
   const indexLabel =
     typeof index === 'number' ? String(index).padStart(2, '0') : index
 
   return (
-    <SlideBase variant="brand" className="bg-nw-gradient" lesson={lesson} footer>
+    <SlideBase variant="night" lesson={lesson} footer>
       <div className="relative grid h-full place-items-center text-center">
         {indexLabel != null && (
           <motion.span

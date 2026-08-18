@@ -14,6 +14,17 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
+/*
+  Deck identity and the headline counts are DERIVED, never typed in. This page
+  used to hardcode "35" and "3.37 MB": by the time the deck reached 48 slides the
+  contact sheet still announced 35 above a grid of 48, which is the most
+  misleading thing a QA artefact can do.
+*/
+const cfg = JSON.parse(readFileSync(join(root, 'deck.config.json'), 'utf8'))
+const builtHtml = join(root, 'dist-single', `${cfg.htmlName}.html`)
+const builtMb = existsSync(builtHtml)
+  ? (readFileSync(builtHtml).length / 1024 / 1024).toFixed(2) + ' MB'
+  : 'n/a'
 const previewDir = join(root, 'workflow', 'preview')
 const thumbDir = join(previewDir, 'thumbs')
 
@@ -50,6 +61,16 @@ async function fontCss() {
 
 /* ── content ──────────────────────────────────────────────────────────── */
 
+/*
+  Checked HERE, before the first read. This guard used to live at the bottom of
+  the file, after 260 lines of template string, so `readdirSync` below always
+  threw a raw ENOENT first and the helpful message was unreachable.
+*/
+if (!existsSync(thumbDir)) {
+  console.error(`no thumbnails at ${thumbDir}\n  run preview.mjs first — it writes thumbs/ as it captures.`)
+  process.exit(2)
+}
+
 const slides = readdirSync(thumbDir)
   .filter((f) => /^\d\d\.jpg$/.test(f))
   .sort()
@@ -71,7 +92,7 @@ const frame = (f, i) => `
         <figcaption>${i * 70}<span>ms</span></figcaption>
       </figure>`
 
-const html = `<title>Session 1 Deck Preview</title>
+const html = `<title>Session 2 Deck Preview</title>
 <style>
 ${await fontCss()}
 
@@ -270,15 +291,15 @@ code {
 <div class="wrap">
   <header>
     <div class="eyebrow">Standalone build</div>
-    <h1>Deployment Session 1, as one HTML file</h1>
+    <h1>${cfg.title}, as one HTML file</h1>
     <p class="lede">
-      Every frame below was captured from <code>deployment-session-1.html</code> opened over
+      Every frame below was captured from <code>${cfg.htmlName}.html</code> opened over
       <code>file://</code> with all network traffic blocked, so nothing here relies on a server,
       a CDN, or a sibling folder.
     </p>
     <div class="stats">
-      <div class="stat"><b>35</b><span>Slides</span></div>
-      <div class="stat"><b>3.37 MB</b><span>Single file</span></div>
+      <div class="stat"><b>${slides.length}</b><span>Slides</span></div>
+      <div class="stat"><b>${builtMb}</b><span>Single file</span></div>
       <div class="stat pass"><b>0</b><span>Broken images</span></div>
       <div class="stat pass"><b>0</b><span>Console errors</span></div>
       <div class="stat pass"><b>0</b><span>Network requests</span></div>
@@ -297,7 +318,7 @@ code {
   </section>
 
   <section>
-    <h2>All 35 slides</h2>
+    <h2>All ${slides.length} slides</h2>
     <p class="note">
       Captured with the <code>?all</code> flag, which forces every build step visible, so each
       thumbnail shows the finished slide rather than its empty first step.
@@ -314,6 +335,5 @@ code {
 `
 
 const out = join(previewDir, 'index.html')
-if (!existsSync(thumbDir)) throw new Error('run preview.mjs first — no thumbs/ directory')
 writeFileSync(out, html)
 console.log(`Preview page: workflow/preview/index.html (${(html.length / 1024 / 1024).toFixed(2)} MB, ${slides.length} slides)`)

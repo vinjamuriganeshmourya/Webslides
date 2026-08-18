@@ -15,6 +15,23 @@ const KEYWORDS = new Set([
   'const', 'let', 'var', 'function', 'export', 'default', 'new', 'this',
   'typeof', 'interface', 'type', 'extends', 'implements', 'public', 'private',
   'null', 'undefined', 'true', 'false',
+  /*
+   * dockerfile instructions.
+   *
+   * Uppercase, so they can never collide with the python/js keywords above —
+   * the set is case-sensitive, and `from` (python) stays a separate entry from
+   * `FROM` (dockerfile).
+   *
+   * This deck renders a Dockerfile as the main exhibit on eleven slides, and on
+   * most of them the instruction word IS the lesson. Without these the whole
+   * file rendered as undifferentiated plain text and the one token the eye
+   * needed to find was the only one with no colour.
+   */
+  'FROM', 'WORKDIR', 'COPY', 'RUN', 'CMD', 'ENV', 'EXPOSE', 'ENTRYPOINT',
+  'ADD', 'ARG', 'LABEL', 'VOLUME', 'USER',
+  // The placeholder on the instruction-anatomy slide, which is not a real
+  // instruction but is read as one.
+  'INSTRUCTION',
 ])
 
 const COLORS = {

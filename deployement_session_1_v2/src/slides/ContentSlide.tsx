@@ -3,6 +3,7 @@ import { SlideHeader } from '@/ui/SlideHeader'
 import { BulletList } from '@/ui/content'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
 import type { ContentSlideProps } from './types'
+import { SLIDE_FAMILY } from '@/motion/continuity'
 
 /**
  * CONTENT — a clean, single-focus text slide (no media). Standard header,
@@ -62,3 +63,10 @@ export function ContentSlide({
     </SlideBase>
   )
 }
+
+/*
+  Part of the light content family: these layouts can flow into one another
+  inside a concept, so `SlideHeader` holds an unchanged kicker still instead of
+  replaying its entrance. See `src/motion/continuity.ts`.
+*/
+ContentSlide.family = SLIDE_FAMILY.content

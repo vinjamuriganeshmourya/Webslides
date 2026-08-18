@@ -1,9 +1,10 @@
 import { chromium } from 'playwright'
 import fs from 'node:fs'
+import { SLIDE_COUNT, DEV_PORT } from './deck.config.mjs'
 
-const URL = process.argv[2] ?? 'http://localhost:5175'
-const TOTAL = Number(process.argv[3] ?? 44)
-const OUT = process.argv[4] ?? '/tmp/claude-1000/-home-nxtwave-Web-Slides/d1ea3893-5898-44ad-868c-ba0c1cdd14b1/scratchpad/shots'
+const URL = process.argv[2] ?? `http://localhost:${DEV_PORT}/?all`
+const TOTAL = Number(process.argv[3] ?? SLIDE_COUNT)
+const OUT = process.argv[4] ?? 'workflow/qa-shots'
 fs.mkdirSync(OUT, { recursive: true })
 
 const browser = await chromium.launch(
@@ -18,7 +19,22 @@ const report = []
 for (let i = 1; i <= TOTAL; i++) {
   const target = URL.includes('?') ? `${URL}#/${i}` : `${URL}/#/${i}`
   await page.goto(target, { waitUntil: 'networkidle' })
-  await page.waitForTimeout(700)
+  /*
+    2600ms, not 700 and not 1800.
+
+    `?all` opens every click-gated step but does not fast-forward entrances that
+    play on mount, so this has to outlast the slowest one in the kit.
+
+      AgendaSlide  ~2.38s  items are cued off the curve drawing itself
+      DataTable    ~1.5s   rows are timed off the header, not staggered by a parent
+
+    At 700ms every table slide showed a header and one row over an empty panel;
+    at 1800ms every agenda showed two items and a third at 30% opacity. Both look
+    exactly like content bugs and neither is one. The overflow numbers were right
+    the whole time (the rects exist while the content is transparent), but a QA
+    screenshot nobody can read is not QA.
+  */
+  await page.waitForTimeout(2600)
 
   const info = await page.evaluate(() => {
     const sec = document.querySelector('section')

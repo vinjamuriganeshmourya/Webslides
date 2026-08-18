@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { SlideBase, Illustration, Chip } from '@/ui'
+import { SlideBase, Illustration } from '@/ui'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
 import type { ThankYouSlideProps } from './types'
 
@@ -7,9 +7,9 @@ import type { ThankYouSlideProps } from './types'
  * THANK YOU — the closing stage. Night gradient, mascot cheering, an
  * oversized farewell, an optional parting message, and a "Next up" pill.
  */
-export function ThankYouSlide({ title = 'Thank you!', message, nextUp, lesson }: ThankYouSlideProps) {
+export function ThankYouSlide({ title = 'Thank you!', message, lesson }: ThankYouSlideProps) {
   return (
-    <SlideBase variant="brand" className="bg-nw-gradient" lesson={lesson} footer>
+    <SlideBase variant="night" lesson={lesson} footer>
       <div className="grid h-full place-items-center text-center">
         <RevealGroup className="flex flex-col items-center" stagger={0.12}>
           <motion.div
@@ -40,11 +40,13 @@ export function ThankYouSlide({ title = 'Thank you!', message, nextUp, lesson }:
             </Reveal>
           )}
 
-          {nextUp && (
-            <Reveal dir="up" delay={0.1}>
-              <Chip className="mt-8 !bg-white/10 !text-white">Next up: {nextUp}</Chip>
-            </Reveal>
-          )}
+          {/*
+            NO "Next up:" CHIP.
+
+            The Next session slide sits immediately before this one and already
+            names what is coming. Repeating it here gave the deck two endings, and
+            the room started packing up on the wrong slide.
+          */}
         </RevealGroup>
       </div>
     </SlideBase>

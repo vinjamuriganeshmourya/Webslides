@@ -13,9 +13,12 @@ export const SLIDE_HEIGHT = 720
 export const SLIDE_ASPECT = SLIDE_WIDTH / SLIDE_HEIGHT // 16:9
 
 export const colors = {
-  brand: '#0B5FFF',
-  brandDark: '#0A44C2',
-  brandDeep: '#083296',
+  /* The style guide's blue. Mirrors `brand.500/600/900` in tailwind.config.ts,
+     and is the same colour as nwBlue / nwDeep / nwNavy below: SVG paint and
+     Tailwind classes have to land on one hue or figures drift off-palette. */
+  brand: '#2D63FB',
+  brandDark: '#0146C7',
+  brandDeep: '#00254B',
   teal: '#12B5A8',
   tealDark: '#0E9285',
   accent: '#FF8A3D',
@@ -28,7 +31,7 @@ export const colors = {
   body: '#4A5B6B',
   muted: '#8A99A8',
   line: '#D8E3F5',
-  surface: '#F4F8FF',
+  surface: '#F5F8FF',
   surface2: '#E8F0FF',
   white: '#FFFFFF',
   night: '#081026',
@@ -43,13 +46,27 @@ export const colors = {
 
 export type ColorToken = keyof typeof colors
 
-/** Accent color used by the slide-type category system. */
+/**
+ * Accent color used by the slide-type category system.
+ *
+ * `nw` and `nwDeep` are the style guide's blues, and they are what every DARK
+ * chrome slide uses. The chrome frames used to reach for `accent` (orange) and
+ * `teal`, which is the whole reason the welcome frame and the section dividers
+ * looked like they came from two different decks: orange and teal are Evolve
+ * hues and there is no orange or teal anywhere in the NxtWave style guide.
+ *
+ * The Evolve tones below are still live on the LIGHT content slides. Do not
+ * reach for them on a navy ground.
+ */
 export const accentByTone = {
   brand: colors.brand,
   teal: colors.teal,
   accent: colors.accent,
   success: colors.success,
   info: colors.info,
+  /* style guide, page 01 */
+  nw: colors.nwBlue,
+  nwDeep: colors.nwDeep,
 } as const
 
 export type Tone = keyof typeof accentByTone

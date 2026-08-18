@@ -30,15 +30,27 @@ export function RecapSlide({
           </div>
         </div>
 
-        {/* right — mascot */}
+        {/*
+          right — mascot
+
+          BOTTOM ALIGNED, AND SMALLER THAN IT LOOKS LIKE IT SHOULD BE.
+          This column straddles x=913, which is the left edge of the reserved
+          instructor-video rectangle (x 913..1280, y 0..220). Centred at h-[78%]
+          the mascot's head reached y≈115 and `video-safe.mjs` reported it 372px
+          into the reserved area. Pinning the figure to the floor and capping it
+          at 66% puts its top at roughly y=243, clear of the rectangle with room
+          to spare. Do not re-centre it: the mascot is the only element in the
+          kit tall enough to reach up there, and the harness is the only thing
+          that would notice.
+        */}
         <motion.div
-          className="relative grid h-full place-items-center"
+          className="relative grid h-full place-items-end justify-items-center"
           initial={{ opacity: 0, scale: 0.88 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.25, duration: 0.65, ease: [0.34, 1.56, 0.64, 1] }}
         >
-          <div className="absolute h-64 w-64 rounded-full bg-success/15 blur-2xl" />
-          <Illustration name="recap" className="relative h-[78%] w-auto" />
+          <div className="pointer-events-none absolute bottom-8 h-56 w-56 rounded-full bg-success/15 blur-2xl" />
+          <Illustration name="recap" className="relative h-[66%] w-auto" />
         </motion.div>
       </div>
     </SlideBase>

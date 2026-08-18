@@ -94,3 +94,46 @@ Decision: ship without these and capture them on a physical Windows machine, or
 under KVM/QEMU (the host has `kvm_amd` with nesting enabled, so a migrated VM
 would work). Until then `c8-steps-34`'s hello-world block must be treated as
 illustrative, and anyone presenting should say so if asked.
+
+---
+
+# Session 2 — "Docker File Creation" (`deployement_session_2`)
+
+**No screenshots are used anywhere in this deck.** Every command and every
+transcript renders through `src/ui/Terminal.tsx`, per slide-content-rules §3, and
+the Dockerfile and `.dockerignore` render through `CodeBlock` because they are
+files rather than commands.
+
+## Outstanding captures
+
+Every transcript in the deck is **quoted from the TR doc, not captured**, blocked
+by the same VirtualBox/HCS limitation recorded for Session 1 above. Docker
+Desktop cannot start in this VM, so no `docker build` has ever run here.
+
+| ID | Slide id | Command to capture | Currently shown |
+|---|---|---|---|
+| C1 | `c3-build` | `docker build -t nxttrendz-app .`, first run | one `cmd` line, no output |
+| C2 | `c3-build-output` | the same build's `[1/5]`…`[5/5]` transcript | TR transcript, 12.4s timings |
+| C3 | `c3-pull` | `docker pull python:3.14-slim` | TR transcript |
+| C4 | `c3-images` | `docker images`, showing both rows | TR table, image id `3f2a8b91c04d`, 156MB |
+| C5 | `c3-run` | `docker run nxttrendz-app` | the three `app.py` print lines |
+| C6 | `c3-ps` | `docker ps`, then `docker ps -a` | TR table, `Exited (0)`, `bold_hopper` |
+| C7 | `c4-cached` | the no-change rebuild, `CACHED` on every step | TR transcript, 0.8s |
+| C8 | `c5-mistake-1`, `c5-mistake-2` | the two deliberate errors | TR error text and old output |
+
+Every prompt must read `PS C:\nxttrendz\docker-demo>`: the session's demo lives in
+a folder of its own beside `nxttrendz\backend` and `nxttrendz\frontend`, so a
+capture taken from the project root would contradict every slide.
+
+Consequences, and they are stated on stage rather than hidden: the timings
+(12.4s, 0.8s, 6.8s), the image id and the 156MB size are **illustrative**, and
+every affected slide's speaker notes tell the presenter to say that the room's
+own numbers will differ.
+
+Replacing them needs no layout change: `Terminal` takes the same `lines` array
+whether they were typed by hand or pasted from a real run. Capturing C1 to C8 in
+one sitting on a machine that can run Docker retires this whole section.
+
+**Capture rules that still apply when that happens:** VS Code's integrated
+terminal only, `PS C:\nxttrendz>` prompt kept in frame, cropped to the panel, and
+never retouched. See slide-content-rules §3 and §11.

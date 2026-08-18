@@ -19,7 +19,6 @@ import {
   KeyTakeawaysSlide,
   PracticeSlide,
   FeedbackSlide,
-  QuizSlide,
   ThankYouSlide,
 } from '@/slides'
 
@@ -336,26 +335,6 @@ export const sampleDeck: SlideDef[] = [
     ),
   },
   {
-    id: 'quiz',
-    label: 'Quiz',
-    section: 'Wrap-up',
-    transition: 'flip',
-    notes: 'Ask learners to vote before revealing. The correct answer is 201 Created.',
-    element: (
-      <QuizSlide
-        lesson={FOOTER}
-        question="Which status code means a resource was successfully created?"
-        options={[
-          { label: '200 OK' },
-          { label: '201 Created', correct: true },
-          { label: '404 Not Found' },
-          { label: '500 Server Error' },
-        ]}
-        hint="Think about the 2xx family — one code specifically signals creation."
-      />
-    ),
-  },
-  {
     id: 'takeaways',
     label: 'Key Takeaways',
     section: 'Wrap-up',
@@ -411,7 +390,6 @@ export const sampleDeck: SlideDef[] = [
       <ThankYouSlide
         title="Thank you!"
         message="You can now turn a Django model into a live JSON API. See you next session."
-        nextUp="Serializers deep-dive & POST requests"
       />
     ),
   },
