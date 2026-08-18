@@ -109,3 +109,10 @@ venv/
 qa-*.png
 shot*.mjs
 *.screenshot.png
+
+# qa.mjs's default output directory. It used to default to an absolute
+# /tmp/claude-1000/<session-id>/scratchpad path baked into the script; that moved
+# into the project so the harness is session-agnostic, which means the shots now
+# land here. Same status as workflow/preview: regenerated on every run, ~5 MB a
+# sweep, never reviewed as source.
+**/workflow/qa-shots/
