@@ -23,7 +23,7 @@ export function WelcomeSlide({
     // Bare-body hero: kicker + session name only. The footer carries the one
     // logo — nothing else competes with the session name.
     return (
-      <SlideBase variant="night" className="bg-nw-gradient" lesson={lesson} footer>
+      <SlideBase variant="night" lesson={lesson} footer>
         <RevealGroup className="relative z-10 flex h-full flex-col items-center justify-center text-center" stagger={0.12}>
           <Reveal dir="up">
             <p className="mb-4 text-kicker uppercase tracking-widest text-white/70">
@@ -41,7 +41,7 @@ export function WelcomeSlide({
   }
 
   return (
-    <SlideBase variant="night" className="bg-nw-gradient" lesson={lesson} footer>
+    <SlideBase variant="night" lesson={lesson} footer>
       <div className="relative z-10 grid h-full grid-cols-[1.35fr_1fr] items-center gap-8">
         {/* left — copy */}
         <RevealGroup className="max-w-2xl" stagger={0.1}>
@@ -49,7 +49,7 @@ export function WelcomeSlide({
             <div className="mb-6 flex items-center gap-3">
               <Logo className="h-8" onDark />
               {course && (
-                <Chip tone="teal" className="!bg-white/10 !text-white">
+                <Chip tone="nw" className="!bg-white/10 !text-white">
                   {course}
                 </Chip>
               )}
@@ -73,7 +73,7 @@ export function WelcomeSlide({
               <div className="mt-8 flex items-center gap-4 text-body-sm text-white/60">
                 {presenter && (
                   <span className="inline-flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-teal-400" />
+                    <span className="h-2 w-2 rounded-full bg-white/70" />
                     {presenter}
                   </span>
                 )}
@@ -90,7 +90,7 @@ export function WelcomeSlide({
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.25, duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}
         >
-          <div className="absolute h-72 w-72 rounded-full bg-brand-500/25 blur-2xl" />
+          <div className="absolute h-72 w-72 rounded-full bg-nw-blue/30 blur-2xl" />
           <Illustration name="nova-wave" className="relative h-[26rem] w-auto" />
         </motion.div>
       </div>

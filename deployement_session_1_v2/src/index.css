@@ -46,14 +46,20 @@ body {
       drop-shadow(0 30px 46px rgba(3, 14, 38, 0.38));
   }
 
-  /* Thin footer strip present on content/section slides */
+  /*
+    Thin footer strip present on content/section slides.
+
+    Style-guide navy running out to the brand blue. It used to run Evolve blue
+    into teal into orange, so the closing frames finished on a green-to-orange
+    fade that appeared nowhere else in the deck and in no version of the brand.
+  */
   .slide-footer-bar {
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
     height: 8px;
-    background: linear-gradient(90deg, #0b5fff 0%, #12b5a8 60%, #ff8a3d 130%);
+    background: linear-gradient(90deg, #00254b 0%, #0146c7 45%, #2d63fb 100%);
   }
 }
 

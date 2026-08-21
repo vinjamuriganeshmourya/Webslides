@@ -91,7 +91,7 @@ function WaveLayers() {
 export function BrandSlide({ greeting = 'Welcome!', lesson }: BrandSlideProps) {
   const letters = greeting.split('')
   return (
-    <SlideBase variant="night" className="bg-nw-night" footer={Boolean(lesson)} footerLogo={false} lesson={lesson}>
+    <SlideBase variant="night" footer={Boolean(lesson)} footerLogo={false} lesson={lesson}>
       {/*
         FLAT DISCS, NOT BLURRED GLOWS.
         These were three `blur-3xl` fields, which read as vague haze rather than

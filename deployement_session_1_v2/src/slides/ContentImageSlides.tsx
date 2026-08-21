@@ -4,6 +4,7 @@ import { SlideHeader } from '@/ui/SlideHeader'
 import { BulletList } from '@/ui/content'
 import { Media } from './Media'
 import type { ContentImageSlideProps } from './types'
+import { SLIDE_FAMILY } from '@/motion/continuity'
 
 type Position = 'left' | 'right' | 'top' | 'bottom'
 
@@ -119,3 +120,13 @@ export const ContentTopImageSlide = (p: ContentImageSlideProps) => (
 export const ContentBottomImageSlide = (p: ContentImageSlideProps) => (
   <ContentWithImage position="bottom" {...p} />
 )
+
+/*
+  Part of the light content family: these layouts can flow into one another
+  inside a concept, so `SlideHeader` holds an unchanged kicker still instead of
+  replaying its entrance. See `src/motion/continuity.ts`.
+*/
+ContentLeftImageSlide.family = SLIDE_FAMILY.content
+ContentRightImageSlide.family = SLIDE_FAMILY.content
+ContentTopImageSlide.family = SLIDE_FAMILY.content
+ContentBottomImageSlide.family = SLIDE_FAMILY.content

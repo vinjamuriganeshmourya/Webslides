@@ -8,7 +8,6 @@ import {
   FeedbackSlide,
   KeyTakeawaysSlide,
   PracticeSlide,
-  ProceduralStepsSlide,
   QuizTimeSlide,
   ScenarioSlide,
   SectionBreakerSlide,
@@ -18,6 +17,7 @@ import {
 import {
   Callout,
   Card,
+  Chip,
   CardGrid,
   CodeBlock,
   LayerGap,
@@ -82,6 +82,32 @@ const SESSION = 'Introduction to Docker'
 /* ------------------------------------------------------------------ */
 /* Shared slide furniture                                              */
 /* ------------------------------------------------------------------ */
+
+/**
+ * A RUNTIME LAYER, WITH ITS OWN MARK.
+ *
+ * `Node` and `Python` are the two names this deck repeats most, across the two
+ * stack figures and `ContainerJourney`, and as bare words they read as
+ * interchangeable boxes. The marks make each one recognisable at a glance from
+ * the back of a room, which is the whole job of these figures: the room is meant
+ * to see that the SAME two things do or do not travel, not to read four labels.
+ *
+ * `LayerStack` types `label` as a `ReactNode`, so this needs no change to the
+ * component. Vendor files, unrecoloured, per the asset rules: the mark stays
+ * full colour even inside a red `breaks` box, because that box is about the
+ * version being wrong, not about the runtime being a different product.
+ */
+function RuntimeLabel({ logo, children }: { logo: string; children: ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-2">
+      <img src={logo} alt="" draggable={false} className="h-4 w-4 object-contain" />
+      {children}
+    </span>
+  )
+}
+
+const PY_LOGO = '/assets/tech/python.svg'
+const NODE_LOGO = '/assets/tech/nodejs.svg'
 
 /** Inline code, for the many `localhost:3000` / `runserver` mentions. */
 function Code({ children }: { children: ReactNode }) {
@@ -349,7 +375,7 @@ export const deploymentSession1Deck: SlideDef[] = [
         kicker="The Problem"
         title="What Is the Problem We Have?"
         persona="A teammate sets up your project"
-        situation="You did everything right. You shared the code, requirements.txt and package.json included. They install and run it"
+        situation="You did everything right. They install and run it"
         beats={[
           { label: 'Teammate', detail: '“The products API crashes the moment I hit it.”', icon: 'chat' },
           { label: 'You', detail: '“That’s strange, it works on my machine.”', icon: 'chat' },
@@ -387,7 +413,7 @@ export const deploymentSession1Deck: SlideDef[] = [
           },
           {
             text: 'Not every machine has the versions you built with',
-            sub: 'You are on Python 3.14 and Node 20, they are on whatever they installed last year',
+            sub: 'Python 3.14 and Node 20 here, whatever they installed there',
             icon: 'warning',
           },
         ]}
@@ -499,7 +525,7 @@ export const deploymentSession1Deck: SlideDef[] = [
       </ContentSlide>
     ),
     notes:
-      'Same two machines, same OS underneath, same code. The one thing that changed is that Django and Python came along inside the sealed unit, so there is nothing left for the receiving machine to get wrong. Point at the dashed border: that boundary is what the word container names.',
+      'Same two machines, same OS underneath, same code. The one thing that changed is that Node and Python came along inside the sealed unit, so there is nothing left for the receiving machine to get wrong. Point at the dashed border: that boundary is what the word container names.',
   },
   {
     id: 'c3-divider',
@@ -575,13 +601,20 @@ export const deploymentSession1Deck: SlideDef[] = [
               stepped={false}
               /* No OS layer: a container does not carry an operating system,
                  it borrows the kernel of the machine it runs on. That is the
-                 whole reason it is megabytes rather than gigabytes, and it is
+                 whole reason it is MB rather than GB, and it is
                  the point the virtual machine comparison later turns on. The
                  runtimes are the ones this application actually needs. */
               layers={[
+                /*
+                  YOUR versions, not theirs. This figure is your environment
+                  sealed and travelling, so the numbers have to be the ones on
+                  the "Your machine" stack two slides on: Node 22, Python 3.14.
+                  It said Node 20 here, which is the RECEIVING machine's version,
+                  so the picture of the fix was quietly carrying the bug.
+                */
                 { label: 'Your code', state: 'ships' },
-                { label: 'Python', note: '3.14', state: 'ships' },
-                { label: 'Node', note: '20', state: 'ships' },
+                { label: <RuntimeLabel logo={PY_LOGO}>Python</RuntimeLabel>, note: '3.14', state: 'ships' },
+                { label: <RuntimeLabel logo={NODE_LOGO}>Node</RuntimeLabel>, note: '22', state: 'ships' },
               ]}
               caption="All three travel together"
             />
@@ -622,8 +655,8 @@ export const deploymentSession1Deck: SlideDef[] = [
             title="Your machine"
             layers={[
               { label: 'Your code', state: 'ships' },
-              { label: 'Django', note: '6.0', state: 'host' },
-              { label: 'Python', note: '3.14', state: 'host' },
+              { label: <RuntimeLabel logo={NODE_LOGO}>Node</RuntimeLabel>, note: '22', state: 'host' },
+              { label: <RuntimeLabel logo={PY_LOGO}>Python</RuntimeLabel>, note: '3.14', state: 'host' },
               { label: 'OS', state: 'host' },
             ]}
             caption="Works"
@@ -635,10 +668,16 @@ export const deploymentSession1Deck: SlideDef[] = [
             title="Their machine"
             layers={[
               { label: 'Your code', state: 'ships' },
-              // Same versions the ContainerJourney animation gives the receiving
-              // machine, so the figure and the motion graphic agree.
-              { label: 'Django', note: '5.0', state: 'breaks' },
-              { label: 'Python', note: '3.10', state: 'breaks' },
+              // The two RUNTIMES this project actually needs, not a runtime and a
+              // framework: the Django backend runs on Python and the Vite/React
+              // frontend runs on Node, which is exactly the pair the room saw in
+              // the two terminals earlier in this deck.
+              //
+              // `ContainerJourney` names the same two things at the same versions,
+              // on purpose. The two figures share a visual language one slide
+              // apart, so if a version moves here it has to move there too.
+              { label: <RuntimeLabel logo={NODE_LOGO}>Node</RuntimeLabel>, note: '20', state: 'breaks' },
+              { label: <RuntimeLabel logo={PY_LOGO}>Python</RuntimeLabel>, note: '3.10', state: 'breaks' },
               { label: 'OS', state: 'breaks' },
             ]}
             caption="Same code. Different ground"
@@ -835,27 +874,33 @@ export const deploymentSession1Deck: SlideDef[] = [
         being precise about: a container packages the OS FILES it needs and
         borrows the KERNEL from the machine it runs on. That is why the figure on
         the containerization slide has no OS layer, and why a container is
-        megabytes rather than gigabytes.
+        MB rather than GB.
       */
       <ContentNoteSlide
         kicker="Docker"
         title="What About the Operating System?"
         lesson={SESSION}
+        /*
+          TWO points, not three.
+
+          The third one ("so the operating system stops being a variable") and the
+          old second sub, which listed WSL 2, the macOS VM and the Linux host
+          kernel, both had to go: the first restated the definition slide one
+          before this, and the second is now the whole of the next slide, drawn
+          rather than asserted. What is left is the one thing neither neighbour
+          says, which is the split between what a container CARRIES and what it
+          BORROWS.
+        */
         points={[
           {
-            text: 'Each container packs the OS files it needs',
-            sub: 'A slim Linux userland is built in, so your application always sees the same OS',
+            text: 'A container packs the OS files it needs',
+            sub: 'A slim Linux userland travels inside it, always the same OS',
             icon: 'database',
           },
           {
-            text: 'Docker supplies the Linux kernel on every host',
-            sub: 'Through WSL 2 on Windows, a built-in Linux VM on macOS, and the host kernel itself on Linux',
+            text: 'It borrows the kernel from the machine it runs on',
+            sub: 'The one piece it does not carry, hence MB not GB',
             icon: 'server',
-          },
-          {
-            text: 'So the operating system stops being a variable',
-            sub: 'Every machine ends up running your application on the same OS, whatever OS that machine is',
-            icon: 'bulb',
             tone: 'accent',
           },
         ]}
@@ -872,7 +917,78 @@ export const deploymentSession1Deck: SlideDef[] = [
       />
     ),
     notes:
-      'Be precise here if asked: the container carries the operating system FILES, not a kernel. It borrows the kernel of the machine it runs on, which is exactly why it is megabytes and a virtual machine is gigabytes. That is the comparison two sections from here.',
+      'Be precise here if asked: the container carries the operating system FILES, not a kernel. It borrows the kernel of the machine it runs on, which is exactly why it is MB and a virtual machine is GB. That is the comparison two sections from here.',
+  },
+  /* --- 4a. One kernel, three hosts ---------------------------------- */
+  {
+    id: 'c5-three-hosts',
+    section: 'Docker',
+    label: 'Three hosts, one kernel',
+    element: (
+      /*
+        The figure for the second point on the previous slide, which until now was
+        a sentence the room had to take on trust.
+
+        Read every column BOTTOM-UP: the host operating system differs, the middle
+        row is how Docker gets a Linux kernel on that host, and the top box is
+        byte-identical in all three. The kernel row is `shared` in every column on
+        purpose: it is the same borrowed Linux kernel each time, only obtained
+        differently, which is exactly the claim the slide is making.
+
+        Each column is titled with its OS mark (`public/assets/tech/*.png`) so the
+        room can find its own machine at a glance before reading a word.
+      */
+      <ContentSlide
+        kicker="Docker"
+        title="Three Hosts, One Linux Kernel"
+        lesson={SESSION}
+      >
+        <div className="flex flex-col items-center gap-7">
+          <div className="flex items-start justify-center gap-8">
+            <LayerStack
+              width={300}
+              stepped={false}
+              title={<img src="/assets/tech/windows.png" alt="Windows" draggable={false} className="mb-3 h-12 w-auto select-none" />}
+              layers={[
+                { label: 'Your container', note: 'identical', state: 'ships' },
+                { label: 'Linux kernel, via WSL 2', state: 'shared' },
+                { label: 'Windows', state: 'host' },
+              ]}
+              caption="Docker installs WSL 2 for you"
+            />
+            <LayerStack
+              width={300}
+              stepped={false}
+              title={<img src="/assets/tech/macos.png" alt="macOS" draggable={false} className="mb-3 h-12 w-auto select-none" />}
+              layers={[
+                { label: 'Your container', note: 'identical', state: 'ships' },
+                { label: 'Linux kernel, in a built-in VM', state: 'shared' },
+                { label: 'macOS', state: 'host' },
+              ]}
+              caption="Docker ships that Linux VM with it"
+            />
+            <LayerStack
+              width={300}
+              stepped={false}
+              title={<img src="/assets/tech/linux.png" alt="Linux" draggable={false} className="mb-3 h-12 w-auto select-none" />}
+              layers={[
+                { label: 'Your container', note: 'identical', state: 'ships' },
+                { label: 'Linux kernel, the host one itself', state: 'shared' },
+                { label: 'Linux', state: 'host' },
+              ]}
+              caption="Nothing extra. It is already Linux"
+            />
+          </div>
+          <Callout kind="tip" title="Your container always lands on Linux" asStep={false}>
+            Whichever operating system you use, your container only ever runs on{' '}
+            <strong>Linux</strong>. Docker installs whatever that machine needs to supply the Linux
+            kernel, so the same container runs on all three
+          </Callout>
+        </div>
+      </ContentSlide>
+    ),
+    notes:
+      'Point at the three bottom boxes first, then the three middle boxes, then the top row. The bottom row is the only thing that differs between the columns, and the top row is identical in all three: that is the whole slide. Two questions come up here. First, "so is it a virtual machine on macOS?" Yes, one small Linux VM, shared by every container on that machine, not one per container. Second, "why does Windows need WSL 2?" Because containers borrow a Linux kernel and Windows does not have one, so Docker brings it. Linux hosts install the least, because they already are the target. This slide is why every docker command later is identical in PowerShell, macOS zsh and Linux bash.',
   },
   {
     id: 'c6-class-object',
@@ -966,41 +1082,94 @@ p2 = Product()      # another, independent`}
       'Deliberately small. Nothing installed here goes near the internet, so this is still Problem 1. Doing it now means the next session starts with Dockerfile on line 1 instead of forty minutes of setup.',
   },
   {
-    id: 'c8-steps-12',
+    id: 'c8-install-link',
     section: 'Docker Installation',
-    label: 'Enable and install',
+    label: 'Get Docker',
     element: (
-      <ProceduralStepsSlide
+      /*
+        THE LINK COMES FIRST, and it is the OFFICIAL one.
+
+        The steps that follow this slide are Windows-only, which used to leave
+        mac and Linux students with nothing to follow and a verbal aside to
+        remember. Docker's own install pages are per-OS, maintained, and change
+        under us; sending the room there is both kinder and more honest than
+        transcribing a version of the steps that will rot.
+
+        All four URLs were checked live before they were put on the slide. If a
+        future edit adds one, check it too: a dead link on a projector is worse
+        than no link.
+      */
+      <ContentSlide
         kicker="Docker Installation"
-        title="Enable and Install"
-        lead="Windows. A virtualisation error here means enabling Intel VT-x or AMD-V in BIOS"
+        title="Get Docker"
+        lead="Install Docker by following the official instructions for your operating system"
         lesson={SESSION}
-        steps={[
-          {
-            title: 'Open VS Code as Administrator',
-            detail: 'Right-click → Run as administrator. Its terminal inherits that',
-            icon: 'terminal',
-          },
-          {
-            title: 'Run wsl --install',
-            detail: 'Reboot when it asks. Already installed? wsl --update is enough',
-            icon: 'settings',
-          },
-          {
-            title: 'Install Docker Desktop',
-            detail: 'docker.com → Docker Desktop for Windows. About 600 MB',
-            icon: 'devices',
-          },
-          {
-            title: 'Keep “Per-user installation”',
-            detail: 'It uses the WSL 2 backend. Restart when it finishes',
-            icon: 'check',
-          },
-        ]}
-      />
+      >
+        <div className="grid gap-5">
+          <div className="grid grid-cols-3 gap-5">
+            {[
+              {
+                os: 'Windows',
+                logo: '/assets/tech/windows.png',
+                what: 'Docker Desktop',
+                href: 'https://docs.docker.com/desktop/setup/install/windows-install/',
+              },
+              {
+                os: 'macOS',
+                logo: '/assets/tech/macos.png',
+                what: 'Docker Desktop',
+                href: 'https://docs.docker.com/desktop/setup/install/mac-install/',
+              },
+              {
+                os: 'Linux',
+                logo: '/assets/tech/linux.png',
+                what: 'Docker Engine',
+                href: 'https://docs.docker.com/desktop/setup/install/linux/',
+              },
+            ].map((o) => (
+              /*
+                THE WHOLE CARD IS THE LINK, not just the URL text. On a projected
+                1280x720 canvas a line of 12px monospace is a hopeless click
+                target, and the presenter is usually clicking it live in front of
+                the room. `target="_blank"` matters more than usual here: the deck
+                holds its position in the URL hash, so navigating away in the same
+                tab loses the presenter's place in the deck.
+              */
+              <a
+                key={o.os}
+                href={o.href}
+                target="_blank"
+                rel="noreferrer"
+                className="flex flex-col items-center gap-3 rounded-card bg-white p-5 text-center shadow-card-soft ring-1 ring-line transition-transform hover:scale-[1.02] hover:ring-brand/40"
+              >
+                <img src={o.logo} alt="" draggable={false} className="h-12 w-auto object-contain" />
+                <div>
+                  <div className="font-heading text-body-lg font-bold text-ink">{o.os}</div>
+                  <div className="text-body-sm text-body">{o.what}</div>
+                </div>
+                <code className="break-all font-mono text-[12px] leading-snug text-brand underline decoration-brand/30 underline-offset-2">
+                  {o.href.replace(/^https:\/\//, '').replace(/\/$/, '')}
+                </code>
+              </a>
+            ))}
+          </div>
+
+          <Callout kind="info" title="Start from one page" asStep={false}>
+            <a
+              href="https://docs.docker.com/get-started/get-docker/"
+              target="_blank"
+              rel="noreferrer"
+              className="font-mono text-brand underline decoration-brand/30 underline-offset-2"
+            >
+              docs.docker.com/get-started/get-docker
+            </a>{' '}
+            picks the right installer for your machine
+          </Callout>
+        </div>
+      </ContentSlide>
     ),
     notes:
-      'Step 1 is the ONLY command in this session that needs administrator rights: wsl --install enables Windows optional components and loads a driver, which is machine-wide state. The docker commands later do NOT need it, because the engine runs as a privileged service and your unelevated CLI talks to it over a named pipe. You do NOT need a Linux distro or any Linux commands: on this build wsl --install installs no distribution at all. Docker Desktop is about 600 MB and takes a few minutes, so start it NOW rather than at the beginning of the next session. macOS uses the same installer with a built-in Linux VM in place of WSL 2. Linux installs the engine directly with sudo apt install docker.io.',
+      'Put the link on screen and let the room type it before you say anything else. The three cards are there so nobody has to ask which one applies to them, and the get-docker page is the single URL to fall back on if someone loses the thread. The steps on the next slides are Windows, because that is what most of this room runs; mac and Linux students follow their own page and rejoin at the verify step, which is identical on all three.',
   },
   {
     id: 'c8-installer',
@@ -1016,13 +1185,35 @@ p2 = Product()      # another, independent`}
         {/* Real capture of Docker Desktop 4.86.0. Older guides describe a
             checkbox called "Use WSL 2 instead of Hyper-V"; it no longer exists,
             and a student hunting for it will stall. Cropped to the dialog only
-            (R11), with one highlight on the option that matters. */}
-        <div className="grid grid-cols-[1fr_1.1fr] items-center gap-8">
+            (R11), with one highlight on the option that matters.
+
+            The crop is TIGHT to the dialog border: the original capture carried
+            a strip of desktop wallpaper down the left and right edges, which
+            read as a blue seam once the shot sat inside the `Shot` frame. Bounds
+            were found by scanning for the light dialog against the dark desktop,
+            not by eye, so the highlight percentages below still line up. */}
+        {/*
+          MARKED AS WINDOWS. This screen exists only in the Windows installer:
+          the macOS installer has no configuration page at all, and Linux has no
+          installer. Without the marker a mac student spends the slide looking
+          for a dialog that will never appear on their machine.
+        */}
+        <div className="grid gap-4">
+          <Chip tone="nw" className="w-fit gap-2">
+            <img
+              src="/assets/tech/windows.png"
+              alt=""
+              draggable={false}
+              className="h-4 w-4 object-contain"
+            />
+            Windows only
+          </Chip>
+          <div className="grid grid-cols-[1fr_1.1fr] items-center gap-8">
           <Shot
             src="/shots/s4-installer-config.png"
             alt="Docker Desktop installer Configuration page with Per-user installation selected"
             caption="Docker Desktop 4.86.0"
-            highlight={{ left: 6.9, top: 24.9, width: 47.8, height: 6.1 }}
+            highlight={{ left: 5.5, top: 24.4, width: 49.6, height: 6.2 }}
           />
           <div className="grid gap-3">
             <Callout kind="success" title="Per-user installation" asStep={false}>
@@ -1033,12 +1224,75 @@ p2 = Product()      # another, independent`}
               That one asks for a password and exists for Windows Containers, which this course
               does not use
             </Callout>
+            </div>
           </div>
         </div>
       </ContentSlide>
     ),
     notes:
       'Show this so nobody hunts for a checkbox that was removed. On Windows Home there is no Hyper-V at all, so the per-user WSL 2 route is not merely recommended, it is the only one available. That is the same point as step 1: a container needs a Linux kernel to borrow, and on Windows the way to get one is WSL 2.',
+  },
+  {
+    id: 'c8-engine-running',
+    section: 'Docker Installation',
+    label: 'Engine running',
+    element: (
+      /*
+        THE CHECK THAT INSTALLING IS NOT THE SAME AS RUNNING.
+
+        Docker Desktop can be installed, present in the Start menu and still have
+        a stopped engine, in which case every command in the next session fails
+        with a connection error that says nothing about the real cause. The whole
+        slide exists for the two words in the bottom-left corner, so that is
+        where the highlight goes.
+
+        A REAL capture (R11), not a mock: this is the actual Docker Desktop
+        window on a machine where the install worked.
+      */
+      <ContentSlide
+        kicker="Docker Installation"
+        title="Engine Running"
+        lead="Open Docker Desktop. Check the status in the bottom-left corner"
+        lesson={SESSION}
+      >
+        <div className="grid grid-cols-[1.35fr_1fr] items-center gap-8">
+          {/*
+            OVERVIEW THEN DETAIL, and both are crops of ONE real capture.
+
+            The raw screenshot is 1919x1020 with roughly 300px of empty white
+            between the last card and the status bar. Cutting that band out would
+            be a splice, not a crop, and the rule here is that a shot is real. So
+            the window is cropped at the end of its own content, and the status
+            bar is shown again underneath at its own scale — where the two words
+            this whole slide is about are actually readable from the back of a
+            room.
+          */}
+          <div className="grid gap-3">
+            <Shot
+              src="/shots/s4-engine-running.png"
+              alt="Docker Desktop with the Containers screen open and no containers yet"
+              caption="Docker Desktop, first launch"
+            />
+            <Shot
+              src="/shots/s4-engine-status.png"
+              alt="The Docker Desktop status bar reading Engine running"
+              highlight={{ left: 3, top: 42, width: 38, height: 44 }}
+            />
+          </div>
+          <div className="grid gap-3">
+            <Callout kind="success" title="Engine running" asStep={false}>
+              This is the only confirmation that matters. Until it says this, no docker command
+              will work
+            </Callout>
+            <Callout kind="info" title="An empty Containers list is correct" asStep={false}>
+              Nothing has been built or run yet, so there is nothing to show here
+            </Callout>
+          </div>
+        </div>
+      </ContentSlide>
+    ),
+    notes:
+      'Installed and running are two different states, and this is the slide that separates them. Have everyone open Docker Desktop now and look at the bottom-left corner: until it reads Engine running, every docker command fails with a connection error that says nothing about the real cause. The empty Containers list is expected, because nothing has been built yet. On a first launch the engine can take a minute to come up, so tell them to wait for the words rather than assuming it failed.',
   },
   {
     id: 'c8-steps-34',
@@ -1048,13 +1302,13 @@ p2 = Product()      # another, independent`}
       <ContentSlide
         kicker="Docker Installation"
         title="Start and Verify"
-        lead="Installed and running are not the same thing. This is the step people skip"
+        lead="Skip the sign in, then verify from the VS Code terminal"
         lesson={SESSION}
       >
-        <div className="grid gap-4">
+        <div className="grid gap-3">
           <Terminal
             path="C:\nxttrendz"
-            fontSize={16}
+            fontSize={14}
             lines={[
               // Captured from a real install, 2026-08-12 (T6a). Version strings
               // age fast, so say out loud that theirs will differ.
@@ -1069,18 +1323,36 @@ p2 = Product()      # another, independent`}
               { text: "Unable to find image 'hello-world:latest' locally", kind: 'out' },
               { text: 'latest: Pulling from library/hello-world', kind: 'out' },
               { text: 'Status: Downloaded newer image for hello-world:latest', kind: 'out' },
-              { text: '', kind: 'out' },
               { text: 'Hello from Docker!', kind: 'ok' },
             ]}
           />
-          <Callout kind="success" title="Wait for green" asStep={false}>
-            Docker Desktop must read <strong>Engine running</strong> before any command works
-          </Callout>
+          {/*
+            TWO CALLOUTS SIDE BY SIDE, not stacked.
+
+            Stacked, this slide overflowed its own frame by 300px. The terminal
+            is the tallest thing here and it cannot shrink much further without
+            the commands becoming unreadable from the back of the room, so the
+            two notes go next to each other instead.
+
+            The sign-in note earns its place: Docker Desktop opens on a Sign in
+            screen, and on the capture machine that dialog sat in front of the
+            engine so `docker --version` answered while `docker info` returned a
+            500. The CLI is just a binary on PATH; only the real commands have to
+            reach the engine.
+          */}
+          <div className="grid grid-cols-2 gap-3">
+            <Callout kind="info" title="Skip the sign in" asStep={false}>
+              Docker Desktop asks you to sign in. Choose skip, nothing here needs an account
+            </Callout>
+            <Callout kind="success" title="Hello from Docker!" asStep={false}>
+              That line is the whole check. Your machine pulled an image and ran a container
+            </Callout>
+          </div>
         </div>
       </ContentSlide>
     ),
     notes:
-      'If you see Hello from Docker!, you are done. Your machine can now run containers. Say out loud that their version number will differ from the one on screen. Worth knowing why this slide matters more than it looks: docker --version answers even when the engine is completely dead, because the CLI is just a binary on PATH, while every real command has to cross a named pipe to the engine. On the capture machine docker --version succeeded while docker info returned a 500, purely because a sign-in dialog was still gating Docker Desktop and the engine had never started. That is the sharper version of "installed and running are not the same thing". OUTSTANDING: the hello-world pull output is still quoted from the TR doc, not captured, because Docker Desktop cannot run under VirtualBox. See workflow/assets-manifest.md.',
+      'Skip the sign-in dialog first: an account is not needed for anything in this course. If you see Hello from Docker!, you are done. Your machine can now run containers. Say out loud that their version number will differ from the one on screen. Worth knowing why this slide matters more than it looks: docker --version answers even when the engine is completely dead, because the CLI is just a binary on PATH, while every real command has to cross a named pipe to the engine. On the capture machine docker --version succeeded while docker info returned a 500, purely because a sign-in dialog was still gating Docker Desktop and the engine had never started. That is the sharper version of "installed and running are not the same thing". OUTSTANDING: the hello-world pull output is still quoted from the TR doc, not captured, because Docker Desktop cannot run under VirtualBox. See workflow/assets-manifest.md.',
   },
   {
     id: 'c8-what-installed',
@@ -1179,7 +1451,6 @@ p2 = Product()      # another, independent`}
         tasks={[
           { text: 'Revisit today’s concepts', sub: 'Say each one back in your own words' },
           { text: 'Try the steps yourself', sub: 'On your own machine, start to finish' },
-          { text: 'Write down what did not click', sub: 'Bring it to the next session' },
         ]}
       />
     ),

@@ -14,7 +14,7 @@ export function FeedbackSlide({
   lesson,
 }: FeedbackSlideProps) {
   return (
-    <SlideBase variant="brand" className="bg-nw-gradient" lesson={lesson} footer>
+    <SlideBase variant="night" lesson={lesson} footer>
       <div className="grid h-full grid-cols-[1fr_1fr] items-center gap-10">
         {/* left — the ask */}
         <RevealGroup className="max-w-xl" stagger={0.1}>

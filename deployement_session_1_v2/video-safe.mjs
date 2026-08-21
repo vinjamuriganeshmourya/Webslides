@@ -24,9 +24,10 @@
  */
 
 import { chromium } from 'playwright'
+import { SLIDE_COUNT, DEV_PORT } from './deck.config.mjs'
 
-const URL = process.argv[2] ?? 'http://localhost:5199/?all'
-const TOTAL = Number(process.argv[3] ?? 50)
+const URL = process.argv[2] ?? `http://localhost:${DEV_PORT}/?all`
+const TOTAL = Number(process.argv[3] ?? SLIDE_COUNT)
 // 550x330 was specified against a 1920x1080 canvas; this deck is authored at
 // 1280x720, so the equivalent reservation is 367x220 at the top right.
 const RESERVED = { x: 1280 - 367, y: 0, w: 367, h: 220 }

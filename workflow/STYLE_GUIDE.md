@@ -1,5 +1,9 @@
 # NIAT slide writing style, derived from sample_ppts
 
+> **Superseded in part.** `TEXT_GUIDELINES.md` is the fuller cut of this
+> corpus analysis and `PEDAGOGY_GUIDELINES.md` covers sequencing. Keep this file
+> as the quick reference; prefer those two where they go deeper.
+
 > ## ⚠️ Read `.claude/skills/slide-content-rules/SKILL.md` first
 >
 > That file holds the **hard content rules** recorded from explicit user

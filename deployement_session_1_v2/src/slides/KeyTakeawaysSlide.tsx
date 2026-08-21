@@ -18,9 +18,9 @@ export function KeyTakeawaysSlide({
       <div className="grid h-full grid-cols-[1.3fr_1fr] items-center gap-12">
         {/* left — the takeaways; header pinned top-left, list centered below */}
         <div className="flex h-full flex-col">
-          <SlideHeader kicker={kicker} title={title} lead={lead} tone="accent" />
+          <SlideHeader kicker={kicker} title={title} lead={lead} tone="nw" />
           <div className="flex min-h-0 flex-1 flex-col justify-center">
-            <BulletList items={points} marker="star" tone="accent" />
+            <BulletList items={points} marker="star" tone="nw" />
           </div>
         </div>
 
@@ -31,7 +31,7 @@ export function KeyTakeawaysSlide({
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.25, duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}
         >
-          <div className="absolute h-64 w-64 rounded-full bg-brand-500/10 blur-2xl" />
+          <div className="absolute h-64 w-64 rounded-full bg-nw-blue/10 blur-2xl" />
           <Illustration name="nova-idea" className="relative h-[60%] w-auto" />
         </motion.div>
       </div>

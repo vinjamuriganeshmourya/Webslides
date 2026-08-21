@@ -14,19 +14,32 @@ export default {
   theme: {
     extend: {
       colors: {
+        /*
+          Primary — the NxtWave style guide's blue, as a full ramp.
+
+          This ramp used to be built on the Evolve blue #0B5FFF while the chrome
+          slides used the style guide's #2D63FB out of the `nw` group below. The
+          two are close enough to look like a rendering error and far enough
+          apart to be obvious the moment a light content slide follows a navy
+          divider: the kicker tick, the icons and the chips all shifted hue.
+
+          So the ramp is retargeted rather than the ~30 slides that consume it.
+          500/600/900 are now exactly `nw.blue` / `nw.deep` / `nw.navy`; the
+          `nw` group is kept as the *names* the style guide uses for those same
+          stops, so both spellings resolve to one colour.
+        */
         brand: {
-          /* Primary — electric-but-trustworthy blue */
-          50: '#EAF1FF',
-          100: '#D6E4FF',
-          200: '#AEC8FF',
-          300: '#7FA6FF',
-          400: '#4C80FF',
-          500: '#0B5FFF', // PRIMARY
-          600: '#0A44C2',
-          700: '#083296',
-          800: '#082873',
-          900: '#0B1F52',
-          DEFAULT: '#0B5FFF',
+          50: '#EEF3FF',
+          100: '#D9E4FF',
+          200: '#B4C8FF',
+          300: '#86A5FF',
+          400: '#5482FD',
+          500: '#2D63FB', // PRIMARY — nw.blue
+          600: '#0146C7', //           nw.deep
+          700: '#013A9E',
+          800: '#002E7A',
+          900: '#00254B', //           nw.navy
+          DEFAULT: '#2D63FB',
         },
         teal: {
           50: '#E6FAF7',
@@ -109,14 +122,17 @@ export default {
         pill: '999px',
       },
       boxShadow: {
-        card: '0 10px 34px -14px rgba(11, 95, 255, 0.30)',
-        'card-soft': '0 6px 24px -10px rgba(11, 26, 43, 0.16)',
-        float: '0 26px 70px -24px rgba(11, 95, 255, 0.50)',
-        glow: '0 0 0 6px rgba(11, 95, 255, 0.10)',
+        /* Blue-tinted, and the blue is the style guide's #2D63FB. */
+        card: '0 10px 34px -14px rgba(45, 99, 251, 0.30)',
+        'card-soft': '0 6px 24px -10px rgba(0, 37, 75, 0.16)',
+        float: '0 26px 70px -24px rgba(45, 99, 251, 0.50)',
+        glow: '0 0 0 6px rgba(45, 99, 251, 0.10)',
       },
       backgroundImage: {
-        'brand-gradient': 'linear-gradient(135deg, #0B5FFF 0%, #2C74FF 55%, #12B5A8 130%)',
-        'brand-soft': 'linear-gradient(160deg, #EAF1FF 0%, #F4F8FF 100%)',
+        /* Retired: Evolve blue into teal. `bg-nw-gradient` replaced it. */
+        'brand-gradient': 'linear-gradient(135deg, #2D63FB 0%, #1B54E4 55%, #0146C7 100%)',
+        /* The light content ground, tinted by the new blue rather than the old. */
+        'brand-soft': 'linear-gradient(160deg, #EEF3FF 0%, #F5F8FF 100%)',
         'accent-gradient': 'linear-gradient(135deg, #FF8A3D 0%, #FFB055 100%)',
         'night-gradient': 'radial-gradient(120% 120% at 15% 0%, #122554 0%, #0C1A3A 45%, #081026 100%)',
         'teal-gradient': 'linear-gradient(135deg, #12B5A8 0%, #0B5FFF 130%)',

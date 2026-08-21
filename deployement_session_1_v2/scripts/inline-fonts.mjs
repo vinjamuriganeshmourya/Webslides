@@ -11,6 +11,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
+const cfg = JSON.parse(readFileSync(join(root, 'deck.config.json'), 'utf8'))
 const htmlPath = join(root, 'dist-single', 'index.html')
 let html = readFileSync(htmlPath, 'utf8')
 
@@ -73,9 +74,11 @@ async function main() {
 // A double-clickable copy with a name that says what it is. index.html is kept
 // so the folder also works as-is on a static host.
 function finish(out) {
-  const named = join(root, 'dist-single', 'deployment-session-1.html')
-  writeFileSync(named, out)
-  console.log(`\n  Deck ready:  dist-single/deployment-session-1.html  (${(out.length / 1024 / 1024).toFixed(2)} MB, self-contained)\n`)
+  /* The double-clickable name comes from deck.config.json, so this script is kit
+     and every session's build:html still emits a file named after that deck. */
+  const rel = `dist-single/${cfg.htmlName}.html`
+  writeFileSync(join(root, rel), out)
+  console.log(`\n  Deck ready:  ${rel}  (${(out.length / 1024 / 1024).toFixed(2)} MB, self-contained)\n`)
 }
 
 main().catch((err) => {

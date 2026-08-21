@@ -10,6 +10,7 @@ import { useFullscreen } from './useFullscreen'
 import { slideVariants, slideTransition, type SlideTransition } from '@/motion/presets'
 import { Stepper } from '@/motion/Stepper'
 import { InstantContext } from '@/motion/instant'
+import { ContinuityContext, computeContinuity, NO_CONTINUITY } from '@/motion/continuity'
 
 function hashIndex(total: number): number {
   if (typeof window === 'undefined') return 0
@@ -156,9 +157,41 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
   )
 
   const current = slides[index]
-  // Plain arrows jump a whole slide as a cut; Ctrl+arrows step the build
-  // and play the deck's transition when they cross a slide boundary.
-  const kind: SlideTransition = cut ? 'none' : (current?.transition ?? transition)
+
+  /*
+    WHAT CARRIED OVER FROM THE OUTGOING SLIDE.
+
+    Recomputed ONLY when `index` changes, and cached in a ref for the rest of the
+    slide's life. That is load-bearing, not an optimisation.
+
+    The first version derived this every render from a `prevIndexRef` updated in an
+    effect. It looked right and was subtly broken: `Stepper` reports its step count
+    on mount, which calls `setMaxStep`, which re-renders — and by then the effect
+    had already moved the ref forward, so continuity collapsed to nothing, the
+    header swapped its held parts back to animated ones, and React remounted them.
+    A remounted `Reveal` starts from `hidden`, so the kicker animated in anyway,
+    roughly 100ms late. The whole feature silently did nothing.
+
+    Comparing against the cached index instead makes the pair (outgoing, incoming)
+    a function of the navigation itself rather than of render timing, so it is also
+    correct for hash jumps and the overview grid, not just the arrow keys.
+  */
+  const contRef = useRef({ index, carry: NO_CONTINUITY, held: false })
+  if (contRef.current.index !== index) {
+    contRef.current = { index, ...computeContinuity(slides[contRef.current.index], current) }
+  }
+  const { carry, held } = contRef.current
+
+  /*
+    Plain arrows jump a whole slide as a cut; Ctrl+arrows step the build and play
+    the deck's transition when they cross a slide boundary.
+
+    `held` also forces the cut. Two content slides in one concept are one idea
+    being developed, so pushing the second one in from the right restages
+    something the room is already looking at — and it would slide the static
+    header across the screen, which is the opposite of holding it still.
+  */
+  const kind: SlideTransition = cut || held ? 'none' : (current?.transition ?? transition)
 
   return (
     <DeckContext.Provider value={ctx}>
@@ -187,9 +220,11 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
                 to the slide's maximum; what plays is each slide's own entrance.
               */}
               <InstantContext.Provider value={false}>
-                <Stepper step={step} onMax={onMax}>
-                  {current?.element}
-                </Stepper>
+                <ContinuityContext.Provider value={carry}>
+                  <Stepper step={step} onMax={onMax}>
+                    {current?.element}
+                  </Stepper>
+                </ContinuityContext.Provider>
               </InstantContext.Provider>
             </motion.div>
           </AnimatePresence>

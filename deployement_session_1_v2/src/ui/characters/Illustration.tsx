@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Nova, type NovaPose, type Facing } from './Nova'
-import { QuestionMark, Laptop, StarBubble, ChecklistCard } from './props'
+import { QuestionMark, ChecklistCard, PracticePad } from './props'
 import { ConceptApi, ConceptDatabase } from './concepts'
 import { TwoAppsScene, CorsGate, EnvConfig, Toolchain, PortsDoors, OriginFlats } from './session1'
 import { AI_CHARACTER_ASSETS } from './manifest'
@@ -81,18 +81,56 @@ export function Illustration({
           <Nova pose="point" facing={facing} float={float} className="absolute bottom-[6%] left-0 h-[80%]" />
         </Scene>
       )
+    /*
+      PRACTICE is an OBJECT; FEEDBACK keeps the character.
+
+      Practice used to pair Nova with a laptop, which put two figures in the same
+      corner of a night slide and left neither reading at projection distance.
+      One notepad, drawn large, says "your turn" faster than a mascot holding
+      something does.
+
+      Feedback is the opposite case and keeps the character: asking the room for
+      something is the one moment the deck should have a face in it. It is Nova
+      on its own there, with no prop at all. `FeedbackBubble` in `props.tsx` is
+      the object-only version, kept but not wired up.
+    */
     case 'practice':
       return (
-        <Scene className={className}>
-          <Laptop className="absolute bottom-2 right-0 w-[64%]" />
-          <Nova pose="idea" facing={facing} float={float} className="absolute left-0 bottom-0 h-[92%]" />
-        </Scene>
+        <Float className={className} float={float}>
+          <PracticePad className="h-full w-auto" />
+        </Float>
       )
     case 'feedback':
+      /*
+        Nova alone. The star bubble that used to sit beside it is gone: five
+        stars are a RATING widget, and this slide is not asking for a score, it
+        is asking the room to say something. The prop also had to be recoloured
+        away from its orange to survive the navy stage, at which point it was a
+        washed-out five-pointed row carrying no meaning the headline did not
+        already carry. `StarBubble` is still in `props.tsx` if a rating slide
+        ever needs it.
+      */
       return (
         <Scene className={className}>
-          <StarBubble className="absolute right-0 top-1 w-[62%]" />
-          <Nova pose="wave" facing={facing} float={float} className="absolute bottom-0 left-0 h-[86%]" />
+          {/*
+            Nova is ABSOLUTE inside the scene box, not in flow.
+
+            In flow it was sized `h-[60%]` against a grid row that sizes to its
+            content, which is circular: the row grew to Nova's intrinsic height,
+            the `h-full` container grew with it, and the slide overflowed its own
+            frame by 31px. `qa.mjs` caught it. Absolute positioning takes Nova
+            out of that loop, and the scene box keeps its aspect ratio.
+
+            Centred with `left-0 right-0 mx-auto`, never `-translate-x-1/2`:
+            Nova's float writes an inline transform every frame, which replaces
+            the utility translate outright.
+          */}
+          <Nova
+            pose="wave"
+            facing={facing}
+            float={float}
+            className="absolute bottom-0 left-0 right-0 mx-auto h-[94%] w-auto"
+          />
         </Scene>
       )
     case 'recap':
@@ -125,6 +163,45 @@ export function Illustration({
   }
 }
 
+/**
+ * A prop that breathes, on the same 5.5s cycle the AI-asset branch and Nova use,
+ * so an object-only slide is not the one still frame in a deck of moving ones.
+ */
+function Float({
+  children,
+  className,
+  float,
+}: {
+  children: React.ReactNode
+  className?: string
+  float: boolean
+}) {
+  return (
+    <motion.div
+      className={`relative ${className ?? ''}`}
+      animate={float ? { y: [0, -10, 0] } : undefined}
+      transition={float ? { duration: 5.5, repeat: Infinity, ease: 'easeInOut' } : undefined}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+/**
+ * A two-piece scene: a character and a prop, both absolutely positioned.
+ *
+ * THE ASPECT RATIO IS LOAD-BEARING. Every child here is absolute, so the box has
+ * no intrinsic width, and every call site sizes it as `h-[60%] w-auto` — which
+ * resolves to a width of ZERO. Nova still showed, because it is sized in `h`,
+ * but any prop sized in `w` (the star bubble, the checklist card) rendered at
+ * zero width and silently vanished. `QuizTimeSlide` hit this and worked around
+ * it by hardcoding a width at its own call site; fixing it here fixes it for
+ * every scene instead.
+ */
 function Scene({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={`relative ${className ?? ''}`}>{children}</div>
+  return (
+    <div className={`relative ${className ?? ''}`} style={{ aspectRatio: '4 / 3' }}>
+      {children}
+    </div>
+  )
 }

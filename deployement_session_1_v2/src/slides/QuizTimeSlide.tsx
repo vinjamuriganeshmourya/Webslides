@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
-import { SlideBase, Nova } from '@/ui'
-import { QuestionMark } from '@/ui/characters/props'
+import { SlideBase } from '@/ui'
+import { useInstant } from '@/motion/instant'
 import type { QuizTimeSlideProps } from './types'
 
 /**
@@ -26,12 +26,44 @@ import type { QuizTimeSlideProps } from './types'
  */
 
 const EASE = [0.16, 1, 0.3, 1] as const
-
+/** Overshoots slightly, so a layer lands with a bit of weight instead of easing to a stop. */
 /** The stage the character stands on: sized once, reused by the disc behind it. */
 const STAGE_W = 540
 const STAGE_H = 400
 
+/**
+ * THE FIGURE, IN FOUR LAYERS, ENTERING AS ONE.
+ *
+ * The art is one Canva illustration, but it is shipped as four separately keyed
+ * PNGs — brain, bulb, bubble, question mark — that share ONE canvas. Because
+ * every file is the same size and the same crop, stacking them with
+ * `absolute inset-0` recomposes the original exactly; nothing has to be
+ * positioned by hand, and nothing drifts when the stage is resized. That is the
+ * only reason the split still exists.
+ *
+ * IT USED TO BE A SEQUENCE, AND IS NOT ANY MORE. Each layer had its own delay
+ * and its own `from` offset, so the scene told a four-beat story: the brain is
+ * there, a question arrives, the mark pops, the idea lights up. Four beats over
+ * roughly 2.2s is a long time to hold a room on a slide whose entire message is
+ * the two words in the heading, and the layers were arriving out of stacking
+ * order, so the bulb appeared to slide out from behind the bubble. The figure
+ * now enters as one composed image, carried by its stage container, which is
+ * the single animation on this half of the slide.
+ *
+ * `z` is stacking order and is all these entries still need to carry.
+ */
+const LAYERS = [
+  { key: 'brain', src: '/assets/quiz/brain.png', z: 1 },
+  { key: 'bulb', src: '/assets/quiz/bulb.png', z: 2 },
+  { key: 'bubble', src: '/assets/quiz/bubble.png', z: 3 },
+  { key: 'mark', src: '/assets/quiz/mark.png', z: 4 },
+] as const
+
+/** Where the bulb's glass sits on the shared canvas, for the glow behind it. */
+const BULB_GLOW = { left: '75%', top: '23%' }
+
 export function QuizTimeSlide({ title = 'Quiz Time!', subtitle, lesson }: QuizTimeSlideProps) {
+  const instant = useInstant()
   return (
     /*
       LIGHT, not the brand blue used by the dividers: the character is drawn in
@@ -98,36 +130,76 @@ export function QuizTimeSlide({ title = 'Quiz Time!', subtitle, lesson }: QuizTi
         */}
         <motion.div
           className="relative z-10 flex h-full items-center justify-center pt-[160px]"
-          initial={{ opacity: 0, x: 36 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.4, duration: 1.2, ease: EASE }}
+          /*
+            THE ONE ANIMATION FOR THE WHOLE FIGURE. It used to carry only a
+            fade and a slide, with the real entrance happening four times
+            underneath it. Now it is the entrance, so it gains a little scale
+            to have some presence on its own, and it has to honour `instant`
+            like everything else that moves on this slide.
+          */
+          initial={instant ? false : { opacity: 0, x: 36, scale: 0.96 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
+          transition={instant ? { duration: 0 } : { delay: 0.4, duration: 1.2, ease: EASE }}
         >
           <div className="relative" style={{ width: STAGE_W, height: STAGE_H }}>
-            {/* the disc: grounds the character instead of leaving it mid-air */}
-            {/* The centring offset is animated, not a utility class: framer-motion
-                writes its own inline `transform`, which silently replaces
-                Tailwind's `-translate-x-1/2 -translate-y-1/2` and left the disc
-                sitting a half-width down and to the right of where it belonged. */}
+            {/*
+              NO DISC BEHIND THE FIGURE.
+
+              There used to be a pale blue circle here, sized to the stage, that
+              grounded the old flat character. The keyed art does not need it:
+              the four layers carry their own soft shadows, and the circle read
+              as a plate the illustration had been dropped onto rather than as
+              part of the composition.
+            */}
+            {/*
+              THE BULB'S GLOW.
+
+              Drawn here rather than baked into the art. The export carried a
+              blurred backdrop wash behind everything, which had to go when the
+              layers were keyed out — it belonged to no single object and left a
+              grey cast on the slide. A CSS radial glow tied to the bulb's own
+              entrance says the same thing and costs nothing, and it can breathe
+              after it lands, which a baked wash cannot.
+            */}
             <motion.span
               aria-hidden
-              className="absolute left-1/2 top-1/2 rounded-full bg-brand/[0.06]"
-              style={{ width: STAGE_H, height: STAGE_H }}
-              initial={{ opacity: 0, scale: 0.7, x: '-50%', y: '-50%' }}
-              animate={{ opacity: 1, scale: 1, x: '-50%', y: '-50%' }}
-              transition={{ delay: 0.55, duration: 1.3, ease: EASE }}
+              className="pointer-events-none absolute z-[2] rounded-full"
+              style={{
+                left: BULB_GLOW.left,
+                top: BULB_GLOW.top,
+                width: 210,
+                height: 210,
+                background:
+                  'radial-gradient(closest-side, rgba(255,196,60,0.42), rgba(255,196,60,0.12) 55%, rgba(255,196,60,0))',
+              }}
+              initial={instant ? false : { opacity: 0, scale: 0.5, x: '-50%', y: '-50%' }}
+              animate={
+                instant
+                  ? { opacity: 1, scale: 1, x: '-50%', y: '-50%' }
+                  : { opacity: [0, 1, 0.72, 1], scale: [0.5, 1.12, 1, 1.06], x: '-50%', y: '-50%' }
+              }
+              transition={
+                instant
+                  ? { duration: 0 }
+                  : { delay: 1.5, duration: 2.6, times: [0, 0.22, 0.55, 1], ease: EASE, repeat: Infinity, repeatType: 'reverse' }
+              }
             />
-            {/*
-              The character and the question mark are composed HERE rather than
-              taken from the shared `quiz` scene, which spaces them at opposite
-              ends of its box and leaves them reading as two unrelated objects.
 
-              Placed as one unit instead: the character faces RIGHT so its
-              pointing arm reaches toward the mark, and the mark overlaps the end
-              of that reach. The gesture is what ties them together, so the pair
-              has to be posed and positioned together to work.
+            {/*
+              The four layers, stacked on one canvas to recompose the artwork.
+              Static: the stage container above is what animates, so the scene
+              arrives as one picture. See LAYERS.
             */}
-            <Nova pose="point" facing="right" className="absolute bottom-0 left-0 h-[88%]" />
-            <QuestionMark className="absolute bottom-[20%] left-[43%] h-[54%]" />
+            {LAYERS.map((layer) => (
+              <img
+                key={layer.key}
+                src={layer.src}
+                alt=""
+                draggable={false}
+                className="absolute inset-0 h-full w-full object-contain"
+                style={{ zIndex: layer.z }}
+              />
+            ))}
           </div>
         </motion.div>
       </div>
