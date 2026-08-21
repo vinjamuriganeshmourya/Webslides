@@ -13,7 +13,7 @@ No slide is generated until this plan is approved. Section 7 is the gate.
 | Project | `deployement_session_4/` — to be scaffolded from `slide-kit/slide-template` |
 | Deck file | `src/decks/runningRealAppDeck.tsx` |
 | Proposed slide count | **72** (see §6 for where it compresses if you want it shorter) |
-| `devPort` | `5215` (5211 kit, 5212–5214 taken by sessions 1v2, 2, 3) |
+| `devPort` | `5215`. Note: the kit and **all three** existing sessions are on `5211` — the scaffold never changed it, so two decks cannot run at once today. 5215 keeps session 4 out of that collision; renumbering the others is a separate call |
 | `NEXT_UP` | Every command today becomes two words, with a Makefile |
 | Build rules | to be created at `workflow/skills/session-4-deck/SKILL.md` on sign-off |
 
