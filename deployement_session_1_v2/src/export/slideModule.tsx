@@ -33,7 +33,8 @@
  *    fonts. If the host needs literal inline styles instead, that is a full
  *    rewrite of the component layer rather than a change to this file.
  */
-import { deploymentSession1Deck, deploymentSession1Meta } from '@/decks/deploymentSession1Deck'
+/* The session-owned seam. See src/decks/activeDeck.ts — this file is kit. */
+import { deck, meta as deckMeta } from '@/decks/activeDeck'
 import { Stepper } from '@/motion/Stepper'
 import { colors, fonts } from '@/design/tokens'
 import { DECK_CSS } from './deckCss'
@@ -129,7 +130,7 @@ const SCALE = HOST_W / DECK_W // 1.5, and 1080/720 is the same number
 function Frame({ index }: { index: number }) {
   useDeckStyles()
   const step = useRevealStep()
-  const slide = deploymentSession1Deck[index]
+  const slide = deck[index]
 
   return React.createElement(
     'div',
@@ -171,7 +172,7 @@ export const design = {
 }
 
 export const meta = {
-  title: deploymentSession1Meta.title,
+  title: deckMeta.title,
   theme: 'NxtWaveEvolve',
 }
 
@@ -183,7 +184,7 @@ export const meta = {
  */
 export { PAGE_REVEAL_MAX_STEPS as pageRevealMaxSteps } from './revealSteps'
 
-const slides = deploymentSession1Deck.map((slide, i) => {
+const slides = deck.map((slide, i) => {
   const Component = () => React.createElement(Frame, { index: i })
   Component.displayName = slide.id
   return Component

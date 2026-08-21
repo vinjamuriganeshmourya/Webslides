@@ -51,7 +51,7 @@ export function SectionBreakerImageSlide({
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.25, duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}
         >
-          <div className="absolute h-80 w-80 rounded-full bg-brand-500/25 blur-2xl" />
+          <div className="absolute h-80 w-80 rounded-full bg-nw-blue/30 blur-2xl" />
           {media ? (
             // width-constrained so wide viewBox illustrations never clip at the
             // slide edge; height follows the aspect ratio up to the cap

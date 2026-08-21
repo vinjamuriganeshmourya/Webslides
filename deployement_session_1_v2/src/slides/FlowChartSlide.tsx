@@ -1,5 +1,6 @@
 import { SlideBase, SlideHeader, FlowChart } from '@/ui'
 import type { FlowChartSlideProps } from './types'
+import { SLIDE_FAMILY } from '@/motion/continuity'
 
 /**
  * FLOW CHART — a header over a centered node → arrow → node sequence.
@@ -24,3 +25,10 @@ export function FlowChartSlide({
     </SlideBase>
   )
 }
+
+/*
+  Part of the light content family: these layouts can flow into one another
+  inside a concept, so `SlideHeader` holds an unchanged kicker still instead of
+  replaying its entrance. See `src/motion/continuity.ts`.
+*/
+FlowChartSlide.family = SLIDE_FAMILY.content

@@ -1,6 +1,7 @@
 import { SlideBase, SlideHeader, StepList } from '@/ui'
 import { Reveal } from '@/motion/Reveal'
 import type { ProceduralStepsSlideProps } from './types'
+import { SLIDE_FAMILY } from '@/motion/continuity'
 
 /**
  * PROCEDURAL STEPS — a numbered how-to on a light stage. The header sets the
@@ -31,3 +32,10 @@ export function ProceduralStepsSlide({
     </SlideBase>
   )
 }
+
+/*
+  Part of the light content family: these layouts can flow into one another
+  inside a concept, so `SlideHeader` holds an unchanged kicker still instead of
+  replaying its entrance. See `src/motion/continuity.ts`.
+*/
+ProceduralStepsSlide.family = SLIDE_FAMILY.content

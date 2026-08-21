@@ -4,6 +4,7 @@ import { BulletList } from '@/ui/content'
 import { Callout } from '@/ui/Callout'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
 import type { ContentNoteSlideProps } from './types'
+import { SLIDE_FAMILY } from '@/motion/continuity'
 
 /**
  * CONTENT WITH A NOTE — header (+optional bullets) up top, with an emphasized
@@ -95,3 +96,10 @@ export function ContentNoteSlide({
     </SlideBase>
   )
 }
+
+/*
+  Part of the light content family: these layouts can flow into one another
+  inside a concept, so `SlideHeader` holds an unchanged kicker still instead of
+  replaying its entrance. See `src/motion/continuity.ts`.
+*/
+ContentNoteSlide.family = SLIDE_FAMILY.content

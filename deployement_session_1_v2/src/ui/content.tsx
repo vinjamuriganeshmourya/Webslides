@@ -54,9 +54,23 @@ export function BulletList({
         const Icon = iconByName[item.icon ?? marker]
         return (
           <Item as="li" dir="up" key={i} className="flex items-start gap-4">
+            {/*
+              MARKER CHIP.
+
+              On a dark ground the marker goes white on a white wash, not the
+              tone colour on a tone wash. A brand-blue icon at 10% blue behind it
+              is legible on a white slide and nearly invisible on the navy stage,
+              which is what happened the moment the practice slide's markers
+              moved off the old orange: orange only worked there by accident, by
+              being the one hue that was NOT the background.
+            */}
             <span
               className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-xl"
-              style={{ background: `${color}1a`, color }}
+              style={
+                onDark
+                  ? { background: 'rgba(255,255,255,0.16)', color: '#FFFFFF' }
+                  : { background: `${color}1a`, color }
+              }
             >
               <Icon width={18} height={18} />
             </span>

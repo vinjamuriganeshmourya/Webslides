@@ -302,8 +302,16 @@ node video-safe.mjs "http://localhost:5199/?all" 37 # must print CLEAN
 screenshots capture the finished slide. Both harnesses take the slide count as
 their last argument — **update it when slides are added or removed.**
 
-Expected `qa.mjs` baseline: slide 1 flagged for its `pointer-events-none`
-decorative blobs. Anything else is a regression.
+Expected `qa.mjs` baseline — **two** flagged slides, both benign:
+
+- **slide 1 (Welcome)** — `NO LOGO` plus overflow on its `pointer-events-none`
+  decorative blobs.
+- **slide 37 (Thank you)** — `NO LOGO` only. The harness looks for the mark in
+  `footer svg, footer img`, and this slide carries the mark *on stage* instead,
+  so it passes `footerLogo={false}` to stop the footer printing a second one.
+  `BrandSlide` does the same.
+
+Anything else is a regression.
 
 ### The standalone HTML build
 

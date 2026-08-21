@@ -16,7 +16,15 @@
 # ── build output ──────────────────────────────────────────────────────────
 **/dist/
 **/dist-ssr/
-**/dist-single/
+# The self-contained single-file decks ARE tracked, by request: they are what
+# gets handed to an instructor, and a 4 MB HTML that only exists on one laptop
+# is not a deliverable. Everything else vite writes here (the unnamed
+# index.html duplicate, stray chunks) stays ignored, so the pattern excludes
+# the CONTENTS of dist-single rather than the directory itself — a `!` negation
+# cannot re-include a file inside an excluded directory.
+**/dist-single/*
+!**/dist-single/deployment-session-*.html
+!**/dist-single/base-template.html
 **/.vite/
 *.tsbuildinfo
 
@@ -109,3 +117,10 @@ venv/
 qa-*.png
 shot*.mjs
 *.screenshot.png
+
+# qa.mjs's default output directory. It used to default to an absolute
+# /tmp/claude-1000/<session-id>/scratchpad path baked into the script; that moved
+# into the project so the harness is session-agnostic, which means the shots now
+# land here. Same status as workflow/preview: regenerated on every run, ~5 MB a
+# sweep, never reviewed as source.
+**/workflow/qa-shots/

@@ -1,6 +1,7 @@
 import { SlideBase, SlideHeader, ScenarioCard } from '@/ui'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
 import type { ScenarioSlideProps } from './types'
+import { SLIDE_FAMILY } from '@/motion/continuity'
 
 /**
  * SCENARIO EXPLANATION — a compact header over a ScenarioCard that walks
@@ -32,3 +33,10 @@ export function ScenarioSlide({
     </SlideBase>
   )
 }
+
+/*
+  Part of the light content family: these layouts can flow into one another
+  inside a concept, so `SlideHeader` holds an unchanged kicker still instead of
+  replaying its entrance. See `src/motion/continuity.ts`.
+*/
+ScenarioSlide.family = SLIDE_FAMILY.content

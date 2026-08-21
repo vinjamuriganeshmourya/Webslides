@@ -115,6 +115,10 @@ import {
   Plus,
   Pencil,
   Trash2,
+  Folder,
+  FolderOpen,
+  FileText,
+  Download,
 } from 'lucide-react'
 
 export const iconByName = {
@@ -152,5 +156,11 @@ export const iconByName = {
   plus: Plus,
   pencil: Pencil,
   trash: Trash2,
+  // Added for Session 2: the FileTree figure needs a folder and a file glyph,
+  // and "download" is the honest picture of `docker pull`.
+  folder: Folder,
+  'folder-open': FolderOpen,
+  file: FileText,
+  download: Download,
 }
 export type IconName = keyof typeof iconByName

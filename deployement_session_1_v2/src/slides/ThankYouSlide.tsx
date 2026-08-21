@@ -1,31 +1,40 @@
 import { motion } from 'framer-motion'
-import { SlideBase, Illustration, Chip } from '@/ui'
+import { SlideBase, Logo } from '@/ui'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
 import type { ThankYouSlideProps } from './types'
 
 /**
- * THANK YOU — the closing stage. Night gradient, mascot cheering, an
- * oversized farewell, an optional parting message, and a "Next up" pill.
+ * THANK YOU — the closing stage. Night gradient, the NxtWave mark, an
+ * oversized farewell and an optional parting message.
+ *
+ * THE MARK, NOT THE MASCOT. Nova cheered here until this slide was put next to
+ * the welcome frame: the deck opened on the brand and closed on a character,
+ * which reads as two different decks. The last frame a room looks at is the one
+ * that should be signed, so the closing stage now carries the same mark the
+ * opening does. Nova still carries the quiz, practice-adjacent and recap frames,
+ * where a face is doing actual work.
  */
-export function ThankYouSlide({ title = 'Thank you!', message, nextUp, lesson }: ThankYouSlideProps) {
+export function ThankYouSlide({ title = 'Thank you!', message, lesson }: ThankYouSlideProps) {
   return (
-    <SlideBase variant="brand" className="bg-nw-gradient" lesson={lesson} footer>
+    /*
+      `footerLogo={false}`: the mark is on stage here, so the footer must not
+      print a second one. Same reason `BrandSlide` suppresses it. The footer bar
+      itself stays.
+    */
+    <SlideBase variant="night" lesson={lesson} footer footerLogo={false}>
       <div className="grid h-full place-items-center text-center">
         <RevealGroup className="flex flex-col items-center" stagger={0.12}>
           <motion.div
-            className="relative mb-6 grid place-items-center"
+            className="relative mb-16 grid place-items-center"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.15, duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}
           >
-            {/* A pale halo rather than a blue one: a blue glow behind a blue
-                character adds no separation at all, which is why the figure
-                disappeared into the ground here. */}
-            <div className="absolute h-64 w-64 rounded-full bg-white/20 blur-2xl" />
-            <Illustration
-              name="nova-cheer"
-              className="char-lift relative mx-auto h-[16rem] w-auto"
-            />
+            {/* A pale halo rather than a blue one: a blue glow behind the navy
+                ground adds no separation at all. Kept from the character version
+                because the mark needs the same lift off the gradient. */}
+            <div className="absolute h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+            <Logo className="relative h-24" onDark />
           </motion.div>
 
           <Reveal dir="up">
@@ -40,11 +49,13 @@ export function ThankYouSlide({ title = 'Thank you!', message, nextUp, lesson }:
             </Reveal>
           )}
 
-          {nextUp && (
-            <Reveal dir="up" delay={0.1}>
-              <Chip className="mt-8 !bg-white/10 !text-white">Next up: {nextUp}</Chip>
-            </Reveal>
-          )}
+          {/*
+            NO "Next up:" CHIP.
+
+            The Next session slide sits immediately before this one and already
+            names what is coming. Repeating it here gave the deck two endings, and
+            the room started packing up on the wrong slide.
+          */}
         </RevealGroup>
       </div>
     </SlideBase>
