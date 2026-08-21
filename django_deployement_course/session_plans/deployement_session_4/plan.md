@@ -1,4 +1,4 @@
-<!-- cSpell:ignore nxttrendz deployement NxtWave colour behaviour djangorestframework simplejwt dockerignore nvmrc PYTHONUNBUFFERED runserver gunicorn createsuperuser sqlite Vite vitejs nodejs -->
+<!-- cSpell:ignore nxttrendz deployement NxtWave colour colours behaviour djangorestframework simplejwt dockerignore nvmrc PYTHONUNBUFFERED runserver gunicorn createsuperuser sqlite Vite vitejs nodejs venv hostnames myproject asgiref sqlparse travelling realisation containerised -->
 # Deployment · Session 4: "Running the Real App with Docker"
 
 **STATUS: AWAITING SIGN-OFF**
