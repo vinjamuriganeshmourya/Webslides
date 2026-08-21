@@ -240,7 +240,7 @@ Decisions taken at the gate (see §5 for what was asked):
 | `SESSION_NAME` | `Docker File Creation` (footer + kicker on every content slide) |
 | `COURSE` | `React + Django Integration · Deployment` |
 | `TR_DOC` | `/home/nxtwave/django/Integration project/deployment/Docker_file_Creation_session_2.md` |
-| `PROJECT` | `Web Slides/deployement_session_2` (copied from `deployement_session_1_v2`, same Evolve theme) |
+| `PROJECT` | `Web Slides/django_deployement_course/deployement_session_2` (copied from `deployement_session_1_v2`, same Evolve theme) |
 | `NEXT_UP` | `Makefile` — **OPEN QUESTION, see §5** |
 | Slide count | **42** |
 

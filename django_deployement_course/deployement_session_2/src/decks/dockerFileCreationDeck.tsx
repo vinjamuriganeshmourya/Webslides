@@ -33,7 +33,7 @@ import { colors } from '@/design/tokens'
  * Deployment · Session 2 "Docker File Creation"
  *
  * Content is the signed-off plan at
- *   `Web Slides/workflow/plans/deployement_session_2.md`
+ *   `Web Slides/django_deployement_course/workflow/plans/deployement_session_2.md`
  * (STATUS: SIGNED OFF 2026-08-17), sourced from the TR doc at
  *   `Integration project/deployment/Docker_file_Creation_session_2.md`
  * after the five TR patches recorded in that plan's §6 were applied.

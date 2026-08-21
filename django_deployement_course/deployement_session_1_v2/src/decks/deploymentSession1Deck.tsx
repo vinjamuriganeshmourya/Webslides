@@ -34,7 +34,7 @@ import { colors } from '@/design/tokens'
  *
  * Content is the signed-off Session 1 deck; the rendering layer is the Evolve
  * theme that ships in `template-code.zip`. See the delta plan at
- *   `Web Slides/workflow/plans/deployement_session_1_v2.md`
+ *   `Web Slides/django_deployement_course/workflow/plans/deployement_session_1_v2.md`
  * for the v1 to v2 component mapping and the decisions behind it.
  *
  * FIVE RULES GOVERN THIS FILE. All five are easy to break by accident while

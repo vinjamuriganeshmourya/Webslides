@@ -39,14 +39,14 @@ import { colors } from '@/design/tokens'
  * Deployment · Session 3 "Docker Compose for Multi-Container Apps"
  *
  * Content is the signed-off plan at
- *   `Web Slides/workflow/plans/deployement_session_3.md`
+ *   `Web Slides/django_deployement_course/workflow/plans/deployement_session_3.md`
  * (STATUS: SIGNED OFF 2026-08-20, concept 1 compressed to the comparison),
  * sourced from the TR doc at
  *   `/home/nxtwave/docker_jenkins_aws/03_docker_compose_multi_container.md`
  * after the eight TR patches recorded in that plan's §6.
  *
  * The build rules for this session, S1 to S13, live in
- *   `Web Slides/workflow/skills/session-3-deck/SKILL.md`
+ *   `Web Slides/django_deployement_course/workflow/skills/session-3-deck/SKILL.md`
  * together with the running feedback log. Read that file before editing this
  * one. The five that bite hardest while transcribing:
  *

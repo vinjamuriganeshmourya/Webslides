@@ -81,7 +81,7 @@ ACCESS_LEVELS = {
     "Read the repo (Read/Grep/Glob)": "read",
     "Full agent — skills, scripts, terminal": "full",
 }
-REPO_ROOT = WORKFLOW_DIR.parent  # "Web Slides" — project settings, skills, deck code
+REPO_ROOT = WORKFLOW_DIR.parent  # the course root — project settings, skills, deck code
 
 
 def run_claude(
@@ -153,11 +153,11 @@ ACCESS_RULES = {
     "none": "- Do not use any tools; answer only from the context given in this prompt.",
     "read": (
         "- You may READ files in this repo (TR doc under 'Integration project/docs', deck code under "
-        "'Web Slides/template', workflow under 'Web Slides/workflow') to ground your answer. Do not modify anything."
+        "'Web Slides/django_deployement_course/template', workflow under 'Web Slides/django_deployement_course/workflow') to ground your answer. Do not modify anything."
     ),
     "full": (
         "- You have full access: read/edit files, run terminal commands and scripts, and use your skills.\n"
-        "- The deck lives in 'Web Slides/template' (npm run build to verify), plans in 'Web Slides/workflow/plans'.\n"
+        "- The deck lives in 'Web Slides/django_deployement_course/template' (npm run build to verify), plans in 'Web Slides/django_deployement_course/workflow/plans'.\n"
         "- Verify anything you change (typecheck/build) and end your reply with a clear summary of every file "
         "you touched and every command you ran."
     ),
@@ -213,7 +213,7 @@ def revision_prompt(
     fb = "\n".join(f"- {f['text']}" for f in feedback_items) or "- (no written feedback; status set to needs-changes)"
     if access == "full":
         task = """Task: address the feedback end to end — you may directly update the plan JSON
-(Web Slides/workflow/plans), the deck source (Web Slides/template/src), and any assets, then
+(Web Slides/django_deployement_course/workflow/plans), the deck source (Web Slides/django_deployement_course/template/src), and any assets, then
 verify with a build. Reply with:
 1. What you changed and why (short).
 2. The revised slide JSON in a ```json fenced block (same schema, same "n" and "id").

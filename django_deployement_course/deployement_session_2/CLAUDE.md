@@ -383,7 +383,7 @@ transcribing a design:
   deck's own R1–R6 rules. Read it before editing that file.
 - Every terminal transcript in this deck is **quoted from the TR doc, not
   captured** (Docker Desktop will not run on the capture machine). Captures C1
-  to C8 are outstanding; see `Web Slides/workflow/assets-manifest.md`.
+  to C8 are outstanding; see `Web Slides/django_deployement_course/workflow/assets-manifest.md`.
 
 ---
 

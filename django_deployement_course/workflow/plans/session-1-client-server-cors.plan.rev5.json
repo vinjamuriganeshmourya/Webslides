@@ -18,7 +18,7 @@
     "trDoc": "Integration project/docs/session-1.md (rev 2026-07-16 15:20)",
     "sessionCode": "Integration project/session-1/{prefilled,final} — built, run, verified",
     "nextUp": "Session 2 — the API contract & JWT login",
-    "deckTarget": "Web Slides/template (React deck), src/decks/session1Deck.tsx"
+    "deckTarget": "Web Slides/django_deployement_course/template (React deck), src/decks/session1Deck.tsx"
   },
   "concepts": [
     {

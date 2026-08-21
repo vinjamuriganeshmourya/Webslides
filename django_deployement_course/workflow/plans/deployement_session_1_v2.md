@@ -59,7 +59,7 @@ re-authored on the layouts that ship in `template-code.zip` (the Evolve theme �
 
 | Input | Value |
 |---|---|
-| `PROJECT` | `deployement_session_1_v2` — fresh copy of `template-code.zip` at `Web Slides/deployement_session_1_v2/` |
+| `PROJECT` | `deployement_session_1_v2` — fresh copy of `template-code.zip` at `Web Slides/django_deployement_course/deployement_session_1_v2/` |
 | `SESSION_NAME` | `From Localhost to Anywhere` — footer text on **every** slide |
 | `COURSE` | `React + Django Integration — Deployment` |
 | `TR_DOC` | `Integration project/deployment/session-1.md` |
@@ -343,7 +343,7 @@ Mechanical, none touching content. Recorded rather than re-gated.
 
 ## Stage 7
 
-Snapshotted source-only to `Web Slides/versions/deployement_session_1_v2.zip`
+Snapshotted source-only to `Web Slides/django_deployement_course/versions/deployement_session_1_v2.zip`
 (109 files, `node_modules` / `dist` / `*.tsbuildinfo` excluded).
 
 > ⚠️ **Credential note.** `template-code.zip` contains `template/.env.local` with a

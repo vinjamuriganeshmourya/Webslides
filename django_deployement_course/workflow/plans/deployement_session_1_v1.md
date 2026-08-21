@@ -17,7 +17,7 @@ Deck total is therefore **46 slides**.
 
 | Input | Value |
 |---|---|
-| `PROJECT` | `deployement_session_1_v1` — standalone copy of `template/` at `Web Slides/deployement_session_1_v1/` |
+| `PROJECT` | `deployement_session_1_v1` — standalone copy of `template/` at `Web Slides/django_deployement_course/deployement_session_1_v1/` |
 | `SESSION_NAME` | `From Localhost to Anywhere` — footer text on **every** slide |
 | `COURSE` | `React + Django Integration — Deployment` |
 | `TR_DOC` | `Integration project/deployment/session-1.md` (951 lines) |
