@@ -12,6 +12,16 @@ export interface Step {
   title: ReactNode
   detail?: ReactNode
   icon?: IconName
+  /**
+   * A tail fragment of the title that claims a build step OF ITS OWN, revealed
+   * one click after the row it sits in.
+   *
+   * For the "ask, then confirm" beat: the row states the need the room just
+   * worked out ("a directory to store the files") and the next click puts the
+   * concrete value beside it (`/app`). Without the second step the answer is on
+   * screen before the room has been asked for it.
+   */
+  value?: ReactNode
 }
 
 export function StepList({
@@ -35,7 +45,20 @@ export function StepList({
           <Step as="li" dir="left" key={i} className="relative flex items-start gap-5">
             <NumberBadge n={i + 1} tone={tone} className="relative z-10 h-11 w-11" />
             <div className="rounded-card border border-line bg-white px-5 py-3.5 shadow-card-soft flex-1">
-              <p className="font-heading text-lg font-bold text-ink">{s.title}</p>
+              <p className="font-heading text-lg font-bold text-ink">
+                {s.title}
+                {/*
+                  Nested inside the row's own `Step`, so it claims the NEXT step
+                  number. It carries its own `animate`, which is what stops the
+                  parent's variants from propagating in and revealing it early.
+                  `inline-block` because framer animates a transform.
+                */}
+                {s.value != null && (
+                  <Step as="span" dir="fade" className="ml-2 inline-block">
+                    {s.value}
+                  </Step>
+                )}
+              </p>
               {s.detail && <p className="mt-0.5 text-body">{s.detail}</p>}
             </div>
           </Step>

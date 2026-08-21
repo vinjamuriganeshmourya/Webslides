@@ -1,6 +1,177 @@
 # Deployment · Session 2 — "Docker File Creation"
 
-**STATUS: SIGNED OFF 2026-08-17 · REVISED (Rev 2) 2026-08-17 after a pedagogy review**
+**STATUS: SIGNED OFF 2026-08-17 · REVISED (Rev 2) 2026-08-17 after a pedagogy
+review · REVISED (Rev 3) 2026-08-18 after a review of the bridge into concept 1 ·
+REVISED (Rev 4) 2026-08-18 after a review of concepts 1 to 3**
+
+## Rev 4 — the four needs, and explain before you show
+
+The user reviewed the bridge out of concept 1 and the whole of concept 3. The deck
+went from 48 slides to **52**. Where this list disagrees with any earlier rev or
+with section 3, this list wins.
+
+**1. The bridge slide stopped handing over the answer.** The slide after the
+definition used to be *Your Four Needs Become the File*, a three-column table that
+printed `FROM`, `WORKDIR`, `COPY` and `CMD` before any of them had been taught.
+That is R7 broken at the worst possible moment: five instruction slides followed
+with nothing left to reveal. It is now `c1-four-needs-one-file`, **All Four Come
+From the File**, lead *To define and run app.py, the image has to be given every
+one of these*. Two columns, the need and the value, both of them the room's own
+answers from *What Does Running It Need*, and a tip callout that asks the question
+instead of answering it: *Let us see how each of these four is provided through the
+Dockerfile*. Not one keyword appears.
+
+**2. Create the file, then ask how to write it.** The order was definition →
+bridge → anatomy → create the file, so the anatomy slide taught the shape of a line
+in a file that did not exist yet. `c1-create-dockerfile` now comes first and the
+anatomy slide follows it, retitled **How Do We Write It** with the lead *A
+Dockerfile holds instructions, one per line, and every line has the same shape*.
+The file is open and empty in front of the room when the question is asked, which
+is the only order in which the question is real.
+
+**3. Every instruction slide names the need it provides.** The five slides of
+concept 2 each carry a lead that points back at the room's own list, so the keyword
+arrives as an answer rather than as vocabulary:
+
+| Slide | Lead |
+|---|---|
+| `FROM` | Need 1, a runtime to run on |
+| `WORKDIR` | Need 2, a folder to work in |
+| `COPY` | Need 3, the files and their content |
+| `RUN` | Need 3 again, the packages those files ask for |
+| `CMD` | Need 4, a command to start it |
+
+Need 3 deliberately spans two slides: `COPY` puts the files in the image and `RUN`
+installs what those files ask for, and splitting them across two need numbers would
+invent a fifth need the room never listed. Each slide's speaker note opens on the
+same link, so the instructor says it out loud even if the lead is skimmed.
+
+**4. A handover slide between the finished file and the build.** The complete
+Dockerfile is the slide the room photographs, which makes it feel like an ending.
+New slide `c2-to-build`, **The File Is Done**, lead *Now we build an image from the
+Dockerfile we just wrote*: two cards, what we have (six lines of plain text, and
+Docker cannot run a text file) against what we need (an image), and an info callout
+*The file is the recipe, not the meal*. No command appears on it; the divider that
+follows now answers a question rather than announcing a topic.
+
+**5. Concept 3 explains each command before showing it (R10).** Every command in
+the section is two slides, what it does and then the transcript, so the room reads
+output it has already been told how to read. The teaching cards moved off the
+transcript slides onto the explain slides, where they are the content and take a
+click each rather than having to land with the terminal.
+
+| # | Slide | Shape |
+|---|---|---|
+| 26 | `c3-build-explain` **What Building Does** | three points, no command on screen |
+| 27 | `c3-build` **docker build** | the one line, plus the `-t` and trailing-dot callouts |
+| 28 | `c3-build-output` **Reading the Output** | the transcript, two callouts |
+| 29 | `c3-images-explain` **Where Did the Image Go** | three cards |
+| 30 | `c3-images` **docker images** | the transcript, one callout |
+| 31 | `c3-run-explain` **What Running Does** | three cards |
+| 32 | `c3-run` **docker run** | the transcript, one callout |
+| 33 | `c3-ps-explain` **Where Did the Container Go** | three cards |
+| 34 | `c3-ps` **docker ps** | both commands in one panel, one callout |
+
+**6. There is no `docker pull` slide.** `FROM` pulls the base image as part of the
+build, so the room never types `pull` in this session, and Rev 2's decision to
+teach it cost a slide for a command they will not use. The slide is removed and the
+fact it carried is taught where the room can see it happen: the build-output slide
+gains a tip callout, *Step one was a download*, saying `FROM` fetched the base image
+from Docker Hub once and the next build reuses the local copy. Downstream, the
+command-summary table drops its `pull` row (four commands, not five), the practice
+task reads *Run all four commands on it* / *build, then images, then run, then ps
+-a, in that order*, the `docker images` slide no longer offers `pull` as the source
+of its second row, and R9 in the deck header records why `pull` is absent rather
+than taught.
+
+**7. Speaker-note cross-references are now name-based, not numbered.** Rev 3
+resolved nineteen stale "see slide N" references to the then-current order, and
+this rev moved things again. Rather than renumber them a third time, every
+cross-reference in `notes` and in the file's comments now names its target (*the
+COPY slide*, *the Images Are Frozen slide*, *the full journey slide*), so the next
+renumbering cannot break them. `grep -on "slides* [0-9]\+"` should return only the
+one reference to slide 7, the folder-creation slide, whose position has not moved
+across four revs.
+
+Harness counts updated with the slide count: `deck.config.json` `slideCount` 50 →
+**52** (one bridge slide added after concept 2, four explain slides added in
+concept 3, the `docker pull` slide removed), and `src/export/revealSteps.ts` needs
+regenerating.
+
+## Rev 3 — the bridge into concept 1
+
+The user reviewed slides 5 and 6 and raised two problems. The deck went from 48
+slides to **51**. Where this list disagrees with Rev 2 or with section 3, this
+list wins.
+
+**1. "Someone else" is the wrong answer to "where did that image come from".**
+The room pulled `hello-world`; the honest, memorable answer is that the image
+came with Docker, ready made. Slide 5 is retitled **That Image Came With
+Docker**, its second point becomes `But that image came with Docker` / *It was
+ready made, and none of it was your application*, and slide 3's recap pill drops
+the same phrasing (`all built by someone else` → `all of them built already`) so
+the deck does not plant the wording two slides before it is corrected. The
+question in the note is unchanged: it is still the question of the session.
+
+**2. The gap named no goal, and the analogy arrived before the need for it.**
+Rev 2's order was gap → create the folder → file contents → divider → recipe
+card. So the room typed a script with no stated destination, and then met a
+recipe analogy for a problem it had not yet felt. Three slides fix that, all of
+them before the divider, all of them in the "The Dockerfile" rail:
+
+- **New, before "Create the Folder"** — `c1-goal`, *Let Us Run Our Own Script*.
+  `ContentSlide` + a three-node `FlowChart`: `Write a script` → `Hand it to
+  Docker` → `It runs in a container`, plus a tip callout, *Everything from here
+  to the end of the session is these three boxes, one at a time*. It says "hand
+  it to Docker" and not "build an image", because R7 holds: the need for an image
+  is earned two slides later.
+- **New, after "What Goes In Them"** — `c1-need-an-image`, *Now We Need an
+  Image*. Two cards, past against present: last session the image already
+  existed, so we pulled it and ran it; this session no image holds our `app.py`,
+  so one has to be prepared. Info callout: *Docker never runs a file*, it runs an
+  image, so `app.py` has to be inside one first. This is the hinge of the
+  session, from consuming an image to producing one.
+- **New, after that** — `c1-what-it-takes`, *What Does Running It Need*. No lead
+  and no sub-lines: the title asks, and an ordered `StepList` reveals the four
+  answers one click at a time, one line each, so the room can finish each line
+  before it appears. `We require a Python runtime (Python)` · `A directory to
+  store the files (/app)` · `Files and their content (app.py and
+  requirements.txt)` · `Command to run (python app.py)`. The parenthesised half
+  is set in mono, because each one is the argument of the instruction that
+  carries it in concept 2. Order is the teaching beat, because each need is
+  useless without the one above it.
+
+Those four needs are the spine of concept 2, in the order the Dockerfile is
+written, and **not one keyword is named on the slide** (R7): each collects its
+name on the slide that teaches it. The recipe-card and recipe-to-Dockerfile
+slides are unchanged, and now land on a room that has already worked out what an
+image has to carry.
+
+**3. The session 3 title is settled.** The next-session frame was left blank at
+sign-off because the topic was not decided. It is now **Docker Compose
+Multi-Container**, so the name is on the frame and its speaker note carries the
+reason the room will feel it: one Dockerfile and one image stop being enough the
+moment a project is a backend, a frontend and a database that have to come up
+together. R3 still holds for the teaching slides; the handover frame is the one
+place whose job is to name what comes next.
+
+**4. Two Quiz Time beats, not three, and no feedback frame.** The quiz that sat
+after the mistakes section (the layer-cache question) is gone, and a new one sits
+immediately before the takeaways asking RUN against CMD, which is the pair the
+room most often has backwards at the end of this session. The section-4 quiz is
+untouched, so the deck now holds exactly two: one before the fourth divider, one
+before the takeaways. The `FeedbackSlide` frame is removed with its import.
+
+**5. Speaker-note cross-references were all stale.** Nineteen "see slide N"
+references in `notes` and comments had been written against the Rev 1 42-slide
+numbering and were never updated at Rev 2, so most of them pointed at the wrong
+slide even before this revision moved things again. Every one is now resolved to
+the current order. Anyone renumbering the deck again should re-check them:
+`grep -on "slides* [0-9]\+" src/decks/dockerFileCreationDeck.tsx`.
+
+Harness counts updated with the slide count: `deck.config.json` `slideCount` 48 →
+**50** (three added before the divider, one quiz added, one quiz and the feedback
+frame removed), and `src/export/revealSteps.ts` regenerated.
 
 ## Rev 2 — what the pedagogy review changed
 

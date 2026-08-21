@@ -5,7 +5,6 @@ import {
   BrandSlide,
   ContentNoteSlide,
   ContentSlide,
-  FeedbackSlide,
   KeyTakeawaysSlide,
   PracticeSlide,
   QuizTimeSlide,
@@ -15,9 +14,9 @@ import {
   WelcomeSlide,
 } from '@/slides'
 import {
-  AnalogyMap,
   Callout,
   Card,
+  Chip,
   CardGrid,
   CodeBlock,
   DataTable,
@@ -87,9 +86,15 @@ import { colors } from '@/design/tokens'
  *
  *   R9 A RECAP MAY ONLY CLAIM WHAT SESSION 1 TAUGHT. The TR's recap lists four
  *      docker commands as known; Session 1's deck contains `docker --version`
- *      and `docker run hello-world` and nothing else. `docker pull`, `docker
- *      images` and `docker ps` are therefore TAUGHT in section 3 of this deck,
- *      one per slide, each at the point the session first needs it.
+ *      and `docker run hello-world` and nothing else. `docker images` and
+ *      `docker ps` are therefore TAUGHT in section 3 of this deck, each at the
+ *      point the session first needs it. `docker pull` is not taught at all:
+ *      `FROM` pulls the base image during the build, so the room never types it,
+ *      and the fact lives on the build-output slide instead.
+ *
+ *  R10 EXPLAIN THE COMMAND BEFORE SHOWING IT. Every command in section 3 takes
+ *      two slides, what it does and then the transcript, so the room reads
+ *      output it has already been told how to read.
  *
  * ONE HONESTY NOTE, and it is load-bearing. Every transcript in this deck is
  * QUOTED FROM THE TR, not captured: Docker Desktop cannot run on the capture
@@ -166,9 +171,38 @@ const DOCKERFILE = [
 const dockerfile = (n: number) => DOCKERFILE.slice(0, n).join('\n')
 
 /**
- * The growing file, as slides 13 to 19 render it. One place for the props so a
+ * The growing file, as slides 18 to 22 render it. One place for the props so a
  * later tweak (font size, line numbers, cap) cannot drift between the seven.
  */
+/**
+ * THE NEED THIS INSTRUCTION PROVIDES.
+ *
+ * Section 1 ends with four needs in the room's own words, and every instruction
+ * slide answers one of them. That link used to be a lead reading "Need 1, a
+ * runtime to run on". The ordinal was the problem: it made the room carry a
+ * number that means nothing on its own, and it sat beside a code panel whose
+ * lines are also numbered, so "Need 3" and line 3 read as the same claim when
+ * they never are. The need text alone says everything the number stood in for,
+ * and it is worded exactly as the table on `c1-four-needs-one-file` words it,
+ * because that table is the room's own list handed back.
+ *
+ * It is a chip rather than a lead because it labels the instruction instead of
+ * making a sentence about it, and because a lead-less header lets the bullets
+ * and the file move up 48px (`ContentSlide` adds the video-box guard itself).
+ * Same treatment as session 1's "Windows only" chip on the installer slide,
+ * tone and markup included.
+ */
+function NeedChip({ children, logo }: { children: ReactNode; logo?: string }) {
+  return (
+    <Chip tone="nw" className="w-fit gap-2">
+      {logo && (
+        <img src={logo} alt="" draggable={false} className="h-4 w-4 object-contain" />
+      )}
+      {children}
+    </Chip>
+  )
+}
+
 function DockerfileSoFar({ lines, highlight }: { lines: number; highlight?: number[] }) {
   return (
     <CodeBlock
@@ -207,43 +241,38 @@ export const dockerFileCreationDeck: SlideDef[] = [
     label: 'Recap',
     element: (
       /*
-        THE RECAP MAY ONLY CLAIM WHAT SESSION 1 ACTUALLY TAUGHT.
+        THE RECAP IS SESSION 1'S KEY TAKEAWAYS, VERBATIM.
 
-        The TR's recap block ends with "Key commands: docker pull, docker run,
-        docker ps, docker images". Session 1's deck contains exactly two commands,
-        `docker --version` and `docker run hello-world`. Three of those four have
-        never been explained to this room, so a pill saying "four commands you
-        already ran" is false, and it also quietly removes the reason to teach
-        them. They are taught in section 3 of this deck instead, each at the point
-        where it is first needed, and the fourth pill now says what really
-        happened last session.
+        These four lines are the exact points on session 1's Key Takeaways slide,
+        in the same order, which are themselves session 1's agenda items in the
+        same order. The room was promised those four words at the start of last
+        session and handed them back at the end, so opening this one with anything
+        else makes the two decks disagree about what was covered.
+
+        It also fixes a claim this slide used to make. The TR's recap block ends
+        with "Key commands: docker pull, docker run, docker ps, docker images",
+        and session 1's deck contains exactly two commands, `docker --version` and
+        `docker run hello-world`. Three of those four had never been explained to
+        this room. Section 3 of this deck teaches the ones the session actually
+        uses, each at the point where it is first needed.
+
+        If a point here does not appear on session 1's Key Takeaways slide, it
+        does not belong on this one.
       */
       <RecapSlide
         kicker="Recap"
         title="Last Session"
         lesson={SESSION}
         points={[
-          {
-            text: 'Docker packages an app with all its dependencies into an image',
-            sub: 'One sealed unit that runs the same way anywhere',
-          },
-          {
-            text: 'A running instance of an image is a container',
-            sub: 'One image, many containers, just like a class and its objects',
-          },
-          {
-            text: 'Ready-made images come from Docker Hub',
-            sub: 'hello-world, python, node, nginx, all built by someone else',
-          },
-          {
-            text: 'You installed Docker and ran your first container',
-            sub: 'docker --version to check the install, then docker run hello-world',
-          },
+          'Where Your App Lives',
+          'Containerization',
+          'Docker',
+          'Docker Installation',
         ]}
       />
     ),
     notes:
-      'Do not re-teach any of these, read them as settled facts. The one word to say twice is image, because the whole session is about producing one. If the room is shaky on image versus container, spend thirty seconds on the class and object comparison from last time, then move on: slide 27 comes back to it anyway.',
+      'These are session 1\'s four key takeaways, word for word. Do not re-teach any of them, read them as settled facts and move. The one to linger on for a few seconds is Docker, because the whole of today is about producing an image with it. If the room is shaky on image versus container, spend thirty seconds on the class and object comparison from last time, then move on: the full journey slide comes back to it anyway.',
   },
   {
     id: 'agenda',
@@ -274,8 +303,9 @@ export const dockerFileCreationDeck: SlideDef[] = [
   /*
     THE GAP, BEFORE THE SECTION THAT FILLS IT.
     Session 1 established the pattern: the room feels the problem, and only then
-    is the section announced. So these two slides sit BEFORE the divider. They
-    carry the section in the rail, because that is where they belong
+    is the section announced. So every slide up to the divider sits BEFORE it:
+    the gap, the goal, the script itself, and the four things running that script
+    needs. They carry the section in the rail, because that is where they belong
     structurally, but on stage they are the reason the section exists.
   */
   {
@@ -285,17 +315,17 @@ export const dockerFileCreationDeck: SlideDef[] = [
     element: (
       <ContentNoteSlide
         kicker="Docker File Creation"
-        title="Someone Else's App"
+        title="That Image Came With Docker"
         lesson={SESSION}
         points={[
           {
             text: 'hello-world proved Docker works',
-            sub: 'You pulled an image and ran a container from it',
+            sub: 'You ran a container from it and read its message',
             icon: 'check',
           },
           {
-            text: 'But it was not your application',
-            sub: 'Every image you have run so far was built by somebody else',
+            text: 'But that image came with Docker',
+            sub: 'It was ready made, and none of it was your application',
             icon: 'warning',
           },
         ]}
@@ -311,7 +341,48 @@ export const dockerFileCreationDeck: SlideDef[] = [
       />
     ),
     notes:
-      'Last session ended on a win, and this slide turns it into a gap. Ask the room who built the hello-world image. Nobody in the room did. That is the whole setup: pulling somebody else\u2019s image is consuming Docker, and today they start producing.',
+      'Last session ended on a win, and this slide turns it into a gap. Ask the room where the hello-world image came from. It came with Docker, ready made, and it printed a message nobody in the room wrote. That is the whole setup: running an image that came with Docker is consuming Docker, and today they start producing.',
+  },
+  {
+    id: 'c1-goal',
+    section: 'The Dockerfile',
+    label: 'The goal',
+    element: (
+      /*
+        THE GOAL, IN ONE SENTENCE, BEFORE ANY TYPING.
+
+        The previous slide leaves the room with a gap and no destination. This one
+        names the destination and nothing else: write a small Python script, and
+        get Docker to run it. Everything from here to the end of section 3 is that
+        one sentence being carried out, and the room can check its own progress
+        against it.
+
+        The flow says "hand it to Docker" and not "build an image", because the
+        room has not been told yet that an image has to be prepared (that is the
+        slide after the script exists). R7: no name before its own slide.
+      */
+      <ContentSlide
+        kicker="The Dockerfile"
+        title="Let Us Run Our Own Script"
+        lead="A small Python script of our own, run by Docker"
+        lesson={SESSION}
+      >
+        <div className="grid gap-5">
+          <FlowChart
+            nodes={[
+              { label: 'Write a script', caption: 'A few lines of Python', icon: 'code' },
+              { label: 'Hand it to Docker', caption: 'Not to Python on your machine', icon: 'terminal' },
+              { label: 'It runs in a container', caption: 'The same way anywhere', icon: 'play' },
+            ]}
+          />
+          <Callout kind="tip" title="The whole session, in one line" asStep={false}>
+            Everything from here to the end of the session is these three boxes, one at a time
+          </Callout>
+        </div>
+      </ContentSlide>
+    ),
+    notes:
+      'Say the sentence out loud and leave it on screen: we write a script, Docker runs it. The middle box is the one to press on, because "hand it to Docker" is exactly the part they cannot do yet, and it is the part the rest of the session buys them. Do not say the word image here, and do not say Dockerfile: both have their own slides, and the room has to want them first. If someone asks why not just run python app.py, agree that it works on their machine and ask what happens on the next machine, which is last session\u2019s promise.',
   },
   {
     id: 'c1-create-project',
@@ -338,7 +409,7 @@ export const dockerFileCreationDeck: SlideDef[] = [
         points={[
           {
             text: 'Inside nxttrendz, beside backend and frontend',
-            sub: 'A new folder named docker-demo, a sibling of the two apps and not inside either',
+            sub: 'Named docker-demo, not inside either app',
             icon: 'folder',
           },
           {
@@ -368,7 +439,7 @@ export const dockerFileCreationDeck: SlideDef[] = [
       </ContentSlide>
     ),
     notes:
-      'Do this with them, do not describe it. Say why it is a separate folder and not the backend: today is about Docker, and the moment settings.py is on screen the room debugs Django instead. Also a real reason they will meet on slide 37, COPY . . copies the whole folder, so a Dockerfile sitting in the project root would sweep both apps into one image. The prompt matters: every terminal in this deck reads PS C:\\nxttrendz\\docker-demo>, and "wrong folder" is the first error they will hit, exactly as it was last session. Their drive letter or path may differ, and that is fine as long as they read their own prompt. On macOS and Linux this is ~/nxttrendz/docker-demo.',
+      'Do this with them, do not describe it. Say why it is a separate folder and not the backend: today is about Docker, and the moment settings.py is on screen the room debugs Django instead. Also a real reason they will meet in the last section, COPY . . copies the whole folder, so a Dockerfile sitting in the project root would sweep both apps into one image. The prompt matters: every terminal in this deck reads PS C:\\nxttrendz\\docker-demo>, and "wrong folder" is the first error they will hit, exactly as it was last session. Their drive letter or path may differ, and that is fine as long as they read their own prompt. On macOS and Linux this is ~/nxttrendz/docker-demo.',
   },
   {
     id: 'c1-the-app',
@@ -422,6 +493,118 @@ print("Connected successfully!")`}
       'Each panel is titled with its full path on purpose, so nobody has to guess which file they are looking at. Three prints and a comment, and that is the entire application: everything they learn today applies unchanged to their Django project, and they will point the same Dockerfile at it later. The requirements file is empty and that is fine, because the instruction that installs from it does not care.',
   },
   {
+    id: 'c1-need-an-image',
+    section: 'The Dockerfile',
+    label: 'We need an image',
+    element: (
+      /*
+        THE TURN, AND THE FIRST TIME "PREPARE AN IMAGE" IS SAID.
+
+        The script now exists, so the question is finally concrete: Docker only
+        ever runs an image, last session's image was already sitting there waiting
+        to be pulled, and no image anywhere in the world contains this app.py. Two
+        cards, past against present, because the contrast IS the content: nothing
+        about Docker changed, only who has to produce the image.
+      */
+      <ContentSlide
+        kicker="The Dockerfile"
+        title="Now We Need an Image"
+        lead="Docker runs images, and no image contains app.py yet"
+        lesson={SESSION}
+      >
+        <div className="grid gap-5">
+          <CardGrid cols={2}>
+            <Card icon="download" title="Last session">
+              The image already existed, so we pulled it and ran it. Nothing had to be prepared
+            </Card>
+            <Card icon="plus" title="This session" tone="brand">
+              No image holds our app.py, so we have to prepare one before Docker can run anything
+            </Card>
+          </CardGrid>
+          <Callout kind="info" title="Docker never runs a file" asStep={false}>
+            It runs an image, so <Code>app.py</Code> has to be inside one first
+          </Callout>
+        </div>
+      </ContentSlide>
+    ),
+    notes:
+      'This is the hinge of the whole session, so slow down. Ask the room to run app.py with Docker right now and let them find there is nothing to run: docker run needs an image name, and no image name in the world means their script. Last session they consumed an image; from this slide on they produce one. Do not answer how yet, the next slide gets the room to work it out from first principles.',
+  },
+  {
+    id: 'c1-what-it-takes',
+    section: 'The Dockerfile',
+    label: 'What running it needs',
+    element: (
+      /*
+        FIRST PRINCIPLES, AND THE SPINE OF SECTION 2.
+
+        Before any analogy, the room derives the requirements itself from
+        something it already knows: a bare machine and a Python script. Four
+        answers come back every time, and in this order, because each one is
+        useless without the one above it.
+
+        These four ARE the Dockerfile, in the order the file is written: a runtime
+        to run on, a folder to work in, the file itself, and the command that
+        starts it. Section 2 then teaches one instruction per answer. R7 holds
+        here too, so not one keyword is named: the room leaves this slide holding
+        four needs, and each need collects its keyword on the slide that teaches
+        it.
+      */
+      <ContentSlide kicker="The Dockerfile" title="What Does Running It Need" lesson={SESSION}>
+        {/*
+          ONE LINE PER STEP, NO SUB-LINE, AND THE VALUE ON A SECOND CLICK.
+
+          The four needs are the answer the room gives out loud, so each one is a
+          single line it can finish for you. A sub-line under each would explain an
+          answer the room just produced, and the lead that used to sit above
+          ("forget Docker for a moment") explained the question before it was
+          asked. Both are gone: the instructor asks, the room answers, the line
+          lands.
+
+          Then the parenthesised value arrives on its own click, via `value`. That
+          is the second half of the same beat: the need is the room's answer, the
+          value is the confirmation, and putting both on one click would print the
+          answer before anyone had been asked. Eight steps, four questions.
+
+          The values are the arguments of the instructions concept 2 teaches, in
+          the same order, which is why they are set in mono and why no keyword is
+          named here.
+        */}
+        <StepList
+          steps={[
+            { title: 'We require a Python runtime', value: '(Python)' },
+            {
+              title: 'A directory to store the files',
+              value: (
+                <>
+                  (<Code>/app</Code>)
+                </>
+              ),
+            },
+            {
+              title: 'Files and their content',
+              value: (
+                <>
+                  (<Code>app.py</Code> and <Code>requirements.txt</Code>)
+                </>
+              ),
+            },
+            {
+              title: 'Command to run',
+              value: (
+                <>
+                  (<Code>python app.py</Code>)
+                </>
+              ),
+            },
+          ]}
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'Ask, do not tell. Give the room a machine with nothing on it and this script, and let them list what is missing; these four come back in almost this order every time, and a room that produced the list will follow section 2 far better than a room that was handed it. Press on order: the file is no use without Python, and the command is no use without the file. Then close the loop, the image has to carry all four, and everything after the divider is how those four get written down. Do not name a single instruction here, each one arrives on its own slide.',
+  },
+  {
     id: 'c1-divider',
     section: 'The Dockerfile',
     label: '01 Divider',
@@ -433,73 +616,6 @@ print("Connected successfully!")`}
     ),
     notes:
       'The hinge. Everything before this is the gap, everything after is the answer. Say the word Dockerfile out loud here and then stop, because the next two slides earn it before defining it.',
-  },
-  {
-    id: 'c1-recipe-card',
-    section: 'The Dockerfile',
-    label: 'A recipe card',
-    element: (
-      /*
-        The analogy is installed before the term. `StepList` and not a card grid,
-        because the ordering is the half of the analogy that carries the lesson:
-        a recipe read out of order produces something else. Its steps stay
-        click-gated, since that ordering IS the teaching beat here.
-      */
-      <ContentSlide
-        kicker="The Dockerfile"
-        title="A Recipe Card"
-        lead="Anyone holding the card produces the same dish, in any kitchen"
-        lesson={SESSION}
-      >
-        <StepList
-          steps={[
-            { title: 'Start with a base', detail: 'Take a pan of boiling water', icon: 'play' },
-            { title: 'Add ingredients', detail: 'Add rice, then vegetables', icon: 'arrow' },
-            { title: 'Perform steps in order', detail: 'Simmer for ten minutes', icon: 'route' },
-            { title: 'Serve', detail: 'Garnish and serve hot', icon: 'check' },
-          ]}
-        />
-      </ContentSlide>
-    ),
-    notes:
-      'Walk down the rail and land on the last line of the lead: the same card, in any kitchen, gives the same dish. Then ask what happens if you serve before you simmer. Order is not decoration, and that is the point the next slide cashes in.',
-  },
-  {
-    id: 'c1-recipe-to-dockerfile',
-    section: 'The Dockerfile',
-    label: 'Recipe to Dockerfile',
-    element: (
-      /*
-        NO KEYWORDS ON THIS SLIDE.
-
-        The right column used to read "Start from a base image (FROM)", which put
-        all four instruction names on screen before the room had been told what an
-        instruction even is (next slide but one) and before any of them had been
-        taught (section 2). That is the answer arriving before the question: by
-        the time the FROM slide came around, the word was already old news and the
-        slide had nothing left to reveal.
-
-        So the right column stays in plain language. The room leaves this slide
-        knowing a Dockerfile has a step that picks a base and a step that copies
-        the code in, and section 2 gives each of those steps its name at the
-        moment it teaches it. Same mapping, one layer of vocabulary later.
-      */
-      <ContentSlide kicker="The Dockerfile" title="Recipe to Dockerfile" lesson={SESSION}>
-        <AnalogyMap
-          leftLabel="Recipe card"
-          rightLabel="Dockerfile"
-          rows={[
-            { from: 'Pan of boiling water', to: 'Start from something that already exists' },
-            { from: 'Add rice and vegetables', to: 'Bring your code in' },
-            { from: 'Simmer for ten minutes', to: 'Install what the app depends on' },
-            { from: 'Garnish and serve', to: 'Say how the app is started' },
-            { from: 'Same dish in any kitchen', to: 'Same image on any machine' },
-          ]}
-        />
-      </ContentSlide>
-    ),
-    notes:
-      'Read across each row and stop. There are deliberately no keywords on this slide: the room should leave it knowing a Dockerfile has four kinds of step, not knowing four new words. Each word arrives in the next section, on the slide that teaches what it does. If someone already knows the keywords and calls one out, take it and say "that is exactly the one, and it has a slide". The bottom row is the row that matters: same dish in any kitchen is last session’s promise, and the Dockerfile is how it gets kept.',
   },
   {
     id: 'c1-definition',
@@ -543,57 +659,68 @@ print("Connected successfully!")`}
       />
     ),
     notes:
-      'Both points are day-one mistakes that cost twenty minutes each. VS Code will happily save Dockerfile.txt and the build then says it cannot find a Dockerfile, which reads like Docker is broken. On the folder: put it beside app.py, not in a subfolder, and slide 21 explains why in terms of the build context.',
+      'Both points are day-one mistakes that cost twenty minutes each. VS Code will happily save Dockerfile.txt and the build then says it cannot find a Dockerfile, which reads like Docker is broken. On the folder: put it beside app.py, not in a subfolder, and the docker build slide explains why in terms of the build context.',
   },
   {
-    id: 'c1-anatomy',
+    id: 'c1-four-needs-one-file',
     section: 'The Dockerfile',
-    label: 'One line, one instruction',
+    label: 'All four come from the file',
     element: (
       /*
-        The pattern, once, so the writing section reads as one thing repeating
-        rather than five new things.
+        THE BRIDGE FROM "WHAT DOES RUNNING IT NEED".
 
-        The first bullet used to list all five keywords as its sub, which is the
-        same answer-too-early mistake as the analogy slide, just smaller: the
-        room would have read every instruction name before a single one had been
-        explained. The shape is what this slide teaches. The names are what the
-        next five teach.
+        The room derived four needs a few slides ago, and it has just been told
+        what a Dockerfile is. This slide joins the two and stops there: to define
+        and run app.py, every one of those four has to be provided through the
+        Dockerfile, and the question the section then answers is HOW.
+
+        R7 HOLDS HERE. An earlier version of this slide printed FROM, WORKDIR,
+        COPY and CMD in a middle column, which handed the room every keyword
+        before a single one had been taught and left the five instruction slides
+        with nothing to reveal. The needs and their values are the room's own
+        answers, so repeating them costs nothing; the keywords are not repeated
+        because they have not been said yet. Each instruction slide names its own
+        keyword and says which of these four rows it is for.
       */
       <ContentSlide
         kicker="The Dockerfile"
-        title="One Line, One Instruction"
+        title="All Four Come From the File"
+        lead="To define and run app.py, the image has to be given every one of these"
         lesson={SESSION}
-        points={[
-          {
-            text: 'INSTRUCTION is an uppercase keyword',
-            sub: 'It says what kind of step this line is',
-            icon: 'code',
-          },
-          {
-            text: 'arguments are what it acts on',
-            sub: 'A base image, a folder, a file, a command',
-            icon: 'arrow',
-          },
-          {
-            text: 'Five instructions containerise most Python apps',
-            sub: 'One per slide from here, and the file grows by a line each time',
-            icon: 'bulb',
-            tone: 'accent',
-          },
-        ]}
       >
-        <CodeBlock
-          filename="Dockerfile"
-          language="dockerfile"
-          showLineNumbers={false}
-          maxHeight={120}
-          code={`INSTRUCTION  arguments`}
-        />
+        <div className="grid gap-5">
+          <DataTable
+            compact
+            columns={[
+              { label: 'What running it needs', weight: 1.4 },
+              { label: 'What has to be provided', weight: 1.4 },
+            ]}
+            rows={[
+              [
+                'A runtime to run on',
+                <span className="inline-flex items-center gap-2">
+                  <img
+                    src="/assets/tech/python.svg"
+                    alt=""
+                    draggable={false}
+                    className="h-4 w-4 object-contain"
+                  />
+                  Python
+                </span>,
+              ],
+              ['A folder to work in', '/app'],
+              ['The files and their content', 'app.py, requirements.txt'],
+              ['A command to start it', 'python app.py'],
+            ]}
+          />
+          <Callout kind="tip" title="So the only question left is how">
+            Let us see how each of these four is provided through the Dockerfile
+          </Callout>
+        </div>
       </ContentSlide>
     ),
     notes:
-      'Uppercase is a convention, not a requirement, and it is worth saying so: Docker accepts lowercase, and every Dockerfile in the world still uses uppercase because it separates the instruction from its argument at a glance. Five instructions is the whole vocabulary for today, and they arrive one at a time so do not list them here even if someone asks.',
+      'These are their four answers, in their order, so read them as a recap and not as new material. Then land the one new sentence: the Dockerfile is where all four get provided, and nothing else in the project provides any of them. Click the callout and stop there. Do not name an instruction yet, and if someone in the room names one, say yes and that it is coming, because each keyword arrives on its own slide with one of these four rows beside it.',
   },
   {
     id: 'c1-create-dockerfile',
@@ -605,7 +732,7 @@ print("Connected successfully!")`}
 
         The definition slide says the file is named exactly `Dockerfile` and lives
         in the project root; this is where the room actually makes one, in the
-        folder they created on slide 6, before the next section starts writing
+        folder they created on slide 7, before the next section starts writing
         lines into it. Without this slide the FROM slide is asking them to type
         into a file that does not exist.
 
@@ -652,6 +779,61 @@ print("Connected successfully!")`}
     notes:
       'Make them do it now, and walk the room. This is the single most common day-one failure: VS Code saves Dockerfile.txt, docker build then reports it cannot find a Dockerfile, and it reads like Docker is broken rather than like a filename typo. The whale icon in the VS Code explorer is the cheapest possible check, so point at it. If someone is on Notepad, tell them to choose All Files in the save dialog or it will silently append .txt. Leave the file empty: the next section writes it one line at a time.',
   },
+  {
+    id: 'c1-anatomy',
+    section: 'The Dockerfile',
+    label: 'One line, one instruction',
+    element: (
+      /*
+        HOW DO WE WRITE IT, ASKED AND ANSWERED IN ONE SHAPE.
+
+        The file now exists and is empty, so this is the slide that says what goes
+        into it: a Dockerfile holds instructions, one per line, and every line has
+        the same two-part shape. The pattern is taught once here so the writing
+        section reads as one thing repeating rather than five new things.
+
+        The first bullet used to list all five keywords as its sub, which is the
+        same answer-too-early mistake as the analogy slide, just smaller: the
+        room would have read every instruction name before a single one had been
+        explained. The shape is what this slide teaches. The names are what the
+        next five teach, each one beside the need it provides.
+      */
+      <ContentSlide
+        kicker="The Dockerfile"
+        title="How Do We Write It"
+        lead="Instructions, one per line, and every line has the same shape"
+        lesson={SESSION}
+        points={[
+          {
+            text: 'INSTRUCTION is an uppercase keyword',
+            sub: 'It says what kind of step this line is',
+            icon: 'code',
+          },
+          {
+            text: 'arguments are what it acts on',
+            sub: 'A base image, a folder, a file, a command',
+            icon: 'arrow',
+          },
+          {
+            text: 'Five instructions containerise most applications',
+            sub: 'The same five whether the app is Python or React',
+            icon: 'bulb',
+            tone: 'accent',
+          },
+        ]}
+      >
+        <CodeBlock
+          filename="Dockerfile"
+          language="dockerfile"
+          showLineNumbers={false}
+          maxHeight={120}
+          code={`INSTRUCTION  arguments`}
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'The file is open and empty in front of them, so ask the question the title asks: what do we type. The answer is instructions, one per line, and this shape is all of them. Uppercase is a convention, not a requirement, and it is worth saying so: Docker accepts lowercase, and every Dockerfile in the world still uses uppercase because it separates the instruction from its argument at a glance. Five instructions is the whole vocabulary for today, and they arrive one at a time, each one answering one of the four needs the room listed, so do not list them here even if someone asks.',
+  },
 
   /* --- 2. Writing the Dockerfile ------------------------------------ */
   /*
@@ -660,8 +842,10 @@ print("Connected successfully!")`}
     weighs individually and the growing file is the deck's spine. All seven share
     one shape: same kicker, the instruction plus its job as the title, two points,
     at most one callout, and `DockerfileSoFar` with the new line highlighted.
-    By slide 19 the room has watched the complete file assemble, which is why
-    slide 19 can simply show it.
+    Each one also names which of the room's four needs it provides, so the
+    keyword lands as an answer rather than as vocabulary. By the end of the
+    section the room has watched the complete file assemble, which is why the
+    last slide of the section can simply show it.
   */
   {
     id: 'c2-divider',
@@ -708,11 +892,14 @@ print("Connected successfully!")`}
           },
         ]}
       >
-        <DockerfileSoFar lines={1} highlight={[1]} />
+        <div className="grid gap-3">
+          <NeedChip logo="/assets/tech/python.svg">A runtime to run on</NeedChip>
+          <DockerfileSoFar lines={1} highlight={[1]} />
+        </div>
       </ContentSlide>
     ),
     notes:
-      'The base already contains Linux and Python, which is why the file is six lines and not six hundred. Two things to say out loud. Slim drops rarely-needed OS tools and contains the same Python, so it is the default choice, not a compromise. And pinning 3.14 rather than latest is what keeps last session\u2019s promise: latest changes under you, and then the image that worked yesterday does not build today.',
+      'Read the lead first and point back at their own list: need one was a Python runtime, and FROM is how the image gets one. The base already contains Linux and Python, which is why the file is six lines and not six hundred. Two things to say out loud. Slim drops rarely-needed OS tools and contains the same Python, so it is the default choice, not a compromise. And pinning 3.14 rather than latest is what keeps last session\u2019s promise: latest changes under you, and then the image that worked yesterday does not build today.',
   },
   {
     id: 'c2-workdir',
@@ -736,11 +923,14 @@ print("Connected successfully!")`}
           },
         ]}
       >
-        <DockerfileSoFar lines={2} highlight={[2]} />
+        <div className="grid gap-3">
+          <NeedChip>A folder to work in</NeedChip>
+          <DockerfileSoFar lines={2} highlight={[2]} />
+        </div>
       </ContentSlide>
     ),
     notes:
-      'The word "inside" is the whole slide. Nothing appears on their own machine, and no folder called app is created anywhere they can browse to. /app is a convention, not a rule: any path works, and every project you will ever read uses /app or /code, so use one of those. It also matters for the error on slide 34, where the container looks for /app/app.py.',
+      'Need two was a folder to work in, and this is the line that provides it. The word "inside" is the whole slide. Nothing appears on their own machine, and no folder called app is created anywhere they can browse to. /app is a convention, not a rule: any path works, and every project you will ever read uses /app or /code, so use one of those. It also matters for the Nothing to Run error in the last section, where the container looks for /app/app.py.',
   },
   {
     id: 'c2-copy',
@@ -766,17 +956,20 @@ print("Connected successfully!")`}
           },
           {
             text: 'Why only this file, and not the code',
-            sub: 'Copying the requirements list first is deliberate, and the reason is the build cache in section four',
+            sub: 'The order is deliberate: section four says why',
             icon: 'bulb',
             tone: 'accent',
           },
         ]}
       >
-        <DockerfileSoFar lines={3} highlight={[3]} />
+        <div className="grid gap-3">
+          <NeedChip>The files and their content</NeedChip>
+          <DockerfileSoFar lines={3} highlight={[3]} />
+        </div>
       </ContentSlide>
     ),
     notes:
-      'Read the line as a sentence: copy requirements.txt from my folder into the image\u2019s current folder. Do not explain the cache yet, just plant that the order is deliberate. Someone always asks why not copy everything now, and the honest answer is "hold that question, it is a whole section". Come back and point at this slide when you get to slide 30.',
+      'Need three was the files and their content, and COPY is the only instruction that puts a file in the image. Read the line as a sentence: copy requirements.txt from my folder into the image\u2019s current folder. Do not explain the cache yet, just plant that the order is deliberate. Someone always asks why not copy everything now, and the honest answer is "hold that question, it is a whole section". Come back and point at this slide when you get to the copy order slide.',
   },
   {
     id: 'c2-run',
@@ -800,11 +993,14 @@ print("Connected successfully!")`}
           },
         ]}
       >
-        <DockerfileSoFar lines={5} highlight={[4, 5]} />
+        <div className="grid gap-3">
+          <NeedChip>The packages those files ask for</NeedChip>
+          <DockerfileSoFar lines={5} highlight={[4, 5]} />
+        </div>
       </ContentSlide>
     ),
     notes:
-      'Two lines arrive together here on purpose: install first, then copy the code, and that pairing is the cache lesson in miniature. Say what RUN means precisely, because it is the word students get wrong: the command executes once, while the image is being built, and whatever it produced is baked in. The packages are installed inside the image, not on their machine, so pip list in their own terminal will not show them.',
+      'Still need three, because a file that lists packages is no use until they are installed. Two lines arrive together here on purpose: install first, then copy the code, and that pairing is the cache lesson in miniature. Say what RUN means precisely, because it is the word students get wrong: the command executes once, while the image is being built, and whatever it produced is baked in. The packages are installed inside the image, not on their machine, so pip list in their own terminal will not show them.',
   },
   {
     id: 'c2-cmd',
@@ -828,11 +1024,14 @@ print("Connected successfully!")`}
           },
         ]}
       >
-        <DockerfileSoFar lines={6} highlight={[6]} />
+        <div className="grid gap-3">
+          <NeedChip>A command to start it</NeedChip>
+          <DockerfileSoFar lines={6} highlight={[6]} />
+        </div>
       </ContentSlide>
     ),
     notes:
-      'The list form is where the typos live: CMD ["python app.py"] as one string looks right and fails, because Docker then looks for a program literally named "python app.py". One word, one string. And say "declares", not "runs": the build does not execute this line, which is exactly why the mistake on slide 34 gets through the build unnoticed.',
+      'Need four, the command to start it, and it is the last of the four. The list form is where the typos live: CMD ["python app.py"] as one string looks right and fails, because Docker then looks for a program literally named "python app.py". One word, one string. And say "declares", not "runs": the build does not execute this line, which is exactly why the Nothing to Run mistake gets through the build unnoticed.',
   },
   {
     id: 'c2-run-vs-cmd',
@@ -909,6 +1108,50 @@ print("Connected successfully!")`}
       'Pause here and let the room photograph it. Then read the callout out loud as one sentence, because that is the test of whether they understood the section: a Dockerfile they can narrate is a Dockerfile they can write. Six lines, and it will containerise their Django project almost unchanged.',
   },
 
+  {
+    id: 'c2-to-build',
+    section: 'Writing the Dockerfile',
+    label: 'The file is done, now what',
+    element: (
+      /*
+        THE HANDOVER INTO SECTION 3.
+
+        The previous slide is the finished file and the room photographs it, which
+        makes it feel like an ending. It is not: a Dockerfile is still a text file,
+        and Docker runs images. This slide names the gap in one beat so the divider
+        that follows arrives as the answer to a question rather than as a new
+        topic.
+
+        Two cards, have against need, the same shape "Now We Need an Image" used
+        earlier in the deck. No command appears here: the build command is taught
+        on its own slides in the next section.
+      */
+      <ContentSlide
+        kicker="Writing the Dockerfile"
+        title="The File Is Done"
+        lead="Now we build an image from the Dockerfile we just wrote"
+        lesson={SESSION}
+      >
+        <div className="grid gap-5">
+          <CardGrid cols={2}>
+            <Card icon="code" title="What we have">
+              A Dockerfile, six lines of plain text. Docker cannot run a text file
+            </Card>
+            <Card icon="database" title="What we need" tone="brand">
+              An image built from those instructions, because an image is the only thing Docker
+              runs
+            </Card>
+          </CardGrid>
+          <Callout kind="info" title="The file is the recipe, not the meal" asStep={false}>
+            Nothing has been built yet. The next section reads this file and produces the image
+          </Callout>
+        </div>
+      </ContentSlide>
+    ),
+    notes:
+      'Do not let the finished file feel like the end of the session. Ask the room what happens if they run docker run nxttrendz-app right now: nothing, because no image of that name exists, only a text file describing one. That is the gap this slide names and the next section closes. Point back at the definition slide as you say it, a Dockerfile is instructions for building an image, and instructions are not the image.',
+  },
+
   /* --- 3. Build and Run --------------------------------------------- */
   {
     id: 'c3-divider',
@@ -925,6 +1168,61 @@ print("Connected successfully!")`}
     ),
     notes:
       'A Dockerfile is a text file and nothing more, so far. This section is where it becomes an image and then a running container, which is the first time in this course they produce something Docker can run.',
+  },
+  /*
+    EXPLAIN THE COMMAND, THEN SHOW IT.
+
+    Every command in this section gets two slides. The first says what the command
+    does and what its output will mean; the second shows the command itself with
+    the transcript. The room therefore reads a transcript it has already been told
+    how to read, instead of being shown a wall of output and then talked through it.
+
+    That split is also why the teaching cards moved off the transcript slides. They
+    were the text half of a text-and-visual pair there and had to land with the
+    terminal; on an explain slide they ARE the content, so they take a click each
+    and arrive one at a time.
+
+    THERE IS NO `docker pull` SLIDE. `FROM` pulls the base image as part of the
+    build, so the room never types `pull` in this session, and teaching a command
+    they will not use costs a slide that the build output needs more. The fact
+    behind it survives: the build output slide names its first step as a download
+    from Docker Hub, and says it is cached.
+  */
+  {
+    id: 'c3-build-explain',
+    section: 'Build and Run',
+    label: 'What building does',
+    element: (
+      /*
+        No command on this slide, deliberately. It answers "what happens when I
+        build" so that the next slide can be one line the room copies, and so the
+        transcript two slides later is read rather than explained.
+      */
+      <ContentSlide
+        kicker="Build and Run"
+        title="What Building Does"
+        lead="It reads your Dockerfile top to bottom and produces an image"
+        lesson={SESSION}
+      >
+        {/* Three cards, the same shape the other three explain slides use, so the
+            section reads as one pattern repeating. Bullets alone left the right
+            half of the frame empty against a full-width terminal on the slide
+            that follows. */}
+        <CardGrid cols={3}>
+          <Card icon="route" title="Every instruction becomes a step">
+            Docker carries them out in the order you wrote them, first line first
+          </Card>
+          <Card icon="database" title="The result is one image" tone="teal">
+            With a name you choose, and that name is what every later command refers to
+          </Card>
+          <Card icon="folder" title="You say which folder to read" tone="accent">
+            It takes the Dockerfile and the files your COPY lines ask for from there
+          </Card>
+        </CardGrid>
+      </ContentSlide>
+    ),
+    notes:
+      'Ask before you tell: they have a file and they want an image, so what has to happen. Three things to land here, and none of them needs the command on screen. The build works down the file, so order matters. It produces exactly one image and that image needs a name or they cannot refer to it. And it reads from a folder they nominate, which is the reason the wrong-folder error exists at all. Next slide is the command, and it will be one line.',
   },
   {
     id: 'c3-build',
@@ -962,7 +1260,7 @@ print("Connected successfully!")`}
       </ContentSlide>
     ),
     notes:
-      'Point at the prompt path first. Run this from the wrong folder and nothing works, which is the same lesson as last session. The trailing dot is the single most common typo here, and the error it produces is unhelpful: ERROR: "docker buildx build" requires exactly 1 argument. Say that error out loud so they recognise it. Without -t the image gets no name and shows up as <none> in docker images, which is recoverable but confusing. NOT CAPTURED: this transcript is quoted from the TR, capture C1.',
+      'The previous slide said what it does, so this one is just the line and its two parts. Point at the prompt path first. Run this from the wrong folder and nothing works, which is the same lesson as last session. The trailing dot is the single most common typo here, and the error it produces is unhelpful: ERROR: "docker buildx build" requires exactly 1 argument. Say that error out loud so they recognise it. Without -t the image gets no name and shows up as <none> in docker images, which is recoverable but confusing. NOT CAPTURED: this transcript is quoted from the TR, capture C1.',
   },
   {
     id: 'c3-build-output',
@@ -990,88 +1288,81 @@ print("Connected successfully!")`}
               { text: ' => naming to docker.io/library/nxttrendz-app          0.0s' },
             ]}
           />
-          <Callout kind="info" title="Five instructions, five steps" asStep={false}>
-            Compare the step list with your file. Same lines, same order, and the slow one is the
-            install
-          </Callout>
-        </div>
-      </ContentSlide>
-    ),
-    notes:
-      'Read down the steps and back up to the Dockerfile: the room should see them as the same list twice. Two things to point at. There are five steps and six lines, because CMD declares rather than executes, so it never becomes a build step. And the timings are lopsided: the install took 6.8 of the 12.4 seconds, which is the fact the fourth section is built on. Their numbers will differ. NOT CAPTURED: quoted from the TR, capture C2.',
-  },
-  /*
-    THE FOUR COMMANDS, ONE PER SLIDE.
-
-    `docker pull`, `docker images`, `docker run` and `docker ps` are listed in the
-    TR's recap as things the room already knows. They do not: Session 1's deck
-    contains `docker --version` and `docker run hello-world` and nothing else. So
-    they are taught here, properly, and the recap slide no longer claims otherwise.
-
-    They are NOT a reference table dropped in front of the build. Each one is
-    placed at the first moment the session actually needs it, so every command
-    answers a question the room has just asked:
-
-      pull    the build output's first line says it downloaded the base. From where?
-      images  it says it built something. Where did that something go?
-      run     an image is not running anything. How do I start it?
-      ps      it printed and vanished. Where is my container?
-
-    One command per slide, the same discipline the five instructions get, and for
-    the same reason: these are a series the learner weighs individually.
-  */
-  /*
-    LAYOUT NOTE FOR ALL FOUR.
-
-    Terminal at full width, teaching points as three cards beneath it, rather
-    than the deck's usual bullets-left/visual-right split. These slides are ABOUT
-    terminal output, and in the narrow right-hand column the prompt alone
-    (`PS C:\nxttrendz\docker-demo> `) ate half the line: `python:3.14-slim`
-    wrapped mid-token and the `docker ps -a` table wrapped its last column onto
-    its own line, which destroys the column alignment that is the entire point of
-    reading a table. A wrapped table is not a table.
-
-    Plain `Card`s in a grid rather than `CardGrid`, because `CardGrid` wraps each
-    child in a `Step` and would click-gate them; here they are the text half of a
-    text-and-visual pair and must land with the terminal.
-  */
-  {
-    id: 'c3-pull',
-    section: 'Build and Run',
-    label: 'docker pull',
-    element: (
-      <ContentSlide
-        kicker="Build and Run"
-        title="docker pull"
-        lead="Step one of your build downloaded something. This is where it came from"
-        lesson={SESSION}
-      >
-        <div className="grid gap-5">
-          <Terminal
-            path={CWD}
-            fontSize={14}
-            lines={[
-              { text: 'docker pull python:3.14-slim', kind: 'cmd' },
-              { text: '3.14-slim: Pulling from library/python' },
-              { text: 'Status: Downloaded newer image for python:3.14-slim', kind: 'ok' },
-            ]}
-          />
-          <div className="grid grid-cols-3 gap-4">
-            <Card icon="database" title="Docker Hub" className="!p-5 !text-body-sm">
-              The public library of images: python, node, nginx, postgres
-            </Card>
-            <Card icon="download" title="Downloads it once" tone="teal" className="!p-5 !text-body-sm">
-              The next build reuses the copy already on your machine
-            </Card>
-            <Card icon="bulb" title="FROM does this for you" tone="accent" className="!p-5 !text-body-sm">
-              You will rarely type pull, and now you can read that build line
-            </Card>
+          {/*
+            Two callouts, and the second one is where the old `docker pull` slide's
+            content went. FROM downloads the base image from Docker Hub as part of
+            the build, so the fact is taught at the line that shows it happening
+            rather than as a command the room will never type.
+          */}
+          <div className="grid grid-cols-2 gap-4">
+            <Callout kind="info" title="Five instructions, five steps" asStep={false}>
+              Compare the step list with your file. Same lines, same order, and the slow one is the
+              install
+            </Callout>
+            <Callout kind="tip" title="Step one was a download" asStep={false}>
+              FROM fetched the base image from Docker Hub. It is cached, so the next build reuses
+              it
+            </Callout>
           </div>
         </div>
       </ContentSlide>
     ),
     notes:
-      'Point back at the build output they just read: [1/5] FROM docker.io/library/python:3.14-slim took 4.2 seconds, and that was a download. This slide names it. Two things worth saying. It is cached, so the second build of the day does not re-download 150 MB, which is part of why the rebuild later is instant. And they will almost never type pull by hand, because FROM triggers it, so the value of knowing the command is being able to read that build line and being able to fetch an image before they need it. NOT CAPTURED: quoted from the TR, capture C2.',
+      'Read down the steps and back up to the Dockerfile: the room should see them as the same list twice. Three things to point at. There are five steps and six lines, because CMD declares rather than executes, so it never becomes a build step. Step one took 4.2 seconds because it was a 150 MB download from Docker Hub, and it is cached, so the second build of the day does not repeat it; that is also why they will almost never fetch a base image by hand. And the timings are lopsided: the install took 6.8 of the 12.4 seconds, which is the fact the fourth section is built on. Their numbers will differ. NOT CAPTURED: quoted from the TR, capture C2.',
+  },
+  /*
+    THREE COMMANDS, TWO SLIDES EACH.
+
+    `docker images`, `docker run` and `docker ps` are listed in the TR's recap as
+    things the room already knows. They do not: Session 1's deck contains
+    `docker --version` and `docker run hello-world` and nothing else. So they are
+    taught here, properly, and the recap slide no longer claims otherwise.
+
+    They are NOT a reference table dropped in front of the build. Each one is
+    placed at the first moment the session actually needs it, so every command
+    answers a question the room has just asked:
+
+      images  the build says it built something. Where did that something go?
+      run     an image is not running anything. How do I start it?
+      ps      it printed and vanished. Where is my container?
+
+    LAYOUT NOTE FOR ALL SIX SLIDES.
+
+    The explain slide carries the teaching as three cards through `CardGrid`, one
+    click each. The transcript slide carries the `Terminal` at full width and
+    nothing else, rather than the deck's usual bullets-left/visual-right split:
+    these are slides ABOUT terminal output, and in the narrow right-hand column
+    the prompt alone (`PS C:\nxttrendz-docker-demo> `) ate half the line, so
+    `python:3.14-slim` wrapped mid-token and the `docker ps -a` table wrapped its
+    last column onto its own line. A wrapped table is not a table.
+  */
+  {
+    id: 'c3-images-explain',
+    section: 'Build and Run',
+    label: 'Where the image went',
+    element: (
+      <ContentSlide
+        kicker="Build and Run"
+        title="Where Did the Image Go"
+        lead="The build finished, and nothing about your folder changed"
+        lesson={SESSION}
+      >
+        <CardGrid cols={3}>
+          <Card icon="database" title="Docker keeps it, not your folder">
+            Images live in Docker's own storage, which is why no new file appeared beside your code
+          </Card>
+          <Card icon="eye" title="One command lists them" tone="teal">
+            Every image on the machine, the ones you built and the base images your builds
+            downloaded
+          </Card>
+          <Card icon="lock" title="Built once, never changes" tone="accent">
+            It sits there until you delete it, and the next section is built on exactly that
+          </Card>
+        </CardGrid>
+      </ContentSlide>
+    ),
+    notes:
+      'Let them look for the image in their own folder first, because that is where a beginner looks and it is not there. Then the three cards: Docker stores it itself, one command lists what it is storing, and an image never changes once built. That last card is the layer and cache story arriving early, so plant it in one sentence and move on. The command is on the next slide.',
   },
   {
     id: 'c3-images',
@@ -1084,7 +1375,7 @@ print("Connected successfully!")`}
         lead="The build said it finished. This is the proof"
         lesson={SESSION}
       >
-        <div className="grid gap-5">
+        <div className="grid gap-4">
           <Terminal
             path={CWD}
             fontSize={14}
@@ -1095,22 +1386,42 @@ print("Connected successfully!")`}
               { text: 'python          3.14-slim   a91b7c2d4e05   2 weeks ago      151MB' },
             ]}
           />
-          <div className="grid grid-cols-3 gap-4">
-            <Card icon="database" title="Every image you have" className="!p-5 !text-body-sm">
-              The ones you built and the ones you pulled, in one table
-            </Card>
-            <Card icon="target" title="REPOSITORY is your tag" tone="teal" className="!p-5 !text-body-sm">
-              nxttrendz-app, the name the -t flag gave it
-            </Card>
-            <Card icon="lock" title="Built once, never changes" tone="accent" className="!p-5 !text-body-sm">
-              It sits there until you delete it, and the last section turns on exactly this
-            </Card>
-          </div>
+          <Callout kind="info" title="REPOSITORY is the name you chose" asStep={false}>
+            nxttrendz-app, the tag the <Code>-t</Code> flag gave it, and the row under it is the
+            base image FROM downloaded
+          </Callout>
         </div>
       </ContentSlide>
     ),
     notes:
-      'Two rows, and the second one is worth a sentence: the base image they pulled is sitting there too, and their own image is only about 5 MB bigger than it. That is the layer story from the next section arriving early, so plant it and move on. The TAG column says latest because they did not ask for a version; that is a default, not a claim about being up to date. Their IMAGE ID and timings will differ. NOT CAPTURED: quoted from the TR, capture C3.',
+      'Two rows, and the second one is worth a sentence: the base image is sitting there too, and their own image is only about 5 MB bigger than it. The TAG column says latest because they did not ask for a version; that is a default, not a claim about being up to date. Their IMAGE ID and timings will differ. NOT CAPTURED: quoted from the TR, capture C3.',
+  },
+  {
+    id: 'c3-run-explain',
+    section: 'Build and Run',
+    label: 'What running does',
+    element: (
+      <ContentSlide
+        kicker="Build and Run"
+        title="What Running Does"
+        lead="An image sits there doing nothing until you start a container from it"
+        lesson={SESSION}
+      >
+        <CardGrid cols={3}>
+          <Card icon="play" title="Creates, then starts">
+            A container is made from the image, and the image itself is left untouched
+          </Card>
+          <Card icon="terminal" title="It runs what CMD declared" tone="teal">
+            Here that is python app.py, so you should expect your three lines
+          </Card>
+          <Card icon="bolt" title="Run it again, get another" tone="accent">
+            One image, many containers, exactly as last session promised
+          </Card>
+        </CardGrid>
+      </ContentSlide>
+    ),
+    notes:
+      'Point back at the CMD line of their Dockerfile while you say the second card, because this is the slide where that instruction finally does something. Ask the room to predict the output before the next slide: they wrote app.py, so they already know what three lines should appear. The third card is the class-and-object idea from last session, said once, so keep it short.',
   },
   {
     id: 'c3-run',
@@ -1120,10 +1431,10 @@ print("Connected successfully!")`}
       <ContentSlide
         kicker="Build and Run"
         title="docker run"
-        lead="An image does not do anything on its own. This is what starts it"
+        lead="Your own app.py, printing from inside a container"
         lesson={SESSION}
       >
-        <div className="grid gap-5">
+        <div className="grid gap-4">
           <Terminal
             path={CWD}
             fontSize={14}
@@ -1134,22 +1445,47 @@ print("Connected successfully!")`}
               { text: 'Connected successfully!', kind: 'ok' },
             ]}
           />
-          <div className="grid grid-cols-3 gap-4">
-            <Card icon="play" title="Creates, then starts" className="!p-5 !text-body-sm">
-              A container is made from the image, and the image is left untouched
-            </Card>
-            <Card icon="terminal" title="It runs what CMD declared" tone="teal" className="!p-5 !text-body-sm">
-              Here that is python app.py, so you get your three lines
-            </Card>
-            <Card icon="bolt" title="Run it again, get another" tone="accent" className="!p-5 !text-body-sm">
-              One image, many containers, exactly as last session promised
-            </Card>
-          </div>
+          <Callout kind="success" title="This is the whole session in one output" asStep={false}>
+            Three lines from an environment you described in six lines of text
+          </Callout>
         </div>
       </ContentSlide>
     ),
     notes:
-      'Stop on this one. Those are the three lines from their own app.py, printed from inside a container, in an environment they described in six lines of text. That is the whole session in one output. Point at the CMD line of the Dockerfile while the output is on screen, because this is where that instruction finally does something. Then have them run it twice and note that nothing breaks: the second run is a second container from the same untouched image. NOT CAPTURED: quoted from the TR, capture C4.',
+      'Stop on this one. Those are the three lines from their own app.py, printed from inside a container, in an environment they described in six lines of text. Then have them run it twice and note that nothing breaks: the second run is a second container from the same untouched image. NOT CAPTURED: quoted from the TR, capture C4.',
+  },
+  {
+    id: 'c3-ps-explain',
+    section: 'Build and Run',
+    label: 'Where the container went',
+    element: (
+      /*
+        This slide exists because the previous one raises a question the deck used
+        to answer with a callout: the container printed and vanished. It also
+        inoculates against the "my container is not running" panic, which is
+        otherwise the first thing they hit alone.
+      */
+      <ContentSlide
+        kicker="Build and Run"
+        title="Where Did the Container Go"
+        lead="It printed three lines and disappeared, and that is correct behaviour"
+        lesson={SESSION}
+      >
+        <CardGrid cols={3}>
+          <Card icon="bulb" title="It lives as long as its command">
+            Three prints, then nothing left to do, so the container stopped
+          </Card>
+          <Card icon="eye" title="Stopped is not the same as gone" tone="teal">
+            It is still on the machine, finished, and you can still list it
+          </Card>
+          <Card icon="check" title="Finishing is not failing" tone="accent">
+            A container that completed its work exits with a success code
+          </Card>
+        </CardGrid>
+      </ContentSlide>
+    ),
+    notes:
+      'Ask the question out loud before you answer it, because every room asks it: where did it go. This is the single most common beginner panic, "my container is not running", and it is usually correct behaviour for a container whose command has finished. Say the third card carefully, since the next slide shows Exited (0) and a zero looks like an error to someone who has never seen an exit code. The command that shows all of this is on the next slide.',
   },
   {
     id: 'c3-ps',
@@ -1157,22 +1493,17 @@ print("Connected successfully!")`}
     label: 'docker ps',
     element: (
       /*
-        This slide exists because the previous one raises a question the deck used
-        to answer with a callout: the container printed and vanished. An assertion
-        is weaker than a command that shows it, and `docker ps` is that command. It
-        also inoculates against the "my container is not running" panic, which is
-        otherwise the first thing they hit alone.
-
         Two commands in ONE panel: same terminal, typed one after the other, which
-        is not the two-terminals case the rule is about.
+        is not the two-terminals case the rule is about. The empty first table is
+        the teaching, so both have to be visible together.
       */
       <ContentSlide
         kicker="Build and Run"
         title="docker ps"
-        lead="Your container printed and vanished. Here is where it went"
+        lead="Nothing is running, and adding -a finds the one that finished"
         lesson={SESSION}
       >
-        <div className="grid gap-5">
+        <div className="grid gap-4">
           <Terminal
             path={CWD}
             fontSize={14}
@@ -1185,22 +1516,14 @@ print("Connected successfully!")`}
               { text: '9c4f1a7b2e83   nxttrendz-app   Exited (0)   bold_hopper' },
             ]}
           />
-          <div className="grid grid-cols-3 gap-4">
-            <Card icon="eye" title="ps shows running only" className="!p-5 !text-body-sm">
-              Yours is not in the first table, and that is correct
-            </Card>
-            <Card icon="check" title="Add -a for stopped ones" tone="teal" className="!p-5 !text-body-sm">
-              Exited (0) means it finished cleanly, not that it crashed
-            </Card>
-            <Card icon="bulb" title="It lives as long as its command" tone="accent" className="!p-5 !text-body-sm">
-              Three prints, then nothing left to do, so it stopped
-            </Card>
-          </div>
+          <Callout kind="info" title="Exited (0) is a success code" asStep={false}>
+            The same zero every program returns when it finishes cleanly, so it is not an error
+          </Callout>
         </div>
       </ContentSlide>
     ),
     notes:
-      'The empty first table is the teaching, so do not skip past it. Exited (0) is a success code, the same zero every program returns when it finishes cleanly, so it is not an error. This is the single most common beginner panic, "my container is not running", and it is usually correct behaviour for a container whose command has finished. Worth naming: the container got a random name, bold_hopper here, because they did not pass --name. Their id and name will differ. NOT CAPTURED: quoted from the TR, capture C4.',
+      'The empty first table is the teaching, so do not skip past it: ps shows running containers only, and theirs is correctly absent. Then -a finds it, Exited (0). Worth naming: the container got a random name, bold_hopper here, because they did not pass --name. Their id and name will differ. NOT CAPTURED: quoted from the TR, capture C4.',
   },
   {
     id: 'c3-journey',
@@ -1233,7 +1556,7 @@ print("Connected successfully!")`}
       </ContentSlide>
     ),
     notes:
-      'This is the shape to keep coming back to for the rest of the course, so make them say it back: files, build, image, run, container. The Django parallel is worth the time, because they already trust it: nobody expects makemigrations to change the database, and for the same reason nobody should expect an edited app.py to change an existing image. That is slide 35.',
+      'This is the shape to keep coming back to for the rest of the course, so make them say it back: files, build, image, run, container. The Django parallel is worth the time, because they already trust it: nobody expects makemigrations to change the database, and for the same reason nobody should expect an edited app.py to change an existing image. That is the Images Are Frozen slide.',
   },
   {
     id: 'c3-quiz',
@@ -1241,7 +1564,7 @@ print("Connected successfully!")`}
     label: 'Quiz Time',
     element: <QuizTimeSlide lesson={SESSION} />,
     notes:
-      'Ask from the quiz tool and hold this slide while the room answers. The question for this beat: you change one line in app.py, save it, and run docker run nxttrendz-app again. What do you see? Answer: the OLD output, unchanged, because the image was built from the old code and docker run uses the image. This is deliberately a PREDICTION, signed off as an exception to the quiz rule: the deck teaches the answer on slide 35, and asking first is what makes that slide land. Take a show of hands before revealing anything, and do not confirm the answer yet, just say "hold that" and move on.',
+      'Ask from the quiz tool and hold this slide while the room answers. The question for this beat: you change one line in app.py, save it, and run docker run nxttrendz-app again. What do you see? Answer: the OLD output, unchanged, because the image was built from the old code and docker run uses the image. This is deliberately a PREDICTION, signed off as an exception to the quiz rule: the deck teaches the answer on the Images Are Frozen slide, and asking first is what makes that slide land. Take a show of hands before revealing anything, and do not confirm the answer yet, just say "hold that" and move on.',
   },
 
   /* --- 4. Layers and the Build Cache -------------------------------- */
@@ -1253,7 +1576,7 @@ print("Connected successfully!")`}
       <SectionBreakerSlide index={4} title="Layers and the Build Cache" lesson={SESSION} />
     ),
     notes:
-      'This section answers the question parked on slide 15: why copy requirements before the code. It is also the section that pays off every time they rebuild for the rest of the course.',
+      'This section answers the question parked on the COPY slide: why copy requirements before the code. It is also the section that pays off every time they rebuild for the rest of the course.',
   },
   {
     id: 'c4-layers',
@@ -1386,7 +1709,7 @@ print("Connected successfully!")`}
     label: 'Why COPY order matters',
     element: (
       /*
-        The payoff for the tease on slide 15. `DataTable` because the teaching IS
+        The payoff for the tease on the COPY slide. `DataTable` because the teaching IS
         the column comparison: the eye has to run down the two orderings and see
         that the expensive middle row survives in one and not the other.
       */
@@ -1419,7 +1742,7 @@ print("Connected successfully!")`}
       </ContentSlide>
     ),
     notes:
-      'Point back at slide 15 and pay off the question they parked. Code changes daily, requirements change rarely, so putting the requirements copy above the install keeps the slow layer cached almost always. The highlighted row is the one that costs money. This is not a micro-optimisation: later in this course the image is rebuilt automatically on every code push, and cache friendly ordering is the difference between a ten second and a ten minute build. Tool name for that stage stays off the slide by R3, but for your own reference it is the Jenkins sessions.',
+      'Point back at the COPY slide and pay off the question they parked. Code changes daily, requirements change rarely, so putting the requirements copy above the install keeps the slow layer cached almost always. The highlighted row is the one that costs money. This is not a micro-optimisation: later in this course the image is rebuilt automatically on every code push, and cache friendly ordering is the difference between a ten second and a ten minute build. Tool name for that stage stays off the slide by R3, but for your own reference it is the Jenkins sessions.',
   },
 
   /* --- 5. .dockerignore and Mistakes -------------------------------- */
@@ -1457,11 +1780,17 @@ print("Connected successfully!")`}
             The virtual environment. Huge, and pointless inside an image, because the image is the
             environment
           </Card>
-          {/* `route` and not `book`: lucide's Book renders as a near-empty
-              rounded square at 24px on this grid, which reads as a missing icon.
-              A branching route also happens to be what .git holds. */}
-          <Card icon="route" title=".git/" className="!p-5 !text-body-sm">
-            Your entire version history, every branch and every old commit
+          {/* WAS `.git/`, AND IT CANNOT BE. Version control has not been taught
+              at any point in this course, so the card asked the room to exclude
+              a folder it has never been told about, and the .dockerignore slide
+              then leaned on .gitignore twice to explain itself. Both were
+              borrowing authority from a tool nobody here has met.
+
+              `.vscode/` costs nothing to introduce: they have been inside VS
+              Code all session, right-clicking this very folder to open its
+              terminal. */}
+          <Card icon="settings" title=".vscode/" className="!p-5 !text-body-sm">
+            Your editor settings, which belong to you and not to the image
           </Card>
           <Card icon="code" title="__pycache__/" tone="teal" className="!p-5 !text-body-sm">
             Compiled Python cache, rebuilt automatically and never worth shipping
@@ -1487,7 +1816,7 @@ print("Connected successfully!")`}
         points={[
           {
             text: 'Create it in docker-demo',
-            sub: 'Beside the Dockerfile, exactly where .gitignore would sit in a repo',
+            sub: 'Beside the Dockerfile, in the same folder the build reads from',
             icon: 'folder',
           },
           {
@@ -1496,9 +1825,13 @@ print("Connected successfully!")`}
             icon: 'check',
           },
           {
-            text: 'You already know this file',
-            sub: 'It works exactly like .gitignore, for docker build',
-            icon: 'bulb',
+            /* This bullet used to be "You already know this file", resting the
+               whole explanation on .gitignore. Nothing in this course has
+               introduced it, so the bullet now teaches the syntax instead,
+               which the slide never did and needs to. */
+            text: 'One path per line',
+            sub: 'A trailing slash means a folder, and * matches any name',
+            icon: 'code',
             tone: 'accent',
           },
         ]}
@@ -1509,7 +1842,7 @@ print("Connected successfully!")`}
           showLineNumbers={false}
           maxHeight={220}
           code={`env/
-.git/
+.vscode/
 __pycache__/
 *.pyc
 db.sqlite3`}
@@ -1517,7 +1850,7 @@ db.sqlite3`}
       </ContentSlide>
     ),
     notes:
-      'Five lines, and they already understand four of them from .gitignore. Two practical notes. It has to sit beside the Dockerfile, in the build context root, or Docker never reads it. And it is worth having them run docker images before and after adding it on a real project, because the size difference is the argument.',
+      'Five lines, and each one is a folder or a pattern they saw on the slide before. Two practical notes. It has to sit beside the Dockerfile, in the build context root, or Docker never reads it. And it is worth having them run docker images before and after adding it on a real project, because the size difference is the argument.',
   },
   {
     id: 'c5-mistake-1',
@@ -1566,7 +1899,7 @@ CMD ["python", "app.py"]`}
       </ContentSlide>
     ),
     notes:
-      'Ask for the prediction before you click. Most rooms expect the build to fail, and that expectation is the useful mistake: a build that succeeds is not a promise that the container works. Trace the error with them: WORKDIR set /app, CMD asked for app.py inside /app, and nothing ever copied it there. This is also why slide 15 mattered, since COPY is the only instruction that puts their code in the image.',
+      'Ask for the prediction before you click. Most rooms expect the build to fail, and that expectation is the useful mistake: a build that succeeds is not a promise that the container works. Trace the error with them: WORKDIR set /app, CMD asked for app.py inside /app, and nothing ever copied it there. This is also why the COPY slide mattered, since COPY is the only instruction that puts their code in the image.',
   },
   {
     id: 'c5-mistake-2',
@@ -1574,7 +1907,7 @@ CMD ["python", "app.py"]`}
     label: 'Mistake two',
     element: (
       /*
-        The answer to the quiz on slide 25. Two panels here is correct and is not
+        The answer to the section 3 quiz. Two panels here is correct and is not
         the two-terminals case: the left is what they get, the right is the fix,
         and putting them side by side is what makes the missing rebuild visible.
       */
@@ -1624,53 +1957,8 @@ CMD ["python", "app.py"]`}
     notes:
       'This is the answer to the quiz. Take the show of hands again first, then reveal. The sentence to make them repeat: images are frozen at build time. Then name the rhythm, edit, rebuild, run, and be honest that typing it every time gets tedious, which is why automating exactly this comes later in the course. Tool name stays off the slide by R3; for your own reference it is the Makefile session.',
   },
-  {
-    id: 'c5-quiz',
-    section: '.dockerignore and Mistakes',
-    label: 'Quiz Time',
-    element: <QuizTimeSlide lesson={SESSION} />,
-    notes:
-      'Ask from the quiz tool. The question for this beat: you add one package to requirements.txt and rebuild. Which layers come back CACHED? Answer: FROM and WORKDIR only. The COPY requirements.txt line changed, so it and everything after it rebuilds, including pip install. Follow up by asking what would have been cached if the change had been in app.py instead, which is the opposite answer and the whole point of the ordering rule.',
-  },
 
   /* --- Closing frame ------------------------------------------------ */
-  {
-    id: 'instruction-summary',
-    section: 'Closing',
-    label: 'The five instructions',
-    element: (
-      /*
-        The reference slide, and the one the room screenshots. The CMD row is
-        highlighted because it is the only one that is not build time, which is
-        the distinction slide 18 spent a whole slide on.
-      */
-      <ContentSlide
-        kicker="Docker File Creation"
-        title="The Five Instructions"
-        lead="Everything you need to containerise a Python application"
-        lesson={SESSION}
-      >
-        <DataTable
-          compact
-          highlight={[5]}
-          columns={[
-            { label: 'Instruction', weight: 1.15 },
-            { label: 'Purpose', weight: 1.9 },
-            { label: 'Executes', weight: 0.8 },
-          ]}
-          rows={[
-            ['FROM', 'Choose the base image, and it must be the first line', 'Build time'],
-            ['WORKDIR', 'Set the working folder inside the image', 'Build time'],
-            ['COPY <src> <dest>', 'Copy files from your machine into the image', 'Build time'],
-            ['RUN <command>', 'Execute a command, for example installing packages', 'Build time'],
-            ['CMD ["prog", "arg"]', 'Declare the container start command, one per file', 'Container start'],
-          ]}
-        />
-      </ContentSlide>
-    ),
-    notes:
-      'Let them photograph this one too. The highlighted row is the only one that is not build time, and that single difference is behind both mistakes from the last section. If they remember one thing from the table, it is that four of the five happen in the kitchen and one happens at the table.',
-  },
   {
     id: 'command-summary',
     section: 'Closing',
@@ -1700,7 +1988,6 @@ CMD ["python", "app.py"]`}
           ]}
           rows={[
             ['docker build -t name .', 'Reads the Dockerfile and produces an image', 'Every time you change the code'],
-            ['docker pull image', 'Downloads a ready-made image from Docker Hub', 'Rarely, because FROM does it'],
             ['docker images', 'Lists the images on your machine', 'To check a build worked'],
             ['docker run name', 'Creates a container from an image and starts it', 'To actually run your app'],
             ['docker ps -a', 'Lists containers, running and stopped', 'To find out where one went'],
@@ -1709,7 +1996,15 @@ CMD ["python", "app.py"]`}
       </ContentSlide>
     ),
     notes:
-      'The highlighted row is the only command they met for the first time today, and it is the one this whole session was about. Read the last column down: it is a workflow, not a list. If you have time for one question, ask which of these five goes inside the Dockerfile. The answer is none, and that confusion is the reason this table sits next to the instruction table rather than being merged with it.',
+      'The highlighted row is the only command they met for the first time today, and it is the one this whole session was about. Read the last column down: it is a workflow, not a list. If you have time for one question, ask which of these four goes inside the Dockerfile. The answer is none, and that confusion is the reason this table sits next to the instruction table rather than being merged with it.',
+  },
+  {
+    id: 'closing-quiz',
+    section: 'Closing',
+    label: 'Quiz Time',
+    element: <QuizTimeSlide lesson={SESSION} />,
+    notes:
+      'The second and last quiz beat, and the only one that spans the whole session. Ask it before the takeaways, not after, so the takeaways confirm what the room just worked out instead of announcing it. The question for this beat: one of RUN and CMD happens while the image is being built, and the other happens when a container starts. Which is which, and what breaks if you swap them? Answer: RUN runs at build time and its result is baked into the image, CMD runs at container start and is the default command; swap them and pip install runs on every container start while the app never starts at all. Take a show of hands on RUN first, then CMD, and only then confirm. If the room is quick, follow up with the naming rule: the build says it cannot find a Dockerfile, and the folder holds a file called Dockerfile.txt, so what happened.',
   },
   {
     id: 'takeaways',
@@ -1751,8 +2046,8 @@ CMD ["python", "app.py"]`}
             sub: 'A new folder, the two files, then the Dockerfile from memory',
           },
           {
-            text: 'Run all five commands on it',
-            sub: 'build, images, run, ps -a, and pull an image of your own choosing',
+            text: 'Run all four commands on it',
+            sub: 'build, then images, then run, then ps -a, in that order',
           },
           {
             text: 'Change one print line and run without rebuilding',
@@ -1765,31 +2060,27 @@ CMD ["python", "app.py"]`}
       'The second task is the important one, because it is the edit, rebuild, run rhythm and it is the habit that stops the frozen image confusion from ever coming back. Ask them to note down the two build times, since the cache lesson is more convincing on their own machine than on a slide.',
   },
   {
-    id: 'feedback',
-    section: 'Closing',
-    label: 'Feedback',
-    element: <FeedbackSlide lesson={SESSION} />,
-  },
-  {
     id: 'next-session',
     section: 'Closing',
     label: 'Next session',
     element: (
       /*
         NO index: the deck has exactly five numbered sections and this is not a
-        sixth. The title is deliberately EMPTY, decided at the sign-off gate: the
-        session 3 topic is not settled, and naming a tool the room has no problem
-        for would break R3. Filling in the title is the only edit this slide
-        needs.
+        sixth.
+
+        The title sat empty until the session 3 topic was settled. It now is, so
+        the name is on the slide: this is the handover frame, and R3's ban on
+        naming a later tool covers the teaching slides, not the frame whose entire
+        job is to say what comes next.
       */
       <SectionBreakerSlide
         kicker="Next session"
-        title="Coming up next"
+        title="Docker Compose Multi-Container"
         lesson={SESSION}
       />
     ),
     notes:
-      'Land the handover without naming a tool: today they wrote the recipe and built the image, and next time they build on top of it. The session 3 title is deliberately not on this slide yet, decided at plan sign-off. Fill in the title once it is settled. Nothing to do between now and then except the practice tasks.',
+      'Land the handover: today they wrote one Dockerfile and built one image, and next session that stops being enough, because a real project is a backend and a frontend and a database that have to come up together. Do not teach anything here and do not open a compose file, just leave the name on screen and the reason for it in one sentence. Nothing to do between now and then except the practice tasks.',
   },
   {
     id: 'thank-you',

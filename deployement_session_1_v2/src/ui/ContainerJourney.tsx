@@ -35,18 +35,41 @@ const VERDICT_AT = START + TRAVEL - 0.2
 interface ChipSpec {
   label: string
   note?: string
+  /**
+   * Vendor mark for a runtime chip, shown at 16px before the label. The two
+   * stack figures in this deck carry the same marks at the same size, so Node
+   * and Python stay recognisable as the SAME two things wherever they appear.
+   * Vendor file, never recoloured, even inside a red `breaks` chip.
+   */
+  logo?: string
 }
 
+/*
+  THE TWO RUNTIMES THIS PROJECT NEEDS, not a runtime and a framework.
+
+  These used to read Django 6.0 / Python 3.14 and Django 5.0 / Python 3.10. The
+  `LayerStack` figure on the "Different Ground" slide names the same two things
+  and now says Node and Python, so this had to follow: the two figures use the
+  same visual language one slide apart, and a room that sees Django in one and
+  Node in the other assumes it missed something.
+
+  Node and Python is also the truer pair for this course. The Django backend runs
+  on Python and the Vite/React frontend runs on Node, which is exactly what the
+  room saw in the two terminals earlier in the deck.
+
+  Keep these version numbers identical to the ones in that `LayerStack`. If one
+  moves, move the other.
+*/
 const APP: ChipSpec[] = [
   { label: 'Your code' },
-  { label: 'Django', note: '6.0' },
-  { label: 'Python', note: '3.14' },
+  { label: 'Node', note: '22', logo: '/assets/tech/nodejs.svg' },
+  { label: 'Python', note: '3.14', logo: '/assets/tech/python.svg' },
 ]
 
 /** What the receiving machine supplies itself, when nothing came with the code. */
 const THEIRS: ChipSpec[] = [
-  { label: 'Django', note: '5.0' },
-  { label: 'Python', note: '3.10' },
+  { label: 'Node', note: '20', logo: '/assets/tech/nodejs.svg' },
+  { label: 'Python', note: '3.10', logo: '/assets/tech/python.svg' },
 ]
 
 function Chip({ spec, tone, dim = false }: { spec: ChipSpec; tone: 'ships' | 'breaks'; dim?: boolean }) {
@@ -59,7 +82,17 @@ function Chip({ spec, tone, dim = false }: { spec: ChipSpec; tone: 'ships' | 'br
       className="flex w-full items-center justify-between rounded-lg border-2 px-3 py-2 text-body-sm font-semibold"
       style={{ ...style, opacity: dim ? 0.4 : 1 }}
     >
-      <span>{spec.label}</span>
+      <span className="inline-flex items-center gap-2">
+        {spec.logo && (
+          <img
+            src={spec.logo}
+            alt=""
+            draggable={false}
+            className="h-4 w-4 object-contain"
+          />
+        )}
+        {spec.label}
+      </span>
       {spec.note && <span className="font-mono text-xs opacity-80">{spec.note}</span>}
     </div>
   )

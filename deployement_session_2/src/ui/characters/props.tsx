@@ -53,11 +53,32 @@ export function Laptop({ className }: { className?: string }) {
   )
 }
 
+/**
+ * A rating bubble. Used on the FEEDBACK slide, which is a NIGHT stage.
+ *
+ * The stars are drawn here rather than through `Star`, which is hardcoded to
+ * Evolve orange. Orange is correct where `Star` is used on light content slides
+ * and wrong on navy — `tokens.ts` is explicit that orange and teal have no place
+ * in the NxtWave style guide and must not be reached for on a dark ground. Gold
+ * is the reflex colour for a rating and there is no gold in this palette, so the
+ * filled stars are white over pale blue: the SHAPE carries the meaning, the hue
+ * does not have to.
+ */
 export function StarBubble({ className }: { className?: string }) {
   const g = useGrad('#EAF1FF', '#FFFFFF')
+  const s = useGrad('#FFFFFF', '#C7D6EF')
+  const points = (cx: number, cy: number, r: number) =>
+    Array.from({ length: 10 }, (_, i) => {
+      const ang = (Math.PI / 5) * i - Math.PI / 2
+      const rad = i % 2 === 0 ? r : r * 0.45
+      return `${cx + Math.cos(ang) * rad},${cy + Math.sin(ang) * rad}`
+    }).join(' ')
   return (
     <svg viewBox="0 0 240 190" className={className} aria-hidden>
-      <defs>{g.el}</defs>
+      <defs>
+        {g.el}
+        {s.el}
+      </defs>
       <path
         d="M28 20 H212 C 224 20 232 28 232 40 V120 C 232 132 224 140 212 140 H96 L60 172 V140 H28 C 16 140 8 132 8 120 V40 C 8 28 16 20 28 20 Z"
         fill={`url(#${g.id})`}
@@ -65,7 +86,14 @@ export function StarBubble({ className }: { className?: string }) {
         strokeWidth="2"
       />
       {[0, 1, 2, 3, 4].map((i) => (
-        <Star key={i} cx={44 + i * 38} cy={78} r={16} filled={i < 4} />
+        <polygon
+          key={i}
+          points={points(44 + i * 38, 78, 16)}
+          fill={i < 4 ? `url(#${s.id})` : 'none'}
+          stroke={i < 4 ? '#A9B7CE' : '#C7D6EF'}
+          strokeWidth={i < 4 ? 1.5 : 2.5}
+          strokeLinejoin="round"
+        />
       ))}
     </svg>
   )
@@ -123,6 +151,157 @@ export function ChecklistCard({ className }: { className?: string }) {
           </g>
         )
       })}
+    </svg>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/* Chrome-slide icons: Practice and Feedback                          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * PRACTICE — a spiral notepad with one task ticked and a pencil across it.
+ *
+ * Drawn rather than rendered. The reference for this was a 3D clay icon, and a
+ * 3D icon is exactly what this deck must not use: every other figure here is
+ * flat vector on the Nova palette, and one photoreal object among them reads as
+ * a sticker someone dropped on the slide. The SHAPE follows the reference (rings
+ * along the top, a green tick, a pencil lying diagonally); the RENDERING follows
+ * Nova — flat fills, one soft gradient for form, rounded everything.
+ *
+ * COLOUR: the style-guide blues and white, nothing else. `tokens.ts` is explicit
+ * that orange and teal are Evolve hues with no place in the NxtWave guide and
+ * must not be reached for on a navy ground — the first cut of this icon had
+ * orange rings, an orange pencil and a green tick, and it read as a sticker from
+ * a different deck. Nothing here is mid-tone either: on navy, mid-tones vanish.
+ */
+export function PracticePad({ className }: { className?: string }) {
+  const page = useGrad('#FFFFFF', '#EAF1FF')
+  const barrel = useGrad('#2D63FB', '#0146C7')
+  return (
+    <svg viewBox="0 0 240 264" className={className} aria-hidden>
+      <defs>
+        {page.el}
+        {barrel.el}
+      </defs>
+
+      {/* the pad */}
+      <rect x="30" y="46" width="180" height="192" rx="20" fill={`url(#${page.id})`} />
+      {/* a single darker edge along the bottom, so the pad has a thickness
+          rather than reading as a flat white rectangle on the navy */}
+      <path d="M30 214 H210 V218 C210 229 201 238 190 238 H50 C39 238 30 229 30 218 Z" fill="#D8E3F5" />
+
+      {/* binding: four rings straddling the top edge */}
+      {[70, 106, 142, 178].map((x) => (
+        <g key={x}>
+          <circle cx={x} cy="46" r="5" fill="#0B1A2B" fillOpacity="0.12" />
+          <path
+            d={`M${x - 9} 58 C ${x - 9} 30, ${x + 9} 30, ${x + 9} 52`}
+            fill="none"
+            stroke="#2D63FB"
+            strokeWidth="8"
+            strokeLinecap="round"
+          />
+        </g>
+      ))}
+
+      {/* the ticked task */}
+      <circle cx="72" cy="104" r="17" fill="#2D63FB" />
+      <path
+        d="M64 104 l6 7 l11 -13"
+        fill="none"
+        stroke="#FFFFFF"
+        strokeWidth="4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <rect x="100" y="96" width="80" height="9" rx="4.5" fill="#C7D6EF" />
+      <rect x="100" y="111" width="52" height="9" rx="4.5" fill="#D8E3F5" />
+
+      {/* the task still to do */}
+      <circle cx="72" cy="158" r="17" fill="#FFFFFF" stroke="#C7D6EF" strokeWidth="3.5" />
+      <rect x="100" y="150" width="66" height="9" rx="4.5" fill="#D8E3F5" />
+      <rect x="100" y="165" width="42" height="9" rx="4.5" fill="#E8F0FF" />
+
+      {/*
+        THE PENCIL, drawn upright and then rotated as one group.
+
+        Building it on the diagonal directly means every coordinate is a
+        trigonometry problem and the ferrule bands stop being parallel the moment
+        anything is nudged. Upright-then-rotate keeps the geometry readable and
+        the whole pencil movable by one number.
+      */}
+      <g transform="rotate(34 168 196)">
+        {/* eraser */}
+        <rect x="152" y="112" width="32" height="20" rx="9" fill="#00254B" />
+        {/* ferrule */}
+        <rect x="152" y="128" width="32" height="22" fill="#C7D6EF" />
+        <rect x="152" y="134" width="32" height="3" fill="#A9B7CE" />
+        <rect x="152" y="142" width="32" height="3" fill="#A9B7CE" />
+        {/* barrel */}
+        <rect x="152" y="148" width="32" height="94" fill={`url(#${barrel.id})`} />
+        <rect x="172" y="148" width="12" height="94" fill="#00254B" fillOpacity="0.28" />
+        {/* sharpened point */}
+        <path d="M152 242 H184 L168 268 Z" fill="#EAF1FF" />
+        <path d="M161 256 H175 L168 268 Z" fill="#00254B" />
+      </g>
+    </svg>
+  )
+}
+
+/**
+ * FEEDBACK — a speech bubble carrying three stars, with a heart notification.
+ *
+ * Same reasoning as `PracticePad`: the shape comes from the reference icon, the
+ * rendering comes from Nova, and the colour comes from the style guide.
+ *
+ * The stars are drawn HERE rather than reusing `Star` from this file. `Star` is
+ * hardcoded to Evolve orange, which is correct where it is used (light content
+ * slides) and wrong on the night stage. Gold is the reflex colour for a rating,
+ * but there is no gold in this palette, so the stars are white with a pale blue
+ * underside — they still read as stars because the shape carries the meaning,
+ * not the hue.
+ *
+ * The badge overlaps the bubble's top-right corner and carries a ring in the
+ * stage colour, which is what separates two rounded shapes of similar size when
+ * they touch. Without it the badge reads as a bite taken out of the bubble.
+ */
+export function FeedbackBubble({ className }: { className?: string }) {
+  const body = useGrad('#FFFFFF', '#EAF1FF')
+  const star = useGrad('#FFFFFF', '#C7D6EF')
+  return (
+    <svg viewBox="0 0 250 216" className={className} aria-hidden>
+      <defs>
+        {body.el}
+        {star.el}
+      </defs>
+
+      <path
+        d="M46 26 H186 C202 26 214 38 214 54 V132 C214 148 202 160 186 160
+           H120 L86 196 V160 H46 C30 160 18 148 18 132 V54 C18 38 30 26 46 26 Z"
+        fill={`url(#${body.id})`}
+      />
+
+      {[74, 116, 158].map((cx) => {
+        const pts = Array.from({ length: 10 }, (_, i) => {
+          const ang = (Math.PI / 5) * i - Math.PI / 2
+          const rad = i % 2 === 0 ? 23 : 23 * 0.45
+          return `${cx + Math.cos(ang) * rad},${94 + Math.sin(ang) * rad}`
+        }).join(' ')
+        return <polygon key={cx} points={pts} fill={`url(#${star.id})`} strokeLinejoin="round" />
+      })}
+
+      {/* notification badge */}
+      {/* The outer rect is the stage colour, not a border: it is what stops two
+          rounded shapes of similar size from fusing where they touch. */}
+      <rect x="176" y="6" width="62" height="62" rx="20" fill="#00254B" />
+      <rect x="180" y="10" width="54" height="54" rx="17" fill="#2D63FB" />
+      <path
+        d="M207 52 C 198 44, 189 37, 189 29 C 189 23, 194 20, 199 20
+           C 203 20, 206 23, 207 25 C 208 23, 211 20, 215 20
+           C 220 20, 225 23, 225 29 C 225 37, 216 44, 207 52 Z"
+        fill="#FFFFFF"
+      />
     </svg>
   )
 }

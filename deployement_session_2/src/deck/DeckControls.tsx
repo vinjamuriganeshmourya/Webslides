@@ -39,9 +39,13 @@ function IconBtn({
 }
 
 /**
- * Bottom-right control cluster: the slide / animation-step counter, the
+ * Bottom-LEFT control cluster: the slide / animation-step counter, the
  * ◀ ▶ nav arrows, and a fullscreen toggle. Overview, speaker notes, and
  * click-to-advance are intentionally omitted.
+ *
+ * Left, not right: the cluster and the NxtWave mark swapped corners. The mark
+ * is the signature and now sits bottom-right where the eye finishes; the
+ * controls are the presenter's tools and sit out of the reading path.
  */
 export function DeckControls({
   index,
@@ -56,7 +60,7 @@ export function DeckControls({
   toggleFullscreen,
 }: Props) {
   return (
-    <div className="absolute bottom-4 right-5 z-30 flex items-center gap-2">
+    <div className="absolute bottom-4 left-5 z-30 flex items-center gap-2">
       <span className="mr-1 select-none rounded-pill bg-white/85 px-2.5 py-1 font-mono text-sm font-medium text-muted ring-1 ring-muted/20 backdrop-blur">
         {/* Slide number only. The build-step counter that used to follow it
             ("· 2/4") reported the state of the reveal machinery, which is the

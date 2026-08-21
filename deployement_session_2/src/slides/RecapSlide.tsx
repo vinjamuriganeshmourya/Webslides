@@ -20,8 +20,17 @@ export function RecapSlide({
   return (
     <SlideBase variant="light" lesson={lesson}>
       <div className="grid h-full grid-cols-[1.3fr_1fr] items-center gap-10">
-        {/* left — recap checklist */}
-        <div className="flex flex-col justify-center">
+        {/*
+          left — recap checklist
+
+          TOP ALIGNED, like every other slide type in the kit. This column used to
+          be `justify-center` with no height, so the kicker and title floated to
+          the vertical middle of the slide while the identical header on a content
+          slide sat pinned at the top. Two slides running, the heading jumped.
+          `h-full` plus `justify-start` puts it back on the same line as
+          everywhere else and lets `SlideHeader`'s own floor do the spacing.
+        */}
+        <div className="flex h-full flex-col justify-start">
           <SlideHeader kicker={kicker} title={title} tone="success" />
           <div className={`mt-8 grid gap-x-10 gap-y-0 ${twoCols ? 'grid-cols-2' : 'grid-cols-1'}`}>
             {columns.map((group, i) => (

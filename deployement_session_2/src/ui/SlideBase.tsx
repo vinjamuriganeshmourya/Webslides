@@ -311,18 +311,24 @@ export function SlideBase({
       </div>
 
       {/*
-        Footer: the NxtWave mark only.
+        Footer: the NxtWave mark only, bottom-RIGHT.
 
-        The session name is deliberately NOT repeated here. It sat bottom-right,
-        directly under the deck's control cluster, so it collided with the slide
-        counter. The session name is already on stage via each slide's kicker, so
+        The mark and the deck's control cluster swapped corners: the mark is the
+        signature and belongs where the eye finishes, and the controls are the
+        presenter's tools rather than the room's. See `DeckControls`, which now
+        pins itself bottom-left; the two must stay on opposite sides or they
+        collide.
+
+        The session name is deliberately NOT repeated here. It used to sit in
+        this corner, under what was then the control cluster, so it collided with
+        the slide counter. The session name is already on stage via each slide's kicker, so
         the footer copy was duplication as well as a collision.
 
         `lesson` is still accepted (it is part of the kit's API and `sampleDeck`
         passes it) but is no longer rendered.
       */}
       {footer && (
-        <footer className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-center px-8 pb-4">
+        <footer className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-center justify-end px-8 pb-4">
           {footerLogo && <Logo className="h-9" onDark={dark} />}
         </footer>
       )}
