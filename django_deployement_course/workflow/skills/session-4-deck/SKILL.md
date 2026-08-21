@@ -158,3 +158,4 @@ reviewed by the user.
 | 2026-08-21 | A question slide should hold only the question, and compound questions should split | Content rule 16, new `QuestionSlide` in the kit, slide 18 split into two |
 | 2026-08-21 | Slides overlapping, and asked for a deterministic constraint | `align-check.mjs` added to the mandatory sweep in generate-slides §7. It already existed and had never been run |
 | 2026-08-21 | Slides 42 and 70 had overlapping labels inside figures | Content rule 17, and S9 above |
+| 2026-08-21 | Deck had no quiz frame; one is mandatory and a lone one goes before Key Takeaways | Content rule 18. `quiz-time` inserted at 77, deck now 80 |

@@ -12,7 +12,7 @@ No slide is generated until this plan is approved. Section 7 is the gate.
 | `TR_DOC` | `/home/nxtwave/docker_jenkins_aws/04_running_django_app_with_docker.md` (845 lines) |
 | Project | `deployement_session_4/` — to be scaffolded from `slide-kit/slide-template` |
 | Deck file | `src/decks/runningRealAppDeck.tsx` |
-| Proposed slide count | **72** (see §6 for where it compresses if you want it shorter) |
+| Slide count | **80** (planned 76; see §8.1 and §8.6 for every change) |
 | `devPort` | `5215`. Note: the kit and **all three** existing sessions are on `5211` — the scaffold never changed it, so two decks cannot run at once today. 5215 keeps session 4 out of that collision; renumbering the others is a separate call |
 | `NEXT_UP` | `Automate Deployment using Makefile` (the next session's confirmed name) |
 | Build rules | to be created at `workflow/skills/session-4-deck/SKILL.md` on sign-off |
@@ -190,6 +190,7 @@ Legend for **Assets**: `kit` = already in `src/ui`, `new` = built for this deck,
 | # | id | Title | Component | Content | Motion | Assets |
 |---|---|---|---|---|---|---|
 | 73 | `recap` | What We Covered | `RecapSlide` | The four concepts restated as outcomes | stagger | kit |
+| 73a | `quiz-time` | Quiz Time | `QuizTimeSlide` | Announcement frame only. Subtitle names what is tested: two Dockerfiles, one Compose file, and the address that broke the rule on purpose | fade | kit |
 | 74 | `takeaways` | Key Takeaways | `KeyTakeawaysSlide` | Inside a container, a server binds to `0.0.0.0` · `ports` opens the door from outside; service names work only inside · secrets go in `.env`, never in a file that travels · the question is always *where does this code run?* | stagger, light chrome | kit |
 | 75 | `next-session` | Next Session | `SectionBreakerSlide` title-only | `Automate Deployment using Makefile` | fade | kit |
 | 76 | `thankyou` | (fixture) | `ThankYouSlide` | Fixture | fade | kit |
@@ -342,3 +343,25 @@ and copied into the session, per rules 12 and 13. The library is now 25 files.
 - `qa.mjs` and `preview.mjs` have not been run yet at the time of writing.
 - The four figures are session-owned pending the promotion decision in §5.1.
 - No screenshots. Slide 65 remains the steps the room performs, per sign-off.
+
+### 8.6 Added after review: the quiz frame
+
+The plan had no quiz slide, which was an omission rather than a decision. A
+session deck must carry at least one, and a lone one sits immediately before
+Key Takeaways, so the closing frame now reads:
+
+```
+Recap → Quiz Time → Key Takeaways → Next session → Thank you
+```
+
+That position is the point: the takeaways state what the room should believe,
+and the quiz is the last chance to find out whether they do, while the session
+is still in the room. Placed earlier, the takeaways paper over whatever it
+exposed. Now content rule 18.
+
+The frame carries no question by design; the question comes from the quiz tool.
+Its subtitle names what is being tested, and the last clause is the paradox,
+because if the room cannot say why the frontend is told `localhost:8000` rather
+than `backend:8000`, the most important idea of the session did not land.
+
+Deck is 80 slides.
