@@ -24,7 +24,7 @@ import { nwColors, nwFonts, nwType } from '@/design/nw2027'
  * Deployment · Session 1 — "From Localhost to Anywhere"
  *
  * Generated from the signed-off plan at
- *   `Web Slides/django_deployement_course/workflow/plans/deployement_session_1_v1.md` (SIGNED OFF 2026-08-11)
+ *   `Web Slides/django_deployement_course/session_plans/deployement_session_1_v1/plan.md` (SIGNED OFF 2026-08-11)
  * against the TR doc
  *   `Integration project/deployment/session-1.md`.
  *

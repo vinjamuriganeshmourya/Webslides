@@ -5,7 +5,7 @@ agents working through the Figma MCP; every path is relative to this directory.
 
 **This directory is Deployment Session 3, "Docker Compose for Multi-Container Apps".** Its deck is
 `src/decks/dockerComposeDeck.tsx`, 69 slides, built from the signed-off plan at
-`../workflow/plans/deployement_session_3.md`.
+`../session_plans/deployement_session_3/plan.md`.
 
 Read `../workflow/skills/session-3-deck/SKILL.md` before editing anything here:
 it carries this session's build rules S1 to S17 and the running feedback log.

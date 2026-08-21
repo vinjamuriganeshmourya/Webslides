@@ -28,7 +28,7 @@ Read the TR doc. Extract **at most 4 key concepts** and map *every* doc
 section under one of them. The agenda shows exactly these concepts; the deck
 has exactly one section divider per concept.
 
-## Stage 2 — Slide-wise content plan (`workflow/plans/<session>.md`)
+## Stage 2 — Slide-wise content plan (`<course>/session_plans/<session>/plan.md`)
 
 Fixed frame, in order:
 

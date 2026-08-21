@@ -102,7 +102,7 @@ as text instead, which is what the room will actually type.
 
 Captured on the `Window` VirtualBox VM against the students' own running project
 (`nxttrendz`: React 19 + Vite 6 on :3000, Django 6.1 + DRF on :8000). Plan and
-per-capture notes: `workflow/plans/deployement_session_1_v1.captures.md` and the
+per-capture notes: `session_plans/deployement_session_1_v1/captures.md` and the
 `.txt` file beside each image in `workflow/captures/`.
 
 All are real captures of running software. None is a mockup.

@@ -22,7 +22,7 @@ import {
  * Session 1 — Client–Server & CORS.
  *
  * Generated from the SIGNED-OFF plan Rev 7
- * (workflow/plans/session-1-client-server-cors.md, signed off 2026-07-24)
+ * (session_plans/session-1-client-server-cors/plan.md, signed off 2026-07-24)
  * against the rewritten TR doc (2026-07-24, Parts A/B, §10 crack patch).
  * Structure: 6 dividers, one per concept (user decision ①), 40 slides.
  * Style pass (user-directed): headers pinned top-left, BulletList points

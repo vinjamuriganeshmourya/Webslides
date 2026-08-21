@@ -39,7 +39,7 @@ import { colors } from '@/design/tokens'
  * Deployment · Session 3 "Docker Compose for Multi-Container Apps"
  *
  * Content is the signed-off plan at
- *   `Web Slides/django_deployement_course/workflow/plans/deployement_session_3.md`
+ *   `Web Slides/django_deployement_course/session_plans/deployement_session_3/plan.md`
  * (STATUS: SIGNED OFF 2026-08-20, concept 1 compressed to the comparison),
  * sourced from the TR doc at
  *   `/home/nxtwave/docker_jenkins_aws/03_docker_compose_multi_container.md`

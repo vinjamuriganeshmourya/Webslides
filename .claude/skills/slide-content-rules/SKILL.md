@@ -1,6 +1,6 @@
 ---
 name: slide-content-rules
-description: Hard content, wording, animation and chrome rules for NxtWave/NIAT session slide decks. Use whenever writing, editing, or reviewing slide copy, deck source under a session project (src/decks/*.tsx), slide plans in workflow/plans/, slide components in src/ui or src/slides, or terminal/command/table/illustration content on a slide. Covers banned punctuation, banned words, terminal rendering, problem sequencing, one-idea-per-slide, parallel text-and-visual reveal, deck chrome colour, and illustration honesty.
+description: Hard content, wording, animation and chrome rules for NxtWave/NIAT session slide decks. Use whenever writing, editing, or reviewing slide copy, deck source under a session project (src/decks/*.tsx), slide plans in <course>/session_plans/<session>/plan.md, slide components in src/ui or src/slides, or terminal/command/table/illustration content on a slide. Covers banned punctuation, banned words, terminal rendering, problem sequencing, one-idea-per-slide, parallel text-and-visual reveal, deck chrome colour, and illustration honesty.
 ---
 
 # Slide content rules

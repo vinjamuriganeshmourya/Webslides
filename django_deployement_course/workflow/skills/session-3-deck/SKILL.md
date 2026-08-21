@@ -1,6 +1,6 @@
 ---
 name: session-3-deck
-description: Build rules, decisions and the running feedback log for Deployment Session 3, "Docker Compose for Multi-Container Apps" (project deployement_session_3). Use whenever writing, editing, reviewing or QA-ing that session's plan (workflow/plans/deployement_session_3.md), its deck source (deployement_session_3/src/decks/dockerComposeDeck.tsx), or any slide, figure, illustration, asset or terminal transcript in it. Also use when the user gives feedback on session 3 slides, so the feedback is recorded here before it is applied.
+description: Build rules, decisions and the running feedback log for Deployment Session 3, "Docker Compose for Multi-Container Apps" (project deployement_session_3). Use whenever writing, editing, reviewing or QA-ing that session's plan (session_plans/deployement_session_3/plan.md), its deck source (deployement_session_3/src/decks/dockerComposeDeck.tsx), or any slide, figure, illustration, asset or terminal transcript in it. Also use when the user gives feedback on session 3 slides, so the feedback is recorded here before it is applied.
 ---
 
 # Session 3 deck: Docker Compose for Multi-Container Apps
@@ -21,7 +21,7 @@ name a session in `index.html`, `baseDeck.tsx` or any other kit file.
 | Thing | Where |
 |---|---|
 | TR doc | `/home/nxtwave/docker_jenkins_aws/03_docker_compose_multi_container.md` |
-| Signed-off plan | `workflow/plans/deployement_session_3.md` |
+| Signed-off plan | `session_plans/deployement_session_3/plan.md` |
 | Deck source | `deployement_session_3/src/decks/dockerComposeDeck.tsx` |
 | Previous session | `deployement_session_2/src/decks/dockerFileCreationDeck.tsx` |
 | Asset manifest | `workflow/assets-manifest.md` |

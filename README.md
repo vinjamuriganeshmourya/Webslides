@@ -83,7 +83,7 @@ Ask Claude Code, at the repo root:
 > CLAUDE.md and give it a devPort nothing else uses.
 
 It will copy `slide-kit/slide-template`, set `deck.config.json`, wire up
-`activeDeck.ts` and create the `workflow/plans` folder. Doing it by hand is
+`activeDeck.ts` and create the `session_plans` folder. Doing it by hand is
 five steps, written out in [`CLAUDE.md`](CLAUDE.md#starting-a-new-course).
 
 ---
@@ -100,7 +100,10 @@ So the flow is:
 
 1. Give Claude the source material (a TR doc, a spec, your notes).
 2. It extracts **at most four key concepts** and maps everything under them.
-3. It writes a slide-wise plan to `<your-course>/workflow/plans/<session>.md`.
+3. It writes a slide-wise plan to
+   `<your-course>/session_plans/<session-name>/plan.md`. **That path is fixed** —
+   see CLAUDE.md. One folder per session, holding the plan and anything that
+   belongs with it.
 4. **You read the plan and say yes.** Push back here, freely.
 5. Only then does it generate slides.
 6. Verification: typecheck, build, and the browser sweeps.
@@ -124,10 +127,18 @@ Useful shapes, roughly in the order you will need them:
 
 > This deck is behind the kit. Check it and apply if it is.
 
+You do **not** need to spell out "reuse the template", "use the existing
+figures", "follow the text guidelines", "run the QA sweep". Saying *generate
+the slides* pulls in `.claude/skills/generate-slides/SKILL.md`, which carries
+the whole procedure: the plan gate, composing kit components instead of new
+markup, illustrations and icons, transitions, when a new component is
+justified, and the verification sweep. If Claude asks you to restate any of
+that, the skill is not being loaded and something is wrong.
+
 Two habits make a large difference:
 
-- **Point at files, not descriptions.** "Read `workflow/plans/session-2.md`"
-  beats "you know the session 2 plan".
+- **Point at files, not descriptions.** "Read
+  `session_plans/session-2/plan.md`" beats "you know the session 2 plan".
 - **Say when to stop.** "Stop at the plan" prevents a helpful sprint past the
   sign-off gate.
 
@@ -143,6 +154,17 @@ whenever it touches slide copy.
 They read as fussy until you learn each one exists because a deck shipped with
 that exact mistake. If a rule blocks something you want, say so and decide
 deliberately, rather than working around it quietly.
+
+### Your feedback is supposed to become a rule
+
+When you correct something that would apply to the next deck too, Claude will
+ask whether to write it into a named file before applying it — the session's
+own skill, the shared content rules, or one of the guidelines. Say yes and the
+correction stops recurring; say no and it stays a one-off.
+
+It should not ask about typos, wrong numbers, or "move this box left". If the
+same correction comes up twice, it should stop asking and simply propose the
+wording to record.
 
 ---
 

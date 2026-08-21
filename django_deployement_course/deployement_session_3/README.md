@@ -1,7 +1,7 @@
 # Docker Compose for Multi-Container Apps
 
 NxtWave Deployment Session 3, React + Django Integration. 69 slides.
-Deck: `src/decks/dockerComposeDeck.tsx`. Plan: `../workflow/plans/deployement_session_3.md`.
+Deck: `src/decks/dockerComposeDeck.tsx`. Plan: `../session_plans/deployement_session_3/plan.md`.
 
 ---
 

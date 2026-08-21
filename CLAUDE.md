@@ -31,12 +31,13 @@ slide-kit/                  course-independent. Shared by every deck.
                             reference material (both ignored by git, ~540 MB)
 
 django_deployement_course/  ONE COURSE. Add a sibling folder for another.
+  session_plans/            EVERY slide-wise plan. One folder per session.
+    deployement_session_3/    plan.md ← the signed-off plan
   deployement_session_1_v1/   a session = one standalone Vite app
   deployement_session_1_v2/
   deployement_session_2/
   deployement_session_3/
   workflow/
-    plans/                  the signed-off slide-wise plan per session
     reviews/                sign-off state
     skills/                 skills scoped to this course
     captures/               real screenshots used on slides
@@ -47,6 +48,7 @@ testing/
 
 .claude/
   skills/slide-content-rules/SKILL.md    hard content rules — see next section
+  skills/generate-slides/SKILL.md        the whole slide-generation procedure
   settings.json                          shared plugin list (committed)
 ```
 
@@ -59,6 +61,12 @@ second one is a new sibling folder, not a fork.
 
 In this order. They are short, and they exist because a deck shipped wrong.
 
+0. **`.claude/skills/generate-slides/SKILL.md`** — read this **first** whenever
+   the user asks for slides in any wording. It is the mandatory procedure and
+   it supplies everything the user would otherwise have to restate: the plan
+   gate, reusing kit components rather than writing markup, illustrations,
+   icons, transitions, when a new component is justified, verification, and
+   how to handle feedback. Never make the user specify these again.
 1. **`.claude/skills/slide-content-rules/SKILL.md`** — hard rules, not
    preferences: banned punctuation and words, how terminals render, problem
    sequencing, one idea per slide, deck chrome colour, illustration honesty.
@@ -66,11 +74,62 @@ In this order. They are short, and they exist because a deck shipped wrong.
    read it explicitly if you are unsure whether something is allowed.
 2. **`slide-kit/workflow/SLIDE_WORKFLOW.md`** — the pipeline. The rule that
    matters most: **no deck generation before the slide-wise plan is signed
-   off.** Plans live in `<course>/workflow/plans/`.
+   off.** Plans live at the path fixed in the next section.
 3. **`slide-kit/workflow/TEXT_GUIDELINES.md`** and **`STYLE_GUIDE.md`** —
    wording and visual system.
 4. **`slide-kit/slide-template/KIT.md`** — before changing anything under
    `src/`, so you know whether you are editing kit or session.
+
+---
+
+## Where a slide-wise plan goes — mandatory
+
+Every slide-wise plan lives under its own course, one folder per session:
+
+```
+<course>/session_plans/<session_name>/plan.md
+```
+
+For example:
+
+```
+django_deployement_course/session_plans/deployement_session_3/plan.md
+another_course/session_plans/intro-to-testing/plan.md
+```
+
+**This path is not a suggestion. Follow it exactly.** No plan in a session's
+own project folder, none loose at the course root, none in `workflow/`.
+`<session_name>` matches the session project directory when one exists, so the
+plan and the deck it describes are findable from each other by name alone.
+
+The folder is per-session so everything about that plan sits together:
+`plan.md` is the plan itself, and revisions (`plan.rev3.md`), capture notes
+(`captures.md`) and any machine-readable form (`plan.json`) go beside it. Only
+`plan.md` is required.
+
+Create the folder when you start planning a session, before writing a line of
+it. If a course has no `session_plans/` yet, make it.
+
+---
+
+## Feedback becomes a written rule, with the user's consent
+
+When the user gives feedback that would apply beyond the slide in front of
+you, **ask whether to record it in a named file, then record it before
+applying it.** Never record silently: what becomes a rule is the user's call.
+
+Ask about a correction that would hold for the next deck, a stated preference,
+or a "never do X". Do not ask about typos, wrong numbers, or a one-off nudge.
+The test: *would this have changed what I did, on a different deck, next
+month?*
+
+Name the destination when you ask — the session's skill under
+`<course>/workflow/skills/`, `.claude/skills/generate-slides/SKILL.md`,
+`.claude/skills/slide-content-rules/SKILL.md`, or one of the
+`slide-kit/workflow/` guidelines. Write the reason alongside the rule; every
+hard rule in this repo names the deck that shipped wrong because of it.
+
+Section 8 of the generate-slides skill has the full table.
 
 ---
 
@@ -130,7 +189,8 @@ it before editing that session.
 
 ## Starting a new course
 
-1. `mkdir <course-name>/workflow/{plans,reviews,captures}` at the repo root.
+1. `mkdir -p <course-name>/{session_plans,workflow/{reviews,captures}}` at the
+   repo root.
 2. Copy `slide-kit/slide-template` to `<course-name>/<session-name>`, minus
    `node_modules`, `dist`, `dist-single` and `workflow/preview`.
 3. Edit `deck.config.json`: `name`, `title`, `htmlName`, and a `devPort` no
