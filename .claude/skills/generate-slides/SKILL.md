@@ -193,9 +193,45 @@ npm run build:html
 
 export CHROME_PATH=/opt/google/chrome/chrome
 node video-safe.mjs      # must print CLEAN
-node qa.mjs              # only slide 1 should be flagged
+node qa.mjs              # baseline is TWO flagged slides, see below
+node align-check.mjs     # misplaced-but-inside-the-frame content
 node preview.mjs && node scripts/build-preview-page.mjs
 ```
+
+**Then look at the figures.** The three harnesses measure DOM rectangles, so an
+`<svg>` is one box to them and a figure whose internal labels collide passes
+every sweep. Screenshot each slide carrying a custom figure and inspect the
+image, or read the contact sheet `build-preview-page.mjs` writes. Content rule
+17 has the detail and the two collisions that prompted it.
+
+**All four, every time. `align-check.mjs` is not optional.** `qa.mjs` only
+catches content that leaves the 1280x720 frame and `video-safe.mjs` only
+catches content that enters the instructor-video rectangle. Neither has any
+opinion about content that is comfortably inside the frame and still wrong: a
+narrow figure stranded in a full-width block, two blocks overlapping, a column
+hard against an edge. Session 4 was reported clean by the first two and the
+user still opened it to find overlapping slides, because this harness was
+skipped.
+
+`qa.mjs`'s expected baseline is **two** slides, both benign: the Welcome slide
+(`NO LOGO`, plus its `pointer-events-none` decorative blobs) and the Thank you
+slide (`NO LOGO`, because it carries the mark on stage instead of in the
+footer). Anything else is a regression.
+
+**Re-run `video-safe.mjs` and `qa.mjs` as a pair after any layout change.**
+They pull in opposite directions: video-safe wants content pushed down out of
+the top-right rectangle, qa wants it to fit above the bottom of the frame, and
+every pixel a fix adds at the top is a pixel lost at the bottom. Satisfying one
+alone will break the other, which happened twice while building session 4.
+
+Three levers fix a slide that trips either one, and picking the wrong one
+wastes a sweep:
+
+| Symptom | Lever |
+|---|---|
+| Content sits too high, into the video rectangle | give the slide a `lead`, which grows the header |
+| A panel is genuinely too long | `fontSize` on `CodeBlock` or `Terminal`. **Not `maxHeight`**: that only adds an inner scroll, and the harnesses measure the un-clipped rect, so the number does not move |
+| Content is narrow by nature but drawn full width | cap the width and align it left. The rectangle starts at x=913, so a block ending before it can be as tall as the well allows |
 
 Before running any of it, **update `slideCount` in `deck.config.json`** if the
 count changed. Every harness reads it, and a stale count makes the sweep stop

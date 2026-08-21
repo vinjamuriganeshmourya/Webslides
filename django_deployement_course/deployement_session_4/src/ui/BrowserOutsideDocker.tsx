@@ -220,10 +220,19 @@ export function BrowserOutsideDocker({ className = '' }: { className?: string })
         <PortDoor y={104} delay={0.4} instant={instant} />
         <PortDoor y={188} delay={0.46} instant={instant} />
 
+        {/*
+          The labels sit in the clear span between the published-port door
+          (ends x=267) and the container (starts x=412), centred at 340 and
+          lifted 12 above their own connector line.
+
+          At x=300 they were centred ON the door and the dashed Docker
+          boundary, so both addresses rendered across the one line in the figure
+          that has to stay legible: the boundary is the whole argument.
+        */}
         <Hop
           d={`M ${BROWSER.x + BROWSER.w} 124 H ${DOCKER.x - 12}`}
           label="localhost:3000"
-          labelX={300}
+          labelX={340}
           labelY={112}
           delay={0.54}
           instant={instant}
@@ -231,8 +240,8 @@ export function BrowserOutsideDocker({ className = '' }: { className?: string })
         <Hop
           d={`M ${BROWSER.x + BROWSER.w / 2} ${BROWSER.y + BROWSER.h} V 208 H ${DOCKER.x - 12}`}
           label="localhost:8000"
-          labelX={300}
-          labelY={230}
+          labelX={340}
+          labelY={196}
           delay={0.78}
           instant={instant}
         />

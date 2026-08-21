@@ -16,6 +16,7 @@ import {
   OnlyImageSlide,
   ProceduralStepsSlide,
   ScenarioSlide,
+  QuestionSlide,
   KeyTakeawaysSlide,
   PracticeSlide,
   FeedbackSlide,
@@ -44,6 +45,20 @@ class ProductSerializer(serializers.ModelSerializer):
  * the template. Duplicate this file and edit the array to build a new lesson.
  */
 export const sampleDeck: SlideDef[] = [
+  {
+    id: 'sample-question',
+    section: 'Slide types',
+    label: 'Question',
+    element: (
+      <QuestionSlide
+        question="If this image is rebuilt next month, does it install the same version?"
+        qualifier="Assume nothing else about the project changed"
+        lesson="Component Gallery"
+      />
+    ),
+    notes:
+      'THE PAUSE BEAT. One question, hero scale, optically centred, and nothing else on the slide. No bullets, no figure, no answer: the room answers out loud and the NEXT slide responds. A compound question gets split into two of these.',
+  },
   {
     id: 'welcome',
     label: 'Welcome',
