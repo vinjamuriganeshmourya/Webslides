@@ -348,8 +348,16 @@ removed** — a stale count silently skips the tail of the deck.
 entrances that play on mount, which is why the harnesses settle for 2600ms; see
 the capture-timing note at the end of `KIT.md` before lowering that.
 
-Expected `qa.mjs` baseline: slide 1 flagged for its `pointer-events-none`
-decorative blobs. Anything else is a regression.
+Expected `qa.mjs` baseline — **two** flagged slides, both benign:
+
+- **slide 1 (Welcome)** — `NO LOGO` plus overflow on its `pointer-events-none`
+  decorative blobs.
+- **the Thank you slide (last)** — `NO LOGO` only. The harness looks for the mark
+  in `footer svg, footer img`, and this slide carries the mark *on stage*
+  instead, so it passes `footerLogo={false}` to stop the footer printing a
+  second one. `BrandSlide` does the same.
+
+Anything else is a regression.
 
 ### The standalone HTML build
 

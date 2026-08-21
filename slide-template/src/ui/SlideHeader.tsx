@@ -29,6 +29,20 @@ import { accentByTone, type Tone } from '@/design/tokens'
 const HEADER_MIN_H = 'min-h-[168px]'
 
 /**
+ * The same floor for a header that has NO lead.
+ *
+ * A kicker and a one-line title measure about 68px, so the full 168px reserved a
+ * lead's worth of space that nothing ever filled: the gap between the title and
+ * the first line of body copy read as a hole in the slide. 120px keeps the well's
+ * top edge at y=168 and hands the other 48px back to the content.
+ *
+ * The video reservation is NOT enforced by this number alone once it drops below
+ * 172 — see the right-column guard in `ContentSlide`, which holds a side visual at
+ * y>=220 regardless of how short the header is.
+ */
+const HEADER_MIN_H_NO_LEAD = 'min-h-[120px]'
+
+/**
  * A `Reveal` that does not move: a plain div, so `RevealGroup`'s variants have
  * nothing to propagate into and the part simply exists at its final position.
  *
@@ -72,7 +86,9 @@ export function SlideHeader({
   const LeadPart = carry.lead ? Still : Reveal
   return (
     <RevealGroup
-      className={`relative shrink-0 ${HEADER_MIN_H} ${centered ? 'text-center' : ''} ${className}`}
+      className={`relative shrink-0 ${lead ? HEADER_MIN_H : HEADER_MIN_H_NO_LEAD} ${
+        centered ? 'text-center' : ''
+      } ${className}`}
       stagger={0.08}
     >
       {!centered && (

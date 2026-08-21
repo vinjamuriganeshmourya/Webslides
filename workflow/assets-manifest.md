@@ -32,12 +32,69 @@ captures of the running session code.
 | Canva AI divider candidates ×12 (jobs `6010fe55…`, `3a8c51b6…`, `1ec00772…`) | thumbnails archived in session scratchpad | Canva AI generate-design, user-requested 2026-07-24 | **not used in deck** — side-by-side review held; user chose in-house for all three dividers (semantic precision + real logos) | 2026-07-24 |
 | `session-1-cover-generated.png` | `workflow/assets/canva/` | Canva AI (design DAHPntOF_Vs) | **not used in deck** — below the deck's professional bar; archived as reference | 2026-07-17 |
 
+## Session 3 — Docker Compose for Multi-Container Apps (plan signed off 2026-08-20)
+
+Rule S9 for this session: **every technology renders as a PNG**, rasterised at
+512px from the vendor's own SVG already in the repo. No SVG appears on a slide,
+and no vendor mark is redrawn or recoloured.
+
+| Asset | Location | Source / license | Used by | Verified |
+|---|---|---|---|---|
+| **Devicon set as PNG** (docker, docker-white, python, nodejs, react, django, npm, vscode, vitejs, container-white) | `deployement_session_3/public/assets/tech/*.png` | rasterised with cairosvg at 512px from the Devicon SVGs already in the repo (MIT, user-approved 2026-07-24). No recolouring | slides 5, 11, 13, 29, 39, 60, 61 | 2026-08-20, alpha and content bbox asserted per file |
+| `TwoRuntimes` (React and Django cards, runtime chips, arrows both ways) | `src/ui/TwoRuntimes.tsx` | built in-house | the-gap (5) | 2026-08-20, rendered in QA |
+| `OneProcessRule` (the cram-it-in attempt goes red, then two clean boxes) | `src/ui/OneProcessRule.tsx` | built in-house | c1-one-process (13) | 2026-08-20, rendered in QA |
+| `HandRitual` (the command count rolls 6 to 12 as two dashed services drop in) | `src/ui/HandRitual.tsx` | built in-house | c2-does-not-scale (26) | 2026-08-20, rendered in QA |
+| `Orchestra` (score, conductor, baton, four players lighting on one beat) | `src/ui/Orchestra.tsx` | built in-house | c2-orchestra (28) | 2026-08-20, rendered in QA |
+| `YamlNesting` (YAML beside the equivalent Python dict, plus the two rules) | `src/ui/YamlNesting.tsx` | built in-house | c3-yaml (35) | 2026-08-20, rendered in QA |
+| `VolumeSurvival` (3 acts: write and lose · plug in the host disk · the count climbs) | `src/ui/VolumeSurvival.tsx` | built in-house | c3-answer-no (44), c3-volume (45), c4-volume-works (54) | 2026-08-20, rendered in QA |
+| `ComposeNetwork` (2 acts: `localhost:8000` loops back red · `backend:8000` crosses green) | `src/ui/ComposeNetwork.tsx` | built in-house | c4-localhost (60), c4-service-name (61) | 2026-08-20, rendered in QA |
+| `StackUp` (the four things `up` creates, ticked in transcript order) | `src/ui/StackUp.tsx` | built in-house | c4-up (51) | 2026-08-20, rendered in QA |
+| `CodeBuildSlide` (file panel + one annotation, shared by the six YAML build slides) | `src/slides/CodeBuildSlide.tsx` | built in-house | 36 to 40, 46 | 2026-08-20, rendered in QA |
+
+### Outstanding captures, C1 to C12
+
+**None of these are possible on the current capture machine.** Docker Desktop
+will not run inside VirtualBox (Hyper-V/HCS unavailable), the same blocker that
+left Sessions 1 and 2 quoted. Every transcript below is **quoted from the TR doc**
+and rendered through `Terminal`, and the speaker note on each slide says so.
+Image IDs, sizes and timings are illustrative. Swapping a real capture in later
+needs no layout change, because `Terminal` takes the same lines either way.
+
+| # | Slide | Command to capture |
+|---|---|---|
+| C1 | 7 | `docker --version` and `dir` in `docker-demo` |
+| C2 | 19 | `docker build -t nxttrendz-frontend .` |
+| C3 | 20 | `docker run nxttrendz-frontend` |
+| C4 | 21 | the backend rebuild, and `docker images` |
+| C5 | 24 | the six by-hand commands, both folders |
+| C6 | 34 | creating `docker-compose.yml` |
+| C7 | 51 | `docker compose up`, the full 4/4 output |
+| C8 | 52 | `docker compose ps` and `ps -a` |
+| C9 | 53 | `docker compose up -d` |
+| C10 | 54, 56 | the second `up`, and `down -v` then `up` |
+| C11 | 55, 57 | `docker compose down`, and `up --build` |
+| C12 | 58 | `no configuration file provided` from `C:\nxttrendz` |
+
+### Two kit changes this session made
+
+| Change | File | Why |
+|---|---|---|
+| `CodeBlock` learned a **YAML mode** (`language="YAML"` colours `key:` tokens) | `src/ui/CodeBlock.tsx` | A compose file is the main exhibit on eight slides and the KEY is the lesson. Same argument that added the Dockerfile instructions in Session 2 |
+| `CodeBlock` gained a **`fontSize`** prop, as `Terminal` already had | `src/ui/CodeBlock.tsx` | The finished 18-line compose file scrolls at 17px, which hides the service-level `volumes:` from the bottom-level block that declares it. A scrolling panel is also a `qa.mjs` frame overflow |
+
+Both were made in `slide-template` as well, so the kit stays the source of truth.
+
 ## External-source rule
 
 Freepik / other free libraries are permitted only with: a free license,
 attribution recorded here, and explicit user approval before download.
-Used so far: **Devicon (MIT)** logo set, user-approved 2026-07-24. All other
-visuals are in-house or real captures.
+Used so far: **Devicon (MIT)** logo set, user-approved 2026-07-24, and its PNG
+rasterisations for Session 3. All other visuals are in-house or real captures.
+
+Session 3 deliberately did **not** download a Docker Compose or YAML logo: Compose
+has no separate official mark and uses the Docker whale, and YAML's would have had
+to come from a third party rather than the vendor. Slide 10 names four base images
+as text instead, which is what the room will actually type.
 
 ---
 

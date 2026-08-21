@@ -14,6 +14,7 @@ export {
 } from './ContentImageSlides'
 export { ContentNoteSlide } from './ContentNoteSlide'
 export { FlowChartSlide } from './FlowChartSlide'
+export { CodeBuildSlide } from './CodeBuildSlide'
 export { OnlyImageSlide } from './OnlyImageSlide'
 export { ProceduralStepsSlide } from './ProceduralStepsSlide'
 export { ScenarioSlide } from './ScenarioSlide'

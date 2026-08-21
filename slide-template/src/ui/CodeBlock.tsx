@@ -68,6 +68,59 @@ function highlightLine(line: string) {
   return out
 }
 
+/*
+ * YAML mode.
+ *
+ * The generic tokenizer above is wrong for YAML in the one way that matters:
+ * a key is not a keyword from a fixed set, it is "the identifier before the
+ * first colon on the line". Session 3 renders a docker-compose.yml as its main
+ * exhibit on eight slides, and on most of them the KEY is the lesson
+ * (`services`, `build`, `depends_on`, `environment`, `volumes`). Left to the
+ * generic path the whole file rendered as flat plain text, exactly the problem
+ * that added the Dockerfile instructions to the keyword set in Session 2.
+ *
+ * Deliberately small: indent, an optional list dash, a key, and the rest of the
+ * line as a value. Anything that does not match that shape (a bare list item, a
+ * comment, a blank line) falls through to plain text, so this can never mangle
+ * a file it does not understand.
+ */
+const YAML_LINE = /^(\s*)(-\s+)?([A-Za-z_][\w.-]*)(:)(.*)$/
+
+function highlightYamlLine(line: string) {
+  const hash = line.indexOf('#')
+  const code = hash >= 0 ? line.slice(0, hash) : line
+  const comment = hash >= 0 ? line.slice(hash) : ''
+  const tail = comment ? (
+    <span key="c" style={{ color: COLORS.comment, fontStyle: 'italic' }}>{comment}</span>
+  ) : null
+
+  const m = YAML_LINE.exec(code)
+  if (!m) {
+    // A bare list item (`- db_data:/app/data` has no key, `- backend` has none
+    // either): colour just the dash so the eye can still find the list.
+    const dash = /^(\s*)(-\s+)(.*)$/.exec(code)
+    if (dash) {
+      return [
+        <Fragment key="i">{dash[1]}</Fragment>,
+        <span key="d" style={{ color: COLORS.number }}>{dash[2]}</span>,
+        <span key="v" style={{ color: COLORS.string }}>{dash[3]}</span>,
+        tail,
+      ]
+    }
+    return [<Fragment key="p">{code}</Fragment>, tail]
+  }
+
+  const [, indent, dash, key, colon, value] = m
+  return [
+    <Fragment key="i">{indent}</Fragment>,
+    dash ? <span key="d" style={{ color: COLORS.number }}>{dash}</span> : null,
+    <span key="k" style={{ color: COLORS.keyword, fontWeight: 600 }}>{key}</span>,
+    <Fragment key="c2">{colon}</Fragment>,
+    value ? <span key="v" style={{ color: COLORS.string }}>{value}</span> : null,
+    tail,
+  ]
+}
+
 export function CodeBlock({
   code,
   filename,
@@ -76,6 +129,8 @@ export function CodeBlock({
   showLineNumbers = true,
   className = '',
   maxHeight = 470,
+  minHeight,
+  fontSize,
 }: {
   code: string
   filename?: string
@@ -89,9 +144,36 @@ export function CodeBlock({
    * push its slide out of the 1280×720 frame — it scrolls inside instead.
    */
   maxHeight?: number
+  /**
+   * Override the 17px `text-code` step, in px.
+   *
+   * Exists for ONE reason: a panel that scrolls is a panel whose learner cannot
+   * see the whole file, and `qa.mjs` reports the un-clipped content rect as a
+   * frame overflow, so a scrolling panel is a QA failure as well as a teaching
+   * one. Session 3's finished `docker-compose.yml` is eighteen lines, which does
+   * not fit at 17px beside anything else, and splitting one file across two
+   * panels would undo the entire point of the section.
+   *
+   * `Terminal` already takes the same prop for the same reason. Use it to make a
+   * long file fit, never to squeeze a second idea onto a slide.
+   */
+  fontSize?: number
+  /**
+   * Floor for the scrollable code area, in px.
+   *
+   * For a BUILD SEQUENCE, where the same file is rendered across several slides
+   * with one more key each time. Without a floor the panel is only as tall as the
+   * file so far, so the first step leaves ~300px of dead space under it and the
+   * last leaves none: six slides that are supposed to be one file look like six
+   * different slides. Setting it equal to `maxHeight` makes the panel one fixed
+   * box that the file grows inside, which is what the sequence is claiming.
+   */
+  minHeight?: number
 }) {
   const lines = code.replace(/\n$/, '').split('\n')
   const hl = new Set(highlight)
+  // `language` is also the chip label, so match case-insensitively.
+  const isYaml = /^ya?ml$/i.test(language)
   return (
     <div className={`overflow-hidden rounded-card bg-night-2 shadow-card ${className}`}>
       <div className="flex items-center gap-2 border-b border-white/10 px-4 py-2.5">
@@ -107,7 +189,11 @@ export function CodeBlock({
       </div>
       <pre
         className="overflow-auto px-4 py-4 font-mono text-code leading-relaxed"
-        style={{ maxHeight }}
+        style={{
+          maxHeight,
+          ...(minHeight ? { minHeight } : {}),
+          ...(fontSize ? { fontSize, lineHeight: 1.55 } : {}),
+        }}
       >
         <code className="grid">
           {lines.map((line, i) => (
@@ -119,7 +205,9 @@ export function CodeBlock({
               {showLineNumbers && (
                 <span className="select-none text-right text-white/25">{i + 1}</span>
               )}
-              <span className="text-white/90">{line ? highlightLine(line) : ' '}</span>
+              <span className="text-white/90">
+                {line ? (isYaml ? highlightYamlLine(line) : highlightLine(line)) : ' '}
+              </span>
             </span>
           ))}
         </code>

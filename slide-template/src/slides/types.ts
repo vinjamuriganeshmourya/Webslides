@@ -90,6 +90,24 @@ export interface ContentNoteSlideProps extends ContentSlideProps {
   }
 }
 
+export interface CodeBuildSlideProps extends Base {
+  kicker?: string
+  title: ReactNode
+  lead?: ReactNode
+  /** The whole file AS IT STANDS on this slide, not just the new lines. */
+  code: string
+  filename?: string
+  /** 1-based lines added on this slide. These are the lit ones. */
+  highlight?: number[]
+  /** What the new key does. `replaces` names the manual step it retires. */
+  annotation: { key: ReactNode; body: ReactNode; replaces?: ReactNode }
+  note?: {
+    kind?: 'note' | 'tip' | 'info' | 'warning' | 'success'
+    title?: ReactNode
+    body: ReactNode
+  }
+}
+
 export interface FlowChartSlideProps extends Base {
   kicker?: string
   title: ReactNode

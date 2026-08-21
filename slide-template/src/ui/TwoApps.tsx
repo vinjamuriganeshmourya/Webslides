@@ -78,7 +78,7 @@ export function TwoApps({ className = '' }: { className?: string }) {
         <Card
           icon={<ServerIcon width={28} height={28} />}
           title="Django REST API"
-          note="runs perfectly — and nothing calls it"
+          note="runs perfectly, and nothing calls it"
           color={teal}
         />
       </Reveal>

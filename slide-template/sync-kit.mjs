@@ -86,6 +86,7 @@ const KIT = {
     'preview.mjs',
     'chrome-check.mjs',
     'continuity-check.mjs',
+    'align-check.mjs',
     'scan-fonts.mjs',
     'deck.config.mjs',
   ],
