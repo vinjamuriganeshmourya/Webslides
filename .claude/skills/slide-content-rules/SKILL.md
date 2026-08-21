@@ -1,6 +1,6 @@
 ---
 name: slide-content-rules
-description: Hard content, wording, animation and chrome rules for NxtWave/NIAT session slide decks. Use whenever writing, editing, or reviewing slide copy, deck source under a session project (src/decks/*.tsx), slide plans in workflow/plans/, slide components in src/ui or src/slides, or terminal/command/table/illustration content on a slide. Covers banned punctuation, banned words, terminal rendering, problem sequencing, one-idea-per-slide, parallel text-and-visual reveal, deck chrome colour, and illustration honesty.
+description: Hard content, wording, animation and chrome rules for NxtWave/NIAT session slide decks. Use whenever writing, editing, or reviewing slide copy, deck source under a session project (src/decks/*.tsx), slide plans in <course>/session_plans/<session>/plan.md, slide components in src/ui or src/slides, or terminal/command/table/illustration content on a slide. Covers banned punctuation, banned words, terminal rendering, problem sequencing, one-idea-per-slide, parallel text-and-visual reveal, deck chrome colour, illustration honesty, technology logos, the central asset library, and registering approved slide types.
 ---
 
 # Slide content rules
@@ -209,3 +209,68 @@ Before a capture goes on a slide:
 
 Capture files keep the full uncropped original alongside the cropped asset, so a
 later reviewer can confirm the crop did not distort what happened.
+
+## 12. A technology named on a slide carries its logo
+
+If a slide names or uses a technology — Django, Docker, React, Postgres, npm,
+VS Code, an operating system — its mark goes on the slide. A learner scanning a
+diagram finds the logo before they finish reading the label, and a stack
+diagram with three named boxes and no marks makes them read all three.
+
+- **PNG is the format.** Fetch it as PNG into `public/assets/tech/<name>.png`
+  and reference it as `/assets/tech/<name>.png`.
+- **An existing SVG satisfies this rule.** Nine logos predate the PNG
+  convention and are still referenced; do not re-fetch a PNG of a logo the deck
+  already renders from SVG just to comply.
+- **Fetch it into the central library first**, never straight into a session.
+  See rule 13.
+- **Never reference a logo file that is not on disk.** This is not theoretical:
+  `TwoRuntimes` and `OneProcessRule` asked for `django.png`, `nodejs.png`,
+  `python.png` and `react.png` while only the `.svg` files were present, so
+  every deck copied from the base template rendered four broken images. After
+  adding a logo reference, confirm the file resolves.
+- Name it after the technology, lowercase, no version number. A light-on-dark
+  variant takes the `-white` suffix, like `docker-white.png`.
+
+The logo supports the label; it does not replace it. A mark with no name beside
+it is a guessing game for anyone who does not already know the technology.
+
+## 13. Every asset lives in the central library first
+
+`slide-kit/assets/` is the one place images are kept: `tech/` for technology
+logos, `quiz/` for quiz decorations, `brand/` for the NxtWave mark.
+
+**Look there before fetching anything.** If the asset exists, copy it into the
+session's `public/assets/`. If it does not, fetch it into the library, then
+copy it across. Never fetch straight into a session, and never keep a
+session-only copy of something another deck will want.
+
+A deck cannot read the library at runtime — Vite serves from the project's own
+`public/`, and the single-file build inlines from there — so `public/assets/`
+is a working copy of library files, byte-identical to them.
+
+This rule exists because the opposite happened: each session kept its own
+assets, they drifted, and the base template ended up shipping references to
+files that only existed in one session. `slide-kit/assets/README.md` has the
+current inventory and the naming convention.
+
+## 14. An approved slide type or transition goes into the kit and the registry
+
+A layout or motion built for one slide, once the user approves it as worth
+keeping, is not finished when it renders. It is finished when the next deck can
+find it.
+
+- The component moves into the kit — `src/slides/` for a slide type, `src/ui/`
+  for a figure, `src/motion/` for a transition — and is exported from the
+  barrel, so `sync-kit.mjs` carries it to every session.
+- It is added to `src/decks/sampleDeck.tsx`, the gallery the next person
+  browses. A component missing from the gallery is invisible.
+- It gets a row in `slide-kit/slide-types/README.md` saying **what it is for**,
+  not just its name.
+
+**Approved means the user said so.** A one-off arrangement for a single slide
+stays inline in that deck; promoting everything turns the kit into a junk
+drawer, and a signed-off deck's output changes when the kit does.
+
+Retiring follows the same path in reverse: into `remove:` in `sync-kit.mjs`
+with the reason, and marked retired in the registry, the way `QuizSlide` is.
