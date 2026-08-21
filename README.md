@@ -60,7 +60,10 @@ file manager. If that file looks right, your setup is correct.
 ## How the repo is arranged
 
 ```
+RULES.md                     every standing rule, one line each
 slide-kit/                   shared by everyone. Not tied to any course.
+  assets/                    logos and images — look here before fetching
+  slide-types/               slide types and transitions already approved
 django_deployement_course/   one course. Yours goes next to it, not inside it.
 testing/                     parked, unused tooling
 ```
@@ -231,5 +234,8 @@ rules, keep them `**/`-prefixed so they work at any depth.
 | How should the words read? | `slide-kit/workflow/TEXT_GUIDELINES.md` |
 | Which slide type, which colour? | `slide-kit/workflow/STYLE_GUIDE.md` |
 | How is a concept taught across slides? | `slide-kit/workflow/PEDAGOGY_GUIDELINES.md` |
+| What are all the rules? | `RULES.md` |
+| Is there already a logo/image for this? | `slide-kit/assets/README.md` |
+| Is there already a slide type for this? | `slide-kit/slide-types/README.md` |
 | Kit or session — who owns this file? | `slide-kit/slide-template/KIT.md` |
 | What has this specific deck decided? | that session's own `CLAUDE.md` |

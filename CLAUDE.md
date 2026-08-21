@@ -13,7 +13,11 @@ Code session in this repo; everything else is read on demand.
 ## Layout
 
 ```
+RULES.md                    index of every standing rule ← start here
+
 slide-kit/                  course-independent. Shared by every deck.
+  assets/                   THE asset library. Fetch here first, then copy.
+  slide-types/              registry of approved slide types and transitions
   slide-template/           THE KIT: rendering layer + a content-free base deck
     KIT.md                  what is kit vs. what a session owns  ← read first
     CLAUDE.md               working rules for the kit itself
@@ -51,6 +55,11 @@ testing/
   skills/generate-slides/SKILL.md        the whole slide-generation procedure
   settings.json                          shared plugin list (committed)
 ```
+
+**Every standing rule in this repo is indexed in [`RULES.md`](RULES.md)**, one
+line each, pointing at the file that holds the full text. Read it when you are
+unsure whether something is a rule. Add to it only with the user's
+confirmation, following the procedure at the bottom of that file.
 
 **A course is just a directory.** Nothing in `slide-kit/` names a course, so a
 second one is a new sibling folder, not a fork.
