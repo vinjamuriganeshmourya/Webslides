@@ -1,7 +1,7 @@
 <!-- cSpell:ignore nxttrendz deployement NxtWave colour colours behaviour djangorestframework simplejwt dockerignore nvmrc PYTHONUNBUFFERED runserver gunicorn createsuperuser sqlite Vite vitejs nodejs venv hostnames myproject asgiref sqlparse travelling realisation containerised -->
 # Deployment · Session 4: "Running the Real App with Docker"
 
-**STATUS: AWAITING SIGN-OFF**
+**STATUS: SIGNED OFF 2026-08-21 · GENERATION IN PROGRESS**
 
 No slide is generated until this plan is approved. Section 7 is the gate.
 
@@ -274,3 +274,71 @@ Cuts 1 to 3 land it at **71**.
 
 On approval I scaffold the project from `slide-kit/slide-template`, generate the
 deck, and run the full verification sweep before showing you anything.
+
+---
+
+## 8. What generation changed
+
+Recorded because the plan is the contract, and generation always finds things
+the plan could not.
+
+### 8.1 The count went 76 → 78
+
+Two slides were added while writing, both because a slide was carrying two ideas
+(content rule 5):
+
+| Added | Why |
+|---|---|
+| `c3-whats-changed` | Slide 54 was going to show the complete Compose file **and** the inventory of everything created today. Two exhibits, two ideas. The inventory is now its own slide, and it is the natural place to pause if anyone is behind |
+| `c4-new-workflow` | The proof cycle and the old-habit/new-habit table were one slide in the plan. The proof is a live demo beat, the table is a reference the room screenshots. They do not belong on one frame |
+
+`deck.config.json` carries **78**, counted from the deck array rather than typed.
+
+### 8.2 Layout, found by `video-safe.mjs`
+
+The first sweep failed: **10 of 78 slides** placed content in the instructor
+video rectangle (`x 913..1280, y 0..220`).
+
+Every one of them was a **lead-less slide carrying a full-width child**. A
+lead-less header stops short, the body well starts higher, and a tall centred
+child reaches up into the rectangle. This is exactly the class of failure
+session 3's §8.1 recorded, and the fix is the same: a `lead`.
+
+Confirmed rather than assumed. Session 3 was re-run under the same harness and
+printed CLEAN with six `CodeBuildSlide` slides, and all five of its
+`CodeBuildSlide` usages carry a lead while both of mine did not. That ruled out
+a kit regression and pointed at the deck.
+
+Eleven slides gained a lead: 7, 10, 14, 30, 36, 42, 49, 54, 57, 64, 71. Each one
+is better copy for it, so nothing was distorted to satisfy the harness.
+
+One slide needed more. `c4-who-talks` carries `BrowserOutsideDocker`, which at
+full width is 1152x534 and too tall to centre clear of the rectangle even with a
+lead. It is capped at `max-w-[800px]`, which drops its top edge below y=220.
+
+### 8.3 A kit bug this surfaced, not fixed
+
+`vite.config.ts` hardcodes `server.port: 5173`. Every harness reads `devPort`
+from `deck.config.json`. **They have never agreed in any session**, which is why
+the kit and all three earlier sessions carry `devPort: 5211` while Vite serves
+5173.
+
+Nothing was broken by it before because the harnesses were passed an explicit
+URL. It is left unfixed here deliberately: `vite.config.ts` is kit-owned, and a
+kit change is the user's call under content rule 14. The workaround is in this
+session's `CLAUDE.md` and in `workflow/skills/session-4-deck/SKILL.md`:
+
+```bash
+npx vite --port 5215 --strictPort
+```
+
+### 8.4 Assets
+
+`sqlite.png` and `git.png` were fetched into `slide-kit/assets/tech/` at 512px
+and copied into the session, per rules 12 and 13. The library is now 25 files.
+
+### 8.5 Still outstanding
+
+- `qa.mjs` and `preview.mjs` have not been run yet at the time of writing.
+- The four figures are session-owned pending the promotion decision in §5.1.
+- No screenshots. Slide 65 remains the steps the room performs, per sign-off.
