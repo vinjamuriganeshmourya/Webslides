@@ -685,7 +685,7 @@ volumes:
     element: (
       <ContentSlide
         kicker="The backend"
-        title="What the Course Left Behind"
+        title="requirements.txt, as It Stands"
         lead="Open backend\requirements.txt. This is what the integration course put there"
         lesson={SESSION}
       >
@@ -1323,12 +1323,18 @@ npm-debug.log`}
     section: 'The Compose File',
     label: 'The locked door',
     element: (
-      <ContentSlide
+      <ContentNoteSlide
         kicker="The new key"
         title="Last Session's Locked Door"
-        lead="From outside Docker, a container is not possible to reach until the service opens a port"
+        lead="This is how the last session ended, and today's new key is what opens it"
         lesson={SESSION}
-        points={[{ text: 'This is the key that opens it', tone: 'brand' }]}
+        noteFirst
+        note={{
+          kind: 'info',
+          title: 'From outside Docker',
+          body: 'A container is not possible to reach until the service opens a port',
+        }}
+        points={[{ text: 'ports is that key', tone: 'brand' }]}
       />
     ),
     notes:

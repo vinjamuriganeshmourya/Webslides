@@ -192,11 +192,21 @@ npm run typecheck
 npm run build:html
 
 export CHROME_PATH=/opt/google/chrome/chrome
-node video-safe.mjs      # must print CLEAN
-node qa.mjs              # baseline is TWO flagged slides, see below
-node align-check.mjs     # misplaced-but-inside-the-frame content
+# The three sweeps are independent processes against the same dev server.
+# Run them in PARALLEL: sequentially they take three times as long for nothing.
+node video-safe.mjs  > /tmp/vs.txt 2>&1 &   # must print CLEAN
+node qa.mjs          > /tmp/qa.txt 2>&1 &   # baseline is TWO flagged slides
+node align-check.mjs > /tmp/al.txt 2>&1 &   # misplaced-but-inside-the-frame
+wait
+
 node preview.mjs && node scripts/build-preview-page.mjs
 ```
+
+Each harness settles 2600ms per slide before measuring, because `AgendaSlide`
+cues its items off a curve that takes ~2.38s to draw. On a 79-slide deck that
+is 3.4 minutes of deliberate waiting per harness, so the parallel run matters.
+Do not lower the settle time to speed it up: `KIT.md` records a signed-off
+preview that shipped with every agenda captured two items in.
 
 **Then look at the figures.** The three harnesses measure DOM rectangles, so an
 `<svg>` is one box to them and a figure whose internal labels collide passes
