@@ -14,7 +14,7 @@ No slide is generated until this plan is approved. Section 7 is the gate.
 | Deck file | `src/decks/runningRealAppDeck.tsx` |
 | Proposed slide count | **72** (see §6 for where it compresses if you want it shorter) |
 | `devPort` | `5215`. Note: the kit and **all three** existing sessions are on `5211` — the scaffold never changed it, so two decks cannot run at once today. 5215 keeps session 4 out of that collision; renumbering the others is a separate call |
-| `NEXT_UP` | Every command today becomes two words, with a Makefile |
+| `NEXT_UP` | `Automate Deployment using Makefile` (the next session's confirmed name) |
 | Build rules | to be created at `workflow/skills/session-4-deck/SKILL.md` on sign-off |
 
 ---
@@ -191,7 +191,7 @@ Legend for **Assets**: `kit` = already in `src/ui`, `new` = built for this deck,
 |---|---|---|---|---|---|---|
 | 73 | `recap` | What We Covered | `RecapSlide` | The four concepts restated as outcomes | stagger | kit |
 | 74 | `takeaways` | Key Takeaways | `KeyTakeawaysSlide` | Inside a container, a server binds to `0.0.0.0` · `ports` opens the door from outside; service names work only inside · secrets go in `.env`, never in a file that travels · the question is always *where does this code run?* | stagger, light chrome | kit |
-| 75 | `next-session` | Next Session | `SectionBreakerSlide` title-only | Every command today becomes two words, with a Makefile | fade | kit |
+| 75 | `next-session` | Next Session | `SectionBreakerSlide` title-only | `Automate Deployment using Makefile` | fade | kit |
 | 76 | `thankyou` | (fixture) | `ThankYouSlide` | Fixture | fade | kit |
 
 **Total: 76.** The count in the header says 72 for the content slides; the four

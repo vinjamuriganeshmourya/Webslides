@@ -111,6 +111,39 @@ changing it is the user's call. The fix is the same static map.
 Keep the map trimmed to what the deck renders. Every entry is inlined whether a
 slide uses it or not, and ten unused logos added 290 KB to the file.
 
+## S9 The harnesses cannot see inside your figures
+
+All four figures in this deck are SVG, and `qa.mjs`, `video-safe.mjs` and
+`align-check.mjs` measure DOM rectangles. An `<svg>` is one rectangle. Every
+label inside it is invisible to all three.
+
+Both figures shipped to review with collisions while all three harnesses
+reported clean:
+
+| Figure | What collided | Fix |
+|---|---|---|
+| `PortPublish` | the two `8000` labels sat above the doors, level with the zone titles, straddling the box borders | moved below the doors and 34 into their own zone |
+| `BrowserOutsideDocker` | both `localhost:` labels were centred at x=300, on top of the port doors and the dashed Docker boundary | moved to x=340, the clear span between door and container |
+
+`VolumeShadow` and `ExecAnatomy` were checked at the same time and are fine.
+
+**Screenshot all four after any change to them.** Content rule 17. The
+arithmetic looks right in source right up until a font renders wider than the
+coordinate assumed, and SVG text has no layout engine to keep it apart from a
+neighbour.
+
+## S10 Compose highlights are derived, not counted
+
+`hl(stage, ...needles)` at the top of the deck returns the line numbers whose
+text matches. `CodeBuildSlide.highlight` takes numbers, and hardcoding them
+broke silently the moment the file was compacted by one line: every highlight
+below the removed line moved onto the wrong row, with no type error and no
+harness complaint.
+
+The needles have to be specific. `'volumes:'` matches **both** the service-level
+key and the top-level block in the final stage, so that call uses
+`'    volumes:'` with its indentation.
+
 ---
 
 ## Feedback log
@@ -121,4 +154,7 @@ reviewed by the user.
 
 | Date | Feedback | Applied as |
 |---|---|---|
-| | | |
+| 2026-08-21 | `\\` rendering as two backslashes on slides | Content rule 15. 19 JSX attributes fixed |
+| 2026-08-21 | A question slide should hold only the question, and compound questions should split | Content rule 16, new `QuestionSlide` in the kit, slide 18 split into two |
+| 2026-08-21 | Slides overlapping, and asked for a deterministic constraint | `align-check.mjs` added to the mandatory sweep in generate-slides §7. It already existed and had never been run |
+| 2026-08-21 | Slides 42 and 70 had overlapping labels inside figures | Content rule 17, and S9 above |

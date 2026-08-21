@@ -8,6 +8,7 @@ import {
   ContentSlide,
   KeyTakeawaysSlide,
   ProceduralStepsSlide,
+  QuestionSlide,
   RecapSlide,
   ScenarioSlide,
   SectionBreakerSlide,
@@ -157,12 +158,10 @@ const COMPOSE_STAGES = [
   `services:
   backend:
     build: ./backend
-
   frontend:
     build: ./frontend
     depends_on:
       - backend
-
 volumes:
   db_data:`,
 
@@ -172,14 +171,12 @@ volumes:
     build: ./backend
     ports:
       - "8000:8000"
-
   frontend:
     build: ./frontend
     ports:
       - "3000:3000"
     depends_on:
       - backend
-
 volumes:
   db_data:`,
 
@@ -189,7 +186,6 @@ volumes:
     build: ./backend
     ports:
       - "8000:8000"
-
   frontend:
     build: ./frontend
     ports:
@@ -198,7 +194,6 @@ volumes:
       VITE_API_BASE_URL: http://localhost:8000
     depends_on:
       - backend
-
 volumes:
   db_data:`,
 
@@ -210,7 +205,6 @@ volumes:
       - "8000:8000"
     env_file:
       - .env
-
   frontend:
     build: ./frontend
     ports:
@@ -219,7 +213,6 @@ volumes:
       VITE_API_BASE_URL: http://localhost:8000
     depends_on:
       - backend
-
 volumes:
   db_data:`,
 
@@ -233,7 +226,6 @@ volumes:
       - .env
     volumes:
       - db_data:/app/data
-
   frontend:
     build: ./frontend
     ports:
@@ -242,10 +234,26 @@ volumes:
       VITE_API_BASE_URL: http://localhost:8000
     depends_on:
       - backend
-
 volumes:
   db_data:`,
 ]
+
+/**
+ * The 1-based line numbers in a stage whose text contains any of `needles`.
+ *
+ * `CodeBuildSlide.highlight` takes line NUMBERS, and hardcoding them is a bug
+ * waiting to happen: removing one blank line from a stage silently moves every
+ * highlight below it onto the wrong row, and nothing fails. That happened here
+ * when the file was compacted to fit the panel.
+ *
+ * Deriving them from the content means the lit lines follow their own text.
+ */
+function hl(stage: string, ...needles: string[]): number[] {
+  return stage
+    .split('\n')
+    .map((line, i) => (needles.some((n) => line.includes(n)) ? i + 1 : 0))
+    .filter(Boolean)
+}
 
 const BACKEND_DOCKERFILE = `FROM python:3.13-slim
 
@@ -307,22 +315,21 @@ export const runningRealAppDeck: SlideDef[] = [
       APP_ENV: development
     volumes:
       - db_data:/app/data
-
   frontend:
     build: ./frontend
     environment:
       API_URL: http://backend:8000
     depends_on:
       - backend
-
 volumes:
   db_data:`}
           filename="docker-compose.yml"
           language="yaml"
-          /* Capped so the panel centres BELOW the instructor-video rectangle.
-             At its natural ~447px it tops out at y=191 and clips the corner of
-             the reserved box; see the session skill, rule S5. */
-          maxHeight={380}
+          /* 15px, not the 17px default. At 17 this sixteen-line file is ~447px:
+             it tops out at y=191 inside the instructor-video rectangle AND
+             overflows the frame by 43px. `maxHeight` does not fix that, it only
+             adds an inner scroll, and qa.mjs measures the un-clipped rect. */
+          fontSize={15}
         />
       </ContentSlide>
     ),
@@ -523,7 +530,7 @@ volumes:
         lesson={SESSION}
       >
         <FileTree
-          root="C:\\nxttrendz"
+          root="C:\nxttrendz"
           entries={[
             { name: 'backend', folder: true, state: 'existing' },
             { name: 'manage.py', depth: 1, state: 'existing' },
@@ -533,9 +540,7 @@ volumes:
             { name: 'env', depth: 1, folder: true, state: 'existing', note: 'the venv' },
             { name: 'frontend', folder: true, state: 'existing' },
             { name: 'package.json  package-lock.json  vite.config.js', depth: 1, state: 'existing' },
-            { name: 'src', depth: 1, folder: true, state: 'existing' },
-            { name: 'node_modules', depth: 1, folder: true, state: 'existing' },
-            { name: 'docker-demo', folder: true, state: 'existing', note: "last session's practice folder, keep it" },
+            { name: 'docker-demo', folder: true, state: 'existing', note: 'last session, untouched' },
           ]}
         />
       </ContentSlide>
@@ -681,7 +686,7 @@ volumes:
       <ContentSlide
         kicker="The backend"
         title="What the Course Left Behind"
-        lead="Open backend\\requirements.txt. This is what the integration course put there"
+        lead="Open backend\requirements.txt. This is what the integration course put there"
         lesson={SESSION}
       >
         <CodeBlock
@@ -690,7 +695,7 @@ djangorestframework
 django-filter
 djangorestframework-simplejwt
 django-cors-headers`}
-          filename="backend\\requirements.txt"
+          filename="backend\requirements.txt"
           language="text"
         />
       </ContentSlide>
@@ -699,19 +704,33 @@ django-cors-headers`}
       'Show it before naming the problem (R6). The room has never looked twice at this file, and that is exactly the point.',
   },
   {
-    id: 'c2-the-question',
+    id: 'c2-question-which-version',
     section: 'A Dockerfile for Each Half',
-    label: 'The pinning question',
+    label: 'Question: which version',
     element: (
-      <ContentSlide
+      <QuestionSlide
         kicker="A question first"
-        title="Same Django Next Month?"
-        lead="If pip install -r requirements.txt runs inside the image build today, and again on a teammate's machine next month, does it install the same Django both times?"
+        question={<>Which version of Django does this file install?</>}
+        qualifier="The build runs pip install -r requirements.txt, and the file names Django with no version"
         lesson={SESSION}
       />
     ),
     notes:
-      'The pause beat. Do not answer it. Take hands. Someone will say yes, and the next slide is more useful once they have committed to an answer.',
+      'First half of the pinning question, and the easier half. Someone will say "the latest one", which is the right answer and sets up the second question. Take hands; do not answer it yourself.',
+  },
+  {
+    id: 'c2-question-next-month',
+    section: 'A Dockerfile for Each Half',
+    label: 'Question: next month',
+    element: (
+      <QuestionSlide
+        kicker="And the one that matters"
+        question={<>A teammate builds the same image next month. Do they get the same Django?</>}
+        lesson={SESSION}
+      />
+    ),
+    notes:
+      'The pause beat of the section. Do not answer it. Someone will say yes, and the next slide is far more useful once the room has committed to an answer out loud. Split from the previous slide deliberately: asked together, the room answers the easy half and never considers this one.',
   },
   {
     id: 'c2-pip-freeze',
@@ -740,7 +759,7 @@ django-cors-headers`}
             { text: 'djangorestframework-simplejwt==5.5.1', kind: 'out' },
             { text: '...', kind: 'out' },
           ]}
-          caption="abridged"
+          caption="abridged: pip also lists dependencies of your dependencies"
         />
       </ContentNoteSlide>
     ),
@@ -775,7 +794,7 @@ djangorestframework==3.18.0
 django-filter==26.1
 djangorestframework-simplejwt==5.5.1
 django-cors-headers==4.9.0`}
-          filename="backend\\requirements.txt"
+          filename="backend\requirements.txt"
           language="text"
           highlight={[1, 2, 3, 4, 5]}
         />
@@ -830,7 +849,7 @@ django-cors-headers==4.9.0`}
         lead="The first new file of the day"
         lesson={SESSION}
       >
-        <CodeBlock code={BACKEND_DOCKERFILE} filename="backend\\Dockerfile" language="dockerfile" />
+        <CodeBlock code={BACKEND_DOCKERFILE} filename="backend\Dockerfile" language="dockerfile" />
       </ContentSlide>
     ),
     notes:
@@ -852,7 +871,7 @@ django-cors-headers==4.9.0`}
       >
         <CodeBlock
           code={BACKEND_DOCKERFILE}
-          filename="backend\\Dockerfile"
+          filename="backend\Dockerfile"
           language="dockerfile"
           highlight={[3, 11]}
         />
@@ -1026,7 +1045,7 @@ data/
 .env
 .git/
 .vscode/`}
-          filename="backend\\.dockerignore"
+          filename="backend\.dockerignore"
           language="text"
         />
       </ContentSlide>
@@ -1090,7 +1109,7 @@ data/
           ),
         }}
       >
-        <CodeBlock code={`v20.9.0`} filename="frontend\\.nvmrc" language="text" showLineNumbers={false} />
+        <CodeBlock code={`v20.9.0`} filename="frontend\.nvmrc" language="text" showLineNumbers={false} />
       </ContentNoteSlide>
     ),
     notes:
@@ -1107,7 +1126,7 @@ data/
         lead="Last session's Node Dockerfile with two upgrades"
         lesson={SESSION}
       >
-        <CodeBlock code={FRONTEND_DOCKERFILE} filename="frontend\\Dockerfile" language="dockerfile" highlight={[4, 9]} />
+        <CodeBlock code={FRONTEND_DOCKERFILE} filename="frontend\Dockerfile" language="dockerfile" highlight={[4, 9]} />
       </ContentSlide>
     ),
     notes:
@@ -1139,7 +1158,7 @@ data/
   "axios": "^1.19.0",
   "react": "^19.0.0"
 }`}
-          filename="frontend\\package.json"
+          filename="frontend\package.json"
           language="json"
           highlight={[2]}
         />
@@ -1190,7 +1209,7 @@ data/
     allowedHosts: true,
   },
 })`}
-          filename="frontend\\vite.config.js"
+          filename="frontend\vite.config.js"
           language="javascript"
           highlight={[4]}
         />
@@ -1228,7 +1247,7 @@ build/
 .git/
 .vscode/
 npm-debug.log`}
-          filename="frontend\\.dockerignore"
+          filename="frontend\.dockerignore"
           language="text"
         />
       </ContentNoteSlide>
@@ -1251,7 +1270,7 @@ npm-debug.log`}
         ]}
       >
         <FileTree
-          root="C:\\nxttrendz"
+          root="C:\nxttrendz"
           entries={[
             { name: 'backend', folder: true, state: 'existing' },
             { name: 'Dockerfile', depth: 1, state: 'new' },
@@ -1285,11 +1304,11 @@ npm-debug.log`}
       <CodeBuildSlide
         kicker="The Compose file"
         title="The Same File, One Level Up"
-        lead="In C:\\nxttrendz, above both folders, because it is the one file that describes both"
+        lead="In C:\nxttrendz, above both folders, because it is the one file that describes both"
         lesson={SESSION}
         code={COMPOSE_STAGES[0]}
         filename="docker-compose.yml"
-        highlight={[3, 6]}
+        highlight={hl(COMPOSE_STAGES[0], 'build: ./')}
         annotation={{
           key: 'build:',
           body: 'Last session\u2019s file stripped back to its frame, with the build paths pointing at the real Django and React folders',
@@ -1344,7 +1363,7 @@ npm-debug.log`}
         lesson={SESSION}
         code={COMPOSE_STAGES[1]}
         filename="docker-compose.yml"
-        highlight={[4, 5, 9, 10]}
+        highlight={hl(COMPOSE_STAGES[1], 'ports:', '8000:8000', '3000:3000')}
         annotation={{
           key: 'ports:',
           body: 'Django listens on 8000 because the CMD said so, and Vite on 3000 because vite.config.js said so',
@@ -1397,7 +1416,7 @@ npm-debug.log`}
         lesson={SESSION}
         code={COMPOSE_STAGES[2]}
         filename="docker-compose.yml"
-        highlight={[11, 12]}
+        highlight={hl(COMPOSE_STAGES[2], 'environment:', 'VITE_API_BASE_URL')}
         annotation={{
           key: 'environment:',
           body: (
@@ -1450,7 +1469,7 @@ npm-debug.log`}
       <ContentNoteSlide
         kicker="The secret"
         title="In Plain Sight"
-        lead="Look at what the integration course left in backend\\myproject\\settings.py"
+        lead="Look at what the integration course left in backend\myproject\settings.py"
         lesson={SESSION}
         note={{
           kind: 'warning',
@@ -1465,7 +1484,7 @@ npm-debug.log`}
       >
         <CodeBlock
           code={`SECRET_KEY = 'django-insecure-uqka5q4b_rndv*1f@-bw^fg_r6tu$20wjm@yg7t^n)s@%mjpb@'`}
-          filename="backend\\myproject\\settings.py"
+          filename="backend\myproject\settings.py"
           language="python"
           showLineNumbers={false}
           highlight={[1]}
@@ -1483,7 +1502,7 @@ npm-debug.log`}
       <ContentSlide
         kicker="The secret · step 1 of 3"
         title="Move It Out"
-        lead="Create C:\\nxttrendz\\.env and move the value there"
+        lead="Create C:\nxttrendz\.env and move the value there"
         lesson={SESSION}
       >
         <CodeBlock
@@ -1511,7 +1530,7 @@ npm-debug.log`}
           code={`import os
 
 SECRET_KEY = os.environ.get('SECRET_KEY')`}
-          filename="backend\\myproject\\settings.py"
+          filename="backend\myproject\settings.py"
           language="python"
           highlight={[1, 3]}
         />
@@ -1532,7 +1551,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')`}
         lesson={SESSION}
         code={COMPOSE_STAGES[3]}
         filename="docker-compose.yml"
-        highlight={[6, 7]}
+        highlight={hl(COMPOSE_STAGES[3], 'env_file:', '- .env')}
         annotation={{
           key: 'env_file:',
           body: 'Hands every variable in the named file to this container',
@@ -1600,33 +1619,38 @@ SECRET_KEY = os.environ.get('SECRET_KEY')`}
     section: 'The Compose File',
     label: 'The database moves',
     element: (
-      <CodeBuildSlide
+      <ContentSlide
         kicker="The database"
         title="Into the Volume"
-        lead="An image is frozen, and a database that cannot change is not a database"
+        lead="Last session's line, doing real work. The third settings edit points Django at it: BASE_DIR / 'data' / 'db.sqlite3'"
         lesson={SESSION}
-        code={COMPOSE_STAGES[4]}
-        filename="docker-compose.yml"
-        highlight={[8, 9]}
-        annotation={{
-          key: 'volumes:',
-          body: (
-            <>
-              Last session\u2019s line, doing real work. The third settings edit points Django at it:{' '}
-              <Code>BASE_DIR / 'data' / 'db.sqlite3'</Code>
-            </>
-          ),
-          replaces: 'a database file frozen inside the image',
-        }}
-        note={{
-          kind: 'note',
-          title: 'The container\u2019s database starts empty',
-          body: 'Your laptop\u2019s db.sqlite3 stays on your laptop. What an empty database needs first is the next section',
-        }}
-      />
+      >
+        {/*
+          NOT a CodeBuildSlide, and this is the one stage that cannot be.
+
+          Its panel is 600x400 at 13.5px, which holds about 17 lines. The file
+          reaches 19 here, so align-check reported it clipping 30px off its own
+          bottom, and what fell off was the top-level `volumes: db_data:` block.
+
+          That block is the whole point of this slide: the service-level
+          `volumes:` key mounts a volume that the top-level one declares, and a
+          learner who cannot see both at once cannot see the relationship. So
+          the panel goes narrow and left instead: 760px keeps it clear of the
+          instructor-video rectangle at x=913, which buys the height to show all
+          19 lines at a readable size.
+        */}
+        <CodeBlock
+          code={COMPOSE_STAGES[4]}
+          filename="docker-compose.yml"
+          language="yaml"
+          highlight={hl(COMPOSE_STAGES[4], '    volumes:', 'db_data:/app/data', 'db_data:')}
+          fontSize={13}
+          className="mr-auto w-[760px]"
+        />
+      </ContentSlide>
     ),
     notes:
-      'The promise from last session, kept: "next session the real Django project\u2019s database file lives in exactly this folder". Say that the volume is the one place that outlives containers.',
+      'The promise from last session, kept: "next session the real Django project\u2019s database file lives in exactly this folder". Say that the volume is the one place that outlives containers, and point at BOTH lit `volumes:` keys: the service mounts it, the block at the bottom declares it. The container\u2019s database starts empty, because your laptop\u2019s db.sqlite3 stays on your laptop; what an empty database needs first is the next section.',
   },
   {
     id: 'c3-why-not-app',
@@ -1644,7 +1668,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')`}
           body: 'It would serve that first copy forever: every rebuilt image silently shadowed, and --build apparently doing nothing',
         }}
       >
-        <VolumeShadow act={2} />
+        <VolumeShadow act={2} className="mx-auto max-w-[760px]" />
       </ContentNoteSlide>
     ),
     notes:
@@ -1655,19 +1679,38 @@ SECRET_KEY = os.environ.get('SECRET_KEY')`}
     section: 'The Compose File',
     label: 'The complete file',
     element: (
-      <ContentNoteSlide
+      <ContentSlide
         kicker="The Compose file"
         title="Read It as a Sentence"
-        lead="One skeleton from last session, two new keys, and two kept promises"
+        lead="Six files created, two edited, one .gitignore line, and not a single line of application code touched"
         lesson={SESSION}
-        note={{
-          kind: 'success',
-          title: 'Six files created, two edited, one .gitignore line',
-          body: 'And not a single line of application code touched',
-        }}
       >
-        <CodeBlock code={COMPOSE_STAGES[4]} filename="docker-compose.yml" language="yaml" maxHeight={330} />
-      </ContentNoteSlide>
+        {/*
+          A ContentNoteSlide here overflowed the frame by 170px: the finished
+          file plus a callout is simply more than one slide holds. The callout's
+          claim was the better half, so it became the lead, and the file gets the
+          whole well at 14px. The next slide carries the inventory.
+        */}
+        <CodeBlock
+          code={COMPOSE_STAGES[4]}
+          filename="docker-compose.yml"
+          language="yaml"
+          fontSize={13}
+          /*
+            LEFT-ALIGNED AND NARROW, AND THAT IS THE FIX.
+
+            Full width, this panel is ~496px tall and its top lands at y=193,
+            inside the instructor-video rectangle. Shrinking the font enough to
+            clear it would take 11px, which nobody can read from the back.
+
+            The rectangle starts at x=913, so a panel that ends before it can be
+            as tall as the well allows. At 760px the longest line here
+            (`VITE_API_BASE_URL: http://localhost:8000`, 46 characters) still
+            fits comfortably at 14px.
+          */
+          className="mr-auto w-[760px]"
+        />
+      </ContentSlide>
     ),
     notes:
       'Read it aloud as a sentence: my app is two services, backend built from the real Django folder, reachable at localhost:8000, its secret from .env, its database in a volume, and frontend built from the real React folder, reachable at localhost:3000, told where the backend is, started after it.',
@@ -1684,7 +1727,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')`}
         lesson={SESSION}
       >
         <FileTree
-          root="C:\\nxttrendz"
+          root="C:\nxttrendz"
           entries={[
             { name: 'docker-compose.yml', state: 'new' },
             { name: '.env', state: 'new', note: 'never committed' },
@@ -1694,8 +1737,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')`}
             { name: 'requirements.txt', depth: 1, state: 'new', note: 'pinned' },
             { name: 'myproject\\settings.py', depth: 1, state: 'existing', note: 'three lines changed' },
             { name: 'frontend', folder: true, state: 'existing' },
-            { name: 'Dockerfile', depth: 1, state: 'new' },
-            { name: '.dockerignore', depth: 1, state: 'new' },
+            { name: 'Dockerfile  .dockerignore', depth: 1, state: 'new' },
           ]}
         />
       </ContentSlide>
@@ -1735,7 +1777,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')`}
             { text: ' Container nxttrendz-backend-1    Started', kind: 'ok' },
             { text: ' Container nxttrendz-frontend-1   Started', kind: 'ok' },
           ]}
-          caption="abridged"
+          caption="abridged: both servers' startup logs follow, and we read them next"
         />
       </ContentSlide>
     ),
@@ -1917,14 +1959,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY')`}
             { text: 'docker compose exec backend python manage.py migrate', kind: 'cmd' },
             { text: 'Operations to perform:', kind: 'out' },
             { text: '  Apply all migrations: admin, auth, cart, contenttypes,', kind: 'out' },
-            { text: '                        products, sessions, users', kind: 'out' },
+            { text: '                        products, sessions, token_blacklist, users', kind: 'out' },
             { text: 'Running migrations:', kind: 'out' },
             { text: '  Applying contenttypes.0001_initial... OK', kind: 'ok' },
-            { text: '  Applying users.0001_initial... OK', kind: 'ok' },
-            { text: '  Applying products.0001_initial... OK', kind: 'ok' },
             { text: '  ...', kind: 'out' },
           ]}
-          caption="abridged"
+          caption="abridged: 39 migrations apply, one line each"
         />
       </ContentNoteSlide>
     ),
@@ -2235,7 +2275,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')`}
     id: 'next-session',
     section: 'Closing',
     label: 'Next session',
-    element: <SectionBreakerSlide title="Every Command Today Becomes Two Words" lesson={SESSION} />,
+    element: <SectionBreakerSlide title="Automate Deployment using Makefile" lesson={SESSION} />,
     notes:
       'Count today\u2019s keystrokes out loud: up -d --build, exec backend python manage.py migrate, exec backend python manage.py createsuperuser. Typed daily, these invite typos. Next session compresses each into make up and make migrate, with a Makefile. Title only, no subtitle and no index.',
   },

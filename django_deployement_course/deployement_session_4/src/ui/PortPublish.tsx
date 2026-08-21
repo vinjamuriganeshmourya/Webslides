@@ -40,6 +40,13 @@ function Door({
   instant: boolean
 }) {
   const paint = side === 'host' ? colors.brand : colors.teal
+  /*
+    The door is cut INTO the wall, so it straddles the zone border by design.
+    Its label must not: centred under the door, "8000" rendered with the border
+    line running straight through the digits. Each label therefore sits 34 to
+    its own side, inside the zone whose port it names.
+  */
+  const labelDx = side === 'host' ? -34 : 34
   return (
     <motion.g
       initial={instant ? false : { opacity: 0, scale: 0.7 }}
@@ -49,9 +56,17 @@ function Door({
     >
       <rect x={x} y={y} width={DOOR.w} height={DOOR.h} rx={5} fill={colors.white} stroke={paint} strokeWidth={2.5} />
       <circle cx={x + DOOR.w - 7} cy={y + DOOR.h / 2} r={2.6} fill={paint} />
+      {/*
+        BELOW the door, not above it.
+
+        Above, the label sat at the same height as each zone's title and
+        straddled the zone border, so "8000" collided with the box edge on the
+        host side and crowded "The container" on the other. Both zones are
+        empty below the door, so the label goes there and touches nothing.
+      */}
       <text
-        x={x + DOOR.w / 2}
-        y={y - 10}
+        x={x + DOOR.w / 2 + labelDx}
+        y={y + DOOR.h + 22}
         textAnchor="middle"
         fontSize={15}
         fontWeight={800}

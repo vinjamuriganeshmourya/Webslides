@@ -274,3 +274,94 @@ drawer, and a signed-off deck's output changes when the kit does.
 
 Retiring follows the same path in reverse: into `remove:` in `sync-kit.mjs`
 with the reason, and marked retired in the registry, the way `QuizSlide` is.
+
+## 15. A backslash in a JSX attribute is literal, so write one
+
+In a JSX attribute string, `\` is **not** an escape character. `root="C:\\app"`
+renders on the slide as `C:\\app`, with both backslashes visible.
+
+```tsx
+root="C:\nxttrendz"          // renders C:\nxttrendz     correct
+root="C:\\nxttrendz"         // renders C:\\nxttrendz    WRONG, and it ships
+filename="backend\Dockerfile"                          // correct
+```
+
+The confusion is that the doubling **is** correct one line away, inside a
+JavaScript string literal, where `\\` is an escaped backslash that renders as
+one:
+
+```tsx
+const AT_ROOT = 'C:\\nxttrendz'    // correct: a JS string, renders C:\nxttrendz
+<Terminal path={AT_ROOT} />        // correct
+```
+
+So the rule is by position, not by habit: **doubled inside `{'...'}`, single
+inside `"..."`.** Session 4 shipped 19 doubled paths to review because the
+constants were right and the attributes were copied from them.
+
+Windows paths appear on every deck in this course, so grep before handing over:
+
+```bash
+grep -nE '(lead|title|root|filename|path)="[^"]*\\\\' src/decks/*.tsx
+```
+
+## 16. A question slide carries the question and nothing else
+
+When a slide poses a question to the room, use `QuestionSlide`. Not a
+`ContentSlide` with a lead and no points: that inherits the content layout, so
+the question sits top-left at lead size with an empty well beneath it, and the
+one thing the room is meant to think about is neither the largest thing on
+screen nor centred on it. It reads as a slide someone forgot to finish.
+
+- **Nothing else on the slide.** No bullets, no figure, no callout, and above
+  all no answer. Anything else is something to read instead of think.
+- **The answer is the NEXT slide.** That is the whole mechanism: the room
+  commits out loud, then sees whether it was right.
+- **One question per slide.** Split a compound question, for the same reason a
+  slide carries one idea. Asked "does this install the same version today, and
+  again next month?", a room answers the easy half and never considers the
+  second. Asked as two slides, it has to answer both.
+- `qualifier` takes at most one short line, for a constraint needed in order to
+  answer. Never a hint.
+
+If a slide genuinely needs supporting content, it is a `ContentSlide` whose
+lead ends in a question mark, and that is a different slide with a different
+job.
+
+## 17. Screenshot every custom figure and look at it
+
+The three harnesses cannot see inside a figure, and this is a structural blind
+spot rather than an oversight in any of them.
+
+`qa.mjs`, `video-safe.mjs` and `align-check.mjs` all measure **DOM element
+rectangles**: against the frame, against the reserved video box, and against
+each other. An `<svg>` is one DOM element. Every `<text>`, box and arrow drawn
+inside it is invisible to all three, so a figure whose labels sit on top of one
+another passes every sweep.
+
+That is not hypothetical. Session 4 was reported clean by all three harnesses
+and the user opened the deck to find two collisions immediately: in
+`PortPublish` the port numbers straddled the zone borders and crowded a title,
+and in `BrowserOutsideDocker` both `localhost:` labels rendered across the port
+doors and the dashed Docker boundary, which is the one line in that figure the
+whole argument depends on.
+
+**So: capture every slide carrying a custom figure and actually look at the
+image.** Not the JSX, not the coordinates. The arithmetic looks right in source
+right up until a font renders wider than assumed.
+
+```js
+// playwright, from inside the session project so the dep resolves
+await page.goto(`http://localhost:<devPort>/?all#/<n>`, { waitUntil: 'networkidle' })
+await page.waitForTimeout(2600)   // the settle time the harnesses use
+await page.screenshot({ path: `slide-${n}.png` })
+```
+
+`node preview.mjs && node scripts/build-preview-page.mjs` builds a contact
+sheet of the whole deck, which is the cheaper way to do this for every slide at
+once. Either way, the check is a human or a model looking at pixels.
+
+Text inside an SVG is the specific hazard, because it has no layout engine
+keeping it apart from its neighbours: a label centred on a boundary will
+overlap that boundary, and nothing warns you. Give labels their own clear
+space rather than trusting a coordinate.

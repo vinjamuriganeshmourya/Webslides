@@ -28,11 +28,18 @@ propagated by `sync-kit.mjs`; nothing is duplicated here, so nothing can drift.
 | `ProceduralStepsSlide` | an ordered procedure the learner will repeat |
 | `FlowChartSlide` | a process with branches |
 | `ScenarioSlide` | a situation posed before its resolution |
+| `QuestionSlide` | the pause beat: one question, hero scale, centred, nothing else |
 | `QuizTimeSlide` | the quiz announcement frame only |
 | `PracticeSlide` | hands-on work |
 | `RecapSlide` | what was covered |
 | `KeyTakeawaysSlide` | what to remember |
 | `FeedbackSlide` `ThankYouSlide` `BrandSlide` | the closing chrome |
+
+`QuestionSlide` was **added in session 4**. A question posed to the room used to
+be written as a `ContentSlide` with a lead and no points, which inherits the
+content layout: the question sits top-left at lead size with an empty well
+beneath it, so the one thing the room should be thinking about is neither the
+largest thing on screen nor centred on it. See content rules 16.
 
 `QuizSlide` was **retired**: quizzes are delivered by an external component, so
 a deck's only quiz frame is the announcement one. `sync-kit.mjs` deletes it

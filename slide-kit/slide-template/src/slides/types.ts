@@ -138,6 +138,21 @@ export interface ScenarioSlideProps extends Base {
   beats: ScenarioBeat[]
 }
 
+export interface QuestionSlideProps extends Base {
+  kicker?: string
+  /** The question. One question, and nothing else on the slide. */
+  question: ReactNode
+  /**
+   * At most one short line under the question, for a constraint the room needs
+   * in order to answer ("assume the container is already running").
+   *
+   * NOT for a hint, and never for the answer. If the slide needs explaining, it
+   * is not a question slide.
+   */
+  qualifier?: ReactNode
+  tone?: Tone
+}
+
 export interface KeyTakeawaysSlideProps extends Base {
   kicker?: string
   title?: ReactNode
