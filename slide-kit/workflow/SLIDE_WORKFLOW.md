@@ -80,4 +80,4 @@ through the gate.
 
 ## Stage 7 — Versioning
 
-Snapshot the template to `Web Slides/django_deployement_course/versions/<session>.zip` (source only).
+Snapshot the template to `<course>/versions/<session>.zip` (source only).

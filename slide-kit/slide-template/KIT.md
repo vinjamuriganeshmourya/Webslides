@@ -79,8 +79,8 @@ reads it, and a stale count means the sweep silently skips the tail of the deck.
 ```bash
 # in slide-template/
 npm run dev                                            # the base deck
-node sync-kit.mjs --check ../deployement_session_1_v2   # read-only, exits 1 if behind
-node sync-kit.mjs --apply ../deployement_session_1_v2 ../deployement_session_2
+node sync-kit.mjs --check ../../django_deployement_course/deployement_session_1_v2   # read-only, exits 1 if behind
+node sync-kit.mjs --apply ../../django_deployement_course/deployement_session_1_v2 ../../django_deployement_course/deployement_session_2
 
 # then in each session that was synced
 npx tsc -b --noEmit && npm run build:html

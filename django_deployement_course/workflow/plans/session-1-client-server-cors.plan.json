@@ -18,7 +18,7 @@
     "trDoc": "Integration project/docs/session-1.md (rev 2026-07-16 15:20, unchanged)",
     "sessionCode": "Integration project/session-1/{prefilled,final} — built, run, verified",
     "nextUp": "The API Contract & JWT Login",
-    "deckTarget": "Web Slides/django_deployement_course/template, src/decks/session1Deck.tsx"
+    "deckTarget": "Web Slides/slide-kit/template, src/decks/session1Deck.tsx"
   },
   "sampleAlignment": [
     "bare title slide -> welcome (session name only; brand slide precedes per stakeholder rule)",

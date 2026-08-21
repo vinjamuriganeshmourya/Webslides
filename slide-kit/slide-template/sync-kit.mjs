@@ -2,9 +2,9 @@
 /**
  * sync-kit.mjs — apply this template's kit to a session, or report the drift.
  *
- *   node sync-kit.mjs --check  ../deployement_session_1_v2
- *   node sync-kit.mjs --apply  ../deployement_session_1_v2
- *   node sync-kit.mjs --check  ../deployement_session_1_v2 ../deployement_session_2
+ *   node sync-kit.mjs --check  ../../django_deployement_course/deployement_session_1_v2
+ *   node sync-kit.mjs --apply  ../../django_deployement_course/deployement_session_1_v2
+ *   node sync-kit.mjs --check  ../../django_deployement_course/deployement_session_1_v2 ../../django_deployement_course/deployement_session_2
  *
  * WHY A SCRIPT AND NOT A SHARED PACKAGE
  *

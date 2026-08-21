@@ -6,7 +6,7 @@ with **Claude Code connected** (headless `claude -p`) to respond to feedback.
 ## Run
 
 ```bash
-cd "Web Slides/django_deployement_course/workflow/review_app"
+cd "Web Slides/testing/review_app"
 streamlit run app.py
 ```
 

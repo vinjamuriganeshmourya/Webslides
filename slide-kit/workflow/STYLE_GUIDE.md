@@ -19,7 +19,7 @@
 > | — | A later problem is **named, never opened**: no tools, no stages, and not greyed out. |
 
 
-Derived by corpus analysis of **all 23 decks in `Web Slides/django_deployement_course/sample_ppts`**
+Derived by corpus analysis of **all 23 decks in `Web Slides/slide-kit/sample_ppts`**
 (1,274 slides, 12,960 body lines). Every number below is measured, every
 example is verbatim from the corpus. Use this with `SLIDE_WORKFLOW.md` and
 `DESIGN_GUIDE.md` when writing any session deck.

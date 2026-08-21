@@ -335,8 +335,8 @@ node qa.mjs                 # overflow + logo per slide
 node video-safe.mjs         # must print CLEAN
 node workflow/export/build-reveal-steps.mjs http://localhost:<port> <count>
 
-node sync-kit.mjs --check ../deployement_session_1_v2   # is that session behind?
-node sync-kit.mjs --apply ../deployement_session_1_v2   # bring it up to date
+node sync-kit.mjs --check ../../django_deployement_course/deployement_session_1_v2   # is that session behind?
+node sync-kit.mjs --apply ../../django_deployement_course/deployement_session_1_v2   # bring it up to date
 ```
 
 The harnesses take their URL, slide count and output name from
