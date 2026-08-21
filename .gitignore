@@ -16,7 +16,15 @@
 # ── build output ──────────────────────────────────────────────────────────
 **/dist/
 **/dist-ssr/
-**/dist-single/
+# The self-contained single-file decks ARE tracked, by request: they are what
+# gets handed to an instructor, and a 4 MB HTML that only exists on one laptop
+# is not a deliverable. Everything else vite writes here (the unnamed
+# index.html duplicate, stray chunks) stays ignored, so the pattern excludes
+# the CONTENTS of dist-single rather than the directory itself — a `!` negation
+# cannot re-include a file inside an excluded directory.
+**/dist-single/*
+!**/dist-single/deployment-session-*.html
+!**/dist-single/base-template.html
 **/.vite/
 *.tsbuildinfo
 
