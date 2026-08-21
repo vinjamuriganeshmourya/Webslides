@@ -9,6 +9,7 @@ import {
   KeyTakeawaysSlide,
   ProceduralStepsSlide,
   QuestionSlide,
+  QuizTimeSlide,
   RecapSlide,
   ScenarioSlide,
   SectionBreakerSlide,
@@ -2257,6 +2258,19 @@ SECRET_KEY = os.environ.get('SECRET_KEY')`}
       />
     ),
     notes: 'The same four wordings as the agenda and the dividers, restated as outcomes.',
+  },
+  {
+    id: 'quiz-time',
+    section: 'Closing',
+    label: 'Quiz time',
+    element: (
+      <QuizTimeSlide
+        subtitle="Two Dockerfiles, one Compose file, and one address that broke the rule on purpose"
+        lesson={SESSION}
+      />
+    ),
+    notes:
+      'The checkpoint, immediately before the takeaways. The subtitle names the three things the session built, and the last clause is the paradox: if the room cannot say why the frontend is told localhost:8000 rather than backend:8000, the most important idea of the session did not land, and the takeaways will paper over it. Hand over to the quiz component; this frame carries no question by design.',
   },
   {
     id: 'takeaways',

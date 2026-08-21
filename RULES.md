@@ -37,6 +37,7 @@ shipped with that exact mistake.
 | 15 | A backslash in a JSX attribute is literal, so write one |
 | 16 | A question slide carries the question and nothing else |
 | 17 | Screenshot every custom figure and look at it |
+| 18 | Every deck carries a quiz frame, and a lone one sits before the takeaways |
 
 ## Process rules
 
