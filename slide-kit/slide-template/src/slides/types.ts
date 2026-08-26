@@ -2,6 +2,9 @@ import type { ReactNode } from 'react'
 import type { BulletItem } from '@/ui/content'
 import type { Step, FlowNode } from '@/ui/flow'
 import type { ScenarioBeat } from '@/ui/ScenarioCard'
+import type { SyntaxPart } from '@/ui/SyntaxBreakdown'
+import type { StatusItem } from '@/ui/StatusList'
+import type { ChatTurn } from '@/ui/ChatThread'
 import type { IllustrationName } from '@/ui/characters/Illustration'
 import type { Tone } from '@/design/tokens'
 
@@ -198,4 +201,133 @@ export interface ThankYouSlideProps extends Base {
     and already names what is coming; a "Next up:" chip here as well gave the deck
     two endings. Signpost the next session on that slide, not on this one.
   */
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Syntax explanation                                                  */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Shared by the two syntax types. The specimen line is BUILT from `parts`, so
+ * there is no separate string to keep in step with the legend.
+ */
+interface SyntaxSlideBase extends Base {
+  kicker?: string
+  title: ReactNode
+  lead?: ReactNode
+  parts: SyntaxPart[]
+  /** Click-gate the legend rows. The specimen itself is always immediate. */
+  stepped?: boolean
+  /** One line under the breakdown: the filled-in example, or the gotcha. */
+  note?: {
+    kind?: 'note' | 'tip' | 'info' | 'warning' | 'success' | 'error'
+    title?: ReactNode
+    body: ReactNode
+  }
+}
+
+export interface CodeSyntaxSlideProps extends SyntaxSlideBase {
+  /** The chip on the specimen panel. Also picks nothing else: there is no
+      highlighter here, because a grammar diagram colours by SLOT, not by token
+      class. Use `CodeBuildSlide` when the subject is a real file. */
+  language?: string
+}
+
+export interface CommandSyntaxSlideProps extends SyntaxSlideBase {
+  /*
+    No `path` prop, deliberately.
+
+    Hard rule 3 ("one panel per terminal, with the folder path shown") governs
+    `Terminal`, which shows a command being RUN. This type shows a command's
+    SHAPE and runs nothing, so a prompt path here would be claiming a working
+    directory the slide never demonstrates. Show the run in a `Terminal` on the
+    next slide.
+  */
+}
+
+/* ------------------------------------------------------------------ */
+/* Points that carry a verdict                                         */
+/* ------------------------------------------------------------------ */
+
+export interface StatusPointsSlideProps extends Base {
+  kicker?: string
+  title: ReactNode
+  lead?: ReactNode
+  items: StatusItem[]
+  tone?: Tone
+  /** A supporting figure beside the list. Forces the rows to reveal immediately. */
+  children?: ReactNode
+  /**
+   * Click-gate the rows. Ignored when `children` is present, because hard rule 6
+   * requires text and its supporting visual to arrive together.
+   */
+  stepped?: boolean
+}
+
+/* ------------------------------------------------------------------ */
+/* Question with supporting points                                     */
+/* ------------------------------------------------------------------ */
+
+/**
+ * A question the room answers, followed by the points that answer it.
+ *
+ * NOT a relaxation of hard rule 16. `QuestionSlide` carries the question and
+ * nothing else, and this type keeps that true FOR AS LONG AS THE QUESTION IS
+ * OPEN: at step 0 the slide is the question alone, and the points are build
+ * steps that land only after the room has answered out loud. The rule exists so
+ * there is nothing to read instead of think, and a step that has not been
+ * revealed is not on screen to read.
+ *
+ * If the points are meant to be visible WHILE the question is asked, this is the
+ * wrong type — that is a `ContentSlide` whose lead ends in a question mark.
+ */
+export interface QuestionPointsSlideProps extends Base {
+  kicker?: string
+  question: ReactNode
+  qualifier?: ReactNode
+  /** Revealed one click at a time, after the question. */
+  points: (BulletItem | string)[]
+  tone?: Tone
+}
+
+/* ------------------------------------------------------------------ */
+/* Conversation and chat                                               */
+/* ------------------------------------------------------------------ */
+
+/**
+ * A two-voice exchange set as a transcript: speaker in the gutter, line beside
+ * it. Denser than `ChatSlide`, so it is the one to reach for when the exchange
+ * runs past four turns or the lines are long.
+ */
+export interface ConversationSlideProps extends Base {
+  kicker?: string
+  title: ReactNode
+  lead?: ReactNode
+  /** Exactly two voices. A third is a panel discussion, not a teaching device. */
+  speakers: { left: string; right: string }
+  turns: ChatTurn[]
+  tone?: Tone
+  stepped?: boolean
+}
+
+export interface ChatSlideProps extends Base {
+  kicker?: string
+  title: ReactNode
+  lead?: ReactNode
+  speakers?: { left: string; right: string }
+  turns: ChatTurn[]
+  tone?: Tone
+  stepped?: boolean
+}
+
+export interface ChatCharacterSlideProps extends ChatSlideProps {
+  /**
+   * The figure standing beside the thread. Defaults to Nova pointing at it.
+   *
+   * It goes on the LEFT and gestures right, toward the messages. On the right it
+   * would sit in the column the video rectangle already claims, and it would be
+   * gesturing off the edge of the slide.
+   */
+  character?: IllustrationName
 }

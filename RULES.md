@@ -38,6 +38,9 @@ shipped with that exact mistake.
 | 16 | A question slide carries the question and nothing else |
 | 17 | Screenshot every custom figure and look at it |
 | 18 | Every deck carries a quiz frame, and a lone one sits before the takeaways |
+| 19 | The concept and its sub-concept are pinned to the top of every slide |
+| 20 | Key Takeaways restates the agenda concepts, verbatim |
+| 21 | The welcome line is written once |
 
 ## Process rules
 
@@ -52,6 +55,11 @@ shipped with that exact mistake.
 | Compose kit components; never hand-roll layout, spacing or colour | same, section 2 |
 | Colours come from `src/design/tokens.ts`; no hex literals in a deck | same, section 2 |
 | A new component is justified only by an argument no existing figure makes | same, section 6 |
+| Anything reusable built for a session is copied back into the kit, not left in it | same, section 6 |
+| A new slide type, figure or transition is committed to the kit and raised as a PR | same, section 6, and [`slide-kit/slide-types/README.md`](slide-kit/slide-types/README.md) |
+| `sampleDeck.tsx` renders EVERY type exported from `src/slides/index.ts` | [`slide-kit/slide-types/README.md`](slide-kit/slide-types/README.md) |
+| Motion runs at the explanatory tier, roughly double the `animate` skill's UI numbers | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md), section 4b |
+| Vendored skills live in `.agents/skills` and are never edited in place | same, section 4b |
 | Kit changes propagate by running `sync-kit.mjs`, never automatically | [`slide-kit/slide-template/KIT.md`](slide-kit/slide-template/KIT.md) |
 | `slideCount` in `deck.config.json` stays current, or sweeps skip the tail | same |
 
