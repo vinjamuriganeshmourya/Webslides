@@ -42,6 +42,38 @@ function MediaFrame({
   )
 }
 
+/**
+ * THE HEADER IS OUTSIDE THE COLUMN LAYOUT, AND THAT IS THE POINT.
+ *
+ * The concept (`kicker`) and its sub-concept (`title`) sit at the slide's own
+ * top-left datum on EVERY content slide, whatever the media is doing. They are
+ * the room's answer to "where am I in this session", and an answer that moves
+ * between slides is not an answer.
+ *
+ * It did move. The header used to live INSIDE the text column, so:
+ *
+ *   - `ContentLeftImageSlide` started its header at x=664, six hundred pixels
+ *     right of where the previous slide's header was
+ *   - `ContentTopImageSlide` put the media above the header, so the concept
+ *     name appeared roughly halfway down the slide, after the picture
+ *
+ * `align-check.mjs` measures every slide against "the header left edge" as its
+ * datum and had been reporting both as DRIFT for several sessions. The finding
+ * was real and this is the fix: one header, one position, and the media and the
+ * points arrange themselves in the well underneath it.
+ *
+ * So `left` / `right` / `top` / `bottom` now name where the media sits relative
+ * to the POINTS, never relative to the header.
+ *
+ * THE VIDEO-RECTANGLE GUARD
+ *
+ * x 913..1280, y 0..220 is held for the instructor video. A lead-less header
+ * stops at y=168, and both a right-hand media column and a full-width top media
+ * reach past x=913, so without the 52px guard they sit inside it and
+ * `video-safe.mjs` fails. `ContentSlide` carries the same guard for the same
+ * reason. A media on the LEFT or at the BOTTOM never reaches the rectangle, so it
+ * is not held back.
+ */
 function ContentWithImage({
   position,
   kicker,
@@ -54,54 +86,52 @@ function ContentWithImage({
   children,
   lesson,
 }: ContentImageSlideProps & { position: Position }) {
-  const text = (
-    <div className="flex h-full flex-col">
-      <SlideHeader kicker={kicker} title={title} lead={lead} tone={tone} />
-      <div className="flex min-h-0 flex-1 flex-col justify-center">
-        {points && <BulletList items={points} tone={tone} />}
-        {children && <div className="mt-6">{children}</div>}
-      </div>
+  const body = (
+    <div className="flex min-h-0 flex-col justify-center">
+      {points && <BulletList items={points} tone={tone} immediate />}
+      {children && <div className="mt-6">{children}</div>}
     </div>
   )
 
   const horizontal = position === 'left' || position === 'right'
+  const mediaFirst = position === 'left' || position === 'top'
+  /* Only a media that can reach x=913 needs holding below the rectangle. */
+  const reachesTheRectangle = position === 'right' || position === 'top'
+  const guard = !lead && reachesTheRectangle ? 'pt-[52px]' : ''
 
-  if (horizontal) {
-    const media_first = position === 'left'
-    return (
-      <SlideBase variant="light" lesson={lesson}>
-        <div className="grid h-full grid-cols-2 items-center gap-12">
-          {media_first ? (
-            <>
-              <MediaFrame media={media} caption={caption} className="h-[72%]" />
-              {text}
-            </>
-          ) : (
-            <>
-              {text}
-              <MediaFrame media={media} caption={caption} className="h-[72%]" />
-            </>
-          )}
-        </div>
-      </SlideBase>
-    )
-  }
-
-  // vertical: top / bottom
-  const media_first = position === 'top'
   return (
     <SlideBase variant="light" lesson={lesson}>
-      <div className="flex h-full flex-col gap-6">
-        {media_first ? (
-          <>
-            <MediaFrame media={media} caption={caption} className="h-[46%]" />
-            {text}
-          </>
+      <div className="flex h-full flex-col">
+        <SlideHeader kicker={kicker} title={title} lead={lead} tone={tone} />
+
+        {horizontal ? (
+          <div className="grid min-h-0 flex-1 grid-cols-2 items-center gap-12">
+            {mediaFirst ? (
+              <>
+                <MediaFrame media={media} caption={caption} className={`h-[86%] ${guard}`} />
+                {body}
+              </>
+            ) : (
+              <>
+                {body}
+                <MediaFrame media={media} caption={caption} className={`h-[86%] ${guard}`} />
+              </>
+            )}
+          </div>
         ) : (
-          <>
-            {text}
-            <MediaFrame media={media} caption={caption} className="h-[46%]" />
-          </>
+          <div className="flex min-h-0 flex-1 flex-col gap-5">
+            {mediaFirst ? (
+              <>
+                <MediaFrame media={media} caption={caption} className={`h-[46%] shrink-0 ${guard}`} />
+                <div className="flex min-h-0 flex-1 flex-col justify-center">{body}</div>
+              </>
+            ) : (
+              <>
+                <div className="flex min-h-0 flex-1 flex-col justify-center">{body}</div>
+                <MediaFrame media={media} caption={caption} className="h-[46%] shrink-0" />
+              </>
+            )}
+          </div>
         )}
       </div>
     </SlideBase>

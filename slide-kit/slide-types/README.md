@@ -28,11 +28,56 @@ propagated by `sync-kit.mjs`; nothing is duplicated here, so nothing can drift.
 | `ProceduralStepsSlide` | an ordered procedure the learner will repeat |
 | `FlowChartSlide` | a process with branches |
 | `ScenarioSlide` | a situation posed before its resolution |
+| `QuestionSlide` | the pause beat: one question, hero scale, centred, nothing else |
+| `QuestionPointsSlide` | a question, then the points that answer it, as build steps |
+| `CodeSyntaxSlide` | the SHAPE of a language construct, slot by slot |
+| `CommandSyntaxSlide` | the SHAPE of a command, slot by slot. Runs nothing |
+| `StatusPointsSlide` | points that each carry a verdict: works, careful, fails, note |
+| `ConversationSlide` | a two-voice exchange as a transcript. The dense form |
+| `ChatSlide` | the same exchange as messages. Up to five short turns |
+| `ChatCharacterSlide` | the messages, with Nova beside them |
 | `QuizTimeSlide` | the quiz announcement frame only |
 | `PracticeSlide` | hands-on work |
 | `RecapSlide` | what was covered |
 | `KeyTakeawaysSlide` | what to remember |
 | `FeedbackSlide` `ThankYouSlide` `BrandSlide` | the closing chrome |
+
+`QuestionSlide` was **added in session 4**. A question posed to the room used to
+be written as a `ContentSlide` with a lead and no points, which inherits the
+content layout: the question sits top-left at lead size with an empty well
+beneath it, so the one thing the room should be thinking about is neither the
+largest thing on screen nor centred on it. See content rules 16.
+
+### The four types added for the slide-type gallery
+
+`CodeSyntaxSlide` and `CommandSyntaxSlide` exist because explaining a GRAMMAR had
+no home. A one-line `CodeBlock` reads as a file the learner should create, and a
+one-line `Terminal` reads as a command that printed nothing. Four types now cover
+the two axes, and picking the wrong quadrant is the commonest way this content
+ships wrong:
+
+|            | the SHAPE of it      | an INSTANCE of it         |
+|------------|----------------------|---------------------------|
+| a file     | `CodeSyntaxSlide`    | `CodeBuildSlide`          |
+| a command  | `CommandSyntaxSlide` | `ContentSlide` + `Terminal` |
+
+`StatusPointsSlide` exists because a verdict is content, not a colour applied to a
+bullet after the fact. `Callout` says "one thing here must not be missed", which
+four stacked callouts cannot say. If every row would come out `success`, it is a
+`ContentSlide`.
+
+`ConversationSlide`, `ChatSlide` and `ChatCharacterSlide` are one exchange in three
+densities. **Pick by length, not by taste:** up to four short turns where the point
+is that these are people talking, use `ChatSlide`; five or more turns, or lines past
+a dozen words, use `ConversationSlide`; add the character on the ONE slide in a
+concept where the exchange is the argument. Two speakers who agree with each other
+are a `BulletList` in a costume.
+
+`QuestionPointsSlide` does **not** relax content rule 16. At step 0 it is the
+question and nothing else; the points are build steps that land only after the room
+has answered. The rule governs what is on screen while the question is open, and an
+unrevealed step is not on screen. `QuestionSlide` stays the default: use it whenever
+the answer wants its own slide.
 
 `QuizSlide` was **retired**: quizzes are delivered by an external component, so
 a deck's only quiz frame is the announcement one. `sync-kit.mjs` deletes it
@@ -42,11 +87,15 @@ from any session that still has it.
 
 `slide-kit/slide-template/src/ui/`, on the `@/ui` barrel.
 
-`AnalogyMap` · `ComposeNetwork` · `ContainerJourney` · `DataTable` ·
-`FileTree` · `FlowChart` · `HandRitual` · `JourneyRoadmap` · `LayerStack` ·
-`MachineBoundary` · `Nova` · `OneProcessRule` · `Orchestra` · `ScenarioCard` ·
-`StackUp` · `StepList` · `Terminal` · `Shot` · `TwoRuntimes` ·
-`VolumeSurvival` · `YamlNesting`
+`AnalogyMap` · `ChatThread` · `ComposeNetwork` · `ContainerJourney` ·
+`DataTable` · `FileTree` · `FlowChart` · `HandRitual` · `JourneyRoadmap` ·
+`LayerStack` · `MachineBoundary` · `Nova` · `OneProcessRule` · `Orchestra` ·
+`ScenarioCard` · `StackUp` · `StatusList` · `StepList` · `SyntaxBreakdown` ·
+`Terminal` · `Shot` · `TwoRuntimes` · `VolumeSurvival` · `YamlNesting`
+
+`SyntaxBreakdown` builds its specimen line FROM its `parts` array, so the diagram
+and the legend under it cannot drift apart. The first draft took a separate
+`command` string and they disagreed within one session.
 
 Not on the barrel, import by path: `TwoApps`, `RequestFlow`.
 
@@ -71,22 +120,77 @@ registry exists to prevent.
 
 ## Promoting a new slide type or transition
 
-A one-off arrangement for a single slide stays inline in that deck. Promote
-only what the user has approved and a second deck will want.
+**A slide type built while generating a session does not stay in that session.**
+It is copied back into the kit, added to the gallery, registered here, committed
+to `slide-kit/slide-template`, and raised as a pull request. A component that
+lives in one deck's `src/decks/` is invisible to the next deck and gets rebuilt
+from scratch, slightly differently, by whoever needs it next. That is how this
+repo ended up with two hand-rolled question layouts before `QuestionSlide`
+existed.
 
-1. **Get approval.** The user confirms it is worth keeping. Approved means
-   they said so, not that it looked fine.
+A one-off ARRANGEMENT for a single slide still stays inline in that deck. The
+test is the same one the workflow uses everywhere: *would a different deck, next
+month, want this?*
+
+1. **Get approval.** The user confirms it is worth keeping. Approved means they
+   said so, not that it looked fine.
 2. **Move it into the kit** — `src/slides/` for a slide type, `src/ui/` for a
-   figure, `src/motion/` for a transition — and export it from the barrel.
-3. **Add it to `src/decks/sampleDeck.tsx`.** The gallery is how the next person
-   discovers it, and it is kit-synced, so a component missing from it is
-   invisible.
+   figure, `src/motion/` for a transition — and export it from the barrel. The
+   session then imports it from the kit like every other type; it must not keep
+   a private copy, or the two drift.
+3. **Add it to `src/decks/sampleDeck.tsx`.** Not optional, and not "later": see
+   [Every type is in the gallery](#every-type-is-in-the-gallery) below.
 4. **Add a row here**, saying what it is *for*. A name alone does not tell the
-   next person when to reach for it.
+   next person when to reach for it. If it is easily confused with a type that
+   already exists, say which one and how to choose between them.
 5. **Colours from `src/design/tokens.ts`, motion from the presets.** No hex
    literals, no bespoke timings.
-6. **Say that you changed the kit**, because `sync-kit.mjs` will push it to
-   every other session.
+6. **Verify it by rendering**, at the deck's fixed 1280x720, through all four
+   harnesses. A new type has not been tested by the deck that prompted it: it has
+   been tested at one content length, on one slide.
+7. **Commit it to `slide-kit/slide-template` and raise a PR.** On a branch, not
+   on `main`:
+
+   ```bash
+   git checkout -b kit/<the-type-name>
+   git add slide-kit/slide-template slide-kit/slide-types/README.md
+   git commit -m "feat(kit): <TypeName> — <what it is for>"
+   gh pr create --fill
+   ```
+
+   The PR is what makes a kit change reviewable before it reaches every other
+   session, because `sync-kit.mjs --apply` will push it to all of them. Say in
+   the PR body which sessions are expected to sync.
+8. **Say that you changed the kit**, and name the sessions that will need
+   `sync-kit.mjs --apply`.
+
+### Every type is in the gallery
+
+`src/decks/sampleDeck.tsx` must render **every** type exported from
+`src/slides/index.ts`. The gallery is the only discovery mechanism there is: the
+generate-slides skill sends every author to it first, and a type that is not in it
+is a type the next deck will not know exists and will rebuild by hand.
+
+This is checkable, and it was not always true — `BrandSlide`, `CodeBuildSlide` and
+`QuizTimeSlide` were each exported and missing from the gallery for several
+sessions:
+
+```bash
+cd slide-kit/slide-template
+diff <(grep -oP "\b[A-Z]\w*Slide\b" src/slides/index.ts | sort -u) \
+     <(grep -oP "<\K[A-Z]\w*Slide\b" src/decks/sampleDeck.tsx | sort -u)
+```
+
+Left-only lines are types exported but missing from the gallery, which is the
+failure. (An early version of this check grepped only `export { ... }` on one
+line and silently missed the four `Content*ImageSlide`s, which are exported from a
+multi-line block.)
+
+Each gallery entry carries a `notes` string saying what the type is FOR, what it
+must not carry, and which type it is confusable with. The notes are the
+documentation; the slide is only the proof it renders.
+
+### Retiring
 
 Retiring works the same way: add it to `remove:` in `sync-kit.mjs` with the
 reason, and say here that it is retired and why, the way `QuizSlide` is above.

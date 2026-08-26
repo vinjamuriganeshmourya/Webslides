@@ -69,10 +69,47 @@ the plan header (`STATUS: SIGNED OFF <date>` / `AWAITING SIGN-OFF`).
 Implement the deck exactly per the signed-off plan. Deviations go back
 through the gate.
 
+Compose kit components; do not write new markup. Start from
+`slide-kit/slide-template/src/decks/sampleDeck.tsx`, the gallery of every slide
+type and figure, and pick from
+[`slide-kit/slide-types/README.md`](../slide-types/README.md). Motion runs at the
+**explanatory tier**, roughly double the `animate` skill's UI numbers: entrances
+520ms, staggers 130ms, line draws 860ms, a whole figure assembled in about 2.4s.
+Nobody triggers a slide figure, and it is read once from the back of a room.
+
+### Stage 5b — Anything reusable goes back into the kit, through a PR
+
+A slide type, figure or transition built for this session that **a different deck
+next month would want** does not stay in the session. It is moved into
+`slide-kit/slide-template`, exported from the barrel, added to `sampleDeck.tsx`
+with a `notes` string, registered in the slide-types README, and **committed on a
+branch with a PR raised**.
+
+This is the step this repo skipped most. The syntax-anatomy figure was hand-rolled
+three times (`PortPublish` and `ExecAnatomy` in session 4, `TargetAnatomy` in
+session 5) before it became `SyntaxBreakdown` in the kit, and session 5 had to
+rediscover session 4's invisible-overlapping-labels bug by shipping it.
+
+The PR is not ceremony: `sync-kit.mjs --apply` pushes a kit change to **every
+other session**, signed-off ones included. Section 6 of
+`.claude/skills/generate-slides/SKILL.md` has the full procedure.
+
 ## Stage 6 — Verification
 
 - Build passes (`npm run build`).
-- Per-slide QA in the running deck: alignment (measured, not eyeballed), no overflow of the 1280×720 frame (code blocks capped by `maxHeight`), animation smoothness/readability, step counts correct, quiz reveals answer only after all options.
+- **All four harnesses, every time**, run in parallel against the dev server:
+  `video-safe.mjs` (the instructor-video rectangle stays clear), `qa.mjs`
+  (nothing leaves the 1280x720 frame), `align-check.mjs` (content that is inside
+  the frame and still misplaced), and `preview.mjs` plus
+  `scripts/build-preview-page.mjs` for the contact sheet.
+  `align-check.mjs` is the one that gets skipped and the one that catches slide
+  drift: session 4 was reported clean by the first two and shipped with
+  overlapping slides.
+- **Then look at the figures.** The harnesses measure DOM rectangles, so an
+  `<svg>` is one box to them and a figure whose internal labels collide passes
+  all three. Content rule 17. This is also why a figure made mostly of labels is
+  built from DOM elements rather than as an `<svg>`.
+- Per-slide QA in the running deck: alignment (measured, not eyeballed), no overflow of the 1280×720 frame (code blocks capped by `fontSize`, not `maxHeight`), animation smoothness/readability, step counts correct.
 - ~~Footer shows `SESSION_NAME` on every slide.~~ **SUPERSEDED:** the footer
   carries the NxtWave mark only. The session name collided with the deck's
   bottom-right slide counter and duplicated each slide's kicker. See

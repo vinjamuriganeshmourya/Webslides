@@ -274,3 +274,193 @@ drawer, and a signed-off deck's output changes when the kit does.
 
 Retiring follows the same path in reverse: into `remove:` in `sync-kit.mjs`
 with the reason, and marked retired in the registry, the way `QuizSlide` is.
+
+## 15. A backslash in a JSX attribute is literal, so write one
+
+In a JSX attribute string, `\` is **not** an escape character. `root="C:\\app"`
+renders on the slide as `C:\\app`, with both backslashes visible.
+
+```tsx
+root="C:\nxttrendz"          // renders C:\nxttrendz     correct
+root="C:\\nxttrendz"         // renders C:\\nxttrendz    WRONG, and it ships
+filename="backend\Dockerfile"                          // correct
+```
+
+The confusion is that the doubling **is** correct one line away, inside a
+JavaScript string literal, where `\\` is an escaped backslash that renders as
+one:
+
+```tsx
+const AT_ROOT = 'C:\\nxttrendz'    // correct: a JS string, renders C:\nxttrendz
+<Terminal path={AT_ROOT} />        // correct
+```
+
+So the rule is by position, not by habit: **doubled inside `{'...'}`, single
+inside `"..."`.** Session 4 shipped 19 doubled paths to review because the
+constants were right and the attributes were copied from them.
+
+Windows paths appear on every deck in this course, so grep before handing over:
+
+```bash
+grep -nE '(lead|title|root|filename|path)="[^"]*\\\\' src/decks/*.tsx
+```
+
+## 16. A question slide carries the question and nothing else
+
+When a slide poses a question to the room, use `QuestionSlide`. Not a
+`ContentSlide` with a lead and no points: that inherits the content layout, so
+the question sits top-left at lead size with an empty well beneath it, and the
+one thing the room is meant to think about is neither the largest thing on
+screen nor centred on it. It reads as a slide someone forgot to finish.
+
+- **Nothing else on the slide.** No bullets, no figure, no callout, and above
+  all no answer. Anything else is something to read instead of think.
+- **The answer is the NEXT slide.** That is the whole mechanism: the room
+  commits out loud, then sees whether it was right.
+- **One question per slide.** Split a compound question, for the same reason a
+  slide carries one idea. Asked "does this install the same version today, and
+  again next month?", a room answers the easy half and never considers the
+  second. Asked as two slides, it has to answer both.
+- `qualifier` takes at most one short line, for a constraint needed in order to
+  answer. Never a hint.
+
+If a slide genuinely needs supporting content, it is a `ContentSlide` whose
+lead ends in a question mark, and that is a different slide with a different
+job.
+
+## 17. Screenshot every custom figure and look at it
+
+The three harnesses cannot see inside a figure, and this is a structural blind
+spot rather than an oversight in any of them.
+
+`qa.mjs`, `video-safe.mjs` and `align-check.mjs` all measure **DOM element
+rectangles**: against the frame, against the reserved video box, and against
+each other. An `<svg>` is one DOM element. Every `<text>`, box and arrow drawn
+inside it is invisible to all three, so a figure whose labels sit on top of one
+another passes every sweep.
+
+That is not hypothetical. Session 4 was reported clean by all three harnesses
+and the user opened the deck to find two collisions immediately: in
+`PortPublish` the port numbers straddled the zone borders and crowded a title,
+and in `BrowserOutsideDocker` both `localhost:` labels rendered across the port
+doors and the dashed Docker boundary, which is the one line in that figure the
+whole argument depends on.
+
+**So: capture every slide carrying a custom figure and actually look at the
+image.** Not the JSX, not the coordinates. The arithmetic looks right in source
+right up until a font renders wider than assumed.
+
+```js
+// playwright, from inside the session project so the dep resolves
+await page.goto(`http://localhost:<devPort>/?all#/<n>`, { waitUntil: 'networkidle' })
+await page.waitForTimeout(2600)   // the settle time the harnesses use
+await page.screenshot({ path: `slide-${n}.png` })
+```
+
+`node preview.mjs && node scripts/build-preview-page.mjs` builds a contact
+sheet of the whole deck, which is the cheaper way to do this for every slide at
+once. Either way, the check is a human or a model looking at pixels.
+
+Text inside an SVG is the specific hazard, because it has no layout engine
+keeping it apart from its neighbours: a label centred on a boundary will
+overlap that boundary, and nothing warns you. Give labels their own clear
+space rather than trusting a coordinate.
+
+## 18. Every deck carries a quiz frame, and a lone one sits before the takeaways
+
+A session deck must include at least one `QuizTimeSlide`. It is not optional
+chrome: it marks the switch from "listen" to "answer", so the room looks up
+before anything is asked.
+
+**If the deck has only one, it goes immediately before Key Takeaways.**
+
+```
+… → Recap → QuizTimeSlide → Key Takeaways → Next session → Thank you
+```
+
+That position is the point. The takeaways state what the room should now
+believe; the quiz is the last chance to find out whether they actually do,
+while the session is still in the room. Put it earlier and the takeaways paper
+over whatever the quiz just exposed. A deck with several quizzes may place the
+others at concept boundaries, but one of them still holds this slot.
+
+Write the `subtitle` so it names what is being tested, without asking anything:
+*"Two Dockerfiles, one Compose file, and one address that broke the rule on
+purpose"*. The room should be able to tell which part of the session is about
+to be examined.
+
+**The frame carries no question, no options and no answer** (see the component's
+own note). The question is asked from the quiz tool, so the deck never holds a
+second copy that can drift, and no answer is ever sitting on a slide the room
+has already seen. `QuizSlide`, which did render a question with four lettered
+options, was retired from the kit for exactly this reason.
+
+---
+
+## 19. The concept and its sub-concept are pinned to the top of every slide
+
+On every slide that carries them, the **kicker** (the concept) and the **title**
+(the sub-concept) sit at the slide's own top-left datum: x=64, starting at y=48.
+Not beside the figure, not underneath it, not in whichever column the layout
+happened to put the text in.
+
+They are the room's answer to *"where am I in this session"*, and an answer that
+moves between slides is not an answer.
+
+It used to move. `SlideHeader` lived **inside** the text column of every
+`Content*ImageSlide`, so:
+
+- `ContentLeftImageSlide` started its header at x=664, six hundred pixels right
+  of where the previous slide's header had been
+- `ContentTopImageSlide` drew the media *above* the header, so the concept name
+  appeared halfway down the slide, after the picture
+
+`align-check.mjs` measures every slide against "the header left edge" as its
+datum and had been reporting both as DRIFT for several sessions before anyone
+read the finding. The header is now hoisted out of the column layout in
+`ContentImageSlides.tsx`, and `left` / `right` / `top` / `bottom` name where the
+media sits relative to the **points**, never relative to the header.
+
+**Applies to any new slide type too.** If it has a kicker and a title, they go
+through `SlideHeader` as the first child of the slide's column, before anything
+else. A type that needs the header somewhere else needs a different reason than
+"it looked better".
+
+## 20. Key Takeaways restates the agenda concepts, verbatim
+
+The Key Takeaways slide carries **the agenda's items, word for word**. Not
+reworded as outcomes, not a summary written fresh at the end, and never a fifth
+item the agenda never promised.
+
+The room was promised exactly those concepts at the start, and this frame is the
+receipt. If the words change, the room cannot tell whether what they got is what
+they were promised, and the deck quietly makes a different claim than it opened
+with.
+
+**What changes between the two slides is the UI, not the words.** The agenda and
+the takeaways deliberately use different components so the frame does not read as
+a copy-paste; the strings are identical.
+
+Session 5 shipped reworded outcomes here and they were replaced with the agenda
+strings. The sample deck did the same thing for longer, which is worse: it is the
+file every new deck is copied from.
+
+Corollary: **at most four agenda items**, and no agenda item that is deck chrome.
+"Practice and wrap-up" is not a concept, and putting it on the agenda forces
+either a fifth takeaway or a mismatch.
+
+## 21. The welcome line is written once
+
+`WelcomeSlide` hardcodes its own kicker, *"Welcome to today's session"*. Nothing
+else in the deck may say it again, and in practice that means `BrandSlide`'s
+`greeting` is something else: `"Welcome!"` is the default and it is fine.
+
+The two frames sit one or two slides apart, so the same sentence arrives twice
+inside ten seconds and the deck opens by repeating itself. The gallery shipped
+exactly that.
+
+`WelcomeSlide` also takes `minimal`, and **`minimal` is the shipping form.** The
+workflow specifies the kicker plus the session name, centred, and nothing else in
+the body: no course chip, no subtitle, no presenter, no meta, no mascot, and no
+body logo, because the footer already carries the one mark. The full-bodied
+variant still exists on the props type; no shipping deck uses it.
