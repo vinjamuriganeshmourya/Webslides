@@ -118,8 +118,33 @@ clean tree.
   one screen.
 - **`sampleDeck.tsx`** — the exhaustive component gallery: every slide type, every
   `src/ui` figure, every callout kind. Open this when a **layout** looks wrong.
+  **It is what `activeDeck.ts` points at in the template**, because the gallery is
+  what this directory is for; a session points at its own deck.
 
-Point `activeDeck.ts` at either one to view it.
+Point `activeDeck.ts` at either one to view it. It is two lines, and it is
+session-owned, so switching it here never propagates.
+
+### The gallery is not optional, and it is checkable
+
+`sampleDeck.tsx` must render **every** type exported from `src/slides/index.ts`.
+It is the only discovery mechanism there is: the generate-slides skill sends
+every author to it first, so a type missing from it is a type the next deck
+rebuilds by hand. `BrandSlide`, `CodeBuildSlide` and `QuizTimeSlide` were each
+exported and missing for several sessions.
+
+```bash
+diff <(grep -oP "\b[A-Z]\w*Slide\b" src/slides/index.ts | sort -u) \
+     <(grep -oP "<\K[A-Z]\w*Slide\b" src/decks/sampleDeck.tsx | sort -u)
+```
+
+Left-only lines are the failure: exported, but not in the gallery.
+
+Every entry carries a `notes` string saying what the type is FOR, what it must
+not carry, and which type it is confusable with. The notes are the documentation;
+the slide is only the proof it renders.
+
+Because `sampleDeck.tsx` is **kit-owned**, a type added to the gallery reaches
+every session on the next `sync-kit.mjs --apply`, which is the point.
 
 ---
 

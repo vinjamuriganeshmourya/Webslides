@@ -34,6 +34,13 @@ shipped with that exact mistake.
 | 12 | A technology named on a slide carries its logo (PNG) |
 | 13 | Every asset lives in the central library first |
 | 14 | An approved slide type or transition goes into the kit and the registry |
+| 15 | A backslash in a JSX attribute is literal, so write one |
+| 16 | A question slide carries the question and nothing else |
+| 17 | Screenshot every custom figure and look at it |
+| 18 | Every deck carries a quiz frame, and a lone one sits before the takeaways |
+| 19 | The concept and its sub-concept are pinned to the top of every slide |
+| 20 | Key Takeaways restates the agenda concepts, verbatim |
+| 21 | The welcome line is written once |
 
 ## Process rules
 
@@ -42,10 +49,17 @@ shipped with that exact mistake.
 | No deck generation before the slide-wise plan is signed off | [`slide-kit/workflow/SLIDE_WORKFLOW.md`](slide-kit/workflow/SLIDE_WORKFLOW.md) |
 | A plan lives at `<course>/session_plans/<session_name>/plan.md`, and nowhere else | [`CLAUDE.md`](CLAUDE.md) |
 | "Generate slides" runs the full procedure without the user restating it | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md) |
+| The verification sweep is four harnesses, `align-check.mjs` included | same, section 7 |
+| Re-run `video-safe` and `qa` as a pair: they pull in opposite directions | same, section 7 |
 | Durable feedback is offered to a named file before it is applied | same, section 8 |
 | Compose kit components; never hand-roll layout, spacing or colour | same, section 2 |
 | Colours come from `src/design/tokens.ts`; no hex literals in a deck | same, section 2 |
 | A new component is justified only by an argument no existing figure makes | same, section 6 |
+| Anything reusable built for a session is copied back into the kit, not left in it | same, section 6 |
+| A new slide type, figure or transition is committed to the kit and raised as a PR | same, section 6, and [`slide-kit/slide-types/README.md`](slide-kit/slide-types/README.md) |
+| `sampleDeck.tsx` renders EVERY type exported from `src/slides/index.ts` | [`slide-kit/slide-types/README.md`](slide-kit/slide-types/README.md) |
+| Motion runs at the explanatory tier, roughly double the `animate` skill's UI numbers | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md), section 4b |
+| Vendored skills live in `.agents/skills` and are never edited in place | same, section 4b |
 | Kit changes propagate by running `sync-kit.mjs`, never automatically | [`slide-kit/slide-template/KIT.md`](slide-kit/slide-template/KIT.md) |
 | `slideCount` in `deck.config.json` stays current, or sweeps skip the tail | same |
 
