@@ -394,3 +394,73 @@ own note). The question is asked from the quiz tool, so the deck never holds a
 second copy that can drift, and no answer is ever sitting on a slide the room
 has already seen. `QuizSlide`, which did render a question with four lettered
 options, was retired from the kit for exactly this reason.
+
+---
+
+## 19. The concept and its sub-concept are pinned to the top of every slide
+
+On every slide that carries them, the **kicker** (the concept) and the **title**
+(the sub-concept) sit at the slide's own top-left datum: x=64, starting at y=48.
+Not beside the figure, not underneath it, not in whichever column the layout
+happened to put the text in.
+
+They are the room's answer to *"where am I in this session"*, and an answer that
+moves between slides is not an answer.
+
+It used to move. `SlideHeader` lived **inside** the text column of every
+`Content*ImageSlide`, so:
+
+- `ContentLeftImageSlide` started its header at x=664, six hundred pixels right
+  of where the previous slide's header had been
+- `ContentTopImageSlide` drew the media *above* the header, so the concept name
+  appeared halfway down the slide, after the picture
+
+`align-check.mjs` measures every slide against "the header left edge" as its
+datum and had been reporting both as DRIFT for several sessions before anyone
+read the finding. The header is now hoisted out of the column layout in
+`ContentImageSlides.tsx`, and `left` / `right` / `top` / `bottom` name where the
+media sits relative to the **points**, never relative to the header.
+
+**Applies to any new slide type too.** If it has a kicker and a title, they go
+through `SlideHeader` as the first child of the slide's column, before anything
+else. A type that needs the header somewhere else needs a different reason than
+"it looked better".
+
+## 20. Key Takeaways restates the agenda concepts, verbatim
+
+The Key Takeaways slide carries **the agenda's items, word for word**. Not
+reworded as outcomes, not a summary written fresh at the end, and never a fifth
+item the agenda never promised.
+
+The room was promised exactly those concepts at the start, and this frame is the
+receipt. If the words change, the room cannot tell whether what they got is what
+they were promised, and the deck quietly makes a different claim than it opened
+with.
+
+**What changes between the two slides is the UI, not the words.** The agenda and
+the takeaways deliberately use different components so the frame does not read as
+a copy-paste; the strings are identical.
+
+Session 5 shipped reworded outcomes here and they were replaced with the agenda
+strings. The sample deck did the same thing for longer, which is worse: it is the
+file every new deck is copied from.
+
+Corollary: **at most four agenda items**, and no agenda item that is deck chrome.
+"Practice and wrap-up" is not a concept, and putting it on the agenda forces
+either a fifth takeaway or a mismatch.
+
+## 21. The welcome line is written once
+
+`WelcomeSlide` hardcodes its own kicker, *"Welcome to today's session"*. Nothing
+else in the deck may say it again, and in practice that means `BrandSlide`'s
+`greeting` is something else: `"Welcome!"` is the default and it is fine.
+
+The two frames sit one or two slides apart, so the same sentence arrives twice
+inside ten seconds and the deck opens by repeating itself. The gallery shipped
+exactly that.
+
+`WelcomeSlide` also takes `minimal`, and **`minimal` is the shipping form.** The
+workflow specifies the kicker plus the session name, centred, and nothing else in
+the body: no course chip, no subtitle, no presenter, no meta, no mascot, and no
+body logo, because the footer already carries the one mark. The full-bodied
+variant still exists on the props type; no shipping deck uses it.

@@ -104,15 +104,35 @@ src/decks/    deck CONTENT             — the actual session, data only
 
 **`src/ui/`** — `SlideBase`, `SlideHeader`, `Callout`, `DataTable`, `CodeBlock`,
 `Terminal`, `Shot`, `LayerStack`, `MachineBoundary`, `ContainerJourney`,
-`primitives.tsx` (Kicker, Chip, NumberBadge), `content.tsx` (BulletList, Card,
-CardGrid, StatTile), `flow.tsx` (StepList, FlowChart). All re-exported from
-`src/ui/index.ts` — import from `@/ui`, not from the file.
+`SyntaxBreakdown`, `StatusList`, `ChatThread`, `primitives.tsx` (Kicker, Chip,
+NumberBadge), `content.tsx` (BulletList, Card, CardGrid, StatTile), `flow.tsx`
+(StepList, FlowChart). All re-exported from `src/ui/index.ts` — import from
+`@/ui`, not from the file.
+
+**A figure made mostly of labels is built from DOM elements, never as an
+`<svg>`.** Session 4 shipped two SVG figures whose `<text>` labels overlapped and
+all three harnesses passed them, because an `<svg>` is one rectangle to a
+harness. `TargetAnatomy` (session 5) and `SyntaxBreakdown` are the corrected
+pattern: every label a real element in a real grid, so the browser keeps them
+apart and `align-check.mjs` can see them. Content rule 17.
 
 **`src/slides/`** — one component per layout: `ContentSlide`, `ContentNoteSlide`,
-`SectionBreakerSlide`, `AgendaSlide`, `QuizSlide`, `QuizTimeSlide`,
-`KeyTakeawaysSlide`, `ProceduralStepsSlide`, `ScenarioSlide`, `BrandSlide`,
-`WelcomeSlide`, `ThankYouSlide`, … Props for every one are declared in a single
-file, `src/slides/types.ts`.
+the four `Content*ImageSlide`s, `SectionBreakerSlide`, `AgendaSlide`,
+`CodeBuildSlide`, `CodeSyntaxSlide`, `CommandSyntaxSlide`, `StatusPointsSlide`,
+`FlowChartSlide`, `ProceduralStepsSlide`, `ScenarioSlide`, `ConversationSlide`,
+`ChatSlide`, `ChatCharacterSlide`, `QuestionSlide`, `QuestionPointsSlide`,
+`QuizTimeSlide`, `KeyTakeawaysSlide`, `RecapSlide`, `PracticeSlide`,
+`FeedbackSlide`, `BrandSlide`, `WelcomeSlide`, `ThankYouSlide`. Props for every
+one are declared in a single file, `src/slides/types.ts`.
+
+`QuizSlide` is **retired**, not merely absent: a quiz is delivered by an external
+component, so a deck's only quiz frame is the announcement one. `sync-kit.mjs`
+deletes it from any session that still has it.
+
+**`sampleDeck.tsx` must render every one of these.** Three of them
+(`BrandSlide`, `CodeBuildSlide`, `QuizTimeSlide`) were exported and missing from
+the gallery for several sessions, so decks were written as though they did not
+exist. `slide-kit/slide-types/README.md` has the one-line check.
 
 **`src/decks/`** — arrays of `SlideDef`. Content only; no layout decisions. This
 template ships two, and `src/decks/activeDeck.ts` selects which one is live:
@@ -318,9 +338,15 @@ slide-template/
         └── sampleDeck.tsx   the full component gallery
 ```
 
-**Organised by kind, not by feature.** A new slide type touches four files, in
-this order: `slides/types.ts` (props) → `slides/NewSlide.tsx` → `slides/index.ts`
-(export) → the deck array.
+**Organised by kind, not by feature.** A new slide type touches SIX files, in
+this order: `slides/types.ts` (props) → `slides/NewSlide.tsx` →
+`slides/index.ts` (export) → `decks/sampleDeck.tsx` (the gallery, with a `notes`
+string saying what it is for) → `../slide-types/README.md` (the registry) → the
+session deck that wanted it.
+
+Then it is **committed to the kit and raised as a PR**, because
+`sync-kit.mjs --apply` will push it to every other session including signed-off
+ones. Section 6 of `.claude/skills/generate-slides/SKILL.md` has the procedure.
 
 ### Commands
 
@@ -350,8 +376,9 @@ the capture-timing note at the end of `KIT.md` before lowering that.
 
 Expected `qa.mjs` baseline — **two** flagged slides, both benign:
 
-- **slide 1 (Welcome)** — `NO LOGO` plus overflow on its `pointer-events-none`
-  decorative blobs.
+- **the first frame** — `NO LOGO` plus overflow on its `pointer-events-none`
+  decorative blobs. In the gallery this is `BrandSlide`; in `baseDeck` it is the
+  Welcome frame. Both carry the mark on stage rather than in the footer.
 - **the Thank you slide (last)** — `NO LOGO` only. The harness looks for the mark
   in `footer svg, footer img`, and this slide carries the mark *on stage*
   instead, so it passes `footerLogo={false}` to stop the footer printing a

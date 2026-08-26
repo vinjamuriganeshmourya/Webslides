@@ -16,4 +16,4 @@
  *
  * So: to point a session at a different deck, edit THIS FILE ONLY. Two lines.
  */
-export { baseDeck as deck, baseDeckMeta as meta } from './baseDeck'
+export { sampleDeck as deck, sampleMeta as meta } from './sampleDeck'

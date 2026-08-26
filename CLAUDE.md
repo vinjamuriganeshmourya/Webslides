@@ -50,9 +50,18 @@ django_deployement_course/  ONE COURSE. Add a sibling folder for another.
 testing/
   review_app/               a Streamlit plan-review UI. NOT IN USE. See below.
 
+.agents/skills/              VENDORED third-party skills. Never edit in place.
+                             Installed with `npx skills add`, pinned by
+                             skills-lock.json. Animation and design-craft
+                             skills (animate, review-animations, baseline-ui,
+                             emil-design-eng, improve-ui, …).
+skills-lock.json             the pin file for the above
+
 .claude/
   skills/slide-content-rules/SKILL.md    hard content rules — see next section
   skills/generate-slides/SKILL.md        the whole slide-generation procedure
+  skills/<vendored>                      SYMLINKS into .agents/skills, so Claude
+                                         Code loads them by description
   settings.json                          shared plugin list (committed)
 ```
 
@@ -88,6 +97,13 @@ In this order. They are short, and they exist because a deck shipped wrong.
    wording and visual system.
 4. **`slide-kit/slide-template/KIT.md`** — before changing anything under
    `src/`, so you know whether you are editing kit or session.
+5. **`.agents/skills/`** — the vendored craft skills, for motion and visual
+   polish. Section 4b of the generate-slides skill says which one to reach for
+   and, more importantly, **the two places they disagree with this repo**:
+   durations here run at the explanatory tier (roughly double their UI numbers),
+   and everything they say about hover, drag and touch does not apply to a deck.
+   Never edit a file under `.agents/skills/`; the next `skills add` overwrites
+   it.
 
 ---
 
@@ -149,10 +165,11 @@ touches the rest. `KIT.md` has the full table; the short version:
 
 | Kit owns (gets overwritten) | The session owns (never touched) |
 |---|---|
-| `src/design/`, `src/motion/`, `src/deck/`, `src/ui/`, `src/slides/` | `src/decks/` — the deck itself |
-| `src/App.tsx`, `src/index.css` | `src/decks/activeDeck.ts` — which deck is live |
-| `tailwind.config.ts`, `vite*.config.ts`, `index.html` | `deck.config.json`, `public/shots/` |
-| `qa.mjs`, `preview.mjs`, `scripts/`, `workflow/export/` | `package.json`, `CLAUDE.md`, `README.md` |
+| `src/design/`, `src/motion/`, `src/deck/`, `src/ui/`, `src/slides/` | `src/decks/<session>Deck.tsx` — the deck itself |
+| `src/decks/sampleDeck.tsx` — the slide-type gallery | `src/decks/activeDeck.ts` — which deck is live |
+| `src/App.tsx`, `src/index.css` | `deck.config.json`, `public/shots/` |
+| `tailwind.config.ts`, `vite*.config.ts`, `index.html` | `package.json`, `CLAUDE.md`, `README.md` |
+| `qa.mjs`, `preview.mjs`, `align-check.mjs`, `scripts/`, `workflow/export/` | `workflow/` plans, captures, sign-offs |
 
 Sessions deliberately do **not** import a shared package. A signed-off deck
 must keep building unchanged years later, so kit updates are a command you run

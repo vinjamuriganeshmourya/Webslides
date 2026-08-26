@@ -21,6 +21,11 @@ export const Check = (p: P) => (
     <path d="M20 6 9 17l-5-5" />
   </svg>
 )
+export const Cross = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M18 6 6 18M6 6l12 12" />
+  </svg>
+)
 export const ArrowRight = (p: P) => (
   <svg {...base(p)}>
     <path d="M5 12h14M13 6l6 6-6 6" />
@@ -123,6 +128,9 @@ import {
 
 export const iconByName = {
   check: Check,
+  // The counterpart to `check`. `StatusList` needs a glyph for a row that
+  // FAILS, and the warning triangle already means "careful", not "broken".
+  cross: Cross,
   arrow: ArrowRight,
   bulb: Bulb,
   bolt: Bolt,

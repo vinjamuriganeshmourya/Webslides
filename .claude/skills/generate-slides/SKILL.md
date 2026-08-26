@@ -66,22 +66,41 @@ probably in there already.
 
 **Slide types** (`src/slides/`), one per shape of content:
 
-`WelcomeSlide` · `AgendaSlide` · `SectionBreakerSlide` ·
+`BrandSlide` · `WelcomeSlide` · `AgendaSlide` · `SectionBreakerSlide` ·
 `SectionBreakerImageSlide` · `ContentSlide` · `ContentNoteSlide` ·
 `ContentLeftImageSlide` · `ContentRightImageSlide` · `ContentTopImageSlide` ·
 `ContentBottomImageSlide` · `OnlyImageSlide` · `CodeBuildSlide` ·
-`ProceduralStepsSlide` · `FlowChartSlide` · `ScenarioSlide` · `QuizTimeSlide` ·
-`PracticeSlide` · `RecapSlide` · `KeyTakeawaysSlide` · `FeedbackSlide` ·
-`ThankYouSlide` · `BrandSlide`
+`CodeSyntaxSlide` · `CommandSyntaxSlide` · `ProceduralStepsSlide` ·
+`FlowChartSlide` · `StatusPointsSlide` · `ScenarioSlide` · `ConversationSlide` ·
+`ChatSlide` · `ChatCharacterSlide` · `QuestionSlide` · `QuestionPointsSlide` ·
+`QuizTimeSlide` · `PracticeSlide` · `RecapSlide` · `KeyTakeawaysSlide` ·
+`FeedbackSlide` · `ThankYouSlide`
+
+**Four pairs are easy to confuse, and picking the wrong one is the commonest way
+this content ships wrong.** The registry has the full text; the short version:
+
+| If the content is | Use | Not |
+|---|---|---|
+| the SHAPE of a construct or command | `CodeSyntaxSlide` / `CommandSyntaxSlide` | `CodeBuildSlide`, `Terminal` |
+| a real file built up, or a real command run | `CodeBuildSlide`, `ContentSlide` + `Terminal` | the syntax types |
+| a list where rows carry verdicts | `StatusPointsSlide` | four stacked `Callout`s |
+| an exchange, up to four short turns | `ChatSlide` | `ConversationSlide` |
+| an exchange, five or more turns | `ConversationSlide` | `ChatSlide` |
+| a question whose answer is the next slide | `QuestionSlide` | `QuestionPointsSlide` |
+| a question answered by 2 to 3 points on the same frame | `QuestionPointsSlide` | `ContentSlide` |
 
 **Building blocks** (`src/ui/`, all via the `@/ui` barrel):
 
 `SlideBase` · `SlideHeader` · `Kicker` · `Chip` · `NumberBadge` · `BulletList` ·
-`Card` · `CardGrid` · `StatTile` · `Callout` · `CodeBlock` · `Terminal` ·
-`Shot` · `DataTable` · `FileTree` · `StepList` · `FlowChart` · `AnalogyMap` ·
-`JourneyRoadmap` · `LayerStack` · `StackUp` · `ScenarioCard` · `Illustration` ·
-`Nova` · `Reveal` · `RevealGroup` · `Decor` (`DotGrid`, `Blob`, `Orb`,
-`WaveArc`)
+`Card` · `CardGrid` · `StatTile` · `Callout` · `ChatThread` · `CodeBlock` ·
+`Terminal` · `Shot` · `DataTable` · `FileTree` · `StepList` · `FlowChart` ·
+`StatusList` · `SyntaxBreakdown` · `AnalogyMap` · `JourneyRoadmap` ·
+`LayerStack` · `StackUp` · `ScenarioCard` · `Illustration` · `Nova` · `Reveal` ·
+`RevealGroup` · `Decor` (`DotGrid`, `Blob`, `Orb`, `WaveArc`)
+
+`Callout` takes five kinds plus `error`. `error` means "this does not work";
+`warning` means "this can bite you". They were one colour until a deck needed to
+say both on one slide.
 
 Colour comes from `src/design/tokens.ts`. **Never write a hex literal in a
 deck file.** If a colour you need is missing, that is a tokens change, raised
@@ -138,6 +157,60 @@ carefully.
 
 ---
 
+## 4b. The vendored craft skills in `.agents/skills`
+
+`.agents/skills/` holds third-party skills installed with `npx skills add`, and
+`.claude/skills/` symlinks the ones relevant to a deck so Claude Code loads them
+by description. `skills-lock.json` pins every one. **Do not edit a file under
+`.agents/skills/`** — it is upstream content and the next `skills add` overwrites
+it. Add a repo-specific rule to this file instead.
+
+Reach for them by job:
+
+| The job in front of you | Skill |
+|---|---|
+| authoring a reveal, a transition or a figure's entrance | `animate` |
+| deciding whether something should animate at all | `animate`, `find-animation-opportunities` |
+| reviewing motion you or another agent just wrote | `review-animations`, `12-principles-of-animation` |
+| auditing a whole deck's motion and planning fixes | `improve-animations` |
+| a figure that reads as flat, generic or off | `emil-design-eng`, `baseline-ui` |
+| spacing, hierarchy and type on a slide that looks "almost right" | `baseline-ui` |
+| auditing a deck's visual system against itself | `improve-ui` |
+| motion that stutters on the projector or in the exported HTML | `fixing-motion-performance` |
+| naming an effect so the user and you mean the same thing | `animation-vocabulary` |
+| trying several designs for one figure before choosing | `prototype` |
+| gesture, depth, materials, optical type | `apple-design`, `interaction-design` |
+| an abstract divider or section illustration | `signal-geometry` |
+
+**Two of these skills disagree with this repo, and the repo wins.**
+
+1. **Durations.** `animate` caps UI animation at ~300ms with 30 to 80ms
+   staggers, and it is right, for a control a person triggers dozens of times a
+   day where the animation sits between them and what they came for. **A slide
+   figure is that skill's own explanatory tier**: nobody triggers it, and it is
+   read once from the back of a room while an instructor talks over it. This deck
+   runs roughly double the UI numbers. Entrances 520ms, staggers 130ms, line
+   draws 860ms, a whole figure assembled in about 2.4s. Session 6's figures were
+   first built at UI speed and the user rejected them as too fast.
+
+   Dividers stay a crossfade: a frame the room sees five times in one deck does
+   belong in the "near-imperceptible or nothing" tier.
+
+2. **Web-app assumptions.** These skills are written for interactive product UI.
+   A deck has no hover, no drag, no routing and one viewport. Ignore everything
+   about `:active` states, pointer capture, momentum, `prefers-reduced-motion`
+   media queries (`src/index.css` already has one) and touch targets. Keep what
+   is about perception: easing direction, never animating from `scale(0)`,
+   transform-and-opacity only, stagger, and reviewing with fresh eyes.
+
+`animate-expo`, `write-swift` and `ask-sonner` are installed but irrelevant here:
+React Native, Swift and a toast library. There are no toasts in a deck.
+
+Anything that hand-animates must still read `useInstant()` and mount at its final
+state when true, or it will be the only thing moving during a Ctrl+arrow jump.
+
+---
+
 ## 5. Transitions and reveal steps
 
 Motion lives in `src/motion/`: `Reveal`, `Stepper`, `presets.ts`,
@@ -162,25 +235,73 @@ node workflow/export/build-reveal-steps.mjs http://localhost:<devPort> <slideCou
 
 ---
 
-## 6. When a new component is justified
+## 6. A new component goes back into the kit, and reaches it through a PR
 
 Prefer composing. Build a new component **only** when the plan calls for an
 argument no existing figure makes, and it will be reused or is too complex to
 inline.
 
-If you do:
+### It does not stay in the session
 
-1. It goes in `src/ui/`, exported from `src/ui/index.ts`.
-2. Colours from `src/design/tokens.ts`. No hex literals.
-3. Animation through `src/motion/` primitives, so it settles with everything else.
-4. It renders correctly at the deck's fixed slide size, not just in isolation.
-5. Say clearly that you added to the **kit**, since `sync-kit.mjs` will push it
-   to every other session.
+**Anything built while generating a session that a second deck would want is
+copied back into `slide-kit/slide-template`.** Not left in the session, not
+copied later, not "noted for next time".
 
-A one-off arrangement for a single slide belongs inline in the deck file, not
-in `src/ui/`.
+This is not a tidiness rule. It is the rule this repo most often broke, and the
+cost is measurable in the corpus:
 
----
+- The syntax-anatomy figure was hand-rolled **three times**: `PortPublish` and
+  `ExecAnatomy` in session 4, then `TargetAnatomy` in session 5. Session 5 had to
+  rediscover, by shipping the bug, that session 4's SVG version put its labels on
+  top of each other invisibly to every harness. It is now `SyntaxBreakdown` in the
+  kit.
+- A question posed to the room was written as a `ContentSlide` with an empty body
+  in three sessions before `QuestionSlide` existed.
+- `BrandSlide`, `CodeBuildSlide` and `QuizTimeSlide` sat in the kit, exported and
+  working, **missing from the gallery** for several sessions. Decks were written
+  as though they did not exist, because as far as the gallery was concerned they
+  did not.
+
+The test is the workflow's usual one: *would a different deck, next month, want
+this?* A one-off arrangement for a single slide stays inline in the deck file.
+
+### The procedure
+
+`slide-kit/slide-types/README.md` holds the full text. The eight steps in short:
+
+1. **Get approval.** The user says so; "it looked fine" is not approval.
+2. **Move it into the kit** — `src/slides/`, `src/ui/` or `src/motion/` — and
+   export it from the barrel. The session then imports it from the kit like
+   everything else and keeps **no private copy**, or the two drift.
+3. **Add it to `src/decks/sampleDeck.tsx`**, with a `notes` string saying what it
+   is FOR, what it must not carry, and which type it is confusable with. The
+   gallery is the only discovery mechanism there is.
+4. **Add a row to the registry**, saying when to reach for it.
+5. **Colours from `src/design/tokens.ts`, motion from the presets.**
+6. **Verify by rendering**, through all four harnesses, at 1280x720. A new type
+   has been tested at one content length on one slide, which is not tested.
+7. **Commit it to the kit and raise a PR.** On a branch, never on `main`:
+
+   ```bash
+   git checkout -b kit/<the-type-name>
+   git add slide-kit/slide-template slide-kit/slide-types/README.md
+   git commit -m "feat(kit): <TypeName>, <what it is for>"
+   gh pr create --fill
+   ```
+
+   The PR exists because `sync-kit.mjs --apply` will push this to **every other
+   session**, including signed-off ones. That is a change worth a review before
+   it can reach a recorded deck. Name in the PR body which sessions are expected
+   to sync.
+8. **Say that you changed the kit**, and name the sessions needing
+   `sync-kit.mjs --apply`.
+
+### Assets and content, the same way
+
+Hard rule 13 already says every asset lands in `slide-kit/assets/` first and is
+then copied into the session. The same holds for anything else a session needs
+that is not session-specific: an icon, a tech logo, a figure, a slide type. The
+central copy is the real one.
 
 ## 7. Verify by rendering. Never by reading.
 
@@ -322,6 +443,8 @@ Hard rule 9. Changing content changes more than one file. After edits, check:
 
 Plan at `<course>/session_plans/<session_name>/plan.md`, signed off → read the
 hard rules and the guidelines → compose kit components, never new markup →
-figures that argue, icons from the house set, motion from presets → build →
-render and sweep → offer durable feedback to a named skill file → update the
-dependents and the plan.
+figures that argue, icons from the house set, motion from presets at the
+explanatory tier → build → render and sweep all four harnesses → anything new and
+reusable goes back into the kit, into the gallery, into the registry, and out as
+a PR → offer durable feedback to a named skill file → update the dependents and
+the plan.
