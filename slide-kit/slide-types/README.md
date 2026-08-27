@@ -87,7 +87,9 @@ from any session that still has it.
 
 `slide-kit/slide-template/src/ui/`, on the `@/ui` barrel.
 
-`AnalogyMap` · `ChatThread` · `ComposeNetwork` · `ContainerJourney` ·
+`AnalogyMap` · `BoundaryBridge` · `ChatThread` · `CircuitMap` · `ComposeNetwork` ·
+`ContainerJourney` · `GateFlow` · `LaneFlow` · `SpineFlow` · `StepLedger` ·
+`TrackSwitch` ·
 `DataTable` · `FileTree` · `FlowChart` · `HandRitual` · `JourneyRoadmap` ·
 `LayerStack` · `MachineBoundary` · `Nova` · `OneProcessRule` · `Orchestra` ·
 `ScenarioCard` · `StackUp` · `StatusList` · `StepList` · `SyntaxBreakdown` ·
@@ -96,6 +98,46 @@ from any session that still has it.
 `SyntaxBreakdown` builds its specimen line FROM its `parts` array, so the diagram
 and the legend under it cannot drift apart. The first draft took a separate
 `command` string and they disagreed within one session.
+
+### Flow chart figures
+
+Six designs for one contract, `FlowchartFigureProps` in
+`src/ui/flowchart/flowchartFigure.ts`. **They all take identical props, so
+choosing between them is a rename at the call site.** Chosen in
+`slide-kit/flowchart-lab`, which keeps all six and records what each is worst at.
+
+| Figure | Reach for it when | Worst at |
+|---|---|---|
+| `SpineFlow` | the default: one happy path with exceptions hanging off it | one decision only; there is a single row of "below" |
+| `LaneFlow` | the point is WHO owns each step, so handoffs are visible | every step having one owner. Needs three lanes to earn its keep |
+| `StepLedger` | the words are the content and boxes would add nothing | shape. A loop is a line of text saying so, not a line to point at |
+| `CircuitMap` | the room has met flow charts elsewhere and a house dialect would cost more than it buys | the diamond constrains the copy, and the copy is the teaching |
+| `GateFlow` | the CHECK is the point of the slide, not one step among several | a second decision, and a question past about six words |
+| `TrackSwitch` | the LOOP is the point: rework rejoining the same journey | buys one idea with the whole stage; assumes exactly one loop |
+
+**These do not replace `FlowChart`.** That one draws a straight sequence and is
+still right for one. These exist because it takes `nodes` and **no edges**, so it
+cannot branch, cannot label an exit, and cannot loop back, while this registry
+had been describing `FlowChartSlide` as "a process with branches" the whole time.
+Its `shape: 'diamond'` rotates a node and carries on in a straight line, so the
+figure looks like it asks a question and shows only one answer.
+
+Three things they share, all in `src/ui/flowchart/`:
+
+- **`NodeShell`** owns the card chrome, ONE padding scale, the hover lift and the
+  hover detail popover. `NODE_MIN_H` is the floor a slot must not go below, and
+  it is exported so a variant sizes itself from one number. Six independent
+  guesses is how the padding came to be 0px in four cards and negative in one.
+- **`motion.tsx`** owns the choreography: a figure assembles ALONG THE PATH, and
+  the exception only leaves the fork once the happy path is complete. Every part
+  is a build step, so `Ctrl+arrow` walks the process one piece at a time.
+- **Every label is a DOM element, never an SVG `<text>`.** Content rule 17. An
+  `<svg>` is one rectangle to all four harnesses, so they will pass a figure whose
+  labels overlap and whose connectors end in mid-air. Both happened here.
+
+`useClaimedSteps` in `src/motion/Stepper.tsx` exists for these: `useReveal()`
+called in a loop claims the same order for every beat, so the whole figure lands
+on the first click and the slide reports one step.
 
 Not on the barrel, import by path: `TwoApps`, `RequestFlow`.
 

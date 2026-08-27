@@ -54,6 +54,32 @@ export { ScenarioCard, type ScenarioBeat } from './ScenarioCard'
 export { SyntaxBreakdown, type SyntaxPart } from './SyntaxBreakdown'
 export { StatusList, type StatusItem, type StatusKind } from './StatusList'
 export { ChatThread, type ChatTurn } from './ChatThread'
+
+/*
+  FLOW CHART FIGURES. Six designs for one contract, chosen in
+  `slide-kit/flowchart-lab`, which also records what each is WORST at. They all
+  take the identical `FlowchartFigureProps`, so swapping one for another is a
+  rename at the call site.
+
+  These replace nothing: `FlowChart` in `flow.tsx` still draws a straight
+  sequence and is the right choice for one. Reach for these when the process
+  BRANCHES, labels an exit, or loops back, none of which `FlowChart` can do,
+  because it takes `nodes` and no edges.
+*/
+export {
+  type FlowchartFigureProps,
+  type FcNode,
+  type FcEdge,
+  type FcNodeKind,
+  resolveGraph,
+} from './flowchart/flowchartFigure'
+export { SpineFlow } from './flowchart/SpineFlow'
+export { LaneFlow } from './flowchart/LaneFlow'
+export { StepLedger } from './flowchart/StepLedger'
+export { CircuitMap } from './flowchart/CircuitMap'
+export { GateFlow } from './flowchart/GateFlow'
+export { TrackSwitch } from './flowchart/TrackSwitch'
+export { NodeShell, lookOf, NODE_MIN_H } from './flowchart/NodeShell'
 export * as Icons from './icons'
 export { iconByName, type IconName } from './icons'
 export { Illustration, type IllustrationName } from './characters/Illustration'
