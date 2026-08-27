@@ -61,6 +61,10 @@ layout.
 | `RadialSpread` | breadth, which is the one claim a grid states but cannot show | mechanism: the body has to move into the hover, which a projector audience cannot reach |
 | `EditorialList` | no boxes at all: when the NAMES are the content, a card around each costs the name its size | it draws nothing but a list, so a set whose items relate to each other is misdrawn as unrelated names. Drops `icon` and `logo`, so it cannot satisfy hard rule 12 |
 | `SplitCompare` | a list asserts value, a comparison demonstrates it | `body` has nowhere to live, and half the stage states the bad case, which is wasted if the room already recognises it |
+| `MetricLed` | the figure leads, because a number is the one thing the eye finds unprompted | needs COMMENSURABLE numbers. See below |
+| `LayerAnatomy` | some sets are one thing with parts, and a grid lies about that by drawing them as peers | a set with no real ordering: it invents an architecture, which is a worse lie than drawing them flat |
+| `FeatureFocus` | one capability per frame, at the size of the only thing on the slide | it can never show the SET, so breadth and comparison are unanswerable, and the cost lands in the deck as N slides |
+| `AnnotatedShot` | show the thing itself, with each claim pinned to the part that proves it | no degraded mode at all. See below |
 
 ## Rules inherited from `flowchart-lab`
 
@@ -104,6 +108,39 @@ can only be drawn by degrading the content is telling you the contract is short 
 field, not that the design is bad. That is not visible until it is on screen with
 real words in it.
 
+## Three variants have an ENTRY REQUIREMENT, and finding that out is the point
+
+This is the most useful thing the lab produced. Three of the ten cannot be judged
+on the shared fixture, and in each case the reason is a precondition of the design
+rather than a fault in it.
+
+**`SplitCompare` needed a field.** It argues from loss and the contract had none,
+so it struck through the positive `outcome`. Both columns then read the same words
+with one scored through, which demonstrates nothing. `without` exists for it.
+
+**`MetricLed` needs commensurable numbers.** It sets every figure at one size, in
+one colour, in one field, which asserts they are readings of the same instrument.
+On the note app they are not: 40 is milliseconds, 100 a percentage, 0 a count of
+folders, and "every" is not a number. No unit text repairs that, because the
+layout makes the claim before the units are read. It runs on
+`pipelineFeatures` instead, where every figure is seconds off the same build.
+
+**`AnnotatedShot` needs a real capture.** A note app is a stand-in with no product
+to photograph, hard rule 11 forbids inventing a screenshot and hard rule 8 forbids
+annotating an unrelated one. It runs on a real capture from deployment session 1.
+It also cannot pin an abstract capability like "offline first", and it rots the
+first time the product screen is redesigned.
+
+**The general lesson:** a variant that can only be drawn by degrading the content
+is telling you either that the contract is short a field or that the design has an
+entry requirement. Neither is visible until it is on screen with real words in it,
+and both are cheaper to learn here than in a deck.
+
+One more, found by looking rather than by measuring: `AnnotatedShot`'s first pass
+put two of its three pins dead centre on the text that proved their claim, so the
+price read "Rs [3]0/-". **A pin that occludes its own evidence is worse than no
+pin**, because the room is told to look at something and then it is hidden.
+
 ## Open findings
 
 - **`FeaturesFigureProps` names no SUBJECT.** `RadialSpread` is a hub reaching
@@ -118,5 +155,5 @@ real words in it.
 
 ## Verification
 
-All three harnesses, six slides: video-safe CLEAN, qa ALL CLEAN, align-check
-0 of 6.
+All three harnesses, eleven slides: video-safe CLEAN, qa ALL CLEAN, align-check
+0 of 11.

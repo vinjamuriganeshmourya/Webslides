@@ -1,12 +1,23 @@
 import type { DeckMeta, SlideDef } from '@/deck/types'
 import { ContentSlide } from '@/slides'
-import { noteAppFeatures, FIXTURE_CAPTION } from '@/ui/variants/fixture'
+import {
+  noteAppFeatures,
+  FIXTURE_CAPTION,
+  pipelineFeatures,
+  PIPELINE_CAPTION,
+  storefrontFeatures,
+  STOREFRONT_CAPTION,
+} from '@/ui/variants/fixture'
 import { BentoGrid } from '@/ui/variants/BentoGrid'
 import { Spotlight } from '@/ui/variants/Spotlight'
 import { AlternatingRows } from '@/ui/variants/AlternatingRows'
 import { RadialSpread } from '@/ui/variants/RadialSpread'
 import { EditorialList } from '@/ui/variants/EditorialList'
 import { SplitCompare } from '@/ui/variants/SplitCompare'
+import { MetricLed } from '@/ui/variants/MetricLed'
+import { LayerAnatomy } from '@/ui/variants/LayerAnatomy'
+import { FeatureFocus } from '@/ui/variants/FeatureFocus'
+import { AnnotatedShot } from '@/ui/variants/AnnotatedShot'
 
 /**
  * FEATURE SLIDE DESIGNS — a lab, not a session.
@@ -129,6 +140,91 @@ export const labDeck: SlideDef[] = [
         lead="The same five capabilities, argued from what you lose without them."
       >
         <SplitCompare {...FIG} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'v7-metric',
+    label: '7 · MetricLed',
+    section: 'Variants',
+    notes:
+      'THE NUMBER LEADS AND THE NAME SUPPORTS IT, because a figure is the one thing on a slide the eye finds without being told where to look. Note the fixture: this is the ONE variant on `pipelineFeatures` rather than the note app, and that is the finding. Setting five numbers at one size in one colour asserts they are readings of the SAME instrument, and "40 ms / 100 per cent / 0 folders / every" is not such a set. No unit text repairs it, because the layout makes the claim before the units are read. A precondition of the design, not a bug in it.',
+    element: (
+      <ContentSlide
+        kicker="Variant 7"
+        title="MetricLed"
+        lead="The figure leads. Only works where the numbers are the same kind of number."
+      >
+        <MetricLed {...pipelineFeatures} caption={PIPELINE_CAPTION} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'v8-layer',
+    label: '8 · LayerAnatomy',
+    section: 'Variants',
+    notes:
+      'SOME FEATURE SETS ARE ONE THING WITH PARTS, and a grid actively lies about that by drawing the parts as peers standing side by side. A stack, stepped so the eye reads the side wall of a single solid rather than five bars in a column, tint strengthening with depth so the base looks like it is holding the rest up. Worst at: a set with no real ordering. The geometry insists the top rests on the bottom and the room believes it, so five unrelated capabilities come out as an invented architecture, which is a worse lie than drawing them flat.',
+    element: (
+      <ContentSlide
+        kicker="Variant 8"
+        title="LayerAnatomy"
+        lead="Not five things side by side. One thing, seen from the side."
+      >
+        <LayerAnatomy {...FIG} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'v9-focus-a',
+    label: '9 · FeatureFocus (1 of n)',
+    section: 'Variants',
+    notes:
+      'ONE CAPABILITY PER FRAME, at hero scale, with a rail showing where you are in the set. Established practice from app-store screenshot sets and product pages: each frame highlights ONE thing and does not try to show everything, because a viewer given six things looks at none of them. THE COST IS IN THE DECK, NOT THE FIGURE: it is designed to be repeated with `at` incremented, so the author writes N slides rather than one. The next slide is the same component at at=2.',
+    element: (
+      <ContentSlide
+        kicker="Variant 9"
+        title="FeatureFocus"
+        lead="One capability, at the size of the only thing on the slide."
+      >
+        <FeatureFocus {...FIG} at={0} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'v9-focus-b',
+    label: '9 · FeatureFocus (3 of n)',
+    section: 'Variants',
+    notes:
+      'THE SAME COMPONENT, `at` INCREMENTED. This is what the repetition costs and what it buys: the rail has moved, the room knows where it is in the set, and the frame is still about exactly one thing. Judge the pair together, because one slide of this variant is not the variant.',
+    element: (
+      <ContentSlide
+        kicker="Variant 9"
+        title="FeatureFocus"
+        lead="The same component, one slide later."
+      >
+        <FeatureFocus {...FIG} at={2} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'v10-shot',
+    label: '10 · AnnotatedShot',
+    section: 'Variants',
+    notes:
+      'SHOW THE THING. Callouts pinned to the regions of a real screenshot that prove each claim. For a technical audience, seeing the actual interface beats any icon, and the guidance is to annotate only where the interface cannot explain itself. THIS IS THE ONE VARIANT THAT CANNOT SHARE THE FIXTURE: a note app is a stand-in with no product to photograph, hard rule 11 forbids inventing a capture and hard rule 8 forbids annotating an unrelated one. So it runs on a REAL screenshot from deployment session 1, with three claims that shot genuinely shows. That constraint is its main cost: it is unusable wherever no real capture exists.',
+    element: (
+      <ContentSlide
+        kicker="Variant 10"
+        title="AnnotatedShot"
+        lead="The product itself, with each claim pinned to the part that proves it."
+      >
+        <AnnotatedShot
+          {...storefrontFeatures}
+          caption={STOREFRONT_CAPTION}
+          src="/shots/s1-app-products.png"
+          alt="A React storefront listing products fetched from a Django API"
+        />
       </ContentSlide>
     ),
   },

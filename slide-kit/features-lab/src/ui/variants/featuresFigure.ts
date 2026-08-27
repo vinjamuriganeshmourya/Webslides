@@ -67,6 +67,28 @@ export interface FeatureItem {
    * plainly rather than fabricating a hardship.
    */
   without?: ReactNode
+  /**
+   * A number that IS the claim: "12x", "0", "3 seconds".
+   *
+   * ADDED FOR `MetricLed`, and optional like `without`. Only that variant reads
+   * it, so adding it changed no other figure.
+   *
+   * Established practice for a metric-led layout is that the FIGURE leads and
+   * the label supports it, because a number is the one thing on a slide the eye
+   * finds without being told where to look. A feature with no honest number
+   * simply has none: `MetricLed` says so rather than manufacturing one, which is
+   * the whole reason this is a separate field and not a formatting hint on
+   * `outcome`.
+   *
+   * **THE NUMBERS IN ONE SET MUST BE COMMENSURABLE.** Setting them at one size in
+   * one colour in one field asserts they are readings of the same instrument, and
+   * that assertion is made by the layout before any unit text is read. A set of
+   * "40 ms", "100 per cent", "0 folders" and "every" is not such a set, and no
+   * amount of unit labelling repairs it. This is a precondition of the variant
+   * rather than a bug in it, and `pipelineFeatures` in `fixture.ts` exists so the
+   * design can be judged where the precondition actually holds.
+   */
+  metric?: { value: string; unit?: string }
   icon?: IconName
   /**
    * A technology mark from the central asset library, `/assets/tech/*.png`.
