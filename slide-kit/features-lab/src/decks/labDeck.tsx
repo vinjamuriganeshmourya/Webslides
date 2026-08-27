@@ -5,6 +5,8 @@ import { BentoGrid } from '@/ui/variants/BentoGrid'
 import { Spotlight } from '@/ui/variants/Spotlight'
 import { AlternatingRows } from '@/ui/variants/AlternatingRows'
 import { RadialSpread } from '@/ui/variants/RadialSpread'
+import { EditorialList } from '@/ui/variants/EditorialList'
+import { SplitCompare } from '@/ui/variants/SplitCompare'
 
 /**
  * FEATURE SLIDE DESIGNS — a lab, not a session.
@@ -95,6 +97,38 @@ export const labDeck: SlideDef[] = [
         lead="One thing reaching into many places, which is a claim a grid cannot draw."
       >
         <RadialSpread {...FIG} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'v5-editorial',
+    label: '5 · EditorialList',
+    section: 'Variants',
+    notes:
+      'NO BOXES AT ALL. When the NAMES are the content, a card around each one is decoration that also costs the name its size. Full-width rows, a tick rule in the gutter, hairlines between, and the label set large. It wins outright on long labels: "Plain files on disk" gets 306px of measure instead of a fixed tile. Worst at: it draws nothing but a LIST, so any set whose items relate to each other is silently misdrawn as unrelated names. It also drops icon and logo entirely, which makes it unusable wherever hard rule 12 requires a technology to carry its mark.',
+    element: (
+      <ContentSlide
+        kicker="Variant 5"
+        title="EditorialList"
+        lead="When the names are the content, the boxes are decoration."
+      >
+        <EditorialList {...FIG} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'v6-split',
+    label: '6 · SplitCompare',
+    section: 'Variants',
+    notes:
+      'A LIST ASSERTS VALUE, A COMPARISON DEMONSTRATES IT. The left column states life WITHOUT each capability by striking through the item\'s own outcome, so nothing is invented; the right carries it at full weight, and the pair shares one beat so the comparison reveals as a unit. "You stop losing work" only lands next to "you lose work". Worst at: `body` has nowhere to live in a 64px row, so what the feature IS moves into the hover, which a projector audience cannot reach. Half the stage is also spent stating the bad case, wasted if the room does not already recognise it.',
+    element: (
+      <ContentSlide
+        kicker="Variant 6"
+        title="SplitCompare"
+        lead="The same five capabilities, argued from what you lose without them."
+      >
+        <SplitCompare {...FIG} />
       </ContentSlide>
     ),
   },

@@ -52,6 +52,21 @@ export interface FeatureItem {
    * product's behaviour: "You stop losing work", not "Autosaves continuously".
    */
   outcome?: ReactNode
+  /**
+   * The cost of NOT having this, in the person's own terms.
+   *
+   * ADDED BECAUSE `SplitCompare` COULD NOT BE JUDGED WITHOUT IT. That variant
+   * argues from loss, and with no field for the loss it fell back to striking
+   * through the positive `outcome`. On screen both columns then read the same
+   * sentence, one of them crossed out, which demonstrates nothing: a struck
+   * "You stop filing things and just find them" is not "You lose an afternoon a
+   * week to filing".
+   *
+   * Optional, and the only variant that reads it. Everything else ignores it, so
+   * adding it changed no other figure. Where it is absent `SplitCompare` says so
+   * plainly rather than fabricating a hardship.
+   */
+  without?: ReactNode
   icon?: IconName
   /**
    * A technology mark from the central asset library, `/assets/tech/*.png`.

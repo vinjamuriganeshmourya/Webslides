@@ -42,6 +42,8 @@ So the contract carries the two things a flat card grid throws away:
 - **`outcome`** is what the feature BUYS, kept separate from `body`, which is
   what it IS. A variant can then put them in different places, or admit it has
   nowhere to put one.
+- **`without`** is the cost of not having it, added later and for one reason: see
+  the finding below.
 
 ## The variants
 
@@ -57,6 +59,8 @@ layout.
 | `Spotlight` | one feature legible at a time, and a click MOVES the light rather than adding a tile | its own final frame. A screenshot or PDF gets one feature and four headings |
 | `AlternatingRows` | the what and the why side by side, sides swapping so each pair reads as a pair | comparison, because labels never line up in a column |
 | `RadialSpread` | breadth, which is the one claim a grid states but cannot show | mechanism: the body has to move into the hover, which a projector audience cannot reach |
+| `EditorialList` | no boxes at all: when the NAMES are the content, a card around each costs the name its size | it draws nothing but a list, so a set whose items relate to each other is misdrawn as unrelated names. Drops `icon` and `logo`, so it cannot satisfy hard rule 12 |
+| `SplitCompare` | a list asserts value, a comparison demonstrates it | `body` has nowhere to live, and half the stage states the bad case, which is wasted if the room already recognises it |
 
 ## Rules inherited from `flowchart-lab`
 
@@ -78,6 +82,28 @@ All of these were paid for there, and are not up for rediscovery:
 - **The hover popover is never in the DOM unless open**, because the harnesses
   measure static rectangles.
 
+## `SplitCompare` could not be judged until the contract grew a field
+
+It argues from loss, and the contract had no field for the loss. So its first
+version struck through the item's positive `outcome`, on the sound principle that
+nothing should be invented.
+
+On screen both columns then read **the same words**, one of them scored through.
+A comparison where both sides say the same thing demonstrates nothing: a struck
+"You stop filing things and just find them" is not "You lose an afternoon a week
+to filing". The whole argument of the variant is that the gain only lands beside
+the loss, and it had no loss to put there.
+
+`without` on the contract is the fix, and it exists for this. It is optional and
+no other variant reads it, so adding it changed nothing else. The strikethrough
+survives as the fallback where an item has no `without`, and an honest "no gain
+stated for this one" as the fallback after that.
+
+**The general lesson, and the reason a lab is worth building:** a variant that
+can only be drawn by degrading the content is telling you the contract is short a
+field, not that the design is bad. That is not visible until it is on screen with
+real words in it.
+
 ## Open findings
 
 - **`FeaturesFigureProps` names no SUBJECT.** `RadialSpread` is a hub reaching
@@ -92,5 +118,5 @@ All of these were paid for there, and are not up for rediscovery:
 
 ## Verification
 
-All three harnesses, four slides: video-safe CLEAN, qa ALL CLEAN, align-check
-0 of 4.
+All three harnesses, six slides: video-safe CLEAN, qa ALL CLEAN, align-check
+0 of 6.
