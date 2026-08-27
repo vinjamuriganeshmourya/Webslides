@@ -30,8 +30,26 @@ export const T = {
   enter: 0.52,
   /** Gap between items in a stagger. Was 70ms, which read as one clump. */
   stagger: 0.13,
-  /** A rail or a connector tracing itself. The slowest beat, and it leads. */
-  draw: 0.86,
+  /**
+   * A rail or a connector tracing itself.
+   *
+   * WAS 0.86, AND CLICK-GATING IS WHY IT IS NOT ANY MORE.
+   *
+   * 860ms was right while the whole figure auto-played: the draw was the slowest
+   * beat inside a single 2.4s assembly that the room watched once, and it led the
+   * eye along the path.
+   *
+   * Once every part became a build step, that stopped being true. An edge now
+   * draws in direct response to the presenter pressing a key, and they are
+   * waiting for it before they speak the next sentence. That is the `animate`
+   * skill's UI case, not its explanatory one, and 860ms of waiting after a
+   * deliberate press reads as lag rather than as deliberation.
+   *
+   * 600ms keeps the line visibly travelling, which is the whole reason it draws
+   * rather than fades, while answering the click promptly. The arrowhead's delay
+   * is a fraction of this value, so it follows automatically.
+   */
+  draw: 0.6,
   /** A label or caption fading up once its line has landed. */
   label: 0.34,
   /** The one emphasis beat a figure is allowed, and it plays once. */
