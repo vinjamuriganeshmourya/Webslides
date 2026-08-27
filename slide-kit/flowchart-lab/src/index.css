@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #060c1c; /* dark stage behind the slide canvas */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* The slide canvas is a fixed 1280×720 stage that is scaled to fit the
+   viewport. Everything inside uses absolute px so it matches the PPTX. */
+@layer components {
+  .slide-canvas {
+    width: 1280px;
+    height: 720px;
+    position: relative;
+    overflow: hidden;
+    background: #ffffff;
+  }
+
+  /*
+    CHARACTER LIFT
+    Nova is drawn in brand blue, so on the dark blue closing frames the figure
+    sank into the ground and read as a silhouette. Two stacked drop-shadows in
+    a cool grey separate it: drop-shadow follows the alpha shape, so it traces
+    the character's outline rather than boxing it the way box-shadow would. The
+    tight one gives the edge definition, the wide one gives the elevation.
+  */
+  .char-lift {
+    filter:
+      drop-shadow(0 4px 6px rgba(3, 14, 38, 0.55))
+      drop-shadow(0 12px 18px rgba(3, 14, 38, 0.45))
+      drop-shadow(0 30px 46px rgba(3, 14, 38, 0.38));
+  }
+
+  /*
+    Thin footer strip present on content/section slides.
+
+    Style-guide navy running out to the brand blue. It used to run Evolve blue
+    into teal into orange, so the closing frames finished on a green-to-orange
+    fade that appeared nowhere else in the deck and in no version of the brand.
+  */
+  .slide-footer-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 8px;
+    background: linear-gradient(90deg, #00254b 0%, #0146c7 45%, #2d63fb 100%);
+  }
+}
+
+/* Reduced-motion users get instant, non-animated slides */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/*
+  FLOW-CHART LAB: the node hover.
+
+  A CSS transition and not framer-motion, deliberately. Hover is fired and
+  cancelled fast and repeatedly, and a transition retargets from wherever the
+  value currently is; keyframes and JS-driven animation both restart from zero,
+  which is what makes a quick pointer sweep across a row of nodes look broken.
+  It also runs off the main thread.
+
+  160ms is the `animate` skill's UI tier, NOT the 520ms explanatory tier the
+  figure's entrance uses. A hover is triggered by the presenter, deliberately and
+  often, and they are waiting for it; the figure's entrance is watched once.
+
+  Gated behind `hover: hover` and `pointer: fine` because a touch device fires
+  hover on tap, which would leave a node stuck lifted after a stray finger.
+
+  `transform` and `box-shadow` only. No `top`, no `margin`.
+*/
+@media (hover: hover) and (pointer: fine) {
+  .fc-node--hoverable {
+    transition:
+      transform 160ms cubic-bezier(0.23, 1, 0.32, 1),
+      box-shadow 160ms cubic-bezier(0.23, 1, 0.32, 1);
+    will-change: transform;
+  }
+
+  .fc-node--hoverable:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px -18px rgba(45, 99, 251, 0.45);
+  }
+
+  .fc-node__more {
+    transition: opacity 160ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .fc-node--hoverable:hover .fc-node__more {
+    opacity: 0;
+  }
+}
+
+/*
+  The lift is movement, so reduced motion drops it and keeps the shadow, which
+  is the part that says "this one". The global block above clamps DURATION only,
+  which would still move the node, just instantly.
+*/
+@media (prefers-reduced-motion: reduce) {
+  .fc-node--hoverable:hover {
+    transform: none;
+  }
+}
+
+/*
+  THE HOVER POPOVER HAS TO WIN THE PAINT ORDER.
+
+  Each node sits in a slot that animates `transform`, and a transformed element
+  creates a stacking context. That traps any `z-index` inside the slot, so the
+  detail panel was painted over by every node rendered after it: on a left-hand
+  node it came out sliced by the next two cards along.
+
+  Raising the whole slot on hover is the fix, because the slot is the element
+  that owns the stacking context. `:has()` keeps it in CSS, so no hover state has
+  to be threaded from the card back up to the slot it lives in.
+
+  The base `z-index: 1` matters as much as the raised one: without it the slots
+  are all `auto`, they paint in DOM order, and raising one has nothing to be
+  raised above.
+*/
+.fc-node-slot {
+  z-index: 1;
+}
+
+.fc-node-slot:has(.fc-node--hoverable:hover) {
+  z-index: 60;
+}
