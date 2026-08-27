@@ -1,5 +1,5 @@
 import { colors } from '@/design/tokens'
-import { FcArrowDefs, FcEdgeDraw, FcEdgeLabel, FcNodeIn } from './motion'
+import { FcArrowDefs, FcEdgeDraw, FcEdgeLabel, FcNodeIn, useBeats } from './motion'
 import { resolveGraph, type FlowchartFigureProps } from './flowchartFigure'
 import { NodeShell, lookOf } from './NodeShell'
 
@@ -77,7 +77,19 @@ export function LaneFlow({ nodes, edges, caption, className = '' }: FlowchartFig
     col[n.id] = src ? (col[src.from] ?? 0) + 1 : g.spine.length
   })
 
-  const cols = Math.max(...Object.values(col)) + 1
+
+  /* Lanes first, then the spine, then the exception after the spine finishes
+     with one empty beat between. See SpineFlow for why the two branches must not
+     leave the fork together. */
+  const base = lanes.length
+  const SPINE_END = base + (g.spine.length - 1) * 2
+  const ALT_EDGE = SPINE_END + 1
+  const ALT_NODE = SPINE_END + 2
+  const LOOP = SPINE_END + 3
+  const CAPTION = SPINE_END + 4
+  const beatOf = (id: string) =>
+    g.spineIndex(id) >= 0 ? base + g.spineIndex(id) * 2 : ALT_NODE
+  const shown = useBeats(CAPTION + 1)
   const H = lanes.length * LANE_H + 44
   const mid = (id: string) => ({ x: colMid(col[id]), y: laneY(g.byId[id]?.lane) + NODE_H / 2 })
 
@@ -126,7 +138,7 @@ export function LaneFlow({ nodes, edges, caption, className = '' }: FlowchartFig
       {lanes.map((lane, i) => (
         <FcNodeIn
           key={lane}
-          at={i}
+          at={i} shown={shown[i]}
           className="absolute rounded-xl2"
           style={{
             left: 0,
@@ -165,7 +177,7 @@ export function LaneFlow({ nodes, edges, caption, className = '' }: FlowchartFig
           <FcEdgeDraw
             key={`m${i}`}
             d={route(e.from, e.to)}
-            at={lanes.length + (col[e.from] ?? 0) * 2 + 1}
+            at={beatOf(e.from) + 1} shown={shown[beatOf(e.from) + 1]}
             stroke={PAINT.main}
             markerEnd="url(#lane-main)"
           />
@@ -174,7 +186,7 @@ export function LaneFlow({ nodes, edges, caption, className = '' }: FlowchartFig
           <FcEdgeDraw
             key={`a${i}`}
             d={route(e.from, e.to)}
-            at={lanes.length + (col[e.from] ?? 0) * 2 + 2}
+            at={ALT_EDGE} shown={shown[ALT_EDGE]}
             stroke={PAINT.alt}
             markerEnd="url(#lane-alt)"
           />
@@ -189,7 +201,7 @@ export function LaneFlow({ nodes, edges, caption, className = '' }: FlowchartFig
             <FcEdgeDraw
               key={`l${i}`}
               d={`M ${a.x} ${a.y + NODE_H / 2} V ${floor} H ${b.x} V ${b.y + NODE_H / 2 + ENTER}`}
-              at={lanes.length + (col[e.from] ?? 0) * 2 + 3}
+              at={LOOP} shown={shown[LOOP]}
               stroke={PAINT.alt}
               dashed
               markerEnd="url(#lane-alt)"
@@ -203,7 +215,7 @@ export function LaneFlow({ nodes, edges, caption, className = '' }: FlowchartFig
         return (
           <FcNodeIn
             key={n.id}
-            at={lanes.length + (col[n.id] ?? 0) * 2}
+            at={beatOf(n.id)} shown={shown[beatOf(n.id)]}
             className="absolute"
             style={{ left: colLeft(col[n.id] ?? 0), top: laneY(n.lane), width: COL_W, height: NODE_H }}
           >
@@ -227,7 +239,7 @@ export function LaneFlow({ nodes, edges, caption, className = '' }: FlowchartFig
         return (
           <FcEdgeLabel
             key={`lab${e.from}-${e.to}`}
-            at={lanes.length + (col[e.from] ?? 0) * 2 + (isAlt ? 2 : 1)}
+            at={isAlt ? ALT_EDGE : beatOf(e.from) + 1} shown={shown[isAlt ? ALT_EDGE : beatOf(e.from) + 1]}
             className="absolute z-[2] -translate-x-1/2 rounded-pill px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide"
             style={{ left: at.x, top: at.y, background: `${paint}1a`, color: paint }}
           >
@@ -238,7 +250,7 @@ export function LaneFlow({ nodes, edges, caption, className = '' }: FlowchartFig
 
       {caption && (
         <FcEdgeLabel
-          at={lanes.length + cols * 2 + 2}
+          at={CAPTION} shown={shown[CAPTION]}
           className="absolute text-center text-body-sm"
           style={{ left: 0, width: W, top: H - 16, color: colors.body }}
         >

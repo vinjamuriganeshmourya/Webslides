@@ -1,5 +1,5 @@
 import { colors } from '@/design/tokens'
-import { FcArrowDefs, FcEdgeDraw, FcEdgeLabel, FcNodeIn } from './motion'
+import { FcArrowDefs, FcEdgeDraw, FcEdgeLabel, FcNodeIn, useBeats } from './motion'
 import { resolveGraph, type FlowchartFigureProps } from './flowchartFigure'
 import { NodeShell, lookOf, NODE_MIN_H } from './NodeShell'
 
@@ -135,6 +135,8 @@ export function TrackSwitch({ nodes, edges, caption, className = '' }: Flowchart
   const PEEL_AT = happyEnd + 1
   const ALT_AT = happyEnd + 2
   const RETURN_AT = happyEnd + 3
+  const CAPTION = RETURN_AT + 2
+  const shown = useBeats(CAPTION + 1)
 
   const peelX = gateIdx >= 0 ? cx(gateIdx) : 0
   const mergeX = loopTargetIdx >= 0 ? cx(loopTargetIdx) : 0
@@ -165,11 +167,11 @@ export function TrackSwitch({ nodes, edges, caption, className = '' }: Flowchart
           return (
             <g key={`rail${i}`}>
               {/* the bed */}
-              <FcEdgeDraw d={d} at={i * 2 + 1} stroke={BED} width={7} />
+              <FcEdgeDraw d={d} at={i * 2 + 1} shown={shown[i * 2 + 1]} stroke={BED} width={7} />
               {/* the rail */}
               <FcEdgeDraw
                 d={d}
-                at={i * 2 + 1}
+                at={i * 2 + 1} shown={shown[i * 2 + 1]}
                 stroke={PAINT.main}
                 width={3}
                 markerEnd={isLast ? 'url(#track-main)' : undefined}
@@ -183,7 +185,7 @@ export function TrackSwitch({ nodes, edges, caption, className = '' }: Flowchart
         {altNode && gateIdx >= 0 && (
           <FcEdgeDraw
             d={`M ${peelX} ${RAIL_BOTTOM} C ${peelX} ${RAIL_BOTTOM + 66}, ${peelX + 38} ${RETURN_Y}, ${altLeft - 6} ${RETURN_Y}`}
-            at={PEEL_AT}
+            at={PEEL_AT} shown={shown[PEEL_AT]}
             stroke={PAINT.alt}
             width={2}
             markerEnd="url(#track-alt)"
@@ -196,7 +198,7 @@ export function TrackSwitch({ nodes, edges, caption, className = '' }: Flowchart
         {loopEdge && loopTargetIdx >= 0 && altNode && (
           <FcEdgeDraw
             d={`M ${altLeft} ${RETURN_Y} H ${mergeX + MERGE_RUN} C ${mergeX + 32} ${RETURN_Y}, ${mergeX} ${RETURN_Y - 24}, ${mergeX} ${RAIL_BOTTOM + 6}`}
-            at={RETURN_AT}
+            at={RETURN_AT} shown={shown[RETURN_AT]}
             stroke={PAINT.alt}
             width={1.5}
             dashed
@@ -209,7 +211,7 @@ export function TrackSwitch({ nodes, edges, caption, className = '' }: Flowchart
       {g.spine.map((n, i) => (
         <FcNodeIn
           key={n.id}
-          at={i * 2}
+          at={i * 2} shown={shown[i * 2]}
           className="absolute"
           style={{ left: left(i), top: SPINE_Y, width: SLOT, height: NODE_H }}
         >
@@ -225,7 +227,7 @@ export function TrackSwitch({ nodes, edges, caption, className = '' }: Flowchart
       {/* THE DETOUR, parked on the lower track. */}
       {altNode && (
         <FcNodeIn
-          at={ALT_AT}
+          at={ALT_AT} shown={shown[ALT_AT]}
           className="absolute"
           style={{ left: altLeft, top: ALT_Y, width: SLOT, height: ALT_H }}
         >
@@ -241,7 +243,7 @@ export function TrackSwitch({ nodes, edges, caption, className = '' }: Flowchart
           return (
             <FcEdgeLabel
               key={`m${e.from}-${e.to}`}
-              at={i * 2 + 1}
+              at={i * 2 + 1} shown={shown[i * 2 + 1]}
               className="absolute rounded-pill px-2 py-0.5 text-[12px] font-bold uppercase tracking-wide"
               style={{
                 left: left(i) + SLOT + 3,
@@ -263,7 +265,7 @@ export function TrackSwitch({ nodes, edges, caption, className = '' }: Flowchart
           .map((e) => (
             <FcEdgeLabel
               key={`a${e.from}-${e.to}`}
-              at={PEEL_AT}
+              at={PEEL_AT} shown={shown[PEEL_AT]}
               className="absolute rounded-pill px-2 py-0.5 text-[12px] font-bold uppercase tracking-wide"
               style={{
                 left: peelX + 12,
@@ -279,7 +281,7 @@ export function TrackSwitch({ nodes, edges, caption, className = '' }: Flowchart
       {/* On the flat run of the return track, which is what MERGE_RUN buys. */}
       {loopEdge?.label && loopTargetIdx >= 0 && (
         <FcEdgeLabel
-          at={RETURN_AT}
+          at={RETURN_AT} shown={shown[RETURN_AT]}
           className="absolute rounded-pill bg-white px-2 py-0.5 text-[12px] font-semibold"
           style={{
             left: mergeX + MERGE_RUN + 18,
@@ -294,7 +296,7 @@ export function TrackSwitch({ nodes, edges, caption, className = '' }: Flowchart
 
       {caption && (
         <FcEdgeLabel
-          at={RETURN_AT + 2}
+          at={CAPTION} shown={shown[CAPTION]}
           className="absolute text-center text-body-sm"
           style={{ left: 0, width: W, top: 352, color: colors.body }}
         >

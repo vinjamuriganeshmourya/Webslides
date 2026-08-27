@@ -107,6 +107,50 @@ running out of energy before it connects.
 framer, which writes inline styles frame by frame. Every primitive in
 `src/ui/variants/motion.tsx` reads `useReducedMotion()` itself.
 
+## The figure builds one click at a time
+
+A flow chart is a sequence, and an instructor talks through a sequence one stage
+at a time. Auto-playing the whole thing handed the room the finished picture
+about 2.5s in, whatever the instructor had actually reached, with no way to hold
+on the decision while it was being discussed.
+
+Every part is now a build step, in beat order. **`Ctrl+arrow` steps the build;
+plain arrows change slide.** That is the deck's own binding, not this lab's.
+
+Two rules the first pass got wrong:
+
+- **Beat 0 is not a click.** It is the slide's base content, on screen the moment
+  the slide arrives, which is the `start` node. Claiming it opened the slide on
+  an empty stage that reads as a figure which failed to render.
+- **No empty beat between the branches.** The happy path completes, and the
+  exception starts on the very next click. An empty beat as a "pause" cost the
+  presenter a press that changed nothing on screen, which reads as the deck
+  having stopped responding. The click IS the separation.
+
+Slide 1 now steps: start node on entry, then eight clicks that finish the happy
+path at "Marked complete", then the No exit, the retry card, and the loop home.
+
+`useReveal()` CALLED IN A LOOP DOES NOT WORK, and this cost an hour. It calls
+`useId()` internally and the ids do not come out distinct in the way the registry
+needs, so every beat claimed the same order: the whole figure appeared on the
+first click, and the slide reported one step, which made the arrow key advance to
+the next slide instead of building this one. `useClaimedSteps(count)` in
+`src/motion/Stepper.tsx` calls exactly two hooks whatever the count is and
+derives `count` stable ids from one base. **That is an addition to a kit-owned
+file, and a promoted variant has to carry it.**
+
+## The exception must not leave the fork with the happy path
+
+The beats used to be `gateIdx * 2 + 2` for the "No" exit, which on a five-node
+spine is beat 6, and beat 6 is also when the node after the decision lands. Both
+branches left the fork at the same instant. This file's own choreography note
+said the happy path draws first and the exception second, and the arithmetic
+simply did not do it.
+
+`GateFlow` and `TrackSwitch` had it right from the start (`EXC` and `PEEL_AT` are
+both derived from the end of the spine). `SpineFlow`, `CircuitMap` and `LaneFlow`
+did not, and now derive theirs the same way.
+
 ## Hover is a different tier, and that is deliberate
 
 The figure's entrance is explanatory: watched once, from the back of a room. A
@@ -148,6 +192,12 @@ Each of these cost a render to find, and every one of them passed a typecheck.
   diamond drew straight through the reviewer card, the "Yes" was buried under it,
   and the end terminal hung 100px off the right of the slide. It is a uniform
   pitch now and the arithmetic is `i * PITCH`.
+- **A constant that encodes another constant's old value breaks silently.**
+  `GateFlow`'s caption was `top: 352`, set when the retry card ended at 338.
+  Growing that card to the padding floor pushed it to 364, and the card carries
+  `z-index: 1`, so it painted straight over the caption: the line under the
+  figure simply vanished. Both the caption position and the figure height are
+  derived from `LOWER_TOP + LOWER_H` now.
 - **A label centred on a short edge does not fit in it.** A 42px gap cannot hold
   the word "Yes", so the label has to clear the whole row rather than hover over
   its own line.

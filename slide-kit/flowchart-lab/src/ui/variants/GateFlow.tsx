@@ -1,5 +1,5 @@
 import { colors } from '@/design/tokens'
-import { FcArrowDefs, FcEdgeDraw, FcEdgeLabel, FcNodeIn } from './motion'
+import { FcArrowDefs, FcEdgeDraw, FcEdgeLabel, FcNodeIn, useBeats } from './motion'
 import { resolveGraph, type FlowchartFigureProps } from './flowchartFigure'
 import { NodeShell, lookOf, NODE_MIN_H } from './NodeShell'
 
@@ -56,7 +56,6 @@ import { NodeShell, lookOf, NODE_MIN_H } from './NodeShell'
  */
 
 const W = 1100
-const H = 380
 
 const START = 76
 const SLOT = 176
@@ -74,6 +73,10 @@ const GATE_BOTTOM = GATE_TOP + GATE_H /* 245 */
 const LOWER_TOP = 258
 const LOWER_H = NODE_MIN_H
 const LOWER_MID = LOWER_TOP + LOWER_H / 2 /* 296 */
+
+/* Tall enough for the lower track plus the caption under it, and derived from
+   them so it cannot go stale when either moves. */
+const H = LOWER_TOP + LOWER_H + 48
 
 const PAINT = {
   main: colors.brand,
@@ -124,9 +127,11 @@ export function GateFlow({ nodes, edges, caption, className = '' }: FlowchartFig
      `motion.tsx` taken literally rather than interleaved. */
   const nodeBeat = (i: number) => i * 2
   const edgeBeat = (i: number) => i * 2 + 1
-  const EXC = g.spine.length * 2 /* the ejection */
+  const EXC = (g.spine.length - 1) * 2 + 1 /* the ejection, straight after the spine's last beat */
   const RETRY = EXC + 1
   const LOOP = EXC + 2
+  const CAPTION = LOOP + 2
+  const shown = useBeats(CAPTION + 1)
 
   return (
     <figure className={`relative mx-auto ${className}`} style={{ width: W, height: H }}>
@@ -161,7 +166,7 @@ export function GateFlow({ nodes, edges, caption, className = '' }: FlowchartFig
               <FcEdgeDraw
                 key={`m${s.from}-${s.to}`}
                 d={`M ${x1} ${ROW_MID} H ${b.x - 6}`}
-                at={edgeBeat(s.from)}
+                at={edgeBeat(s.from)} shown={shown[edgeBeat(s.from)]}
                 stroke={PAINT.main}
                 markerEnd="url(#gate-main)"
               />
@@ -175,7 +180,7 @@ export function GateFlow({ nodes, edges, caption, className = '' }: FlowchartFig
         {altEdge && altNode && gateSlot && retrySlot && (
           <FcEdgeDraw
             d={`M ${gateSlot.cx} ${GATE_BOTTOM} V ${LOWER_MID} H ${retryLeft + SLOT + 6}`}
-            at={EXC}
+            at={EXC} shown={shown[EXC]}
             stroke={PAINT.alt}
             markerEnd="url(#gate-alt)"
           />
@@ -186,7 +191,7 @@ export function GateFlow({ nodes, edges, caption, className = '' }: FlowchartFig
         {loopEdge && loopTargetIdx >= 0 && retrySlot && (
           <FcEdgeDraw
             d={`M ${retrySlot.cx} ${LOWER_TOP} V ${ROW_TOP + NODE_H + 6}`}
-            at={LOOP}
+            at={LOOP} shown={shown[LOOP]}
             stroke={PAINT.alt}
             dashed
             markerEnd="url(#gate-alt)"
@@ -202,7 +207,7 @@ export function GateFlow({ nodes, edges, caption, className = '' }: FlowchartFig
         return (
           <FcNodeIn
             key={n.id}
-            at={nodeBeat(i)}
+            at={nodeBeat(i)} shown={shown[nodeBeat(i)]}
             className="absolute"
             style={{
               left: pos[i].x,
@@ -245,7 +250,7 @@ export function GateFlow({ nodes, edges, caption, className = '' }: FlowchartFig
           overhang opens up between the two cards either side of it. */}
       {gate && gateSlot && (
         <FcNodeIn
-          at={nodeBeat(gateIdx)}
+          at={nodeBeat(gateIdx)} shown={shown[nodeBeat(gateIdx)]}
           className="absolute text-center"
           style={{ left: gateSlot.cx - 110, top: 10, width: 220 }}
         >
@@ -267,7 +272,7 @@ export function GateFlow({ nodes, edges, caption, className = '' }: FlowchartFig
       {/* THE RETRY CARD, on the lower track. */}
       {altNode && (
         <FcNodeIn
-          at={RETRY}
+          at={RETRY} shown={shown[RETRY]}
           className="absolute"
           style={{ left: retryLeft, top: LOWER_TOP, width: SLOT, height: LOWER_H }}
         >
@@ -283,7 +288,7 @@ export function GateFlow({ nodes, edges, caption, className = '' }: FlowchartFig
           .map((e) => (
             <FcEdgeLabel
               key={`y${e.to}`}
-              at={edgeBeat(gateIdx)}
+              at={edgeBeat(gateIdx)} shown={shown[edgeBeat(gateIdx)]}
               className="absolute rounded-pill px-2 py-0.5 text-[12px] font-bold uppercase tracking-wide"
               style={{
                 left: gateSlot.x + gateSlot.w + 10,
@@ -298,7 +303,7 @@ export function GateFlow({ nodes, edges, caption, className = '' }: FlowchartFig
 
       {altEdge?.label && gateSlot && (
         <FcEdgeLabel
-          at={EXC}
+          at={EXC} shown={shown[EXC]}
           className="absolute rounded-pill px-2 py-0.5 text-[12px] font-bold uppercase tracking-wide"
           style={{
             left: gateSlot.cx + 12,
@@ -313,7 +318,7 @@ export function GateFlow({ nodes, edges, caption, className = '' }: FlowchartFig
 
       {loopEdge?.label && retrySlot && (
         <FcEdgeLabel
-          at={LOOP}
+          at={LOOP} shown={shown[LOOP]}
           className="absolute rounded-pill bg-white px-2 py-0.5 text-[12px] font-semibold"
           style={{
             left: retrySlot.cx + 12,
@@ -328,9 +333,15 @@ export function GateFlow({ nodes, edges, caption, className = '' }: FlowchartFig
 
       {caption && (
         <FcEdgeLabel
-          at={LOOP + 1}
+          at={CAPTION} shown={shown[CAPTION]}
           className="absolute text-center text-body-sm"
-          style={{ left: 0, width: W, top: 352, color: colors.body }}
+          /* Derived from the lowest thing in the figure, not hardcoded. `top:
+             352` was set when the retry card ended at 338; growing that card to
+             the padding floor pushed it to 364 and the card, which carries
+             `z-index: 1`, painted straight over the caption. A constant that
+             encodes another constant's old value breaks silently the moment that
+             one moves. */
+          style={{ left: 0, width: W, top: LOWER_TOP + LOWER_H + 16, color: colors.body }}
         >
           {caption}
         </FcEdgeLabel>

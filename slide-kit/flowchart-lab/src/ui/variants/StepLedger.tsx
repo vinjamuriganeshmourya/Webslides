@@ -1,7 +1,7 @@
 import { colors } from '@/design/tokens'
 import { motion, useReducedMotion } from 'framer-motion'
 import { T } from '@/ui/figureTiming'
-import { beat, FcEdgeLabel, FcNodeIn } from './motion'
+import { FcEdgeLabel, FcNodeIn, useBeats } from './motion'
 import { resolveGraph, type FlowchartFigureProps } from './flowchartFigure'
 
 /**
@@ -57,25 +57,48 @@ export function StepLedger({ nodes, edges, caption, className = '' }: FlowchartF
 
   /* Rows are the spine; the fork block is injected straight after the decision,
      so the two outcomes read as belonging to the question above them. */
+  /*
+    BEATS RUN IN VISUAL ORDER HERE, NOT IN SPINE ORDER.
+
+    Every other variant is a diagram, so its beats follow the path. A ledger is
+    read top to bottom, and the fork is printed BETWEEN the decision row and the
+    row after it. Numbering by spine index would reveal row 4 before the two
+    outcomes sitting above it, which is the one thing a list must not do.
+
+    So a running counter assigns a beat to each block in the order it appears on
+    the page, and the fork takes two of them: Yes, then No. That also gives the
+    two branches their own clicks, rather than landing together.
+  */
   let y = 0
+  let cursor = 0
   const rows = g.spine.map((n, i) => {
     const top = y
+    const at = cursor
+    cursor += 1
     y += ROW_H
-    if (i === gateIdx) y += FORK_H * 2
-    return { node: n, top, i }
+    if (i === gateIdx) {
+      y += FORK_H * 2
+      cursor += 2 /* the Yes row, then the No row */
+    }
+    return { node: n, top, i, at }
   })
+  const FORK_YES = (rows[gateIdx]?.at ?? 0) + 1
+  const FORK_NO = FORK_YES + 1
+  const CAPTION = cursor
+  const shown = useBeats(CAPTION + 1)
   const H = y + 44
 
   return (
     <figure className={`relative mx-auto ${className}`} style={{ width: W, height: H }}>
-      {rows.map(({ node: n, top, i }) => {
+      {rows.map(({ node: n, top, i, at }) => {
         const isEnd = n.kind === 'end'
         const isDecision = n.kind === 'decision'
         const paint = isEnd ? PAINT.end : PAINT.main
         return (
           <div key={n.id}>
             <FcNodeIn
-              at={i * 2}
+              at={at}
+              shown={shown[at]}
               className="absolute flex items-baseline gap-5"
               style={{ left: 0, top, width: W, height: ROW_H }}
             >
@@ -125,8 +148,8 @@ export function StepLedger({ nodes, edges, caption, className = '' }: FlowchartF
                 transformOrigin: 'left center',
               }}
               initial={reduce ? false : { transform: 'scaleX(0)' }}
-              animate={{ transform: 'scaleX(1)' }}
-              transition={{ duration: T.draw, delay: beat(i * 2 + 1), ease: 'linear' }}
+              animate={{ transform: shown[at] ? 'scaleX(1)' : 'scaleX(0)' }}
+              transition={{ duration: T.draw, delay: 0, ease: 'linear' }}
             />
           </div>
         )
@@ -146,7 +169,8 @@ export function StepLedger({ nodes, edges, caption, className = '' }: FlowchartF
       */}
       {gateIdx >= 0 && yesEdge && (
         <FcNodeIn
-          at={gateIdx * 2 + 2}
+          at={FORK_YES}
+          shown={shown[FORK_YES]}
           className="absolute flex items-center gap-4"
           style={{ left: 56, top: rows[gateIdx].top + ROW_H, width: W - 56, height: FORK_H }}
         >
@@ -165,7 +189,8 @@ export function StepLedger({ nodes, edges, caption, className = '' }: FlowchartF
 
       {gateIdx >= 0 && altEdge && altNode && (
         <FcNodeIn
-          at={gateIdx * 2 + 3}
+          at={FORK_NO}
+          shown={shown[FORK_NO]}
           className="absolute flex items-center gap-4"
           style={{ left: 56, top: rows[gateIdx].top + ROW_H + FORK_H, width: W - 56, height: FORK_H }}
         >
@@ -189,7 +214,8 @@ export function StepLedger({ nodes, edges, caption, className = '' }: FlowchartF
 
       {caption && (
         <FcEdgeLabel
-          at={g.spine.length * 2 + 3}
+          at={CAPTION}
+          shown={shown[CAPTION]}
           className="absolute text-body-sm"
           style={{ left: 56, top: H - 26, color: colors.body }}
         >
