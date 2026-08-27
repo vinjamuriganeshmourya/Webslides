@@ -1,7 +1,7 @@
 import { colors } from '@/design/tokens'
 import { FcArrowDefs, FcEdgeDraw, FcEdgeLabel, FcNodeIn } from './motion'
 import { resolveGraph, type FlowchartFigureProps } from './flowchartFigure'
-import { NodeShell, lookOf } from './NodeShell'
+import { NodeShell, lookOf, NODE_MIN_H } from './NodeShell'
 
 /**
  * GATE FLOW — the decision is a barrier the work has to get past, not a box in the row.
@@ -63,16 +63,16 @@ const SLOT = 176
 const GATE_W = 60
 const GAP = 46
 
-const ROW_TOP = 104
-const NODE_H = 92
+const ROW_TOP = 92
+const NODE_H = NODE_MIN_H
 const ROW_MID = ROW_TOP + NODE_H / 2 /* 150 */
 
 const GATE_H = 190
 const GATE_TOP = ROW_MID - GATE_H / 2 /* 55 */
 const GATE_BOTTOM = GATE_TOP + GATE_H /* 245 */
 
-const LOWER_TOP = 256
-const LOWER_H = 80
+const LOWER_TOP = 258
+const LOWER_H = NODE_MIN_H
 const LOWER_MID = LOWER_TOP + LOWER_H / 2 /* 296 */
 
 const PAINT = {

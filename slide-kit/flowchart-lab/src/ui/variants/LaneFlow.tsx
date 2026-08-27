@@ -35,11 +35,16 @@ import { NodeShell, lookOf } from './NodeShell'
  */
 
 const W = 1100
-const LANE_H = 104
-const HEAD_W = 150
-const COL_W = 176
-const COL_GAP = 14
-const NODE_H = 74
+const LANE_H = 118
+const HEAD_W = 132
+/* Narrower cards, same pitch, so the gap that has to hold an arrowhead grows
+   from 14px to 22px. Measured horizontal padding stays at 12px or better. */
+const COL_W = 168
+const COL_GAP = 22
+/* Row layout stacks a two-line label over a two-line caption beside the icon,
+   which measured 73px of content in a 74px box: zero real padding on four of
+   the six cards. */
+const NODE_H = 94
 
 const colLeft = (i: number) => HEAD_W + 16 + i * (COL_W + COL_GAP)
 const colMid = (i: number) => colLeft(i) + COL_W / 2
