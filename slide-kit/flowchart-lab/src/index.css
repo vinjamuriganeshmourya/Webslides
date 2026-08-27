@@ -147,3 +147,30 @@ body {
 .fc-node-slot:has(.fc-node--hoverable:hover) {
   z-index: 60;
 }
+
+/*
+  THE DIAMOND'S HOVER SHADOW BELONGS TO THE DIAMOND, NOT TO ITS BOX.
+
+  A diamond is a rotated square drawn as a separate layer inside an unstyled
+  square `.fc-node` (the rotation cannot live on `.fc-node` itself, because the
+  hover rule sets `transform` on that element and would replace it). The default
+  hover shadow therefore landed on the transparent square and drew a RECTANGLE
+  around the diamond.
+
+  So the bare variant drops the shadow and hands it to the rotated layer, which
+  is the shape the eye actually sees. The lift still happens on `.fc-node`, so
+  the whole thing rises as one.
+*/
+@media (hover: hover) and (pointer: fine) {
+  .fc-node--bare:hover {
+    box-shadow: none;
+  }
+
+  .fc-node__shape {
+    transition: box-shadow 160ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .fc-node--hoverable:hover .fc-node__shape {
+    box-shadow: 0 18px 40px -18px rgba(45, 99, 251, 0.45);
+  }
+}

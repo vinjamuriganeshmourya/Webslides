@@ -153,24 +153,73 @@ export function NodeShell({
     >
       <div
         className={`fc-node flex h-full w-full ${
-          shape === 'diamond' ? 'rotate-45 px-2 py-2' : 'px-4 py-3.5'
-        } ${chrome} ${
+          /*
+            THE DIAMOND'S ROTATION IS NOT ON THIS ELEMENT, AND THAT IS THE FIX.
+
+            It used to be: `rotate-45` here, `-rotate-45` on the content to put
+            the text back level. But the hover rule sets
+            `transform: translateY(-3px)` on this same element, and `transform`
+            is ONE property. The hover value replaced the rotation outright, so
+            pointing at the decision un-rotated the box while its content kept
+            its counter-rotation: the card squared up and the text swung to 45
+            degrees.
+
+            The rotated square is now a separate absolutely-positioned layer
+            below, so this element owns only the hover transform and the two can
+            never collide. The content is not counter-rotated at all, because it
+            is never rotated in the first place.
+          */
+          shape === 'diamond' ? 'relative items-center justify-center px-2 py-2' : 'px-4 py-3.5'
+        } ${shape === 'diamond' ? '' : chrome} ${
           layout === 'row' ? 'items-center gap-2.5' : 'flex-col items-center justify-center gap-1 text-center'
-        } ${hasDetail ? 'fc-node--hoverable' : ''}`}
+        } ${hasDetail ? 'fc-node--hoverable' : ''} ${shape === 'diamond' ? 'fc-node--bare' : ''}`}
         style={
-          filled
+          shape === 'diamond'
+            ? undefined
+            : filled
             ? { background: paint }
             : decision
-              ? { background: `${paint}12`, border: `2px solid ${paint}` }
+              ? {
+                  /*
+                    OPAQUE, and it was not before.
+
+                    `${paint}12` is a 7% wash, so on `TrackSwitch` the main rail
+                    ran straight through the decision card and out the other
+                    side: the card looked like a hole in the figure. Every other
+                    look is opaque (a terminal is a solid fill, a step is
+                    `bg-white`), so the decision was the only one a connector
+                    could show through.
+
+                    Two background layers: the tint painted over an opaque white
+                    base. Keeps the same colour and stops anything behind it
+                    reading through.
+                  */
+                  background: `linear-gradient(${paint}12, ${paint}12), ${colors.white}`,
+                  border: `2px solid ${paint}`,
+                }
               : undefined
         }
         aria-describedby={open ? id : undefined}
       >
+        {shape === 'diamond' && (
+          <span
+            aria-hidden
+            className={`fc-node__shape absolute inset-[14%] rotate-45 rounded-lg ${filled ? 'shadow-card' : 'shadow-card-soft'}`}
+            style={
+              filled
+                ? { background: paint }
+                : {
+                    background: `linear-gradient(${paint}12, ${paint}12), ${colors.white}`,
+                    border: `2px solid ${paint}`,
+                  }
+            }
+          />
+        )}
         {children ?? (
           <span
             className={
               shape === 'diamond'
-                ? '-rotate-45 flex flex-col items-center gap-1 px-1 text-center'
+                ? 'relative flex flex-col items-center gap-1 px-1 text-center'
                 : 'contents'
             }
           >

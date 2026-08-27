@@ -186,6 +186,31 @@ comparing that to the card's own rect. Note the trap: the default body is wrappe
 in a `display: contents` span, which has NO box, so a first attempt that measured
 `el.children` reported zero content height for every card in the lab.
 
+## Two bugs the hover introduced, both worth remembering
+
+**`transform` is one property, so a hover lift replaces a rotation.** The diamond
+was `rotate-45` on `.fc-node` with `-rotate-45` on its content to put the text
+back level. The hover rule sets `transform: translateY(-3px)` on that same
+element, which overwrote the rotation outright: pointing at the decision squared
+the box up and swung its text to 45 degrees. The rotated square is now a separate
+absolutely-positioned layer, so `.fc-node` owns only the hover transform and the
+content is never rotated at all.
+
+That fix produced a second one. The hover shadow was still landing on the now
+transparent square box and drawing a RECTANGLE around the diamond, so
+`.fc-node--bare` drops it there and hands it to `.fc-node__shape`, which is the
+outline the eye actually sees.
+
+**A translucent fill lets a connector through.** The decision look was
+`${paint}12`, a 7% wash, and every other look is opaque: a terminal is a solid
+fill and a step is `bg-white`. On `TrackSwitch` the main rail therefore ran
+straight through the decision card and out the other side, and the card read as a
+hole in the figure. It is two background layers now, the tint over an opaque
+white base, so the colour is unchanged and nothing shows through.
+
+Both were invisible to all three harnesses, and the first only appears while a
+pointer is on the node.
+
 ## Still open
 
 - The geometry in every variant is authored for the fixture's shape, which is one
