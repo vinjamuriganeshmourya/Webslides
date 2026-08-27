@@ -1,5 +1,5 @@
 import { colors } from '@/design/tokens'
-import { FcArrowDefs, FcEdgeDraw, FcEdgeLabel, FcNodeIn } from './motion'
+import { FcArrowDefs, FcEdgeDraw, FcEdgeLabel, FcNodeIn, useBeats } from './motion'
 import { resolveGraph, type FlowchartFigureProps } from './flowchartFigure'
 import { NodeShell, lookOf, NODE_MIN_H } from './NodeShell'
 
@@ -100,6 +100,15 @@ export function CircuitMap({ nodes, edges, caption, className = '' }: FlowchartF
   const loopFrom = loopEdge ? leftOf(loopEdge.from) : null
   const loopTo = loopEdge ? below(loopEdge.to) : null
 
+  /* The exception hangs off the END of the spine, with one empty beat between,
+     so the two branches never leave the fork together. See SpineFlow. */
+  const SPINE_END = (g.spine.length - 1) * 2
+  const ALT_EDGE = SPINE_END + 1
+  const ALT_NODE = SPINE_END + 2
+  const LOOP = SPINE_END + 3
+  const CAPTION = SPINE_END + 4
+  const shown = useBeats(CAPTION + 1)
+
   return (
     <figure className={`relative mx-auto ${className}`} style={{ width: W, height: H }}>
       <svg aria-hidden className="pointer-events-none absolute inset-0" width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
@@ -111,7 +120,7 @@ export function CircuitMap({ nodes, edges, caption, className = '' }: FlowchartF
             <FcEdgeDraw
               key={`m${i}`}
               d={`M ${a.x} ${a.y} H ${b.x - 7}`}
-              at={i * 2 + 1}
+              at={i * 2 + 1} shown={shown[i * 2 + 1]}
               stroke={PAINT.main}
               markerEnd="url(#circuit-main)"
             />
@@ -124,7 +133,7 @@ export function CircuitMap({ nodes, edges, caption, className = '' }: FlowchartF
             <FcEdgeDraw
               key={`a${i}`}
               d={`M ${a.x} ${a.y} V ${b.y - 7}`}
-              at={gateIdx * 2 + 2}
+              at={ALT_EDGE} shown={shown[ALT_EDGE]}
               stroke={PAINT.alt}
               markerEnd="url(#circuit-alt)"
             />
@@ -133,7 +142,7 @@ export function CircuitMap({ nodes, edges, caption, className = '' }: FlowchartF
         {loopEdge && loopFrom && loopTo && (
           <FcEdgeDraw
             d={`M ${loopFrom.x} ${loopFrom.y} H ${loopTo.x} V ${loopTo.y + 7}`}
-            at={gateIdx * 2 + 4}
+            at={LOOP} shown={shown[LOOP]}
             stroke={PAINT.alt}
             dashed
             markerEnd="url(#circuit-alt)"
@@ -144,11 +153,11 @@ export function CircuitMap({ nodes, edges, caption, className = '' }: FlowchartF
       {nodes.map((n) => {
         const b = box(n.id)
         const i = g.spineIndex(n.id)
-        const at = i >= 0 ? i * 2 : gateIdx * 2 + 3
+        const at = i >= 0 ? i * 2 : ALT_NODE
         const terminal = n.kind === 'start' || n.kind === 'end'
         const decision = n.kind === 'decision'
         return (
-          <FcNodeIn key={n.id} at={at} className="absolute" style={{ left: b.x, top: b.y, width: b.w, height: b.h }}>
+          <FcNodeIn key={n.id} at={at} shown={shown[at]} className="absolute" style={{ left: b.x, top: b.y, width: b.w, height: b.h }}>
             {/* The classic notation's three silhouettes, all through the shared
                 shell so hover, padding and the detail popover are identical to
                 every other variant. Only the outline differs, which is the whole
@@ -175,7 +184,7 @@ export function CircuitMap({ nodes, edges, caption, className = '' }: FlowchartF
         return (
           <FcEdgeLabel
             key={`m${e.from}-${e.to}`}
-            at={g.spineIndex(e.from) * 2 + 1}
+            at={g.spineIndex(e.from) * 2 + 1} shown={shown[g.spineIndex(e.from) * 2 + 1]}
             className="absolute -translate-x-1/2 rounded-pill bg-white px-2 py-0.5 text-[12px] font-bold uppercase tracking-wide"
             /* Above the ROW, not above the LINE. The gap between two slots is
                42px and "Yes" is wider than that, so a label centred on the edge
@@ -194,7 +203,7 @@ export function CircuitMap({ nodes, edges, caption, className = '' }: FlowchartF
         return (
           <FcEdgeLabel
             key={`a${e.from}-${e.to}`}
-            at={gateIdx * 2 + 2}
+            at={ALT_EDGE} shown={shown[ALT_EDGE]}
             className="absolute rounded-pill bg-white px-2 py-0.5 text-[12px] font-bold uppercase tracking-wide"
             style={{ left: a.x + 12, top: (a.y + above(e.to).y) / 2 - 11, color: PAINT.alt, border: `1px solid ${PAINT.alt}44` }}
           >
@@ -205,9 +214,12 @@ export function CircuitMap({ nodes, edges, caption, className = '' }: FlowchartF
 
       {loopEdge?.label && loopFrom && loopTo && (
         <FcEdgeLabel
-          at={gateIdx * 2 + 4}
+          at={LOOP} shown={shown[LOOP]}
           className="absolute -translate-x-1/2 rounded-pill bg-white px-2 py-0.5 text-[12px] font-semibold"
-          style={{ left: (loopFrom.x + loopTo.x) / 2, top: loopFrom.y - 12, color: PAINT.alt, border: `1px solid ${PAINT.alt}44` }}
+          /* Centred on the run rather than on the midpoint of the two endpoints:
+             the midpoint sits a few px from the card the line leaves, so the pill
+             touched it. */
+          style={{ left: (loopFrom.x + loopTo.x) / 2 - 24, top: loopFrom.y - 12, color: PAINT.alt, border: `1px solid ${PAINT.alt}44` }}
         >
           {loopEdge.label}
         </FcEdgeLabel>
@@ -215,7 +227,7 @@ export function CircuitMap({ nodes, edges, caption, className = '' }: FlowchartF
 
       {caption && (
         <FcEdgeLabel
-          at={g.spine.length * 2 + 3}
+          at={CAPTION} shown={shown[CAPTION]}
           className="absolute text-center text-body-sm"
           style={{ left: 0, width: W, top: H - 22, color: colors.body }}
         >

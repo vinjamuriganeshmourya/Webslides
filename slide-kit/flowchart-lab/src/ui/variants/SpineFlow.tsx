@@ -1,5 +1,5 @@
 import { colors } from '@/design/tokens'
-import { FcArrowDefs, FcEdgeDraw, FcEdgeLabel, FcNodeIn } from './motion'
+import { FcArrowDefs, FcEdgeDraw, FcEdgeLabel, FcNodeIn, useBeats } from './motion'
 import { resolveGraph, type FlowchartFigureProps } from './flowchartFigure'
 import { NodeShell, lookOf, NODE_MIN_H } from './NodeShell'
 
@@ -62,6 +62,31 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
   const yMid = SPINE_Y + NODE_H / 2
   const altMid = ALT_Y + NODE_H / 2
 
+  /*
+    THE EXCEPTION STARTS AFTER THE HAPPY PATH FINISHES, NOT ALONGSIDE IT.
+
+    The beats used to be `gateIdx * 2 + 2` for the "No" exit, which for a
+    five-node spine is beat 6, and beat 6 is also when the node AFTER the
+    decision lands. So the two branches left the fork at the same instant and the
+    room had to watch both at once. The file's own choreography note said the
+    happy path draws first and the exception second, and the arithmetic did not
+    do it.
+
+    `SPINE_END` is the last beat the spine occupies, and the exception starts on
+    the beat straight after it, so the straight-through story is complete on
+    screen before anything branches.
+
+    No empty beat between them: these are CLICKS, and a click that changes
+    nothing reads to the presenter as a figure that has stopped responding. The
+    separation is the click itself.
+  */
+  const SPINE_END = (g.spine.length - 1) * 2
+  const ALT_EDGE = SPINE_END + 1
+  const ALT_NODE = SPINE_END + 2
+  const LOOP = SPINE_END + 3
+  const CAPTION = SPINE_END + 4
+  const shown = useBeats(CAPTION + 1)
+
   return (
     <figure className={`relative mx-auto ${className}`} style={{ width: W, height: 372 }}>
       {/* CONNECTORS. One aria-hidden SVG layer under the DOM nodes: the lines are
@@ -81,7 +106,7 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
           <FcEdgeDraw
             key={`s${i}`}
             d={`M ${left(i) + SLOT} ${yMid} H ${left(i + 1) - 6}`}
-            at={i * 2 + 1}
+            at={i * 2 + 1} shown={shown[i * 2 + 1]}
             stroke={PAINT.main}
             markerEnd="url(#spine-main)"
           />
@@ -92,7 +117,7 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
         {altNode && gateIdx >= 0 && (
           <FcEdgeDraw
             d={`M ${cx(gateIdx)} ${SPINE_Y + NODE_H} V ${ALT_Y - 6}`}
-            at={gateIdx * 2 + 2}
+            at={ALT_EDGE} shown={shown[ALT_EDGE]}
             stroke={PAINT.alt}
             markerEnd="url(#spine-alt)"
           />
@@ -103,7 +128,7 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
         {loopEdge && loopTargetIdx >= 0 && altNode && (
           <FcEdgeDraw
             d={`M ${left(gateIdx)} ${altMid} H ${cx(loopTargetIdx)} V ${SPINE_Y + NODE_H + 6}`}
-            at={gateIdx * 2 + 4}
+            at={LOOP} shown={shown[LOOP]}
             stroke={PAINT.alt}
             dashed
             markerEnd="url(#spine-alt)"
@@ -115,7 +140,7 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
       {g.spine.map((n, i) => (
         <FcNodeIn
           key={n.id}
-          at={i * 2}
+          at={i * 2} shown={shown[i * 2]}
           className="absolute"
           style={{ left: left(i), top: SPINE_Y, width: SLOT, height: NODE_H }}
         >
@@ -131,7 +156,7 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
       {/* THE EXCEPTION */}
       {altNode && (
         <FcNodeIn
-          at={gateIdx * 2 + 3}
+          at={ALT_NODE} shown={shown[ALT_NODE]}
           className="absolute"
           style={{ left: left(gateIdx), top: ALT_Y, width: SLOT, height: NODE_H }}
         >
@@ -147,7 +172,7 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
           return (
             <FcEdgeLabel
               key={`l${e.from}-${e.to}`}
-              at={i * 2 + 1}
+              at={i * 2 + 1} shown={shown[i * 2 + 1]}
               className="absolute rounded-pill px-2 py-0.5 text-[12px] font-bold uppercase tracking-wide"
               style={{
                 left: left(i) + SLOT + 4,
@@ -166,7 +191,7 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
         .map((e) => (
           <FcEdgeLabel
             key={`a${e.from}-${e.to}`}
-            at={gateIdx * 2 + 2}
+            at={ALT_EDGE} shown={shown[ALT_EDGE]}
             className="absolute rounded-pill px-2 py-0.5 text-[12px] font-bold uppercase tracking-wide"
             style={{
               left: cx(gateIdx) + 10,
@@ -181,7 +206,7 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
 
       {loopEdge?.label && (
         <FcEdgeLabel
-          at={gateIdx * 2 + 4}
+          at={LOOP} shown={shown[LOOP]}
           className="absolute rounded-pill bg-white px-2 py-0.5 text-[12px] font-semibold"
           style={{
             left: cx(loopTargetIdx) + 10,
@@ -196,7 +221,7 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
 
       {caption && (
         <FcEdgeLabel
-          at={g.spine.length * 2 + 3}
+          at={CAPTION} shown={shown[CAPTION]}
           className="absolute text-center text-body-sm"
           style={{ left: 0, width: W, top: 350, color: colors.body }}
         >

@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
+import { useClaimedSteps } from '@/motion/Stepper'
 import { T, E, c4 } from '@/ui/figureTiming'
 
 /**
@@ -47,6 +48,47 @@ import { T, E, c4 } from '@/ui/figureTiming'
 export const beat = (n: number) => T.lead + n * T.stagger
 
 /**
+ * CLICK-GATED BEATS: the figure builds one step per click, in beat order.
+ *
+ * A flow chart is a sequence, and an instructor talks through a sequence one
+ * stage at a time. Auto-playing the whole thing on slide entry hands the room
+ * the finished picture about 2.5 seconds in, whatever the instructor has
+ * actually reached, and there is no way to hold on the decision while it is
+ * being discussed.
+ *
+ * `useClaimedSteps` registers `count` build steps with the deck's `Stepper` and
+ * returns which of them have been reached, so a part gates on `shown[at]` and
+ * the same `at` that used to be a delay is now a click index. Nothing else in a
+ * variant changes.
+ *
+ * It exists because `useReveal()` called in a loop does NOT work: every beat
+ * claimed the same order, the whole figure appeared on the first click, and the
+ * slide reported one step so the arrow key advanced to the next slide instead of
+ * building this one.
+ *
+ * A variant must compute `count` from its own `nodes`/`edges` and never from
+ * state, so the number of registered steps is stable while the slide is up.
+ *
+ * Under `?all` every `useReveal()` returns true, so all three harnesses still
+ * measure the finished figure.
+ */
+export function useBeats(count: number): boolean[] {
+  /*
+    BEAT 0 IS NOT A CLICK.
+
+    It is the slide's base content, on screen the moment the slide arrives, which
+    for every variant here is the `start` node. Claiming it as a step would open
+    the slide on an empty stage that looks like a figure which failed to render,
+    and would cost the presenter a click to reach the one part of the chart that
+    needs no explanation.
+
+    So the first beat is free and the remaining `count - 1` are claimed.
+  */
+  const claimed = useClaimedSteps(Math.max(0, count - 1))
+  return [true, ...claimed]
+}
+
+/**
  * A node arriving.
  *
  * `scale(0.96)` and not `scale(0)`: nothing in the real world appears out of
@@ -56,17 +98,26 @@ export const beat = (n: number) => T.lead + n * T.stagger
  */
 export function FcNodeIn({
   at,
+  shown,
   children,
   className,
   style,
 }: {
-  /** Which beat this node lands on. */
+  /** Which beat this node lands on: a click index when `shown` is passed. */
   at: number
+  /**
+   * Click-gated mode. `undefined` keeps the old auto-play behaviour, where the
+   * part animates on entry after `beat(at)`. A boolean makes it a build step:
+   * it holds hidden until the deck reaches its beat, then animates with no
+   * delay, because the click IS the timing.
+   */
+  shown?: boolean
   children: ReactNode
   className?: string
   style?: CSSProperties
 }) {
   const reduce = useReducedMotion()
+  const stepped = shown !== undefined
   return (
     <motion.div
       /*
@@ -85,8 +136,12 @@ export function FcNodeIn({
       className={`fc-node-slot ${className ?? ''}`}
       style={style}
       initial={reduce ? false : { opacity: 0, transform: 'translateY(10px) scale(0.96)' }}
-      animate={{ opacity: 1, transform: 'translateY(0px) scale(1)' }}
-      transition={{ duration: T.enter, delay: beat(at), ease: c4(E.out) }}
+      animate={
+        stepped && !shown
+          ? { opacity: 0, transform: 'translateY(10px) scale(0.96)' }
+          : { opacity: 1, transform: 'translateY(0px) scale(1)' }
+      }
+      transition={{ duration: T.enter, delay: stepped ? 0 : beat(at), ease: c4(E.out) }}
     >
       {children}
     </motion.div>
@@ -112,6 +167,7 @@ export function FcNodeIn({
 export function FcEdgeDraw({
   d,
   at,
+  shown,
   stroke,
   width = 2,
   dashed = false,
@@ -120,6 +176,7 @@ export function FcEdgeDraw({
 }: {
   d: string
   at: number
+  shown?: boolean
   stroke: string
   width?: number
   dashed?: boolean
@@ -127,6 +184,8 @@ export function FcEdgeDraw({
   duration?: number
 }) {
   const reduce = useReducedMotion()
+  const stepped = shown !== undefined
+  const hidden = stepped && !shown
   return (
     <>
       <motion.path
@@ -141,12 +200,20 @@ export function FcEdgeDraw({
            honest trade and part of why they read as subordinate. */
         strokeDasharray={dashed ? '7 7' : undefined}
         initial={reduce ? false : dashed ? { opacity: 0 } : { pathLength: 0, opacity: 0 }}
-        animate={dashed ? { opacity: 1 } : { pathLength: 1, opacity: 1 }}
+        animate={
+          hidden
+            ? dashed
+              ? { opacity: 0 }
+              : { pathLength: 0, opacity: 0 }
+            : dashed
+              ? { opacity: 1 }
+              : { pathLength: 1, opacity: 1 }
+        }
         transition={{
           duration: dashed ? T.label : duration,
-          delay: beat(at),
+          delay: stepped ? 0 : beat(at),
           ease: dashed ? c4(E.out) : 'linear',
-          opacity: { duration: T.label, delay: beat(at), ease: c4(E.out) },
+          opacity: { duration: T.label, delay: stepped ? 0 : beat(at), ease: c4(E.out) },
         }}
       />
       {/*
@@ -171,10 +238,10 @@ export function FcEdgeDraw({
           strokeWidth={width}
           markerEnd={markerEnd}
           initial={reduce ? false : { opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: hidden ? 0 : 1 }}
           transition={{
             duration: T.label,
-            delay: beat(at) + (dashed ? T.label : duration) * 0.82,
+            delay: (stepped ? 0 : beat(at)) + (dashed ? T.label : duration) * 0.82,
             ease: c4(E.out),
           }}
         />
@@ -196,23 +263,30 @@ export function FcEdgeDraw({
  */
 export function FcEdgeLabel({
   at,
+  shown,
   children,
   className = '',
   style,
 }: {
   at: number
+  shown?: boolean
   children: ReactNode
   className?: string
   style?: CSSProperties
 }) {
   const reduce = useReducedMotion()
+  const stepped = shown !== undefined
   return (
     <motion.span
       className={className}
       style={style}
       initial={reduce ? false : { opacity: 0, transform: 'scale(0.92)' }}
-      animate={{ opacity: 1, transform: 'scale(1)' }}
-      transition={{ duration: T.label, delay: beat(at) + 0.24, ease: c4(E.out) }}
+      animate={
+        stepped && !shown
+          ? { opacity: 0, transform: 'scale(0.92)' }
+          : { opacity: 1, transform: 'scale(1)' }
+      }
+      transition={{ duration: T.label, delay: stepped ? 0 : beat(at) + 0.24, ease: c4(E.out) }}
     >
       {children}
     </motion.span>
