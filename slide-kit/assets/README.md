@@ -13,15 +13,38 @@ base template rendered as broken images for anyone starting a new deck.
 ## What is here
 
 ```
-tech/     technology logos — PNG, with the older SVGs kept alongside
-quiz/     quiz-slide decorations (brain, bulb, bubble, mark)
-brand/    logo-nxtwave.png
+tech/       technology logos — PNG, with the older SVGs kept alongside
+companies/  company brand marks — PNG, single-colour brand glyphs
+quiz/       quiz-slide decorations (brain, bulb, bubble, mark)
+brand/      logo-nxtwave.png
 ```
 
-Current `tech/` set: `container-white` · `django` · `docker` · `docker-white` ·
-`linux` · `macos` · `nodejs` · `npm` · `python` · `react` · `vitejs` ·
-`vscode` · `windows`. PNG for all of them; `.svg` also present for the nine
-that predate the PNG convention.
+Current `tech/` set, tooling and frameworks: `container-white` · `django` ·
+`docker` · `docker-white` · `git` · `linux` · `macos` · `makefile` · `nodejs` ·
+`npm` · `react` · `sqlite` · `vitejs` · `vscode` · `windows`.
+
+Current `tech/` set, languages: `c` · `cplusplus` · `csharp` · `dart` · `go` ·
+`java` · `javascript` · `kotlin` · `python` · `r` · `ruby` · `scala` · `swift`.
+The twelve besides `python` were added for the Python course's "around 700
+languages" logo wall, fetched from devicon and rendered to PNG at 512px.
+
+PNG for all of them; `.svg` also present for the nine that predate the PNG
+convention.
+
+`companies/`: `amazon` · `dropbox` · `google` · `instagram` · `meta` ·
+`microsoft` · `mozilla` · `netflix` · `nvidia` · `oracle` · `paypal` · `quora` ·
+`reddit` · `spotify` · `uber`.
+
+A company is not a technology, so its mark does not belong in `tech/`. These are
+single-colour brand glyphs, which is deliberate: a wall of fifteen marks reads as
+one system only if they share a treatment, and the mixed wordmarks-and-glyphs
+wall the Python source deck used looked assembled from screenshots.
+
+**Two of these replace marks that are retired.** The source PPTX still showed
+the pre-2021 Facebook mark and Uber's retired "bit" square. `meta.png` and
+`uber.png` are the current ones. When a company rebrands, replace the file under
+its existing name rather than adding a suffix, so every deck picks the new mark
+up on its next copy.
 
 ---
 

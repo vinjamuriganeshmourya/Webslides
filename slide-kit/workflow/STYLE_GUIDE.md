@@ -109,3 +109,63 @@ fragment**, not a sentence. 79% of all body lines are ≤6 words.
 | Same title repeated across a build sequence | "Part 1 / Part 2 / continued…" |
 | `Refresh /admin/ — a new "CART" section now appears` | steps that don't say what you'll see |
 | ~40 body words/slide | paragraph slides (>117 words = corpus p90 breach) |
+
+## 8. The form comes from the argument, not from a default
+
+A grid of cards is the shape a "several things" slide reaches for by default.
+Five or six `Card`s, all the same size, the same white, the same tone, each with
+an icon and two lines, and it reads as a table someone drew boxes around: nothing
+leads, nothing has rhythm, and the room takes it in as one grey mass.
+
+This was corrected twice on the same slide of the first Python session, and the
+second correction is the important one.
+
+1. *"All cards having same design, it is not visually appealing."* The first fix
+   varied the tiles: one spanning two columns, three depths of the one accent,
+   numbered, revealed as build steps. Better, and still cards.
+2. *"Instead of cards you can use a different design altogether. Why should we be
+   constrained to cards?"* Correct, and it is the real rule.
+
+**Ask what the slide ARGUES, then pick the form that draws that argument.** A
+grid draws "n things of equal weight" and nothing else, so it is right only when
+that is the whole claim.
+
+| The argument | The form | In the kit |
+|---|---|---|
+| One thing reaching into many places (breadth, reach, applications) | a hub with spokes | `RadialSpread` |
+| A set of answers whose NAMES are the content (roles, options, outcomes) | set as type: a rule between rows, a number in the gutter, no boxes | `EditorialList` |
+| Rows that each carry a verdict | a list with status rails | `StatusList` |
+| An ordered procedure | numbered steps | `StepList` |
+| A process with branches | a flow | `FlowChart` |
+| Things at different depths of one system | stacked layers | `LayerStack` |
+| Two or three items compared side by side | a uniform row, where sameness IS the point | `CardGrid` |
+
+Two consecutive slides that both argue "many things" must not use the same
+figure. The second one then reads as the first one again with different words.
+
+**And do not invent structure the content does not have.** A four-item list drawn
+as a quadrant claims two axes; drawn as a segmented bar it claims proportions;
+drawn as a flow it claims an order. If four things are genuinely just four
+things, a plain typographic list is the honest form, and reusing that form on a
+second such slide is better than inventing a diagram that lies about one of them.
+
+**Numbering is the quietest way to break that rule.** `01 Python Developer`
+through `06 Software Developer` claims a rank or a sequence that six job titles
+do not have, and it slips through review because it looks like tidiness rather
+than a claim. This was caught by the user on the same deck, one slide after the
+card grid: *"the numbers are present but it shouldn't have numbers as per
+content."*
+
+So: **number a set only when you can say what the number means.** Ordered steps,
+a ranked list, or a run the room is being walked through where "three to go" is
+useful pacing (content rule 5's `Attempt 3 of 5` kicker is exactly this, and is
+right). An agenda is numbered because the session runs in that order. A list of
+roles, fields, tools or benefits is not. `EditorialList` and `FeatureTiles`-style
+components should therefore default `numbered` to **off**, so the claim has to be
+made deliberately.
+
+**Give the set a build.** A grid that arrives complete is a grid the room reads
+ahead of the instructor; the same set arriving one item per click is n beats of a
+talk. This is the one place a `Step` belongs on a supporting visual, and it does
+not conflict with hard rule 6: rule 6 is about a visual that SUPPORTS text
+arriving after that text. When the items ARE the content, no text is waiting.
