@@ -286,7 +286,22 @@ export function FcEdgeLabel({
           ? { opacity: 0, transform: 'scale(0.92)' }
           : { opacity: 1, transform: 'scale(1)' }
       }
-      transition={{ duration: T.label, delay: stepped ? 0 : beat(at) + 0.24, ease: c4(E.out) }}
+      /*
+        THE LABEL STILL LANDS AFTER ITS LINE, INCLUDING IN STEPPED MODE.
+
+        Click-gating removed the auto-play delay, and the first pass zeroed this
+        one with it. That put "Yes" on screen the instant the click landed, while
+        the line was still travelling towards it, which is precisely what the note
+        above says must not happen: the room is told the answer before it has
+        watched the question being asked.
+
+        A click removes the delay BEFORE the beat, not the ordering WITHIN it.
+      */
+      transition={{
+        duration: T.label,
+        delay: stepped ? T.draw * 0.7 : beat(at) + 0.24,
+        ease: c4(E.out),
+      }}
     >
       {children}
     </motion.span>
