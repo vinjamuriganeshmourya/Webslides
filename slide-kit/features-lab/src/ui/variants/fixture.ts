@@ -27,6 +27,7 @@ export const noteAppFeatures: Pick<FeaturesFigureProps, 'items'> = {
   items: [
     {
       id: 'search',
+      without: 'You lose an afternoon a week to filing',
       label: 'Search everything',
       body: 'Full text, across every note, as you type',
       outcome: 'You stop filing things and just find them',
@@ -36,6 +37,7 @@ export const noteAppFeatures: Pick<FeaturesFigureProps, 'items'> = {
     },
     {
       id: 'sync',
+      without: 'A tunnel or a bad hotel costs you the session',
       label: 'Offline first',
       body: 'Every note is on the device, not just cached',
       outcome: 'A tunnel changes nothing',
@@ -44,6 +46,7 @@ export const noteAppFeatures: Pick<FeaturesFigureProps, 'items'> = {
     },
     {
       id: 'links',
+      without: 'You design the folder tree before you know the shape',
       label: 'Links between notes',
       body: 'Reference any note from any other',
       outcome: 'The structure emerges instead of being planned',
@@ -52,6 +55,7 @@ export const noteAppFeatures: Pick<FeaturesFigureProps, 'items'> = {
     },
     {
       id: 'history',
+      without: 'One bad paste and the paragraph is gone',
       label: 'Version history',
       body: 'Every save, kept and diffable',
       outcome: 'Nothing you write can be lost',
@@ -60,6 +64,7 @@ export const noteAppFeatures: Pick<FeaturesFigureProps, 'items'> = {
     },
     {
       id: 'export',
+      without: 'Leaving means exporting, converting and checking',
       label: 'Plain files on disk',
       body: 'Markdown in a folder you own',
       outcome: 'Leaving costs you nothing',
