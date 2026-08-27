@@ -152,6 +152,40 @@ Each of these cost a render to find, and every one of them passed a typecheck.
   the word "Yes", so the label has to clear the whole row rather than hover over
   its own line.
 
+## The padding was wrong in every variant, and how it was found
+
+`py-3` declares 12px. What a card actually shows is `(slot height - content
+height) / 2`, so a declared value means nothing once the content is taller than
+the slot allows. Measured in the browser across all six:
+
+| Case | Content | Box | Real padding |
+|---|---|---|---|
+| `LaneFlow`, four of six cards | 73px | 74px | **0px** |
+| `CircuitMap`, "Automated checks run" | 89px | 76px | **-7px**, overflowing |
+| `SpineFlow` / `GateFlow` / `TrackSwitch`, tallest card | 89px | 92px | **1px** |
+
+All of them declared 12px. Horizontal was fine throughout at 16 to 27px real,
+because cards are wider than they need to be; this was a vertical problem only.
+
+Two changes were needed together, and neither works alone:
+
+1. **The content got shorter**, in `NodeShell`: a 24px icon, a 14px label on 1.25
+   leading, an 11px caption on 1.3. Worst-case stacked content went from 89px to
+   about 78px.
+2. **Every slot got taller**, sized from `NODE_MIN_H` exported by `NodeShell`
+   rather than from six independent guesses. Six guesses is precisely how the
+   padding came to be zero in four cards and negative in one.
+
+Worst case is now 12px of real padding, and every other card has 13 to 30.
+
+**Measure it, do not look at it.** Nothing here was visible as "broken" in a
+screenshot: the cards looked full rather than wrong, and all three harnesses
+passed every slide the whole time. The numbers came from walking every
+`.fc-node`, taking the union of its descendants that actually have a box, and
+comparing that to the card's own rect. Note the trap: the default body is wrapped
+in a `display: contents` span, which has NO box, so a first attempt that measured
+`el.children` reported zero content height for every card in the lab.
+
 ## Still open
 
 - The geometry in every variant is authored for the fixture's shape, which is one

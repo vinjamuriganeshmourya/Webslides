@@ -13,18 +13,39 @@ import type { FcNode } from './flowchartFigure'
  * differ in geometry must not also differ in how much air is inside a box, or
  * the comparison measures the padding instead of the design.
  *
- * THE PADDING SCALE, STATED ONCE
+ * THE PADDING SCALE, AND WHY IT IS A FLOOR AND NOT A DECLARATION
  *
- * | Slot        | Padding      | Why                                          |
- * |-------------|--------------|----------------------------------------------|
- * | card, x     | 16px         | the label can reach 2 lines and still breathe |
- * | card, y     | 12px         | with 76 to 92px slots, keeps text off the rule |
- * | icon to text| 10px         | one step below the text's own leading         |
- * | label to caption | 4px     | they are one unit; more reads as two          |
- * | popover     | 14px / 12px  | denser than a card: it is an aside, not a step |
+ * `py-3` declares 12px. What a card actually shows is `(slot height - content
+ * height) / 2`, and if the content is taller than the slot minus its padding,
+ * the declared value means nothing. Measured across all six variants, the real
+ * vertical gap was:
  *
- * Nothing here uses an arbitrary value. If a variant needs different air, it is
- * saying its slot is the wrong size, and the slot is the thing to change.
+ *   LaneFlow, four of six cards          0px   text flush against the border
+ *   CircuitMap, "Automated checks run"  -7px   content overflowing the card
+ *   Spine / Gate / Track, tallest card   1px
+ *
+ * Declared 12px in every one of them. A two-line label plus an icon plus a
+ * caption is about 89px of content, and the slots were 74 to 92.
+ *
+ * So two things had to change together, and neither works alone:
+ *
+ *   1. **The content got shorter here.** 24px icon (was 28), 14px label on 1.25
+ *      leading (was 15px), 11px caption on 1.3 (was 11.5). Worst-case stacked
+ *      content is now about 77px rather than 89px.
+ *   2. **Every slot got taller in its variant.** A slot must be at least
+ *      `CONTENT_MAX + 2 * PAD_Y`, which is the constant exported below so the
+ *      variants size themselves from one number rather than from six guesses.
+ *
+ * | Slot         | Value  | Why                                              |
+ * |--------------|--------|--------------------------------------------------|
+ * | card, y      | 14px   | the floor, and slots are sized to honour it       |
+ * | card, x      | 16px   | measured 16 to 27px real; horizontal was never    |
+ * |              |        | the problem, because cards are wider than needed  |
+ * | icon to text | 4px    | one step below the text's own leading             |
+ * | popover      | 14/12  | denser than a card: it is an aside, not a step    |
+ *
+ * Horizontal padding was already honoured everywhere (16 to 27px real), which is
+ * why this was a vertical problem only.
  *
  * WHY HOVER IS A DIFFERENT TIER FROM THE FIGURE'S ENTRANCE
  *
@@ -56,6 +77,19 @@ import type { FcNode } from './flowchartFigure'
  * It also means the slide is complete without it. The room cannot hover a
  * projector, so `detail` is an aside for the presenter and never the teaching.
  */
+
+/**
+ * The vertical padding a card must actually show, and the tallest content a
+ * stacked card can hold: a 24px icon, a 4px gap, a two-line 14px label on 1.25
+ * leading, and a one-line 11px caption.
+ *
+ * `NODE_MIN_H` is what a variant's slot height must not go below. Every variant
+ * imports it rather than picking its own number, because six independent guesses
+ * is exactly how the padding came to be 0px in four cards and negative in one.
+ */
+export const PAD_Y = 14
+export const CONTENT_MAX = 78
+export const NODE_MIN_H = CONTENT_MAX + PAD_Y * 2 /* 106 */
 
 export type NodeLook = 'step' | 'terminal' | 'decision'
 
@@ -119,7 +153,7 @@ export function NodeShell({
     >
       <div
         className={`fc-node flex h-full w-full ${
-          shape === 'diamond' ? 'rotate-45 px-2 py-2' : 'px-4 py-3'
+          shape === 'diamond' ? 'rotate-45 px-2 py-2' : 'px-4 py-3.5'
         } ${chrome} ${
           layout === 'row' ? 'items-center gap-2.5' : 'flex-col items-center justify-center gap-1 text-center'
         } ${hasDetail ? 'fc-node--hoverable' : ''}`}
@@ -142,26 +176,26 @@ export function NodeShell({
           >
             {Icon && (
               <span
-                className="grid h-7 w-7 shrink-0 place-items-center rounded-lg"
+                className="grid h-6 w-6 shrink-0 place-items-center rounded-lg"
                 style={
                   filled
                     ? { background: 'rgba(255,255,255,0.22)', color: '#FFFFFF' }
                     : { background: `${paint}18`, color: paint }
                 }
               >
-                <Icon width={15} height={15} />
+                <Icon width={14} height={14} />
               </span>
             )}
             <span className={layout === 'row' ? 'min-w-0' : ''}>
               <span
-                className="block font-heading text-[15px] font-bold leading-tight"
+                className="block font-heading text-[14px] font-bold leading-[1.25]"
                 style={{ color: filled ? '#FFFFFF' : decision ? paint : colors.ink }}
               >
                 {node.label}
               </span>
               {node.caption && (
                 <span
-                  className="mt-1 block text-[11.5px] leading-snug"
+                  className="mt-1 block text-[11px] leading-[1.3]"
                   style={{ color: filled ? 'rgba(255,255,255,0.82)' : colors.body }}
                 >
                   {node.caption}

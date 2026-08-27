@@ -1,7 +1,7 @@
 import { colors } from '@/design/tokens'
 import { FcArrowDefs, FcEdgeDraw, FcEdgeLabel, FcNodeIn } from './motion'
 import { resolveGraph, type FlowchartFigureProps } from './flowchartFigure'
-import { NodeShell, lookOf } from './NodeShell'
+import { NodeShell, lookOf, NODE_MIN_H } from './NodeShell'
 
 /**
  * CIRCUIT MAP — the notation everyone already knows, drawn properly.
@@ -39,7 +39,7 @@ import { NodeShell, lookOf } from './NodeShell'
  */
 
 const W = 1100
-const H = 380
+const H = 392
 
 /*
   A UNIFORM GRID, AND THE FIRST VERSION DID NOT HAVE ONE.
@@ -56,12 +56,14 @@ const H = 380
   x=1068, inside the 1100 stage, with 42px gaps that give every arrowhead room.
 */
 const BOX_W = 180
-const BOX_H = 76
+/* NodeShell's floor. Was 76, which made the two-line label overflow the card
+   by 7px at top and bottom. */
+const BOX_H = NODE_MIN_H
 const PITCH = 222
 const DIA = 140
 
-const ROW_Y = 58
-const ALT_Y = 248
+const ROW_Y = 34
+const ALT_Y = 238
 
 const slotX = (i: number) => i * PITCH
 

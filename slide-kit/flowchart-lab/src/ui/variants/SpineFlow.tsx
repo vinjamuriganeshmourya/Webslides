@@ -1,7 +1,7 @@
 import { colors } from '@/design/tokens'
 import { FcArrowDefs, FcEdgeDraw, FcEdgeLabel, FcNodeIn } from './motion'
 import { resolveGraph, type FlowchartFigureProps } from './flowchartFigure'
-import { NodeShell, lookOf } from './NodeShell'
+import { NodeShell, lookOf, NODE_MIN_H } from './NodeShell'
 
 /**
  * SPINE FLOW — the happy path is a straight line, and everything else hangs off it.
@@ -37,9 +37,11 @@ import { NodeShell, lookOf } from './NodeShell'
 const W = 1100
 const SLOT = 180
 const PITCH = 230
-const SPINE_Y = 62
-const NODE_H = 92
-const ALT_Y = 236
+const SPINE_Y = 40
+/* Sized from NodeShell's floor, not chosen: a two-line label plus an icon
+   plus a caption needs 106px to show its declared 14px of padding. */
+const NODE_H = NODE_MIN_H
+const ALT_Y = 232
 
 const cx = (i: number) => i * PITCH + SLOT / 2
 const left = (i: number) => i * PITCH
@@ -61,15 +63,15 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
   const altMid = ALT_Y + NODE_H / 2
 
   return (
-    <figure className={`relative mx-auto ${className}`} style={{ width: W, height: 376 }}>
+    <figure className={`relative mx-auto ${className}`} style={{ width: W, height: 372 }}>
       {/* CONNECTORS. One aria-hidden SVG layer under the DOM nodes: the lines are
           geometry, every label above is a real element, per content rule 17. */}
       <svg
         aria-hidden
         className="pointer-events-none absolute inset-0"
         width={W}
-        height={376}
-        viewBox={`0 0 ${W} 376`}
+        height={372}
+        viewBox={`0 0 ${W} 372`}
       >
         <FcArrowDefs id="spine" colors={PAINT} />
 
@@ -196,7 +198,7 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
         <FcEdgeLabel
           at={g.spine.length * 2 + 3}
           className="absolute text-center text-body-sm"
-          style={{ left: 0, width: W, top: 348, color: colors.body }}
+          style={{ left: 0, width: W, top: 350, color: colors.body }}
         >
           {caption}
         </FcEdgeLabel>

@@ -1,7 +1,7 @@
 import { colors } from '@/design/tokens'
 import { FcArrowDefs, FcEdgeDraw, FcEdgeLabel, FcNodeIn } from './motion'
 import { resolveGraph, type FlowchartFigureProps } from './flowchartFigure'
-import { NodeShell, lookOf } from './NodeShell'
+import { NodeShell, lookOf, NODE_MIN_H } from './NodeShell'
 
 /**
  * TRACK SWITCH — the process is a railway, and the loop is the hero.
@@ -86,12 +86,12 @@ const H = 380
 
 const SLOT = 180
 const PITCH = 230
-const SPINE_Y = 48
-const NODE_H = 92
+const SPINE_Y = 34
+const NODE_H = NODE_MIN_H
 
 /** The lower track: the detour card, and the rail it sits on. */
-const ALT_Y = 244
-const ALT_H = 84
+const ALT_Y = 240
+const ALT_H = NODE_MIN_H
 const RETURN_Y = ALT_Y + ALT_H / 2
 
 /** Straight track before the merge curve, so the loop label has flat rail. */
