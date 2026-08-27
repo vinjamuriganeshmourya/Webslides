@@ -30,8 +30,29 @@ export const T = {
   enter: 0.52,
   /** Gap between items in a stagger. Was 70ms, which read as one clump. */
   stagger: 0.13,
-  /** A rail or a connector tracing itself. The slowest beat, and it leads. */
+  /**
+   * A rail or a connector tracing itself, inside a figure that AUTO-PLAYS.
+   *
+   * The slowest beat, and it leads. Session 6's `BoundaryBridge` is built on this
+   * number and its skill records it, so it does not move.
+   */
   draw: 0.86,
+  /**
+   * The same draw inside a figure that is CLICK-GATED, which is a different tier.
+   *
+   * An auto-played connector is one beat in an assembly the room watches once,
+   * and 860ms of travel leads the eye. A click-gated one draws in direct response
+   * to a key press the presenter is waiting on before they speak the next
+   * sentence: that is the `animate` skill's UI case, and 860ms after a deliberate
+   * press reads as lag.
+   *
+   * 600ms keeps the line visibly travelling, which is the whole reason it draws
+   * rather than fades, while answering the click promptly.
+   *
+   * A separate field rather than a change to `draw`, because both tiers are live
+   * in this kit at once and one number cannot serve both.
+   */
+  drawStep: 0.6,
   /** A label or caption fading up once its line has landed. */
   label: 0.34,
   /** The one emphasis beat a figure is allowed, and it plays once. */

@@ -87,6 +87,32 @@ export function useReveal(): boolean {
   return REVEAL_ALL || !ctx || ctx.step >= order
 }
 
+/**
+ * Claim `count` build steps at once and get back which of them have been reached.
+ *
+ * WHY `useReveal()` IN A LOOP DOES NOT WORK
+ *
+ * `useReveal` calls `useId()` and claims that id. Called `count` times from one
+ * component the ids do not come out distinct in the way the registry needs, so
+ * every beat claimed the SAME order: the whole figure appeared on the first
+ * click and the deck reported one step, which made the arrow key advance the
+ * slide instead of the build.
+ *
+ * This calls exactly two hooks whatever `count` is, and derives `count` stable
+ * ids from one base, so the registry gets `count` distinct claims in order.
+ *
+ * Used by the flow-chart lab, where a figure's parts are laid out by explicit
+ * beat index rather than in render order, so it cannot rely on `<Step>` claiming
+ * as it renders.
+ */
+export function useClaimedSteps(count: number): boolean[] {
+  const ctx = useContext(StepContext)
+  const base = useId()
+  if (!ctx) return Array.from({ length: count }, () => true)
+  const orders = Array.from({ length: count }, (_, i) => ctx.claim(`${base}-${i}`))
+  return orders.map((order) => REVEAL_ALL || ctx.step >= order)
+}
+
 type Tag = 'div' | 'li' | 'span' | 'section' | 'p'
 
 /**
