@@ -4,6 +4,7 @@ import { colors } from '@/design/tokens'
 import { E, c4 } from '@/ui/figureTiming'
 import { FcArrowDefs, FcEdgeDraw, FcEdgeLabel, FcNodeIn, useBeats } from './motion'
 import { resolveProject, type ProjectFigureProps } from './projectFigure'
+import { RouteToggle, TOGGLE_CLEAR, TOGGLE_H, TOGGLE_W, useRoute } from './routeToggle'
 
 /**
  * CALL FLOW — the handover is the subject, and the snippets are the evidence.
@@ -67,47 +68,67 @@ import { resolveProject, type ProjectFigureProps } from './projectFigure'
  *
  * GEOMETRY, AND THE PADDING ARITHMETIC
  *
- * A fixed 1100x384 stage. Labels ride a band at y=6. The connector's horizontal
- * run is at y=36. Cards are 200 wide on a 225 pitch (0, 225, 450, 675, 900, last
- * right edge exactly 1100), top 60, height 280, bottom 340. The plate reaches 348
- * and the caption sits at 358.
+ * A fixed 1100x322 stage, and it was 384 while the cards still carried code. Each
+ * handover owns a tier: 22, 36, 50, 64, with its `via` pill centred on its own line.
+ * Cards are 200 wide on a 225 pitch (0, 225, 450, 675, 900, last right edge exactly
+ * 1100), top 84, height 176, bottom 260. The plate reaches 268, its badge hangs
+ * under that, and the caption is derived from the same expression rather than typed,
+ * so it cannot go stale when the cards move: 84 + 176 + 8 + 26 = 294. The toggle
+ * sits on that line, left, in its own reserved 210 x 28 box.
  *
- * PADDING IS A FLOOR, so CARD_H is derived from the fixture's worst card and not
- * declared. Content width is 200 - 28 (px-14) = 172. Inside the code panel:
- * 172 - 16 (its own pad) - 14 (gutter) - 8 (gap) = 134px of text at 10px mono
- * (0.6em = 6px), so 22 characters per visual line.
+ * PADDING IS A FLOOR, so CARD_H is checked against the fixture's worst card rather
+ * than declared. Content width is 200 - 28 (px-14) = 172.
  *
- *   file chip                        19px   (10px text on 1.3, plus 3px x 2)
+ *   number and file chip             19px   (10px text on 1.3, plus 3px x 2)
  *   gap                               6px
  *   title, 3 lines allowed           48px   ("And the model is where it all
  *                                            resolves" is 37 chars at 12.5px
  *                                            semibold, about 259px, so 2 lines
  *                                            in 172; the third is headroom)
- *   gap                               8px
- *   code panel                      171px   (worst is stop 5: lines of 28, 43,
- *                                            62 and 47 chars wrap to 2 + 2 + 3 +
- *                                            3 = 10 visual lines at 22 chars
- *                                            each, 15.5px per line = 155, plus
- *                                            16px of its own padding)
+ *   gap                               6px
+ *   body, 2 lines                    31px   (11.5px on 1.35; the fixture's longest
+ *                                            body is 59 chars, about 348px, so 2)
+ *   line range                       13px   (10px mono, pushed down by `mt-auto`)
  *   ------------------------------------
- *   content                         252px
- *   CARD_H = 252 + 2 x 14           280px  -> real vertical padding exactly 14
- *
- * The code panel is `flex-1`, so the cards whose snippets are shorter fill the
- * slack with panel rather than with a hole under the text, and their declared
- * 14px stays real too.
+ *   content                         123px
+ *   CARD_H 176 - 2 x 14 = 148       ->  25px of slack, which `mt-auto` puts above
+ *                                       the range line rather than under the text,
+ *                                       so the declared 14px stays real
  */
 
 const W = 1100
 /* Grown from 384: the same-file badge sits below the plate and the caption was
    landing on top of it. Both are derived below rather than pinned. */
-const H = 300
+const H = 322
 const CARD_W = 200
 const PITCH = 225
-const CARDS_TOP = 60
+const CARDS_TOP = 84
 const CARD_H = 176
-const LINE_Y = 36
-const LABEL_Y = 6
+/*
+  ONE LEVEL PER HANDOVER, AND THIS WAS A REPORTED FAULT.
+
+  Every connector used to run at the same y, which looked tidy and was not: an
+  elbow ended by dropping into card i + 1 at its centre, and the next elbow left
+  that same card from the same centre, so at every card the arrowhead coming in and
+  the line going out were drawn on top of each other. Four hops, three collisions,
+  and the arrows read as one continuous zig-zag rather than as four handovers.
+
+  Two changes together, and neither works alone:
+
+    1. **A TIER PER HOP.** Hop 0 runs at 22 and each one after it drops 14, so the
+       staircase funnels down into the last card. No two horizontal runs share a y,
+       and the labels that ride them cannot collide either.
+    2. **THE LEGS STEP OFF CENTRE.** A hop leaves at `cx + 14` and arrives at
+       `cx - 14`, so the outgoing leg and the incoming arrowhead at one card are
+       28px apart instead of superimposed. This is the half that actually removes
+       the overlap: tiers alone would still stack the legs.
+
+  The lowest tier is 64 and the cards start at 84, so the shortest leg is 20px,
+  which is enough for a 3px line and its arrowhead to read as a turn.
+*/
+const TIER_TOP = 22
+const TIER_GAP = 14
+const LEG_DX = 14
 const LABEL_SLOT = 190
 const PLATE_PAD = 8
 /*
@@ -120,8 +141,23 @@ const PLATE_PAD = 8
 */
 const CAPTION_Y = CARDS_TOP + CARD_H + PLATE_PAD + 26
 
+const tierY = (i: number) => TIER_TOP + i * TIER_GAP
 const left = (i: number) => i * PITCH
 const cx = (i: number) => i * PITCH + CARD_W / 2
+
+/**
+ * THE CHAIN IS ONE COLOUR, AND IT USED TO BE FIVE.
+ *
+ * Every connector took its destination file's layer hue, which is right on a map
+ * and wrong on a chain: five differently coloured 2px elbows read as five unrelated
+ * arrows rather than as one path through the code, and that is exactly what came
+ * back from the room. The layer hue still lives on each card's top rule, where it
+ * identifies the file. The path is one weight and one colour, because it is one
+ * path, and the stroke is 3px rather than 2. An SVG marker scales with
+ * `strokeWidth` by default, so the arrowhead grew with it, which is the other half
+ * of the same fix.
+ */
+const CHAIN = colors.brand
 
 /** Same ramp, same order, in all three variants. See the note in `TourStops`. */
 const RAMP = [colors.brand, colors.info, colors.teal, colors.accentDark, colors.success, colors.warning]
@@ -190,8 +226,16 @@ function HoverAside({
   )
 }
 
-export function CallFlow({ files, stops, caption, className = '' }: ProjectFigureProps) {
-  const p = resolveProject({ files, stops })
+export function CallFlow({ files, stops, routes, caption, className = '' }: ProjectFigureProps) {
+  const p = resolveProject({ files, stops, routes })
+  /*
+    WHICH ORDER. The chain rebuilds itself, connectors and `via` labels and all,
+    because the mechanism of a handover has a direction: "GET /api/products/" is
+    what reaches `urls.py` when a request arrives, and is not what `views.py` hands
+    back when you are writing the code. Both routes are authored, and neither is the
+    other one drawn backwards. See `TourRoute` in the contract.
+  */
+  const { route, index, pick, many } = useRoute(p)
 
   /*
     BEATS. Beat 0 is free and carries the first card, so the slide never opens on
@@ -201,7 +245,9 @@ export function CallFlow({ files, stops, caption, className = '' }: ProjectFigur
   */
   const CARD = (i: number) => i * 2
   const EDGE = (i: number) => i * 2 + 1
-  const CAPTION = Math.max(0, (p.stops.length - 1) * 2 + 1)
+  /* FROM `stopCount`, THE LONGEST ROUTE, NEVER FROM THE ACTIVE ONE: the number of
+     build steps a slide registers cannot change while the slide is up. */
+  const CAPTION = Math.max(0, (p.stopCount - 1) * 2 + 1)
   const shown = useBeats(CAPTION + 1)
 
   if (p.problems.length > 0) {
@@ -228,21 +274,19 @@ export function CallFlow({ files, stops, caption, className = '' }: ProjectFigur
     return RAMP[i % RAMP.length]
   }
 
-  /* One marker per stop colour. Index keys, because a layer name like "request
-     handling" contains a space and would break the `url(#...)` reference. */
-  const markers: Record<string, string> = {}
-  p.stops.forEach((s, i) => {
-    markers[`s${i}`] = paintOf(s.file)
-  })
+  /* Two markers, not one per stop: the chain is one colour now. Named keys, because
+     a layer name like "request handling" contains a space and would break the
+     `url(#...)` reference. */
+  const markers: Record<string, string> = { chain: CHAIN, tie: colors.muted }
 
   /** Consecutive stops in the SAME file. Derived, never an index literal. */
-  const sameFile = (i: number) => p.stops[i] && p.stops[i + 1] && p.stops[i].file === p.stops[i + 1].file
+  const sameFile = (i: number) => route.stops[i] && route.stops[i + 1] && route.stops[i].file === route.stops[i + 1].file
 
   return (
     <figure className={`relative mx-auto ${className}`} style={{ width: W, height: H }}>
       {/* THE PLATE BEHIND A SAME-FILE PAIR. First in the DOM, so it is behind the
           cards, and it costs the layout no height at all. */}
-      {p.stops.map((_s, i) =>
+      {route.stops.map((_s, i) =>
         sameFile(i) ? (
           <FcNodeIn
             key={`plate${i}`}
@@ -260,8 +304,8 @@ export function CallFlow({ files, stops, caption, className = '' }: ProjectFigur
             <span
               className="block h-full w-full rounded-xl2 border-2 border-dashed"
               style={{
-                borderColor: `${paintOf(p.stops[i].file)}66`,
-                background: `linear-gradient(${paintOf(p.stops[i].file)}0d, ${paintOf(p.stops[i].file)}0d), ${colors.white}`,
+                borderColor: `${paintOf(route.stops[i].file)}66`,
+                background: `linear-gradient(${paintOf(route.stops[i].file)}0d, ${paintOf(route.stops[i].file)}0d), ${colors.white}`,
               }}
             />
           </FcNodeIn>
@@ -278,22 +322,23 @@ export function CallFlow({ files, stops, caption, className = '' }: ProjectFigur
         viewBox={`0 0 ${W} ${H}`}
       >
         <FcArrowDefs id="callflow" colors={markers} />
-        {p.stops.slice(0, -1).map((_s, i) => {
+        {route.stops.slice(0, -1).map((_s, i) => {
           const tie = sameFile(i)
           return (
             <FcEdgeDraw
               key={`e${i}`}
-              /* Up out of the card, across the label band, down into the next.
-                 The label rides the horizontal run at LINE_Y, where it has a
-                 whole pitch of clear room. */
-              d={`M ${cx(i)} ${CARDS_TOP} V ${LINE_Y} H ${cx(i + 1)} V ${CARDS_TOP - (tie ? 0 : 6)}`}
+              /* Up off centre, across its own tier, down off centre into the next.
+                 Each hop owns a level, and the two legs at a shared card are 28px
+                 apart, so nothing is drawn on top of anything. */
+              d={`M ${cx(i) + LEG_DX} ${CARDS_TOP} V ${tierY(i)} H ${cx(i + 1) - LEG_DX} V ${CARDS_TOP - (tie ? 0 : 6)}`}
               at={EDGE(i)}
               shown={shown[EDGE(i)]}
-              stroke={paintOf(p.stops[i + 1].file)}
+              stroke={tie ? colors.muted : CHAIN}
+              width={tie ? 2 : 3}
               /* Dashed and headless across a same-file pair: an arrowhead here
                  would claim control crossed a file boundary that does not exist. */
               dashed={tie}
-              markerEnd={tie ? undefined : `url(#callflow-s${i + 1})`}
+              markerEnd={tie ? undefined : 'url(#callflow-chain)'}
             />
           )
         })}
@@ -301,21 +346,28 @@ export function CallFlow({ files, stops, caption, className = '' }: ProjectFigur
 
       {/* VIA LABELS. The mechanism of each handover, which is the argument of the
           whole variant, so it is set in the clearest room on the stage. */}
-      {p.stops.slice(0, -1).map((s, i) =>
+      {route.stops.slice(0, -1).map((s, i) =>
         s.via ? (
           <FcEdgeLabel
             key={`v${i}`}
             at={EDGE(i)}
             shown={shown[EDGE(i)]}
             className="absolute text-center"
-            style={{ left: (cx(i) + cx(i + 1)) / 2 - LABEL_SLOT / 2, width: LABEL_SLOT, top: LABEL_Y }}
+            /* Centred on its own tier's line rather than parked in a shared band.
+               The pill is opaque and painted after the SVG, so it masks the short
+               stretch of wire behind it, which reads as a label ON the wire. */
+            style={{
+              left: (cx(i) + cx(i + 1)) / 2 - LABEL_SLOT / 2,
+              width: LABEL_SLOT,
+              top: tierY(i) - 13,
+            }}
           >
             <span
               className="inline-flex items-center rounded-pill px-2.5 py-1 font-mono text-[11px] font-semibold"
               style={{
-                background: `linear-gradient(${paintOf(p.stops[i + 1].file)}1a, ${paintOf(p.stops[i + 1].file)}1a), ${colors.white}`,
-                color: paintOf(p.stops[i + 1].file),
-                border: `1px solid ${paintOf(p.stops[i + 1].file)}3d`,
+                background: `linear-gradient(${CHAIN}1a, ${CHAIN}1a), ${colors.white}`,
+                color: CHAIN,
+                border: `1px solid ${CHAIN}3d`,
               }}
             >
               {/* Its own tight-leading span: the pill is 27px tall from its own
@@ -330,7 +382,7 @@ export function CallFlow({ files, stops, caption, className = '' }: ProjectFigur
 
       {/* "one file", left-aligned at the plate's own left edge so it clears both
           connector legs, which stand at the card centres. */}
-      {p.stops.map((_s, i) =>
+      {route.stops.map((_s, i) =>
         sameFile(i) ? (
           <FcEdgeLabel
             key={`tie${i}`}
@@ -341,7 +393,7 @@ export function CallFlow({ files, stops, caption, className = '' }: ProjectFigur
           >
             <span
               className="inline-block rounded-pill px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider"
-              style={{ background: paintOf(p.stops[i].file), color: colors.white }}
+              style={{ background: paintOf(route.stops[i].file), color: colors.white }}
             >
               one file, two stops
             </span>
@@ -350,10 +402,10 @@ export function CallFlow({ files, stops, caption, className = '' }: ProjectFigur
       )}
 
       {/* THE STOPS */}
-      {p.stops.map((s, i) => {
+      {route.stops.map((s, i) => {
         const paint = paintOf(s.file)
         const snip = p.snippet(s)
-        const continues = i > 0 && p.stops[i - 1].file === s.file
+        const continues = i > 0 && route.stops[i - 1].file === s.file
         return (
           <FcNodeIn
             key={s.id}
@@ -380,8 +432,9 @@ export function CallFlow({ files, stops, caption, className = '' }: ProjectFigur
                     className="min-w-0 truncate rounded-pill px-1.5 py-[3px] font-mono text-[10px] font-semibold"
                     style={{ background: `${paint}1a`, color: paint }}
                   >
-                    {continues ? 'same file, further down' : s.file}
+                    {continues ? 'same file, below' : s.file}
                   </span>
+
                 </span>
 
                 <span
@@ -419,7 +472,16 @@ export function CallFlow({ files, stops, caption, className = '' }: ProjectFigur
                   className="mt-auto block font-mono text-[10px]"
                   style={{ color: colors.muted }}
                 >
-                  lines {snip.from} to {snip.from + snip.lines.length - 1}
+                  {/*
+                    "OF N" IS THE HALF THAT WAS MISSING, AND IT WAS REPORTED FROM
+                    THE ROOM: a range with no total reads as the whole file, so
+                    "lines 8 to 12" on a card with no code beside it looked like a
+                    claim that the file has five lines. The total says out loud that
+                    this is a POINTER at a window in a longer file, which is all
+                    this variant claims to be now that the code has come out.
+                  */}
+                  lines {snip.from} to {snip.from + snip.lines.length - 1} of{' '}
+                  {p.byPath[s.file]?.lines.length ?? '?'}
                 </span>
               </div>
             </HoverAside>
@@ -427,14 +489,33 @@ export function CallFlow({ files, stops, caption, className = '' }: ProjectFigur
         )
       })}
 
-      {caption && (
+      {/*
+        THE TOGGLE SITS ON THE CAPTION LINE, LEFT, AND THE CAPTION IS INSET TO CLEAR
+        IT. Every other band on this figure is spoken for: the label band carries
+        `via`, the card band carries the cards, the plate band carries the same-file
+        tie. Insetting the caption to 190..910 costs nothing, because it is one
+        centred line of about 480px, and it keeps two rectangles from overlapping,
+        which `align-check.mjs` measures and would otherwise flag.
+      */}
+      {many && (
+        <span
+          className="absolute"
+          style={{ left: 0, top: CAPTION_Y - 4, width: TOGGLE_W, height: TOGGLE_H }}
+        >
+          <RouteToggle routes={p.routes} index={index} onPick={pick} />
+        </span>
+      )}
+
+      {(route.claim ?? caption) && (
         <FcEdgeLabel
           at={CAPTION}
           shown={shown[CAPTION]}
           className="absolute text-center text-body-sm"
-          style={{ left: 0, width: W, top: CAPTION_Y, color: colors.body }}
+          /* Inset past the toggle's reserved 210px box plus its 10px of clearance,
+             and symmetrically on the right so the line stays centred on the stage. */
+          style={{ left: TOGGLE_W + TOGGLE_CLEAR, width: W - 2 * (TOGGLE_W + TOGGLE_CLEAR), top: CAPTION_Y, color: colors.body }}
         >
-          {caption}
+          {route.claim ?? caption}
         </FcEdgeLabel>
       )}
     </figure>

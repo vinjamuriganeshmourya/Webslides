@@ -81,10 +81,61 @@ export interface TourStop {
   via?: string
 }
 
+/**
+ * ONE ORDERING OF THE SAME FILES, AND WHY THERE HAS TO BE MORE THAN ONE.
+ *
+ * The route this lab was built around is the REQUEST's path: a GET arrives at
+ * `urls.py`, is dispatched to `views.py`, which asks `serializers.py` to turn
+ * `models.py` rows into JSON. That is the right order for explaining what happens.
+ *
+ * It is the WRONG order for writing the code. Nobody writes `urls.py` first: a
+ * route needs a view to point at, a view needs a serializer, and a serializer
+ * names fields that have to exist on a model. Writing order runs the other way,
+ * models to urls, and a learner told only the request order will sit down to build
+ * their own app and start at the end.
+ *
+ * So the two orders are BOTH taught, and they are two authored routes rather than
+ * one route drawn backwards. A reversal would be a lie in three places at once:
+ *
+ *   1. `via` names the MECHANISM of a handover, and a mechanism has a direction.
+ *      "GET /api/products/" is not what `views.py` hands to `urls.py`.
+ *   2. `title` is a CLAIM about why the room is looking at this stop, and the
+ *      claim differs: the model is "where it all resolves" when you are following
+ *      a request, and "start with what a product IS" when you are writing one.
+ *   3. Two stops in one file do not reverse. The request reaches the view, then
+ *      the queryset line inside it; you WRITE the function, then the line inside
+ *      it. Same order, both times, in the middle of a reversal.
+ *
+ * Authored, therefore, in the same way `real.map` is authored in the pseudocode
+ * lab: because it is a claim about correspondence, and a figure that guessed it
+ * would quietly teach the wrong thing.
+ */
+export interface TourRoute {
+  /** `request` and `code` are the two this course needs. */
+  id: string
+  /** What the toggle says. Two or three words. */
+  label: string
+  /** One line: what this ORDER claims. Variants show it in place of the caption. */
+  claim?: string
+  stops: TourStop[]
+}
+
 export interface ProjectFigureProps {
   files: CodeFile[]
-  /** The route, in the order the room should walk it. */
+  /**
+   * The route, in the order the room should walk it.
+   *
+   * Still required, and still the one a figure draws when it ignores `routes`
+   * entirely. When `routes` is given, this must be `routes[0].stops`.
+   */
   stops: TourStop[]
+  /**
+   * The orderings the room can switch between, `routes[0]` being the default.
+   *
+   * Optional: a figure with one honest order should not have to invent a toggle,
+   * and a toggle with one entry is a button that does nothing.
+   */
+  routes?: TourRoute[]
   /** Which stop is current, for a variant that shows one at a time. */
   at?: number
   caption?: ReactNode
@@ -94,6 +145,18 @@ export interface ProjectFigureProps {
 export interface ResolvedProject {
   files: CodeFile[]
   stops: TourStop[]
+  /** Always at least one, so a variant never branches on whether routes exist. */
+  routes: TourRoute[]
+  /**
+   * The most stops any route has.
+   *
+   * A variant registers its build steps with the deck's `Stepper` through
+   * `useBeats(count)`, and that count MUST NOT change while the slide is up: the
+   * arrow key would advance to the next slide instead of building this one. The
+   * route is chosen by a click, so `stops.length` is state as far as the beat
+   * count is concerned, and this is the number to use instead.
+   */
+  stopCount: number
   byPath: Record<string, CodeFile>
   /** Layers in first-appearance order, so colour assignment is stable. */
   layers: string[]
@@ -112,7 +175,8 @@ export interface ResolvedProject {
 export function resolveProject({
   files,
   stops,
-}: Pick<ProjectFigureProps, 'files' | 'stops'>): ResolvedProject {
+  routes,
+}: Pick<ProjectFigureProps, 'files' | 'stops' | 'routes'>): ResolvedProject {
   const problems: string[] = []
   const byPath: Record<string, CodeFile> = {}
   for (const f of files) {
@@ -126,26 +190,66 @@ export function resolveProject({
     if (!layers.includes(l)) layers.push(l)
   }
 
-  for (const [i, s] of stops.entries()) {
-    const f = byPath[s.file]
-    if (!f) {
-      problems.push(`stop ${i + 1} is in "${s.file}", which is not in files`)
-      continue
-    }
-    const [a, b] = s.range
-    if (a < 1 || b > f.lines.length) {
-      problems.push(`stop ${i + 1} wants lines ${a} to ${b} of "${s.file}", which has ${f.lines.length}`)
-    }
-    if (a > b) problems.push(`stop ${i + 1} has an inverted range`)
-    if (b - a > 11) {
-      problems.push(`stop ${i + 1} spans ${b - a + 1} lines; past a dozen the room cannot tell which the sentence was about`)
+  /*
+    ONE ROUTE WHEN NOTHING SAYS OTHERWISE, so no variant has to ask whether the
+    figure it is drawing has a toggle.
+  */
+  const allRoutes: TourRoute[] =
+    routes && routes.length > 0
+      ? routes
+      : [{ id: 'default', label: 'The route', stops }]
+
+  if (routes && routes.length > 0 && routes[0].stops !== stops) {
+    problems.push('the first route must be the same array as `stops`, which is what a figure draws when it ignores the toggle')
+  }
+  /*
+    EVERY ROUTE HAS TO BE THE SAME LENGTH, and this is not tidiness.
+
+    The number of build steps a figure registers with the deck cannot change while
+    the slide is up, and switching route is a click. Two routes of different
+    lengths would either strand a click on nothing or lose the tail of the longer
+    one, and both of those read to a presenter as a figure that has stopped
+    responding.
+  */
+  for (const r of allRoutes.slice(1)) {
+    if (r.stops.length !== allRoutes[0].stops.length) {
+      problems.push(
+        `route "${r.id}" has ${r.stops.length} stops and "${allRoutes[0].id}" has ${allRoutes[0].stops.length}; the toggle cannot change how many build steps the slide registers`,
+      )
     }
   }
-  if (stops.length > 6) problems.push(`${stops.length} stops; past six this is a chapter, not a slide`)
+
+  /* Named per route, because "stop 7" means nothing once there are two routes of
+     five and the author has to find which one is wrong. */
+  for (const r of allRoutes) {
+    const where = allRoutes.length > 1 ? ` of route "${r.id}"` : ''
+    for (const [i, s] of r.stops.entries()) {
+      const f = byPath[s.file]
+      if (!f) {
+        problems.push(`stop ${i + 1}${where} is in "${s.file}", which is not in files`)
+        continue
+      }
+      const [a, b] = s.range
+      if (a < 1 || b > f.lines.length) {
+        problems.push(`stop ${i + 1}${where} wants lines ${a} to ${b} of "${s.file}", which has ${f.lines.length}`)
+      }
+      if (a > b) problems.push(`stop ${i + 1}${where} has an inverted range`)
+      if (b - a > 11) {
+        problems.push(`stop ${i + 1}${where} spans ${b - a + 1} lines; past a dozen the room cannot tell which the sentence was about`)
+      }
+    }
+  }
+  for (const r of allRoutes) {
+    if (r.stops.length > 6) {
+      problems.push(`route "${r.id}" has ${r.stops.length} stops; past six this is a chapter, not a slide`)
+    }
+  }
 
   return {
     files,
     stops,
+    routes: allRoutes,
+    stopCount: Math.max(0, ...allRoutes.map((r) => r.stops.length)),
     byPath,
     layers,
     snippet: (stop) => {

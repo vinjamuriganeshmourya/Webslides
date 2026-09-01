@@ -1,4 +1,4 @@
-import type { ProjectFigureProps } from './projectFigure'
+import type { ProjectFigureProps, TourStop } from './projectFigure'
 
 /**
  * ONE PROJECT SLICE, RENDERED BY EVERY VARIANT.
@@ -24,6 +24,129 @@ import type { ProjectFigureProps } from './projectFigure'
  * deck: it is the smallest slice that genuinely runs, so a variant cannot be
  * flattered by code that would not work. Four files, four layers, five stops.
  */
+
+/*
+  THE ROUTE IS THE REQUEST'S OWN PATH, not the order the files were written.
+
+    That is the whole argument for a tour over a file listing: a learner opening
+    this app for the first time does not need to know that `models.py` exists
+    before `urls.py`, they need to know what happens when somebody visits a URL.
+    Reading order and execution order are different, and a walkthrough should
+    follow the one that answers the question.
+
+  `via` names the MECHANISM of each handover, so a variant can label the edge
+  rather than drawing an unexplained arrow.
+*/
+const requestRoute: TourStop[] = [
+    {
+      id: 'route',
+      file: 'products/urls.py',
+      range: [5, 7],
+      title: 'The address is the entry point',
+      body: 'Nothing runs until a URL matches this pattern.',
+      via: 'GET /api/products/',
+      detail: 'The trailing slash matters: without it Django redirects, and a client that does not follow redirects sees a 301 rather than the list.',
+    },
+    {
+      id: 'view',
+      file: 'products/views.py',
+      range: [8, 12],
+      title: 'The view is four lines and no logic',
+      body: 'Fetch, serialize, respond. Anything more belongs elsewhere.',
+      via: 'calls',
+      detail: 'The decorator rejects every verb except GET before this function body runs, which is why there is no method check inside it.',
+    },
+    {
+      id: 'query',
+      file: 'products/views.py',
+      range: [10, 10],
+      title: 'One line reaches the database',
+      body: 'A queryset, not a list. Nothing has been fetched yet.',
+      via: 'lazy queryset',
+      detail: 'Django does not hit the database here. The query runs when the serializer iterates it on the next line, which is why a slow endpoint is rarely slow on the line that looks like the query.',
+    },
+    {
+      id: 'serialize',
+      file: 'products/serializers.py',
+      range: [6, 9],
+      title: 'The field list is the contract',
+      body: 'Whatever is named here is what the client receives.',
+      via: 'reads Product',
+      detail: 'Adding a field to the model changes nothing on the wire until it is added here too. That is the single most common cause of "my new column is missing from the API".',
+    },
+  {
+    id: 'model',
+    file: 'products/models.py',
+    range: [4, 7],
+    title: 'And the model is where it all resolves',
+    body: 'The serializer takes its types from these three lines.',
+    via: 'defines',
+    detail: 'DecimalField is deliberate: a float would introduce rounding error in prices, and the serializer emits it as a string for exactly that reason.',
+  },
+]
+
+/*
+  THE SAME FOUR FILES IN THE ORDER YOU WOULD WRITE THEM, WHICH IS NOT THE REVERSE.
+
+  A learner who has only ever been shown the request path will sit down to build
+  their own app and start at `urls.py`, which cannot be written first: a route needs
+  a view to point at, a view needs a serializer, and a serializer names fields that
+  have to exist on a model.
+
+  Every stop below is authored rather than derived from the route above, and the
+  three reasons are in the `TourRoute` doc comment: `via` has a direction, `title`
+  is a claim that changes with the direction, and the two stops inside `views.py`
+  do NOT swap. You write the function, then the line inside it; the request reaches
+  the function, then the line inside it. Same order, in the middle of a reversal,
+  which is exactly the thing a reversing figure would get wrong.
+*/
+const codeRoute: TourStop[] = [
+  {
+    id: 'c-model',
+    file: 'products/models.py',
+    range: [4, 7],
+    title: 'Start with what a product IS',
+    body: 'Every layer above this one takes its types from here.',
+    via: 'serialize it',
+    detail: 'Writing the model first is not a style preference. A serializer names fields, so the fields have to exist, and the migration that creates the table is generated from this file and nothing downstream of it.',
+  },
+  {
+    id: 'c-serializer',
+    file: 'products/serializers.py',
+    range: [6, 9],
+    title: 'Then decide what is allowed to leave',
+    body: 'The field list is a promise to whoever calls the API.',
+    via: 'use it in a view',
+    detail: 'Adding a field to the model changes nothing on the wire until it is added here too. That is the single most common cause of "my new column is missing from the API".',
+  },
+  {
+    id: 'c-view',
+    file: 'products/views.py',
+    range: [8, 12],
+    title: 'Then write the four lines that answer',
+    body: 'Fetch, serialize, respond. Anything more belongs elsewhere.',
+    via: 'inside the same function',
+    detail: 'The decorator rejects every verb except GET before this function body runs, which is why there is no method check inside it.',
+  },
+  {
+    id: 'c-query',
+    file: 'products/views.py',
+    range: [10, 10],
+    title: 'And the one line that reaches the data',
+    body: 'A queryset, not a list. Nothing has been fetched yet.',
+    via: 'expose it at a path',
+    detail: 'Django does not hit the database here. The query runs when the serializer iterates it on the next line, which is why a slow endpoint is rarely slow on the line that looks like the query.',
+  },
+  {
+    id: 'c-route',
+    file: 'products/urls.py',
+    range: [5, 7],
+    title: 'Last, give the whole thing an address',
+    body: 'Nothing you just wrote is reachable until this line exists.',
+    detail: 'The trailing slash matters: without it Django redirects, and a client that does not follow redirects sees a 301 rather than the list.',
+  },
+]
+
 export const apiSliceFixture: ProjectFigureProps = {
   files: [
     {
@@ -98,64 +221,10 @@ export const apiSliceFixture: ProjectFigureProps = {
     },
   ],
 
-  /*
-    THE ROUTE IS THE REQUEST'S OWN PATH, not the order the files were written.
-
-    That is the whole argument for a tour over a file listing: a learner opening
-    this app for the first time does not need to know that `models.py` exists
-    before `urls.py`, they need to know what happens when somebody visits a URL.
-    Reading order and execution order are different, and a walkthrough should
-    follow the one that answers the question.
-
-    `via` names the MECHANISM of each handover, so a variant can label the edge
-    rather than drawing an unexplained arrow.
-  */
-  stops: [
-    {
-      id: 'route',
-      file: 'products/urls.py',
-      range: [5, 7],
-      title: 'The address is the entry point',
-      body: 'Nothing runs until a URL matches this pattern.',
-      via: 'GET /api/products/',
-      detail: 'The trailing slash matters: without it Django redirects, and a client that does not follow redirects sees a 301 rather than the list.',
-    },
-    {
-      id: 'view',
-      file: 'products/views.py',
-      range: [8, 12],
-      title: 'The view is four lines and no logic',
-      body: 'Fetch, serialize, respond. Anything more belongs elsewhere.',
-      via: 'calls',
-      detail: 'The decorator rejects every verb except GET before this function body runs, which is why there is no method check inside it.',
-    },
-    {
-      id: 'query',
-      file: 'products/views.py',
-      range: [10, 10],
-      title: 'One line reaches the database',
-      body: 'A queryset, not a list. Nothing has been fetched yet.',
-      via: 'lazy queryset',
-      detail: 'Django does not hit the database here. The query runs when the serializer iterates it on the next line, which is why a slow endpoint is rarely slow on the line that looks like the query.',
-    },
-    {
-      id: 'serialize',
-      file: 'products/serializers.py',
-      range: [6, 9],
-      title: 'The field list is the contract',
-      body: 'Whatever is named here is what the client receives.',
-      via: 'reads Product',
-      detail: 'Adding a field to the model changes nothing on the wire until it is added here too. That is the single most common cause of "my new column is missing from the API".',
-    },
-    {
-      id: 'model',
-      file: 'products/models.py',
-      range: [4, 7],
-      title: 'And the model is where it all resolves',
-      body: 'The serializer takes its types from these three lines.',
-      via: 'defines',
-      detail: 'DecimalField is deliberate: a float would introduce rounding error in prices, and the serializer emits it as a string for exactly that reason.',
-    },
+  stops: requestRoute,
+  routes: [
+    { id: 'request', label: 'Request flow', claim: 'The order it happens in, when somebody visits the URL.', stops: requestRoute },
+    { id: 'code', label: 'Code flow', claim: 'The order you write it in, which is very nearly the reverse.', stops: codeRoute },
   ],
 
   caption: 'Four files, one request, in the order it actually happens.',

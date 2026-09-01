@@ -4,6 +4,7 @@ import { colors } from '@/design/tokens'
 import { E, c4 } from '@/ui/figureTiming'
 import { FcEdgeLabel, FcNodeIn, useBeats } from './motion'
 import { resolveProject, type ProjectFigureProps } from './projectFigure'
+import { RouteToggle, TOGGLE_CLEAR, TOGGLE_H, useRoute } from './routeToggle'
 
 /**
  * TOUR STOPS — a small map that never leaves, and one snippet at a time beside it.
@@ -49,8 +50,14 @@ import { resolveProject, type ProjectFigureProps } from './projectFigure'
  *
  * GEOMETRY, AND THE PADDING ARITHMETIC
  *
- * A fixed 1100x390 stage. Map column 300 wide, 24px gutter, snippet panel 776
- * wide at x=324. Both run from y=0 to y=350, and the caption sits at 366.
+ * A fixed 1100x398 stage. Map column 300 wide, 24px gutter, snippet panel 776
+ * wide at x=324. Both run from y=0 to y=362, and the caption sits at 374.
+ *
+ * THE TOGGLE OWNS THE TOP-LEFT CORNER, AND IT IS PAID FOR. Its box is 230 x 28
+ * inside the map column's 300, and the first map row starts at 42, which is the
+ * control's height plus 14px of air. That air is OUTSIDE the control: a box that
+ * butts against the row beneath it is the same padding failure as a card with 0px
+ * inside it, and it does not stop being one because the box is a button.
  *
  * PADDING IS A FLOOR. A box shows `(box - content) / 2`, so every height below is
  * derived from the fixture's longest string rather than declared and hoped for.
@@ -60,32 +67,38 @@ import { resolveProject, type ProjectFigureProps } from './projectFigure'
  *   one line. The longest role, "What a product IS, and the table behind it", is
  *   42 chars at 11px (~5.4px) = 227px, which is WIDER than 216, so it wraps to
  *   two. Content = 15.6 + 3 + 2 x 14.85 = 49px. ROW_H 74 gives (74 - 49) / 2 =
- *   12.5px real against 12px declared. Four rows on an 82px pitch: 30, 112, 194,
- *   276, ending at 350.
+ *   12.5px real against 12px declared. Four rows on an 82px pitch, starting one
+ *   clear gap under the toggle: 42, 124, 206, 288, ending at 362.
  *
- *   SNIPPET PANEL. Content width 776 - 40 = 736. Chips 22 + 8 + title (2 lines of
- *   19px at 1.3 = 49) + 6 + body 22 + 12 + code panel (28 header + 5 lines at
- *   14px x 1.6 = 112 + 24 pad = 164) = 283px. PANEL_H 350 leaves 67px of slack,
- *   which the code panel absorbs with `flex-1` rather than leaving a hole, so the
- *   declared 20px stays real. Worst case ceiling is 350 - 40 = 310 > 283.
+ *   SNIPPET PANEL. Content width 776 - 40 = 736. Chips 22 + 8 + title 25 + 6 +
+ *   body 22 + 12 + code panel (28 header + 7 lines at 13px x 1.6 = 147 + 24 pad =
+ *   199) = 294px. PANEL_H 362 leaves 28px of slack, which the code panel absorbs
+ *   with `flex-1` rather than leaving a hole, so the declared 20px stays real.
+ *   Worst case ceiling is 362 - 40 = 322 > 294.
  *
- *   The longest snippet line, `    data = ProductSerializer(products, many=True).data`,
- *   is 54 chars at 14px mono = 454px, well inside the 696px of code column, so
- *   nothing wraps and nothing scrolls.
+ *   SEVEN CODE LINES, WHICH IS WHY THE FONT CAME DOWN TO 13. The panel shows the
+ *   stop's range plus one line of context either side, and the longest range in the
+ *   fixture is five, so the window is at most seven lines. The longest line in it,
+ *   `    data = ProductSerializer(products, many=True).data`, is 54 chars at 13px
+ *   mono (7.8px) = 421px inside 696px of code column, so nothing wraps and nothing
+ *   scrolls.
  */
 
 const W = 1100
-const H = 390
+const H = 398
 const MAP_W = 300
 const PANEL_X = 324
 const PANEL_W = 776
-const COL_H = 350
+const COL_H = 362
 
-const ROW_TOP = 30
+/* THE TOGGLE OWNS THE TOP-LEFT CORNER AND THE ROWS START BELOW ITS CLEARANCE, not
+   2px under it as they did at first. 28 tall plus 14 of air, from
+   `routeToggle.tsx`, so the number cannot drift from the control's own box. */
+const ROW_TOP = TOGGLE_H + TOGGLE_CLEAR
 const ROW_H = 74
 const ROW_PITCH = 82
 
-const CAPTION_Y = 366
+const CAPTION_Y = 374
 
 /**
  * THE LAYER RAMP, AND WHY ALL THREE VARIANTS CARRY THE SAME ARRAY.
@@ -169,30 +182,76 @@ function HoverAside({
 }
 
 /**
- * Line numbers START AT `from`, which is the whole reason this exists rather
- * than `CodeBlock`. One grid row per line, so a number cannot drift off its own
- * code.
+ * A WINDOW ON THE FILE, NOT A SNIPPET FLOATING FREE.
+ *
+ * Line numbers start at the window's first line and never at 1, which is the whole
+ * reason this exists rather than `CodeBlock`, whose gutter is hardcoded `{i + 1}`.
+ *
+ * AND ONE LINE OF CONTEXT EITHER SIDE, WHICH WAS A REPORTED FAULT AND NOT A
+ * REFINEMENT. Showing lines 5 to 7 with a gutter reading 5, 6, 7 and nothing above
+ * them puts a number on screen with no code at that number: the room reads it as a
+ * panel that starts at line 5, which is not a thing a file can do. The dimmed
+ * neighbours prove the position the numbers are claiming, and the header states the
+ * file's real length so a window can be seen to be a window.
+ *
+ * The stop's own lines carry a tinted ground and full-strength text; the context
+ * lines are dimmed. One grid row per line, so a number cannot drift off its code.
  */
-function SnippetLines({ lines, from, fontSize }: { lines: string[]; from: number; fontSize: number }) {
+function SnippetLines({
+  lines,
+  from,
+  hot,
+  fontSize,
+}: {
+  lines: string[]
+  from: number
+  /** The stop's own range, 1-based and inclusive, inside this window. */
+  hot: [number, number]
+  fontSize: number
+}) {
   return (
     <code
       className="grid font-mono"
       style={{ fontSize, lineHeight: `${Math.round(fontSize * 1.6)}px` }}
     >
-      {lines.map((line, i) => (
-        <span key={i} className="grid" style={{ gridTemplateColumns: '26px 1fr', columnGap: 12 }}>
-          <span className="select-none text-right" style={{ color: `${colors.white}47` }}>
-            {from + i}
+      {lines.map((line, i) => {
+        const n = from + i
+        const on = n >= hot[0] && n <= hot[1]
+        return (
+          <span
+            key={i}
+            className="grid rounded"
+            style={{
+              gridTemplateColumns: '26px 1fr',
+              columnGap: 12,
+              background: on ? `${colors.info}26` : undefined,
+            }}
+          >
+            <span
+              className="select-none text-right"
+              style={{ color: on ? `${colors.white}c4` : `${colors.white}3d` }}
+            >
+              {n}
+            </span>
+            <span
+              style={{
+                color: on ? `${colors.white}ed` : `${colors.white}6b`,
+                whiteSpace: 'pre',
+              }}
+            >
+              {line === '' ? ' ' : line}
+            </span>
           </span>
-          <span style={{ color: `${colors.white}ed`, whiteSpace: 'pre' }}>{line === '' ? ' ' : line}</span>
-        </span>
-      ))}
+        )
+      })}
     </code>
   )
 }
 
-export function TourStops({ files, stops, caption, className = '' }: ProjectFigureProps) {
-  const p = resolveProject({ files, stops })
+export function TourStops({ files, stops, routes, caption, className = '' }: ProjectFigureProps) {
+  const p = resolveProject({ files, stops, routes })
+  /* WHICH ORDER. A control rather than a build step: see `routeToggle.tsx`. */
+  const { route, index, pick, many } = useRoute(p)
 
   /*
     BEATS. Beat 0 is free and carries the MAP AND THE FIRST STOP, so the slide
@@ -201,7 +260,10 @@ export function TourStops({ files, stops, caption, className = '' }: ProjectFigu
     derived from `stops.length`, never from state, so the number of registered
     steps is stable while the slide is up.
   */
-  const CAPTION = p.stops.length
+  /* FROM `stopCount`, THE LONGEST ROUTE, AND NEVER FROM THE ACTIVE ONE. The step
+     count a slide registers cannot change while the slide is up, and picking a
+     route is a click. */
+  const CAPTION = p.stopCount
   const shown = useBeats(CAPTION + 1)
 
   /*
@@ -210,9 +272,9 @@ export function TourStops({ files, stops, caption, className = '' }: ProjectFigu
     tour, and there is no second source of truth to fall out of sync with the
     deck's own step counter.
   */
-  const reached = p.stops.filter((_s, i) => shown[i]).length
+  const reached = route.stops.filter((_s, i) => shown[i]).length
   const cur = Math.max(0, reached - 1)
-  const stop = p.stops[cur]
+  const stop = route.stops[cur]
 
   /* Invalid input is REPORTED, not drawn. A stop pointing past the end of a file
      renders an empty panel that looks like a styling bug. */
@@ -241,6 +303,32 @@ export function TourStops({ files, stops, caption, className = '' }: ProjectFigu
   }
 
   const snip = stop ? p.snippet(stop) : { lines: [], from: 1, language: undefined }
+  /*
+    THE WINDOW. One line of context either side of the stop, clamped to the file,
+    so the gutter's numbers always have code beside them and the room can see where
+    the stop sits. Seven lines is the panel's ceiling: the longest range in the
+    fixture is five.
+  */
+  const whole = stop ? (p.byPath[stop.file]?.lines ?? []) : []
+  /*
+    FILLED TO THE PANEL'S SEVEN LINES RATHER THAN A FIXED ONE LINE EITHER SIDE.
+
+    A one-line margin is worth little around a range that sits between blank lines,
+    which in this fixture it often does: the gutter proves the position, but the
+    context proves nothing. Since the panel holds seven lines and the longest range
+    is five, the spare rows are free. They are spent symmetrically and clamped to
+    the file, so a stop at the top of a file spends them all downward instead of
+    inventing lines above line 1.
+  */
+  const WINDOW_MAX = 7
+  const rangeLen = stop ? stop.range[1] - stop.range[0] + 1 : 0
+  const spare = Math.max(0, WINDOW_MAX - rangeLen)
+  const wantUp = Math.ceil(spare / 2)
+  const winFrom = stop ? Math.max(1, stop.range[0] - wantUp) : 1
+  const winTo = stop
+    ? Math.min(whole.length, stop.range[1] + (spare - (stop.range[0] - winFrom)))
+    : 0
+  const windowLines = whole.slice(winFrom - 1, winTo)
 
   return (
     <figure className={`relative mx-auto ${className}`} style={{ width: W, height: H }}>
@@ -252,17 +340,24 @@ export function TourStops({ files, stops, caption, className = '' }: ProjectFigu
         className="absolute"
         style={{ left: 0, top: 0, width: MAP_W }}
       >
-        <span
-          className="block font-heading text-[12px] font-bold uppercase tracking-wider"
-          style={{ color: colors.muted }}
-        >
-          The four files
-        </span>
+        {/* THE TOGGLE SITS WHERE THE MAP'S OWN LABEL USED TO. "The four files" was
+            saying what the four rows underneath it already say, and the order the
+            tour is walking in is the one thing the map cannot state by itself. */}
+        {many ? (
+          <RouteToggle routes={p.routes} index={index} onPick={pick} />
+        ) : (
+          <span
+            className="block font-heading text-[12px] font-bold uppercase tracking-wider"
+            style={{ color: colors.muted }}
+          >
+            The four files
+          </span>
+        )}
       </FcNodeIn>
 
       {p.files.map((f, fi) => {
         const paint = layerPaint(f.path)
-        const mine = p.stops.map((s, i) => ({ s, i })).filter((x) => x.s.file === f.path)
+        const mine = route.stops.map((s, i) => ({ s, i })).filter((x) => x.s.file === f.path)
         const here = stop?.file === f.path
         const seen = mine.some((x) => x.i < cur)
         return (
@@ -368,7 +463,7 @@ export function TourStops({ files, stops, caption, className = '' }: ProjectFigu
                   className="block rounded-pill px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider"
                   style={{ background: layerPaint(stop.file), color: colors.white }}
                 >
-                  Stop {cur + 1} of {p.stops.length}
+                  Stop {cur + 1} of {route.stops.length}
                 </span>
               </HoverAside>
               <span
@@ -389,8 +484,11 @@ export function TourStops({ files, stops, caption, className = '' }: ProjectFigu
                 */}
                 <span className="leading-none">{stop.file}</span>
               </span>
+              {/* "of N" IS THE OTHER HALF OF THE FIX. A range with no total reads
+                  as the whole file, so a window looked like a file that starts at
+                  line 8. */}
               <span className="ml-auto font-mono text-[11px]" style={{ color: colors.muted }}>
-                lines {stop.range[0]} to {stop.range[1]}
+                lines {stop.range[0]} to {stop.range[1]} of {whole.length}
               </span>
             </span>
 
@@ -427,21 +525,29 @@ export function TourStops({ files, stops, caption, className = '' }: ProjectFigu
                 </span>
               </div>
               <div className="px-4 py-3">
-                <SnippetLines lines={snip.lines} from={snip.from} fontSize={14} />
+                <SnippetLines
+                  lines={windowLines}
+                  from={winFrom}
+                  hot={stop.range}
+                  fontSize={13}
+                />
               </div>
             </div>
           </div>
         </FcNodeIn>
       )}
 
-      {caption && (
+      {/* THE ROUTE'S OWN CLAIM WINS THE CAPTION SLOT. The caption is the sentence
+          under the figure, and when the room has just changed the order, what that
+          order claims IS the sentence. */}
+      {(route.claim ?? caption) && (
         <FcEdgeLabel
           at={CAPTION}
           shown={shown[CAPTION]}
           className="absolute text-center text-body-sm"
           style={{ left: 0, width: W, top: CAPTION_Y, color: colors.body }}
         >
-          {caption}
+          {route.claim ?? caption}
         </FcEdgeLabel>
       )}
     </figure>
