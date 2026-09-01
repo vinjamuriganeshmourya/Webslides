@@ -4,6 +4,7 @@ import { colors } from '@/design/tokens'
 import { E, c4 } from '@/ui/figureTiming'
 import { FcArrowDefs, FcEdgeDraw, FcEdgeLabel, FcNodeIn, useBeats } from './motion'
 import { resolveProject, type ProjectFigureProps } from './projectFigure'
+import { RouteToggle, TOGGLE_CLEAR, TOGGLE_H, TOGGLE_W, useRoute } from './routeToggle'
 
 /**
  * LAYER MAP — the project by architectural layer, with the tour plotted onto it.
@@ -65,9 +66,12 @@ import { resolveProject, type ProjectFigureProps } from './projectFigure'
  *
  * GEOMETRY, AND THE PADDING ARITHMETIC
  *
- * A fixed 1100x392 stage. Column headers at y=6. Four bands 74px tall on an 84px
- * pitch (30, 114, 198, 282), so the last band ends at 356 and the caption sits at
- * 366. The layer name column is 168px, the band body starts at 178. Stop chips
+ * A fixed 1100x398 stage. The toggle owns a reserved 230 x 28 box at the top left,
+ * and the column headers it cannot reach sit at y=6. Four bands 74px tall on an
+ * 82px pitch (42, 124, 206, 288), so the last band ends at 362 and the caption sits
+ * at 374. The 14px between the toggle and the first band is air OUTSIDE the
+ * control, which is the same floor the cards inside the bands honour: a control is
+ * not exempt from the padding rule. The layer name column is 168px, the band body starts at 178. Stop chips
  * are 62 wide on an 84 pitch starting at x=660, so the fifth chip ends at 1058,
  * inside the 1084 the band's own 16px padding allows.
  *
@@ -89,11 +93,14 @@ import { resolveProject, type ProjectFigureProps } from './projectFigure'
  */
 
 const W = 1100
-const H = 392
+const H = 398
 const HEAD_Y = 6
-const BANDS_TOP = 30
+/* THE TOGGLE OWNS THE TOP-LEFT CORNER AND IS PAID FOR: 28 tall plus a 10px clear
+   gap, so the first band starts at 38 rather than 30. The pitch drops from 84 to
+   82 to buy it back, which takes the band gap from 10px to 8px. */
+const BANDS_TOP = TOGGLE_H + TOGGLE_CLEAR
 const BAND_H = 74
-const BAND_PITCH = 84
+const BAND_PITCH = 82
 const LAYER_COL = 168
 const BODY_X = 178
 const TEXT_W = 440
@@ -101,7 +108,7 @@ const PLOT_X0 = 660
 const CHIP_W = 62
 const CHIP_H = 30
 const CHIP_PITCH = 84
-const CAPTION_Y = 366
+const CAPTION_Y = 374
 
 /** Same ramp, same order, in all three variants. See the note in `TourStops`. */
 const RAMP = [colors.brand, colors.info, colors.teal, colors.accentDark, colors.success, colors.warning]
@@ -181,8 +188,19 @@ function HoverAside({
   )
 }
 
-export function LayerMap({ files, stops, caption, className = '' }: ProjectFigureProps) {
-  const p = resolveProject({ files, stops })
+export function LayerMap({ files, stops, routes, caption, className = '' }: ProjectFigureProps) {
+  const p = resolveProject({ files, stops, routes })
+  /*
+    WHICH ORDER, AND THIS IS THE VARIANT THE TOGGLE PAYS OFF ON.
+
+    The bands never move: routing stays at the top and data stays at the bottom,
+    because that is where those layers ARE. Only the plotted line changes, so
+    switching from the request order to the writing order turns a descent into a
+    climb, in place, on one press. The room sees the two orders as the same four
+    files walked in opposite directions, which is the whole claim, and no other
+    variant here can show it without redrawing itself.
+  */
+  const { route, index, pick, many } = useRoute(p)
 
   /*
     BEATS. Beat 0 is free and carries the BANDS AND THE FIRST CHIP, so the slide
@@ -196,7 +214,9 @@ export function LayerMap({ files, stops, caption, className = '' }: ProjectFigur
   */
   const SEG = (i: number) => i * 2 - 1
   const CHIP = (i: number) => (i === 0 ? 0 : i * 2)
-  const CAPTION = Math.max(0, (p.stops.length - 1) * 2 + 1)
+  /* FROM `stopCount`, THE LONGEST ROUTE, NEVER FROM THE ACTIVE ONE: the number of
+     build steps a slide registers cannot change while the slide is up. */
+  const CAPTION = Math.max(0, (p.stopCount - 1) * 2 + 1)
   const shown = useBeats(CAPTION + 1)
 
   if (p.problems.length > 0) {
@@ -217,9 +237,35 @@ export function LayerMap({ files, stops, caption, className = '' }: ProjectFigur
     )
   }
 
+  /*
+    COLOUR COMES FROM `layers`, POSITION COMES FROM THE ROUTE, AND THEY ARE NOT THE
+    SAME ORDER.
+
+    `p.layers` is first-appearance order in `files`, which is what keeps a layer the
+    same hue in all three variants of this lab. It is a terrible band order: the
+    fixture declares its files bottom up, models first, so the bands came out with
+    data at the top and routing at the bottom, and the figure drew the request as a
+    CLIMB while this file's own doc comment promised a descent.
+
+    So the bands are ordered by first appearance along `routes[0]`, the request
+    path, which puts routing at the top and data at the bottom and makes the descent
+    real. Deliberately `routes[0]` and not the active route: the bands are where the
+    layers ARE, so they must not move when the toggle flips. Only the plotted line
+    changes, which is the whole point of the toggle on this variant, and the writing
+    order then draws as the climb back up.
+  */
+  const bands: string[] = []
+  for (const st of p.routes[0].stops) {
+    const l = p.byPath[st.file]?.layer ?? 'unassigned'
+    if (!bands.includes(l)) bands.push(l)
+  }
+  /* Any layer no stop visits still gets a band, at the bottom, rather than being
+     silently dropped from a figure that claims to show the project. */
+  for (const l of p.layers) if (!bands.includes(l)) bands.push(l)
+
   const paintOfLayer = (layer: string) => RAMP[p.layers.indexOf(layer) % RAMP.length]
-  const bandOf = (path: string) => p.layers.indexOf(p.byPath[path]?.layer ?? 'unassigned')
-  const paintOfPath = (path: string) => RAMP[Math.max(0, bandOf(path)) % RAMP.length]
+  const bandOf = (path: string) => bands.indexOf(p.byPath[path]?.layer ?? 'unassigned')
+  const paintOfPath = (path: string) => paintOfLayer(p.byPath[path]?.layer ?? 'unassigned')
 
   /* One marker per band colour. Index keys, because a layer name like "request
      handling" contains a space and would break the `url(#...)` reference. */
@@ -227,8 +273,12 @@ export function LayerMap({ files, stops, caption, className = '' }: ProjectFigur
   p.layers.forEach((l, i) => {
     markers[`l${i}`] = paintOfLayer(l)
   })
+  /* Keyed by the layer's RAMP index, not its band position, so a marker can never
+     be a different colour from the line it caps. */
+  const markerOf = (path: string) =>
+    `url(#layermap-l${p.layers.indexOf(p.byPath[path]?.layer ?? 'unassigned')})`
 
-  const chipCy = (i: number) => bandTop(Math.max(0, bandOf(p.stops[i].file))) + BAND_H / 2
+  const chipCy = (i: number) => bandTop(Math.max(0, bandOf(route.stops[i].file))) + BAND_H / 2
   const chipCx = (i: number) => chipLeft(i) + CHIP_W / 2
 
   return (
@@ -238,8 +288,23 @@ export function LayerMap({ files, stops, caption, className = '' }: ProjectFigur
         <span className="block">
           {(
             [
-              ['Layer', 0],
-              ['File, and what it is for', BODY_X + 16],
+              /*
+                THE TOGGLE TAKES THIS ROW WHEN THERE IS ONE, AND BOTH LEFT HEADERS
+                COME OUT.
+
+                "Layer" is said four times over by the band labels underneath it,
+                and "File, and what it is for" starts at 194, which is inside the
+                toggle's 210px box: the first pass printed the pill straight through
+                that header. `align-check.mjs` does not look for a collision like
+                that, so it took a screenshot to find. The header the toggle cannot
+                reach stays.
+              */
+              ...(many
+                ? ([] as const)
+                : ([
+                    ['Layer', 0],
+                    ['File, and what it is for', BODY_X + 16],
+                  ] as const)),
               ['The tour, in order', PLOT_X0],
             ] as const
           ).map(([text, x]) => (
@@ -254,8 +319,14 @@ export function LayerMap({ files, stops, caption, className = '' }: ProjectFigur
         </span>
       </FcNodeIn>
 
+      {many && (
+        <span className="absolute" style={{ left: 0, top: 0, width: TOGGLE_W, height: TOGGLE_H }}>
+          <RouteToggle routes={p.routes} index={index} onPick={pick} />
+        </span>
+      )}
+
       {/* THE BANDS. One per layer, in the fixture's own order, top to bottom. */}
-      {p.layers.map((layer, li) => {
+      {bands.map((layer, li) => {
         const paint = paintOfLayer(layer)
         const inLayer = p.files.filter((f) => (f.layer ?? 'unassigned') === layer)
         return (
@@ -319,11 +390,11 @@ export function LayerMap({ files, stops, caption, className = '' }: ProjectFigur
         viewBox={`0 0 ${W} ${H}`}
       >
         <FcArrowDefs id="layermap" colors={markers} />
-        {p.stops.slice(1).map((s, k) => {
+        {route.stops.slice(1).map((s, k) => {
           const i = k + 1
-          const from = Math.max(0, bandOf(p.stops[i - 1].file))
+          const from = Math.max(0, bandOf(route.stops[i - 1].file))
           const to = Math.max(0, bandOf(s.file))
-          const paint = paintOfLayer(p.layers[to])
+          const paint = paintOfLayer(bands[to])
           /*
             SAME BAND MEANS SAME FILE, so the move is horizontal and stays inside
             the band. `views.py` holds stops 2 and 3, and a straight run between
@@ -349,7 +420,17 @@ export function LayerMap({ files, stops, caption, className = '' }: ProjectFigur
               at={SEG(i)}
               shown={shown[SEG(i)]}
               stroke={paint}
-              markerEnd={`url(#layermap-l${to})`}
+              /*
+                3px AND NOT 2, BECAUSE THE ARROWS WERE REPORTED AS UNCLEAR.
+
+                An SVG marker scales with `strokeWidth` by default, so the
+                arrowhead grew with the line: at 2px a 6px marker on a projector is
+                a smudge at the end of a hairline. The segments also run through a
+                10px gutter between two tinted bands, which is the least contrasted
+                place on the figure, so the line has to carry its own weight.
+              */
+              width={3}
+              markerEnd={markerOf(s.file)}
             />
           )
         })}
@@ -357,7 +438,7 @@ export function LayerMap({ files, stops, caption, className = '' }: ProjectFigur
 
       {/* THE STOPS, PLOTTED. Left to right in tour order, at the height of the
           layer they are in. */}
-      {p.stops.map((s, i) => {
+      {route.stops.map((s, i) => {
         const paint = paintOfPath(s.file)
         const snip = p.snippet(s)
         const last = snip.from + Math.max(0, snip.lines.length - 1)
@@ -381,7 +462,7 @@ export function LayerMap({ files, stops, caption, className = '' }: ProjectFigur
               label={`Stop ${i + 1}: ${s.title}`}
               detail={s.detail}
               paint={paint}
-              side={bandOf(s.file) < p.layers.length / 2 ? 'bottom' : 'top'}
+              side={bandOf(s.file) < bands.length / 2 ? 'bottom' : 'top'}
               dx={dx}
               className="block h-full w-full"
             >
@@ -400,14 +481,17 @@ export function LayerMap({ files, stops, caption, className = '' }: ProjectFigur
         )
       })}
 
-      {caption && (
+      {/* THE ROUTE'S OWN CLAIM WINS THE CAPTION SLOT, as in the other two variants:
+          when the room has just changed the order, what that order claims IS the
+          sentence under the figure. */}
+      {(route.claim ?? caption) && (
         <FcEdgeLabel
           at={CAPTION}
           shown={shown[CAPTION]}
           className="absolute text-center text-body-sm"
           style={{ left: 0, width: W, top: CAPTION_Y, color: colors.body }}
         >
-          {caption}
+          {route.claim ?? caption}
         </FcEdgeLabel>
       )}
     </figure>

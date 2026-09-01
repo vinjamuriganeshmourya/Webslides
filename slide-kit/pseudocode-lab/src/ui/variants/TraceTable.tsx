@@ -4,10 +4,20 @@ import { colors } from '@/design/tokens'
 import { E, c4 } from '@/ui/figureTiming'
 import { FcEdgeLabel, FcNodeIn, useBeats } from './motion'
 import {
+  CODE_BG,
+  CODE_BORDER,
+  CODE_CHIP_BG,
+  CODE_CHIP_FG,
+  CODE_GUTTER,
+  CODE_TITLE,
+  KIND_DARK,
+  KIND_LIGHT,
+  PseudoText,
+} from './pseudoText'
+import {
   resolvePseudo,
   type PseudoFigureProps,
   type PseudoLine,
-  type PseudoLineKind,
   type TraceStep,
 } from './pseudoFigure'
 
@@ -58,6 +68,11 @@ import {
  * instead of drawing a clipped table, but a five-variable algorithm simply is not
  * this figure's job.
  *
+ * The gap between rows is what the height was spent on: seven rows at 36 with
+ * nothing between them read as one block of digits, and a table whose rows the eye
+ * cannot separate has stopped doing the one thing a table is for. 33 plus 4 buys
+ * the separation and keeps 7.7px inside the row.
+ *
  * It also runs out of ROWS at seven. A dry run of a loop over ten items is
  * thirty rows, and the honest answer there is a shorter input, not a smaller
  * font: a trace table nobody at the back can read has stopped being a teaching
@@ -77,14 +92,15 @@ import {
  * content height) / 2`, so every number below is the measured result, not the
  * class name:
  *
- *   - Pseudocode panel. Content is a 22px header plus its 12px margin, plus 8
- *     rows of 34: 22 + 12 + 272 = 306. Real vertical padding (348 - 306) / 2 =
- *     **21px**, against a declared floor of 14.
- *   - Trace panel. Content is 22 + 12 header, a 30px column-header row, and 7
- *     rows of 36: 34 + 30 + 252 = 316. Real padding (348 - 316) / 2 = **16px**.
+ *   - Pseudocode panel, which is DARK: content is a 22px header plus its 12px
+ *     margin, plus 8 rows of 34: 22 + 12 + 272 = 306. Real vertical padding
+ *     (348 - 306) / 2 = **21px**, against a declared floor of 14.
+ *   - Trace panel. Content is a 22px header, the column heads' own 6px margin and
+ *     30px row, and 7 rows of 33 each carrying a 4px gap: 22 + 6 + 30 + 259 =
+ *     317. Real padding (348 - 317) / 2 = **15.5px**.
  *   - A code row is 34px around 15px mono on 1.35 leading (20.25px), so **6.8px**
- *     above and below. A trace cell is 36px around 13px mono on 1.35 (17.5px), so
- *     **9.2px**.
+ *     above and below. A trace cell is 33px around 13px mono on 1.35 (17.5px), so
+ *     **7.7px**, plus the 4px that now separates one row from the next.
  *   - Horizontal. The pseudocode panel's inner width is 560 - 32 = 528, and the
  *     fixture's longest line, "SET largest TO first item of numbers" at 36
  *     characters of 15px mono (9px per character), needs 324 plus a 26px gutter
@@ -114,7 +130,22 @@ const HEADER_GAP = 12
 
 /* Rows. */
 const CODE_ROW_H = 34
-const TRACE_ROW_H = 36
+/*
+  A TRACE ROW IS 33px WITH A 4px GAP UNDER IT, AND IT USED TO BE 36 WITH NONE.
+
+  Seven rows stacked edge to edge read as one block of numbers: the eye has to
+  find the row boundary from the value alignment, which is exactly the work a
+  table is supposed to do for it. The rows are cards, so they need air between
+  them to be cards.
+
+  The panel's budget did not grow, so the height paid for the gap. Rows room is
+  348 - 28 (padding) - 22 (header) - 6 (its margin) - 30 (column heads) = 262px.
+  Seven rows at 33 plus seven gaps of 4 is 259, which fits with 3px to spare, and
+  a row still shows (33 - 17.5) / 2 = 7.7px of vertical padding around its 13px
+  mono on 1.35 leading.
+*/
+const TRACE_ROW_H = 33
+const TRACE_ROW_GAP = 4
 const COL_HEAD_H = 30
 const INDENT = 18
 
@@ -133,7 +164,11 @@ const CELL_PAD_X = 8
 const TRACE_INNER = TRACE_W - PAD_X * 2 /* 484 */
 const PSEUDO_INNER = PSEUDO_W - PAD_X * 2 /* 528 */
 const CODE_ROOM = PSEUDO_INNER - GUTTER - GUTTER_GAP /* 492 */
-const ROW_CAP = Math.floor((PANEL_H - PAD_Y * 2 - HEADER_H - HEADER_GAP - COL_HEAD_H) / TRACE_ROW_H)
+/* The real header stack above the rows: title, the 6px margin the column heads
+   actually carry, and the column heads. Stated once, so the cap and the doc
+   comment cannot disagree. */
+const ROWS_ROOM = PANEL_H - PAD_Y * 2 - HEADER_H - (HEADER_GAP - 6) - COL_HEAD_H /* 262 */
+const ROW_CAP = Math.floor(ROWS_ROOM / (TRACE_ROW_H + TRACE_ROW_GAP))
 const LINE_CAP = Math.floor((PANEL_H - PAD_Y * 2 - HEADER_H - HEADER_GAP) / CODE_ROW_H)
 
 /**
@@ -141,17 +176,18 @@ const LINE_CAP = Math.floor((PANEL_H - PAD_Y * 2 - HEADER_H - HEADER_GAP) / CODE
  * to parse the pseudocode, and this is the whole use of it: one hue per kind, so
  * the loop and the branch are findable in the block without reading it.
  */
-const KIND_PAINT: Record<PseudoLineKind, string> = {
-  io: colors.info,
-  assign: colors.brand,
-  branch: colors.accentDark,
-  loop: colors.tealDark,
-  call: colors.brandDark,
-  return: colors.success,
-  plain: colors.muted,
-}
+/*
+  TWO GROUNDS ON ONE SLIDE, SO TWO ENDS OF ONE RAMP.
 
-const paintOf = (l: PseudoLine | undefined) => KIND_PAINT[l?.kind ?? 'plain']
+  The pseudocode panel is dark now, and the trace table is still white, because a
+  table is not code. `KIND_DARK` and `KIND_LIGHT` are the same four hue families
+  at the two ends, so a step whose line number is teal in the table points at a
+  line whose rule is teal in the panel. Both live in `pseudoText.tsx`: three
+  private copies of a ramp is how the sibling lab's padding came to differ per
+  variant.
+*/
+const darkOf = (l: PseudoLine | undefined) => KIND_DARK[l?.kind ?? 'plain']
+const lightOf = (l: PseudoLine | undefined) => KIND_LIGHT[l?.kind ?? 'plain']
 
 /** Which variables moved on this step. The only thing the row styling turns on. */
 function changedKeys(step: TraceStep, prev: TraceStep | undefined): string[] {
@@ -357,16 +393,27 @@ export function TraceTable({
       <FcNodeIn
         at={0}
         shown={shown[0]}
-        className="absolute rounded-card border border-line bg-white shadow-card-soft"
-        style={{ left: 0, top: 0, width: PSEUDO_W, height: PANEL_H, padding: `${PAD_Y}px ${PAD_X}px` }}
+        /* DARK, like every other code panel in the course. See `pseudoText.tsx`:
+           a white pseudocode panel beside a dark Python one says the two are
+           different kinds of thing. */
+        className="absolute rounded-card shadow-card"
+        style={{
+          left: 0,
+          top: 0,
+          width: PSEUDO_W,
+          height: PANEL_H,
+          padding: `${PAD_Y}px ${PAD_X}px`,
+          background: CODE_BG,
+          border: `1px solid ${CODE_BORDER}`,
+        }}
       >
         <div className="flex items-center justify-between" style={{ height: HEADER_H }}>
-          <span className="font-heading text-[15px] font-bold" style={{ color: colors.ink }}>
+          <span className="font-heading text-[15px] font-bold" style={{ color: CODE_TITLE }}>
             {title}
           </span>
           <span
             className="rounded-pill px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide"
-            style={{ background: `${colors.brand}14`, color: colors.brand }}
+            style={{ background: CODE_CHIP_BG, color: CODE_CHIP_FG }}
           >
             Pseudocode
           </span>
@@ -374,7 +421,7 @@ export function TraceTable({
 
         <div style={{ marginTop: HEADER_GAP }}>
           {g.lines.map((l) => {
-            const paint = paintOf(l)
+            const paint = darkOf(l)
             const on = l.n === activeLine
             return (
               <div
@@ -384,30 +431,35 @@ export function TraceTable({
                   height: CODE_ROW_H,
                   /* The active line is the only tinted thing in the panel, so
                      the eye finds it without being told where to look. */
-                  background: on ? `${paint}14` : undefined,
+                  /* A 14 wash is invisible on navy. The tint has to carry on the
+                     ground it is actually painted on. */
+                  background: on ? `${paint}2b` : undefined,
                   borderLeft: `3px solid ${on ? paint : 'transparent'}`,
                   paddingLeft: 6,
                 }}
               >
                 <span
                   className="shrink-0 text-right font-mono text-[11px]"
-                  style={{ width: GUTTER, color: on ? paint : colors.muted }}
+                  style={{ width: GUTTER, color: on ? paint : CODE_GUTTER }}
                 >
                   {l.n}
                 </span>
                 <span
-                  className="whitespace-pre font-mono text-[15px] leading-[1.35]"
+                  className="font-mono text-[15px] leading-[1.35]"
                   style={{
                     marginLeft: GUTTER_GAP,
                     /* INDENT IS DRAWN. Spaces inside `text` would be part of the
                        string, so they could not be measured, could not be
                        re-indented, and would break the width arithmetic above. */
                     paddingLeft: (l.indent ?? 0) * INDENT,
-                    color: on ? colors.ink : colors.body,
-                    fontWeight: on ? 700 : 500,
                   }}
                 >
-                  {l.text}
+                  {/* KEYWORDS COLOURED, and the declared variables with them:
+                      `vars` is what lets "largest" read as a variable rather than
+                      as prose on the one line that assigns it. The tokenizer emits
+                      every character verbatim, so the width arithmetic above is
+                      untouched. */}
+                  <PseudoText text={l.text} vars={g.vars} dim={!on && activeLine > 0} bold={on} />
                 </span>
               </div>
             )
@@ -476,13 +528,25 @@ export function TraceTable({
           {g.trace.map((s, i) => {
             const changed = changedKeys(s, i ? g.trace[i - 1] : undefined)
             const moved = changed.length > 0
-            const paint = paintOf(g.byLine[s.line])
+            const paint = lightOf(g.byLine[s.line])
             return (
               <FcNodeIn
                 key={`${s.line}-${i}`}
                 at={ROW0 + i}
                 shown={shown[ROW0 + i]}
-                style={{ height: TRACE_ROW_H }}
+                /*
+                  `relative` IS LOAD-BEARING, AND ITS ABSENCE WAS A REAL BUG.
+
+                  `.fc-node-slot` in `index.css` raises a hovered slot to
+                  `z-index: 60` so its popover paints above its neighbours. A
+                  `z-index` on a STATIC element is ignored outright, and these rows
+                  are in normal flow, so the raise did nothing: an aside opening
+                  downward out of an early row was painted over by the text of
+                  every row below it and read as transparent. `relative` with no
+                  offsets moves nothing and makes the z-index apply.
+                */
+                className="relative"
+                style={{ height: TRACE_ROW_H, marginBottom: TRACE_ROW_GAP }}
               >
                 <HoverNote
                   note={s.note}

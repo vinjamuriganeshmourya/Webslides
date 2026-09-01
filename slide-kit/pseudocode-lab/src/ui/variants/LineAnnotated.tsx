@@ -4,10 +4,17 @@ import { colors } from '@/design/tokens'
 import { E, c4 } from '@/ui/figureTiming'
 import { FcEdgeLabel, FcNodeIn, useBeats } from './motion'
 import {
+  CODE_BG,
+  CODE_BORDER,
+  CODE_GUTTER,
+  KIND_DARK,
+  KIND_LIGHT,
+  PseudoText,
+} from './pseudoText'
+import {
   resolvePseudo,
   type PseudoFigureProps,
   type PseudoLine,
-  type PseudoLineKind,
 } from './pseudoFigure'
 
 /**
@@ -130,17 +137,16 @@ const NOTE_ROOM = NOTE_W - NOTE_PAD_X * 2 /* 584 */
 const CODE_ROOM = CODE_W - GUTTER - GUTTER_GAP /* 384 */
 const CHARS_PER_LINE = Math.floor(NOTE_ROOM / NOTE_CH) /* 82 */
 
-const KIND_PAINT: Record<PseudoLineKind, string> = {
-  io: colors.info,
-  assign: colors.brand,
-  branch: colors.accentDark,
-  loop: colors.tealDark,
-  call: colors.brandDark,
-  return: colors.success,
-  plain: colors.muted,
-}
+/*
+  TWO GROUNDS ON ONE PANEL, SO TWO ENDS OF ONE RAMP.
 
-const paintOf = (l: PseudoLine) => KIND_PAINT[l.kind ?? 'plain']
+  The code column is a dark slab now and the note column beside it is still white,
+  because a note is prose and prose belongs on paper. `KIND_DARK` and `KIND_LIGHT`
+  in `pseudoText.tsx` are the same four hue families at the two ends, so a line
+  whose rule is teal on the dark side keeps a teal marker on the light side.
+*/
+const darkOf = (l: PseudoLine) => KIND_DARK[l.kind ?? 'plain']
+const lightOf = (l: PseudoLine) => KIND_LIGHT[l.kind ?? 'plain']
 
 /**
  * How many lines a note will wrap to, and why it is estimated rather than
@@ -368,16 +374,76 @@ export function LineAnnotated({ title, lines, vars, trace, caption, className = 
           </span>
         </div>
 
+        {/*
+          THE CODE COLUMN'S DARK GROUND.
+
+          One slab behind the code cells rather than a dark card: the notes beside
+          them are sentences, and 14px prose reversed out on navy is the least
+          readable thing on any slide in this repo. So code sits on the ground code
+          sits on everywhere else in the course, and the note column stays paper.
+
+          `zIndex: 0` and the rows at 1. This element is POSITIONED, and a
+          positioned element paints above the inline content of the in-flow blocks
+          around it, so without the rows being positioned in turn the slab would
+          cover the very text it is a ground for. `relative` on each row slot is
+          what puts them back on top, and it is the same line that makes their
+          hover popovers work.
+        */}
+        <div
+          aria-hidden
+          className="absolute rounded-card"
+          style={{
+            left: PAD_X - 8,
+            top: PAD_Y + HEADER_H + HEADER_GAP - 6,
+            width: CODE_W + 12,
+            height: rowsH + 12,
+            background: CODE_BG,
+            border: `1px solid ${CODE_BORDER}`,
+            zIndex: 0,
+          }}
+        />
+
         <div style={{ marginTop: HEADER_GAP }}>
           {rows.map(({ line: l, h }, i) => {
-            const paint = paintOf(l)
+            const paint = darkOf(l)
             const landed = shown[LINE0 + i]
             const on = i === activeIdx
-            /* The note is the room's, the popover is the presenter's, so the
-               hover is armed only where the note has not landed yet. */
-            const peek = landed ? undefined : l.note
+            /*
+              ARMED ON EVERY ROW, AND IT USED TO BE ARMED ONLY ON THE UNLANDED ONES.
+
+              The intent was good: the note is the room's and the popover is the
+              presenter's, so hovering a line that had not landed yet was the way
+              to read ahead. It could never work. `FcNodeIn` holds an unlanded row
+              at `opacity: 0`, the popover is a child of that same slot, and an
+              opacity on an ancestor applies to the whole subtree, so the aside was
+              rendered, positioned, and completely invisible.
+
+              A hover that answers nothing is worse than no hover, so it is armed
+              everywhere. On a landed row it repeats the note, which costs the room
+              nothing because the room cannot hover a projector.
+            */
+            const peek = l.note
             return (
-              <FcNodeIn key={l.n} at={LINE0 + i} shown={landed} style={{ height: h }}>
+              <FcNodeIn
+                key={l.n}
+                at={LINE0 + i}
+                shown={landed}
+                /*
+                  `relative` IS LOAD-BEARING, TWICE OVER.
+
+                  `.fc-node-slot` in `index.css` raises a hovered slot to
+                  `z-index: 60` so its popover paints above its neighbours, and a
+                  `z-index` on a STATIC element is ignored outright. These rows are
+                  in normal flow, so the raise did nothing: an aside opening
+                  downward out of an early row was painted over by the text of the
+                  rows below it and read as transparent.
+
+                  It is also what puts the rows above the dark slab, which is a
+                  positioned element and would otherwise paint over them.
+                */
+                className="relative"
+                style={{ height: h }}
+              >
                 <HoverNote
                   note={peek}
                   title={`Line ${l.n}`}
@@ -385,38 +451,43 @@ export function LineAnnotated({ title, lines, vars, trace, caption, className = 
                   side={i < Math.ceil(rows.length / 2) ? 'bottom' : 'top'}
                 >
                   <div
-                    className="flex h-full items-center rounded-lg"
-                    style={{
-                      /* The active line is the only tinted row, so the eye lands
-                         on it without a pointer or a laser. */
-                      background: on ? `${paint}12` : undefined,
-                      borderLeft: `3px solid ${on ? paint : 'transparent'}`,
-                    }}
+                    className="flex h-full items-center"
+                    style={{ borderLeft: `3px solid ${on ? paint : 'transparent'}` }}
                   >
-                    {/* THE CODE CELL. Mono, 15px, and the indent is drawn. */}
+                    {/* THE CODE CELL. Mono, 15px, the indent drawn, and the tint
+                        lives HERE rather than on the row: the row crosses from the
+                        dark slab onto the white note column, and one wash cannot
+                        be right on both grounds. */}
                     <span
-                      className="flex shrink-0 items-center"
-                      style={{ width: CODE_W, paddingLeft: 6 }}
+                      className="flex h-full shrink-0 items-center rounded-lg"
+                      style={{
+                        width: CODE_W,
+                        paddingLeft: 6,
+                        /* A 12 wash is invisible on navy. The tint has to carry on
+                           the ground it is painted on. */
+                        background: on ? `${paint}2b` : undefined,
+                      }}
                     >
                       <span
                         className="shrink-0 text-right font-mono text-[11px]"
-                        style={{ width: GUTTER, color: on ? paint : colors.muted }}
+                        style={{ width: GUTTER, color: on ? paint : CODE_GUTTER }}
                       >
                         {l.n}
                       </span>
                       <span
-                        className="whitespace-pre font-mono text-[15px] leading-[1.35]"
+                        className="font-mono text-[15px] leading-[1.35]"
                         style={{
                           marginLeft: GUTTER_GAP,
                           /* Drawn, never spaces inside `text`: spaces would be
                              part of the string, unmeasurable, and would break the
                              width arithmetic in the doc comment. */
                           paddingLeft: (l.indent ?? 0) * INDENT,
-                          color: landed ? colors.ink : colors.muted,
-                          fontWeight: on ? 700 : 500,
                         }}
                       >
-                        {l.text}
+                        {/* KEYWORDS COLOURED, and the declared variables with them.
+                            The tokenizer emits every character verbatim, so the
+                            width arithmetic is untouched. */}
+                        <PseudoText text={l.text} vars={g.vars} dim={!landed} bold={on} />
                       </span>
                     </span>
 
@@ -442,7 +513,7 @@ export function LineAnnotated({ title, lines, vars, trace, caption, className = 
                         <span
                           aria-hidden
                           className="h-1.5 w-1.5 rounded-full"
-                          style={{ background: `${paint}66` }}
+                          style={{ background: `${lightOf(l)}66` }}
                         />
                       )}
                     </span>

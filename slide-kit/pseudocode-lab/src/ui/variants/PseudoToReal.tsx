@@ -4,10 +4,20 @@ import { colors } from '@/design/tokens'
 import { E, c4 } from '@/ui/figureTiming'
 import { FcArrowDefs, FcEdgeDraw, FcEdgeLabel, FcNodeIn, useBeats } from './motion'
 import {
+  CODE_BG,
+  CODE_BORDER,
+  CODE_CHIP_BG,
+  CODE_CHIP_FG,
+  CODE_GUTTER,
+  CODE_TITLE,
+  KIND_DARK,
+  PseudoText,
+  RealText,
+} from './pseudoText'
+import {
   resolvePseudo,
   type PseudoFigureProps,
   type PseudoLine,
-  type PseudoLineKind,
 } from './pseudoFigure'
 
 /**
@@ -128,17 +138,14 @@ const RIGHT_ROOM = RIGHT_W - PAD_X * 2 /* 408 */
 const WIRE_X0 = LEFT_W + 6
 const WIRE_X1 = LEFT_W + GAP - 8
 
-const KIND_PAINT: Record<PseudoLineKind, string> = {
-  io: colors.info,
-  assign: colors.brand,
-  branch: colors.accentDark,
-  loop: colors.tealDark,
-  call: colors.brandDark,
-  return: colors.success,
-  plain: colors.muted,
-}
+/*
+  BOTH PANELS ARE DARK, SO THERE IS ONE RAMP AND IT IS THE DARK ONE.
 
-const paintOf = (l: PseudoLine | undefined) => KIND_PAINT[l?.kind ?? 'plain']
+  `KIND_DARK` lives in `pseudoText.tsx` with the highlighter, because the ramp and
+  the syntax palette have to balance on the same ground and three private copies
+  is how the sibling lab's padding came to differ per variant.
+*/
+const paintOf = (l: PseudoLine | undefined) => KIND_DARK[l?.kind ?? 'plain']
 
 /**
  * The hover aside. Same three rules as everywhere else in this lab, all from
@@ -451,16 +458,29 @@ export function PseudoToReal({
           not a language, and saying either would tell the learner to start typing
           one slide too early. */}
       <div
-        className="absolute rounded-card border border-line bg-white shadow-card-soft"
-        style={{ left: 0, top: 0, width: LEFT_W, height: panelH, padding: `${PAD_Y}px ${PAD_X}px` }}
+        /* DARK, and the panel on the right is dark too. The asymmetry this figure
+           argues for is in the CHIP, which says "pseudocode" on one side and names
+           a real language on the other. Putting the sketch on paper and the code on
+           navy would have made it a difference of MEDIUM instead, which is the one
+           claim the figure must not make: they are the same thing, one step apart. */
+        className="absolute rounded-card shadow-card"
+        style={{
+          left: 0,
+          top: 0,
+          width: LEFT_W,
+          height: panelH,
+          padding: `${PAD_Y}px ${PAD_X}px`,
+          background: CODE_BG,
+          border: `1px solid ${CODE_BORDER}`,
+        }}
       >
         <div className="flex items-center justify-between" style={{ height: HEADER_H }}>
-          <span className="truncate font-heading text-[15px] font-bold" style={{ color: colors.ink }}>
+          <span className="truncate font-heading text-[15px] font-bold" style={{ color: CODE_TITLE }}>
             {title}
           </span>
           <span
             className="shrink-0 rounded-pill px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide"
-            style={{ background: `${colors.brand}14`, color: colors.brand }}
+            style={{ background: CODE_CHIP_BG, color: CODE_CHIP_FG }}
           >
             Pseudocode
           </span>
@@ -472,7 +492,30 @@ export function PseudoToReal({
             const on = active === l.n
             const orphan = !map.includes(l.n)
             return (
-              <FcNodeIn key={l.n} at={0} shown={shown[0]} style={{ height: ROW_H }}>
+              <FcNodeIn
+                key={l.n}
+                at={0}
+                shown={shown[0]}
+                /*
+                  `relative` IS LOAD-BEARING, AND ITS ABSENCE WAS THE BUG REPORTED
+                  FROM THIS SLIDE.
+
+                  `.fc-node-slot` in `index.css` raises a hovered slot to
+                  `z-index: 60` so its popover paints above its neighbours, and a
+                  `z-index` on a STATIC element is ignored outright. These rows are
+                  the only ones in this figure in normal flow, the rows on the right
+                  are absolutely positioned, so only this column was affected: the
+                  first four lines open their aside DOWNWARD, it was painted over by
+                  the code of every row below it, and it read as transparent. The
+                  last four open upward over rows earlier in the DOM and always
+                  looked fine, which is exactly the half-broken symptom reported.
+
+                  `relative` with no offsets moves nothing and makes the z-index
+                  apply.
+                */
+                className="relative"
+                style={{ height: ROW_H }}
+              >
                 <HoverNote
                   note={
                     orphan
@@ -490,30 +533,33 @@ export function PseudoToReal({
                   <div
                     className="flex h-full items-center rounded-lg"
                     style={{
-                      background: on ? `${paint}12` : undefined,
+                      /* A 12 wash is invisible on navy. The tint has to carry on
+                         the ground it is painted on. */
+                      background: on ? `${paint}2b` : undefined,
                       borderLeft: `3px solid ${on ? paint : 'transparent'}`,
                       paddingLeft: 6,
                     }}
                   >
                     <span
                       className="shrink-0 text-right font-mono text-[11px]"
-                      style={{ width: GUTTER, color: on ? paint : colors.muted }}
+                      style={{ width: GUTTER, color: on ? paint : CODE_GUTTER }}
                     >
                       {l.n}
                     </span>
                     <span
-                      className="whitespace-pre font-mono text-[15px] leading-[1.35]"
+                      className="font-mono text-[15px] leading-[1.35]"
                       style={{
                         marginLeft: GUTTER_GAP,
                         /* Drawn per level, never spaces inside `text`. On the
                            pseudocode side the indent is a claim about nesting; on
                            the real side, next door, it is syntax. */
                         paddingLeft: (l.indent ?? 0) * INDENT,
-                        color: orphan ? colors.body : colors.ink,
-                        fontWeight: on ? 700 : 500,
                       }}
                     >
-                      {l.text}
+                      {/* KEYWORDS COLOURED, and the declared variables with them.
+                          An orphan line is dimmed rather than recoloured: it is
+                          still pseudocode, it just has nothing on the right. */}
+                      <PseudoText text={l.text} vars={g.vars} dim={orphan} bold={on} />
                     </span>
                   </div>
                 </HoverNote>
@@ -526,22 +572,26 @@ export function PseudoToReal({
       {/* THE REAL CODE. Same grid, so a pair shares a y. The language chip here is
           TRUE, which is the entire asymmetry with the panel on the left. */}
       <div
-        className="absolute rounded-card border border-line bg-white shadow-card-soft"
+        className="absolute rounded-card shadow-card"
         style={{
           left: LEFT_W + GAP,
           top: 0,
           width: RIGHT_W,
           height: panelH,
           padding: `${PAD_Y}px ${PAD_X}px`,
+          background: CODE_BG,
+          border: `1px solid ${CODE_BORDER}`,
         }}
       >
         <div className="flex items-center justify-between" style={{ height: HEADER_H }}>
-          <span className="font-heading text-[15px] font-bold" style={{ color: colors.ink }}>
+          <span className="font-heading text-[15px] font-bold" style={{ color: CODE_TITLE }}>
             The code
           </span>
           <span
+            /* The chip on THIS side names a real language, and that is the whole
+               asymmetry with the panel on the left. */
             className="shrink-0 rounded-pill px-2 py-0.5 font-mono text-[10.5px] font-bold lowercase"
-            style={{ background: colors.surface2, color: colors.brandDeep }}
+            style={{ background: CODE_CHIP_BG, color: CODE_CHIP_FG }}
           >
             {real?.language}
           </span>
@@ -572,18 +622,17 @@ export function PseudoToReal({
                 <div
                   className="flex h-full items-center rounded-lg"
                   style={{
-                    background: on ? `${colors.brand}12` : undefined,
-                    borderLeft: `3px solid ${on ? colors.brand : 'transparent'}`,
+                    background: on ? `${colors.info}2b` : undefined,
+                    borderLeft: `3px solid ${on ? colors.info : 'transparent'}`,
                     paddingLeft: 8,
                   }}
                 >
-                  <span
-                    className="whitespace-pre font-mono text-[15px] leading-[1.35]"
-                    style={{ color: colors.ink, fontWeight: on ? 700 : 500 }}
-                  >
-                    {/* `whitespace-pre` keeps the real leading spaces, because on
-                        this side the indentation IS the block. */}
-                    {p.text}
+                  <span className="font-mono text-[15px] leading-[1.35]">
+                    {/* COLOURED THE WAY VS CODE COLOURS IT: control flow in mauve,
+                        declarations in blue, a call in function yellow. And
+                        `whitespace-pre` inside `RealText` keeps the real leading
+                        spaces, because on this side the indentation IS the block. */}
+                    <RealText text={p.text} language={real?.language} bold={on} />
                   </span>
                 </div>
               </HoverNote>
@@ -612,9 +661,9 @@ export function PseudoToReal({
             >
               <div
                 className="flex h-full items-center rounded-lg px-2.5"
-                style={{ border: `1px dashed ${colors.line}`, background: colors.surface }}
+                style={{ border: `1px dashed ${colors.white}33`, background: `${colors.white}0a` }}
               >
-                <span className="text-[11.5px] font-semibold" style={{ color: colors.muted }}>
+                <span className="text-[11.5px] font-semibold" style={{ color: `${colors.white}8a` }}>
                   {orphanReason(l.kind).short}
                 </span>
               </div>
