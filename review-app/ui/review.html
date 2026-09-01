@@ -1,0 +1,976 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Deck review</title>
+    <style>
+      /*
+        The chrome is deliberately DARKER and plainer than any slide.
+
+        A review tool sits around the thing being judged, and every colour it
+        spends is a colour competing with the slide. So: one navy ground, one
+        accent, and the only saturated things on screen are the four status dots,
+        which are the only things a reviewer needs to find at a glance.
+      */
+      :root {
+        --ground: #070d1e;
+        --panel: #0f1830;
+        --panel-2: #16223f;
+        --line: #23325a;
+        --ink: #e8eefc;
+        --muted: #93a4c6;
+        --faint: #64769b;
+        --accent: #5b8dff;
+        --open: #ffb020;
+        --done: #2ed3a7;
+        --wont: #7b8bad;
+        --changes: #ff6b6b;
+        --ok: #2ed3a7;
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; }
+      body {
+        background: var(--ground);
+        color: var(--ink);
+        font: 13px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        overflow: hidden;
+      }
+      button, input, textarea, select {
+        font: inherit;
+        color: inherit;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        padding: 5px 9px;
+      }
+      button { cursor: pointer; }
+      button:hover { border-color: var(--accent); }
+      button[disabled] { opacity: .45; cursor: default; }
+      .primary { background: var(--accent); border-color: var(--accent); color: #04102c; font-weight: 650; }
+      .ghost { background: transparent; }
+      .tiny { padding: 2px 7px; font-size: 11.5px; border-radius: 6px; }
+      code, .mono { font-family: ui-monospace, "JetBrains Mono", Menlo, monospace; }
+
+      /* ── top bar ── */
+      header {
+        display: flex; align-items: center; gap: 14px;
+        padding: 9px 14px; background: var(--panel);
+        border-bottom: 1px solid var(--line);
+      }
+      .title { font-weight: 700; letter-spacing: -.01em; }
+      .title small { display: block; font-weight: 400; color: var(--faint); font-size: 11px; }
+      .nav { display: flex; align-items: center; gap: 6px; margin-left: 6px; }
+      .nav .where { min-width: 116px; text-align: center; color: var(--muted); }
+      .nav .where b { color: var(--ink); }
+      .spacer { flex: 1; }
+      .armed { background: var(--accent) !important; border-color: var(--accent) !important; color: #04102c !important; font-weight: 650; }
+      .filepath { color: var(--faint); font-size: 11px; max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .stale { color: var(--open); }
+
+      /* ── body ── */
+      main { display: grid; grid-template-columns: 1fr 380px; min-height: 0; }
+      .stage { position: relative; display: grid; place-items: center; background: #04091a; min-width: 0; }
+      .frame { position: relative; box-shadow: 0 24px 70px rgba(0,0,0,.6); }
+      iframe { display: block; border: 0; background: #000; }
+      .stage .hint {
+        position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+        color: var(--faint); font-size: 11.5px; background: rgba(7,13,30,.85);
+        padding: 4px 10px; border-radius: 999px; pointer-events: none;
+      }
+      /*
+        Covers the stage completely while there is no build behind it, so a
+        reviewer is never looking at an empty frame wondering whose fault it is.
+      */
+      .blocker { position: absolute; inset: 0; z-index: 5; display: grid; place-items: center; background: #04091a; }
+      .blocker[hidden] { display: none; }
+      .blocker-box { max-width: 470px; padding: 0 22px; text-align: center; }
+      .blocker-box b { font-size: 14px; }
+      .blocker-box p { color: var(--muted); margin: 7px 0 12px; }
+      .blocker-box pre {
+        margin: 0 0 12px; padding: 9px 10px; text-align: left; overflow-x: auto;
+        background: var(--panel-2); border: 1px solid var(--line); border-radius: 9px;
+        font-size: 11.5px; white-space: pre-wrap;
+      }
+
+      /* ── rail ── */
+      aside {
+        background: var(--panel); border-left: 1px solid var(--line);
+        display: grid; grid-template-rows: auto auto 1fr auto; min-height: 0;
+      }
+      .slide-id { padding: 12px 14px 10px; border-bottom: 1px solid var(--line); }
+      .slide-id .id { font-weight: 700; font-size: 14px; }
+      .slide-id .sec { color: var(--faint); font-size: 11.5px; }
+      .verdicts { display: flex; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+      .verdicts button { flex: 1; }
+      .v-on-approved { background: var(--done); border-color: var(--done); color: #04221a; font-weight: 650; }
+      .v-on-changes { background: var(--changes); border-color: var(--changes); color: #2a0606; font-weight: 650; }
+
+      .comments { overflow-y: auto; padding: 10px 14px; display: flex; flex-direction: column; gap: 9px; }
+      .empty { color: var(--faint); text-align: center; padding: 22px 8px; }
+      .c {
+        background: var(--panel-2); border: 1px solid var(--line);
+        border-radius: 9px; padding: 9px 10px;
+      }
+      .c.done { opacity: .55; }
+      .c-head { display: flex; align-items: baseline; gap: 7px; }
+      .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; margin-top: 5px; }
+      .dot.open { background: var(--open); }
+      .dot.done { background: var(--done); }
+      .dot.wont-fix { background: var(--wont); }
+      .c-comp { font-weight: 650; }
+      .c-loc { color: var(--faint); font-size: 11px; }
+      .c-note { margin: 5px 0 0; white-space: pre-wrap; }
+      .c-quote { margin-top: 5px; color: var(--muted); font-size: 11.5px; border-left: 2px solid var(--line); padding-left: 7px; }
+      .c-acts { display: flex; gap: 5px; margin-top: 7px; }
+
+      /* ── composer ── */
+      .composer { border-top: 1px solid var(--line); padding: 10px 14px 12px; background: var(--panel); }
+      .target { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin-bottom: 7px; }
+      .chip {
+        background: var(--panel-2); border: 1px solid var(--line); border-radius: 999px;
+        padding: 2px 9px; font-size: 11.5px; cursor: pointer;
+      }
+      .chip.on { background: var(--accent); border-color: var(--accent); color: #04102c; font-weight: 650; }
+      .chip.arrow { border: 0; background: none; color: var(--faint); cursor: default; padding: 0 1px; }
+      /* The player's own frame. Still selectable, but it should not read as an
+         equal candidate to the component the reviewer actually clicked. */
+      .chip.chrome:not(.on) { color: var(--faint); border-style: dashed; }
+      textarea { width: 100%; min-height: 62px; resize: vertical; }
+      .composer-foot { display: flex; align-items: center; gap: 8px; margin-top: 7px; }
+      .composer-foot .note { color: var(--faint); font-size: 11px; flex: 1; }
+
+      /* ── filmstrip ── */
+      footer {
+        display: flex; gap: 3px; padding: 7px 10px; overflow-x: auto;
+        background: var(--panel); border-top: 1px solid var(--line);
+      }
+      .s {
+        flex: none; width: 30px; height: 24px; border-radius: 5px;
+        border: 1px solid var(--line); background: var(--panel-2);
+        color: var(--muted); font-size: 10.5px; display: grid; place-items: center;
+        position: relative; cursor: pointer;
+      }
+      .s.here { border-color: var(--accent); color: var(--ink); box-shadow: 0 0 0 1px var(--accent); }
+      .s.approved { background: rgba(46,211,167,.18); border-color: rgba(46,211,167,.5); }
+      .s.changes-requested { background: rgba(255,107,107,.18); border-color: rgba(255,107,107,.5); }
+      .s .n {
+        position: absolute; top: -3px; right: -3px; min-width: 13px; height: 13px;
+        border-radius: 999px; background: var(--open); color: #2a1a00;
+        font-size: 9px; font-weight: 700; display: grid; place-items: center; padding: 0 2px;
+      }
+      .toast {
+        position: fixed; bottom: 58px; left: 50%; transform: translateX(-50%);
+        background: var(--panel-2); border: 1px solid var(--accent); color: var(--ink);
+        padding: 7px 14px; border-radius: 999px; opacity: 0; transition: opacity .18s;
+        pointer-events: none; z-index: 20;
+      }
+      .toast.on { opacity: 1; }
+      dialog {
+        background: var(--panel); color: var(--ink); border: 1px solid var(--line);
+        border-radius: 12px; max-width: 880px; width: 90vw; padding: 0;
+      }
+      dialog::backdrop { background: rgba(3,7,18,.7); }
+      dialog .dlg-head { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+      dialog pre {
+        margin: 0; padding: 14px; max-height: 70vh; overflow: auto;
+        font-family: ui-monospace, monospace; font-size: 12px; white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <button class="ghost tiny" id="back" title="Back to the session picker">Back</button>
+      <div class="title">
+        <span id="deck-title"></span>
+        <small id="deck-sub"></small>
+      </div>
+      <div class="nav">
+        <button class="ghost" id="prev" title="Previous slide (←)">◀</button>
+        <span class="where"><b id="where-n">1</b> / <span id="where-total">?</span></span>
+        <button class="ghost" id="next" title="Next slide (→)">▶</button>
+      </div>
+      <button id="pick" title="Arm the component picker (p)">Pick a component</button>
+      <div class="spacer"></div>
+      <span class="filepath mono" id="filepath"></span>
+      <button class="ghost tiny" id="showfile">View file</button>
+      <button class="ghost tiny" id="openhtml" title="Open the rendered review in a new tab">Preview HTML</button>
+      <button class="ghost tiny" id="downloadhtml" title="Download the review as one self-contained HTML file">Download HTML</button>
+      <button class="ghost tiny" id="rebuild" title="Rebuild the deck from src/">Rebuild</button>
+    </header>
+
+    <main>
+      <div class="stage">
+        <div class="frame" id="frame"><iframe id="deck" title="the deck under review"></iframe></div>
+        <div class="hint" id="hint"></div>
+        <div class="blocker" id="blocker" hidden>
+          <div class="blocker-box">
+            <b id="blocker-title"></b>
+            <p id="blocker-why"></p>
+            <pre class="mono" id="blocker-cmd" hidden></pre>
+            <button class="primary" id="build" hidden>Build the deck</button>
+          </div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="slide-id">
+          <div class="id" id="slide-id">—</div>
+          <div class="sec" id="slide-sec"></div>
+        </div>
+        <div class="verdicts">
+          <button id="v-approved">Approve</button>
+          <button id="v-changes">Changes</button>
+          <button class="ghost" id="v-pending" title="Back to no verdict">Clear</button>
+        </div>
+        <div class="comments" id="comments"></div>
+        <div class="composer">
+          <div class="target" id="target"></div>
+          <textarea id="note" placeholder="What is wrong with it? (Ctrl+Enter saves)"></textarea>
+          <div class="composer-foot">
+            <span class="note" id="composer-note">Writes straight to the review file.</span>
+            <button class="ghost tiny" id="clear-target">Whole slide</button>
+            <button class="primary" id="save">Add comment</button>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer id="strip"></footer>
+    <div class="toast" id="toast"></div>
+    <dialog id="filedlg">
+      <div class="dlg-head">
+        <b>The review file</b>
+        <span class="filepath mono" id="dlg-path"></span>
+        <div class="spacer"></div>
+        <button class="ghost tiny" id="dlg-close">Close</button>
+      </div>
+      <pre id="dlg-body"></pre>
+    </dialog>
+
+    <script id="boot" type="application/json">/*%BOOT%*/</script>
+    <script>
+      /*
+        BOOT DATA, HANDED OVER AS JSON RATHER THAN AS A SPLICED-IN EXPRESSION.
+
+        The server fills the `<script type="application/json">` block above by
+        string replacement. Doing it that way, rather than substituting straight
+        into `const BOOT = …`, is what makes this file parse in BOTH states: with
+        the data in place and without it. The first attempt spliced an object
+        literal in front of a `{}` fallback, which produced `const BOOT = {…} {}`
+        and would not parse at all — the app served a blank page and the console
+        said only "unexpected token".
+
+        Parsing here also means the payload is data at every step. A reviewer's
+        note can contain any text at all, and nothing in it is ever evaluated.
+      */
+      const BOOT = (() => {
+        try {
+          return JSON.parse(document.getElementById('boot').textContent)
+        } catch {
+          return {}
+        }
+      })()
+
+      /*
+        STATE. `model` mirrors the file on disk and is REPLACED by whatever the
+        server returns from a mutation — the server re-reads the file, applies the
+        change and hands back the result, so the UI can never drift into showing a
+        comment that did not land.
+      */
+      const state = {
+        model: BOOT.model ?? { slides: {} },
+        order: [],       // [{ n, id, label, section }] from window.__DECK__, or
+                         // filled in slide by slide from the deck's own URL hash
+        manifest: false, // did the deck publish window.__DECK__ at all
+        loaded: false,   // has the iframe fired a load for the built deck
+        n: 1,            // current slide number, 1-based
+        armed: false,    // is the picker on
+        chain: [],       // data-ui ancestors of the last pick, innermost first
+        pickIndex: 0,    // which of `chain` the comment is filed against
+        at: null,        // { x, y } in slide coordinates
+        quote: null,
+        built: !!BOOT.built, // is there a review build behind the iframe yet
+      }
+
+      const $ = (id) => document.getElementById(id)
+      const deck = $('deck')
+
+      /*
+        ONE SERVER, MANY SESSIONS. Nothing here is scoped by the URL the page was
+        served from: the api resolves the course and the session from `?c=&s=`, and
+        `BOOT.q` is that query already built and encoded. So every request goes
+        through this helper rather than being concatenated at the call site, where
+        a second `?` would silently address the wrong deck — or none.
+      */
+      const apiUrl = (path, extra = '') => path + BOOT.q + extra
+      /** The built deck for THIS session, at the prefix the server gave us. */
+      const deckSrc = (n) => `${BOOT.deckBase}/index.html?all#/${n}`
+
+      const api = async (path, body) => {
+        const res = await fetch(apiUrl(path), {
+          method: body === undefined ? 'GET' : 'POST',
+          headers: body === undefined ? {} : { 'content-type': 'application/json' },
+          body: body === undefined ? undefined : JSON.stringify(body),
+        })
+        const data = await res.json()
+        if (data.error) throw new Error(data.error)
+        if (data.model) state.model = data.model
+        return data
+      }
+
+      let toastTimer
+      const toast = (msg) => {
+        $('toast').textContent = msg
+        $('toast').classList.add('on')
+        clearTimeout(toastTimer)
+        toastTimer = setTimeout(() => $('toast').classList.remove('on'), 1700)
+      }
+
+      const slideEntry = (n) => state.order[n - 1] ?? { id: `#${n}`, label: null, section: null }
+      const slideRecord = (id) => state.model.slides?.[id] ?? { id, verdict: 'pending', comments: [] }
+
+      /*
+        SLIDE IDENTITY WITHOUT A MANIFEST.
+
+        `window.__DECK__` and `[data-slide-stage]` are recent kit additions, and a
+        deck built from an older copy of the kit has neither. Every deck ever built
+        does rewrite its own URL hash to `#/<n>-<id>` as it navigates, though, so
+        the hash is the one identity channel they all share. Reading it is what
+        keeps a comment filed against a real slide id instead of against `#6`, which
+        would stop matching the moment a slide is inserted above it.
+
+        The id may contain hyphens of its own, so the number is the part before the
+        FIRST hyphen and the id is everything after it. A bare `#/12` means the deck
+        has no id for that slide, and the `#n` fallback stands.
+      */
+      function readHash() {
+        let hash = ''
+        try {
+          hash = deck.contentWindow?.location?.hash ?? ''
+        } catch {
+          // Only reachable if the iframe is somehow cross-origin, which the server
+          // rules out. Treat it as "nothing to learn" rather than throwing here.
+          return null
+        }
+        const m = /^#\/(\d+)(?:-(.+))?$/.exec(hash)
+        return m ? { n: Number(m[1]), id: m[2] || null } : null
+      }
+
+      /**
+        Record what the hash just told us about slide `n`. Without a manifest the
+        order can only be learned one slide at a time, as the reviewer visits them,
+        so slots nobody has opened stay unknown. Returns whether anything changed.
+      */
+      function rememberSlide(n, id) {
+        if (!id || !(n >= 1)) return false
+        if (state.order[n - 1]?.id === id) return false
+        state.order[n - 1] = { n, id, label: null, section: null }
+        return true
+      }
+
+      /**
+        How many slides there are. With a manifest the deck itself is authoritative.
+        Without one, `state.order` holds only the slides visited so far, so the count
+        has to come from `deck.config.json` by way of BOOT — otherwise the filmstrip
+        would shrink to the handful of slides the reviewer happened to open.
+      */
+      const totalSlides = () =>
+        (state.manifest ? state.order.length : BOOT.slideCount) || state.order.length || 0
+
+      /*
+        AN OLDER DECK, SAID ONCE AND QUIETLY.
+
+        A reviewer must not be left guessing why the filmstrip has no labels. One
+        muted line in the rail, added the first time we conclude there is no
+        manifest, names the cause and the command that clears it. It is not an
+        error: the review still works, and the ids in the file are real.
+      */
+      let legacyNoted = false
+      function noteLegacyDeck() {
+        if (legacyNoted) return
+        legacyNoted = true
+        const note = document.createElement('div')
+        note.className = 'sec'
+        note.textContent =
+          'This deck predates the review manifest, so slide labels and the full slide ' +
+          'index are unavailable until the kit is synced into it. Comments are still ' +
+          'filed against real slide ids read from the deck’s own URL. From ' +
+          `slide-kit/slide-template: node sync-kit.mjs --apply ../../${BOOT.course}/${BOOT.session}`
+        $('slide-sec').after(note)
+      }
+
+      /* ── the stage: fit 1280x720 into whatever room is left ───────────── */
+
+      function fitStage() {
+        const stage = document.querySelector('.stage')
+        const pad = 28
+        const scale = Math.min(
+          (stage.clientWidth - pad) / 1280,
+          (stage.clientHeight - pad) / 720,
+        )
+        /*
+          The IFRAME is sized 1280x720 and then scaled, rather than being given the
+          available pixels directly. The deck fits itself to its viewport, so a
+          900px-wide iframe would render a 900px-wide deck: correct, but no longer
+          the geometry anybody is signing off, and a comment pinned at slide
+          coordinates would be measured against a stage that is not the real one.
+          Scaling a fixed 1280x720 frame keeps the review honest at any window size.
+        */
+        deck.style.width = '1280px'
+        deck.style.height = '720px'
+        deck.style.transformOrigin = 'top left'
+        deck.style.transform = `scale(${scale})`
+        $('frame').style.width = `${1280 * scale}px`
+        $('frame').style.height = `${720 * scale}px`
+      }
+      addEventListener('resize', fitStage)
+
+      /* ── the picker, injected into the deck's own document ─────────────── */
+
+      /*
+        WHY INJECTED RATHER THAN BUILT INTO THE DECK. The deck is the deliverable.
+        Nothing about reviewing it belongs in the bundle an instructor opens, so the
+        picker is a string that this page pushes into the iframe after load. The
+        review server serves both from one origin precisely so this is allowed.
+      */
+      const PICKER = `
+        (() => {
+          if (window.__PICKER__) return
+          const box = document.createElement('div')
+          box.style.cssText = 'position:fixed;pointer-events:none;z-index:2147483647;border:2px solid #5b8dff;border-radius:4px;background:rgba(91,141,255,.12);display:none'
+          const tag = document.createElement('div')
+          tag.style.cssText = 'position:fixed;pointer-events:none;z-index:2147483647;background:#5b8dff;color:#04102c;font:600 11px/1.4 ui-sans-serif,system-ui;padding:2px 7px;border-radius:5px;display:none;white-space:nowrap'
+          document.body.append(box, tag)
+
+          let armed = false
+          const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim().slice(0, 90)
+
+          /*
+            THE PLAYER, NOT THE SLIDE.
+
+            Every click is inside these on the way out to the document, because they
+            are the frame the deck is shown in rather than anything on the slide. A
+            comment filed against SlideStage is a comment about the review harness,
+            which is never what the reviewer meant.
+
+            NOTE FOR ANYONE EDITING NEARBY: this comment is inside the PICKER
+            template literal, so it must not contain a backtick. One in an earlier
+            draft closed the literal and took the whole page down with it.
+
+            They stay IN the chain, as chips a reviewer can still choose, because
+            occasionally the complaint really is about the chrome — the footer mark,
+            the progress bar. They are only excluded from being chosen by DEFAULT.
+          */
+          const CHROME = new Set(['App', 'Deck', 'SlideStage', 'SlideBase', 'AnnotationLayer', 'AnnotationToolbar'])
+
+          /** data-ui ancestors of an element, innermost first. */
+          const chainOf = (el) => {
+            const out = []
+            for (let node = el; node && node !== document.body; node = node.parentElement) {
+              if (!node.hasAttribute?.('data-ui')) continue
+              const component = node.getAttribute('data-ui')
+              // Collapse a run of the same component: a figure is often six nested
+              // divs from one file, and six identical chips help nobody.
+              if (out.length && out[out.length - 1].component === component) continue
+              out.push({
+                component,
+                loc: node.getAttribute('data-ui-loc') || null,
+                text: clean(node.textContent),
+                chrome: CHROME.has(component),
+              })
+              if (out.length >= 6) break
+            }
+            return out
+          }
+
+          /**
+            The 1280x720 box, preferably by its marker attribute. A deck built from
+            an older kit carries no marker, so fall back to geometry: the stage is
+            laid out at exactly 1280x720 and then scaled by a CSS transform, which
+            leaves offsetWidth/offsetHeight at the unscaled size while the rect still
+            reports what is on screen. Cached, because a click should not walk every
+            div in the document.
+          */
+          let stageEl = null
+          const findStage = () => {
+            if (stageEl?.isConnected) return stageEl
+            stageEl = document.querySelector('[data-slide-stage]')
+            if (stageEl) return stageEl
+            for (const el of document.querySelectorAll('div')) {
+              if (el.offsetWidth === 1280 && el.offsetHeight === 720) {
+                stageEl = el
+                break
+              }
+            }
+            return stageEl
+          }
+
+          /** Slide coordinates, measured off the stage's own rect. */
+          const slideXY = (ev) => {
+            const stage = findStage()
+            if (!stage) return null
+            const r = stage.getBoundingClientRect()
+            if (!r.width || !r.height) return null
+            return {
+              x: Math.round((ev.clientX - r.left) * (1280 / r.width)),
+              y: Math.round((ev.clientY - r.top) * (720 / r.height)),
+            }
+          }
+
+          const paint = (el) => {
+            const r = el.getBoundingClientRect()
+            box.style.display = 'block'
+            box.style.left = r.left + 'px'
+            box.style.top = r.top + 'px'
+            box.style.width = r.width + 'px'
+            box.style.height = r.height + 'px'
+            tag.style.display = 'block'
+            tag.textContent = el.getAttribute('data-ui')
+            tag.style.left = r.left + 'px'
+            tag.style.top = Math.max(2, r.top - 20) + 'px'
+          }
+          const hide = () => { box.style.display = 'none'; tag.style.display = 'none' }
+
+          const hit = (ev) => ev.target?.closest?.('[data-ui]')
+
+          addEventListener('mousemove', (ev) => {
+            if (!armed) return
+            const el = hit(ev)
+            el ? paint(el) : hide()
+          }, true)
+
+          addEventListener('click', (ev) => {
+            if (!armed) return
+            // The deck advances on click. Swallow it, or picking a component moves
+            // the reviewer off the slide they were picking on.
+            ev.preventDefault()
+            ev.stopPropagation()
+            const el = hit(ev)
+            parent.postMessage({
+              type: 'pick',
+              chain: el ? chainOf(el) : [],
+              at: slideXY(ev),
+              quote: el ? clean(el.textContent) : null,
+            }, location.origin)
+          }, true)
+
+          addEventListener('message', (ev) => {
+            if (ev.data?.type !== 'arm') return
+            armed = !!ev.data.on
+            document.body.style.cursor = armed ? 'crosshair' : ''
+            if (!armed) hide()
+          })
+
+          window.__PICKER__ = true
+        })()
+      `
+
+      function injectPicker() {
+        try {
+          const doc = deck.contentDocument
+          if (!doc) return false
+          const s = doc.createElement('script')
+          s.textContent = PICKER
+          doc.body.appendChild(s)
+          arm(state.armed)
+          return true
+        } catch (err) {
+          // Same-origin is guaranteed by the server, so this should not happen.
+          // If it ever does, say so rather than leaving a dead button.
+          $('hint').textContent = 'the picker could not attach: ' + err.message
+          return false
+        }
+      }
+
+      const arm = (on) => {
+        state.armed = on
+        $('pick').classList.toggle('armed', on)
+        $('pick').textContent = on ? 'Picking… (Esc)' : 'Pick a component'
+        $('hint').textContent = on
+          ? 'hover a component, click to comment on it'
+          : 'p to pick a component · ← → to move · Ctrl+Enter to save a comment'
+        deck.contentWindow?.postMessage({ type: 'arm', on }, location.origin)
+      }
+
+      /* ── navigation ───────────────────────────────────────────────────── */
+
+      function goto(n) {
+        const total = totalSlides() || 1
+        state.n = Math.min(Math.max(1, n), total)
+        /*
+          `?all` reveals every build step, the same flag `preview.mjs` uses. A
+          reviewer must see the finished slide: half a slide because its steps are
+          click-gated reads as a slide with missing content, and that is the single
+          most misleading thing a review artefact can do.
+        */
+        // With no build there is nothing to point the iframe at, and a 404 in the
+        // stage tells a reviewer less than the blocker already does. The rail still
+        // renders, so the review file can be read while the build is missing.
+        if (state.built) {
+          const want = deckSrc(state.n)
+          if (!deck.src) deck.src = want
+          else deck.contentWindow.location.hash = `#/${state.n}`
+        }
+        render()
+      }
+
+      /**
+        The deck is also navigable from INSIDE the iframe — it owns the arrow keys
+        whenever it has focus, and it is the deck's job to, not something to fight.
+        So the rail follows the deck rather than assuming it led: poll the manifest
+        the deck publishes and re-render when the slide changes underneath.
+
+        A deck built from an older kit publishes no manifest, so the same poll falls
+        back to the URL hash, which every deck maintains. That path can follow
+        navigation and learn ids, but never the labels or the slides not yet
+        visited, so the two are kept apart rather than blended.
+      */
+      function watchDeck() {
+        // React mounts a beat after `load`, so `__DECK__` appears slightly late.
+        // Only a run of empty polls means the deck genuinely has no manifest.
+        let misses = 0
+        setInterval(() => {
+          const live = deck.contentWindow?.__DECK__
+          if (live?.current) {
+            if (!state.manifest && live.slides?.length) {
+              state.manifest = true
+              state.order = live.slides
+              api('/api/deck', { slides: live.slides }).catch(() => {})
+            }
+            if (live.current !== state.n) {
+              state.n = live.current
+              render()
+            }
+            return
+          }
+          if (!state.loaded) return
+          if (++misses >= 4) noteLegacyDeck()
+          /*
+            Nothing is POSTed to `/api/deck` on this path. A half-known order would
+            replace the order the server otherwise takes from the review file, and a
+            partial list of slide ids is worse than a complete older one.
+          */
+          const h = readHash()
+          if (!h) return
+          const learned = rememberSlide(h.n, h.id)
+          if (h.n !== state.n) {
+            state.n = h.n
+            render()
+          } else if (learned) {
+            render()
+          }
+        }, 300)
+      }
+
+      /* ── render ───────────────────────────────────────────────────────── */
+
+      function render() {
+        const total = totalSlides()
+        $('where-n').textContent = state.n
+        $('where-total').textContent = total
+        const entry = slideEntry(state.n)
+        $('slide-id').textContent = entry.id
+        $('slide-sec').textContent =
+          [entry.label, entry.section].filter(Boolean).join(' · ') || 'no label'
+
+        const rec = slideRecord(entry.id)
+        $('v-approved').className = rec.verdict === 'approved' ? 'v-on-approved' : ''
+        $('v-changes').className = rec.verdict === 'changes-requested' ? 'v-on-changes' : ''
+
+        renderComments(rec)
+        renderTarget()
+        renderStrip()
+      }
+
+      function renderComments(rec) {
+        const host = $('comments')
+        host.innerHTML = ''
+        if (!rec.comments.length) {
+          host.innerHTML =
+            '<div class="empty">Nothing said about this slide yet.<br />Pick a component, or write a note for the whole slide.</div>'
+          return
+        }
+        for (const c of rec.comments) {
+          const el = document.createElement('div')
+          el.className = 'c' + (c.status === 'open' ? '' : ' done')
+          const loc = c.loc ? `<span class="c-loc mono">${esc(c.loc)}</span>` : ''
+          const at = c.at ? `<span class="c-loc">@${c.at.x},${c.at.y}</span>` : ''
+          el.innerHTML = `
+            <div class="c-head">
+              <span class="dot ${c.status}"></span>
+              <span class="c-comp">${esc(c.component)}</span>
+              ${loc} ${at}
+            </div>
+            <p class="c-note">${esc(c.note)}</p>
+            ${c.quote ? `<div class="c-quote">"${esc(c.quote)}"</div>` : ''}
+            <div class="c-acts"></div>`
+          const acts = el.querySelector('.c-acts')
+          const act = (label, body, title) => {
+            const b = document.createElement('button')
+            b.className = 'ghost tiny'
+            b.textContent = label
+            if (title) b.title = title
+            b.onclick = async () => {
+              await api(`/api/comment/${c.id}`, body)
+              render()
+            }
+            acts.append(b)
+          }
+          if (c.status !== 'done') act('Done', { status: 'done' })
+          if (c.status !== 'open') act('Reopen', { status: 'open' })
+          if (c.status !== 'wont-fix') act('Wont fix', { status: 'wont-fix' })
+          act('Delete', { delete: true }, 'Remove this comment from the file')
+          host.append(el)
+        }
+      }
+
+      /**
+        THE TARGET BREADCRUMB — and the one real judgement call in this app.
+
+        A click inside a slide is inside SEVERAL components at once: a line of code
+        is inside `CodeBlock`, which is inside `ContentSlide`. Naming the innermost
+        one is right for "this line is wrong" and wrong for "this whole block should
+        be a terminal". Rather than guess, the app shows the whole chain and files
+        the comment against whichever chip is selected.
+
+        The DEFAULT selection is the innermost component that is not the player's own
+        chrome, on the reasoning that a reviewer who bothered to aim at something
+        meant the thing they aimed at, and never meant `SlideStage`.
+      */
+      function renderTarget() {
+        const host = $('target')
+        host.innerHTML = ''
+        if (!state.chain.length) {
+          host.innerHTML = `<span class="chip on">whole slide</span>`
+          $('composer-note').textContent = 'Writes straight to the review file.'
+          return
+        }
+        state.chain.forEach((link, i) => {
+          if (i) host.insertAdjacentHTML('beforeend', '<span class="chip arrow">‹</span>')
+          const chip = document.createElement('span')
+          chip.className = 'chip' + (i === state.pickIndex ? ' on' : '') + (link.chrome ? ' chrome' : '')
+          chip.textContent = link.component
+          chip.title = link.loc ?? ''
+          chip.onclick = () => {
+            state.pickIndex = i
+            renderTarget()
+          }
+          host.append(chip)
+        })
+        const link = state.chain[state.pickIndex]
+        $('composer-note').textContent = link?.loc ? link.loc : 'no source line'
+      }
+
+      function renderStrip() {
+        const strip = $('strip')
+        strip.innerHTML = ''
+        const total = totalSlides()
+        for (let n = 1; n <= total; n++) {
+          const entry = slideEntry(n)
+          const rec = slideRecord(entry.id)
+          const open = rec.comments.filter((c) => c.status === 'open').length
+          const b = document.createElement('button')
+          b.className = `s ${rec.verdict}${n === state.n ? ' here' : ''}`
+          b.title = `${entry.id}${entry.label ? ' · ' + entry.label : ''}`
+          b.innerHTML = `${n}${open ? `<span class="n">${open}</span>` : ''}`
+          b.onclick = () => goto(n)
+          strip.append(b)
+        }
+        strip.querySelector('.here')?.scrollIntoView({ block: 'nearest', inline: 'center' })
+      }
+
+      const esc = (s) =>
+        String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+
+      /* ── actions ──────────────────────────────────────────────────────── */
+
+      async function saveComment() {
+        const note = $('note').value.trim()
+        if (!note) {
+          $('note').focus()
+          return
+        }
+        const link = state.chain[state.pickIndex]
+        await api('/api/comment', {
+          slideId: slideEntry(state.n).id,
+          // Sent so the review file can number the heading correctly on a deck
+          // that publishes no manifest: there the app knows it is on slide 9, and
+          // the server has no other way to find that out.
+          slideN: state.n,
+          component: link?.component ?? 'slide',
+          loc: link?.loc ?? null,
+          at: state.at,
+          quote: link ? state.quote : null,
+          note,
+        })
+        $('note').value = ''
+        state.chain = []
+        state.at = null
+        state.quote = null
+        state.pickIndex = 0
+        render()
+        toast('saved to the review file')
+      }
+
+      async function setVerdict(verdict) {
+        await api('/api/verdict', { slideId: slideEntry(state.n).id, verdict, slideN: state.n })
+        render()
+      }
+
+      addEventListener('message', (ev) => {
+        if (ev.origin !== location.origin || ev.data?.type !== 'pick') return
+        state.chain = ev.data.chain ?? []
+        state.at = ev.data.at ?? null
+        state.quote = ev.data.quote ?? null
+        /*
+          The innermost component the reviewer could plausibly have meant: the first
+          one that is not the player's own chrome. A reviewer who aimed at something
+          meant the thing they aimed at, and on a slide whose content is a single
+          full-bleed figure the innermost mark was `SlideBase` and every comment
+          arrived filed against the layout wrapper.
+        */
+        const first = state.chain.findIndex((link) => !link.chrome)
+        state.pickIndex = first === -1 ? 0 : first
+        arm(false)
+        renderTarget()
+        $('note').focus()
+      })
+
+      /* ── wiring ───────────────────────────────────────────────────────── */
+
+      /*
+        WHICH DECK THIS IS. The app serves every session in the repo, so the title
+        alone is ambiguous — two cuts of a session share it. The course, the folder
+        name and the version identify the one thing under review, and they stay on
+        one line so the bar keeps its height.
+      */
+      $('deck-title').textContent = BOOT.title ?? 'Deck'
+      $('deck-sub').textContent = [BOOT.course, BOOT.session, BOOT.version]
+        .filter(Boolean)
+        .join(' · ')
+      $('filepath').textContent = BOOT.reviewFileShort ?? ''
+      $('filepath').title = BOOT.reviewFile ?? ''
+      $('dlg-path').textContent = BOOT.reviewFile ?? ''
+      if (BOOT.stale) {
+        $('rebuild').classList.add('stale')
+        $('rebuild').title = 'src/ is newer than this build — rebuild to review the current deck'
+      }
+
+      $('back').onclick = () => (location.href = '/')
+      $('prev').onclick = () => goto(state.n - 1)
+      $('next').onclick = () => goto(state.n + 1)
+      $('pick').onclick = () => arm(!state.armed)
+      $('save').onclick = saveComment
+      $('clear-target').onclick = () => {
+        state.chain = []
+        state.at = null
+        state.quote = null
+        renderTarget()
+      }
+      $('v-approved').onclick = () => setVerdict('approved')
+      $('v-changes').onclick = () => setVerdict('changes-requested')
+      $('v-pending').onclick = () => setVerdict('pending')
+
+      $('showfile').onclick = async () => {
+        $('dlg-body').textContent = await (await fetch(apiUrl('/api/file'))).text()
+        $('filedlg').showModal()
+      }
+      $('dlg-close').onclick = () => $('filedlg').close()
+
+      /*
+        THE RENDERED REVIEW. Both buttons hit the same route; only the
+        `download` flag differs, so what somebody saves is byte-identical to what
+        they just looked at. The flag joins with `&`, because the session query is
+        already the `?` part. `location.href` rather than a fetch-and-blob, because
+        the browser's own download machinery already handles the filename the
+        server named, and a blob would not.
+      */
+      $('openhtml').onclick = () => window.open(apiUrl('/api/review.html'), '_blank')
+      $('downloadhtml').onclick = () => {
+        location.href = apiUrl('/api/review.html', '&download=1')
+        toast('downloading the rendered review')
+      }
+
+      /*
+        ONE BUILD PATH, TWO BUTTONS. First open needs a build because none exists;
+        Rebuild needs one because `src/` moved on. Both are the same server call and
+        the same wait, so they share the feedback: the button that was pressed is the
+        button that says what is happening.
+      */
+      async function runBuild(btn, idle, done) {
+        btn.disabled = true
+        btn.textContent = 'Building…'
+        try {
+          await api('/api/build', {})
+          state.built = true
+          $('blocker').hidden = true
+          deck.src = deckSrc(state.n)
+          $('rebuild').classList.remove('stale')
+          toast(done)
+        } catch (err) {
+          toast(err.message)
+        }
+        btn.disabled = false
+        btn.textContent = idle
+      }
+
+      $('build').onclick = () => runBuild($('build'), 'Build the deck', 'deck built')
+      $('rebuild').onclick = () => runBuild($('rebuild'), 'Rebuild', 'deck rebuilt')
+
+      /*
+        THE FIRST-OPEN STATE. The app serves sessions it has never built, so the
+        stage can open with nothing behind it. Say so, and offer the one action that
+        fixes it — unless the session cannot be built at all, in which case the
+        reason and the command that clears it are more use than a button that would
+        only fail.
+      */
+      function showBlocker() {
+        const ready = BOOT.readiness ?? { missing: [], noModules: false, ready: true }
+        $('blocker').hidden = false
+        if (!ready.ready) {
+          $('blocker-title').textContent = 'This session cannot be built for review yet.'
+          $('blocker-why').textContent = ready.missing?.length
+            ? `It has no ${ready.missing.join(' and no ')}. Those are kit files. Sync the kit into it, then reload this page.`
+            : 'It has no node_modules, so its own vite cannot run. Install its dependencies, then reload this page.'
+          $('blocker-cmd').hidden = false
+          $('blocker-cmd').textContent = ready.missing?.length
+            ? `cd slide-kit/slide-template\nnode sync-kit.mjs --apply ../../${BOOT.course}/${BOOT.session}`
+            : `cd ${BOOT.course}/${BOOT.session}\nnpm install`
+          $('build').hidden = true
+          return
+        }
+        $('blocker-title').textContent = 'This deck has not been built for review yet.'
+        $('blocker-why').textContent =
+          'The review build runs with this session’s own vite, so it takes a moment.'
+        $('blocker-cmd').hidden = true
+        $('build').hidden = false
+      }
+
+      addEventListener('keydown', (ev) => {
+        const typing = /^(INPUT|TEXTAREA)$/.test(ev.target.tagName)
+        if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey)) return saveComment()
+        if (ev.key === 'Escape') return arm(false)
+        if (typing) return
+        if (ev.key === 'ArrowRight') goto(state.n + 1)
+        if (ev.key === 'ArrowLeft') goto(state.n - 1)
+        if (ev.key === 'p') arm(!state.armed)
+      })
+
+      deck.addEventListener('load', () => {
+        state.loaded = true
+        injectPicker()
+        fitStage()
+      })
+
+      goto(1)
+      if (!state.built) showBlocker()
+      fitStage()
+      watchDeck()
+      arm(false)
+    </script>
+  </body>
+</html>

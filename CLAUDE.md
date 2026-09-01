@@ -47,6 +47,10 @@ django_deployement_course/  ONE COURSE. Add a sibling folder for another.
     captures/               real screenshots used on slides
   versions/                 source-only zip snapshots (ignored by git)
 
+review-app/                 the deck review app. One server for the whole repo,
+                            slide-wise and component-wise. Its README is the
+                            manual; the section below is the command.
+
 testing/
   review_app/               a Streamlit plan-review UI. NOT IN USE. See below.
 
@@ -210,6 +214,27 @@ and a stale count silently skips the tail of the deck.
 
 Each session has its own `CLAUDE.md` with decisions specific to that deck. Read
 it before editing that session.
+
+---
+
+## Reviewing a deck
+
+```bash
+node review-app/server.mjs      # port 5199, any session in any course
+```
+
+Pick a course, a session and a version, then comment on a slide or on a named
+component inside it. Every comment lands in
+
+```
+<course>/workflow/reviews/<session>.review.md
+```
+
+which is the path you then point Claude Code at. It exists so that feedback on a
+deck is a file in the repo rather than a screenshot in a chat: a comment that
+names `CodeBlock` at `src/ui/CodeBlock.tsx:84` is actionable months later, and
+"the grey box on slide 12 is wrong" is not. `review-app/README.md` covers the
+flow, the file format, and what a session needs before it can be reviewed.
 
 ---
 

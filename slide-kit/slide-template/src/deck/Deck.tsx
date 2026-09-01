@@ -179,6 +179,37 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
   }, [index, slides])
 
   /*
+    THE DECK'S OWN TABLE OF CONTENTS, PUBLISHED ON `window`.
+
+    Read by the review app (`review.mjs`), which frames this deck and needs to
+    know what it is looking at: the slide ids in order, so a comment can be filed
+    against `why-layers` rather than against "slide 14" and survive a slide being
+    inserted above it.
+
+    It is published from HERE, at runtime, rather than derived by a tool reading
+    `src/decks/<session>Deck.tsx`, because the deck file is a TypeScript module
+    whose slide list is assembled by hand and sometimes conditionally. The only
+    thing that knows the real order is the running deck. A regex over the source
+    would be wrong the first time somebody wrote `...moreSlides` into the array.
+
+    Harmless in a shipped deck — an object on `window` that nothing reads — so it
+    is not gated behind a flag. Keeping it ungated is the point: a review build and
+    the deck an instructor opens stay the same code path.
+  */
+  useEffect(() => {
+    ;(window as unknown as Record<string, unknown>).__DECK__ = {
+      total,
+      current: index + 1,
+      slides: slides.map((s, i) => ({
+        n: i + 1,
+        id: s.id,
+        label: s.label ?? null,
+        section: s.section ?? null,
+      })),
+    }
+  }, [slides, total, index])
+
+  /*
     THE PICKER OWNS THE ARROW KEYS WHILE IT IS OPEN.
 
     Both this and the picker listen on `window`, so without the flag an arrow press
