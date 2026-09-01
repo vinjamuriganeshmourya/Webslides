@@ -114,8 +114,11 @@ at a time. Auto-playing the whole thing handed the room the finished picture
 about 2.5s in, whatever the instructor had actually reached, with no way to hold
 on the decision while it was being discussed.
 
-Every part is now a build step, in beat order. **`Ctrl+arrow` steps the build;
-plain arrows change slide.** That is the deck's own binding, not this lab's.
+Every part is now a build step, in beat order. **`Ctrl+arrow` steps the build and
+plain arrows change slide, and `S` swaps the pair.** That is the deck's own
+binding, not this lab's: on a deck whose slides are mostly builds, holding Ctrl
+for a whole slide is the wrong default, and a hardware clicker cannot send Ctrl at
+all. `G` opens the slide picker.
 
 Two rules the first pass got wrong:
 

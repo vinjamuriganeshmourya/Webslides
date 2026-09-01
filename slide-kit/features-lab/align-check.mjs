@@ -93,11 +93,29 @@ const TOL = 10
  * The deck chrome, in stage coordinates: it is painted ON TOP of slide content,
  * so anything a slide puts here is legible only by luck. Measured from the
  * rendered player, with a couple of px of slack.
- *   left   the slide counter chip, the two nav arrows and the fullscreen button
+ *   left   the slide counter chip, the two nav arrows, the jump-to-slide button,
+ *          the arrow-mode pill and the fullscreen button
  *   right  the NxtWave footer mark
+ *
+ * THE LEFT BOX GREW FROM 252 TO 335, AND THAT IS THE POINT OF THIS COMMENT.
+ *
+ * It was measured when the cluster held a counter and three separate floating
+ * chips. It is one bar now, and it also carries a jump-to-slide button and the
+ * arrow-mode control: `{left: 20, top: 664, right: 333, bottom: 704}`, identical in
+ * both modes, on every hover, and on one-digit and two-digit slide numbers. For as
+ * long as this constant said 252 the harness would have passed any slide with
+ * words between x=252 and x=333 in that band while the deck painted the bar
+ * straight over them. A constant that encodes another constant's old value breaks
+ * silently, which this repo has now paid for three times.
+ *
+ * MEASURE IT AGAIN IF THE BAR CHANGES: open the deck, and read
+ * `document.querySelector('div.absolute.bottom-4.left-5').getBoundingClientRect()`.
+ * The bar is fixed-width by construction, so one reading is the whole answer: the
+ * counter is `tabular-nums` in a fixed box and the mode label sits in a 40px box,
+ * precisely so this number cannot depend on which slide is up.
  */
 const CHROME = [
-  { name: 'controls', x1: 18, y1: 658, x2: 252, y2: 706 },
+  { name: 'controls', x1: 18, y1: 660, x2: 335, y2: 706 },
   { name: 'footer mark', x1: 1172, y1: 660, x2: 1248, y2: 706 },
 ]
 

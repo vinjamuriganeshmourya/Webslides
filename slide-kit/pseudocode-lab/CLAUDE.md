@@ -91,9 +91,10 @@ variant pairing by index would put `print(largest)` against `END IF`.
 - Every label is a DOM element, never an SVG `<text>`. Content rule 17.
 - Padding is a floor, not a declaration: a box shows `(box height - content
   height) / 2`, so a declared 12px becomes 0 or negative once content outgrows it.
-- Every part is a click-gated build step. `Ctrl+arrow` steps, plain arrows change
-  slide. Beat 0 is free and carries the pseudocode block, because the room must
-  see the algorithm before anything is claimed about it.
+- Every part is a click-gated build step. `Ctrl+arrow` steps and plain arrows
+  change slide, unless `S` has swapped the pair. Beat 0 is free and carries the
+  pseudocode block, because the room must see the algorithm before anything is
+  claimed about it.
 - No literal durations except the hover popover, which is the UI tier.
 - The hover popover is never in the DOM unless open.
 - `indent` is DRAWN at 18px a level, never spaces inside `text`.

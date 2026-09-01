@@ -77,9 +77,10 @@ All of these were paid for there, and are not up for rediscovery:
   height) / 2`, so a declared 12px silently becomes 0 or negative once content
   outgrows the box. Four cards shipped at 0px and one at -7px in the sibling lab.
   Size every box against the fixture's longest label.
-- **Every part is a click-gated build step.** `Ctrl+arrow` steps the build; plain
-  arrows change slide. Beat 0 is free, so a slide never opens on an empty stage,
-  and there are no dead clicks.
+- **Every part is a click-gated build step.** `Ctrl+arrow` steps the build and
+  plain arrows change slide, and `S` swaps that pair for a deck like this one
+  where nearly every slide is a build. Beat 0 is free, so a slide never opens on
+  an empty stage, and there are no dead clicks.
 - **No variant writes a literal duration.** Everything comes from
   `src/ui/figureTiming.ts`. The one exception is the hover popover, which is the
   UI tier rather than the explanatory one and says so at its call site.
