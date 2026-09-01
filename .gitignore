@@ -50,6 +50,10 @@ versions/
 sample_ppts/
 *.pptx
 *.ppt
+# Python_PPT_slide is the same thing for the Python course: one 5.8 MB deck plus a
+# reference photo. `*.pptx` above already covers the deck, so without this line the
+# folder shows up in every `git status` for the sake of the photo alone.
+Python_PPT_slide/
 *.mp4
 *.mov
 *.webm
@@ -78,6 +82,12 @@ sample_ppts/
 **/workflow/slide-types/*.html
 **/workflow/preview/
 **/workflow/signoff/*.html
+
+# The review app's own build of the deck (`node review.mjs`), component markers and
+# all. Regenerated on demand and never handed to anyone, so it is an artefact like
+# the previews above. The REVIEW ITSELF is tracked: it lives at
+# <course>/workflow/reviews/<session>.review.md, which this does not match.
+**/workflow/review/
 
 # The generated halves of the slide-host module. `slideModule.tsx` is authored
 # and tracked; these two are written by build-theme-module.mjs.

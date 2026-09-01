@@ -37,7 +37,18 @@ reads and never writes.
 | `src/App.tsx`, `src/index.css` | `workflow/` plans, captures, sign-offs |
 | `tailwind.config.ts`, `vite*.config.ts`, `index.html` | `package.json`, `CLAUDE.md`, `README.md` |
 | `qa.mjs`, `video-safe.mjs`, `preview.mjs` | `dist/`, `dist-single/`, `node_modules/` |
-| `scripts/`, `workflow/export/` | |
+| `align-check.mjs`, `marker-check.mjs` | |
+| `scripts/`, `workflow/export/` | `workflow/review/` the review build's output |
+| `review/markComponents.mjs`, `vite.review.config.ts` | |
+
+The last row is the BUILD half of the review app, and all of it that a session
+holds. The app itself is not in the kit: it lives at the repo root in
+`review-app/`, because a reviewer picks a course and a session before there is a
+session folder to be inside of. A session only needs the two files its own
+toolchain uses to produce a reviewable deck — the app shells out to `npx vite
+build -c vite.review.config.ts` here. (`vite*.config.ts` in the row above already
+matches `vite.review.config.ts`; it is named again because a session that predates
+the review app has to be told what it is missing.)
 
 ### The one seam: `src/decks/activeDeck.ts`
 

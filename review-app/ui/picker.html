@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Deck review</title>
+    <style>
+      /*
+        The same chrome as review.html, and deliberately so: these are two screens
+        of one app, and the landing page is the only place a reviewer forms an
+        expectation of what the tool looks like. The custom properties below are
+        copied verbatim from review.html rather than shared through a stylesheet,
+        because the server injects boot data into each page as a standalone file
+        and neither page is allowed to depend on a second request.
+      */
+      :root {
+        --ground: #070d1e;
+        --panel: #0f1830;
+        --panel-2: #16223f;
+        --line: #23325a;
+        --ink: #e8eefc;
+        --muted: #93a4c6;
+        --faint: #64769b;
+        --accent: #5b8dff;
+        --open: #ffb020;
+        --done: #2ed3a7;
+        --wont: #7b8bad;
+        --changes: #ff6b6b;
+        --ok: #2ed3a7;
+      }
+      * { box-sizing: border-box; }
+      html, body { min-height: 100%; margin: 0; }
+      body {
+        background: var(--ground);
+        color: var(--ink);
+        font: 13px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      button, input {
+        font: inherit;
+        color: inherit;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        padding: 5px 9px;
+      }
+      button { cursor: pointer; }
+      button:hover { border-color: var(--accent); }
+      button[disabled] { opacity: .45; cursor: default; }
+      button[disabled]:hover { border-color: var(--line); }
+      .primary { background: var(--accent); border-color: var(--accent); color: #04102c; font-weight: 650; }
+      .ghost { background: transparent; }
+      .tiny { padding: 2px 7px; font-size: 11.5px; border-radius: 6px; }
+      code, .mono { font-family: ui-monospace, "JetBrains Mono", Menlo, monospace; }
+      a { color: var(--accent); }
+
+      /* ── top bar ── */
+      header {
+        display: flex; align-items: center; gap: 14px;
+        padding: 9px 14px; background: var(--panel);
+        border-bottom: 1px solid var(--line);
+        position: sticky; top: 0; z-index: 5;
+      }
+      .title { font-weight: 700; letter-spacing: -.01em; }
+      .title small { display: block; font-weight: 400; color: var(--faint); font-size: 11px; }
+      .spacer { flex: 1; }
+      .found { color: var(--muted); font-size: 11.5px; }
+      #filter { width: 260px; }
+      #filter::placeholder { color: var(--faint); }
+      .kbd {
+        border: 1px solid var(--line); border-radius: 4px; background: var(--panel-2);
+        color: var(--faint); font-size: 10.5px; padding: 0 4px;
+      }
+
+      /* ── courses ── */
+      main { padding: 16px 14px 40px; max-width: 1400px; margin: 0 auto; }
+      section { margin-bottom: 26px; }
+      section[hidden] { display: none; }
+      .course-head {
+        display: flex; align-items: baseline; gap: 9px;
+        padding-bottom: 8px; margin-bottom: 11px;
+        border-bottom: 1px solid var(--line);
+      }
+      .course-head .name { font-weight: 700; font-size: 14px; }
+      .course-head .n { color: var(--faint); font-size: 11.5px; }
+
+      .cards { display: grid; gap: 11px; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); }
+
+      .card {
+        background: var(--panel); border: 1px solid var(--line);
+        border-radius: 10px; padding: 11px 12px 12px;
+        display: flex; flex-direction: column; gap: 8px;
+      }
+      .card[hidden] { display: none; }
+      .card.first-visible { border-color: var(--accent); }
+      .card h3 { margin: 0; font-size: 13.5px; font-weight: 650; line-height: 1.35; }
+      .folder { color: var(--faint); font-size: 11px; word-break: break-all; }
+
+      /* the version chips, only rendered when a group has more than one cut */
+      .cuts { display: flex; flex-wrap: wrap; gap: 4px; }
+      .chip {
+        background: var(--panel-2); border: 1px solid var(--line); border-radius: 999px;
+        padding: 2px 10px; font-size: 11.5px; cursor: pointer;
+      }
+      .chip.on { background: var(--accent); border-color: var(--accent); color: #04102c; font-weight: 650; }
+
+      .facts { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; color: var(--muted); font-size: 11.5px; }
+      .facts b { color: var(--ink); font-weight: 650; }
+      .facts .unreviewed { color: var(--faint); }
+      .facts .open { color: var(--open); }
+      .facts .approved { color: var(--done); }
+      .facts .changes { color: var(--changes); }
+
+      .warn {
+        border-radius: 8px; padding: 7px 9px; font-size: 11.5px;
+        background: var(--panel-2); border: 1px solid var(--line);
+        color: var(--muted);
+      }
+      .warn.block { border-color: rgba(255,107,107,.5); }
+      .warn.soft { border-color: rgba(255,176,32,.45); }
+      .warn b { color: var(--ink); font-weight: 650; }
+      .warn pre {
+        margin: 6px 0 0; padding: 6px 7px; border-radius: 6px;
+        background: var(--ground); border: 1px solid var(--line);
+        color: var(--ink); font-family: ui-monospace, "JetBrains Mono", Menlo, monospace;
+        font-size: 11px; white-space: pre-wrap; word-break: break-all;
+      }
+
+      .acts { display: flex; align-items: center; gap: 7px; margin-top: auto; padding-top: 2px; }
+      .acts .spacer { flex: 1; }
+
+      .nothing {
+        border: 1px dashed var(--line); border-radius: 10px;
+        padding: 22px 18px; color: var(--muted); max-width: 720px;
+      }
+      .nothing b { color: var(--ink); }
+      .nothing code { color: var(--ink); }
+      #no-match { display: none; color: var(--faint); padding: 8px 2px; }
+      #no-match.on { display: block; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="title">
+        Deck review
+        <small class="mono" id="root"></small>
+      </div>
+      <div class="spacer"></div>
+      <span class="found" id="found"></span>
+      <input id="filter" type="search" placeholder="Filter by course, folder or title" autocomplete="off" />
+      <span class="kbd">/</span>
+    </header>
+
+    <main>
+      <div id="courses"></div>
+      <div id="no-match">Nothing matches that filter.</div>
+    </main>
+
+    <script id="boot" type="application/json">/*%BOOT%*/</script>
+    <script>
+      /*
+        BOOT DATA, HANDED OVER AS JSON RATHER THAN AS A SPLICED-IN EXPRESSION.
+
+        The server fills the `<script type="application/json">` block above by
+        string replacement. Doing it that way, rather than substituting straight
+        into `const BOOT = …`, is what makes this file parse in BOTH states: with
+        the data in place and without it. The first attempt spliced an object
+        literal in front of a `{}` fallback, which produced `const BOOT = {…} {}`
+        and would not parse at all — the app served a blank page and the console
+        said only "unexpected token".
+
+        Parsing here also means the payload is data at every step. A reviewer's
+        note can contain any text at all, and nothing in it is ever evaluated.
+      */
+      const BOOT = (() => {
+        try {
+          return JSON.parse(document.getElementById('boot').textContent)
+        } catch {
+          return {}
+        }
+      })()
+
+      const COURSES = Array.isArray(BOOT.courses) ? BOOT.courses : []
+
+      const $ = (id) => document.getElementById(id)
+
+      /* Same escaping helper as review.html: every string below reaches the DOM
+         through innerHTML, and a session title comes out of a JSON file on disk. */
+      const esc = (s) =>
+        String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+
+      const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`
+
+      /* A cut with no `_vN` suffix has `version: null`, and discover.mjs is explicit
+         that it must not be given a fake v1. The folder name is the honest label. */
+      const cutLabel = (cut) => cut.version ?? cut.session
+
+      const reviewHref = (cut) =>
+        `/s/${encodeURIComponent(cut.course)}/${encodeURIComponent(cut.session)}`
+
+      const reportHref = (cut) =>
+        `/api/review.html?c=${encodeURIComponent(cut.course)}&s=${encodeURIComponent(cut.session)}`
+
+      /* ── rendering ─────────────────────────────────────────────────────── */
+
+      function factsHtml(cut) {
+        const r = cut.review ?? {}
+        if (!r.exists) return '<span class="unreviewed">Not reviewed yet</span>'
+
+        const bits = []
+        if (r.open > 0) bits.push(`<span class="open"><b>${r.open}</b> open</span>`)
+        bits.push(`<span><b>${r.done ?? 0}</b> resolved</span>`)
+        if (r.approved > 0) bits.push(`<span class="approved"><b>${r.approved}</b> approved</span>`)
+        if (r.changes > 0) bits.push(`<span class="changes"><b>${r.changes}</b> need changes</span>`)
+        return bits.join('')
+      }
+
+      /**
+       * The warnings a reviewer has to act on before, or just after, clicking
+       * Review. Order matters: the two blocking ones come first, because when a
+       * session is missing kit files there is no point telling them the build is
+       * also stale.
+       */
+      function warnHtml(cut) {
+        const ready = cut.readiness ?? {}
+        const out = []
+
+        if ((ready.missing ?? []).length) {
+          /*
+            Two ways out, and the button is the one to reach for.
+
+            "Prepare" copies ONLY the two review-tooling files, and only where they
+            are absent. `sync-kit.mjs --apply` is the other way, and it is offered
+            as text rather than as a button on purpose: it overwrites every
+            kit-owned file in the session, which is a real change to a deck that
+            may already be signed off, and that is a decision to make deliberately
+            in a terminal rather than by clicking Prepare's neighbour.
+          */
+          const cmd = `cd slide-kit/slide-template && node sync-kit.mjs --apply ../../${cut.course}/${cut.session}`
+          out.push(
+            `<div class="warn block"><b>Not set up for review yet.</b> Missing ${esc(ready.missing.join(' and '))}. ` +
+              `<button class="primary tiny prepare">Prepare this session</button> copies just those two files in. ` +
+              `To bring the whole kit up to date instead:<pre>${esc(cmd)}</pre></div>`,
+          )
+        }
+        if (ready.noModules) {
+          out.push(
+            `<div class="warn block"><b>No node_modules.</b> Run <code>npm install</code> in ` +
+              `<code>${esc(cut.course)}/${esc(cut.session)}</code> first.</div>`,
+          )
+        }
+        if (!out.length && !cut.built) {
+          out.push(
+            '<div class="warn soft"><b>Not built yet.</b> Opening it builds the deck first, which takes a moment.</div>',
+          )
+        }
+        if (!out.length && cut.stale) {
+          out.push(
+            '<div class="warn soft"><b>Build is older than src/.</b> Rebuild it from inside the review screen.</div>',
+          )
+        }
+        return out.join('')
+      }
+
+      /** The whole card body for one selected cut. The version chips sit outside. */
+      function bodyHtml(cut) {
+        const blocked = !(cut.readiness?.ready ?? false)
+        const slides = cut.slideCount == null ? 'slide count unknown' : plural(cut.slideCount, 'slide')
+        return `
+          <h3>${esc(cut.title)}</h3>
+          <div class="folder mono">${esc(cut.session)} &middot; ${esc(slides)}</div>
+          <div class="facts">${factsHtml(cut)}</div>
+          ${warnHtml(cut)}
+          <div class="acts">
+            <button class="primary go"${blocked ? ' disabled' : ''}>Review</button>
+            <div class="spacer"></div>
+            ${cut.review?.exists ? '<button class="ghost tiny report">Report</button>' : ''}
+          </div>`
+      }
+
+      /**
+       * Copies the two review files into a session, then repaints the card from
+       * the readiness the server reports back.
+       *
+       * The card is repainted from the SERVER's answer rather than from an assumed
+       * success, because the interesting case is the one where it half worked: the
+       * kit itself is missing a file, or the session directory is not writable. A
+       * card that turned green on optimism would send the reviewer to a build that
+       * cannot run.
+       */
+      async function prepare(cut, btn, repaint) {
+        btn.disabled = true
+        btn.textContent = 'Preparing…'
+        try {
+          const res = await fetch(`/api/prepare?c=${encodeURIComponent(cut.course)}&s=${encodeURIComponent(cut.session)}`, {
+            method: 'POST',
+          })
+          const data = await res.json()
+          if (data.error) throw new Error(data.error)
+          cut.readiness = data.readiness
+          repaint()
+        } catch (err) {
+          btn.disabled = false
+          btn.textContent = 'Prepare failed, retry'
+          btn.title = err.message
+        }
+      }
+
+      function cardEl(group) {
+        const card = document.createElement('div')
+        card.className = 'card'
+
+        /* `cuts` arrives newest-first from discover.mjs, so index 0 is the default
+           and the sort is never redone here. */
+        let selected = 0
+
+        const cuts = document.createElement('div')
+        cuts.className = 'cuts'
+        const body = document.createElement('div')
+        body.style.display = 'contents'
+
+        const paint = () => {
+          const cut = group.cuts[selected]
+          body.innerHTML = bodyHtml(cut)
+          for (const [i, chip] of [...cuts.children].entries()) chip.classList.toggle('on', i === selected)
+          body.querySelector('.go')?.addEventListener('click', () => open(cut))
+          body
+            .querySelector('.report')
+            ?.addEventListener('click', () => window.open(reportHref(cut), '_blank', 'noopener'))
+          body.querySelector('.prepare')?.addEventListener('click', (ev) => prepare(cut, ev.target, paint))
+          card.dataset.session = cut.session
+        }
+
+        if (group.cuts.length > 1) {
+          for (const [i, cut] of group.cuts.entries()) {
+            const chip = document.createElement('button')
+            chip.className = 'chip'
+            chip.type = 'button'
+            chip.textContent = cutLabel(cut)
+            chip.title = cut.session
+            chip.addEventListener('click', () => {
+              selected = i
+              paint()
+            })
+            cuts.append(chip)
+          }
+          card.append(cuts)
+        }
+
+        card.append(body)
+        paint()
+
+        /* Every cut's text is searchable, not only the selected one: hiding a card
+           because the reviewer typed "v1" while v3 happened to be showing would
+           look like the v1 cut does not exist. */
+        card.dataset.hay = group.cuts
+          .map((c) => `${c.course} ${c.session} ${c.title} ${cutLabel(c)}`)
+          .join(' ')
+          .toLowerCase()
+
+        /* Enter in the filter opens the first visible card, so the selected cut has
+           to be reachable from the element itself. */
+        card.__open = () => {
+          const cut = group.cuts[selected]
+          if (cut.readiness?.ready) open(cut)
+        }
+
+        return card
+      }
+
+      const open = (cut) => {
+        location.href = reviewHref(cut)
+      }
+
+      function render() {
+        const host = $('courses')
+
+        if (!COURSES.length) {
+          host.innerHTML = `
+            <div class="nothing">
+              <p><b>No courses found.</b></p>
+              <p>The app walks every directory under the repo root and treats any folder
+                 that contains a <code>deck.config.json</code> as one session, with its
+                 parent folder as the course. Nothing under this root matched.</p>
+              <p>Either there is no course here yet, or the sessions live somewhere other
+                 than <span class="mono">${esc(BOOT.root ?? '')}</span>.</p>
+            </div>`
+          $('filter').disabled = true
+          return
+        }
+
+        for (const course of COURSES) {
+          const section = document.createElement('section')
+          const head = document.createElement('div')
+          head.className = 'course-head'
+          head.innerHTML =
+            `<span class="name mono">${esc(course.course)}</span>` +
+            `<span class="n">${esc(plural(course.count, 'session'))}` +
+            `${course.groups.length === course.count ? '' : `, ${esc(plural(course.groups.length, 'group'))}`}</span>`
+          section.append(head)
+
+          const cards = document.createElement('div')
+          cards.className = 'cards'
+          for (const group of course.groups) cards.append(cardEl(group))
+          section.append(cards)
+          host.append(section)
+        }
+      }
+
+      /* ── filter ────────────────────────────────────────────────────────── */
+
+      function applyFilter() {
+        const q = $('filter').value.trim().toLowerCase()
+        let firstVisible = null
+
+        for (const section of $('courses').querySelectorAll('section')) {
+          let shown = 0
+          for (const card of section.querySelectorAll('.card')) {
+            const hit = !q || card.dataset.hay.includes(q)
+            card.hidden = !hit
+            card.classList.remove('first-visible')
+            if (hit) {
+              shown++
+              if (!firstVisible) firstVisible = card
+            }
+          }
+          section.hidden = shown === 0
+        }
+
+        /* Only marked while filtering. Outlining a card the reviewer never asked
+           about would read as a recommendation. */
+        if (q && firstVisible) firstVisible.classList.add('first-visible')
+        $('no-match').classList.toggle('on', Boolean(q) && !firstVisible)
+      }
+
+      /* ── boot ──────────────────────────────────────────────────────────── */
+
+      $('root').textContent = BOOT.root ?? ''
+      const sessionTotal = COURSES.reduce((n, c) => n + (c.count ?? 0), 0)
+      $('found').textContent = COURSES.length
+        ? `${plural(sessionTotal, 'session')} across ${plural(COURSES.length, 'course')}`
+        : 'nothing found'
+
+      render()
+
+      $('filter').addEventListener('input', applyFilter)
+      $('filter').addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter') return
+        const card = $('courses').querySelector('.card:not([hidden])')
+        card?.__open?.()
+      })
+
+      addEventListener('keydown', (e) => {
+        if (e.key !== '/' || e.target === $('filter')) return
+        e.preventDefault()
+        $('filter').focus()
+        $('filter').select()
+      })
+    </script>
+  </body>
+</html>
