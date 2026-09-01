@@ -292,6 +292,48 @@ the section dividers look like two different decks.
 2. **Header floor.** `SlideHeader` carries `min-h-[168px]` so body content never
    starts above y≈216.
 
+**Navigating a deck** goes through `src/deck/`, and two of its bindings are now
+the presenter's choice rather than the kit's:
+
+- **`S` swaps what the arrow keys do.** The default is unchanged: plain arrows
+  change slide as a cut, `Ctrl+arrow` steps the build. Pressing `S` swaps the
+  pair, and the pill in the bottom-left cluster always says which way round it
+  currently is (`→ slide` or `→ step`). It is a swap and not a third mode so both
+  jobs stay reachable mid-session. The choice is remembered per browser in
+  `localStorage`, and every read and write is wrapped: the deliverable is a
+  double-clicked HTML file, which is a `file://` origin, where that API throws
+  outright in some browsers.
+  `PageDown` / `PageUp` follow the plain arrows, because that is what a hardware
+  clicker sends and a clicker cannot send Ctrl. A build-heavy deck was previously
+  unpresentable from a clicker: it skipped every build in the deck.
+  **`?all` forces the default**, whatever is stored. `preview.mjs` and
+  `continuity-check.mjs` press a plain `ArrowRight` and expect the next SLIDE, so
+  a harness must never be able to read a human's preference.
+  `?nav=slides` or `?nav=steps` overrides everything, for a deck embedded
+  somewhere that wants one specific binding.
+- **The bar hides until the cursor comes looking for it.** It fades out once the
+  pointer is anywhere but the bottom 132px of the stage, and fades back in when the
+  pointer enters that band, so a projector shows the slide and nothing else for the
+  99% of a session when nobody is reaching for a control. Three details keep that
+  safe: it starts VISIBLE and hides on the first pointer move away from the band,
+  which keeps it discoverable AND keeps every harness working unchanged (none of
+  them moves a pointer, so they see the bar exactly where they always did);
+  `focus-within` reveals it, because a control only a mouse can summon is not
+  reachable by Tab and this bar is the only pointer route to the picker; and a
+  device with no fine pointer keeps it on screen permanently, since there is no
+  hover to ask with. The fade is a CSS transition on `opacity` and `transform`,
+  not framer, because it is interrupted constantly at the boundary and a transition
+  retargets while a keyframe restarts from zero.
+- **`G` opens the slide picker**, a text index of the deck grouped by `section`,
+  filterable by label, section or number, with the arrows moving a cursor and
+  Enter jumping. Not a thumbnail grid: 79 slides means mounting 79 slides, each of
+  which animates and several of which register build steps. `label` in
+  `types.ts` has described itself as being "for the overview grid" since the first
+  version, and this is finally that. A jump lands FULLY REVEALED, like the
+  plain-arrow cut, because arriving on a two-thirds-empty slide in front of the
+  room is a trap. The panel is never in the DOM unless open: it covers the stage,
+  so parked at `opacity: 0` every harness would report it on every slide.
+
 **Motion** goes through `src/motion/`:
 - `Reveal.tsx` — `<RevealGroup stagger={0.1}>` + `<Reveal dir="up">` for entrance
   choreography. `RevealGroup` is a `motion` component, so **a plain wrapper
@@ -302,6 +344,15 @@ the section dividers look like two different decks.
 - `instant.ts` — `useInstant()`, true during Ctrl+←/→ jumps. Any component with
   its own entrance must read it and mount at the final state when set, or it will
   be the only thing moving on an otherwise still slide.
+
+Beware: **`text-body` is a SIZE in this config, not a colour.** `body` is a key in
+both `theme.colors` (#4A5B6B) and `theme.fontSize` (19px), and when a key is in
+both, the fontSize utility wins and the colour one is shadowed, so `text-body` on a
+chip sets 19px type. It is why the deck's slide counter rendered at 19px inside an
+11.5px bar, and why the arrow-mode control grew on hover: `hover:text-body` was
+setting its label to 19px. `text-body-sm`, `text-code` and `text-kicker` are sizes
+for the same reason. For that grey use `style={{ color: colors.body }}`;
+`text-muted` and `text-ink` are safe, because neither has a `fontSize` entry.
 
 Beware: **framer-motion writes an inline `transform` every frame, which replaces
 Tailwind's `-translate-x-1/2` utilities.** Centre animated elements with animated
