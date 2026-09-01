@@ -1,5 +1,5 @@
 import type { SlideDef, DeckMeta } from '@/deck/types'
-import { BoundaryBridge, CodeBlock, SpineFlow, LaneFlow, StepLedger, CircuitMap, GateFlow, TrackSwitch } from '@/ui'
+import { BoundaryBridge, CodeBlock, FanOut, SpineFlow, LaneFlow, StepLedger, CircuitMap, GateFlow, TrackSwitch } from '@/ui'
 import type { FlowchartFigureProps } from '@/ui'
 import {
   WelcomeSlide,
@@ -692,6 +692,31 @@ export const sampleDeck: SlideDef[] = [
             { label: 'docker pull', sub: 'on every deploy', issuedBy: 'right' },
           ]}
           caption="The image never travels laptop to server directly. Neither machine has to trust the other."
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'fan-out',
+    label: 'Fan out (figure)',
+    section: 'DRF',
+    notes:
+      'FOR ONE ARTEFACT AND MANY LIVE COPIES OF IT. The source keeps its single box at full size while every connector leaves it at once, so the room reads MULTIPLICITY rather than sequence, and the source is drawn quiet on purpose (dashed, tinted, no live dot) because the mistake the figure prevents is reading the source as one of the running things. `live` is per copy, so "three containers, one of them stopped" is sayable. It must NOT carry any relationship BETWEEN the copies: they are peers with no connectors between them, so balanced traffic, a shared volume, or copy 2 made from copy 1 are all claims this figure does not make. Confusable with BoundaryBridge, which is two machines and a shared hub between them, and with FlowChart, which is a sequence: reach for FanOut only when one thing becomes several at once. Promoted out of session 1 v2, where it was a deck-local ImageFanout hardcoded to one image and three containers; the contract has no Docker in it.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="One image, many containers"
+        title="Fan out"
+        lead="The image is built once. Every container is started from that one copy."
+      >
+        <FanOut
+          source={{ label: 'Image', caption: 'built once, read only', icon: 'folder' }}
+          copies={[
+            { id: 'c1', label: 'Container 1', note: 'serving traffic', live: true },
+            { id: 'c2', label: 'Container 2', note: 'serving traffic', live: true },
+            { id: 'c3', label: 'Container 3', note: 'stopped, same image', live: false },
+          ]}
+          caption="Starting a container never changes the image, which is why the third one is identical to the first."
         />
       </ContentSlide>
     ),

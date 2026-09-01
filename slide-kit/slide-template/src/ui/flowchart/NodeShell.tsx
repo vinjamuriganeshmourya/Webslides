@@ -2,6 +2,7 @@ import { useId, useState, type ReactNode } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { colors } from '@/design/tokens'
 import { iconByName } from '@/ui/icons'
+import type { StationLogo } from '@/ui/flowFigure'
 import { E, c4 } from '@/ui/figureTiming'
 import type { FcNode } from './flowchartFigure'
 
@@ -102,6 +103,23 @@ export function lookOf(node: FcNode): NodeLook {
 /** Where the popover sits relative to the node it explains. */
 type Side = 'top' | 'bottom'
 
+/**
+ * The same five-plus-two names as `BoundaryBridge`'s own map, and it is a second
+ * copy on purpose rather than an import: `BoundaryBridge` is a different figure
+ * family and importing across them would couple `flowchart/` to `flowFigure.ts`
+ * for one record. The union in `flowFigure.ts` is the single source of the NAMES,
+ * which is the part that can drift; a missing row here is a type error.
+ */
+const LOGO_SRC: Record<StationLogo, string> = {
+  docker: '/assets/tech/docker.png',
+  git: '/assets/tech/git.png',
+  github: '/assets/tech/github.png',
+  jenkins: '/assets/tech/jenkins.png',
+  python: '/assets/tech/python.png',
+  nodejs: '/assets/tech/nodejs.png',
+  makefile: '/assets/tech/makefile.png',
+}
+
 export function NodeShell({
   node,
   look,
@@ -133,6 +151,10 @@ export function NodeShell({
   const reduce = useReducedMotion()
   const id = useId()
   const Icon = node.icon ? iconByName[node.icon as keyof typeof iconByName] : null
+  /* A real mark wins over a house glyph. See `FcNode.logo`: rule 12 wants the
+     vendor file, unrecoloured, and `object-contain` keeps a wide wordmark from
+     being stretched into the square the glyphs occupy. */
+  const logoSrc = node.logo ? LOGO_SRC[node.logo] : null
   const filled = look === 'terminal'
   const decision = look === 'decision'
   const hasDetail = Boolean(node.detail)
@@ -223,17 +245,36 @@ export function NodeShell({
                 : 'contents'
             }
           >
-            {Icon && (
+            {logoSrc ? (
+              /*
+                THE MARK SITS ON A WHITE TILE, always, on a filled card and a
+                plain one alike. GitHub's mark is near black and Jenkins's is
+                dark red on cream: dropped straight onto a `filled` brand-blue
+                card they read as smudges, and the same tile that fixes that on
+                blue keeps every mark on the identical ground everywhere else, so
+                a row of them looks like one system. Tinting a vendor file to
+                match the card is the other way to solve it and it is the
+                forbidden one.
+              */
               <span
                 className="grid h-6 w-6 shrink-0 place-items-center rounded-lg"
-                style={
-                  filled
-                    ? { background: 'rgba(255,255,255,0.22)', color: '#FFFFFF' }
-                    : { background: `${paint}18`, color: paint }
-                }
+                style={{ background: '#FFFFFF', boxShadow: `0 1px 2px 0 ${colors.brandDeep}2e` }}
               >
-                <Icon width={14} height={14} />
+                <img src={logoSrc} alt="" draggable={false} className="h-4 w-4 object-contain" />
               </span>
+            ) : (
+              Icon && (
+                <span
+                  className="grid h-6 w-6 shrink-0 place-items-center rounded-lg"
+                  style={
+                    filled
+                      ? { background: 'rgba(255,255,255,0.22)', color: '#FFFFFF' }
+                      : { background: `${paint}18`, color: paint }
+                  }
+                >
+                  <Icon width={14} height={14} />
+                </span>
+              )
             )}
             <span className={layout === 'row' ? 'min-w-0' : ''}>
               <span

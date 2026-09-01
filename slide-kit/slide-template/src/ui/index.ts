@@ -80,6 +80,27 @@ export { CircuitMap } from './flowchart/CircuitMap'
 export { GateFlow } from './flowchart/GateFlow'
 export { TrackSwitch } from './flowchart/TrackSwitch'
 export { NodeShell, lookOf, NODE_MIN_H } from './flowchart/NodeShell'
+
+/*
+  ONE SOURCE, MANY COPIES.
+
+  On the barrel, unlike the four promoted figure FAMILIES under `src/ui/points`,
+  `pseudocode`, `projectcode` and `features`, which stay import-by-path. The
+  difference is that a family offers a CHOICE between designs for one contract, and
+  choosing should be a deliberate act at the import line; `FanOut` is a single
+  figure with one shape, like `LayerStack` and `ContainerJourney` beside it.
+
+  Promoted out of `deployement_session_1_v2`, where it was a deck-local
+  `ImageFanout` hardcoded to one image and three containers. The contract carries
+  no Docker in it: the same figure draws one build and many environments, or one
+  template and many generated files.
+*/
+export {
+  FanOut,
+  type FanOutProps,
+  type FanOutSource,
+  type FanOutCopy,
+} from './figures/FanOut'
 export * as Icons from './icons'
 export { iconByName, type IconName } from './icons'
 export { Illustration, type IllustrationName } from './characters/Illustration'

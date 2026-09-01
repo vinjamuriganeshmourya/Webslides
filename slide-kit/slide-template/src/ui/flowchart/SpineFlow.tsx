@@ -173,10 +173,23 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
             <FcEdgeLabel
               key={`l${e.from}-${e.to}`}
               at={i * 2 + 1} shown={shown[i * 2 + 1]}
-              className="absolute rounded-pill px-2 py-0.5 text-[12px] font-bold uppercase tracking-wide"
+              className="absolute whitespace-nowrap rounded-pill px-2 py-0.5 text-[12px] font-bold uppercase tracking-wide"
+              /*
+                ABOVE THE CARD ROW, CENTRED ON THE GAP.
+                These pills used to sit at `yMid - 32`, inside the card band, and
+                start 4px past the card in a gap of `PITCH - SLOT` = 50px. Every
+                label longer than about four characters was printed over by the
+                next card: session 7's chain rendered GIT PU, WEBH, DOCK, DOCK.
+                No label short enough to fit exists, so the fix is positional and
+                not editorial. Above the row the only neighbours are the other
+                edge labels, and those are `PITCH` = 230px apart.
+                `whitespace-nowrap` because a pill that wraps is a pill that has
+                grown a second line into the card it was lifted clear of.
+              */
               style={{
-                left: left(i) + SLOT + 4,
-                top: yMid - 32,
+                left: left(i) + SLOT + (PITCH - SLOT) / 2,
+                top: SPINE_Y - 26,
+                transform: 'translateX(-50%)',
                 background: `${PAINT.main}1a`,
                 color: PAINT.main,
               }}
