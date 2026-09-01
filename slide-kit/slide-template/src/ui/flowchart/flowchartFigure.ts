@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type { IconName } from '@/ui/icons'
+import type { StationLogo } from '@/ui/flowFigure'
 
 /**
  * ONE CONTRACT FOR EVERY FLOW-CHART VARIANT.
@@ -60,6 +61,19 @@ export interface FcNode {
    */
   detail?: ReactNode
   icon?: IconName
+  /**
+   * A TECHNOLOGY MARK, WHICH TAKES PRECEDENCE OVER `icon`.
+   *
+   * Hard rule 12: a technology named on a slide carries its logo, because a
+   * learner scanning a diagram finds the mark before they finish reading the
+   * label. `FcNode` had only `icon`, so session 7's architecture chain (GitHub,
+   * Jenkins, Docker Hub) had to draw three house glyphs where three real marks
+   * belonged, and a `<>` glyph is not GitHub to anyone who does not already know.
+   *
+   * Same union as `FlowStation.logo` next door, so a name that works on one
+   * figure family works on the other and there is one list of PNGs to keep true.
+   */
+  logo?: StationLogo
   /**
    * Who owns this step. Optional, and only `LaneFlow` draws it.
    *

@@ -290,9 +290,22 @@ export function GateFlow({ nodes, edges, caption, className = '' }: FlowchartFig
               key={`y${e.to}`}
               at={edgeBeat(gateIdx)} shown={shown[edgeBeat(gateIdx)]}
               className="absolute rounded-pill px-2 py-0.5 text-[12px] font-bold uppercase tracking-wide"
+              /*
+                ABOVE THE CARD ROW, NOT ON IT.
+                This pill used to sit at `ROW_MID - 34`, which is inside the card
+                band (`ROW_TOP` to `ROW_TOP + NODE_H`), and to start 10px past the
+                gate in a gap that is only `GAP` = 46px wide. A four-letter label
+                is already about 50px with its padding, so the next card printed
+                over it and PASS rendered as PAS. It was not a content problem:
+                no label short enough to fit exists, which is why shortening the
+                nodes in `cicd-lab` did not move it.
+                It now clears the row entirely and centres on the gap, so its
+                width no longer has to fit between two cards.
+              */
               style={{
-                left: gateSlot.x + gateSlot.w + 10,
-                top: ROW_MID - 34,
+                left: gateSlot.x + gateSlot.w + GAP / 2,
+                top: ROW_TOP - 28,
+                transform: 'translateX(-50%)',
                 background: `${PAINT.main}1a`,
                 color: PAINT.main,
               }}
@@ -305,9 +318,16 @@ export function GateFlow({ nodes, edges, caption, className = '' }: FlowchartFig
         <FcEdgeLabel
           at={EXC} shown={shown[EXC]}
           className="absolute rounded-pill px-2 py-0.5 text-[12px] font-bold uppercase tracking-wide"
+          /*
+            CLEAR OF THE EXCEPTION CARD, WHICH IS DIRECTLY BELOW THE GATE.
+            `GATE_BOTTOM` is 245 and the lower row starts at 258, so there are 13
+            vertical pixels here and a pill is 20. Sitting at `cx + 12` put this
+            label under the card every time. The card is `SLOT` wide and centred
+            on the gate, so the first clear column is half a slot to the right.
+          */
           style={{
-            left: gateSlot.cx + 12,
-            top: GATE_BOTTOM + 8,
+            left: gateSlot.cx + SLOT / 2 + 14,
+            top: GATE_BOTTOM + 6,
             background: `${PAINT.alt}1a`,
             color: PAINT.alt,
           }}

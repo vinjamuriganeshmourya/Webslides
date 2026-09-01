@@ -88,8 +88,8 @@ from any session that still has it.
 `slide-kit/slide-template/src/ui/`, on the `@/ui` barrel.
 
 `AnalogyMap` · `BoundaryBridge` · `ChatThread` · `CircuitMap` · `ComposeNetwork` ·
-`ContainerJourney` · `GateFlow` · `LaneFlow` · `SpineFlow` · `StepLedger` ·
-`TrackSwitch` ·
+`ContainerJourney` · `FanOut` · `GateFlow` · `LaneFlow` · `SpineFlow` ·
+`StepLedger` · `TrackSwitch` ·
 `DataTable` · `FileTree` · `FlowChart` · `HandRitual` · `JourneyRoadmap` ·
 `LayerStack` · `MachineBoundary` · `Nova` · `OneProcessRule` · `Orchestra` ·
 `ScenarioCard` · `StackUp` · `StatusList` · `StepList` · `SyntaxBreakdown` ·
@@ -98,6 +98,19 @@ from any session that still has it.
 `SyntaxBreakdown` builds its specimen line FROM its `parts` array, so the diagram
 and the legend under it cannot drift apart. The first draft took a separate
 `command` string and they disagreed within one session.
+
+| Figure | Reach for it when | Worst at |
+|---|---|---|
+| `FanOut` | ONE artefact is the origin of SEVERAL live things and does not change or divide when they are made: one image and many containers, one build and many environments, one template and many generated files. The source is drawn quiet on purpose, dashed and tinted with no live dot, because the mistake the figure prevents is reading the source as one of the running things. `live` is per copy, so "three containers, one of them stopped" is sayable | ANY relationship between the copies. They are peers with no connectors between them, so balanced traffic, a shared volume, or copy 2 made from copy 1 are claims the presenter is making and the figure is not. It also has no room for a second source |
+
+`FanOut` is confusable with two figures either side of it. `BoundaryBridge` is two
+MACHINES with a shared hub between them, and `FlowChart` is a SEQUENCE; reach for
+`FanOut` only when one thing becomes several at once. Its height is derived from the
+copy count rather than declared, so a fourth copy can never overlap a third: three
+copies is the design point at 258px including the caption, four fits at 300px, and
+five at 378px is the ceiling before the honest edit is two slides. Promoted out of
+`deployement_session_1_v2`, where it was a deck-local `ImageFanout` hardcoded to one
+image and three containers; nothing Docker-specific survived into the contract.
 
 ### Flow chart figures
 
@@ -130,7 +143,15 @@ Three things they share, all in `src/ui/flowchart/`:
   guesses is how the padding came to be 0px in four cards and negative in one.
 - **`motion.tsx`** owns the choreography: a figure assembles ALONG THE PATH, and
   the exception only leaves the fork once the happy path is complete. Every part
-  is a build step, so `Ctrl+arrow` walks the process one piece at a time.
+  is a build step, so `Ctrl+arrow` walks the process one piece at a time, or the
+  plain arrows do once `S` has swapped the pair. **The implementation now lives at
+  `@/ui/figures/motion`** and is shared by all five figure families below;
+  `src/ui/flowchart/motion.tsx` is a re-export of it. Five labs each carried a
+  byte-identical copy, which is the drift the labs exist to prevent: families that
+  differ in GEOMETRY must not also differ in tempo, or comparing them compares the
+  wrong thing. Every variant in every family is click-gated through `useBeats`,
+  whose **beat 0 is free**, so a slide never opens on an empty stage and no click
+  does nothing.
 - **Every label is a DOM element, never an SVG `<text>`.** Content rule 17. An
   `<svg>` is one rectangle to all four harnesses, so they will pass a figure whose
   labels overlap and whose connectors end in mid-air. Both happened here.
@@ -140,6 +161,184 @@ called in a loop claims the same order for every beat, so the whole figure lands
 on the first click and the slide reports one step.
 
 Not on the barrel, import by path: `TwoApps`, `RequestFlow`.
+
+### Pseudocode figures
+
+Three designs for one contract, `PseudoFigureProps` in
+`src/ui/pseudocode/pseudoFigure.ts`, answering **what does this algorithm do, and
+what happens when it runs**. Identical props, so choosing between them is a rename
+at the call site. From `slide-kit/pseudocode-lab`, where **the winner was not
+picked**, so all three are registered on purpose and the lab stays the record of
+the comparison.
+
+| Figure | Reach for it when | Worst at |
+|---|---|---|
+| `TraceTable` | the VALUES are the lesson: one column per variable, one row per executed step, filling a row per click with the pseudocode line lighting at the same instant | it runs out of columns and says so rather than shrinking, and at eight clicks it is the slowest of the three to present |
+| `LineAnnotated` | every line needs its reason beside it, which is the thing `CodeBlock` structurally cannot hold | it cannot show a VALUE, so "line 4 is true only once in three" stays a claim in prose |
+| `PseudoToReal` | the bridge to real code, with each real line positioned at the y of the pseudocode line it implements | it draws a one-to-one map only, and the right column is mostly air whenever the real code is shorter |
+
+**Do not put pseudocode through `CodeBlock`.** That is a FILE view and two of its
+features actively mislead: a filename says "create this file" when pseudocode is
+what you write BEFORE there is one, and a language chip names a language when the
+whole point is that it is none of them. It also has nowhere to say what a line
+MEANS and nowhere to show what happens when the algorithm runs.
+
+Three things an author has to get right:
+
+- **`trace` is authored, and it must be hand-verified.** A fabricated trace table
+  is the exact failure this family is designed against: the figure looks right and
+  teaches something false, and no harness in this repo can tell.
+- **`vars` sets the column order explicitly**, because a table whose columns come
+  from `Object.keys` reorders itself the moment a step is edited.
+- **`indent` is DRAWN**, at 18px a level, never spaces inside `text`. Spaces are
+  part of the string, so they cannot be measured or re-indented.
+
+`pseudoText.tsx` is the shared highlighter and dark ground: keywords by class the
+way an editor colours them, control flow apart from declarations, and the author's
+declared `vars` coloured as variables so a pseudocode line's prose stays prose.
+
+Not on the barrel, import by path: `@/ui/pseudocode/TraceTable`,
+`@/ui/pseudocode/LineAnnotated`, `@/ui/pseudocode/PseudoToReal`.
+
+### Project-code figures
+
+Three designs for one contract, `ProjectFigureProps` in
+`src/ui/projectcode/projectFigure.ts`, answering the question a trace table
+cannot: **where does this live, what calls it, and what has to be true elsewhere
+for this line to make sense**. The unit is a STOP ON A TOUR and not a file, so
+`files` is the map and `stops` is the route. From `slide-kit/projectcode-lab`,
+where **the winner was not picked**, so all three are registered and the lab stays
+the record of the comparison.
+
+| Figure | Reach for it when | Worst at |
+|---|---|---|
+| `TourStops` | the default: a small map of the files that never leaves, with one snippet at a time large beside it, so the room never loses track of where a snippet lives | the HANDOVER. `via` is drawn nowhere, so a room can finish the tour able to name every file and still not say what calls what. It also shows one snippet, so two stops cannot be compared |
+| `CallFlow` | WHAT HANDS TO WHAT is the lesson: the stops as a chain, with the mechanism of each handover named on the line between them | the code. Five 200px cards leave a 106px code column, so the snippets came out entirely and the cards now name line ranges and hand the reading to `TourStops` |
+| `LayerMap` | the question is "where does this live" rather than "what happens next": one band per layer, with the tour plotted onto it so a request reads as a descent | the code, almost entirely: no snippet at all. It also collapses when every layer holds one file visited once, because then the band and the chip say the same thing twice |
+
+Two things an author has to get right:
+
+- **When `routes` is used, `routes[0].stops` must be the same array as `stops`**,
+  which is what a figure draws when it ignores the toggle, and every route must
+  hold the same NUMBER of stops. The resolver reports both. The build-step count a
+  slide registers cannot change while the slide is up, and picking a route is a
+  click.
+- **Each route is authored, never the other one reversed.** `via` names a
+  mechanism and a mechanism has a direction, `title` is a claim that changes with
+  the direction, and two stops inside one file do not swap: you write the function
+  then the line inside it, and the request reaches the function then the line
+  inside it.
+
+`routeToggle.tsx` is the shared control: `Request flow` against `Code flow` on one
+press, with the numbers and the connectors following. It is a control rather than a
+build step, because the room asks "so which do we write first" at an unpredictable
+moment and a build step can only be reached in order.
+
+Not on the barrel, import by path: `@/ui/projectcode/TourStops`,
+`@/ui/projectcode/CallFlow`, `@/ui/projectcode/LayerMap`.
+
+### Point-stating figures
+
+Three designs for one contract, `PointsFigureProps` in
+`src/ui/points/pointsFigure.ts`, for **stating a short set of points**, which is
+the most frequent thing any deck in this repo does. From `slide-kit/points-lab`,
+where **the winner was not picked**, so all three are registered and the lab stays
+the record of the comparison.
+
+| Figure | Reach for it when | Worst at |
+|---|---|---|
+| `RuleStack` | the default: full-width ordered rows, so a claim gets its own line with its reason under it, and the ordinal states an order a stack otherwise only implies | it states a SEQUENCE whether or not one exists, so genuine peers read as steps, and six rows come to 532px, which does not fit the budget: its honest ceiling is four |
+| `PeerCards` | the points are things of one kind and equal geometry is the honest claim, with every claim at one eye height | it flattens the lead, and 224px of content width means a 65-character claim drives the declared 18px of padding to 0 |
+| `LeadAndRest` | one point leads and the others support it: the lead takes 440px and 26px type, the rest share a 640px column | it promotes one point whether or not the author meant it and cannot be switched off, and a support row cannot hold a reason past about 86 characters |
+
+**A bullet list is what these replace**, and what it gets wrong is structural: four
+bullets claim the four are peers when most sets have a lead; a bullet holds one
+string, so the author either states the claim and loses the reason or writes a
+sentence too long to read from the back; a list arrives whole, which is not the
+same as an instructor arriving at a point; and it invites two ideas per bullet,
+which is the hard rule this repo breaks most often.
+
+Three things an author has to get right:
+
+- **A set is ALL OR NONE on `body` and on `term`.** Half the points carrying a
+  reason reads as an edit somebody abandoned, and every variant then has to leave
+  a hole for the missing half. The resolver reports it rather than guessing which
+  was intended.
+- **A label is a claim, not a sentence.** Past about 52 characters, or ending in a
+  full stop, it is reported: a full stop means the reason has been folded into the
+  claim, which is the two-ideas failure arriving through the front door.
+- **Six points is the cap.** Past that the honest edit is two slides, and the
+  figure says so rather than shrinking its own type.
+
+`pointsChrome.tsx` owns the tone ramp, the term chip and the hover aside. **`risk`
+is amber and not red:** `danger` on a slide reads as an error in the deck and the
+room looks for what broke, while a risk is a trap the learner is about to walk
+into. A non-neutral tone also gets a WORD, because colour carries on a good
+projector and nothing on a bad one.
+
+Not on the barrel, import by path: `@/ui/points/RuleStack`,
+`@/ui/points/PeerCards`, `@/ui/points/LeadAndRest`.
+
+**They size themselves to the set and to the slot, and they did not always.** As promoted, all three laid out from x=0 on a fixed 1100px stage at a fixed height, both derived from a four-point fixture: a two-point set stranded about 540px of width, and a short set left about 120px of empty card under its text. Session 1 v3 hit both on the same day. What they do now:
+
+- **`PeerCards`** centres its row, divides the slot by the card count (clamped 240 to 420, so two cards come to 420 each and four to 260), and derives the card height from the estimated line counts of the longest label and the longest body at the real content width.
+- **`RuleStack`** derives its row height the same way, and collapses its marker column from 132px to 46px when the set carries no `term`, because 132 was sized for a term chip and an untermed set put a 28px badge in it and left 104px of nothing.
+- Both take a **`width`**, for the common case of a figure paired with a points column in a `ContentSlide` rather than owning the stage.
+- Estimated and not measured, deliberately: the height has to be known before layout, and a measure-then-render pass risks the browser and the exported single file disagreeing. The estimate takes the WORST item, so a card can be too tall by a rounding and never too short, which is what keeps the declared padding a floor.
+
+**A point's `tag` is the tone's word in your language.** The defaults came from the lab fixture, so `risk` says "the usual trap". A deck that means "this one is later" by `risk` must say so, and Session 1 v3 shipped a slide calling a later problem a trap before this existed.
+
+### Feature figures
+
+Ten designs for one contract, `FeaturesFigureProps` in
+`src/ui/features/featuresFigure.ts`, for **"here are the things it can do"**. From
+`slide-kit/features-lab`, where **the winner was not picked**, so all ten are
+registered on purpose and the lab stays the record of the comparison and of what
+each is worst at.
+
+They exist because the kit's answer was `CardGrid`: n cards of identical size,
+identical white, identical tone. The verdict on exactly that slide was "all cards
+having same design, it is not visually appealing", and then the more useful
+version, "why should we be constrained to cards?", which became section 8 of
+`STYLE_GUIDE.md`. A modular grid whose cards are all one size defeats the point of
+a modular grid, because nothing leads and the eye is given no anchor to enter on.
+
+| Figure | Reach for it when | Worst at |
+|---|---|---|
+| `BentoGrid` | one capability leads: unequal tiles, the hero spanning two columns at exactly twice the area and the only one carrying its outcome | a set with no real leader, where it asserts a hierarchy the content does not have |
+| `Spotlight` | one feature should be legible at a time, and a click MOVES the light rather than adding a tile | its own final frame. A screenshot or a PDF gets one feature and four headings |
+| `AlternatingRows` | the what and the why belong side by side, sides swapping so each pair reads as a pair | comparison, because labels never line up in a column |
+| `RadialSpread` | BREADTH is the claim, which is the one thing a grid states but cannot show | mechanism: the body has to move into the hover, which a projector audience cannot reach |
+| `EditorialList` | the NAMES are the content, and a card around each costs the name its size | it draws nothing but a list, so a set whose items relate to each other is misdrawn as unrelated names. It drops `icon` and `logo`, so it cannot satisfy hard rule 12 |
+| `SplitCompare` | a list would assert value where a comparison demonstrates it | `body` has nowhere to live, and half the stage states the bad case, which is wasted if the room already recognises it |
+| `MetricLed` | the figure leads, because a number is the one thing the eye finds unprompted | it needs COMMENSURABLE numbers, and says so rather than pretending |
+| `LayerAnatomy` | the set is one thing with parts, which a grid lies about by drawing them as peers | a set with no real ordering: it invents an architecture, which is a worse lie than drawing them flat |
+| `FeatureFocus` | one capability per frame, at the size of the only thing on the slide | it can never show the SET, so breadth and comparison are unanswerable, and the cost lands in the deck as N slides |
+| `AnnotatedShot` | show the thing itself, with each claim pinned to the part that proves it | it has no degraded mode at all, cannot pin an abstract capability, and rots the first time the product screen is redesigned |
+
+Two things an author has to get right:
+
+- **`weight: 'hero'` on at most one item.** The resolver reports more than one
+  rather than letting a variant pick silently, and a set with no hero is what
+  `BentoGrid` is worst at.
+- **`outcome` is what the feature BUYS, kept separate from `body`, which is what
+  it IS.** A variant can then place them differently, or admit it has nowhere to
+  put one. `without` is the cost of not having it and only `SplitCompare` reads it.
+
+**Three of the ten have an ENTRY REQUIREMENT**, which is the most useful thing the
+lab produced. `SplitCompare` needs `without`, because without it both columns read
+the same words with one struck through, which demonstrates nothing. `MetricLed`
+needs figures that are readings of the same instrument, because setting them at one
+size in one colour asserts exactly that and no unit text repairs it. `AnnotatedShot`
+needs a real capture: hard rule 11 forbids inventing a screenshot and hard rule 8
+forbids annotating an unrelated one. **A variant that can only be drawn by
+degrading the content is telling you the contract is short a field, or that the
+design has an entry requirement.**
+
+Not on the barrel, import by path: `@/ui/features/BentoGrid` and the nine beside
+it.
+
+**These own the stage.** Each is a full 1100px frame at a fixed height, so none of them fits beside a points column in a `ContentSlide`. `SplitCompare` is also a `without` against a `with` and not a mapping: for a correspondence, reach for `AnalogyMap`.
 
 ## Transitions and reveals
 
