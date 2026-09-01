@@ -366,13 +366,27 @@ keeping it apart from its neighbours: a label centred on a boundary will
 overlap that boundary, and nothing warns you. Give labels their own clear
 space rather than trusting a coordinate.
 
-## 18. Every deck carries a quiz frame, and a lone one sits before the takeaways
+## 18. Every deck carries one or two quiz frames, and the last one sits before the takeaways
 
-A session deck must include at least one `QuizTimeSlide`. It is not optional
-chrome: it marks the switch from "listen" to "answer", so the room looks up
-before anything is asked.
+A session deck must include **one or two** `QuizTimeSlide`s. They are not
+optional chrome: a quiz frame marks the switch from "listen" to "answer", so the
+room looks up before anything is asked.
 
-**If the deck has only one, it goes immediately before Key Takeaways.**
+**The last one goes immediately before Key Takeaways.** A second, when there is
+one, goes at a concept boundary in the middle of the deck.
+
+**Two is the shape asked for on 2026-08-31, while planning session 7**, and it
+supersedes the standing "no quiz frames anywhere" instruction that sessions 5 and
+6 shipped under. That instruction is retired: it was given as a preference for
+one deck, was carried forward twice by inheritance, and left three consecutive
+decks silently contradicting this rule. A future session does not need to ask
+again, and does not need an exception recorded for it.
+
+Where the second one goes is the pedagogy question, not a layout one:
+`PEDAGOGY_GUIDELINES.md` §8 puts it **after the concept the rest of the session
+depends on**, so a misunderstanding is caught before it compounds. Session 7 puts
+it after concept 2, because everything from there on assumes the room can already
+read the words pipeline, stage and gate.
 
 ```
 … → Recap → QuizTimeSlide → Key Takeaways → Next session → Thank you
@@ -381,8 +395,8 @@ before anything is asked.
 That position is the point. The takeaways state what the room should now
 believe; the quiz is the last chance to find out whether they actually do,
 while the session is still in the room. Put it earlier and the takeaways paper
-over whatever the quiz just exposed. A deck with several quizzes may place the
-others at concept boundaries, but one of them still holds this slot.
+over whatever the quiz just exposed. Whatever else a deck does, one quiz frame
+still holds this slot.
 
 Write the `subtitle` so it names what is being tested, without asking anything:
 *"Two Dockerfiles, one Compose file, and one address that broke the rule on
