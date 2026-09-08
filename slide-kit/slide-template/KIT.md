@@ -159,6 +159,38 @@ every session on the next `sync-kit.mjs --apply`, which is the point.
 
 ---
 
+## Never add a session figure to `src/ui/index.ts`. Import it by path
+
+`src/ui/index.ts` is the `@/ui` barrel and it is **kit-owned**, so
+`sync-kit.mjs --apply` overwrites it wholesale. A session figure re-exported from
+its tail is deleted by the next sync, the figure file itself is left sitting
+untouched beside the deck, and the deck stops compiling with
+`Module '@/ui' has no exported member 'X'`.
+
+So a session-owned figure is imported **by path**:
+
+```tsx
+import { TargetAnatomy } from '@/ui/TargetAnatomy'   // survives every sync
+import { TargetAnatomy } from '@/ui'                 // deleted by the next one
+```
+
+This is what the kit already does for its own figure families
+(`@/ui/points/...`, `@/ui/flowchart/...`), and a path import names a file that no
+sync touches.
+
+**It has now cost four decks.** Session 4 hit it first and recorded it in its
+deck header; the 2026-09-03 kit sync then broke session 5 twice
+(`AutomationLadder`, `TargetAnatomy`) and session 6 twice (`ImageNameAnatomy`,
+`TagPointers`), all four with the same error, because the convention of appending
+to the barrel's tail looks harmless and cannot survive.
+
+The alternative worth considering, if this recurs: have the kit's `index.ts`
+re-export a session-owned `src/ui/session.ts` that `sync-kit.mjs` never touches,
+so a session has a barrel of its own. Not done yet, because a path import is one
+line and needs no kit machinery.
+
+---
+
 ## Capture timing, if a screenshot looks broken
 
 `?all` forces every click-gated build step open, but it does **not** fast-forward
