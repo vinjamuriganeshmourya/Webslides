@@ -133,14 +133,32 @@ for (let i = 1; i <= TOTAL; i++) {
       thirteen slides had wrapped labels and scrolling panels. A harness that
       exempts by accident is worse than no harness, because it is believed.
     */
+    /*
+      ONE EXPLICIT OPT-OUT, DECLARED BY THE SLIDE ITSELF.
+
+      `QuestionSlide` is a vertically centred pause frame: one card on the stage's
+      centre line, with a deliberate empty band above and below it. Its text is
+      LEFT-aligned inside that card, so neither test below sees it, and the tail
+      measurement reports the intentional band as dead space.
+
+      The slide type therefore declares itself with `data-align-exempt="centred"`.
+      That is a NAMED exemption a reader can grep for, not a widened heuristic:
+      the comment above is emphatic that an exemption which fires by accident is
+      worse than no harness, and loosening the geometry test to cover this frame
+      is exactly how that happens. Chrome collisions and clipped panels are still
+      measured on an exempt slide, because those are wrong on any layout.
+    */
+    const declaredCentred = !!content.querySelector('[data-align-exempt="centred"]')
+
     const centredLayout =
-      !!tr &&
+      declaredCentred ||
+      (!!tr &&
       (getComputedStyle(title).textAlign === 'center' ||
         /* Centred by flex rather than by text-align, as the Welcome and Thank You
            frames are. The width test is what the first version was missing: a
            full-width LEFT-aligned heading also has a centred box, so "centred box"
            alone exempted almost the whole deck. */
-        (tr.width < cr.width - 40 && Math.abs((tr.left + tr.right) / 2 - centre) <= 16))
+        (tr.width < cr.width - 40 && Math.abs((tr.left + tr.right) / 2 - centre) <= 16)))
 
     /* The header block itself is not a finding: it defines the datum. Walk past it
        and measure the blocks that carry the slide's body. */

@@ -5,7 +5,13 @@ import { DeckContext } from './DeckContext'
 import { SlideStage } from './SlideStage'
 import { ProgressBar } from './ProgressBar'
 import { DeckControls } from './DeckControls'
-import { useKeyboardNav } from './useKeyboardNav'
+import {
+  initialArrowMode,
+  rememberArrowMode,
+  useKeyboardNav,
+  type ArrowMode,
+} from './useKeyboardNav'
+import { SlidePicker } from './SlidePicker'
 import { useFullscreen } from './useFullscreen'
 import { slideVariants, slideTransition, type SlideTransition } from '@/motion/presets'
 import { Stepper } from '@/motion/Stepper'
@@ -22,10 +28,21 @@ function hashIndex(total: number): number {
 
 /**
  * A full-page deck: the slide fills the viewport edge-to-edge (no padding or
- * letterbox chrome). Kept on top: the progress bar, the slide/animation-step
- * counter, the ◀ ▶ arrows, and a fullscreen toggle. Navigation is ← / → only
- * (plain arrows jump whole slides as a cut, Ctrl+← / → step the build). No overview, notes, or
- * click-to-advance.
+ * letterbox chrome). Kept on top: the progress bar, the slide counter, the ◀ ▶
+ * arrows, a jump-to-slide button, the arrow-key mode pill, and a fullscreen
+ * toggle.
+ *
+ * NAVIGATION
+ *
+ *   →  /  ←        whole slide as a cut, or one build step: whichever the mode
+ *                  pill says. `S` swaps the pair, and the choice is remembered
+ *                  per browser.
+ *   Ctrl+→ / ←     the other one of the pair
+ *   PageDown / Up  the same as the plain arrows, because that is what a clicker
+ *                  sends and a clicker cannot send Ctrl
+ *   G              jump to a slide, by name or number
+ *
+ * Speaker notes and click-to-advance are still intentionally omitted.
  */
 export function Deck({ slides, transition = 'slide' }: DeckProps) {
   const total = slides.length
@@ -45,6 +62,27 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
   */
   const [cut, setCut] = useState(false)
   const { isFullscreen, toggle: toggleFullscreen } = useFullscreen(rootRef)
+
+  /*
+    WHAT THE PLAIN ARROWS DO, AND WHERE THE PICKER LIVES.
+
+    The mode is initialised from the URL, then the harness flag, then this
+    browser's last choice, then the default: see `initialArrowMode`. It is
+    remembered on change rather than in an effect, so a render can never write it.
+  */
+  const [arrowMode, setArrowMode] = useState<ArrowMode>(initialArrowMode)
+  const [pickerOpen, setPickerOpen] = useState(false)
+
+  const toggleArrowMode = useCallback(() => {
+    setArrowMode((m) => {
+      const nextMode: ArrowMode = m === 'slides' ? 'steps' : 'slides'
+      rememberArrowMode(nextMode)
+      return nextMode
+    })
+  }, [])
+
+  const openPicker = useCallback(() => setPickerOpen(true), [])
+  const closePicker = useCallback(() => setPickerOpen(false), [])
 
   // Refs mirror state so nav callbacks read the latest values without stale closures.
   const stepRef = useRef(0)
@@ -140,7 +178,41 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
     window.history.replaceState(null, '', `#/${index + 1}${id ? `-${id}` : ''}`)
   }, [index, slides])
 
-  useKeyboardNav({ next, prev, prevSlide, nextSlide })
+  /*
+    THE PICKER OWNS THE ARROW KEYS WHILE IT IS OPEN.
+
+    Both this and the picker listen on `window`, so without the flag an arrow press
+    would move the picker's cursor AND change the slide behind it, and the deck
+    would be somewhere else by the time the presenter pressed Enter.
+  */
+  useKeyboardNav({
+    next,
+    prev,
+    prevSlide,
+    nextSlide,
+    arrowMode,
+    toggleArrowMode,
+    openPicker,
+    enabled: !pickerOpen,
+  })
+
+  /*
+    A JUMP FROM THE PICKER LANDS FULLY REVEALED, like the plain-arrow cut does.
+
+    Anything else would be a trap: the presenter jumps to slide 12 to answer a
+    question and gets its first build step, so the slide they wanted to show is
+    two thirds absent and they have to guess how many presses it takes to restore
+    it in front of the room.
+  */
+  const pickSlide = useCallback(
+    (i: number) => {
+      setPickerOpen(false)
+      if (i === indexRef.current) return
+      pendingFull.current = true
+      gotoSlide(i, i >= indexRef.current ? 1 : -1, { cut: true })
+    },
+    [gotoSlide],
+  )
 
   const ctx = useMemo(
     () => ({
@@ -241,7 +313,25 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
           next={next}
           prev={prev}
           toggleFullscreen={toggleFullscreen}
+          arrowMode={arrowMode}
+          toggleArrowMode={toggleArrowMode}
+          openPicker={openPicker}
         />
+
+        {/* NEVER IN THE DOM UNLESS OPEN. It covers the whole stage, so parked at
+            `opacity: 0` it would be reported by `qa.mjs` as content that scrolls
+            and by `video-safe.mjs` as covering the instructor video, on every
+            slide of every deck. */}
+        <AnimatePresence>
+          {pickerOpen && (
+            <SlidePicker
+              slides={slides}
+              index={index}
+              onPick={pickSlide}
+              onClose={closePicker}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </DeckContext.Provider>
   )
