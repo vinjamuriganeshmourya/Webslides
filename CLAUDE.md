@@ -69,6 +69,13 @@ skills-lock.json             the pin file for the above
   settings.json                          shared plugin list (committed)
 ```
 
+**Several people work in this repo.** Before the first edit of anything, read
+[`.claude/skills/branch-from-main/SKILL.md`](.claude/skills/branch-from-main/SKILL.md):
+pull main, branch from it, work there. A branch cut from a stale main looks fine
+for hours and then produces a merge nobody can review. Anything under
+`slide-kit/slide-template/` is a PR, never a direct merge, because
+`sync-kit.mjs --apply` pushes it into every session including signed-off ones.
+
 **Every standing rule in this repo is indexed in [`RULES.md`](RULES.md)**, one
 line each, pointing at the file that holds the full text. Read it when you are
 unsure whether something is a rule. Add to it only with the user's
