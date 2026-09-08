@@ -1,6 +1,14 @@
 /** Barrel export for all shared slide building blocks. */
 export { SlideBase, type SlideVariant } from './SlideBase'
 export { SlideHeader } from './SlideHeader'
+/*
+  The sentence under the heading, drawn as the FIRST thing in the content well.
+  Reach for it in a new slide type that takes a `lead`: the header no longer
+  accepts one, so the type renders `<SlideLead tone={tone}>{lead}</SlideLead>`
+  itself, outside whatever block it centres below. Not for an aside or a warning,
+  which is `Callout`.
+*/
+export { SlideLead } from './SlideLead'
 export { Logo } from './Logo'
 export { DotGrid, Blob, Orb, WaveArc } from './Decor'
 export { Kicker, Chip, NumberBadge } from './primitives'
@@ -52,6 +60,18 @@ export { ScenarioCard, type ScenarioBeat } from './ScenarioCard'
    `StatusList` is a list whose rows carry verdicts, `ChatThread` is a two-voice
    exchange. See each file's header for what it must not be used for. */
 export { SyntaxBreakdown, type SyntaxPart } from './SyntaxBreakdown'
+
+/* A comparison where one side stands in for the other: one pairing is one
+   object, familiar side recessed, new side raised. Chosen in
+   `slide-kit/comparison-lab` over three other candidates. NOT for two peers
+   being weighed against each other -- it asserts a direction. */
+export { SwapRows } from './SwapRows'
+export type { CompareFigureProps, ComparePair } from './compareFigure'
+
+/* The style guide's surface lighting (section 9) for SVG figures, which cannot
+   express it as CSS. Declare `<SurfaceDefs/>` once per `<svg>`, then spread
+   `surface(tone)` onto a `<rect>`. */
+export { SurfaceDefs, surface, TopHighlight, type SurfaceTone } from './svgDepth'
 export { StatusList, type StatusItem, type StatusKind } from './StatusList'
 export { ChatThread, type ChatTurn } from './ChatThread'
 

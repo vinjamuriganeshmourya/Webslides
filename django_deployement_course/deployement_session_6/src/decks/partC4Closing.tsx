@@ -7,7 +7,13 @@ import {
   SectionBreakerSlide,
   ThankYouSlide,
 } from '@/slides'
-import { CodeBlock, DataTable, TagPointers, Terminal } from '@/ui'
+import { CodeBlock, DataTable, Terminal } from '@/ui'
+/* Session-owned figure, imported from its own file rather than through `@/ui`.
+   `src/ui/index.ts` is kit-owned, so `sync-kit.mjs` overwrites it and the
+   re-export line that used to live at its tail vanished on sync — this file
+   stopped compiling with "Module '@/ui' has no exported member 'TagPointers'".
+   Importing the file directly keeps it out of the kit's way permanently. */
+import { TagPointers } from '@/ui/TagPointers'
 import {
   AT_ROOT,
   C1,
@@ -97,7 +103,7 @@ export const partC4Closing: SlideDef[] = [
             {' on Docker Hub?'}
           </>
         }
-        qualifier="The code changed, the tag did not"
+        qualifier="Code changed, the tag did not"
         lesson={SESSION}
       />
     ),
@@ -124,7 +130,7 @@ export const partC4Closing: SlideDef[] = [
               </>
             ),
           },
-          { text: 'The old build is unrecoverable from that tag' },
+          { text: 'Old build is unrecoverable from that tag' },
         ]}
         note={{
           kind: 'warning',
@@ -151,7 +157,7 @@ export const partC4Closing: SlideDef[] = [
       <ContentSlide
         kicker={C4}
         title="The latest Trap"
-        lead="The word sounds safe and automatic, which is exactly the problem"
+        lead="Word sounds safe and automatic, which is exactly the problem"
         points={[
           {
             text: (
@@ -225,7 +231,7 @@ export const partC4Closing: SlideDef[] = [
       <ContentSlide
         kicker={C4}
         title="A History That Holds"
-        lead="The repository on Docker Hub now holds a history that never loses a version"
+        lead="Repository on Docker Hub now holds a history that never loses a version"
         lesson={SESSION}
       >
         <div className="mx-auto w-full max-w-[980px]">
@@ -319,8 +325,8 @@ export const partC4Closing: SlideDef[] = [
     element: (
       <ContentSlide
         kicker={C4}
-        title="The Release"
-        lead="The whole release is now two words each"
+        title="Release"
+        lead="Whole release is now two words each"
         lesson={SESSION}
       >
         <div className="mx-auto w-full max-w-[860px]">
@@ -358,7 +364,7 @@ export const partC4Closing: SlideDef[] = [
           <Terminal
             path={AT_ROOT}
             lines={[{ text: 'make push VERSION=v2', kind: 'cmd' }]}
-            caption="The variable is set for this run only"
+            caption="Variable is set for this run only"
           />
         </div>
       </ContentSlide>
@@ -425,7 +431,7 @@ export const partC4Closing: SlideDef[] = [
       <ContentSlide
         kicker={C4}
         title="Six Sessions"
-        lead="The course so far, as one table, and the last row is today"
+        lead="Course so far, as one table, and the last row is today"
         lesson={SESSION}
       >
         <div className="mx-auto w-full max-w-[980px]">

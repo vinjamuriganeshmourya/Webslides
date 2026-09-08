@@ -204,6 +204,8 @@ const F = {
 const LOGO_SRC: Record<StationLogo, string> = {
   docker: '/assets/tech/docker.png',
   git: '/assets/tech/git.png',
+  github: '/assets/tech/github.png',
+  jenkins: '/assets/tech/jenkins.png',
   python: '/assets/tech/python.png',
   nodejs: '/assets/tech/nodejs.png',
   makefile: '/assets/tech/makefile.png',

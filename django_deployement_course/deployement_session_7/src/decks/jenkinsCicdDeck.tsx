@@ -107,7 +107,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
         }}
       >
         <DataTable
-          columns={[{ label: 'What we did', weight: 1.1 }, { label: 'The command', weight: 1.4 }]}
+          columns={[{ label: 'What we did', weight: 1.1 }, { label: 'Command', weight: 1.4 }]}
           rows={[
             ['Gave the image a full name', <Code key="a">docker tag ravi123/nxttrendz-backend:v7</Code>],
             ['Signed in to the registry', <Code key="b">docker login</Code>],
@@ -130,8 +130,8 @@ export const jenkinsCicdDeck: SlideDef[] = [
         lesson={SESSION}
         items={[
           { title: C1, sub: 'Give your code a home on the internet' },
-          { title: C2, sub: 'The practice that automates the boring part' },
-          { title: C3, sub: 'The program that does the work for you' },
+          { title: C2, sub: 'Practice that automates the boring part' },
+          { title: C3, sub: 'Program that does the work for you' },
           { title: C4, sub: 'Job, build, queue and executor' },
         ]}
       />
@@ -166,7 +166,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
             { text: 'make build', kind: 'cmd' },
             { text: 'Successfully tagged nxttrendz-backend:latest', kind: 'ok' },
           ]}
-          caption="The project root. Every command in this session runs from here"
+          caption="Project root. Every command in this session runs from here"
         />
       </ContentSlide>
     ),
@@ -238,7 +238,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
           title: 'Remember',
           body: (
             <>
-              The automation server we meet today copies your code <strong>over the network</strong>.
+              Automation server we meet today copies your code <strong>over the network</strong>.
               It cannot copy a folder that only exists on your laptop.
             </>
           ),
@@ -350,7 +350,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
       <ContentSlide
         kicker={C1}
         title="Why This Order"
-        lead="The first push is the one step in this session you cannot take back"
+        lead="First push is the one step in this session you cannot take back"
         lesson={SESSION}
       >
         <Callout kind="warning" title="Two things that surprise people" asStep={false}>
@@ -376,7 +376,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
         points={[
           {
             text: 'Stop tracking it, then commit that change',
-            sub: 'The file stays on your disk. Only Git forgets about it',
+            sub: 'File stays on your disk. Only Git forgets about it',
             icon: 'unlink',
           },
           {
@@ -523,7 +523,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
       >
         <DataTable
           columns={[
-            { label: 'The step', weight: 1 },
+            { label: 'Step', weight: 1 },
             { label: 'Images, last session', weight: 1.4 },
             { label: 'Code, today', weight: 1.4 },
           ]}
@@ -569,7 +569,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
             },
           ]}
         />
-        <Callout kind="note" title="The same job, done by two files" asStep={false}>
+        <Callout kind="note" title="Same job, done by two files" asStep={false}>
           <Code>.gitignore</Code> keeps secrets out of Git. <Code>.dockerignore</Code> keeps them out
           of images. You wrote both, in session 4 and session 2.
         </Callout>
@@ -624,12 +624,12 @@ export const jenkinsCicdDeck: SlideDef[] = [
             {
               status: 'warning',
               text: 'Inconsistency',
-              detail: 'The tests passed on YOUR machine, and were never run anywhere else',
+              detail: 'Tests passed on YOUR machine, and were never run anywhere else',
             },
             {
               status: 'warning',
               text: 'Delay',
-              detail: 'The person who deploys is in a meeting, so the release waits for them',
+              detail: 'Person who deploys is in a meeting, so the release waits for them',
             },
           ]}
         />
@@ -646,7 +646,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
       <QuestionSlide
         kicker={C1}
         question="Could a machine watch our repository, and every time code is pushed, run the tests, build the image and push it, the same way every time, without being asked?"
-        qualifier="The same four commands you run by hand today"
+        qualifier="Same four commands you run by hand today"
         lesson={SESSION}
       />
     ),
@@ -662,7 +662,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
     section: C2,
     label: '02 Divider',
     element: (
-      <SectionBreakerSlide index={2} title={C2} subtitle="The practice, before the tool" lesson={SESSION} />
+      <SectionBreakerSlide index={2} title={C2} subtitle="Practice, before the tool" lesson={SESSION} />
     ),
     notes: 'The practice first. Naming Jenkins now would make CI/CD sound like a Jenkins feature.',
   },
@@ -725,7 +725,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
       <ContentSlide
         kicker={C2}
         title="Continuous Delivery"
-        lead="The second half of CI/CD, and the one this course builds up to"
+        lead="Second half of CI/CD, and the one this course builds up to"
         lesson={SESSION}
         points={[
           {
@@ -761,7 +761,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
           },
           {
             text: 'Every passing change reaches the live server on its own',
-            sub: 'The last human action in the whole chain is your git push',
+            sub: 'Last human action in the whole chain is your git push',
             icon: 'rocket',
           },
         ]}
@@ -777,8 +777,8 @@ export const jenkinsCicdDeck: SlideDef[] = [
     element: (
       <ContentNoteSlide
         kicker={C2}
-        title="The Three Terms"
-        lead="The same chain of steps, automated a little further each time"
+        title="Three Terms"
+        lead="Same chain of steps, automated a little further each time"
         lesson={SESSION}
         note={{
           kind: 'tip',
@@ -843,7 +843,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
     element: (
       <ContentSlide
         kicker={C2}
-        title="The Mapping"
+        title="Mapping"
         lead="Every part of that factory has a name in software"
         lesson={SESSION}
       >
@@ -857,7 +857,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
             ['Fixed stations, in a fixed order', 'Pipeline stages: test, then build, then push'],
             ['A failed part is pulled off the line', 'A failed stage stops the run, and the team is told'],
             ['Identical cars come out', 'Identical, tested releases come out'],
-            ['The line runs all day, every day', 'The pipeline runs on every push'],
+            ['Line runs all day, every day', 'Pipeline runs on every push'],
           ]}
         />
       </ContentSlide>
@@ -936,7 +936,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
         note={{
           kind: 'success',
           title: 'Remember',
-          body: 'The pipeline is your Makefile, run by a robot. Nothing new has to be invented for it.',
+          body: 'Pipeline is your Makefile, run by a robot. Nothing new has to be invented for it.',
         }}
       >
         {/* Three targets, no blank lines between them, at 14px. The eight-line
@@ -1012,9 +1012,9 @@ export const jenkinsCicdDeck: SlideDef[] = [
             [
               <Tech key="a" name="github">Webhook</Tech>,
               'GitHub tells the server the instant you push, without being asked',
-              'The professional standard. We set one up in session 9',
+              'Professional standard. We set one up in session 9',
             ],
-            ['Poll SCM', 'The server asks GitHub every few minutes whether anything changed', 'When a webhook cannot reach your server'],
+            ['Poll SCM', 'Server asks GitHub every few minutes whether anything changed', 'When a webhook cannot reach your server'],
             ['Build Now', 'A person clicks a button', 'Testing the pipeline itself, which is what we do today'],
           ]}
           highlight={[1]}
@@ -1050,7 +1050,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
     section: C3,
     label: '03 Divider',
     element: (
-      <SectionBreakerSlide index={3} title={C3} subtitle="The factory that runs the line" lesson={SESSION} />
+      <SectionBreakerSlide index={3} title={C3} subtitle="Factory that runs the line" lesson={SESSION} />
     ),
     notes: 'We have described the assembly line. Now meet the factory that runs it.',
   },
@@ -1071,7 +1071,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
         }}
         points={[
           { text: 'It never sleeps, so it never forgets', sub: 'That was failure number one on the by-hand list', icon: 'eye' },
-          { text: 'If CI/CD is the assembly line idea, Jenkins is the factory', sub: 'The idea needs something to actually run it', icon: 'settings' },
+          { text: 'If CI/CD is the assembly line idea, Jenkins is the factory', sub: 'Idea needs something to actually run it', icon: 'settings' },
         ]}
       />
     ),
@@ -1212,13 +1212,13 @@ export const jenkinsCicdDeck: SlideDef[] = [
           rows={[
             [<Code key="a">-d</Code>, 'Runs in the background, so your terminal is free again'],
             [<Code key="b">--name jenkins</Code>, 'A fixed name, instead of the random one Docker would pick'],
-            [<Code key="c">-p 8080:8080</Code>, 'The web dashboard, which you open at localhost:8080'],
+            [<Code key="c">-p 8080:8080</Code>, 'Web dashboard, which you open at localhost:8080'],
             [<Code key="d">-p 50000:50000</Code>, 'For extra Jenkins workers later. Standard to open it now'],
             [
               <Code key="e">-v jenkins_home:/var/jenkins_home</Code>,
               'A volume. Every setting and every past run survives a restart, exactly like pgdata did for the database in session 3',
             ],
-            [<Code key="f">jenkins/jenkins:lts</Code>, 'The official image. lts means Long Term Support, the stable one'],
+            [<Code key="f">jenkins/jenkins:lts</Code>, 'Official image. lts means Long Term Support, the stable one'],
           ]}
           highlight={[5]}
         />
@@ -1367,7 +1367,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
         lesson={SESSION}
         points={[
           {
-            text: 'The same idea as VS Code extensions',
+            text: 'Same idea as VS Code extensions',
             sub: 'A small core, plus the pieces you actually need. You have done this before',
             icon: 'plug',
           },
@@ -1410,8 +1410,8 @@ export const jenkinsCicdDeck: SlideDef[] = [
     element: (
       <ContentSlide
         kicker={C4}
-        title="The Screen"
-        lead="The dashboard is empty except for a menu. Here is what is on it"
+        title="Screen"
+        lead="Dashboard is empty except for a menu. Here is what is on it"
         lesson={SESSION}
         points={[
           { text: 'New Item', sub: 'Where you create a job. We use it in a moment', icon: 'plus' },
@@ -1478,7 +1478,7 @@ export const jenkinsCicdDeck: SlideDef[] = [
         }}
         points={[
           {
-            text: 'The numbers matter later',
+            text: 'Numbers matter later',
             sub: 'Those run numbers, #1, #2, #3, are where automatic image tags come from in session 9',
             icon: 'target',
           },
@@ -1498,6 +1498,24 @@ export const jenkinsCicdDeck: SlideDef[] = [
         title="hello-jenkins"
         lead="Before any real pipeline, prove it is alive with a job that just prints a message"
         lesson={SESSION}
+        /*
+          DENSE, ASKED FOR EXPLICITLY.
+
+          `ProceduralStepsSlide` decides this from the step count by default, and
+          four steps is under its threshold. Height comes from LINES though, not
+          from steps: all four details here wrap to two lines, so this slide is
+          taller than the five one-line-step slides the threshold was tuned on.
+          Once the kit moved the lead out of the header, the last detail's second
+          line ended 4px inside the control bar and `align-check.mjs` caught it.
+
+          Dropping the lead is not the alternative: without it the step column
+          starts higher and reaches x=960, which puts it inside the
+          `x913..1280 y0..220` instructor-video rectangle and fails
+          `video-safe.mjs` instead. The two harnesses pull in opposite directions
+          on this slide, and tighter spacing is the only lever that satisfies
+          both without touching the copy.
+        */
+        dense
         steps={[
           {
             title: 'New Item, name it hello-jenkins, pick Freestyle project, click OK',
@@ -1595,10 +1613,18 @@ export const jenkinsCicdDeck: SlideDef[] = [
         noteFirst
         note={{
           kind: 'note',
-          body: 'The Makefile lesson: how you operate a project belongs in a versioned file, not in somebody\'s memory. Tick boxes in a web page are somebody\'s memory.',
+          body: 'Makefile lesson: how you operate a project belongs in a versioned file, not in somebody\'s memory. Tick boxes in a web page are somebody\'s memory.',
         }}
       >
         <DataTable
+          /* `compact` because the kit sync that moved `lead` out of `SlideHeader`
+             into `SlideLead` also grew `DataTable`'s row padding, and the two
+             together pushed the last row's text to y=662 — 2px under the bottom-
+             left control bar, which `align-check.mjs` reports as a CHROME
+             collision. `noteFirst` above had already bought this slide the room
+             it needed once; the tighter row padding buys it back without
+             touching a word of the table. */
+          compact
           columns={[
             { label: '', weight: 1.2 },
             { label: 'Freestyle job', weight: 1.2 },

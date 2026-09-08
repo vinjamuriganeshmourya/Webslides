@@ -184,13 +184,13 @@ export const partFrontC1: SlideDef[] = [
       <ContentSlide
         kicker={C1}
         title="Where It Lives"
-        lead="The image exists, so put the promise to the test and ask where it is"
+        lead="Image exists, so put the promise to the test and ask where it is"
         lesson={SESSION}
       >
         <div className="mx-auto w-full max-w-[980px]">
           <Terminal
             path={AT_ROOT}
-            caption="The local image store on this machine"
+            caption="Local image store on this machine"
             lines={[
               { text: 'docker images', kind: 'cmd' },
               { text: 'REPOSITORY           TAG       IMAGE ID       CREATED       SIZE', kind: 'out' },
@@ -241,7 +241,7 @@ export const partFrontC1: SlideDef[] = [
       <QuestionSlide
         kicker={C1}
         question="156MB, and your Python code is a few hundred kilobytes. What is the other 155MB?"
-        qualifier="The same build, every time, on any machine"
+        qualifier="Same build, every time, on any machine"
         lesson={SESSION}
       />
     ),
@@ -343,7 +343,7 @@ export const partFrontC1: SlideDef[] = [
     element: (
       <ContentNoteSlide
         kicker={C1}
-        title="The Proof"
+        title="Proof"
         lead="Two statements that look like a contradiction, and both are true"
         points={[
           { text: <>{"Your machine's "}<Tech name="nodejs" label="node_modules/" />{' was blocked from entering'}</> },
@@ -397,7 +397,7 @@ export const partFrontC1: SlideDef[] = [
                   {' and the '}
                   <Code>SECRET_KEY</Code>
                 </>,
-                'The project-root .env sits outside both build contexts, and .dockerignore guards against a stray copy. A secret must never be frozen into an image bound for a public registry',
+                'Project-root .env sits outside both build contexts, and .dockerignore guards against a stray copy. A secret must never be frozen into an image bound for a public registry',
               ],
               [
                 <>
@@ -409,7 +409,7 @@ export const partFrontC1: SlideDef[] = [
               ],
               [
                 <Code>VITE_API_BASE_URL</Code>,
-                "The backend's address differs per environment, so Compose supplies it at run time",
+                "Backend's address differs per environment, so Compose supplies it at run time",
               ],
             ]}
           />
@@ -433,7 +433,7 @@ export const partFrontC1: SlideDef[] = [
           title: 'Remember',
           body: (
             <>
-              {'The image holds everything needed to '}
+              {'Image holds everything needed to '}
               <strong>run</strong>
               {' the app, and nothing that ties it to the machine that built it.'}
             </>
@@ -457,7 +457,7 @@ export const partFrontC1: SlideDef[] = [
       <ContentSlide
         kicker={C1}
         title="Why Not the Code"
-        lead="The objection is fair, so compare what a server has to do with each"
+        lead="Objection is fair, so compare what a server has to do with each"
         lesson={SESSION}
       >
         <div className="mx-auto w-full max-w-[980px]">
@@ -609,7 +609,7 @@ export const partFrontC1: SlideDef[] = [
     element: (
       <ContentNoteSlide
         kicker={C1}
-        title="The Account"
+        title="Account"
         lead="Pushing needs a free account, and the username you choose becomes part of every image name"
         points={[
           {
@@ -649,7 +649,7 @@ export const partFrontC1: SlideDef[] = [
     element: (
       <ContentSlide
         kicker={C1}
-        title="The Target Picture"
+        title="Target Picture"
         lead="Where the image is going by the end of this session, and what moves it there"
         lesson={SESSION}
       >
@@ -672,7 +672,7 @@ export const partFrontC1: SlideDef[] = [
             { label: 'docker push', sub: 'once per release', issuedBy: 'left' },
             { label: 'docker pull', sub: 'on every machine', issuedBy: 'right' },
           ]}
-          caption="The image only moves when a command crosses a machine boundary"
+          caption="Image only moves when a command crosses a machine boundary"
         />
       </ContentSlide>
     ),
