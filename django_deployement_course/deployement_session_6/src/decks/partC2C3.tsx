@@ -1,6 +1,12 @@
 import type { SlideDef } from '@/deck/types'
 import { ContentNoteSlide, ContentSlide, SectionBreakerSlide } from '@/slides'
-import { BoundaryBridge, CodeBlock, DataTable, ImageNameAnatomy, Terminal } from '@/ui'
+import { BoundaryBridge, CodeBlock, DataTable, Terminal } from '@/ui'
+/* Session-owned figure, imported from its own file rather than through `@/ui`.
+   `src/ui/index.ts` is kit-owned, so `sync-kit.mjs` overwrites it and the
+   re-export line that used to live at its tail vanished on sync — this file
+   stopped compiling with "Module '@/ui' has no exported member 'ImageNameAnatomy'".
+   Importing the file directly keeps it out of the kit's way permanently. */
+import { ImageNameAnatomy } from '@/ui/ImageNameAnatomy'
 import { AT_ROOT, C2, C3, Code, DOCKER_ID, IMAGE, ON_ANOTHER_MACHINE, pushDenied, REPO, SESSION, Tech } from './deckShared'
 
 /**
@@ -103,7 +109,7 @@ export const partC2C3: SlideDef[] = [
       <ContentNoteSlide
         kicker={C2}
         title="Read Line Two"
-        lead="The second line names a namespace nobody chose"
+        lead="Second line names a namespace nobody chose"
         points={[
           {
             text: (
@@ -152,7 +158,7 @@ export const partC2C3: SlideDef[] = [
       <ContentSlide
         kicker={C2}
         title="Full Image Name"
-        lead="The real name has three parts, and the first one is the part that was missing"
+        lead="Real name has three parts, and the first one is the part that was missing"
         lesson={SESSION}
       >
         <ImageNameAnatomy
@@ -174,8 +180,8 @@ export const partC2C3: SlideDef[] = [
     element: (
       <ContentSlide
         kicker={C2}
-        title="The Three Parts"
-        lead="The same name as a reference table, which is the version worth photographing"
+        title="Three Parts"
+        lead="Same name as a reference table, which is the version worth photographing"
         lesson={SESSION}
       >
         <div className="mx-auto w-full max-w-[980px]">
@@ -367,7 +373,7 @@ export const partC2C3: SlideDef[] = [
           {
             text: (
               <>
-                {'The password is invisible while typing, the same behaviour as '}
+                {'Password is invisible while typing, the same behaviour as '}
                 <Code>createsuperuser</Code>
                 {' in session 4'}
               </>
@@ -523,7 +529,7 @@ export const partC2C3: SlideDef[] = [
         note={{
           kind: 'success',
           title: 'Remember',
-          body: 'The layer system pays off a second time here. In session 2 it was the build cache, which stopped a rebuild from redoing work. On a push it is the same idea against the network: a layer the registry already has is claimed, not sent.',
+          body: 'Layer system pays off a second time here. In session 2 it was the build cache, which stopped a rebuild from redoing work. On a push it is the same idea against the network: a layer the registry already has is claimed, not sent.',
         }}
         lesson={SESSION}
       />
@@ -540,7 +546,7 @@ export const partC2C3: SlideDef[] = [
       <ContentSlide
         kicker={C3}
         title="On Docker Hub"
-        lead="The middle box of the target picture, now real and visible in a browser"
+        lead="Middle box of the target picture, now real and visible in a browser"
         lesson={SESSION}
       >
         {/*
@@ -631,7 +637,7 @@ export const partC2C3: SlideDef[] = [
     element: (
       <ContentSlide
         kicker={C3}
-        title="The Whole Cycle"
+        title="Whole Cycle"
         lead="Two steps run on the machine you build on, two on every machine that serves it"
         lesson={SESSION}
       >
