@@ -1,5 +1,6 @@
 import type { SlideDef, DeckMeta } from '@/deck/types'
-import { BoundaryBridge, CodeBlock } from '@/ui'
+import { BoundaryBridge, CodeBlock, FanOut, SpineFlow, LaneFlow, StepLedger, CircuitMap, GateFlow, TrackSwitch } from '@/ui'
+import type { FlowchartFigureProps } from '@/ui'
 import {
   WelcomeSlide,
   RecapSlide,
@@ -64,6 +65,37 @@ def product_list(request):
     products = Product.objects.all()
     data = ProductSerializer(products, many=True).data
     return Response(data)`
+
+
+/*
+  ONE PROCESS, RENDERED BY ALL SIX FLOW-CHART FIGURES.
+
+  Deliberately a general process rather than a REST one: these figures go into
+  every deck, and a fixture dressed in this lesson's content would be judged on
+  how well it renders this lesson. It stresses every case the older `FlowChart`
+  cannot draw: a decision written as a QUESTION with BOTH exits labelled, an
+  exception branch, and a loop back to an earlier step.
+*/
+const reviewFlow: Pick<FlowchartFigureProps, 'nodes' | 'edges'> = {
+  nodes: [
+    { id: 'submit', kind: 'start', label: 'Work submitted', caption: 'the learner clicks send', icon: 'rocket', lane: 'Learner', detail: 'Nothing is checked yet. The work is queued and the learner gets an id they can quote.' },
+    { id: 'checks', kind: 'step', label: 'Automated checks run', caption: 'format, tests, limits', icon: 'bolt', lane: 'Grading service', detail: 'Formatting, the test suite, and the size limit. Minutes, not hours, and it runs unattended.' },
+    { id: 'gate', kind: 'decision', label: 'All checks pass?', icon: 'target', lane: 'Grading service', detail: 'The only automatic decision in the process. Everything after it is a person.' },
+    { id: 'review', kind: 'step', label: 'A reviewer reads it', caption: 'judgement, not rules', icon: 'eye', lane: 'Reviewer', detail: 'A human reads for judgement: is the approach sound, not merely does it run.' },
+    { id: 'fix', kind: 'step', label: 'Fix and resubmit', caption: 'as many times as needed', icon: 'pencil', lane: 'Learner', detail: 'The loop with no counter. A submission can come back through here any number of times.' },
+    { id: 'done', kind: 'end', label: 'Marked complete', caption: 'feedback published', icon: 'check', lane: 'Reviewer', detail: 'Feedback is published and the attempt is closed. The loop cannot be re-entered.' },
+  ],
+  edges: [
+    { from: 'submit', to: 'checks', kind: 'main' },
+    { from: 'checks', to: 'gate', kind: 'main' },
+    { from: 'gate', to: 'review', label: 'Yes', kind: 'main' },
+    { from: 'gate', to: 'fix', label: 'No', kind: 'alt' },
+    { from: 'fix', to: 'checks', label: 'run again', kind: 'loop' },
+    { from: 'review', to: 'done', kind: 'main' },
+  ],
+}
+
+const FLOW = { ...reviewFlow, caption: 'The straight run is four steps. Everything else is the loop.' }
 
 export const sampleDeck: SlideDef[] = [
   {
@@ -535,6 +567,108 @@ export const sampleDeck: SlideDef[] = [
     ),
   },
   {
+    id: 'flow-spine',
+    label: 'Flow · SpineFlow',
+    section: 'DRF',
+    notes:
+      'THE DEFAULT FLOW CHART when a process branches. The happy path is an unbroken horizontal line at full weight; the failure drops vertically out of the gate in amber and the loop returns underneath, so it can never be confused with progress. All six of these take the IDENTICAL props, so swapping one for another is a rename. They build one click at a time (Ctrl+arrow), assembling along the path, and the exception only starts once the happy path is complete. Worst at: more than one decision, because there is one row of "below" to drop into.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="A process with branches"
+        title="SpineFlow"
+        lead="The happy path is a straight line, and everything else hangs off it."
+      >
+        <SpineFlow {...FLOW} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'flow-lane',
+    label: 'Flow · LaneFlow',
+    section: 'DRF',
+    notes:
+      'THE SWIMLANE. The only one of the six that answers "whose job is that": a step sits in its owner\'s lane, so handoffs become visible as vertical moves and every crossing is a place the work can stall. It is the only figure that reads the `lane` field. Worst at: a process where every step has the same owner, which is a SpineFlow that has thrown away a third of its height. Needs three lanes to earn its keep.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="A process with branches"
+        title="LaneFlow"
+        lead="The same process, but the vertical axis is who owns each step."
+      >
+        <LaneFlow {...FLOW} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'flow-ledger',
+    label: 'Flow · StepLedger',
+    section: 'DRF',
+    notes:
+      'THE FLOW CHART WITH NO BOXES. STYLE_GUIDE section 8 applied to a process: boxes and arrows draw "discrete units connected by transitions", so if every transition is just "and then", the boxes are decoration. A number in the gutter, a rule per row, the words at full width. Wins on long labels, which every other figure here wraps inside a fixed slot. Worst at: shape. A loop back to step two is a line of text saying so, not a line you can point at.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="A process with branches"
+        title="StepLedger"
+        lead="The same process with no boxes, no arrows and no diagram at all."
+      >
+        <StepLedger {...FLOW} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'flow-circuit',
+    label: 'Flow · CircuitMap',
+    section: 'DRF',
+    notes:
+      'THE TEXTBOOK NOTATION: stadium terminals, rectangles, a real diamond, orthogonal connectors, every exit labelled. Reach for it when the room has met flow charts elsewhere and a house dialect would cost them more than it buys. Worst at: the diamond constrains the copy. Only its middle third is usable, so "All checks pass?" fits and anything longer does not, and the copy is the teaching.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="A process with branches"
+        title="CircuitMap"
+        lead="The textbook notation, drawn properly."
+      >
+        <CircuitMap {...FLOW} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'flow-gate',
+    label: 'Flow · GateFlow',
+    section: 'DRF',
+    notes:
+      'THE DECISION AS A BARRIER WITH PHYSICAL EXTENT. Steps are a card row; the decision is a tall bar standing across the line, with the happy path drawn UNDER it so the line passes through and emerges on the far side. Use it when the check is the point of the slide rather than one step among several. Worst at: a second decision, which has no third vertical level to occupy, and a question past about six words, which starts reading as a title for the whole figure.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="A process with branches"
+        title="GateFlow"
+        lead="The decision is not a step. It is a barrier the work has to get past."
+      >
+        <GateFlow {...FLOW} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'flow-track',
+    label: 'Flow · TrackSwitch',
+    section: 'DRF',
+    notes:
+      'THE ONE WHERE THE LOOP IS THE HERO. A railway: the happy path is one continuous straight rail with stations on it, and at the decision the track switches, peeling away on a curve to a lower return track that merges back on a mirrored curve. Straight line against curved detour is the whole design, and it makes rework feel like a detour that rejoins the journey rather than an arrow pointing backwards. Worst at: it buys one idea with the entire stage, and assumes exactly one loop with room to the right of the gate.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="A process with branches"
+        title="TrackSwitch"
+        lead="A railway. The main line runs straight and rework peels off, then merges back."
+      >
+        <TrackSwitch {...FLOW} />
+      </ContentSlide>
+    ),
+  },
+  {
     id: 'boundary-bridge',
     label: 'Boundary bridge (figure)',
     section: 'DRF',
@@ -558,6 +692,31 @@ export const sampleDeck: SlideDef[] = [
             { label: 'docker pull', sub: 'on every deploy', issuedBy: 'right' },
           ]}
           caption="The image never travels laptop to server directly. Neither machine has to trust the other."
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'fan-out',
+    label: 'Fan out (figure)',
+    section: 'DRF',
+    notes:
+      'FOR ONE ARTEFACT AND MANY LIVE COPIES OF IT. The source keeps its single box at full size while every connector leaves it at once, so the room reads MULTIPLICITY rather than sequence, and the source is drawn quiet on purpose (dashed, tinted, no live dot) because the mistake the figure prevents is reading the source as one of the running things. `live` is per copy, so "three containers, one of them stopped" is sayable. It must NOT carry any relationship BETWEEN the copies: they are peers with no connectors between them, so balanced traffic, a shared volume, or copy 2 made from copy 1 are all claims this figure does not make. Confusable with BoundaryBridge, which is two machines and a shared hub between them, and with FlowChart, which is a sequence: reach for FanOut only when one thing becomes several at once. Promoted out of session 1 v2, where it was a deck-local ImageFanout hardcoded to one image and three containers; the contract has no Docker in it.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="One image, many containers"
+        title="Fan out"
+        lead="The image is built once. Every container is started from that one copy."
+      >
+        <FanOut
+          source={{ label: 'Image', caption: 'built once, read only', icon: 'folder' }}
+          copies={[
+            { id: 'c1', label: 'Container 1', note: 'serving traffic', live: true },
+            { id: 'c2', label: 'Container 2', note: 'serving traffic', live: true },
+            { id: 'c3', label: 'Container 3', note: 'stopped, same image', live: false },
+          ]}
+          caption="Starting a container never changes the image, which is why the third one is identical to the first."
         />
       </ContentSlide>
     ),

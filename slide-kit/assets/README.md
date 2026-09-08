@@ -20,8 +20,13 @@ brand/      logo-nxtwave.png
 ```
 
 Current `tech/` set, tooling and frameworks: `container-white` · `django` ·
-`docker` · `docker-white` · `git` · `linux` · `macos` · `makefile` · `nodejs` ·
-`npm` · `react` · `sqlite` · `vitejs` · `vscode` · `windows`.
+`docker` · `docker-white` · `git` · `github` · `jenkins` · `linux` · `macos` ·
+`makefile` · `nodejs` · `npm` · `react` · `sqlite` · `vitejs` · `vscode` ·
+`windows`.
+
+`github` and `jenkins` were added for Deployment session 7, from devicon at
+512px. `git` and `github` are different marks and both are needed: session 7
+names the tool and the service on the same slide.
 
 Current `tech/` set, languages: `c` · `cplusplus` · `csharp` · `dart` · `go` ·
 `java` · `javascript` · `kotlin` · `python` · `r` · `ruby` · `scala` · `swift`.

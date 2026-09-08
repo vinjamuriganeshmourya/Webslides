@@ -80,6 +80,42 @@ comparison tables, where each cell is still a fragment.
   Analogies are introduced, cashed out into the technical mapping on the same or
   next slide, and then dropped. Never leave an analogy unmapped.
 
+## 3b. Write for someone who has never met the word
+
+**Every point on a slide must be readable by an absolute beginner.** Asked for on
+2026-08-31 while planning Deployment session 7, and it holds for every deck.
+
+The corpus voice already assumes this and the guidance above encodes half of it.
+The half that gets dropped under time pressure is the half written here.
+
+- **No unexplained jargon in a bullet, ever.** A term the room has not been given
+  cannot appear in a fragment, because a fragment has no room to define it. If it
+  has to appear, it gets its own slide first. `webhook`, `executor`, `gate` and
+  `automation server` are all one-line definitions before they are ever used in
+  passing.
+- **Define at first use, on the frame where it first appears.** Not in the
+  speaker notes, not two slides later, not "we will come back to this". The plan's
+  vocabulary table exists to make this checkable: every term in it names the slide
+  that defines it, and that slide is at or before every slide that uses it.
+- **A definition names three things**: what it is, why it exists at this point in
+  the session, and where the room has already met it if they have. A bare gloss is
+  not a definition.
+- **Concrete before abstract.** The everyday case, then the technical one. An
+  assembly line before a pipeline; a teammate who never ran the tests before
+  "continuous integration".
+- **Expand an acronym the first time, always.** CI/CD is Continuous Integration
+  and Continuous Delivery on the slide that introduces it, and only then a
+  two-letter pair.
+- **Never say "simply", "just", "obviously" or "of course".** They tell a learner
+  who is stuck that being stuck is unusual. The corpus does not use them and no
+  deck should add them.
+- **A step says what the learner will SEE.** Already rule in §3, and it is the
+  single most beginner-facing line in this document: an instruction with no
+  observable result gives a beginner no way to tell whether it worked.
+
+The test: read the slide as somebody who joined this course last week. If a
+fragment sends them to a search engine, it is not finished.
+
 ## 4. Titles
 
 - **Two or three words, topic-bare:** `Testing` · `Update` · `Serializers` ·

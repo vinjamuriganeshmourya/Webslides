@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Step } from '@/motion/Stepper'
 import { Reveal, RevealGroup } from '@/motion/Reveal'
+import { colors } from '@/design/tokens'
 import { iconByName } from './icons'
 
 /**
@@ -105,8 +106,25 @@ export function StatusList({
               >
                 {item.text}
               </span>
+              {/*
+                `text-body` IS A FONT SIZE, NOT ONLY A COLOUR.
+
+                `body` is declared in BOTH `theme.colors` and `theme.fontSize` in
+                tailwind.config.ts, so `.text-body` emits two rules and BOTH
+                apply: `font-size: 19px; line-height: 1.6` and the grey. This
+                element carried `text-body-sm text-body`, which is two font sizes
+                on one element, and which one won was decided by the order of keys
+                in the config's `fontSize` object rather than by anything here. It
+                happened to render at 16px, and reordering that object would
+                silently push every line like it to 19px.
+
+                The colour comes from `tokens.ts` instead, which is what the rest
+                of this file already does.
+              */}
               {item.detail && (
-                <span className="mt-0.5 block text-body-sm text-body">{item.detail}</span>
+                <span className="mt-0.5 block text-body-sm" style={{ color: colors.body }}>
+                  {item.detail}
+                </span>
               )}
             </span>
             {/* The verdict, spelled out. The colour says it to anyone who can see

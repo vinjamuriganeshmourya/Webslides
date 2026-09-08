@@ -135,11 +135,30 @@ function Code({ children }: { children: ReactNode }) {
 }
 
 /** A technology, always as a PNG (rule S9), at the size a card wants. */
+/*
+  THE PATHS ARE LITERALS, AND THAT IS THE WHOLE POINT OF THIS MAP.
+
+  This helper used to build its src as `/assets/tech/${name}.png`. That works in
+  dev, where a server resolves the path, and it BREAKS IN THE DELIVERABLE:
+  `scripts/inline-assets.mjs` rewrites literal `/assets/...` strings to data
+  URIs, and a template literal is not one, so the two logos survived into the
+  single-file build as root-absolute paths. Under `file://` those resolve to the
+  filesystem root and the images render blank, on slides 10, 11 and 39.
+
+  Every other logo in this session is written as a literal string and inlines
+  fine. A name-to-path map keeps the call sites reading `name="python"` while
+  giving the inliner the literals it needs.
+*/
+const TECH_LOGO: Record<string, string> = {
+  python: '/assets/tech/python.png',
+  nodejs: '/assets/tech/nodejs.png',
+}
+
 function Tech({ name, label }: { name: string; label?: string }) {
   return (
     <span className="inline-flex items-center gap-2">
       <img
-        src={`/assets/tech/${name}.png`}
+        src={TECH_LOGO[name]}
         alt=""
         draggable={false}
         className="h-5 w-5 object-contain"
