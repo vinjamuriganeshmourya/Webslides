@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { colors, easing } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
+import { SurfaceDefs, surface, TopHighlight } from '@/ui/svgDepth'
 
 /**
  * "The frontend container only DELIVERS the React code. The code RUNS in your
@@ -49,7 +50,8 @@ function Container({
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, delay: instant ? 0 : delay, ease: easing.soft }}
     >
-      <rect x={412} y={y} width={166} height={70} rx={12} fill={colors.white} stroke={colors.teal} strokeWidth={2} />
+      <rect x={412} y={y} width={166} height={70} rx={12} {...surface('teal')} />
+      <TopHighlight x={412} y={y} width={166} rx={12} />
       <image href={logo} x={428} y={y + 20} width={30} height={30} preserveAspectRatio="xMidYMid meet" />
       <text x={470} y={y + 32} fontSize={15} fontWeight={800} fill={colors.ink}>
         {name}
@@ -146,6 +148,7 @@ export function BrowserOutsideDocker({ className = '' }: { className?: string })
 
         {/* The machine. Everything on this figure is on one laptop, which is why
             the Docker box is INSIDE it rather than beside it. */}
+        <SurfaceDefs />
         <motion.g
           initial={instant ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -157,9 +160,7 @@ export function BrowserOutsideDocker({ className = '' }: { className?: string })
             width={OUTER.w}
             height={OUTER.h}
             rx={16}
-            fill={colors.surface}
-            stroke={colors.line}
-            strokeWidth={2}
+            {...surface('neutral', { flat: true })}
           />
           <text x={OUTER.x + 18} y={OUTER.y + 26} fontSize={13} fontWeight={800} fill={colors.muted}>
             YOUR MACHINE
@@ -179,8 +180,7 @@ export function BrowserOutsideDocker({ className = '' }: { className?: string })
             width={DOCKER.w}
             height={DOCKER.h}
             rx={14}
-            fill={colors.white}
-            stroke={colors.brand}
+            {...surface('brand')}
             strokeWidth={2.5}
             strokeDasharray="7 5"
           />
@@ -201,7 +201,7 @@ export function BrowserOutsideDocker({ className = '' }: { className?: string })
             width={BROWSER.w}
             height={BROWSER.h}
             rx={12}
-            fill={colors.white}
+            {...surface('neutral')}
             stroke={colors.ink}
             strokeWidth={2.5}
           />
