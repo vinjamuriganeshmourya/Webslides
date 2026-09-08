@@ -46,6 +46,36 @@ Quiz Time! → Recap → Practice → Feedback → Thank you (next-up teaser)
 
 ## 2. Motivation before mechanism
 
+### The four beats of a new concept
+
+**This is a hard rule, not a pattern to aim for.** Never introduce a mechanism
+cold. Every new concept, every new instruction, every new file, moves through
+four beats, in this order:
+
+| Beat | The question it answers | What the slide shows |
+|---|---|---|
+| 1 | **What works today?** | the routine the learner already has, running |
+| 2 | **What does it cost?** | the point where that routine breaks or falls short |
+| 3 | **What do we need?** | the capability, named in plain words, before any syntax |
+| 4 | **How do we do it?** | the instruction or command, then the run that proves it |
+
+Beat 3 is the one that gets skipped. Naming the capability in the learner's
+own words ("we need the container to read the same secrets our `.env` file
+holds") is what makes beat 4 land as an answer rather than as a fact to
+memorise. A slide that opens with the syntax has already lost the sequence.
+
+The beats are slides, not bullets on one slide: one idea per slide still holds,
+so a concept costs three to five slides. If a concept is not worth four beats,
+it is not a new concept and belongs as a line on an existing slide.
+
+**Why this rule exists.** Session 4 of the Django deployment course
+(`Running the Real App with Docker`) shipped with `ENV PYTHONUNBUFFERED=1`,
+`.dockerignore`, published ports, and the database move all introduced as bare
+instructions on slides 14, 26, 31, 44 and 57. Review comments on all five said
+the same thing in different words: *give the problem first, then provide this
+as the solution.* Each re-cut cost two extra slides that the original plan
+should have carried.
+
 No concept is introduced by its definition. The corpus opens every concept with
 a felt need, then names the thing that satisfies it:
 
@@ -192,6 +222,8 @@ session uses and why.
 - [ ] Recap of last session present, ending on the gap today closes
 - [ ] Agenda and recap carry the same four items in different UI
 - [ ] Each concept opens on motivation, not on a definition
+- [ ] Every new mechanism carries all four beats, in order: what works today,
+      what it costs, what we need, how we do it
 - [ ] Each multi-part artifact is built one element per slide, then shown whole
 - [ ] Each abstraction opened once, showing the real mechanism
 - [ ] Each build followed by a test slide with expected results

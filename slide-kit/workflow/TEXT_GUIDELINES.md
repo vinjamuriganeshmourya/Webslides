@@ -80,6 +80,56 @@ comparison tables, where each cell is still a fragment.
   Analogies are introduced, cashed out into the technical mapping on the same or
   next slide, and then dropped. Never leave an analogy unmapped.
 
+### 3a. Register: professional, not casual
+
+Asked for on 2026-09-02, during Deployment session 3's wording pass.
+
+**This does not repeal the second person above.** "You" and "we" are the corpus
+voice and stay. Register is a different axis: a sentence can be warm, direct and
+addressed to the reader while still being written rather than chatted.
+
+What to cut:
+
+- **Chummy first-person plural.** `here is everything one command is about to do
+  for us` is not the same as "we built our ProductList". The first performs
+  camaraderie, the second describes work. Keep the second.
+- **Telegraphic fragments used as whole lines.** `The payoff` · `Why` ·
+  `The path matters, not the code`. A headline-style fragment reads as a caption
+  on something else, and §3c has already shown that is usually what it is. A
+  bullet is legitimately a fragment; a lead, a callout title and a table cell
+  carry a stated fact.
+- **Verdict words standing in for the fact.** `a disaster` · `a mess` ·
+  `trivial to prevent` · `fine`. These rate the fact instead of giving it, which
+  is §3c's fourth test arriving in casual clothes.
+- **Punchy two-beat constructions.** `One image, many machines` ·
+  `Two halves, separated by a colon`. They scan well and say less than the plain
+  sentence that fits the same budget.
+
+What to keep: imperatives, the observable-result rule, the named trap, and the
+fixed set of analogy openers. Those are direct, not casual.
+
+**Professional does NOT mean elevated.** Reaffirmed 2026-09-02: *"all sentences
+and points must use simple and professional English."* These pull against each
+other if you let them, and the plain word wins every time. The failure this
+prevents is over-correcting a casual line into a formal one:
+
+| Casual (wrong) | Formal (also wrong) | Simple and professional (right) |
+|---|---|---|
+| `The symptom is maddening` | `The manifestation is problematic` | `The server runs, the browser is refused` |
+| `A genuinely confusing hour` | `A protracted diagnostic effort` | `Without this line, the log panel stays empty` |
+| `gone` | `no longer requisite` | `No longer needed` |
+
+Prefer the short Anglo-Saxon word to the long Latinate one: **use** not *utilise*,
+**start** not *initiate*, **needs** not *requires*, **about** not *regarding*,
+**before** not *prior to*, **so** not *consequently*. A sentence is professional
+because it states a fact plainly and carries no filler, not because it sounds
+formal. The register to aim at is good technical documentation, which is written
+in short plain sentences and is nobody's idea of casual.
+
+The test: would this line survive in written course material with no instructor
+beside it. A deck is read from the back of a room and again, alone, from the
+recording.
+
 ## 3b. Write for someone who has never met the word
 
 **Every point on a slide must be readable by an absolute beginner.** Asked for on
@@ -88,6 +138,14 @@ comparison tables, where each cell is still a fragment.
 The corpus voice already assumes this and the guidance above encodes half of it.
 The half that gets dropped under time pressure is the half written here.
 
+- **Use the word the learner would use.** A term can be perfectly clear and still
+  be wrong, because nobody says it. `keystrokes` is the case that prompted this:
+  it is precise, everyone understands it, and no developer has ever described
+  their own day in keystrokes. Session 5 used it on four slides and the review
+  asked for plain words instead, on the grounds that it is *"not relevant to
+  regular usage of phrase"*. `make up` is **two words**, not seven keystrokes.
+  Others in the same family: prefer `typing` to `input`, `folder` to `directory`
+  when the learner's editor says folder, and `command` to `invocation`.
 - **No unexplained jargon in a bullet, ever.** A term the room has not been given
   cannot appear in a fragment, because a fragment has no room to define it. If it
   has to appear, it gets its own slide first. `webhook`, `executor`, `gate` and
@@ -116,6 +174,84 @@ The half that gets dropped under time pressure is the half written here.
 The test: read the slide as somebody who joined this course last week. If a
 fragment sends them to a search engine, it is not finished.
 
+## 3c. State the fact. Do not allude to it
+
+**A line must contain the thing it is about.** Asked for on 2026-09-02, after
+Deployment session 3's review, and it holds for every deck.
+
+This is not §3b again. §3b is about *vocabulary*: a word the room has not been
+given. This is about *sentences built out of words the room already knows that
+still say nothing*, because they comment on the point instead of making it. The
+reviewer's phrase for them was **riddles**: the room is handed a clue and left to
+reconstruct the lesson themselves. It was raised six separate times on one deck
+("make sure that points are clear, not a riddle", "do not give as riddles to
+students", "explain more clearly", "make the statement clearly, this is not
+clear", "sentences are not at all clear", "do not just provide statements,
+explain clearly"), which is why it is now a rule rather than a review note.
+
+The failure has a shape. The writer knows the point, writes a line that *refers*
+to the point, and reads it back correctly because they already hold the meaning
+the line is missing. The room does not hold it. Every example below shipped:
+
+| Riddle (what shipped) | What it was trying to say |
+|---|---|
+| `The shift in thinking, and you have made this exact shift once before` | `Compose describes what you want. docker run tells Docker each step` |
+| `The boundary of the claim, so nobody over-generalises it` | `Only services in this file share the network` |
+| `Two cases, and only one of them is open to you today` | `A container reaches another by service name. Anything outside Docker cannot reach in yet` |
+| `Technically yes, and it would be a mess` | `Both programs fit in one container, and one crash then takes down both` |
+| `A single musician can start playing on their own. An orchestra cannot` | `One musician starts alone. An orchestra needs a score and a conductor to start together` |
+
+Read the left column: each one is *about* a fact without *being* the fact.
+
+**NO HALF-BAKED SENTENCES.** Reaffirmed 2026-09-02: every line must carry its own
+context through to the end. A line that starts an idea and leaves the room to
+finish it is not shorter, it is unfinished. Three shapes of half-baked line, all
+of which shipped:
+
+- **The dangling opener.** `Which is why detached mode stops being optional` and
+  `And both exist only because this is a real server` begin mid-thought, on a
+  conjunction, continuing a sentence the previous slide ended. A slide is not a
+  paragraph continued; the room may have looked away for the slide change.
+- **The withheld half.** `Two Questions, Two Answers` names neither question nor
+  either answer. `The Same Rule, Already Solved` names no rule and no solution.
+  If a line promises two things, it states both.
+- **The context-free deictic.** `From outside Docker`, `Into the Volume`,
+  `Move It Out`. Each is a prepositional phrase with no subject and no verb: it
+  labels something off-frame that the reader has to find first.
+
+The repair is always the same: name the subject, state what happens to it, and
+finish the thought inside the line. This costs a few words and it is the
+difference between a slide the room reads and a slide the room decodes.
+
+Four tests, and a line has to pass all four:
+
+- **The standalone test.** Read the line with the slide's figure, title and
+  bullets covered. If it no longer says anything, it was leaning on them.
+- **Does it name its own subject?** "The shift in thinking" names no shift.
+  "The boundary of the claim" names no boundary. A line whose subject is a
+  pronoun, a demonstrative ("that line", "this one", "both of these") or a bare
+  abstraction ("the shift", "the claim", "the point") is describing the content
+  from outside it.
+- **Would a reader who missed the previous slide follow it?** Not "would they
+  have full context" — they will not. Would they understand *this sentence*.
+- **Is it commentary?** Lines that tell the room how to *feel* about a fact
+  ("and it would be a mess", "so nobody over-generalises it", "and that is the
+  whole point") are the instructor's job, spoken. Put them in `notes`. The slide
+  carries the fact.
+
+**Withholding is not the same as pacing.** A `QuestionSlide` legitimately
+withholds its answer, because the answer is the next frame and the room is meant
+to commit first. A content slide withholding its own content is not pacing, it is
+an unfinished line. The difference: on a question slide the room knows it is
+being asked something.
+
+**The cure is usually not more words.** These lines are short because they are
+allusive, and the fix is to spend the same budget on the fact rather than on a
+remark about the fact. `Technically yes, and it would be a mess` and
+`Both programs fit, and one crash takes down both` are the same length, and only
+one of them teaches. When a line genuinely cannot be stated in the budget, the
+slide is carrying two ideas and §1 already says to split it.
+
 ## 4. Titles
 
 - **Two or three words, topic-bare:** `Testing` · `Update` · `Serializers` ·
@@ -131,6 +267,117 @@ fragment sends them to a search engine, it is not finished.
 - Recurring fixture titles, use them verbatim: `Quiz Time!` (31x) ·
   `Test it` / `Testing` (39x) · `Initial Setup` (21x) · `Recap` (24x) ·
   `Where we Left Off`.
+
+### 4a. Agenda items carry no articles and no helping words
+
+An agenda item is a **noun phrase in content words only**. Strip every `a`,
+`an` and `the`, and every verb that is there for grammar rather than for
+meaning: `getting`, `understanding`, `looking at`, `introduction to`.
+
+| Write | Not |
+|---|---|
+| `Real Project Setup` | `Getting the Real Project Ready` |
+| `Dockerfile for Backend and Frontend` | `A Dockerfile for the Backend and the Frontend` |
+| `Writing Compose File` | `Writing the Compose File for the Project` |
+| `Running Application with Docker Compose` | `Running the Application Through Docker Compose` |
+| `Node Container Image` | `A Container Image for Node` |
+
+Keep only the connectors that change the meaning: the `and` joining two things,
+the `with` or `for` naming the tool. Drop the rest.
+
+The reason is the reading distance. An agenda is read at a glance from the back
+of a room, twice per session — once at the front and once in the recap — and an
+article is a word the eye steps over before it reaches the noun it came for.
+Four items with three articles each is twelve words of scaffolding on a slide
+whose whole job is to be scannable.
+
+**The same words then have to appear on the section divider and in the recap,
+verbatim** (content rule 20), so write them as one array in the deck file and
+read the dividers and the recap from it. Two hand-typed copies of a phrase drift
+inside one session, and a divider that paraphrases its agenda item quietly
+renames the section halfway through.
+
+**Why this rule exists.** Session 4's agenda was corrected twice in one review
+pass. First for being figurative — *"Moves In? Each Part? Specify what?"* — and
+then, after a rewrite into plain sentences, for the scaffolding those sentences
+brought with them: *"remove a the helping words from the agenda"*. The second
+correction is the one worth writing down, because plain English and terse
+English are not the same target and the first rewrite hit the wrong one.
+
+### 4a-bis. Drop the leading article, everywhere on the slide
+
+§4a strips articles from agenda items. The same applies to **every** piece of
+copy on a slide: a lead, a bullet, a callout title or body, a caption, a
+qualifier, a figure's card label, a table cell. A slide line is a fragment
+(§2), and a fragment does not open on `The`.
+
+| Write | Not |
+|---|---|
+| `Project now documents its own operations` | `The project now documents its own operations` |
+| `Same two commands, after today` | `The same two commands, after today` |
+| `Interface` | `The Interface` |
+| `Cost that is not about keystrokes at all` | `The cost that is not about keystrokes at all` |
+
+Titles were already meant to work this way — §4 calls them "topic-bare" and the
+corpus examples carry no article at all. This is that rule finally applied past
+the title.
+
+**Only the leading article goes.** `Run it from the folder that holds
+requirements.txt` keeps its `the`, because that one is doing work: it points at
+one specific folder. The rule is about the word the eye steps over before it
+reaches the content, not about every article in the line.
+
+**Never in speaker notes.** Notes are prose an instructor reads aloud, in full
+sentences, and stripping their articles makes them harder to read out. Never in
+a terminal transcript, a filename or a code panel either — those are quoted.
+
+**Why this rule exists.** Session 5's review, on a lead reading "The project now
+documents its own operations": *"Remove The from all sentences... make similar
+changes in all."* It came after the same correction on the agenda, which is what
+makes it a rule rather than a preference: the same instruction twice, on two
+different parts of the same deck.
+
+### 4b. One line is one sentence. Join the clauses with a comma
+
+A lead, a callout body, a bullet `sub`, a caption: **one line, one sentence.**
+When a line is two short clauses about the same thing, they are joined with a
+comma, not split with a full stop.
+
+| Write | Not |
+|---|---|
+| `Open backend\requirements.txt, this is what the integration course put there` | `Open backend\requirements.txt. This is what the integration course put there` |
+| `Run it in the backend folder, the versions go straight into the file` | `Run it in the backend folder. The versions go straight into the file` |
+
+The reason is what a full stop does to a reader. It is a full stop: the eye
+stops, and the line lands as two separate statements the room now has to relate
+to each other. On a slide read at a glance while somebody talks over it, that is
+a beat spent on punctuation. A comma keeps it as one thought with two halves,
+which is what it is.
+
+**Length is not a reason to keep the full stop.** The first attempt at this pass
+set a ~100 character ceiling and left dozens of lines split, which was the wrong
+test: a line that is too long for a slide is too long whether it is punctuated
+with a comma or a full stop. If the joined sentence does not fit, **cut words**.
+Do not restore the stop to make the line look shorter.
+
+**Do not join** when the second clause is a different claim, a correction, or a
+separate beat:
+
+- an answer that stands alone before its explanation — `No. They get whatever is
+  newest that day` keeps its stop, because the `No.` answers the question on the
+  previous slide
+- a statement followed by a question on the same frame — a `QuestionSlide`
+  premise and its question are two different acts
+- verbatim terminal output, which is quoted and never edited
+- a meta-statement about the slide itself rather than about its subject —
+  `Nobody ever types 0.0.0.0 into a browser. These are two different questions`
+
+Three or more clauses strung together with commas is a run-on. Join the two that
+belong together and cut the third, or split the line across two fields: the lead
+takes the claim and the callout takes the consequence.
+
+**Speaker notes are exempt.** They are prose an instructor reads aloud, several
+sentences long by design. This rule is about the words on the slide.
 
 ## 5. Punctuation and code voice
 
