@@ -51,6 +51,57 @@ Use: **others**, *anyone else*, *someone else*, *another person*.
 | `Can a stranger's browser reach it?` | `Can others open it?` |
 | `Send it to a stranger` | `Send it to someone else` |
 
+## 2b. Never name another session on a slide
+
+**Banned in every rendered string:** `last session`, `last session's`,
+`previous session`, `next session`, `Session 1`/`2`/`3`, `last week`, `today we
+will`, and any phrase that positions the content by WHEN it was taught.
+
+Given as review feedback on session 3 (comment `2nv8tp`, "do not use last
+session's and session 1 2 3 4 5 wording anywhere in the session"), applied to
+that deck, and **never written down** until 2026-09-02, by which point session 4
+had shipped fourteen of them. That is the exact failure this file's own preamble
+describes: a correction that is fixed once and not recorded is a correction that
+gets made again.
+
+Three reasons it is a hard rule, not a preference:
+
+- **A deck is watched out of order and out of time.** Recordings are viewed
+  months later, sessions get re-cut and renumbered, and a learner who joins at
+  session 4 has no "last session". `Last Session's Locked Door` is a title that
+  means nothing to most of the people who will read it.
+- **It dates the deck.** A re-order that moves one session invalidates every
+  cross-reference in the deck after it, silently, and no harness can see it.
+- **It is almost always covering for a missing definition.** `Last session's
+  warning, now with teeth` exists because the warning is not restated. Say the
+  thing: `node_modules must never enter the image`. The point survives on its
+  own, which is what §3c of `TEXT_GUIDELINES.md` demands anyway.
+
+| Don't | Do |
+|---|---|
+| `Last session's Node Dockerfile with two upgrades` | `The Node Dockerfile, with two upgrades` |
+| `Last session's docker-demo folder stays where it is` | `The docker-demo practice folder stays where it is` |
+| `This is how the last session ended` | `A container stays unreachable until a port is published` |
+| `Last session's iron rule` | `The rule from the container networking section` |
+
+**Speaker notes and JSX comments are exempt**, and are the right home for it: the
+instructor is in the room and can say "you saw this last week" out loud. `notes:`
+may say it freely.
+
+**The one permitted exception** is the closing teaser, which
+`PEDAGOGY_GUIDELINES.md` §1 requires: the final slide names the NEXT session by
+its title, under a `Next Session` kicker. That names a session by name, not by
+number, and it is the only slide allowed to.
+
+**Check:**
+
+```bash
+grep -nE "[Ll]ast [Ss]ession|[Pp]revious [Ss]ession|[Ss]ession [0-9]" src/decks/*.tsx \
+  | grep -vE "^\s*[0-9]+: *(\*|//|/\*)" | grep -v "notes:"
+```
+
+Every surviving hit is a defect.
+
 ## 3. Terminals: one panel per terminal, with the folder path
 
 When a slide shows commands the learner types:
@@ -478,3 +529,44 @@ workflow specifies the kicker plus the session name, centred, and nothing else i
 the body: no course chip, no subtitle, no presenter, no meta, no mascot, and no
 body logo, because the footer already carries the one mark. The full-bodied
 variant still exists on the props type; no shipping deck uses it.
+
+---
+
+## 22. Rendered copy never names a slide's position
+
+No lead, bullet, callout, caption or table cell says **"the next slide"**, "the
+next two slides", "the previous slide", "the slide before" or "as we saw two
+slides ago".
+
+Two reasons, and the second is the one that keeps costing.
+
+**Slide order changes.** Every review pass in this repo has inserted, removed or
+re-sequenced slides, and copy that names a neighbour is silently wrong the moment
+one moves. Nothing fails: the deck builds, every harness passes, and the slide
+now points at whatever happens to be beside it. Session 5 shipped
+*"The next two slides are the fix"* and a caption reading *"Not on PATH, and the
+next slides fix it"*, and both became wrong within the hour, when the success and
+error cases were split onto separate frames.
+
+**It is stage direction, not content.** A slide telling the room where to look
+next is doing the instructor's job on the instructor's behalf, badly. The room
+does not navigate the deck; the presenter does.
+
+**Say what is coming, not where it is.** "Two steps fix it: find where it
+installed, then add that folder" survives any re-ordering and tells the room more
+than a pointer does.
+
+| Write | Not |
+|---|---|
+| `Two steps fix it: find where it installed, then add that folder` | `The next two slides are the fix` |
+| `Where the container's data lives comes later in this session` | `Slide 52 answers this` |
+| `Same file, with your database and your secrets added` | `The same file as the previous slide` |
+
+**Speaker notes are exempt, and deliberately so.** `notes:` is the instructor's
+own script, never rendered to the room, and "do not answer it, the next slide is
+the answer" is exactly the direction a presenter needs. The rule is about what is
+on the screen.
+
+**Naming a later SESSION is also fine** — "later in this course", "next session"
+— because a session is a stable unit and content rule 4 already governs how much
+of it may be opened. It is slide-level pointers that rot.

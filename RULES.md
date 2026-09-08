@@ -41,6 +41,7 @@ shipped with that exact mistake.
 | 19 | The concept and its sub-concept are pinned to the top of every slide |
 | 20 | Key Takeaways restates the agenda concepts, verbatim |
 | 21 | The welcome line is written once |
+| 22 | Rendered copy never names a slide's position |
 
 ## Process rules
 
@@ -58,6 +59,7 @@ shipped with that exact mistake.
 | Anything reusable built for a session is copied back into the kit, not left in it | same, section 6 |
 | A new slide type, figure or transition is committed to the kit and raised as a PR | same, section 6, and [`slide-kit/slide-types/README.md`](slide-kit/slide-types/README.md) |
 | `sampleDeck.tsx` renders EVERY type exported from `src/slides/index.ts` | [`slide-kit/slide-types/README.md`](slide-kit/slide-types/README.md) |
+| A session-owned figure is imported by path, never re-exported from the kit-owned `@/ui` barrel | [`slide-kit/slide-template/KIT.md`](slide-kit/slide-template/KIT.md) |
 | Motion runs at the explanatory tier, roughly double the `animate` skill's UI numbers | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md), section 4b |
 | Vendored skills live in `.agents/skills` and are never edited in place | same, section 4b |
 | Kit changes propagate by running `sync-kit.mjs`, never automatically | [`slide-kit/slide-template/KIT.md`](slide-kit/slide-template/KIT.md) |
@@ -72,6 +74,7 @@ shipped with that exact mistake.
 | A course is a root-level folder; nothing in `slide-kit/` names a course | [`CLAUDE.md`](CLAUDE.md) |
 | `.gitignore` patterns stay `**/`-prefixed or unanchored, never path-anchored | same |
 | Generators are tracked, artefacts are not — except the built `dist-single/*.html` decks | same |
+| The single-file build does not minify CSS: esbuild's minifier emits an invalid `@media(hover:hover)and(...)` | [`vite.singlefile.config.ts`](slide-kit/slide-template/vite.singlefile.config.ts) |
 
 ## Writing rules
 
@@ -83,6 +86,17 @@ These are guidelines rather than hard rules: they say how a line should read,
 how a concept is taught across consecutive slides, and which slide type and
 colour suit which content. Where a guideline and a hard rule disagree, the hard
 rule wins.
+
+One of them is a hard rule, not a guideline:
+
+| Rule | Full text |
+|---|---|
+| Every new concept carries four beats, in order: what works today, what it costs, what we need, how we do it | [`PEDAGOGY_GUIDELINES.md`](slide-kit/workflow/PEDAGOGY_GUIDELINES.md), section 2 |
+| Every surface in a figure is lit from the top-left: highlight, ramp, colour-tinted shadow, two hairlines | [`STYLE_GUIDE.md`](slide-kit/workflow/STYLE_GUIDE.md), section 9 |
+| Agenda items are content words only: no articles, no helping verbs, and the dividers and recap read from the same array | [`TEXT_GUIDELINES.md`](slide-kit/workflow/TEXT_GUIDELINES.md), section 4a |
+| No slide copy opens on `The`: leads, bullets, callouts, captions and titles all drop the leading article | [`TEXT_GUIDELINES.md`](slide-kit/workflow/TEXT_GUIDELINES.md), section 4a-bis |
+| One line on a slide is one sentence: two clauses about the same thing are joined with a comma, never split with a full stop | [`TEXT_GUIDELINES.md`](slide-kit/workflow/TEXT_GUIDELINES.md), section 4b |
+| The lead is drawn in the content well by `SlideLead`, never inside `SlideHeader` | [`slide-kit/slide-types/README.md`](slide-kit/slide-types/README.md) |
 
 ## Session-specific rules
 
