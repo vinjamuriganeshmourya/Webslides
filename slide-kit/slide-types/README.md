@@ -28,7 +28,7 @@ propagated by `sync-kit.mjs`; nothing is duplicated here, so nothing can drift.
 | `ProceduralStepsSlide` | an ordered procedure the learner will repeat |
 | `FlowChartSlide` | a process with branches |
 | `ScenarioSlide` | a situation posed before its resolution |
-| `QuestionSlide` | the pause beat: one question, hero scale, centred, nothing else |
+| `QuestionSlide` | the pause beat: one question, hero scale, centred, nothing else. `choices` adds the two or three answers the room picks between, drawn identically so the slide never hints |
 | `QuestionPointsSlide` | a question, then the points that answer it, as build steps |
 | `CodeSyntaxSlide` | the SHAPE of a language construct, slot by slot |
 | `CommandSyntaxSlide` | the SHAPE of a command, slot by slot. Runs nothing |
@@ -79,6 +79,30 @@ has answered. The rule governs what is on screen while the question is open, and
 unrevealed step is not on screen. `QuestionSlide` stays the default: use it whenever
 the answer wants its own slide.
 
+### The lead is content, so it is drawn in the content well
+
+Every content type above takes a `lead`, the sentence that says what the slide is
+for. It used to be rendered inside `SlideHeader`, under the title. It is now the
+FIRST thing in the content well, through `SlideLead`, because the kicker and title
+NAME the slide and the lead makes its argument: in the header it read as a subtitle
+of the heading, above the body it belongs to.
+
+Nothing changes for a deck. `lead` is still a prop of the slide, still authored the
+same way, and `src/motion/continuity.ts` still compares it so an unchanged lead
+does not replay its entrance. What changed is where it is drawn, plus two
+consequences worth knowing before writing a new type:
+
+- **`SlideHeader` does not accept a `lead` any more.** Passing one is a compile
+  error, on purpose. A prop still declared but ignored would be passed by the next
+  type somebody writes and the sentence would vanish with no error.
+- **The header floor is one number now, `min-h-[120px]`**, not 168px with a lead
+  and 120px without. The lead-less guards in the layouts (`pt-[52px]` on a side
+  visual) still test `lead`, because a lead still fills that same band of the
+  well; it is just drawn below the header rather than inside it.
+
+Ported into the kit from `deployement_session_3`, which cut its whole deck this way
+first.
+
 `QuizSlide` was **retired**: quizzes are delivered by an external component, so
 a deck's only quiz frame is the announcement one. `sync-kit.mjs` deletes it
 from any session that still has it.
@@ -92,15 +116,47 @@ from any session that still has it.
 `StepLedger` · `TrackSwitch` ·
 `DataTable` · `FileTree` · `FlowChart` · `HandRitual` · `JourneyRoadmap` ·
 `LayerStack` · `MachineBoundary` · `Nova` · `OneProcessRule` · `Orchestra` ·
-`ScenarioCard` · `StackUp` · `StatusList` · `StepList` · `SyntaxBreakdown` ·
-`Terminal` · `Shot` · `TwoRuntimes` · `VolumeSurvival` · `YamlNesting`
+`ScenarioCard` · `SlideLead` · `StackUp` · `StatusList` · `StepList` · `SyntaxBreakdown` ·
+`SwapRows` · `Terminal` · `Shot` · `TwoRuntimes` · `VolumeSurvival` · `YamlNesting`
 
 `SyntaxBreakdown` builds its specimen line FROM its `parts` array, so the diagram
 and the legend under it cannot drift apart. The first draft took a separate
 `command` string and they disagreed within one session.
 
+`FileTree` takes an optional `open`, naming the folder that STARTS open. It is an
+accordion: every folder row with children is a real `<button>`, clicking one
+shuts whatever was open, and there is no all-shut state, so the figure can never
+collapse to bare rows in front of the room. The well reserves the tallest
+folder's height, so nothing on the slide moves when the open folder changes.
+The open folder's children are drawn inside a recessed well that belongs to it,
+and every other folder collapses to a row with a shut chevron and a count. **Omitting
+`open` keeps the old flat-with-`depth` rendering**, which is what sessions 2 and
+3 ship, so the prop is additive and no signed-off deck moves. Reach for `open`
+whenever the tree is longer than about six rows: session 4's workspace slide was
+nine flat rows of monospace and the review read it as one list rather than as
+three folders.
+
+`Terminal` takes **two chromes**. `vscode` (the default) draws the integrated
+panel with its tab strip, which is right for the commands this course runs from
+inside the editor. `chrome="powershell"` draws a STANDALONE Windows PowerShell
+window with a title bar, for the few slides that tell the room to open one: a
+slide saying "Administrator PowerShell" while drawing VS Code's panel is telling
+the room two different things, and the one it draws is the one that wins. It also
+takes an `err` line kind, in red, because a console error is red and rendering it
+in the same grey as ordinary output loses the one cue a learner scans for.
+
+Every surface in every figure here is lit from the top-left, per
+`STYLE_GUIDE.md` section 9. A DOM figure gets it from `background` and
+`boxShadow`; an SVG figure gets it from `SurfaceDefs` and `surface(tone)` in
+`svgDepth.tsx`, because an SVG `<rect>` can express none of it as a property.
+**A new figure that ships flat is a bug, not a style choice** — session 4 shipped
+three flat SVG figures and the review's one-line verdict was "the container depth
+is missing, all are very flat".
+
 | Figure | Reach for it when | Worst at |
 |---|---|---|
+| `SwapRows` | A comparison where one side STANDS IN FOR the other: a phone's speed dial and a Makefile's targets, a Python function and a Makefile, a manual ritual and an automated one. Each pairing is one object divided internally, familiar side recessed and new side raised, so it reads as "this stands in for that" with no arrow. `code` sets a pairing in monospace. Chosen in `slide-kit/comparison-lab` over three other candidates; that lab's `CLAUDE.md` says what each was worse at | TWO PEERS. The recessed-to-raised inversion asserts a direction, so two alternatives being weighed against each other are misrepresented by it (rule 8) — use `DataTable` with identical row labels. Also more than four pairings, because each row is a drawn object rather than a line of text. It carries no emphasis flag by design |
+| `SlideLead` | ALWAYS, in a slide type that takes a `lead`. It draws that sentence as the first thing in the content well, one tone-coloured arrow and the deck's body-lg type, and owns both the gap below it and the width cap that keeps the line clear of the instructor-video rectangle. `SlideHeader` no longer accepts a `lead`, so a new type that forgets this one is a TypeScript error rather than a silently missing sentence | Anything that INTERRUPTS. It is deliberately the lighter register: no ground, no label line, no border. The warning, the gotcha and the aside are `Callout`, and a lead dressed as one competes with the real callout on the same slide |
 | `FanOut` | ONE artefact is the origin of SEVERAL live things and does not change or divide when they are made: one image and many containers, one build and many environments, one template and many generated files. The source is drawn quiet on purpose, dashed and tinted with no live dot, because the mistake the figure prevents is reading the source as one of the running things. `live` is per copy, so "three containers, one of them stopped" is sayable | ANY relationship between the copies. They are peers with no connectors between them, so balanced traffic, a shared volume, or copy 2 made from copy 1 are claims the presenter is making and the figure is not. It also has no room for a second source |
 
 `FanOut` is confusable with two figures either side of it. `BoundaryBridge` is two

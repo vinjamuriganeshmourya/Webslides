@@ -1,5 +1,5 @@
 import type { SlideDef, DeckMeta } from '@/deck/types'
-import { BoundaryBridge, CodeBlock, FanOut, SpineFlow, LaneFlow, StepLedger, CircuitMap, GateFlow, TrackSwitch } from '@/ui'
+import { BoundaryBridge, CodeBlock, FanOut, FileTree, SwapRows, SpineFlow, LaneFlow, StepLedger, CircuitMap, GateFlow, TrackSwitch } from '@/ui'
 import type { FlowchartFigureProps } from '@/ui'
 import {
   WelcomeSlide,
@@ -119,6 +119,21 @@ export const sampleDeck: SlideDef[] = [
     ),
     notes:
       'THE PAUSE BEAT. One question, hero scale, optically centred, and nothing else on the slide. No bullets, no figure, no answer: the room answers out loud and the NEXT slide responds. A compound question gets split into two of these.',
+  },
+  {
+    id: 'sample-question-choices',
+    section: 'Slide types',
+    label: 'Question · choices',
+    element: (
+      <QuestionSlide
+        question="A container writes a file. The container is deleted and recreated. Is the file still there?"
+        qualifier="Nothing else about the setup changes"
+        choices={['Yes', 'No']}
+        lesson="Component Gallery"
+      />
+    ),
+    notes:
+      'THE SAME PAUSE BEAT, WITH THE ANSWERS THE ROOM IS CHOOSING BETWEEN. `choices` takes two or three short strings and draws them as identical boxes under the question. It is FOR replacing the stage direction decks used to print as a bullet ("say yes or no before the next slide"), which told the room how to behave rather than showing it what it was picking. It must NOT carry a hint: the boxes are deliberately drawn the same, so never tint, tick, enlarge or order one of them to signal the answer, and never use it for more than three options. The answer is still the NEXT slide. Confusable with QuestionPointsSlide, which puts the ANSWER on the same frame as click-revealed points and is therefore the wrong type whenever the room is meant to commit first.',
   },
   {
     id: 'welcome',
@@ -717,6 +732,65 @@ export const sampleDeck: SlideDef[] = [
             { id: 'c3', label: 'Container 3', note: 'stopped, same image', live: false },
           ]}
           caption="Starting a container never changes the image, which is why the third one is identical to the first."
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'file-tree',
+    label: 'File tree (figure)',
+    section: 'DRF',
+    notes:
+      'FOR "WHERE DOES THIS FILE GO". A slide that shows a file\'s CONTENTS never says which folder it belongs in, and "create a file called Dockerfile" is not an instruction until it does. `state` is what makes it teach: `new` is the file this slide asks them to create (brand, tagged once, on the top-level entry only), `existing` is already there from an earlier slide, `later` is named but not created yet (dashed, italic). `open` names the folder that STARTS open, and its children are drawn INSIDE a recessed well that belongs to it rather than as siblings indented by 22px. It is an accordion: every folder row with children is a real button, clicking one shuts whatever was open, there is no all-shut state, and the well reserves the tallest folder\'s height so nothing on the slide moves when the open folder changes. Use it whenever the tree runs past about six rows: session 4 shipped nine flat rows and the review read them as one list rather than as three folders. OMIT `open` and every folder renders expanded with no chevrons, which is what sessions 2 and 3 ship, so the prop is additive. It must NOT be used as a general nested list: the glyphs are a folder and a file, and the header row is a filesystem path, so pointing it at a taxonomy or a menu makes the slide claim something untrue (rule 8).',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="The starting point"
+        title="Where the new file goes"
+        lead="One folder open at a time, so the room reads three folders rather than one list."
+      >
+        <FileTree
+          root="C:\project"
+          open="backend"
+          entries={[
+            { name: 'backend', folder: true, state: 'existing' },
+            { name: 'manage.py', depth: 1, state: 'existing' },
+            { name: 'requirements.txt', depth: 1, state: 'existing', note: 'about to change' },
+            { name: 'Dockerfile', depth: 1, state: 'new' },
+            { name: '.dockerignore', depth: 1, state: 'later' },
+            { name: 'frontend', folder: true, state: 'existing' },
+            { name: 'package.json', depth: 1, state: 'existing' },
+            { name: 'vite.config.js', depth: 1, state: 'existing' },
+            { name: 'docker-compose.yml', state: 'later', note: 'the next section' },
+          ]}
+          caption="backend is open because this slide points at requirements.txt. Shut folders carry a count, not their contents."
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'swap-rows',
+    label: 'Swap rows (figure)',
+    section: 'DRF',
+    notes:
+      'FOR A COMPARISON WHERE ONE SIDE STANDS IN FOR THE OTHER. A phone\'s speed dial and a Makefile\'s targets; a Python function and a Makefile; a manual ritual and an automated one. Every row is ONE object divided internally, not two boxes with an arrow between them: the familiar side is recessed into it and the new side is raised out of it, so the pairing reads as the sentence "this stands in for that" with no glyph needed. That recessed-to-raised inversion is the argument, and therefore the constraint. It asserts a DIRECTION, so it must NOT be used for two alternatives being weighed against each other, which have none: a DataTable with identical row labels is the figure for that, and drawing peers this way claims something untrue (rule 8). `code` sets both cells of a pairing in monospace, because `make "up"` is a thing you type and reads as the name of an idea when set as prose. There is deliberately no emphasis flag; compareFigure.ts records why it was removed rather than kept and ignored. Chosen in slide-kit/comparison-lab over LedgerCompare, MirrorCards and CallerView, and that lab\'s CLAUDE.md says what each was worse at. Worst at: more than four pairings, because each row is a drawn object rather than a line of text.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="One stands in for the other"
+        title="Swap rows"
+        lead="A Makefile does for your commands exactly what a function does for your code."
+      >
+        <SwapRows
+          leftLabel="A Python function"
+          rightLabel="A Makefile"
+          pairs={[
+            { from: 'make_coffee()', to: 'make "up"', code: true },
+            { from: 'Body of the function', to: 'docker compose command under the target' },
+            { from: 'Caller writes one line', to: 'Anyone running the project types one short word' },
+            { from: 'Caller never reads the body', to: 'Nobody needs to know the Docker flags' },
+          ]}
+          caption="The long thing still exists. It has stopped being anybody's problem."
         />
       </ContentSlide>
     ),
