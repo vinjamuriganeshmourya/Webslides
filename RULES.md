@@ -47,6 +47,8 @@ shipped with that exact mistake.
 
 | Rule | Full text |
 |---|---|
+| Pull main, branch from it, work there. Never edit on main | [`.claude/skills/branch-from-main/SKILL.md`](.claude/skills/branch-from-main/SKILL.md) |
+| A kit change reaches every session on the next sync, so it is always a PR | same, section 4, and [`generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md) section 6 |
 | No deck generation before the slide-wise plan is signed off | [`slide-kit/workflow/SLIDE_WORKFLOW.md`](slide-kit/workflow/SLIDE_WORKFLOW.md) |
 | A plan lives at `<course>/session_plans/<session_name>/plan.md`, and nowhere else | [`CLAUDE.md`](CLAUDE.md) |
 | "Generate slides" runs the full procedure without the user restating it | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md) |
