@@ -26,6 +26,8 @@ export { DataTable, type TableColumn, type TableRow } from './DataTable'
 export { FileTree, type FileEntry, type FileState } from './FileTree'
 export { LayerStack, LayerGap, type Layer, type LayerState } from './LayerStack'
 export { MachineBoundary } from './MachineBoundary'
+export { SocketBridge } from './SocketBridge'
+export { TunnelPath } from './TunnelPath'
 export { JourneyRoadmap } from './JourneyRoadmap'
 export { StepList, FlowChart, type Step, type FlowNode } from './flow'
 

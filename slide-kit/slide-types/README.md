@@ -92,6 +92,7 @@ from any session that still has it.
 `StepLedger` · `TrackSwitch` ·
 `DataTable` · `FileTree` · `FlowChart` · `HandRitual` · `JourneyRoadmap` ·
 `LayerStack` · `MachineBoundary` · `Nova` · `OneProcessRule` · `Orchestra` ·
+`SocketBridge` · `TunnelPath` ·
 `ScenarioCard` · `StackUp` · `StatusList` · `StepList` · `SyntaxBreakdown` ·
 `Terminal` · `Shot` · `TwoRuntimes` · `VolumeSurvival` · `YamlNesting`
 
