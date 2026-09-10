@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
 import { iconByName } from './icons'
 import { colors } from '@/design/tokens'
@@ -51,7 +52,46 @@ function Tile({
   )
 }
 
-export function MachineBoundary({ className = '' }: { className?: string }) {
+export interface MachineBoundaryTile {
+  icon: 'devices' | 'code' | 'server'
+  label: string
+  port?: string
+}
+
+/**
+ * PARAMETERISED 2026-09-10, defaults unchanged.
+ *
+ * The figure's ARGUMENT is the boundary, not the three programs behind it, and
+ * a second deck needed to make the same argument about a different pair: an
+ * automation server on `localhost:8080` that a webhook cannot reach. Rendering
+ * React and Django dev servers on that slide would have been an honest figure
+ * for a claim nobody was making, which is the illustration-honesty rule.
+ *
+ * Every prop defaults to what this component has always drawn, so existing
+ * decks render byte for byte as before.
+ */
+export function MachineBoundary({
+  className = '',
+  inside = [
+    { icon: 'devices', label: 'Your browser' },
+    { icon: 'code', label: 'React dev server', port: 'localhost:3000' },
+    { icon: 'server', label: 'Django runserver', port: 'localhost:8000' },
+  ],
+  insideNote = 'Neighbours inside one box',
+  outsider = { icon: 'devices', label: "A friend's browser", port: 'localhost:3000' },
+  outsiderNote,
+  failure = 'connection refused',
+}: {
+  className?: string
+  /** The programs sharing the machine. */
+  inside?: MachineBoundaryTile[]
+  insideNote?: string
+  /** The one outside that cannot get in. */
+  outsider?: MachineBoundaryTile
+  /** Defaults to the "their localhost is their machine" line. */
+  outsiderNote?: ReactNode
+  failure?: string
+}) {
   return (
     <RevealGroup className={`flex flex-col items-center gap-3 ${className}`} stagger={0.12}>
       {/* Inside the boundary */}
@@ -67,12 +107,18 @@ export function MachineBoundary({ className = '' }: { className?: string }) {
             Your machine
           </span>
           <div className="flex flex-col gap-2">
-            <Tile icon="devices" label="Your browser" color={colors.brand} />
-            <Tile icon="code" label="React dev server" port="localhost:3000" color={colors.teal} />
-            <Tile icon="server" label="Django runserver" port="localhost:8000" color={colors.teal} />
+            {inside.map((t, i) => (
+              <Tile
+                key={i}
+                icon={t.icon}
+                label={t.label}
+                port={t.port}
+                color={i === 0 ? colors.brand : colors.teal}
+              />
+            ))}
           </div>
           <p className="mt-2.5 text-center text-xs font-semibold text-brand-600">
-            Neighbours inside one box
+            {insideNote}
           </p>
         </div>
       </Reveal>
@@ -95,16 +141,20 @@ export function MachineBoundary({ className = '' }: { className?: string }) {
           />
         </svg>
         <span className="font-mono text-body-sm font-semibold" style={{ color: colors.danger }}>
-          connection refused
+          {failure}
         </span>
       </Reveal>
 
       <Reveal dir="up" className="w-full">
         <div className="mx-auto w-[62%]">
-          <Tile icon="devices" label="A friend's browser" port="localhost:3000" color={colors.muted} muted />
+          <Tile icon={outsider.icon} label={outsider.label} port={outsider.port} color={colors.muted} muted />
         </div>
         <p className="mt-1.5 text-center text-xs text-body">
-          Their <span className="font-mono">localhost</span> is their machine
+          {outsiderNote ?? (
+            <>
+              Their <span className="font-mono">localhost</span> is their machine
+            </>
+          )}
         </p>
       </Reveal>
     </RevealGroup>
