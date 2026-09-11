@@ -31,6 +31,10 @@
 **/dist-single/*
 !**/dist-single/deployment-session-*.html
 !**/dist-single/base-template.html
+# One negation per deck, which is the cost of naming them: `!**/dist-single/*.html`
+# would re-include vite's unnamed `index.html` duplicate as well, and that is the
+# 4 MB byte-for-byte copy this block exists to keep out.
+!**/dist-single/state-behaviour-constructor.html
 **/.vite/
 *.tsbuildinfo
 
