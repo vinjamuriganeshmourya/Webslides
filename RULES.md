@@ -11,6 +11,26 @@ Rules are added **only with the user's confirmation** — see
 
 ---
 
+## A new rule never re-opens a delivered deck
+
+**Every session already delivered is frozen.** A rule added here applies to the
+deck being planned and the deck being built. It is **not** a mandate to go back
+and correct a session that has shipped.
+
+This overrides content rule 9 ("when content changes, chase the dependents"),
+which is about dependents *inside* the deck you are working on, not about
+earlier sessions.
+
+Several rules in this file quote a shipped deck as the evidence for why they
+exist, and quoting a defect is the whole point of that citation. **Those quotes
+are evidence, never a work list.** If a delivered deck breaks a rule written
+after it shipped, that is expected and correct: the rule exists because the deck
+taught us it was needed.
+
+A frozen deck is re-opened only when the user asks for that deck by name.
+
+---
+
 ## Hard content rules
 
 Full text: [`.claude/skills/slide-content-rules/SKILL.md`](.claude/skills/slide-content-rules/SKILL.md).
@@ -42,6 +62,12 @@ shipped with that exact mistake.
 | 20 | Key Takeaways restates the agenda concepts, verbatim |
 | 21 | The welcome line is written once |
 | 22 | Rendered copy never names a slide's position |
+| 23 | Every concept opens on a need and closes on proof, and the deck is one chain |
+| 24 | Nothing appears before it is introduced, and an introduction says why here |
+| 25 | Nothing arrives assembled: one new element per slide |
+| 26 | Plain English: write literally, never figuratively |
+| 27 | An illustration is researched before it is drawn, and the source says why that form |
+| 28 | The quiz frame says "Quiz Time!" and nothing else, so it cannot preview the answers |
 
 ## Process rules
 
@@ -89,11 +115,31 @@ how a concept is taught across consecutive slides, and which slide type and
 colour suit which content. Where a guideline and a hard rule disagree, the hard
 rule wins.
 
-One of them is a hard rule, not a guideline:
+Some of them are hard rules, not guidelines. The narrative-flow rule is the
+largest of these, and it is duplicated as content rule 23 so it loads on every
+turn that writes slide copy:
 
 | Rule | Full text |
 |---|---|
-| Every new concept carries four beats, in order: what works today, what it costs, what we need, how we do it | [`PEDAGOGY_GUIDELINES.md`](slide-kit/workflow/PEDAGOGY_GUIDELINES.md), section 2 |
+| Every concept opens on a felt need and closes on something observable. This never varies | [`PEDAGOGY_GUIDELINES.md`](slide-kit/workflow/PEDAGOGY_GUIDELINES.md) section 2, and [`slide-content-rules`](.claude/skills/slide-content-rules/SKILL.md) rule 23 |
+| The middle varies: STAR for a mechanism (default), 4MAT for a definition, SCQA for a choice, Merrill for a skill | same, "Choosing the middle". One framework per concept, named in the plan |
+| Two opening slides in every framework: the routine running, then the point it breaks | same. One means the cost beat is missing, which is this rule's known failure mode |
+| A framework is never an escape hatch from the opening: 4MAT's Why is STAR's Situation | same |
+| A fifth framework may be added, but it is registered before it is used and never picked mid-generation | same, "The set is open, and admission has a price". Five conditions, and the user's confirmation |
+| A new framework replaces the middle only. It never touches the opening or the close | same |
+| A STAR Task slide carries the capability in plain words and no syntax | same, "Task carries no syntax" |
+| Concept N's close is concept N+1's opening, and the divider inherits it | same, "The deck is one chain" |
+| Four or five content slides is the floor for a concept, not the target | same, and [`SLIDE_WORKFLOW.md`](slide-kit/workflow/SLIDE_WORKFLOW.md) stage 2 |
+| Decks are written for absolute beginners: explained once, used often, never re-explained | [`PEDAGOGY_GUIDELINES.md`](slide-kit/workflow/PEDAGOGY_GUIDELINES.md) section 2b, and rule 24 |
+| A concept's Situation must be writable from already-introduced terms only, which is what fixes its placement | same, "The placement test" |
+| Every plan carries a term ledger, checked at the sign-off gate | same, "The term ledger", and `SLIDE_WORKFLOW.md` stage 2 |
+| One new named term per slide, plain-words gloss before the formal name, no unexpanded acronym | same, "Register" |
+| An artefact with parts is never shown assembled first: one element per slide, then whole | [`PEDAGOGY_GUIDELINES.md`](slide-kit/workflow/PEDAGOGY_GUIDELINES.md) section 3, and rule 25 |
+| Every word on a slide means what it says: no idiom, no phrasal verb, no metaphor | [`TEXT_GUIDELINES.md`](slide-kit/workflow/TEXT_GUIDELINES.md) section 3d, and rule 26 |
+| Literal outranks short: `under the hood` is Anglo-Saxon and still banned | same, "The axis that matters" |
+| No Latin abbreviation on a slide: `e.g.`, `i.e.`, `etc.`, `via`, `vs.`, `per` | same |
+| 20 words and two commas is the hard cap for a rendered string | same, "The measured ceiling" |
+| Active voice, at most two stacked nouns, never a double negative | same, "The four remaining hazards" |
 | Every surface in a figure is lit from the top-left: highlight, ramp, colour-tinted shadow, two hairlines | [`STYLE_GUIDE.md`](slide-kit/workflow/STYLE_GUIDE.md), section 9 |
 | Agenda items are content words only: no articles, no helping verbs, and the dividers and recap read from the same array | [`TEXT_GUIDELINES.md`](slide-kit/workflow/TEXT_GUIDELINES.md), section 4a |
 | No slide copy opens on `The`: leads, bullets, callouts, captions and titles all drop the leading article | [`TEXT_GUIDELINES.md`](slide-kit/workflow/TEXT_GUIDELINES.md), section 4a-bis |

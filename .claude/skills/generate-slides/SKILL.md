@@ -31,6 +31,21 @@ The plan is at, and only at:
   slides exist means rebuilding screenshots, animations and step counts, then
   do as they ask. Their call, not yours.
 
+**Three things to check in the plan before generating**, all hard rules that are
+cheapest to catch here (`PEDAGOGY_GUIDELINES.md` sections 2, 2b and 3):
+
+1. **Two opening slides per concept, and a named framework.** The plan says
+   which of STAR, 4MAT, SCQA or Merrill each concept runs, and the pick matches
+   the kind of concept. One opening slide means the cost beat is missing and the
+   mechanism will arrive cold. This is the single most common defect. **Never
+   name a new framework at this stage** — the set grows at plan time, with the
+   user's confirmation, or not at all.
+2. **A term ledger, and no term used above its own introduction.**
+3. **No artefact shown assembled on its first appearance.**
+
+If the plan fails one of these, say which and fix the plan before generating —
+re-cutting a generated deck costs screenshots, animations and step counts.
+
 Re-read the plan in full at the start of every generation run, even one you
 wrote yourself earlier in the session. Generate what the plan says, not what
 you remember of it.
@@ -43,9 +58,9 @@ Read these, in this order, and treat them as binding:
 
 | File | Governs |
 |---|---|
-| `.claude/skills/slide-content-rules/SKILL.md` | **hard rules.** Banned punctuation and words, terminals, problem sequencing, one idea per slide, parallel reveal, chrome colour, illustration honesty |
+| `.claude/skills/slide-content-rules/SKILL.md` | **hard rules.** Banned punctuation and words, terminals, the STAR shape of a concept, prerequisite order, one element per slide, problem sequencing, one idea per slide, parallel reveal, chrome colour, illustration honesty |
 | `slide-kit/workflow/TEXT_GUIDELINES.md` | titles, kickers, how a line should read |
-| `slide-kit/workflow/PEDAGOGY_GUIDELINES.md` | how a concept is taught across consecutive slides |
+| `slide-kit/workflow/PEDAGOGY_GUIDELINES.md` | **narrative flow.** Sections 2, 2b and 3 are hard rules: one named framework per concept opening on a need and closing on proof, nothing used before it is introduced, nothing shown assembled |
 | `slide-kit/workflow/STYLE_GUIDE.md` | colour, type, which slide type suits which content |
 | the session's own `CLAUDE.md`, and any skill in `<course>/workflow/skills/` | decisions already made for this specific deck |
 
