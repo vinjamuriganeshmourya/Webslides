@@ -204,3 +204,23 @@ the kit PR gates the sync.
 | **AWS activation is 24 to 72 hours** | It is the reason this block is in session 8 at all | Nothing to do; it is the point |
 | **Free Tier clock starts at sign-up** | Two of the twelve months are spent before session 10 launches an instance | Costs nothing, worth stating on the slide |
 | **`SocketBridge` is a kit change** | Reaches every session including signed-off ones | PR, never a direct merge |
+
+---
+
+## Phase 7 — rev2, 2026-09-11. The whole Jenkins flow, plain English, captures
+
+Instructions received after the 58-slide build merged as PR #5.
+
+| # | Task | State |
+|---|---|---|
+| T7.1 | Rules 29, 30, 31 recorded in `slide-content-rules`, indexed in `RULES.md` | ✅ done, numbered after the author's uncommitted 22 to 28 |
+| T7.2 | `plan.md` rev2: TR 9 pulled in, quiz frames removed, ngrok explained, every title plain, every process a `Shot` | ✅ done, 88 slides |
+| T7.3 | Rewrite `jenkinsDockerDeck.tsx` to the rev2 list | next |
+| T7.4 | Fix the three Console Output slides that rendered as a shell (7, 24, 46) | in T7.3 |
+| T7.5 | Every `CodeBlock` names its file path or UI location | in T7.3 |
+| T7.6 | **19 captures**, listed at the end of plan §5 | **blocked on the author**: a running Jenkins, an ngrok login, a Docker Hub login, an AWS sign-up on their own device |
+| T7.7 | `slideCount` to 88, then the three harnesses, then `build:html` | after T7.3 |
+| T7.8 | Slide 48 `DataTable` → `SwapRows` | still blocked on `kit/lit-surfaces` merging |
+
+**Branch:** `session/8-plain-english-and-captures`, cut from `origin/main` after
+PR #5 merged.

@@ -8,16 +8,35 @@ it has been replaced by this file. The kit's rules still apply, and they live at
 
 | | |
 |---|---|
-| Slides | **58** |
+| Slides | **88**, rev2 of 2026-09-11 |
 | `devPort` | 5219 |
 | `htmlName` | `deployment-session-8` |
 | Deck file | `src/decks/jenkinsDockerDeck.tsx`, plus `src/decks/deckShared.tsx` |
-| Plan | `../session_plans/deployement_session_8/plan.md` — **SIGNED OFF 2026-09-10** |
+| Plan | `../session_plans/deployement_session_8/plan.md` — **rev2, 2026-09-11**, on direct instruction |
 | Tasks | `../session_plans/deployement_session_8/tasks.md` |
 | Build rules | session 7's `../workflow/skills/session-7-deck/SKILL.md`, R1 to R20, carried forward |
 | TR | `/home/nxtwave/docker_jenkins_aws/08_setting_up_jenkins_for_docker_builds.md` |
 | Also draws on | TR 9 §4 (the webhook) and TR 10 §2 (AWS account creation) |
 | Branch | `deck/setting-up-jenkins-for-docker-builds`, worktree at `/home/nxtwave/web-slides-session8` |
+
+## rev2, 2026-09-11: the whole Jenkins flow, and four rules this deck taught
+
+**Scope.** *"On session 8 we must complete whole setup for Jenkins, from next
+we would be required to start AWS."* TR 9's pipeline content is in this deck:
+Jenkinsfile, the four stages, the failure demo, the complete flow. The sessions
+after this one start AWS.
+
+**Rule 18 is overridden here, on instruction.** *"Keep no Quiz Time slides as
+this is long, override the rule and remove all Quiz Slides."* No `QuizTimeSlide`
+in this deck. This is a per-deck exception, not a repo rule.
+
+**Three hard rules were written because of this deck's first cut** (29, 30, 31
+in `slide-content-rules`): no company-presentation voice, a screenshot for every
+process, every code panel names its place. The first cut broke all three. Read
+them before adding a slide.
+
+**Concept names, article-free:** `Docker Access` · `Storing Secrets` ·
+`Connecting to GitHub` · `Full Pipeline`.
 
 ## The two decisions that shape this deck
 

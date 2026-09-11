@@ -41,6 +41,9 @@ shipped with that exact mistake.
 | 19 | The concept and its sub-concept are pinned to the top of every slide |
 | 20 | Key Takeaways restates the agenda concepts, verbatim |
 | 21 | The welcome line is written once |
+| 29 | No company-presentation voice: a title is the topic, a line is the fact |
+| 30 | Every process is shown with a real screenshot |
+| 31 | Every code panel says exactly where the code lives or runs |
 
 ## Process rules
 
