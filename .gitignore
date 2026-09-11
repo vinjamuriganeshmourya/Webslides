@@ -89,6 +89,10 @@ Python_PPT_slide/
 # <course>/workflow/reviews/<session>.review.md, which this does not match.
 **/workflow/review/
 
+# review.sh writes this while the app is running, so --stop can find the process
+# again. Runtime state, and the pid inside it means nothing on another machine.
+review-app/.review.pid
+
 # The generated halves of the slide-host module. `slideModule.tsx` is authored
 # and tracked; these two are written by build-theme-module.mjs.
 **/src/export/deckCss.ts
@@ -140,3 +144,9 @@ shot*.mjs
 # land here. Same status as workflow/preview: regenerated on every run, ~5 MB a
 # sweep, never reviewed as source.
 **/workflow/qa-shots/
+
+# ── deck studio ───────────────────────────────────────────────────────────
+# Per-session UI state: revision notes in flight and the pinned Claude Code
+# session id. Local to whoever is running the studio; the plan and the review
+# file beside it are the record.
+**/session_plans/*/studio.json

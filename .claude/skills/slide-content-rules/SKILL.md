@@ -1,6 +1,6 @@
 ---
 name: slide-content-rules
-description: Hard content, wording, animation and chrome rules for NxtWave/NIAT session slide decks. Use whenever writing, editing, or reviewing slide copy, deck source under a session project (src/decks/*.tsx), slide plans in <course>/session_plans/<session>/plan.md, slide components in src/ui or src/slides, or terminal/command/table/illustration content on a slide. Covers banned punctuation, banned words, terminal rendering, problem sequencing, one-idea-per-slide, parallel text-and-visual reveal, deck chrome colour, illustration honesty, technology logos, the central asset library, and registering approved slide types.
+description: Hard content, wording, animation and chrome rules for NxtWave/NIAT session slide decks. Use whenever writing, editing, or reviewing slide copy, deck source under a session project (src/decks/*.tsx), slide plans in <course>/session_plans/<session>/plan.md, slide components in src/ui or src/slides, or terminal/command/table/illustration content on a slide. Covers banned punctuation, banned words, plain literal English for a second-language audience, terminal rendering, the four narrative frameworks and how a concept picks one, prerequisite order and the term ledger, breaking an artefact down one element per slide, problem sequencing, one-idea-per-slide, parallel text-and-visual reveal, deck chrome colour, illustration honesty, technology logos, the central asset library, and registering approved slide types.
 ---
 
 # Slide content rules
@@ -152,7 +152,7 @@ two on one slide and three on the next.
 Shape that works: kicker `Attempt 3 of 5`, a 2–3 word title, the claim as the
 lead in quotes, 2 bullets of what it is, and one `Callout` titled `Why it fails`.
 
-This beats the 2–4 content slides per concept guideline. Pacing and one-idea-per
+This beats the five-content-slides-per-concept floor. Pacing and one-idea-per
 -slide outrank the slide count.
 
 ## 6. Text and its supporting visual reveal in parallel
@@ -570,3 +570,302 @@ on the screen.
 **Naming a later SESSION is also fine** — "later in this course", "next session"
 — because a session is a stable unit and content rule 4 already governs how much
 of it may be opened. It is slide-level pointers that rot.
+
+---
+
+## 23. Every concept opens on a need and closes on proof, and the deck is one chain
+
+Full text, with all four frameworks and their tests:
+[`slide-kit/workflow/PEDAGOGY_GUIDELINES.md`](../../../slide-kit/workflow/PEDAGOGY_GUIDELINES.md)
+section 2.
+
+**The invariant, which never varies.** Every concept **opens** on a felt need
+(the routine the learner has, then the point it breaks) and **closes** on
+something observable (run, seen, chosen with a reason, or done by the learner).
+The opening and the close are fixed so a reviewer can check them in seconds.
+
+**The middle varies by what kind of concept it is.** One framework per concept,
+named in the plan, never two blended:
+
+| The concept is | Use | Slides | The one-line check |
+|---|---|---|---|
+| a mechanism, file, command, config | **STAR** *(default)* | 5+ | two Situation slides, and a Result that was run |
+| a definition, nothing to run yet | **4MAT** | 4+ | a *Why* slide before the *What* slide |
+| a choice between options | **SCQA** | 4+ | the question on its own frame, then a verdict with its reason |
+| a skill the learner performs | **Merrill** | 5+ | an *Application* slide where the learner does it |
+
+**When in doubt, STAR.** A concept that seems to need one of the other three
+usually needs STAR and a clearer break in its Situation.
+
+**The set is open, and admission has a price.** A fifth framework may be added
+when a concept is genuinely explained better by one. It must satisfy the
+invariant, make an argument none of the four makes, ship its own one-line review
+check, and be **registered before it is used** — a row in
+`PEDAGOGY_GUIDELINES.md` section 2, a row in `RULES.md`, added with the user's
+confirmation. **Chosen at plan time and named in the plan, never during
+generation:** a framework named while slides are being written is almost always
+a label applied after the fact to a concept that already broke this rule. A new
+framework replaces the middle and never touches the opening or the close.
+
+STAR's movements: **S** Situation, **two slides** (the routine running, then the
+break) · **T** Task, the capability in plain words with **no syntax** ·
+**A** Action, the instruction · **R** Result, the run with its `→ expected` line.
+
+**Four or five slides is the floor for a concept.** Fewer means it is not a
+concept; it is a line on an existing slide.
+
+**The one check that catches most violations: count the opening slides.**
+There are two, in every framework. The cost beat is the one that vanishes, and a
+single opening slide is a preamble followed by a mechanism introduced cold. That
+is the exact defect this rule exists to stop.
+
+**A framework is not an escape hatch.** Picking 4MAT because a concept has no
+Result does not excuse a cold opening: 4MAT's *Why* is the same two slides as
+STAR's Situation.
+
+**Task holds no syntax.** A Task slide carrying a command is an Action slide
+mislabelled, and the learner never got told what problem the command solves.
+
+**The close is mandatory, and each framework has its own.** STAR closes on a
+Result the room watched happen (a command run, a page rendered, a log line, a
+status code); 4MAT on *What if*, a named consequence in the learner's own work;
+SCQA on a verdict with its reason; Merrill on the learner doing it. Rule 11
+governs how a capture is cropped; content rule 6 governs how it reveals.
+
+**Then chain them.** Concept N's close is concept N+1's opening, and the
+divider inherits it. Four concepts that each pass their own framework alone still read as four
+unrelated topics; the join is what makes a 60-slide deck one build. Bounded by
+rule 4: a cost named inside a concept is resolved inside that concept, so
+chaining forward is a handoff, never an opened problem left hanging.
+
+**Why this rule exists.** Session 4 (`Running the Real App with Docker`) shipped
+`ENV PYTHONUNBUFFERED=1`, `.dockerignore`, published ports and the database move
+as bare instructions on slides 14, 26, 31, 44 and 57. All five review comments
+said the same thing: *give the problem first, then provide this as the solution.*
+Each re-cut cost two slides the original plan should have carried. The rule was
+written as four unnamed beats after that session and still got skipped, because
+an unnamed rule is not a rule anyone can check. These are checkable: count the
+opening slides, look for syntax in the Task, look for the close.
+
+---
+
+## 24. Nothing appears before it is introduced, and an introduction says why here
+
+Full text, with the term ledger and the placement test:
+[`PEDAGOGY_GUIDELINES.md`](../../../slide-kit/workflow/PEDAGOGY_GUIDELINES.md)
+section 2b.
+
+**Every session here is taught to absolute beginners**, assuming a learner who
+does not grasp quickly. That assumption buys **order**, not repetition.
+
+1. **No term, tool, file or concept appears on a slide before the slide that
+   introduces it** — leads, bullets, callouts, terminal comments, table cells
+   and figure labels all included.
+2. **An introduction says why it is arriving here.** STAR's Situation and Task
+   are that "why"; a term with no felt need in front of it gets memorised, not
+   understood.
+3. **A later use names where the term came from, in content terms**, never by
+   position: "the image we built in concept 2", never "the image from slide 19"
+   (rule 22).
+4. **Explained once, used often.** A second explanation is a defect. A second
+   *use*, in new surroundings, is the design — that is how a beginner deck is
+   both slow and non-repetitive at the same time.
+
+**The placement test.** *A concept's Situation must be writable using only terms
+already introduced.* If it cannot be, the concept sits in the wrong place: move
+it after its prerequisite, or introduce that one prerequisite inside this
+concept's Situation. "The instructor will say it out loud" is not a third
+option — a deck that only works when narrated is not the deck the next
+instructor receives.
+
+**Register, all four hard:**
+
+- **One new named term per slide.** Two is one-idea-per-slide broken in
+  vocabulary instead of in content.
+- **The plain-words gloss comes before the formal name.** "A packaged copy of
+  your app, ready to run anywhere. That package is called an **image**." Never
+  "An image is an immutable filesystem snapshot".
+- **No word in a gloss may itself need a gloss.**
+- **No unexpanded acronym, ever** — CI/CD, WSGI, ORM, DNS.
+
+**Why this rule exists.** Session 5 shipped a section titled `Makefile in CI/CD`
+having never said what either letter stands for. The review comment was *"CI/CD
+is new for students so we need to update flow and explanation"*, and the fix
+cost six new slides. Every pacing re-cut in this repo has run the same way: the
+mechanism arrived before the vocabulary needed to state its problem, so the
+problem went unstated, so the mechanism arrived cold.
+
+---
+
+## 25. Nothing arrives assembled: one new element per slide
+
+Full text: [`PEDAGOGY_GUIDELINES.md`](../../../slide-kit/workflow/PEDAGOGY_GUIDELINES.md)
+section 3.
+
+**An artefact with more than one part is never shown complete on its first
+appearance.** It is built one element per slide, then shown whole with its
+payoff line.
+
+This is where STAR's **Action** expands: Action is one slide only when the
+instruction is one line. A Dockerfile, a command chain, a compose file, a
+pipeline or a diagram makes Action a build sequence, and the concept grows past
+five slides. That growth is correct.
+
+| Artefact | One element is |
+|---|---|
+| a file | one line, or one directive |
+| a command chain | one command |
+| a diagram | one node, one arrow, or one label |
+| a table | one row |
+| a config | one key |
+
+**The test:** a learner pausing on any slide of the sequence can say what
+changed since the previous one, in one sentence. If they cannot, two things
+landed at once.
+
+Previously shown content stays visible, unchanged, in the same position; elide
+earlier blocks with `...` once the sequence runs long, never re-flow them. One
+new line gets **one** new annotation, in the fixed format: `token` on one line,
+`→ what it does` on the next.
+
+---
+
+## 26. Plain English: write literally, never figuratively
+
+Full text, with the substitution tables and the measurements:
+[`TEXT_GUIDELINES.md`](../../../slide-kit/workflow/TEXT_GUIDELINES.md) section 3d.
+
+These decks reach **lakhs of students**, and for many of them English is a
+second or third language. There is no instructor in the recording to rescue a
+line they stall on.
+
+**The first test on every rendered string: does every word mean what it says?**
+
+A second-language reader can look up a long word. **They cannot look up an
+idiom.** This outranks §3a's "short Anglo-Saxon over long Latinate" advice,
+which is not wrong but is insufficient here: `under the hood` is short,
+Anglo-Saxon, and banned.
+
+**Banned: figurative verbs and idioms.** `under the hood` · `wired up` ·
+`bake into` · `spin up` · `roll back` · `kick off` · `hit the endpoint` ·
+`out of the box` · `figure out` · `run into` · `end up with` · `take care of` ·
+`on the fly` · `up and running` · `ship` (as a verb) · `hand off`, plus every
+cultural or sporting metaphor.
+
+The generative rule for anything not listed: **a two-word verb whose meaning is
+not the sum of its words is banned.** `set up` and `log in` stay, because they
+are the learner's own words and the tools themselves use them.
+
+**Banned: Latin abbreviations.** `e.g.` → *for example* · `i.e.` → *that is* ·
+`etc.` → name the rest · `via` → *through*, *using* · `vs.` → *compared with* ·
+`per` → *for each* · `N/A` → *not needed*.
+
+**Hard limits**, measured against 2,416 shipped strings whose median is 4 words:
+
+- **20 words maximum** in any rendered string. Past that it is a paragraph, and
+  paragraphs are two slides (rule 24, and `PEDAGOGY_GUIDELINES.md` section 2b).
+- **Two commas maximum.**
+- One line is one sentence (`TEXT_GUIDELINES.md` §4b, already a rule).
+
+**Four more, all hard:** write active not passive · never stack more than two
+nouns (`container image build context` → `the build context for the image`) ·
+never negate twice (`not uncommon`) · no conditional pile-up (`If you had not
+set this, the build would have failed` → `Without this line, the build fails`).
+
+**Why this rule exists.** Asked for directly: *"here we are catering lakhs of
+students, not all would be able to understand difficult vocabulary, we must use
+very simple and understandable English."* The audit that followed found
+`under the hood` nine times in shipped decks, `wired up` four, `bake` six,
+`e.g.` eleven, `via` five, and a Jenkins slide reading *"an automation server is
+simply a program"*, which also broke §3b's existing ban on `simply`. Nothing had
+ever flagged them, because there was no line to check them against.
+
+**Delivered decks are frozen.** Those counts are evidence for the rule, not a
+list of slides to go and fix. See the freeze clause at the top of `RULES.md`.
+
+## 27. An illustration is researched before it is drawn
+
+**Hard rule.** Before a concept gets a figure, find out how that KIND of idea is
+conventionally drawn. Then either use the convention, or write down what you are
+doing instead and why. Reaching for the nearest component that fits the data is
+not a choice of representation, it is a choice of whatever came to mind first.
+
+Asked for on 2026-09-09: *"whenever you're preparing an illustration for any
+concept, research on what is the best way of representation, and add this in
+rules or guidelines to follow every time."*
+
+### Why, in three decks' worth of evidence
+
+- **Session 7's CI/CD reach.** The signed-off plan guessed `NestedSpans`, three
+  brackets above a chain, "because the actual relationship between the three
+  terms is containment, and no other candidate draws that". The user overruled
+  it: the convention is **stacked rows**, and the thing that had to be drawn was
+  the **human approval marker** between delivery and deployment. A lab then built
+  four candidates and `ThreeLanes` won, on the ground that Atlassian, Red Hat,
+  AWS, CircleCI, IBM and Bitrise all publish that same picture, so a learner
+  meets it again in the first article they read. **Local cleverness lost to a
+  published convention**, and no amount of reasoning from the data would have
+  found it.
+- **Session 5's analogy rows.** `AnalogyMap` drew two bordered boxes and an arrow
+  glyph per row. The review rejected the rendered slide outright, and the
+  diagnosis that won was that the fault was the GRAMMAR, not the styling: two
+  boxes and a glyph are three objects, so the eye counts three things and then
+  has to be told they are one. `SwapRows` replaced it with one object cut in two.
+- **Session 4's SVG figures.** Two shipped with `<text>` labels overlapping and
+  all three harnesses passed them, because an `<svg>` is one rectangle to a
+  harness (rule 17).
+
+### What counts as research
+
+One of these, and say which in the slide's own source:
+
+1. **How the field draws it.** Vendor docs, the tools' own dashboards, the
+   articles a learner will read next. A picture the room meets again elsewhere is
+   worth more than a better picture they never see twice.
+2. **A named representation for that shape of claim.** Containment, sequence,
+   one-to-many, queue-and-servers, before-and-after, part-and-whole each have
+   conventional forms. Name the shape of the claim first, and the form follows.
+3. **The registry.** `slide-kit/slide-types/README.md` says what each figure is
+   FOR and what it must not be used for. A figure whose contract does not match
+   the claim is the wrong figure even when the data fits its props.
+
+### The check
+
+**The slide's source says why THIS representation and not the obvious
+alternative.** One sentence is enough, and the absence of that sentence is the
+defect: it is the difference between a chosen figure and a found one. Where the
+answer is "no existing figure makes this argument", rule 14 takes over and it
+becomes a lab with candidates.
+
+**This is not a licence to build a component per slide.** Most concepts are
+served by a figure already in the registry, and the research usually ENDS at the
+registry. What the rule forbids is skipping the question.
+
+## 28. The quiz frame says "Quiz Time!" and nothing else
+
+**Hard rule.** The quiz announcement slide carries its two words and no subtitle,
+no lead, no bullet, no list of what the quiz covers.
+
+Asked for on 2026-09-09: *"remove any kind of sentences in the Quiz Time slide.
+The only sentence present should be the two words Quiz Time, no other should be
+used on that."*
+
+`QuizTimeSlideProps` still declares an optional `subtitle`, because removing a
+prop from the kit changes the type every delivered session compiles against. Do
+not pass it. A session that does is the defect, not the type.
+
+Two reasons, and the second is the one that matters:
+
+- **The questions are not on the slide.** A quiz is delivered by an external
+  component (`QuizSlide` is retired for this reason, see
+  `slide-kit/slide-template/CLAUDE.md` section 2), so the frame's whole job is to
+  say "stop, we are checking". A subtitle listing the topics **previews the
+  questions and answers some of them**: session 7's mid-deck frame read "five
+  stages, two rules, and the difference between delivery and deployment", which
+  is three of the answers.
+- **It is the one frame in the deck with nothing to read.** That is deliberate.
+  The room's attention has to move off the screen and onto the tool, and every
+  extra line on the slide holds it where it no longer belongs.
+
+**Check:** `grep -n "QuizTimeSlide" -A 3 src/decks/*.tsx` shows `lesson` and
+nothing else.

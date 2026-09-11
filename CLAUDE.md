@@ -51,6 +51,10 @@ review-app/                 the deck review app. One server for the whole repo,
                             slide-wise and component-wise. Its README is the
                             manual; the section below is the command.
 
+studio/                     Deck Studio: the whole pipeline in a browser, with
+                            headless Claude Code behind it shown as a conversation.
+                            Python server, React UI. Its README is the manual.
+
 testing/
   review_app/               a Streamlit plan-review UI. NOT IN USE. See below.
 
@@ -242,6 +246,26 @@ deck is a file in the repo rather than a screenshot in a chat: a comment that
 names `CodeBlock` at `src/ui/CodeBlock.tsx:84` is actionable months later, and
 "the grey box on slide 12 is wrong" is not. `review-app/README.md` covers the
 flow, the file format, and what a session needs before it can be reviewed.
+
+---
+
+## The studio
+
+```bash
+cd studio && uv sync && (cd ui && npm install && npm run build)   # once
+uv run python -m server.main                                     # http://127.0.0.1:8600
+```
+
+TR doc → plan → plan sign-off → generate → review → deck sign-off → export, one
+pane each, with Claude Code running headless on your own login and shown as
+messages, tool calls, approval cards and questions.
+The UI owns the files and both sign-offs: the `STATUS` line in `plan.md` (the gate
+`generate-slides` reads) and the review file (the review app's grammar). The model
+steps are one prompt each, `/studio plan|generate|review <course>/<session>`,
+which the studio sends for you. Every session pins a Claude Code
+session id in `session_plans/<session>/studio.json` and resumes it, so a change
+request lands in the conversation that already knows the deck. `studio/README.md`
+is the manual.
 
 ---
 
