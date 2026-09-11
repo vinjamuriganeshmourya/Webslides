@@ -13,7 +13,7 @@
 > | This guide says | The rule says |
 > |---|---|
 > | "Em-dash for the reveal beat (~1 per 3 slides)" (§5) | **Never use a spaced em dash** in any rendered string. Use a comma, colon, full stop or parentheses. |
-> | "2–4 content slides per concept" (`SLIDE_WORKFLOW.md`) | A numbered series the learner weighs individually gets **one item per slide**, even past 4. |
+> | "at least five content slides per concept" (`SLIDE_WORKFLOW.md`) | A numbered series the learner weighs individually gets **one item per slide**, even past 4. |
 > | — | Never say **stranger**; say *others*. |
 > | — | Commands render in a **VS Code `Terminal`** with the prompt path, one panel per terminal. |
 > | — | A later problem is **named, never opened**: no tools, no stages, and not greyed out. |

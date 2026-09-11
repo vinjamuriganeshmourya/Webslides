@@ -283,7 +283,54 @@ for (let i = 1; i <= TOTAL; i++) {
       const oneToken = cs.fontFamily.includes('Mono') || t.includes('\u00b7')
       if (!oneToken) return
       const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.4
-      const rows = Math.round(el.getBoundingClientRect().height / lh)
+      /*
+        PADDING IS NOT A SECOND LINE.
+
+        This divided the element's full border-box height by its line height,
+        so any padded monospace leaf reported two rows while rendering on one:
+        a `py-2.5` chip at 17px line height measures 40px, and 40/17 rounds to
+        2. Session 3 shipped four such false positives (`starts.txt`,
+        `docker-demo_default` twice, and a `backend:8000 resolves` pill), all
+        confirmed single-line in the rendered screenshots, and a harness whose
+        warnings are known-noisy is a harness people stop reading.
+
+        Measuring the CONTENT box is what the check meant all along: subtract
+        the vertical padding before dividing. A genuine wrap still grows the
+        content box by a full line, so nothing real is masked.
+      */
+      /*
+        NOR IS A STRETCHED GRID ROW A SECOND LINE.
+
+        Subtracting the padding fixed the chip case above and still reported a
+        false positive on session 7's `c1-same-two-steps`, for a different
+        reason: `SwapRows` puts both halves of a pairing in one grid row, and the
+        right half carries a command AND a gloss under it. The left half holds
+        one line, and the grid stretches it to match, so its CONTENT box is two
+        lines tall while its text renders on one. `docker tag ravi123/...` was
+        reported wrapped and was confirmed single-line on the screenshot.
+
+        A box is the wrong thing to measure. Ask the TEXT how many line boxes it
+        occupies: a Range over the text node returns one rect per line, which no
+        amount of padding, stretch or alignment can inflate. The box arithmetic
+        stays as the fallback for the case the Range cannot answer.
+      */
+      let rows = 0
+      const node = el.firstChild
+      if (node && node.nodeType === 3) {
+        const range = document.createRange()
+        range.selectNodeContents(el)
+        const lineTops = new Set()
+        for (const r of range.getClientRects()) {
+          if (r.width === 0 && r.height === 0) continue
+          lineTops.add(Math.round(r.top))
+        }
+        rows = lineTops.size
+        range.detach?.()
+      }
+      if (!rows) {
+        const padY = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0)
+        rows = Math.round((el.getBoundingClientRect().height - padY) / lh)
+      }
       if (rows >= 2) wrapped.push({ rows, txt: t.slice(0, 56) })
     })
 

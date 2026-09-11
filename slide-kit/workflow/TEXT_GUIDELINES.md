@@ -119,6 +119,10 @@ prevents is over-correcting a casual line into a formal one:
 | `A genuinely confusing hour` | `A protracted diagnostic effort` | `Without this line, the log panel stays empty` |
 | `gone` | `no longer requisite` | `No longer needed` |
 
+Prefer the short Anglo-Saxon word to the long Latinate one, and read §3d
+before applying this: short does not mean literal, and **literal is the rule
+that outranks it**. `under the hood` is short, Anglo-Saxon and banned.
+
 Prefer the short Anglo-Saxon word to the long Latinate one: **use** not *utilise*,
 **start** not *initiate*, **needs** not *requires*, **about** not *regarding*,
 **before** not *prior to*, **so** not *consequently*. A sentence is professional
@@ -173,6 +177,9 @@ The half that gets dropped under time pressure is the half written here.
 
 The test: read the slide as somebody who joined this course last week. If a
 fragment sends them to a search engine, it is not finished.
+
+§3b is about the technical term. **§3d is about the ordinary English around
+it**, which is what actually stops a second-language reader.
 
 ## 3c. State the fact. Do not allude to it
 
@@ -251,6 +258,122 @@ remark about the fact. `Technically yes, and it would be a mess` and
 `Both programs fit, and one crash takes down both` are the same length, and only
 one of them teaches. When a line genuinely cannot be stated in the budget, the
 slide is carrying two ideas and §1 already says to split it.
+
+## 3d. Plain English at scale: write literally, never figuratively
+
+**Hard rule.** These decks are taught to **lakhs of students** across a course,
+and for a large share of them English is a second or third language. A line that
+a fluent reader skims is a line another reader stops on, re-reads and gives up
+on. There is no instructor in the recording to rescue it.
+
+§3a governs register (professional, not casual) and §3b governs unfamiliar
+technical terms. **This section governs the English itself**, and it adds two
+things neither of those has: a measured ceiling, and the hazard classes that
+specifically break a second-language reader.
+
+### The axis that matters is literal versus figurative, not short versus long
+
+§3a says prefer the short Anglo-Saxon word to the long Latinate one. **At this
+scale that advice is not enough, and taken alone it points the wrong way.**
+`under the hood` is entirely Anglo-Saxon and much harder than `internally`,
+because it cannot be decoded from its parts and no dictionary lookup rescues it.
+
+A second-language reader can look up a long word. **They cannot look up an
+idiom.** So the first test on every line is: *does every word here mean what it
+says?*
+
+### Banned: figurative verbs and idioms
+
+**Banned in every rendered string.** These are the ones already found in shipped
+decks, plus the family they belong to. **The shipped counts below are evidence,
+not a work list**: delivered sessions are frozen, see the freeze clause at the
+top of `RULES.md`.
+
+
+| Don't | Do |
+|---|---|
+| `under the hood` (9 uses shipped) | `inside`, `internally`, `in the code that runs it` |
+| `wired up` (4) | `connected`, `set up`, `configured` |
+| `bake it into the image` (6) | `include it in the image`, `store it in the image` |
+| `spin up a container` | `start a container` |
+| `roll back` | `go back to the earlier version` |
+| `kick off the build` | `start the build` |
+| `hit the endpoint` | `send a request to the endpoint` |
+| `out of the box` | `without any setup` |
+| `figure out` | `find`, `work out`, `decide` |
+| `run into an error` | `get an error`, `see an error` |
+| `end up with` | `you now have` |
+| `take care of` | `handles`, `does` |
+| `on the fly` | `while it is running` |
+| `up and running` | `running` |
+| `ship the image` | `publish the image`, `send the image` |
+| `hand off` | `pass to`, `give to` |
+| `a mess`, `a nightmare`, `painful` | state the fact (§3c) |
+
+The generative rule, for the ones not on this list: **a two-word verb whose
+meaning is not the sum of its words is banned.** `set up` and `log in` are fine
+because they are the learner's own words for the action and appear in the tools
+themselves. `spin up` and `wire up` are not.
+
+Cultural and sporting metaphors are out for the same reason, with no list
+needed: no `home run`, no `level playing field`, no `back to square one`.
+
+### Banned: Latin abbreviations and legal shorthand
+
+**Banned in every rendered string**, with the count already shipped:
+
+| Don't | Do |
+|---|---|
+| `e.g.` (11 uses shipped) | `for example`, or just give the example |
+| `i.e.` | `that is`, or rewrite the sentence |
+| `etc.` | name the rest, or write `and more` |
+| `via` (5) | `through`, `using`, `with` |
+| `vs.` (1) | `compared with`, or `or` |
+| `per` | `for each` |
+| `N/A` | `not needed`, `does not apply` |
+
+### The measured ceiling
+
+Measured across 2,416 rendered strings in the shipped decks: **median 4 words,
+90th percentile 9 words, 28 strings above 20 words, and one at 61.**
+
+The copy is already short. The ceiling exists to stop the tail:
+
+- **20 words is the hard cap for any rendered string.** The 13 shipped strings
+  above 25 words are the defect this catches, and each is a paragraph that
+  should have been two slides (section 2b of `PEDAGOGY_GUIDELINES.md`).
+- **One line is one sentence** (§4b, already a rule). A rendered string holding
+  three sentences is three ideas on one slide.
+- **Two commas is the limit.** Past that, the reader is holding too much before
+  the sentence resolves.
+
+### The four remaining hazards
+
+- **Write active, not passive.** `The container reads the file`, not
+  `The file is read by the container`. Passive hides who acts, and who acts is
+  usually the whole point.
+- **Never stack more than two nouns.** `container image build context` is four
+  and unparseable; write `the build context for the image`.
+- **Never negate twice.** `not uncommon`, `does not fail to`, `nothing is not
+  copied`. Say the positive thing.
+- **No conditional pile-up.** `If you had not set this, the build would have
+  failed` becomes `Without this line, the build fails`.
+
+### The test
+
+Read the line aloud, slowly, as somebody whose English is good enough for a
+technical course but who has never lived where the idiom comes from. **If any
+word means something other than what it says, rewrite it.** Then check the word
+count.
+
+**Why this rule exists.** Asked for directly: *"here we are catering lakhs of
+students, not all would be able to understand difficult vocabulary, we must use
+very simple and understandable English."* The audit that followed found
+`under the hood`, `wired up`, `bake`, `roll back` and `ship` in shipped deck
+copy, `e.g.` eleven times, and one Jenkins slide reading *"an automation server
+is simply a program"*, which also broke §3b's existing ban on `simply`. None of
+those had ever been checked, because until this section there was no line to
+check them against.
 
 ## 4. Titles
 

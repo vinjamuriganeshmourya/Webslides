@@ -214,6 +214,12 @@ export interface FeedbackSlideProps extends Base {
 export interface QuizTimeSlideProps extends Base {
   /** Defaults to "Quiz Time!". */
   title?: ReactNode
+  /**
+   * DO NOT USE. Content rule 28: the frame carries "Quiz Time!" and nothing
+   * else. The field stays declared only so already delivered sessions keep
+   * compiling against this type. A subtitle here previews the questions the
+   * external quiz tool is about to ask, and answers some of them.
+   */
   subtitle?: ReactNode
 }
 

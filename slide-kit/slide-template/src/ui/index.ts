@@ -10,6 +10,7 @@ export { SlideHeader } from './SlideHeader'
 */
 export { SlideLead } from './SlideLead'
 export { Logo } from './Logo'
+export { Tech } from './Tech'
 export { DotGrid, Blob, Orb, WaveArc } from './Decor'
 export { Kicker, Chip, NumberBadge } from './primitives'
 export { BulletList, Card, CardGrid, StatTile, type BulletItem } from './content'
@@ -121,6 +122,74 @@ export {
   type FanOutSource,
   type FanOutCopy,
 } from './figures/FanOut'
+/*
+  THREE LANES — how far the automation reaches under each of the three CI/CD
+  terms. On the barrel as one figure with one shape, like `FanOut` above it.
+
+  Chosen out of `slide-kit/cicd-reach-lab`, which built four candidates for the
+  same contract: `StopPoints` (three markers on one chain), `NestedSpans` (three
+  brackets above it), `ReachBands` (three bars from a shared left edge) and this.
+  The lab's brief came from the session 7 review, "research the best ways to
+  represent CI/CD and use those", and the answer that survived is the
+  conventional one: Atlassian, Red Hat, AWS Prescriptive Guidance, CircleCI, IBM
+  and Bitrise all publish the same picture, so a learner who reads any article
+  after the session meets this diagram again.
+
+  It is also the only candidate that asks NOTHING of the viewer. The other three
+  draw the reach as an abstraction over a single chain, so a reader has to carry
+  a bar or bracket's right end back up to the stage above it. Here each lane
+  states its own outcome in place. The price is height, paid three times, and it
+  fits: measured at 394px against the 425px ceiling where a composite's top edge
+  starts centring into the instructor-video reserve.
+
+  `ReachBands` stays in the lab rather than the kit. It is the same convention
+  drawn in 276px, and worth promoting if a future deck needs the height back.
+*/
+export { ThreeLanes } from './ThreeLanes'
+export { ReachChain } from './ReachChain'
+export { ApprovalMark } from './ApprovalMark'
+export { CHAIN, REACH_PAINT, type CicdReachProps, type ReachStage, type ReachTerm } from './cicdReach'
+
+/*
+  TILL ROW. One waiting line, and a fixed number of service desks that the
+  front of the line can go to either of. On the barrel as one figure with one
+  shape, like `ThreeLanes` above it.
+
+  Chosen out of `slide-kit/queue-lab`, which built three candidates for the same
+  `QueueFigureProps` contract: `QueueBelt`, `DashboardPanels` and this. The claim
+  all three had to carry is that one job is triggered, runs wait in a line, and a
+  fixed number of executor slots take them.
+
+  It won because it is the only candidate that DRAWS THE MECHANISM rather than
+  the parts. A connector leaves the front of the line, runs along a rail under
+  both desks, and rises into each desk's bottom edge with its own arrowhead, so
+  the dependency between a free slot and the next ticket is geometry rather than
+  words. That dependency is the one thing a learner cannot work out from a list
+  of four definitions, and the other two candidates either state it in a caption
+  or leave it to be inferred.
+
+  It also keeps Jenkins' own panel titles, `Build queue` and `Build executor
+  status` with its slot count, so it still passes content rule 27: a picture the
+  learner meets again elsewhere beats a better one they see once.
+
+  `QueueBelt` lost because its tickets run RIGHT TO LEFT inside the queue well,
+  so a reader scanning left to right meets `#4` before `#3` and has to be told by
+  a caption which end is the front. `DashboardPanels` lost because it draws the
+  two panels and not the flow between them, which leaves the reader to infer the
+  one relationship the figure exists to show. Both stay in the lab, and
+  `DashboardPanels` is worth reaching for if a future slide needs the panels
+  without the flow.
+*/
+export { TillRow, tillRowHeight } from './TillRow'
+export {
+  QUEUE_FIXTURE,
+  type QueueFigureProps,
+  type QueueJob,
+  type QueuedRun,
+  type ExecutorSlot,
+  type FinishedRun,
+} from './queueFigure'
+
 export * as Icons from './icons'
 export { iconByName, type IconName } from './icons'
 export { Illustration, type IllustrationName } from './characters/Illustration'
