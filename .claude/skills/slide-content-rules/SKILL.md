@@ -478,3 +478,85 @@ workflow specifies the kicker plus the session name, centred, and nothing else i
 the body: no course chip, no subtitle, no presenter, no meta, no mascot, and no
 body logo, because the footer already carries the one mark. The full-bodied
 variant still exists on the props type; no shipping deck uses it.
+
+<!--
+  Rules 29 to 31 were written on 2026-09-11 on a branch cut from main, while
+  rules 22 to 28 existed only as uncommitted work in the author's tree. The
+  numbers assume those land first. If they land differently, renumber these.
+-->
+
+## 29. No company-presentation voice: a title is the topic, a line is the fact
+
+**Hard rule.** The full text is `TEXT_GUIDELINES.md` §3c (state the fact, do
+not allude to it), §3d (literal, never figurative) and §4 (titles are two or
+three words, topic-bare). This rule exists because all three were already
+written when Deployment session 8 shipped 58 slides that broke them, and the
+user's description of the result is the test to apply:
+
+> "Our aim is to provide clear simple understandable content across lakhs of
+> students, not fancy phrases... Your sentence phrasing is like for company
+> presentations."
+
+**The audience is absolute beginners**, many reading English as a second or
+third language, with no instructor in the recording to rescue a line.
+
+Two shapes of the failure, both from that deck, so they are recognisable:
+
+| Shipped | Why it fails | Plain |
+|---|---|---|
+| `The Job That Cannot Do the Job` | Clever to someone who knows the point. Says nothing to someone who does not | `docker: not found` |
+| `A Green Build That Only Echoes` | Names no build, no echo, no problem | `Where We Left Off` |
+| `What a Machine Just Did That You Used to Do` | Ten words, and a riddle | `Before and After` |
+| Lead: `Add one docker command to the job, and it stops dead` | Fact, comma, remark about the fact. The remark is the instructor's, spoken | `Add a docker command to the hello-jenkins job. It fails with this error` |
+
+The second shape has a name now: **fact-comma-remark**. About 25 leads on that
+deck were built this way (`...and neither of them is private`, `...and none of
+them were yours`, `...and it is a habit`). The remark goes to `notes`. The line
+keeps the fact.
+
+**Three tests before a string is kept:**
+
+- Is the title the topic, in two or three words? Not a phrase about the topic.
+- Does the lead state the fact, or comment on it?
+- Would a reader who has never met this subject learn the thing from this line
+  alone?
+
+## 30. Every process is shown with a real screenshot
+
+**Hard rule.** A slide that walks the learner through a UI (a sign-up, a
+dashboard, a settings page, a form, a token page) carries a real capture of that
+screen, cropped per rule 11. A table of field names or a list of steps does not
+stand in for it.
+
+Deployment session 8 shipped the ngrok sign-up, the authtoken step, the GitHub
+webhook form and the AWS sign-up as steps and tables, and recorded each as a
+"plan deviation". The user's correction: *"for every process you must add
+screenshots, for ngrok setup or getting the auth code you haven't added any
+screenshot, same for AWS as well."* A beginner following a table cannot find
+the button. A beginner following a picture can.
+
+**Privacy is handled by choosing the screen state, never by skipping the
+capture and never by retouching it (rule 11).** A token page is captured with a
+real token that is then revoked. A sign-up form is captured before personal
+fields are filled. A payment screen is not captured at all, and the slide says
+where the learner is and what they will see.
+
+## 31. Every code panel says exactly where the code lives or runs
+
+**Hard rule.** A `Terminal` already carries its `PS C:\path>` prompt (rule 3).
+This extends the same obligation to every other panel that shows code or text
+the learner will see:
+
+- A `CodeBlock` names the **file path** (`backend/Dockerfile`) or the **UI
+  location** (`Jenkins → nxttrendz-build-test → Configure → Pipeline → Script`).
+  Never a bare label like `Pipeline script`.
+- **Program output the learner reads in a browser is never rendered as a
+  shell.** Deployment session 8 put Jenkins Console Output inside a VS Code
+  `Terminal` with a `PS C:\nxttrendz>` prompt on three slides. That tells the
+  learner they typed those lines in PowerShell. They read them in the browser,
+  on the build page. It is a `Shot` of the console (rule 30), or a `CodeBlock`
+  labelled with where it is on screen.
+
+The user's words: *"whenever a code is presented the path or place must be
+mentioned clearly."* "Wrong folder" and "wrong window" are the first two
+errors a beginner hits, and a panel with no location invites both.
