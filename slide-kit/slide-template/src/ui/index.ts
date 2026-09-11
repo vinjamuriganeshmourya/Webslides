@@ -103,6 +103,43 @@ export {
   type FanOutSource,
   type FanOutCopy,
 } from './figures/FanOut'
+/*
+  OBJECT STATE, AND WHAT ONE METHOD DID TO IT.
+
+  Promoted out of `oops_theory/state_behaviour_constructor`, where `ObjectState`
+  carried eleven slides. On the barrel rather than import-by-path, because unlike
+  the four figure FAMILIES under `src/ui/points`, `pseudocode`, `projectcode` and
+  `features` there is no choice to make here: each is a single figure with one
+  shape, like `LayerStack` and `ContainerJourney` beside them.
+
+  Neither is OOP-specific. The contract is a named thing and the values it holds
+  right now, which is also a build and its settings, a request and its headers, a
+  container and its published ports.
+
+  NOT `DataTable`: a table says "these rows are data" and has no owner to attach
+  them to, and the owner is the teaching. NOT a `Card`: no row structure and
+  nowhere to mark the row that moved.
+*/
+export { ObjectState, ObjectStateRow, type StateRow, type ObjectStateProps } from './ObjectState'
+export { StateChange, type StateSide, type StateChangeProps } from './StateChange'
+
+/*
+  A SNIPPET, AND WHAT RUNNING IT PRINTED.
+
+  Built in `python_programming/programming_with_python`, where thirteen slides
+  needed it, then copied into `oops_theory/state_behaviour_constructor`. Two
+  copies is where this repo stops: the syntax-anatomy figure was hand-rolled
+  three times before it became `SyntaxBreakdown`.
+
+  `CodeBlock` is a FILE (traffic lights, filename, line numbers) and `Terminal`
+  is VS Code's panel, where the command and its output share one scrollback and
+  the folder path is teaching content. Neither can say "this text, run, produces
+  that text", which is what a language lesson is made of.
+
+  Its own header says what `output` may and may not carry.
+*/
+export { CodeOutput, type CodeOutputPane } from './CodeOutput'
+
 export * as Icons from './icons'
 export { iconByName, type IconName } from './icons'
 export { Illustration, type IllustrationName } from './characters/Illustration'
