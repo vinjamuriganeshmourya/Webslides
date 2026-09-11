@@ -35,7 +35,18 @@ in one session with one idea per slide.
 | `video-safe.mjs` | 1 of 58, and it is a kit defect rather than content. See "Known defect" below |
 | `build:html` | clean, `dist-single/deployment-session-8.html`, 3.63 MB |
 
-### Known defect, not fixed here
+### Known defects, not fixed here
+
+**Two, both kit layout, both content independent.** Slide 12 is below. Slide 63,
+The Complete Jenkinsfile, intrudes 287px: `CodeBlock` places its language chip
+at the top right of the panel, and any code panel that sits high on a slide puts
+that chip inside the instructor rectangle. Dropping `language` is not a fix, it
+falls back to the default and labels Groovy as Python, which the first cut
+shipped for one run. Slide 44 has the same chip and passes only because its
+longer lead pushes the panel lower. The chip belongs left of the filename or
+below the rectangle's floor; that is a kit change.
+
+**Slide 12, SyntaxBreakdown.**
 
 Slide 12's `CommandSyntaxSlide` intrudes 177px into the instructor rectangle.
 `SyntaxBreakdown.tsx` sizes its panel `mx-auto w-full max-w-[900px]`, a fixed
