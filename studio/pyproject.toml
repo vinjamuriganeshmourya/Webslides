@@ -1,0 +1,13 @@
+[project]
+name = "deck-studio"
+version = "0.1.0"
+description = "A browser UI around the deck pipeline, with the real Claude Code in a terminal pane."
+requires-python = ">=3.12"
+dependencies = [
+  "claude-agent-sdk>=0.2.152",
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.30",
+]
+
+[tool.uv]
+package = false
