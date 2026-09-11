@@ -34,7 +34,29 @@ export function ContentSlide({
     old floor. Drop this and `node video-safe.mjs` fails on every lead-less slide
     that carries a figure.
   */
-  const visualGuard = lead ? '' : 'pt-[52px]'
+  /*
+    THE 3px IS NOT A FUDGE, IT IS THE MEASURED GAP.
+
+    This used to be `lead ? '' : 'pt-[52px]'`, on the belief stated in the comment
+    below that "a slide with a lead starts its body below y=220". It does not. The
+    well's top with a one-line lead measures **y=217**, three pixels INSIDE the
+    instructor-video reserve (x 913..1280, y 0..220), so a full-width figure flush
+    to the top of the well sits in the reserve and `video-safe.mjs` fails.
+
+    It went unnoticed because it only fires when a figure is tall enough to reach
+    the well's top edge. The well centres its content, so a short figure never
+    does. Three separate figure labs hit it the moment a candidate grew: two
+    landed at y=217 and one at y=222.
+
+    A STILL-OPEN CASE, deliberately not fixed here: a block TALLER than the well
+    overflows both ends equally, and `justify-content: center` distributes
+    negative free space past the start edge while IGNORING this padding. So this
+    guard protects a flush block, not an oversized one. The fix for that is to
+    centre with auto margins instead, which resolve to zero on negative free
+    space and therefore pin rather than leak — but that changes how an oversized
+    block renders in decks already signed off, so it needs its own decision.
+  */
+  const visualGuard = lead ? 'pt-[3px]' : 'pt-[52px]'
   /*
     WHY THAT TEST STILL READS `lead`, NOW THAT THE LEAD IS NOT IN THE HEADER.
 
@@ -42,7 +64,8 @@ export function ContentSlide({
     top of the content well and the first row of the body. That used to be a lead
     inside a 168px header; it is now a lead inside the well, one line of 22px type
     plus its bottom margin, which is the same 50-odd pixels. Either way a slide with
-    a lead starts its body below y=220 and a slide without one does not.
+    a lead starts its body at y=217 and a slide without one does not. That 217 is
+    three pixels above the y=220 reserve floor, which is what the guard above pays.
   */
   return (
     <SlideBase variant="light" lesson={lesson}>

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { SlideBase } from '@/ui/SlideBase'
 import { SlideHeader } from '@/ui/SlideHeader'
+import { SlideLead } from '@/ui/SlideLead'
 import { BulletList } from '@/ui/content'
 import { Media } from './Media'
 import type { ContentImageSlideProps } from './types'
@@ -56,7 +57,16 @@ function ContentWithImage({
 }: ContentImageSlideProps & { position: Position }) {
   const text = (
     <div className="flex h-full flex-col">
-      <SlideHeader kicker={kicker} title={title} lead={lead} tone={tone} />
+      <SlideHeader kicker={kicker} title={title} tone={tone} />
+      {/*
+        The point sits in the text half, above the bullets and level with the
+        media rather than beside it. The heading itself lives in this half on
+        every one of the four positions, so hoisting the lead out to span the
+        whole slide would part it from the title it is the sentence for. Here it
+        opens the text column's well, which is the same reading order as on a
+        text-only slide.
+      */}
+      {lead && <SlideLead tone={tone}>{lead}</SlideLead>}
       <div className="flex min-h-0 flex-1 flex-col justify-center">
         {points && <BulletList items={points} tone={tone} />}
         {children && <div className="mt-6">{children}</div>}

@@ -38,6 +38,27 @@ export interface TableColumn {
   label: ReactNode;
   /** Relative width. Defaults to 1. */
   weight?: number;
+  /**
+   * Right-align this column, header and body together. For a column of NUMBERS
+   * only (sizes, counts, durations), where the digits line up by place value and
+   * the eye compares magnitudes down the column.
+   *
+   * Everything else is left-aligned and there is no opt-out, which is the point
+   * of the next comment.
+   */
+  numeric?: boolean;
+  /**
+   * @deprecated No longer applied. Kept so existing decks keep compiling.
+   *
+   * Centring row data was reported on the "Two Runtimes, Not One" slide: with
+   * `Frontend` and `Backend` centred, each cell started at a different x, so the
+   * reader had to re-find the start of every value instead of running one eye
+   * line down the column — which is the only reason that slide is a table rather
+   * than three cards. Alignment is now a property of the DATA (numbers right,
+   * everything else left), not something a call site chooses per column, so a
+   * table cannot be authored into that state again. Use `numeric` for a column
+   * of numbers.
+   */
   align?: "left" | "center";
   /** Renders the whole column at reduced opacity — the "parked / later" column. */
   dim?: boolean;
@@ -92,7 +113,7 @@ export function DataTable({
               ease: EASE,
             }}
             className={`${pad} font-heading text-body-sm font-bold uppercase tracking-wider ${
-              c.align === "center" ? "text-center" : ""
+              c.numeric ? "text-right" : "text-left"
             }`}
             style={{ color }}
           >
@@ -133,8 +154,11 @@ export function DataTable({
               return (
                 <div
                   key={c}
+                  /* The header above and the cell below share ONE alignment,
+                     read off the same column. They used to be able to disagree,
+                     because each read `align` separately. */
                   className={`${pad} text-body-sm leading-snug ${
-                    col?.align === "center" ? "text-center" : ""
+                    col?.numeric ? "text-right" : "text-left"
                   } ${c === 0 ? "font-semibold text-ink" : "text-body"}`}
                   style={col?.dim ? { opacity: 0.45 } : undefined}
                 >

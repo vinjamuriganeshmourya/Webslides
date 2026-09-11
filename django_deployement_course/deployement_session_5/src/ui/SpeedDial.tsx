@@ -73,9 +73,9 @@ const PAD: DialKey[] = [
 
 /** The numbers Kiran used to have to know. Context for the pad, never content. */
 const HIDDEN = [
-  { who: 'Mom', number: '+91 98455 62190' },
-  { who: 'Dad', number: '+91 99801 47325' },
-  { who: 'Sister', number: '+91 90360 88104' },
+  { who: 'Mom', number: '+91 98455 *****' },
+  { who: 'Dad', number: '+91 99801 *****' },
+  { who: 'Sister', number: '+91 90360 *****' },
 ]
 
 /** The iOS status-bar glyphs, small enough to read as texture rather than data. */
@@ -228,9 +228,10 @@ export function SpeedDial({ className = '' }: { className?: string }) {
         </div>
       </Reveal>
 
-      {/* WHAT THE THREE KEYS SAVED HIM FROM. The numbers are real-looking and
-          full, because a masked number would let the room think the length is
-          the joke. It is not: the length is the cost. */}
+      {/* WHAT THE THREE KEYS SAVED HIM FROM. The last five digits are masked, on
+          the user's ask, so nothing on the slide reads as a real person's phone
+          number. The digit COUNT is preserved by the asterisks, which is the part
+          that carries the point: the length is the cost, not the joke. */}
       {/*
         THE RIGHT-HAND COLUMN, WHICH IS NOW HALF THE SLIDE.
 

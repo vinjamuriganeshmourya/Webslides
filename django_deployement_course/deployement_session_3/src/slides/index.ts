@@ -21,6 +21,8 @@ export { ScenarioSlide } from './ScenarioSlide'
 export { KeyTakeawaysSlide } from './KeyTakeawaysSlide'
 export { PracticeSlide } from './PracticeSlide'
 export { FeedbackSlide } from './FeedbackSlide'
+export { QuestionSlide } from './QuestionSlide'
+export { QuestionPointsSlide } from './QuestionPointsSlide'
 export { QuizTimeSlide } from './QuizTimeSlide'
 export { ThankYouSlide } from './ThankYouSlide'
 

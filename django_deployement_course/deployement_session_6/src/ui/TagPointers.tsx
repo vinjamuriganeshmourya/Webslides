@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { colors, easing } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
+import { lit } from './litSurface'
 
 /**
  * A repository's tags, with the one arrow that says what `latest` really is.
@@ -109,10 +110,24 @@ export function TagPointers({
           return (
             <motion.div
               key={e.tag}
-              className="flex items-center gap-5 rounded-card bg-surface-card px-5 shadow-card-soft"
+              className="flex items-center gap-5 rounded-card px-5"
               style={{
                 height: ROW_H,
                 border: isPointer ? `2px dashed ${paint}` : `1px solid ${colors.line}`,
+                /*
+                  LIT PER ROW, IN THE ROW'S OWN HUE. Every row used to be
+                  `bg-surface-card shadow-card-soft`: one flat fill and one
+                  neutral shadow, so three rows that mean three different things
+                  were the same object in three different inks. STYLE_GUIDE
+                  section 9 is explicit that the shadow carries the surface's own
+                  colour, and that is what lets the pointer row, the row it
+                  points at and the ordinary rows separate at the back of a room.
+
+                  `quiet` for an ordinary row: it keeps the highlight, the ramp
+                  and both hairlines and drops only the drop shadow, which is the
+                  section's "flatter means less light, never no light".
+                */
+                ...lit(paint, isPointer || isTarget ? 'tint' : 'quiet'),
               }}
               initial={instant ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -129,10 +144,10 @@ export function TagPointers({
                 mono text is a clean leaf, so the measurement matches the render.
               */}
               <span
-                className="shrink-0 rounded-md px-3 py-1.5"
-                style={{
-                  background: isPointer ? 'rgba(229,115,42,0.14)' : isTarget ? 'rgba(18,181,168,0.12)' : 'rgba(45,99,251,0.10)',
-                }}
+                className="shrink-0 rounded-lg px-3 py-1.5"
+                /* The tag itself is the object on the row, so it is the one
+                   surface here that keeps its drop shadow whatever the row does. */
+                style={lit(paint, 'tint')}
               >
                 <span
                   className="whitespace-nowrap font-mono text-body-lg font-bold"
@@ -193,7 +208,7 @@ export function TagPointers({
             style={{
               left: LEG_X + 14,
               top: (centerOf(pointerIdx) + centerOf(targetIdx)) / 2 - 18,
-              background: 'rgba(229,115,42,0.14)',
+              ...lit(colors.accentDark, 'tint'),
               color: colors.accentDark,
             }}
             initial={instant ? false : { opacity: 0, scale: 0.97 }}

@@ -10,6 +10,7 @@ export { SlideHeader } from './SlideHeader'
 */
 export { SlideLead } from './SlideLead'
 export { Logo } from './Logo'
+export { Tech } from './Tech'
 export { DotGrid, Blob, Orb, WaveArc } from './Decor'
 export { Kicker, Chip, NumberBadge } from './primitives'
 export { BulletList, Card, CardGrid, StatTile, type BulletItem } from './content'
@@ -121,6 +122,34 @@ export {
   type FanOutSource,
   type FanOutCopy,
 } from './figures/FanOut'
+/*
+  THREE LANES — how far the automation reaches under each of the three CI/CD
+  terms. On the barrel as one figure with one shape, like `FanOut` above it.
+
+  Chosen out of `slide-kit/cicd-reach-lab`, which built four candidates for the
+  same contract: `StopPoints` (three markers on one chain), `NestedSpans` (three
+  brackets above it), `ReachBands` (three bars from a shared left edge) and this.
+  The lab's brief came from the session 7 review, "research the best ways to
+  represent CI/CD and use those", and the answer that survived is the
+  conventional one: Atlassian, Red Hat, AWS Prescriptive Guidance, CircleCI, IBM
+  and Bitrise all publish the same picture, so a learner who reads any article
+  after the session meets this diagram again.
+
+  It is also the only candidate that asks NOTHING of the viewer. The other three
+  draw the reach as an abstraction over a single chain, so a reader has to carry
+  a bar or bracket's right end back up to the stage above it. Here each lane
+  states its own outcome in place. The price is height, paid three times, and it
+  fits: measured at 394px against the 425px ceiling where a composite's top edge
+  starts centring into the instructor-video reserve.
+
+  `ReachBands` stays in the lab rather than the kit. It is the same convention
+  drawn in 276px, and worth promoting if a future deck needs the height back.
+*/
+export { ThreeLanes } from './ThreeLanes'
+export { ReachChain } from './ReachChain'
+export { ApprovalMark } from './ApprovalMark'
+export { CHAIN, REACH_PAINT, type CicdReachProps, type ReachStage, type ReachTerm } from './cicdReach'
+
 export * as Icons from './icons'
 export { iconByName, type IconName } from './icons'
 export { Illustration, type IllustrationName } from './characters/Illustration'
