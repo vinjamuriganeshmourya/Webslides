@@ -19,6 +19,13 @@ import type { QuestionSlideProps } from './types'
  * This type inverts that. There is no header block and no body well: the
  * question IS the slide, set at hero scale.
  *
+ * `choices` is the one thing allowed on the card besides the question and its
+ * qualifier: the two or three answers the room is picking between, drawn as
+ * identical boxes. It replaces the stage direction decks kept printing as a
+ * bullet ("say yes or no before the next slide"), which told the room how to
+ * behave instead of showing it what it was choosing. The boxes never mark which
+ * one is right; the answer is still the next slide.
+ *
  * WHY A CARD RATHER THAN BARE TEXT
  *
  * The first version of this type was a centred sentence on an empty canvas. The
@@ -66,6 +73,7 @@ export function QuestionSlide({
   kicker = 'A question first',
   question,
   qualifier,
+  choices,
   tone = 'brand',
   lesson,
 }: QuestionSlideProps) {
@@ -85,9 +93,26 @@ export function QuestionSlide({
           <Reveal dir="up">
             <div className="relative z-10 flex min-h-[440px] w-full max-w-[840px] flex-col justify-center rounded-card border border-line bg-surface-card px-14 py-12 text-left shadow-card">
               <Kicker tone={tone}>{kicker}</Kicker>
+              {/*
+                LEADING IS SET HERE, NOT LEFT TO THE TYPE TOKEN.
+
+                `slide-title-lg` is 44px at 1.08, a 47.5px line box. An inline
+                `Code` chip at 0.94em paints roughly 53px once its vertical
+                padding is added, and for an INLINE non-replaced element that
+                padding is painted WITHOUT expanding the line box. So a chip in
+                a hero question spills onto the lines either side of it: session
+                6's `c4-question` rendered both `v1` chips overlapping the text
+                above them.
+
+                1.08 is also simply too tight for a paragraph three lines long
+                at this size. 1.3 gives the chip its room and the question its
+                readability, and `min-h-[440px]` on the card absorbs the extra
+                height. Set as a style so it cannot lose to the font-size
+                utility on stylesheet order.
+              */}
               <p
                 className="mt-5 font-heading text-slide-title-lg"
-                style={{ color: colors.ink }}
+                style={{ color: colors.ink, lineHeight: 1.3 }}
               >
                 {question}
               </p>
@@ -103,6 +128,32 @@ export function QuestionSlide({
                     {qualifier}
                   </p>
                 </>
+              )}
+              {choices && choices.length > 0 && (
+                /*
+                  THE BOXES ARE DRAWN IDENTICALLY, AND THAT IS THE FEATURE.
+
+                  Every box takes the same border, the same tint and the same
+                  flex basis, so nothing in the rendering ranks them. The moment
+                  one is tinted differently, or drawn larger, or listed first for
+                  a reason, the slide has answered its own question and the room
+                  reads the answer instead of committing to one.
+
+                  `flex-1` with a floor rather than a fixed width: two boxes and
+                  three boxes both fill the card, so a deck does not get a
+                  ragged right edge for having asked a three-way question.
+                */
+                <div className="mt-9 flex gap-4">
+                  {choices.map((c, i) => (
+                    <div
+                      key={i}
+                      className="flex min-w-[140px] flex-1 items-center justify-center rounded-card border-2 px-6 py-4 font-heading text-slide-title font-bold"
+                      style={{ borderColor: accent, color: accent, background: `${accent}0F` }}
+                    >
+                      {c}
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </Reveal>

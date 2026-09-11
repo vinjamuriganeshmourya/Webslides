@@ -1,5 +1,5 @@
 import type { SlideDef, DeckMeta } from '@/deck/types'
-import { BoundaryBridge, CodeBlock, FanOut, FileTree, SwapRows, SpineFlow, LaneFlow, StepLedger, CircuitMap, GateFlow, TrackSwitch } from '@/ui'
+import { BoundaryBridge, CodeBlock, FanOut, FileTree, SwapRows, Terminal, SpineFlow, LaneFlow, StepLedger, CircuitMap, GateFlow, ThreeLanes, TillRow, QUEUE_FIXTURE, TrackSwitch } from '@/ui'
 import type { FlowchartFigureProps } from '@/ui'
 import {
   WelcomeSlide,
@@ -214,6 +214,36 @@ export const sampleDeck: SlideDef[] = [
           { text: 'Data usually travels as JSON', sub: 'lightweight & language-agnostic', icon: 'code' },
         ]}
       />
+    ),
+  },
+  {
+    id: 'content-split-default',
+    label: 'Content · points beside a figure (default split)',
+    section: 'Concepts',
+    notes:
+      'THE TWO-COLUMN MODE OF ContentSlide: pass BOTH `points` and children and the bullets and the figure sit side by side. This slide passes neither `split` nor `columnAlign`, so it is the historical rendering — the prose gets 1.4fr against the figure\'s 1fr (649px against 463px) and each column centres itself independently. Worst at: a figure that needs width. 463px is narrower than a `Terminal` line of any length, and `Terminal` wraps `break-words`, so it breaks an image name MID-TOKEN. Reach for `split="even"` there.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="Two columns"
+        title="Points beside a figure"
+        lead="The bullets and the figure are one idea, so they arrive together."
+        points={[
+          { text: 'The list keeps the wider column', icon: 'target' },
+          { text: 'The figure takes what is left', icon: 'bolt' },
+          { text: 'Both animate on slide entry', icon: 'arrow' },
+        ]}
+      >
+        <Terminal
+          path="C:\ecommerce"
+          lines={[
+            { text: 'docker ps', kind: 'cmd' },
+            { text: 'CONTAINER ID   STATUS', kind: 'out' },
+            { text: 'a41f9c2b       Up 2 minutes', kind: 'out' },
+          ]}
+          caption="Short lines fit the narrow column"
+        />
+      </ContentSlide>
     ),
   },
   {
@@ -737,6 +767,53 @@ export const sampleDeck: SlideDef[] = [
     ),
   },
   {
+    id: 'three-lanes',
+    label: 'Three lanes (figure)',
+    section: 'DRF',
+    notes:
+      'FOR THREE NAMED PRACTICES THAT DIFFER ONLY IN HOW FAR THEY REACH ALONG ONE CHAIN. Built for CI, Continuous Delivery and Continuous Deployment, and the contract carries no CI/CD in it: any set of terms whose relationship is CONTAINMENT along a shared sequence fits, and any set whose relationship is not containment does not. `terms` is INNERMOST FIRST and the array order IS the containment claim, so shuffling it is a content error rather than a layout one. `reaches` is the 1-based stage the automation reaches THROUGH, inclusive, and every span, dim boundary and marker in the figure derives from that one number, so no two parts of the figure can disagree about where a term stops. `approval` draws the human decision at a term\'s own boundary, which is the ONLY thing separating the two CDs in every published definition: span length alone states the difference and hides the why. Tones are ROLES (inner, middle, outer), not hexes, so a caller cannot reach a verdict hue: green, amber and red stay reserved for pass, warn and fail, and the ramp doubles as a luminance ramp so the three survive a greyscale projector. It reveals one lane per click, four beats on one frame, which is what lets one slide replace four definition slides without breaking content rule 25. Chosen from four candidates in slide-kit/cicd-reach-lab because it is the shape Atlassian, Red Hat, AWS, CircleCI, IBM and Bitrise all publish, so the room meets it again in any article they read, and because it is the only candidate that asks no lookup of the viewer. It costs height: 394px against the 425px ceiling, so it takes a slide with no points and a one-line lead. ReachBands is the same convention in 276px and stays in the lab.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="How far the robot goes"
+        title="Three lanes"
+        lead="Same chain of stages. The three terms differ only in where the automation stops"
+      >
+        <ThreeLanes
+          stages={[
+            { n: 1, label: 'FETCH', caption: 'get the code' },
+            { n: 2, label: 'TEST', caption: 'run the tests' },
+            { n: 3, label: 'BUILD', caption: 'build the image' },
+            { n: 4, label: 'PUSH', caption: 'image to the registry' },
+            { n: 5, label: 'DEPLOY', caption: 'run on the server' },
+          ]}
+          terms={[
+            { name: 'Continuous Integration', reaches: 2, then: 'You are told at once if it broke', tone: 'inner' },
+            { name: 'Continuous Delivery', reaches: 4, then: 'Ready to go live, and it waits', approval: true, tone: 'middle' },
+            { name: 'Continuous Deployment', reaches: 5, then: 'It goes live on its own', tone: 'outer' },
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'till-row',
+    label: 'Till row (figure)',
+    section: 'DRF',
+    notes:
+      'FOR ONE WAITING LINE AND A FIXED NUMBER OF WORKER SLOTS THAT TAKE FROM IT. Built for a Jenkins job, its build queue and its two executors, and the contract carries no Jenkins in it: anything where one trigger creates work, the work WAITS IN ORDER, and a counted set of workers consumes it one at a time fits. `queue` is FRONT OF THE LINE FIRST and that order IS the queue discipline, so shuffling it is a content error rather than a layout one. The number of workers is the `executors` array length and nothing else, and a slot with no `running` is drawn as an EMPTY FRAME the same size as a busy one, never as a dimmed copy: opacity reads as present but unimportant, and only a hole in the picture reads as nothing here. That is what lets a viewer count free slots at a glance, which is the count that explains why the line is or is not moving. THE FAN IS THE POINT: one connector leaves the front of the line, runs along a rail under the desks and rises into EVERY desk with its own arrowhead, because the next ticket is not promised to a particular worker, it goes to whichever frees up first. A single arrow into one desk would teach a wrong queue discipline. It reveals in five beats, six with `done`, in the order the room learns the words: the job, the trigger, the line, both desks together, the fan, the verdict. Busy and free arrive as ONE beat because a contrast cannot be revealed in halves. Chosen from three candidates in slide-kit/queue-lab because it is the only one that draws the mechanism rather than the parts, and it keeps Jenkins own panel titles so the room meets the same picture on the real dashboard. NOT FOR A SEQUENCE: a queue and a worker are not two steps in a row, and drawing them as a chain hides the only fact that matters, that the line exists because there are two slots and not four. Not for a snapshot that has to MOVE either: this draws one instant, and the run stepping from the line into a freed slot is the instructor saying so. Height is a function of the queue length, so it caps at four waiting tickets; five puts the rail past the well. The line is a column and costs 268px of width, which leaves a busy slot room for one short line of note.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="Where a build waits"
+        title="Till row"
+        lead="One line of waiting runs, and a fixed number of slots that take from the front of it"
+      >
+        <TillRow {...QUEUE_FIXTURE} />
+      </ContentSlide>
+    ),
+  },
+  {
     id: 'file-tree',
     label: 'File tree (figure)',
     section: 'DRF',
@@ -815,13 +892,8 @@ export const sampleDeck: SlideDef[] = [
     section: 'Wrap-up',
     transition: 'zoom',
     notes:
-      'THE ANNOUNCEMENT FRAME, AND THE ONLY QUIZ FRAME A DECK HAS. It carries no question by design: questions are delivered by an external quiz component, so this hands over to it. QuizSlide was retired for exactly this reason and sync-kit.mjs deletes it from any session that still has it. Rule 18: every deck carries a quiz frame, and a lone one sits immediately before the takeaways.',
-    element: (
-      <QuizTimeSlide
-        lesson={FOOTER}
-        subtitle="Four questions on serializers, views and status codes."
-      />
-    ),
+      'THE ANNOUNCEMENT FRAME, AND THE ONLY QUIZ FRAME A DECK HAS. It carries no question by design: questions are delivered by an external quiz component, so this hands over to it. QuizSlide was retired for exactly this reason and sync-kit.mjs deletes it from any session that still has it. Rule 18: every deck carries a quiz frame, and a lone one sits immediately before the takeaways. Content rule 28: the frame says "Quiz Time!" and nothing else, so no subtitle is passed here. Because the questions live in the external tool and not on the slide, any subtitle naming what the quiz covers previews the questions and answers some of them. It is also the one frame in the deck with nothing to read, which is what moves the room off the screen and onto the tool. QuizTimeSlideProps still declares an optional subtitle so every delivered session keeps compiling; do not use it.',
+    element: <QuizTimeSlide lesson={FOOTER} />,
   },
   {
     id: 'takeaways',

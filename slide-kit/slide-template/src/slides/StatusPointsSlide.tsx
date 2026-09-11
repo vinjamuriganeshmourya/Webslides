@@ -46,7 +46,10 @@ export function StatusPointsSlide({
      rectangle at x 913..1280, y 0..220. The recovered space goes to the text.
      The test still reads `lead` because the lead still occupies that band; it is
      now one line of body-lg in the well rather than a line inside the header. */
-  const visualGuard = lead ? '' : 'pt-[52px]'
+  /* `pt-[3px]` with a lead, not '': the well's top measures y=217, three pixels
+     inside the instructor-video reserve. See the long note in `ContentSlide.tsx`,
+     which carries the measurement and the still-open oversized-block case. */
+  const visualGuard = lead ? 'pt-[3px]' : 'pt-[52px]'
   const immediate = Boolean(children) || !stepped
   return (
     <SlideBase variant="light" lesson={lesson}>
