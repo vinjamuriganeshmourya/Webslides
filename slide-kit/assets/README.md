@@ -13,10 +13,11 @@ base template rendered as broken images for anyone starting a new deck.
 ## What is here
 
 ```
-tech/       technology logos — PNG, with the older SVGs kept alongside
-companies/  company brand marks — PNG, single-colour brand glyphs
-quiz/       quiz-slide decorations (brain, bulb, bubble, mark)
-brand/      logo-nxtwave.png
+tech/           technology logos — PNG, with the older SVGs kept alongside
+companies/      company brand marks — PNG, single-colour brand glyphs
+quiz/           quiz-slide decorations (brain, bulb, bubble, mark)
+brand/          logo-nxtwave.png
+illustrations/  third-party scene illustrations for section dividers — SVG
 ```
 
 Current `tech/` set, tooling and frameworks: `container-white` · `django` ·
@@ -50,6 +51,20 @@ the pre-2021 Facebook mark and Uber's retired "bit" square. `meta.png` and
 `uber.png` are the current ones. When a company rebrands, replace the file under
 its existing name rather than adding a suffix, so every deck picks the new mark
 up on its next copy.
+
+`illustrations/` holds **unDraw** scenes (unDraw open licence: free for any use,
+no attribution required), added for the OOPs Theory course's section dividers.
+Each one is kept twice, `undraw-<slug>.svg` as fetched and `divider-<slug>.svg`
+as the deck uses it, because the deck's dividers stand on the night stage and
+unDraw draws dark line art assuming a light ground. `illustrations/README.md`
+records the licence, both changes made to every file, which divider each one
+serves, and the six candidates that were fetched, looked at and rejected.
+
+Current set: `bookshelves` · `my-location` · `setup` · `switches` · `tasks`.
+
+A scene illustration is not a logo and not a character. `tech/` is marks,
+`src/ui/characters/` is Nova and the in-repo vector scenes, and this folder is
+third-party art with a licence to record.
 
 ---
 

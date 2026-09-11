@@ -1,5 +1,18 @@
 import type { SlideDef, DeckMeta } from '@/deck/types'
-import { BoundaryBridge, CodeBlock, FanOut, SpineFlow, LaneFlow, StepLedger, CircuitMap, GateFlow, TrackSwitch } from '@/ui'
+import {
+  BoundaryBridge,
+  CodeBlock,
+  CodeOutput,
+  FanOut,
+  ObjectStateRow,
+  StateChange,
+  SpineFlow,
+  LaneFlow,
+  StepLedger,
+  CircuitMap,
+  GateFlow,
+  TrackSwitch,
+} from '@/ui'
 import type { FlowchartFigureProps } from '@/ui'
 import {
   WelcomeSlide,
@@ -784,6 +797,105 @@ export const sampleDeck: SlideDef[] = [
           'Return all products as JSON with Response',
         ]}
       />
+    ),
+  },
+  {
+    id: 'object-state',
+    label: 'ObjectState',
+    section: 'Figures',
+    notes:
+      'FOR: one named thing and the values it is holding RIGHT NOW. A build and its settings, a request and its headers, a container and its published ports. `ObjectStateRow` puts two or three of them side by side on one stagger, which is how you say "same class, separate values". MUST NOT CARRY: a definition (the row label is an attribute name, not a term being defined), or a claim (`points/PeerCards` is for claims). CONFUSABLE WITH `DataTable`, and the difference is the whole point: a table says "these rows are data" and has no owner to attach them to, and the owner is the teaching. Set `changed` ONLY on an after card, or you are marking a change the slide has not shown yet.',
+    element: (
+      <ContentSlide
+        kicker="Figures"
+        title="ObjectState"
+        lead="One object, its attributes, and which of them just moved"
+        lesson={FOOTER}
+      >
+        <ObjectStateRow
+          objects={[
+            {
+              name: 'book1',
+              width: 320,
+              rows: [
+                { name: 'title', value: '"Harry Potter"' },
+                { name: 'author', value: '"Rowling"' },
+                { name: 'available', value: 'false', changed: true },
+              ],
+            },
+            {
+              name: 'book2',
+              width: 320,
+              rows: [
+                { name: 'title', value: '"Atomic Habits"' },
+                { name: 'author', value: '"Clear"' },
+                { name: 'available', value: 'true' },
+              ],
+              caption: 'One class, two objects, and only one of them moved',
+            },
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'state-change',
+    label: 'StateChange',
+    section: 'Figures',
+    notes:
+      'FOR: the same thing before and after ONE named operation, with the rows that moved marked. Which rows those are is COMPUTED by comparing the two sides, never authored, so the mark cannot contradict the values printed under it. MUST NOT CARRY: two different objects (the name is the same on both sides because it is one thing at two times), or more than one operation. CONFUSABLE WITH `flowchart/SpineFlow`, which also draws a labelled edge between two nodes: use that when the nodes are STEPS, and this when they are one thing at two times.',
+    element: (
+      <ContentSlide
+        kicker="Figures"
+        title="StateChange"
+        lead="The same object before and after one method ran"
+        lesson={FOOTER}
+      >
+        <StateChange
+          before={{
+            name: 'account1',
+            rows: [
+              { name: 'holder', value: '"Ali"' },
+              { name: 'balance', value: '50000' },
+            ],
+          }}
+          action="deposit(5000)"
+          after={{
+            name: 'account1',
+            rows: [
+              { name: 'holder', value: '"Ali"' },
+              { name: 'balance', value: '55000' },
+            ],
+          }}
+          caption="One method ran and one value moved. The holder is exactly as it was"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'code-output',
+    label: 'CodeOutput',
+    section: 'Figures',
+    notes:
+      'FOR: this text, run, produces that text. `layout="row"` is the default and the safe one; `stack` gives a single pane the full width for output that is WIDE rather than tall, and it is about 30px taller than the content well allows at five code lines over five output lines, so measure before reaching for it. MUST NOT CARRY: a command the learner types at a shell (that is `Terminal`, with its folder path), the SHAPE of a construct (`CodeSyntaxSlide`), or a file that grows across slides (`CodeBuildSlide`). `output` is what running it actually printed. The one exception is pseudocode, which has no interpreter: there it is the dry run of the code on the same slide and the pane must be labelled "What it prints", never "Output".',
+    element: (
+      <ContentSlide
+        kicker="Figures"
+        title="CodeOutput"
+        lead="A snippet, and what running it printed"
+        lesson={FOOTER}
+      >
+        <CodeOutput
+          panes={[
+            {
+              label: 'Python',
+              language: 'Python',
+              code: 'print(6 / 3)\nprint(6 // 3)',
+              output: '2.0\n2',
+            },
+          ]}
+        />
+      </ContentSlide>
     ),
   },
   {

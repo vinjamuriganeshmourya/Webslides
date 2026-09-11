@@ -102,7 +102,17 @@ and the legend under it cannot drift apart. The first draft took a separate
 
 | Figure | Reach for it when | Worst at |
 |---|---|---|
+| `ObjectState` | ONE named thing and the values it is holding RIGHT NOW: a build and its settings, a request and its headers, an object and its attributes. `ObjectStateRow` puts two or three side by side on one stagger, which is how a deck says "same class, separate values". `changed` marks the row that moved and belongs on an AFTER card only | Being a table. The owner's name IS the teaching, so anything with no owner is a `DataTable`. It also holds no prose: a row is a name and a literal, never a claim or a definition |
+| `StateChange` | The same thing before and after ONE named operation, with the moved rows marked. Which rows moved is COMPUTED from the two sides, so the mark can never contradict the values printed under it | Two different things, or more than one operation. Confusable with `SpineFlow`, which also draws a labelled edge between two nodes: that one is for STEPS, this one for one thing at two times |
+| `CodeOutput` | This text, run, produces that text. The pair a language lesson is made of, and the gap between `CodeBlock` (a file) and `Terminal` (a shell with a folder path), neither of which can say it | A command the learner types (that is `Terminal`), a construct's SHAPE (`CodeSyntaxSlide`), or a file that grows across slides (`CodeBuildSlide`). `layout="stack"` is about 30px taller than the content well allows at five lines over five, so measure before using it |
 | `FanOut` | ONE artefact is the origin of SEVERAL live things and does not change or divide when they are made: one image and many containers, one build and many environments, one template and many generated files. The source is drawn quiet on purpose, dashed and tinted with no live dot, because the mistake the figure prevents is reading the source as one of the running things. `live` is per copy, so "three containers, one of them stopped" is sayable | ANY relationship between the copies. They are peers with no connectors between them, so balanced traffic, a shared volume, or copy 2 made from copy 1 are claims the presenter is making and the figure is not. It also has no room for a second source |
+
+**`output` on `CodeOutput` is what running it actually printed.** The one exception
+is pseudocode, which has no interpreter to run: there it is the dry run of the code
+on the same slide, and the pane must be labelled "What it prints" rather than
+"Output" so the frame does not claim an execution that did not happen. That is the
+only reading of `output` not produced by running something, and it is still not a
+licence to compose: every printed line comes from a statement the deck has shown.
 
 `FanOut` is confusable with two figures either side of it. `BoundaryBridge` is two
 MACHINES with a shared hub between them, and `FlowChart` is a SEQUENCE; reach for
