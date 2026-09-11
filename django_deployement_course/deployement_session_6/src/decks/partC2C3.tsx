@@ -1,16 +1,37 @@
 import type { SlideDef } from '@/deck/types'
 import { ContentNoteSlide, ContentSlide, SectionBreakerSlide } from '@/slides'
-import { BoundaryBridge, CodeBlock, DataTable, Terminal } from '@/ui'
+import { BoundaryBridge, CodeBlock, DataTable, LayerStack, SyntaxBreakdown, Terminal } from '@/ui'
+/* Promoted from `slide-kit/annotated-output-lab`. Imported by path like the
+   other promoted lab families rather than through the `@/ui` barrel. */
+import { CountBadge } from '@/ui/CountBadge'
+import { BracedRun } from '@/ui/BracedRun'
 /* Session-owned figure, imported from its own file rather than through `@/ui`.
    `src/ui/index.ts` is kit-owned, so `sync-kit.mjs` overwrites it and the
    re-export line that used to live at its tail vanished on sync — this file
    stopped compiling with "Module '@/ui' has no exported member 'ImageNameAnatomy'".
    Importing the file directly keeps it out of the kit's way permanently. */
 import { ImageNameAnatomy } from '@/ui/ImageNameAnatomy'
-import { AT_ROOT, C2, C3, Code, DOCKER_ID, IMAGE, ON_ANOTHER_MACHINE, pushDenied, REPO, SESSION, Tech } from './deckShared'
+import {
+  AT_ROOT,
+  C2,
+  C3,
+  Code,
+  DOCKER_ID,
+  FE_IMAGE,
+  FE_REPO,
+  IMAGE,
+  ON_ANOTHER_MACHINE,
+  REPO,
+  S2,
+  S3,
+  S4,
+  SESSION,
+  Tech,
+  pushDenied,
+} from './deckShared'
 
 /**
- * Deployment · Session 6 "Pushing Image to Docker Hub" — slides 21 to 38.
+ * Deployment · Session 6 "Pushing Image to Docker Hub" — slides 18 to 36.
  *
  * Concept 2 (21 to 28) and Concept 3 (29 to 38) of the signed plan at
  * `django_deployement_course/session_plans/deployement_session_6/plan.md`. Slide
@@ -26,11 +47,12 @@ import { AT_ROOT, C2, C3, Code, DOCKER_ID, IMAGE, ON_ANOTHER_MACHINE, pushDenied
  *      R8, unchanged.
  *
  *   B  THE REFUSAL TEXT COMES FROM `pushDenied()`. Slides 22 and 49 show the same
- *      error for two different reasons, which is the whole point of slide 23's
- *      warning and of slide 49. One string, so the two panels cannot drift.
+ *      error for two different reasons, which is the whole point of
+ *      `c2-the-reason`'s warning and of `c3-push-denied-again`. One string, so
+ *      the two panels cannot drift.
  *
  *   C  `Terminal` HAS NO `err` KIND in this kit: its `TerminalLine.kind` is
- *      `cmd | out | ok`. The refusal on slide 22 is therefore an `out` line, and
+ *      `cmd | out | ok`. The refusal on `c2-push-denied` is therefore an `out` line, and
  *      the slide leans on the lead and the following slide to mark it as a
  *      failure rather than on colour.
  *
@@ -64,13 +86,15 @@ export const partC2C3: SlideDef[] = [
       <SectionBreakerSlide
         index={2}
         title={C2}
-        subtitle="Why the name has three parts"
+        subtitle="Why the name has three parts, and how to add one"
         lesson={SESSION}
       />
     ),
     notes:
-      'Hand over verbally: "the image should go to Docker Hub. Why can it not be pushed under the name it already has?" Then move straight to the attempt.',
+      'Hand over verbally: "the image should go to Docker Hub. Why can it not be pushed under the name it already has?" Log in first, then move straight to the attempt.',
   },
+
+
 
   {
     id: 'c2-push-denied',
@@ -102,6 +126,27 @@ export const partC2C3: SlideDef[] = [
   },
 
   {
+    /*
+      THE REFUSAL IS ON THIS FRAME, WITH LINE TWO ENCLOSED.
+
+      This shipped as three bullets and a warning with NO OUTPUT ON THE SLIDE,
+      under the lead "Line two names an owner you never chose" and speaker notes
+      reading "point at line two of the previous panel". That is the same defect
+      `c3-layers-travel` was rebuilt for earlier today: a slide telling the room
+      to read a line that is not on it, with the instructor paging backwards to
+      supply the evidence.
+
+      `BracedRun`, not `CountBadge`: this argues about ONE line, and `CountBadge`
+      derives a count from the run's members, so a single-line run would render
+      a pill reading "1". `BracedRun` is the member of that family that names a
+      run without counting it.
+
+      NO `points`, for the reason recorded on `c3-layers-travel`: passing points
+      alongside a child puts `ContentSlide` into its 463px two-column mode, and
+      the refusal line is 67 characters — it wrapped mid-token there. The
+      bullets' substance moves into the box label and the caption instead, which
+      is what those affordances are for.
+    */
     id: 'c2-the-reason',
     section: C2,
     label: 'Read line two',
@@ -109,45 +154,43 @@ export const partC2C3: SlideDef[] = [
       <ContentNoteSlide
         kicker={C2}
         title="Read Line Two"
-        lead="Second line names a namespace nobody chose"
-        points={[
-          {
-            text: (
-              <>
-                {'An image name with no username prefix is assumed to belong to '}
-                <Code>library/</Code>
-              </>
-            ),
-          },
-          {
-            text: (
-              <>
-                <Code>library/</Code>
-                {' is Docker Hub\u2019s reserved namespace for official images: '}
-                <Code>python</Code>
-                {', '}
-                <Code>node</Code>
-                {', '}
-                <Code>hello-world</Code>
-              </>
-            ),
-          },
-          { text: 'Nobody pushes there, so the refusal is about the name, not about the image' },
-        ]}
+        /* SIMPLIFIED ON REVIEW: THE TAKEAWAY IS "USE YOUR DOCKER ID".
+
+           This slide used to carry the two-causes warning as well, which is
+           `c3-push-denied-again`'s whole job and is stated there in full. Here
+           the room needs one thing: a name with no Docker ID resolves to
+           Docker's own namespace, so include yours.
+
+           The caption answers the question the enclosed line raises. You cannot
+           push to `library/` at all — it holds Docker's Official Images and no
+           ordinary account has rights to it — and the refusal text is vague
+           about that ("repository does not exist OR may require
+           authorization"), which is why the line is worth enclosing. */
+        lead="A name with no Docker ID is not yours to push"
         note={{
-          kind: 'warning',
-          title: 'Watch out',
-          body: (
-            <>
-              {'This same error text also appears when the name is correct and nobody has logged in. Two causes, one wording, so read the name first and check the login second. The last concept of this session meets the login case on purpose.'}
-            </>
-          ),
+          kind: 'success',
+          title: 'Remember',
+          body: 'Push with your own Docker ID in the name, and this refusal goes away.',
         }}
         lesson={SESSION}
-      />
+      >
+        <BracedRun
+          path={AT_ROOT}
+          caption={`library/ is Docker's own namespace, and no ordinary account can push there`}
+          nodes={[
+            { text: `docker push ${IMAGE}`, kind: 'cmd' },
+            { text: 'Using default tag: latest', kind: 'out' },
+            {
+              label: 'An owner you never typed',
+              lines: [{ text: `The push refers to repository [docker.io/library/${IMAGE}]` }],
+            },
+            { text: pushDenied(IMAGE), kind: 'out' },
+          ]}
+        />
+      </ContentNoteSlide>
     ),
     notes:
-      'Point at line two of the previous panel, then read it out. Say the warning out loud twice: the room will otherwise spend an evening debugging the wrong cause.',
+      'Read the enclosed line out loud and let the room find the word library. Nobody typed it, which is the whole point: Docker filled in an owner because the name had none.',
   },
 
   {
@@ -158,7 +201,7 @@ export const partC2C3: SlideDef[] = [
       <ContentSlide
         kicker={C2}
         title="Full Image Name"
-        lead="Real name has three parts, and the first one is the part that was missing"
+        lead="A full image name has three parts, and the first one was missing"
         lesson={SESSION}
       >
         <ImageNameAnatomy
@@ -181,7 +224,7 @@ export const partC2C3: SlideDef[] = [
       <ContentSlide
         kicker={C2}
         title="Three Parts"
-        lead="Same name as a reference table, which is the version worth photographing"
+        lead="Same name as a reference table, worth a photo before you continue"
         lesson={SESSION}
       >
         <div className="mx-auto w-full max-w-[980px]">
@@ -236,18 +279,18 @@ export const partC2C3: SlideDef[] = [
         title="You Already Read It"
         lead={
           <>
-            <Tech name="python" label="python:3.13-slim" />
+            <Tech name="python" label="python:3.14-slim" />
             {' has been at the top of every Dockerfile you wrote, in this exact format'}
           </>
         }
         lesson={SESSION}
       >
-        {/* Same figure as slide 24, different values: that is what makes the
+        {/* Same figure as `c2-name-anatomy`, different values: that is what makes the
             format feel already-known rather than newly taught. The id column
             stays, drawn absent, so the two slides hold one shape. */}
         <ImageNameAnatomy
           repository="python"
-          tag="3.13-slim"
+          tag="3.14-slim"
           labels={{ id: 'no Docker ID, because it is official' }}
           note="An official image lives in the reserved namespace, which is why its name is two parts and yours is three"
         />
@@ -268,26 +311,72 @@ export const partC2C3: SlideDef[] = [
         lead="No rebuild, because the image already exists. This adds a name to it"
         lesson={SESSION}
       >
-        <div className="mx-auto w-full max-w-[980px]">
-          <Terminal
-            path={AT_ROOT}
-            lines={[{ text: `docker tag ${IMAGE} ${REPO}:v1`, kind: 'cmd' }]}
+        {/* 1120px, NOT 980. THE SPECIMEN HAS TO BE ONE LINE.
+
+            The three chips measure about 960px together — `docker tag`, the
+            existing name, and the full `ravi123/nxttrendz-backend:v1` — and at
+            980px the panel's inner width was 896, so the new name wrapped onto a
+            second line. A command a learner retypes must read as one line: the
+            wrap invents a line break that is not in the command.
+
+            1120 sits inside the 1152px well with 16px either side, and the
+            panel starts well below the instructor-video reserve. */}
+        <div className="mx-auto w-full max-w-[1120px]">
+          {/*
+            `SyntaxBreakdown`, NOT A TERMINAL PLUS TWO HAND-ROLLED CARDS.
+
+            The TR draws two ASCII arrows under this command to label its halves,
+            and ASCII arrows do not survive a proportional layout. The first pass
+            answered that with a `Terminal` and two `div`s carrying a border and
+            a flat `bg-surface-card` fill: markup written into the deck, three
+            parts of the STYLE_GUIDE section 9 recipe missing, and no cue joining
+            a card to the token it labels.
+
+            The kit already has the component for exactly this job. Session 4
+            uses it on `docker compose exec`, it numbers each token and its
+            caption card so the pairing survives a projector and greyscale, and
+            `placeholder` says which token the learner substitutes — which is the
+            first question this command raises, because the Docker ID is theirs
+            and the rest is typed as shown.
+          */}
+          <SyntaxBreakdown
+            /* `!max-w-` BECAUSE THE COMPONENT CAPS ITSELF AT 900px.
+
+               `SyntaxBreakdown`'s root is `mx-auto w-full max-w-[900px]` and its
+               specimen row is `flex flex-wrap`, so the three chips here — the
+               command, the existing name, and the full
+               `ravi123/nxttrendz-backend:v1` — total about 960px and the last
+               one wrapped to a second line. A command a learner retypes has to
+               read as one line; the wrap invents a break the command does not
+               have.
+
+               Widening the parent does nothing, because the cap is on the
+               component itself. `className` is appended to its root, but two
+               arbitrary `max-w-` utilities have equal specificity and the
+               winner would depend on stylesheet order, so the important prefix
+               makes it deterministic. The proper fix is a width prop on the
+               component, which is a kit change. */
+            className="!max-w-[1120px]"
+            mode="command"
+            parts={[
+              {
+                token: 'docker tag',
+                label: 'Command',
+                body: 'Adds a second name to an image that already exists, with no rebuild',
+              },
+              {
+                token: IMAGE,
+                label: 'Existing name',
+                body: 'Image as it is named on this machine, from the build',
+              },
+              {
+                token: `${REPO}:v1`,
+                label: 'Additional new name',
+                body: 'Docker ID, repository and tag, which is the only form Docker Hub accepts',
+                fill: 'placeholder',
+              },
+            ]}
           />
-          {/* The TR draws two arrows under this command to label its halves.
-              Arrows made of ASCII do not survive a proportional layout, so the
-              two halves are labelled as a pair of cards instead. */}
-          <div className="mt-4 grid grid-cols-2 gap-4">
-            <div className="rounded-card border border-line bg-surface-card px-4 py-3">
-              <p className="font-mono text-body-sm font-bold text-ink">{IMAGE}</p>
-              <p className="mt-1 font-heading text-body-sm font-semibold text-body">existing name</p>
-            </div>
-            <div className="rounded-card border border-line bg-surface-card px-4 py-3">
-              <p className="font-mono text-body-sm font-bold text-ink">{`${REPO}:v1`}</p>
-              <p className="mt-1 font-heading text-body-sm font-semibold text-body">
-                additional new name
-              </p>
-            </div>
-          </div>
         </div>
       </ContentSlide>
     ),
@@ -309,11 +398,7 @@ export const partC2C3: SlideDef[] = [
           title: 'Remember',
           body: (
             <>
-              {'Both rows carry the same IMAGE ID, '}
-              <Code>3f2a8b91c04d</Code>
-              {', so there is still exactly one image on disk. '}
-              <Code>docker tag</Code>
-              {' added a name, not a copy, like two contacts saved for one phone number. Session 3 showed the same two names on one id.'}
+              {'Same IMAGE ID on both rows: one image with two names, like two contacts saved for one phone number.'}
             </>
           ),
         }}
@@ -334,13 +419,13 @@ export const partC2C3: SlideDef[] = [
       </ContentNoteSlide>
     ),
     notes:
-      'Put a finger on each IMAGE ID in turn and read the twelve characters out. The identical id is the evidence, so make the room see it before you read the note.',
+      `Read the IMAGE ID column out loud on both rows before you say anything else. ${S3} showed the same two names on one id, so name it and move on.`
   },
 
   /* ──────────────────────────────────────────────────────────────────────────
      CONCEPT 3 · Login, Push, Pull (29 to 38)
 
-     The name is right, so now the three commands that move the image, then the
+     The name is right, so now the two commands that move the image, then the
      two teaching points buried in the push output, one per slide.
      ────────────────────────────────────────────────────────────────────────── */
 
@@ -352,91 +437,12 @@ export const partC2C3: SlideDef[] = [
       <SectionBreakerSlide
         index={3}
         title={C3}
-        subtitle="Three commands, and the image leaves the laptop"
+        subtitle="Two commands, and the image leaves the laptop"
         lesson={SESSION}
       />
     ),
     notes:
-      'Hand over: "the name is right. What are the commands that actually move it?" Three, and the first one runs once per machine.',
-  },
-
-  {
-    id: 'c3-login',
-    section: C3,
-    label: 'docker login',
-    element: (
-      <ContentSlide
-        kicker={C3}
-        title="docker login"
-        lead="Once per machine, not once per push"
-        points={[
-          {
-            text: (
-              <>
-                {'Password is invisible while typing, the same behaviour as '}
-                <Code>createsuperuser</Code>
-                {' in session 4'}
-              </>
-            ),
-          },
-          { text: 'Nothing is echoed, so the prompt looks frozen when it is working' },
-        ]}
-        lesson={SESSION}
-      >
-        <Terminal
-          path={AT_ROOT}
-          fontSize={14}
-          lines={[
-            { text: 'docker login', kind: 'cmd' },
-            { text: `Username: ${DOCKER_ID}`, kind: 'out' },
-            { text: 'Password:', kind: 'out' },
-            { text: 'Login Succeeded', kind: 'ok' },
-          ]}
-        />
-      </ContentSlide>
-    ),
-    notes:
-      'Warn about the invisible password before you type it, or half the room will assume the terminal has hung. Wait for the green line before moving on.',
-  },
-
-  {
-    id: 'c3-access-token',
-    section: C3,
-    label: 'Use a token',
-    element: (
-      <ContentNoteSlide
-        kicker={C3}
-        title="Use a Token"
-        lead="If the account password is rejected, Docker Hub is asking for a token instead"
-        points={[
-          {
-            text: (
-              <>
-                {'Create one under Account Settings, then Security, on '}
-                <Code>hub.docker.com</Code>
-              </>
-            ),
-          },
-          {
-            text: (
-              <>
-                {'Paste it at the '}
-                <Code>Password:</Code>
-                {' prompt, and nothing else about the login changes'}
-              </>
-            ),
-          },
-        ]}
-        note={{
-          kind: 'note',
-          title: 'Note',
-          body: 'An access token is a credential used in place of your account password, and it can be revoked on its own without changing the password. It exists here because Docker Hub increasingly requires one, and it matters beyond today: a token is what the automation server later in this course will be given, because a machine never gets your real password.',
-        }}
-        lesson={SESSION}
-      />
-    ),
-    notes:
-      'This is the most likely thing to fail live in the room, so say it before anyone tries. Ask who has two-factor turned on: those learners need the token, not the password.',
+      'Hand over: "the name is right. What are the commands that actually move it?" Two, and you are already logged in.',
   },
 
   {
@@ -472,31 +478,82 @@ export const partC2C3: SlideDef[] = [
   },
 
   {
+    /*
+      THE PANEL THE LEAD TELLS THE ROOM TO READ.
+
+      This shipped as three bullets on an empty frame under the lead "Read the
+      panel again and count the lines between the first and the last" — and
+      there was no panel on the slide. The room was told to read something that
+      was not on screen, and to count lines it could not see. The nearest panel
+      was two slides back.
+
+      It could not be fixed by adding a `Terminal`, because `Terminal` has only
+      four line COLOURS and no way to mark, number or bracket a line, so
+      "between the first and the last" was unrenderable. `slide-kit/
+      annotated-output-lab` built the missing capability and `CountBadge` won:
+      the box says WHICH lines to count and the pill says what the count comes
+      to, both inside the panel.
+
+      The count is derived from the run's members and can never be passed in, so
+      it cannot go stale if a line of real output is ever added. Three is true
+      only because `Mounted from` is OUTSIDE the box — a box around all four
+      under a pill reading three would be a figure arguing with itself.
+
+      NO `exceptionNote` HERE, DELIBERATELY. The lab's fixture labels that line
+      "Not uploaded, already on Hub", and `TwoEnclosures` draws it. Both are
+      right for a recap and wrong here: `c3-mounted-from` is the NEXT slide and
+      the whole of it is that one line. Explaining it here opens the next
+      slide's problem early. `role: 'exception'` still keeps it out of the
+      count, so the figure stays honest without saying why yet — and the gap it
+      leaves is closed on the very next frame, which is what makes this
+      candidate's known weakness harmless in this position.
+    */
     id: 'c3-layers-travel',
     section: C3,
-    label: 'Layers, not a blob',
+    label: 'Layers, not one file',
     element: (
       <ContentSlide
         kicker={C3}
-        title="Layers, Not a Blob"
-        lead="Read the panel again and count the lines between the first and the last"
-        points={[
-          {
-            text: (
-              <>
-                <Code>Pushed</Code>
-                {' appears once per layer, not once for the image'}
-              </>
-            ),
-          },
-          { text: 'Those are the layers from session 2, each with its own id' },
-          { text: 'Nothing here is one file being copied to a server' },
-        ]}
+        title="Layers, Not One File"
+        /* NO `points`, AND THAT IS FORCED BY THE PANEL'S WIDTH.
+
+           Passing `points` alongside a child puts `ContentSlide` into its
+           `grid-cols-[1.4fr_1fr]` mode, which gives the figure 463px. At that
+           width `Terminal` breaks the image name MID-TOKEN — it rendered
+           `ravi123/nxttrendz-` then `backend:v1` — and a learner retyping a
+           broken image name is a worse outcome than a slide with fewer bullets.
+           `slide-kit/figure-side-lab` records the same failure for its
+           `SplitWell` candidate at 546px.
+
+           So the two claims move: the one the title asserts goes into the lead,
+           and the layer attribution goes into the figure's own `caption`, which
+           is the affordance `CountBadge` already has for exactly this. */
+        lead="Each Pushed line is one layer, not one file for the whole image"
         lesson={SESSION}
-      />
+      >
+        <CountBadge
+          caption={`Those are the layers from ${S2}, each with its own id`}
+          path={AT_ROOT}
+          nodes={[
+            { text: `docker push ${REPO}:v1`, kind: 'cmd' },
+            { text: `The push refers to repository [docker.io/${REPO}]`, kind: 'out' },
+            {
+              label: 'Pushed, once per layer',
+              unit: 'layers',
+              lines: [
+                { text: '5f70bf18a086: Pushed' },
+                { text: 'a3ed95caeb02: Pushed' },
+                { text: '92a4b8a3e10c: Pushed' },
+                { text: 'b7f7d2967507: Mounted from library/python', role: 'exception' },
+              ],
+            },
+            { text: 'v1: digest: sha256:9b7e3a... size: 1573', kind: 'ok' },
+          ]}
+        />
+      </ContentSlide>
     ),
     notes:
-      'Point back at the four middle lines of the previous panel and count them out loud. Ask what a single-file upload would have printed instead.',
+      'Ask the room for the number before the pill is on screen if you can, then let it confirm. Do not explain the fourth line yet: the next slide is entirely about it, and a learner who asks early is the perfect hand-over.',
   },
 
   {
@@ -513,29 +570,125 @@ export const partC2C3: SlideDef[] = [
             <Code>Pushed</Code>
           </>
         }
-        points={[
-          {
-            text: (
-              <>
-                <Code>Mounted from library/python</Code>
-                {': Docker Hub already holds the '}
-                <Code>python:3.13-slim</Code>
-                {' base layers'}
-              </>
-            ),
-          },
-          { text: 'They are not uploaded again, so only your own layers travel' },
-        ]}
+        /* NO `points`. THE FIGURE IS SLIDE 12'S STACK WITH ONE LAYER RECOLOURED.
+
+           Both bullets described a picture the slide did not draw: "Docker Hub
+           already holds the base layers" and "only your own layers travel" are
+           statements ABOUT the stack the room met on `c1-inside-the-image`.
+           Drawing that same stack again, with the `FROM` layer switched from
+           `ships` to `shared` and everything else byte-identical, states both
+           of them without prose — and satisfies PEDAGOGY section 3's test
+           literally: a learner pausing here can say what changed since they
+           last saw this figure in one sentence, because exactly one thing did.
+
+           The labels and the `note` annotations are deliberately UNCHANGED from
+           slide 12. If a word moved as well as the colour, the comparison would
+           be doing two things and the room would have to work out which of them
+           carried the point.
+
+           `shared` is the kit's own state for this and its teal is not used for
+           anything else in this deck. Dropping the bullets also keeps the panel
+           out of `ContentSlide`'s 463px two-column mode. */
         note={{
           kind: 'success',
           title: 'Remember',
-          body: 'Layer system pays off a second time here. In session 2 it was the build cache, which stopped a rebuild from redoing work. On a push it is the same idea against the network: a layer the registry already has is claimed, not sent.',
+          body: `Same idea as the build cache in ${S2}, working against the network instead of your disk.`,
         }}
         lesson={SESSION}
-      />
+      >
+        {/* Same four layers, same order, same annotations as `c1-inside-the-image`.
+            Only the base layer's state differs, which is the whole argument. */}
+        <div className="flex justify-center">
+          <LayerStack
+            title="backend image"
+            width={820}
+            caption="Only the three blue layers travelled"
+            /* FOUR ROWS HERE, FIVE ON `c1-inside-the-image`, AND THE DIFFERENCE IS REAL.
+
+               That slide reads the Dockerfile as five INSTRUCTIONS. This slide
+               reads the push OUTPUT, which lists four layers: three `Pushed`
+               and one `Mounted from`. They differ because `WORKDIR` and `CMD`
+               write metadata rather than file content, so they do not appear as
+               separate uploaded layers.
+
+               This slide has to match the output, because the output is the
+               evidence it is arguing from. Making it five to match slide 12
+               would put a fifth row on screen that has no line in the panel the
+               room just read, and the caption's count would stop being true. */
+            layers={[
+              { label: 'Your Django project code', note: 'COPY . .', state: 'ships' },
+              {
+                label: 'Django, DRF, and every package from requirements.txt',
+                note: 'RUN pip install',
+                state: 'ships',
+              },
+              { label: 'Working directory and start command', note: 'WORKDIR, CMD', state: 'ships' },
+              {
+                label: <Tech name="python" label="Python 3.14 and the Debian base files" />,
+                note: 'FROM',
+                state: 'shared',
+              },
+            ]}
+          />
+        </div>
+      </ContentNoteSlide>
     ),
     notes:
-      'Ask why one line differs before you read it. The answer is a session 2 idea, so let someone in the room say "cache" out loud.',
+      'Ask why one line differs before you read it. The answer is a Docker File Creation idea, so let someone in the room say "cache" out loud. Then spell the transfer out: the build cache stopped a rebuild redoing work on your disk, and this stops a push resending a layer the registry already holds.',
+  },
+  {
+    /*
+      `GateFlow` WAS TRIED HERE AND REVERTED, AND THE REASON IS THE COMPONENT.
+
+      The content is a decision tree, so a gate figure is the right instinct and
+      the registry's test is met: the CHECK is the point of the slide. Built with
+      five spine slots it filled the width correctly. But `GateFlow` draws an
+      arrowhead leaving the exception card even when that branch is an `end`, so
+      a stray marker pointed into empty slide beside "It is the naming problem".
+      Session 7's build notes record the same class of defect in this figure
+      ("PASS and FAIL exits move clear of their cards, positional not
+      editorial"), and all three copies of the file in this repo are identical,
+      so it is a live bug rather than a stale component.
+
+      Reverted rather than shipped with the artefact. The fix belongs in
+      `GateFlow`: an exception node of kind `end` should terminate without an
+      exit marker. Until then this slide states the branch in words.
+    */
+    id: 'c3-push-denied-again',
+    section: C3,
+    label: 'Denied again',
+    element: (
+      <ContentSlide
+        kicker={C3}
+        title="Denied Again"
+        lead="On a fresh machine, or after credentials expire, the same refusal comes back for a different reason"
+        points={[
+          {
+            text: 'If the name is not prefixed with your Docker ID, it is the naming problem from earlier',
+            icon: 'warning',
+          },
+          {
+            text: 'If the name is correctly prefixed and this still appears, it is authentication',
+            icon: 'key',
+          },
+          { text: <>{'Fix: '}<Code>docker login</Code>{', then retry'}</>, icon: 'check' },
+        ]}
+        lesson={SESSION}
+      >
+        <div className="mx-auto w-full max-w-[980px]">
+          <Terminal
+            path={ON_ANOTHER_MACHINE}
+            fontSize={12}
+            lines={[
+              { text: `docker push ${REPO}:v1`, kind: 'cmd' },
+              { text: pushDenied(REPO), kind: 'out' },
+            ]}
+          />
+        </div>
+      </ContentSlide>
+    ),
+    notes:
+      'Read the first two points as a pair of tests in order: the name costs nothing to check, so it is checked first. Authentication is the answer only once the name is right.',
   },
 
   {
@@ -602,35 +755,44 @@ export const partC2C3: SlideDef[] = [
       'Say the prompt path out loud: this is not the project folder, because there is no project on this machine. That is the whole point of the slide.',
   },
 
-  {
-    id: 'c3-run-anywhere',
-    section: C3,
-    label: 'Then run it',
-    element: (
-      <ContentNoteSlide
-        kicker={C3}
-        title="Then Run It"
-        lead="Same machine, one command later"
-        note={{
-          kind: 'success',
-          title: 'Remember',
-          body: 'No Python was installed on that machine, no virtual environment was created, and no requirements file was fetched. The complete environment travelled inside the image, which is the promise from session 1 finally cashed across two machines.',
-        }}
-        lesson={SESSION}
-      >
-        <div className="mx-auto w-full max-w-[980px]">
-          <Terminal
-            path={ON_ANOTHER_MACHINE}
-            lines={[{ text: `docker run ${REPO}:v1`, kind: 'cmd' }]}
-          />
-        </div>
-      </ContentNoteSlide>
-    ),
-    notes:
-      'Pause here. This is the moment the session pays for itself, so let the one command sit on screen before you read the note.',
-  },
+  /*
+    MOVED OUT OF CONCEPT 1, ON REVIEW.
 
+    This drew `docker push` and `docker pull` as its two edge labels while
+    sitting at slide 19 — ten and fifteen slides before either command was
+    taught. Content rule 24 does not allow a figure label to name a command the
+    room has not met, and the review caught it.
+
+    It now follows `c3-pull`, which is the first moment both commands exist, and
+    its hub caption carries `:v1` because `c2-docker-tag` introduced the tag
+    form at slide 26. Neither was true where it used to sit.
+
+    STILL TO SETTLE: `c3-the-cycle`, three slides later, is the same
+    `BoundaryBridge` with five stations and four commands. Two drawings of one
+    journey now sit close together, and the honest resolution is probably to
+    merge them rather than show the map twice.
+  */
   {
+    /*
+      ONE MAP, NOT TWO, AND IT SITS AFTER BOTH COMMANDS ARE TAUGHT.
+
+      There used to be two drawings of the same journey. `c1-target-picture` sat
+      at slide 19 as a preview with two commands, and `c3-the-cycle` repeated the
+      figure later with four. The preview also broke content rule 24: it labelled
+      its edges `docker push` and `docker pull` ten and fifteen slides before
+      either was taught, and it could not carry a tag at all because
+      `c2-docker-tag` had not happened yet.
+
+      Merged on review into this single slide, positioned straight after
+      `c3-pull`, which is the first moment both commands exist. It keeps the
+      richer five-station geometry rather than the preview's three, because that
+      is what carries the claim: `build` and `run` never cross a boundary, so
+      they are drawn as short legs INSIDE a machine, and `push` and `pull` are
+      the only spans on the bridge. The layout makes the argument, not the
+      caption.
+
+      The hub now carries `:v1`, which is honest here and was not at slide 19.
+    */
     id: 'c3-the-cycle',
     section: C3,
     label: 'The whole cycle',
@@ -641,18 +803,11 @@ export const partC2C3: SlideDef[] = [
         lead="Two steps run on the machine you build on, two on every machine that serves it"
         lesson={SESSION}
       >
-        {/*
-          The same figure as slide 20, carrying four commands instead of two.
-          `build` and `run` never cross a boundary, so this geometry draws them
-          INSIDE a machine as short vertical legs, and `push` and `pull` are the
-          only spans on the bridge. That is the slide's claim made by the layout
-          rather than by the caption: two steps stay home, two leave.
-        */}
         <BoundaryBridge
           stations={[
             { label: 'Your code', caption: 'plus a Dockerfile', icon: 'code', kind: 'source' },
             { label: 'Image', caption: 'built once', logo: 'docker', kind: 'source' },
-            { label: 'Docker Hub', caption: REPO, logo: 'docker', kind: 'hub', tone: 'accent' },
+            { label: 'Docker Hub', caption: `${REPO}:v1`, logo: 'docker', kind: 'hub', tone: 'accent' },
             { label: 'Image', caption: 'pulled down', logo: 'docker', kind: 'target', tone: 'teal' },
             { label: 'Container', caption: 'serving traffic', icon: 'server', kind: 'target', tone: 'teal' },
           ]}
@@ -662,11 +817,317 @@ export const partC2C3: SlideDef[] = [
             { label: 'docker pull', sub: 'on every machine', issuedBy: 'right' },
             { label: 'docker run', issuedBy: 'left' },
           ]}
+          hubBadge="Online"
           caption="build and run stay on one computer, push and pull are the two steps that leave it"
         />
       </ContentSlide>
     ),
     notes:
-      'Four commands, two computers. Point at the two blue legs inside the boundaries and say those never leave the machine they run on, then at the two spans and say those are the only steps that cross. Ask which two they would run on a brand new server, and let them read the right box. Then ask what happens when the next build reuses the same tag.',
+      'This picture is the map for the rest of the session and the two after it. Point at the middle box and say the automation server will push there, and the deployment server will pull from there.',
+  },
+  {
+    id: 'c3-run-anywhere',
+    section: C3,
+    label: 'Then run it',
+    element: (
+      <ContentNoteSlide
+        kicker={C3}
+        /* THE PAYOFF MOVED TO THE LEAD AND THE CALLOUT TELLS THE TRUTH.
+
+           This slide used to end on a success note reading "nothing was
+           installed on that machine, so the promise is kept". The first half is
+           true and is the point of the session. The second half over-claims: a
+           bare `docker run` starts the container, and Django then needs its
+           `SECRET_KEY` and a database to serve anything. Neither is in the
+           image, deliberately, which `c1-not-inside` has already established.
+
+           So the slide was promising a running application it cannot deliver,
+           three slides after telling the room the image carries no `.env` and no
+           database. A learner who noticed both would be right to ask which one
+           was wrong.
+
+           The payoff keeps its place in the lead. The callout names the gap, and
+           `c3-what-the-machine-supplies` on the next frame closes it. */
+        title="Then Run It"
+        lead="Nothing was installed on that machine, and the container starts"
+        note={{
+          kind: 'warning',
+          title: 'Not a running app yet',
+          body: 'Django still needs its SECRET_KEY and a database, and neither is in the image.',
+        }}
+        lesson={SESSION}
+      >
+        {/*
+          THE REAL FAILURE, QUOTED FROM A CAPTURE THE REVIEWER RAN.
+
+          This was one `cmd` line and nothing else, under a callout ASSERTING
+          that the container still needs a database. The transcript proves it
+          instead, and proves both halves of the slide at once: Django boots,
+          `StatReloader` starts, system checks pass with no issues — the image
+          really did carry a working environment — and THEN it dies on the one
+          thing the image deliberately does not carry.
+
+          `django.db.utils.OperationalError` is the payoff of `c1-not-inside`
+          arriving as a consequence rather than as a warning.
+
+          THE TRACEBACK IS ELIDED TO ONE LINE. The capture runs eleven frames
+          through `django/db/backends/base/base.py` and `sqlite3/base.py`, none
+          of which a learner can act on. Content rule 11 crops a capture to its
+          point; the point is the last line.
+
+          `Exception in thread django-main-thread:` and the `...` elision row
+          went for height, not for accuracy: at eight lines the panel plus its
+          caption plus the callout overflowed the well and the callout rendered
+          under the deck's own control bar. `Traceback (most recent call last):`
+          on its own is enough to say a traceback followed.
+
+          `err` KIND ON THAT LAST LINE, not `out`. The real console prints it
+          red, and the kind exists because rendering an error in the same grey
+          as ordinary output loses the one cue a learner scans for.
+
+          THE DOCKER ID IS THE DECK'S, NOT THE CAPTURE'S. The capture was run
+          under `priyaankit`; this deck writes one Docker ID everywhere and
+          `c1-the-account` tells the room to substitute their own. Quoting the
+          capture's ID here would put a second stranger's username on screen.
+        */}
+        <div className="mx-auto w-full max-w-[980px]">
+          <Terminal
+            path={ON_ANOTHER_MACHINE}
+            fontSize={13}
+            lines={[
+              { text: `docker run ${REPO}:v1`, kind: 'cmd' },
+              { text: 'Watching for file changes with StatReloader', kind: 'out' },
+              { text: 'Performing system checks...', kind: 'out' },
+              { text: 'System check identified no issues (0 silenced).', kind: 'ok' },
+              { text: 'Traceback (most recent call last):', kind: 'out' },
+              { text: 'django.db.utils.OperationalError: unable to open database file', kind: 'err' },
+            ]}
+            caption="The environment travelled. The database did not"
+          />
+        </div>
+      </ContentNoteSlide>
+    ),
+    notes:
+      'Pause here. This is the moment the session pays for itself, so let the one command sit on screen before you read the note.',
+  },
+  {
+    /*
+      THE SLIDE THAT CLOSES THE GAP `c1-not-inside` OPENED.
+
+      Asked for on review. `c1-not-inside` says the image carries no `.env`, no
+      `SECRET_KEY` and no database, and frames that omission as what makes a
+      public push SAFE. True, and it leaves a question the deck never answered:
+      then how does it run anywhere? Concept 3 then spends nine slides moving the
+      image between machines without saying what the receiving machine has to
+      provide.
+
+      A `DataTable` with two columns, not `SwapRows`. The registry is explicit
+      that `SwapRows` recesses one side and raises the other to assert that one
+      thing STANDS IN FOR another. These two are not substitutes: the image and
+      the machine each supply a different half, and both halves are needed. A
+      table states that without asserting a direction (content rule 8).
+
+      `volume` is named with the session that taught it, per content rule 24
+      part 3: it is a term from `Running the Real App with Docker` and a learner
+      meeting it here needs to know where they met it.
+    */
+    id: 'c3-what-the-machine-supplies',
+    section: C3,
+    label: 'What the machine supplies',
+    element: (
+      <ContentNoteSlide
+        kicker={C3}
+        title="What the Image Leaves to the Machine"
+        lead="The image carries what is the same everywhere, so the machine supplies what differs"
+        note={{
+          kind: 'info',
+          title: 'Remember',
+          body: 'An image that carried your secrets could only ever run in one place, and never in public.',
+        }}
+        lesson={SESSION}
+      >
+        <div className="mx-auto w-full max-w-[1060px]">
+          <DataTable
+            compact
+            columns={[
+              { label: 'Not in the image', weight: 1 },
+              { label: 'Why it cannot be', weight: 1.3 },
+              { label: 'Where it comes from', weight: 1.3 },
+            ]}
+            rows={[
+              [
+                <Code>SECRET_KEY</Code>,
+                'A secret in a public image is a published secret',
+                'Passed in when the container starts',
+              ],
+              [
+                'The database',
+                'Every machine holds different data',
+                `A volume on that machine, as ${S4} set up`,
+              ],
+              [
+                <Code>VITE_API_BASE_URL</Code>,
+                "The backend's address differs per machine",
+                'Set per environment, at run time',
+              ],
+            ]}
+          />
+        </div>
+      </ContentNoteSlide>
+    ),
+    notes:
+      'Read the middle column first. Each of the three is missing for a reason, and the reason is always that it differs between machines or must never be published. Then say the same image runs in every environment BECAUSE it carries none of them.',
+  },
+
+  {
+    /*
+      THE SECOND IMAGE, APPLIED RATHER THAN EXPLAINED.
+
+      Nothing on this slide is new: `docker tag` came from concept 2 and
+      `docker push` from the head of this one. That is the point of its
+      position. The room has just watched one image make the whole round trip,
+      so the second one is a use of the pattern, not a second lesson, and it
+      costs one slide instead of doubling every command in the session.
+
+      It has to exist, though. The app is two services, and a learner who
+      pushes only the backend has published half an application: the target
+      picture promises any machine runs this, and one repository cannot keep
+      that promise.
+
+      `Mounted from library/node` is the deliberate echo. `c3-mounted-from`
+      taught that line for `library/python` four slides ago, so seeing it again
+      with a different base is the concept confirming itself.
+    */
+    id: 'c3-frontend-too',
+    section: C3,
+    label: 'Frontend too',
+    element: (
+      /* `ContentNoteSlide`, and NO `points`.
+
+         The first version passed `points` AND a child, which makes
+         `ContentSlide` split into two columns: the terminal got half the width
+         and every command wrapped mid-token, which `align-check` caught. A
+         full-width panel is the only way these two names fit on one line each,
+         so the reason the slide exists moves into the callout instead. */
+      <ContentNoteSlide
+        kicker={C3}
+        title="Frontend Too"
+        lead="Same two commands, a different image name"
+        note={{
+          kind: 'success',
+          title: 'Remember',
+          body: 'The app is two services, so Hub needs two repositories. Both are there now.',
+        }}
+        lesson={SESSION}
+      >
+        <div className="mx-auto w-full max-w-[980px]">
+          <Terminal
+            path={AT_ROOT}
+            fontSize={13}
+            lines={[
+              { text: `docker tag ${FE_IMAGE} ${FE_REPO}:v1`, kind: 'cmd' },
+              { text: `docker push ${FE_REPO}:v1`, kind: 'cmd' },
+              { text: `The push refers to repository [docker.io/${FE_REPO}]`, kind: 'out' },
+              { text: 'c1a2b3d4e5f6: Pushed', kind: 'out' },
+              { text: '7a8b9c0d1e2f: Pushed', kind: 'out' },
+              { text: '3f4e5d6c7b8a: Mounted from library/node', kind: 'out' },
+              { text: 'v1: digest: sha256:4c1f8b... size: 1786', kind: 'ok' },
+            ]}
+            caption="Both repositories now hold a v1"
+          />
+        </div>
+      </ContentNoteSlide>
+    ),
+    notes:
+      'Say out loud that you are typing nothing new. Point at the Mounted from line and remind them where they met it, then say both images are now on Hub and the app can travel.',
+  },
+  {
+    /*
+      THE THREE COMMANDS SIDE BY SIDE, AND WHY IT IS A `DataTable`.
+
+      Asked for on review as "docker Tag vs Push vs pull". Two decisions in
+      that:
+
+      `DataTable` and NOT `SwapRows`. The registry is explicit: `SwapRows`
+      recesses one side and raises the other, which asserts that one thing
+      STANDS IN FOR another. These three are peers doing different jobs, so
+      that inversion would misrepresent them (content rule 8), and the
+      registry's own guidance for peers is a table with identical row labels.
+      The row labels here are identical across all three columns, which is what
+      makes the comparison readable down a column as well as across a row.
+
+      The title says "Tag, Push, Pull" rather than "vs". Content rule 26 bans
+      `vs.` in rendered copy, and three commas would be worse than the comma
+      list.
+
+      It sits at the END of concept 3 because that is the first slide where all
+      three commands have been taught: `docker tag` in concept 2, `push` and
+      `pull` here. Placed any earlier it would name a command the room had not
+      met (content rule 24).
+    */
+    id: 'c3-three-commands',
+    section: C3,
+    label: 'Tag, push, pull',
+    element: (
+      <ContentSlide
+        kicker={C3}
+        title="Login, Tag, Push, Pull"
+        lead="Four commands, four different jobs, and one of them never touches the network"
+        lesson={SESSION}
+      >
+        {/* `docker login` EARNED THE FOURTH COLUMN; `build` AND `run` DID NOT.
+
+            Login is the one registry command the whole-cycle figure does not
+            draw, it is taught two slides before this, and its cadence is the
+            distinction the room most often gets wrong: once per MACHINE, where
+            push is once per RELEASE. `c2-login`'s own lead makes that point in
+            those words, so the column reinforces it rather than introducing
+            anything.
+
+            `docker build` and `docker run` were considered and left out: they
+            would restate `c3-the-cycle`'s claim that build and run stay on one
+            computer while push and pull leave it, and that figure makes the
+            argument by geometry rather than by prose. `docker images` is a
+            look-up rather than an action on the registry, so it belongs to a
+            different axis.
+
+            THE "NEEDS AN ACCOUNT" ROW IS THE USEFUL ONE. Pulling a PUBLIC
+            image needs no sign-in at all, which learners routinely assume the
+            opposite of, and it is the row that explains why the target picture
+            can promise "any machine". */}
+        <div className="mx-auto w-full max-w-[1120px]">
+          <DataTable
+            compact
+            columns={[
+              { label: '', weight: 0.62 },
+              { label: 'docker login', weight: 1 },
+              { label: 'docker tag', weight: 1 },
+              { label: 'docker push', weight: 1 },
+              { label: 'docker pull', weight: 1 },
+            ]}
+            rows={[
+              [
+                'What it does',
+                'Signs this machine in to Docker Hub',
+                'Adds a second name to an image you have',
+                'Uploads the named image to Docker Hub',
+                'Downloads the image from Docker Hub',
+              ],
+              ['Uses the network', 'Yes', 'No', 'Yes', 'Yes'],
+              ['Needs an account', 'Yes', 'No', 'Yes', 'No, for public images'],
+              [
+                'How often',
+                'Once per machine',
+                'Once per release',
+                'Once per release',
+                'On every machine that runs it',
+              ],
+            ]}
+          />
+        </div>
+      </ContentSlide>
+    ),
+    notes:
+      'Read down the network row first: it is the one that explains why tag is instant and the other two are not. Then ask which of the three a deployment server ever runs, and the answer is only pull.',
   },
 ]

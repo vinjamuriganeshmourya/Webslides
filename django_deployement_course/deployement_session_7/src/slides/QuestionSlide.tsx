@@ -93,9 +93,26 @@ export function QuestionSlide({
           <Reveal dir="up">
             <div className="relative z-10 flex min-h-[440px] w-full max-w-[840px] flex-col justify-center rounded-card border border-line bg-surface-card px-14 py-12 text-left shadow-card">
               <Kicker tone={tone}>{kicker}</Kicker>
+              {/*
+                LEADING IS SET HERE, NOT LEFT TO THE TYPE TOKEN.
+
+                `slide-title-lg` is 44px at 1.08, a 47.5px line box. An inline
+                `Code` chip at 0.94em paints roughly 53px once its vertical
+                padding is added, and for an INLINE non-replaced element that
+                padding is painted WITHOUT expanding the line box. So a chip in
+                a hero question spills onto the lines either side of it: session
+                6's `c4-question` rendered both `v1` chips overlapping the text
+                above them.
+
+                1.08 is also simply too tight for a paragraph three lines long
+                at this size. 1.3 gives the chip its room and the question its
+                readability, and `min-h-[440px]` on the card absorbs the extra
+                height. Set as a style so it cannot lose to the font-size
+                utility on stylesheet order.
+              */}
               <p
                 className="mt-5 font-heading text-slide-title-lg"
-                style={{ color: colors.ink }}
+                style={{ color: colors.ink, lineHeight: 1.3 }}
               >
                 {question}
               </p>

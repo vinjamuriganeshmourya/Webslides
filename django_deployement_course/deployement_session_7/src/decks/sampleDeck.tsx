@@ -1,5 +1,5 @@
 import type { SlideDef, DeckMeta } from '@/deck/types'
-import { BoundaryBridge, CodeBlock, FanOut, FileTree, SwapRows, SpineFlow, LaneFlow, StepLedger, CircuitMap, GateFlow, TrackSwitch } from '@/ui'
+import { BoundaryBridge, CodeBlock, FanOut, FileTree, SwapRows, Terminal, SpineFlow, LaneFlow, StepLedger, CircuitMap, GateFlow, ThreeLanes, TrackSwitch } from '@/ui'
 import type { FlowchartFigureProps } from '@/ui'
 import {
   WelcomeSlide,
@@ -214,6 +214,36 @@ export const sampleDeck: SlideDef[] = [
           { text: 'Data usually travels as JSON', sub: 'lightweight & language-agnostic', icon: 'code' },
         ]}
       />
+    ),
+  },
+  {
+    id: 'content-split-default',
+    label: 'Content · points beside a figure (default split)',
+    section: 'Concepts',
+    notes:
+      'THE TWO-COLUMN MODE OF ContentSlide: pass BOTH `points` and children and the bullets and the figure sit side by side. This slide passes neither `split` nor `columnAlign`, so it is the historical rendering — the prose gets 1.4fr against the figure\'s 1fr (649px against 463px) and each column centres itself independently. Worst at: a figure that needs width. 463px is narrower than a `Terminal` line of any length, and `Terminal` wraps `break-words`, so it breaks an image name MID-TOKEN. Reach for `split="even"` there.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="Two columns"
+        title="Points beside a figure"
+        lead="The bullets and the figure are one idea, so they arrive together."
+        points={[
+          { text: 'The list keeps the wider column', icon: 'target' },
+          { text: 'The figure takes what is left', icon: 'bolt' },
+          { text: 'Both animate on slide entry', icon: 'arrow' },
+        ]}
+      >
+        <Terminal
+          path="C:\ecommerce"
+          lines={[
+            { text: 'docker ps', kind: 'cmd' },
+            { text: 'CONTAINER ID   STATUS', kind: 'out' },
+            { text: 'a41f9c2b       Up 2 minutes', kind: 'out' },
+          ]}
+          caption="Short lines fit the narrow column"
+        />
+      </ContentSlide>
     ),
   },
   {
@@ -732,6 +762,36 @@ export const sampleDeck: SlideDef[] = [
             { id: 'c3', label: 'Container 3', note: 'stopped, same image', live: false },
           ]}
           caption="Starting a container never changes the image, which is why the third one is identical to the first."
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'three-lanes',
+    label: 'Three lanes (figure)',
+    section: 'DRF',
+    notes:
+      'FOR THREE NAMED PRACTICES THAT DIFFER ONLY IN HOW FAR THEY REACH ALONG ONE CHAIN. Built for CI, Continuous Delivery and Continuous Deployment, and the contract carries no CI/CD in it: any set of terms whose relationship is CONTAINMENT along a shared sequence fits, and any set whose relationship is not containment does not. `terms` is INNERMOST FIRST and the array order IS the containment claim, so shuffling it is a content error rather than a layout one. `reaches` is the 1-based stage the automation reaches THROUGH, inclusive, and every span, dim boundary and marker in the figure derives from that one number, so no two parts of the figure can disagree about where a term stops. `approval` draws the human decision at a term\'s own boundary, which is the ONLY thing separating the two CDs in every published definition: span length alone states the difference and hides the why. Tones are ROLES (inner, middle, outer), not hexes, so a caller cannot reach a verdict hue: green, amber and red stay reserved for pass, warn and fail, and the ramp doubles as a luminance ramp so the three survive a greyscale projector. It reveals one lane per click, four beats on one frame, which is what lets one slide replace four definition slides without breaking content rule 25. Chosen from four candidates in slide-kit/cicd-reach-lab because it is the shape Atlassian, Red Hat, AWS, CircleCI, IBM and Bitrise all publish, so the room meets it again in any article they read, and because it is the only candidate that asks no lookup of the viewer. It costs height: 394px against the 425px ceiling, so it takes a slide with no points and a one-line lead. ReachBands is the same convention in 276px and stays in the lab.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="How far the robot goes"
+        title="Three lanes"
+        lead="Same chain of stages. The three terms differ only in where the automation stops"
+      >
+        <ThreeLanes
+          stages={[
+            { n: 1, label: 'FETCH', caption: 'get the code' },
+            { n: 2, label: 'TEST', caption: 'run the tests' },
+            { n: 3, label: 'BUILD', caption: 'build the image' },
+            { n: 4, label: 'PUSH', caption: 'image to the registry' },
+            { n: 5, label: 'DEPLOY', caption: 'run on the server' },
+          ]}
+          terms={[
+            { name: 'Continuous Integration', reaches: 2, then: 'You are told at once if it broke', tone: 'inner' },
+            { name: 'Continuous Delivery', reaches: 4, then: 'Ready to go live, and it waits', approval: true, tone: 'middle' },
+            { name: 'Continuous Deployment', reaches: 5, then: 'It goes live on its own', tone: 'outer' },
+          ]}
         />
       </ContentSlide>
     ),
