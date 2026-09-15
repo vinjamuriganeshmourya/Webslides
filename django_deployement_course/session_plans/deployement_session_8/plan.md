@@ -533,3 +533,18 @@ belongs to hello-jenkins, the only job that exists in concept 2.
 
 Deck is 84 slides. Section 5 above is the rev2 list and is one to five slides
 off from here on; the deck file is the reference for numbering.
+
+## Captures completed, 2026-09-15 afternoon
+
+Every `PendingShot` is gone; the deck has no placeholder frames. The Jenkins
+flow was run for real on the user's machine and captured as it happened:
+build 3 (two-stage script, started by the webhook), build 4 (Jenkinsfile from
+the repository, Checkout, Build, Push all green, tag 4 on Docker Hub), build 5
+(Dockerfile typo `requirement.txt`, Build red, Push skipped), then the typo
+reverted. Jenkins pages were captured through the Chrome extension with the
+page zoomed to 1.45x to 2x so the crops are sharp; originals sit in
+`workflow/captures/session-8/`. The Docker Hub token page original is NOT kept
+because it showed a live token; only the crop above the token line is used.
+Deck constants: `DOCKER_ID = 'jeevansravanth'`, `DEV_DOMAIN =
+'decaf-reword-clarify.ngrok-free.dev'`, repository
+`github.com/jeevan170902/nxttrendz`.

@@ -25,7 +25,7 @@ import {
   TunnelPath,
 } from '@/ui'
 import {
-  C1, C2, C3, C4, CLOSING_KICKER, DEV_DOMAIN, DOCKER_ID, PendingShot, ROOT, SESSION,
+  C1, C2, C3, C4, CLOSING_KICKER, DEV_DOMAIN, DOCKER_ID, ROOT, SESSION,
 } from './deckShared'
 
 /**
@@ -70,7 +70,7 @@ export const jenkinsDockerMeta: DeckMeta = {
 }
 
 const JF = 'nxttrendz/Jenkinsfile'
-const REPO = `https://github.com/${DOCKER_ID}/nxttrendz.git`
+const REPO = 'https://github.com/jeevan170902/nxttrendz.git'
 
 export const jenkinsDockerDeck: SlideDef[] = [
   /* ═══ FRONT, 5 ═══════════════════════════════════════════════════════ */
@@ -302,16 +302,23 @@ docker push ${DOCKER_ID}/nxttrendz-backend`} />
         <div className="grid grid-cols-[auto_1fr] gap-8 items-start">
           <Shot
             src="/shots/jenkins-credential-form.png"
-            alt="The Add Username with password dialog: Scope Global, Username ravi123, an empty Password box, ID dockerhub-credentials, Description Docker Hub token for image pushes, and the Create button"
-            caption="Manage Jenkins, Credentials, System, Global, Add Credentials, Username with password"
-            className="max-w-[330px]"
+            alt="The Add Username with password dialog while being filled: Scope Global, Username jeevansravanth, the Password box showing the pasted token as dots, ID and Description still empty, and the Create button"
+            caption="Manage Jenkins, Credentials, System, Global, Add Credentials, Username with password. Halfway through: the token is pasted, ID and Description come next"
+            className="max-w-[290px]"
           />
-          <DataTable compact columns={[{ label: 'Box' }, { label: 'What goes in' }]} rows={[
-            ['Username', `${DOCKER_ID}, your Docker ID`],
-            ['Password', 'the access token, not your account password'],
-            ['ID', 'dockerhub-credentials'],
-            ['Description', 'Docker Hub token for image pushes'],
-          ]} highlight={[2]} />
+          <div className="flex flex-col gap-4">
+            <DataTable compact columns={[{ label: 'Box' }, { label: 'What goes in' }]} rows={[
+              ['Username', `${DOCKER_ID}, your Docker ID`],
+              ['Password', 'the access token, not your account password'],
+              ['ID', 'dockerhub-credentials'],
+              ['Description', 'Docker Hub token for image pushes'],
+            ]} highlight={[2]} />
+            <Shot
+              src="/shots/jenkins-credential-stored.png"
+              alt="The Global credentials page after Create: one row, dockerhub-credentials, jeevansravanth with the password shown as six stars, Docker Hub token for image pushes"
+              caption="After Create. The store shows the ID and the username. The token is stars, and stays stars"
+            />
+          </div>
         </div>
       </ContentSlide>
     ),
@@ -726,7 +733,7 @@ Finished: SUCCESS`} />
         { text: 'Every build gets a unique tag, automatically', icon: 'check' },
         { text: 'The number always goes up, so newer is always higher', icon: 'check' },
         { text: 'Any image traces back to the exact build and the exact commit', icon: 'target' },
-      ]} note={{ kind: 'success', title: 'The tag makes itself', body: 'Image ravi123/nxttrendz-backend:42 came from build #42. No one typed 42.' }} />
+      ]} note={{ kind: 'success', title: 'The tag makes itself', body: `Image ${DOCKER_ID}/nxttrendz-backend:42 came from build #42. No one typed 42.` }} />
     ),
   },
   {
@@ -767,7 +774,7 @@ Finished: SUCCESS`} />
 }`} />
       </ContentSlide>
     ),
-    notes: 'Build #42 produces ravi123/nxttrendz-backend:42 and ravi123/nxttrendz-frontend:42. The second build of each image is fast: Docker reuses the layers that did not change.',
+    notes: 'Build #42 produces jeevansravanth/nxttrendz-backend:42 and jeevansravanth/nxttrendz-frontend:42. The second build of each image is fast: Docker reuses the layers that did not change.',
   },
   {
     id: 'c4-exit-codes', section: C4, label: 'Exit codes are the gate',
@@ -874,7 +881,20 @@ Finished: SUCCESS`} />
     id: 'c4-three-green-stages', section: C4, label: 'Three green stages',
     element: (
       <ContentSlide kicker={C4} title="Three Green Stages" lead="Push a small change. All three stages go green without anyone clicking" lesson={SESSION}>
-        <PendingShot of="The Stage View with three green stages" at="Jenkins → nxttrendz-build-test" shows="Checkout, Build, Push, each with a tick and a duration" />
+        <div className="flex flex-col gap-3 mt-8">
+          <Shot
+            src="/shots/jenkins-stage-view-three.png"
+            alt="Build 4: green tick, Started by GitHub push, Took 1 min 1 sec, and the stage graph Start, Checkout SCM, Checkout, Build, Push, End, every stage ticked green"
+            caption="Jenkins, nxttrendz-build-test, build 4, Stages. Four ticks: Jenkins adds Checkout SCM itself to fetch the Jenkinsfile, then your three stages run"
+            className="mx-auto max-w-[700px]"
+          />
+          <Shot
+            src="/shots/jenkins-console-obtained-jenkinsfile.png"
+            alt="The first lines of the build 4 Console Output: Started by GitHub push by jeevan170902, Obtained Jenkinsfile from git and the repository address"
+            caption="Console Output, first two lines: started by the push, and the Jenkinsfile came from the repository"
+            className="mx-auto max-w-[700px]"
+          />
+        </div>
       </ContentSlide>
     ),
     notes: 'Nobody clicked Build Now. The push did it.',
@@ -882,8 +902,21 @@ Finished: SUCCESS`} />
   {
     id: 'c4-two-images-on-docker-hub', section: C4, label: 'Two images on Docker Hub',
     element: (
-      <ContentSlide kicker={C4} title="On Docker Hub" lead="Both images are on Docker Hub, tagged with the build number" lesson={SESSION}>
-        <PendingShot of="The two repositories on Docker Hub with the new tag" at={`hub.docker.com → ${DOCKER_ID} → Repositories`} shows="nxttrendz-backend and nxttrendz-frontend, each showing tag 43" />
+      <ContentSlide kicker={C4} title="On Docker Hub" lead="Both images are on Docker Hub, tagged 4 because this was build 4" lesson={SESSION}>
+        <div className="flex flex-col gap-3 mt-8">
+          <Shot
+            src="/shots/dockerhub-two-repos.png"
+            alt="Docker Hub, Repositories: nxttrendz-frontend pushed less than a minute ago and nxttrendz-backend pushed 1 minute ago, both Public"
+            caption="hub.docker.com, Repositories. Both images arrived within the last minute"
+            className="mx-auto max-w-[760px]"
+          />
+          <Shot
+            src="/shots/dockerhub-tag-4.png"
+            alt="Docker Hub, nxttrendz-backend, Tags: tag 4, last pushed 3 minutes ago, linux/amd64, 66.3 MB, with the docker pull command for that tag"
+            caption="nxttrendz-backend, Tags. Tag 4, pushed 3 minutes ago, 66 MB. Anyone can now run docker pull jeevansravanth/nxttrendz-backend:4"
+            className="mx-auto max-w-[760px]"
+          />
+        </div>
       </ContentSlide>
     ),
   },
@@ -908,24 +941,30 @@ COPY . .`} highlight={[8]} />
   {
     id: 'c4-the-gate-closes', section: C4, label: 'The gate closes',
     element: (
-      <ContentSlide kicker={C4} title="The Gate Closes" lead="Checkout passes. Build fails. Push never runs" lesson={SESSION}>
-        <PendingShot of="The Stage View with Build red and Push empty" at="Jenkins → nxttrendz-build-test → #44" shows="Checkout green, Build red with FAILED, Push grey with no time" />
+      <ContentSlide kicker={C4} title="The Gate Closes" lead="Checkout passes. Build fails in 8 seconds. Push never runs" lesson={SESSION}>
+        <Shot
+          src="/shots/jenkins-stage-view-failed.png"
+          alt="Build 5, Stages: a red cross, Started by GitHub push, Took 7.6 sec. The graph shows Checkout SCM and Checkout green, Build red, and Push skipped with a dotted line around it. Below, the Build stage is red and its log starts with docker build -t jeevansravanth/nxttrendz-backend:5"
+          caption="Jenkins, nxttrendz-build-test, build 5, Stages. Build is red. Push has a skip mark and took 91 ms, because it never ran"
+          className="mx-auto mt-2 max-w-[960px]"
+        />
       </ContentSlide>
     ),
   },
   {
     id: 'c4-read-the-failure', section: C4, label: 'Read the failure',
     element: (
-      <ContentSlide kicker={C4} title="Read the Failure" lead="The log names the file that is missing and ends with the exit code" lesson={SESSION}>
-        <CodeBlock filename="Jenkins → nxttrendz-build-test → #44 → Console Output" language="text" showLineNumbers={false} fontSize={11} code={`+ docker build -t ${DOCKER_ID}/nxttrendz-backend:44 ./backend
- => ERROR [4/6] RUN pip install -r requirement.txt
-ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirement.txt'
-ERROR: failed to solve: process "/bin/sh -c pip install -r requirement.txt" did not complete successfully: exit code: 1
-ERROR: script returned exit code 1
-Finished: FAILURE`} />
+      <ContentSlide kicker={C4} title="Read the Failure" lead="Click the red stage. The log names the file that is missing and the Dockerfile line that asked for it" lesson={SESSION}>
+        <Shot
+          src="/shots/jenkins-build-5-log.png"
+          alt="Build 5, Stages view: on the left Build red and Push skipped. On the right the Build stage log: RUN pip install -r requirement.txt, ERROR Could not open requirements file, No such file or directory, then Dockerfile:8"
+          caption="Jenkins, nxttrendz-build-test, build 5, Stages, click the red Build stage. The log names the missing file and points at Dockerfile line 8"
+          highlight={{ left: 25, top: 42, width: 58, height: 36, label: 'the error, and the file it could not find' }}
+          className="mx-auto mt-6 max-w-[1000px]"
+        />
       </ContentSlide>
     ),
-    notes: 'CAPTURE pending. Read from the bottom: exit code 1, then the line that says which file was missing.',
+    notes: 'Captured 2026-09-15, build 5. Read from the bottom: exit code 1, then the line that says which file was missing, then Dockerfile:8.',
   },
   {
     id: 'c4-what-did-not-happen', section: C4, label: 'What did not happen',
