@@ -520,7 +520,13 @@ latest: digest: sha256:3f9a... size: 2841`} />
     id: 'c3-add-the-webhook', section: C3, label: 'Add the webhook',
     element: (
       <ContentSlide kicker={C3} title="Add the Webhook" lead="In your repository: Settings, Webhooks, Add webhook. Fill the form" lesson={SESSION}>
-        <PendingShot of="The Add webhook form, filled in" at="github.com → nxttrendz → Settings → Webhooks → Add webhook" shows={<>Payload URL <span className="font-mono">https://{DEV_DOMAIN}/github-webhook/</span>, Content type application/json, Just the push event</>} />
+        <Shot
+          src="/shots/github-add-webhook.png"
+          alt="GitHub's Add webhook form: Payload URL, Content type, Secret, SSL verification, the event choice with Just the push event selected, Active ticked, and the Add webhook button"
+          highlight={{ left: 1.5, top: 19, width: 97, height: 18, label: 'type your URL, then set content type to application/json' }}
+          caption="Settings, Webhooks, Add webhook. Three changes: paste your Payload URL, change Content type to application/json, keep Just the push event. Then Add webhook"
+          className="mx-auto max-w-[760px]"
+        />
       </ContentSlide>
     ),
   },
