@@ -372,7 +372,8 @@ and needs a running Jenkins, a live tunnel, an ngrok account or an AWS sign-up.
 | 34 | How a Tunnel Works | `TunnelPath` | Laptop dials out, webhook rides back |
 | 35 | Create an ngrok Account | `Shot` **CAPTURE** | ngrok.com sign-up. **New** |
 | 36 | Copy Your Authtoken | `Shot` **CAPTURE** | Dashboard → Your Authtoken. A real token, revoked after capture. **New** |
-| 37 | Start the Tunnel | `Terminal` | `ngrok config add-authtoken`, then `ngrok http 8080`, read the Forwarding line |
+| 37 | Install ngrok | `Terminal` + `DataTable` | Added 2026-09-15 on instruction: `winget install ngrok -s msstore`, with `brew install ngrok` and `snap install ngrok` alongside. Read off ngrok.com/download. Every slide after this one is numbered one higher than below; `slideCount` is 89 |
+| 38 | Start the Tunnel | `Terminal` | `ngrok config add-authtoken`, then `ngrok http 8080`, read the Forwarding line |
 | 38 | What ngrok Costs | `DataTable` | Free plan: one stable dev domain, 20k requests, 1GB, 3 endpoints. **New** |
 | 39 | The Payload URL | `CommandSyntaxSlide` | scheme, dev domain, `/github-webhook/` |
 | 40 | Add the Webhook | `Shot` **CAPTURE** | Repo → Settings → Webhooks → Add webhook |
