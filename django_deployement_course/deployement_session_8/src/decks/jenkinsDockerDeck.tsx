@@ -18,6 +18,7 @@ import {
   FileTree,
   GateFlow,
   MachineBoundary,
+  Shot,
   SocketBridge,
   StatusList,
   Terminal,
@@ -1031,7 +1032,11 @@ Finished: FAILURE`} />
     id: 'aws-sign-up', section: 'Closing', label: 'The sign up',
     element: (
       <ContentSlide kicker={CLOSING_KICKER} title="The Sign Up" lead="Five screens. Only the last one has a choice to make" lesson={SESSION}>
-        <PendingShot of="The first sign-up screen, before any personal details are typed" at="aws.amazon.com → Create an AWS Account" shows="Root user email address and AWS account name fields. Later screens with address and payment are not captured" />
+        <Shot
+          src="/shots/aws-signup.png"
+          alt="The AWS sign-up form with empty Root user email address and AWS account name fields, next to the offer of USD 100 in credits for up to 6 months"
+          caption="signin.aws.amazon.com/signup. Only the email and account name on this screen. Later screens ask for address and payment and are not shown"
+        />
       </ContentSlide>
     ),
   },
