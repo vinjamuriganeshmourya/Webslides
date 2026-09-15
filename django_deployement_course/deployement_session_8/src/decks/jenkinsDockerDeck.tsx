@@ -288,7 +288,8 @@ docker push ${DOCKER_ID}/nxttrendz-backend`} />
         <Shot
           src="/shots/dockerhub-token-created.png"
           alt="Docker Hub's Copy access token page after generating a token: the warning that it is displayed only once, then its description, expiry and access permissions"
-          caption="hub.docker.com, Account settings, Personal access tokens, Generate new token. Copy it now. It is shown once. Pick Read and Write, because the pipeline pushes"
+          caption="hub.docker.com, Account settings, Personal access tokens, Generate new token. Copy it now, it is shown once. This one was made Read-only. Yours needs Read and Write, because the pipeline pushes"
+          className="mt-3"
         />
       </ContentSlide>
     ),
@@ -456,8 +457,8 @@ latest: digest: sha256:3f9a... size: 2841`} />
         <Shot
           src="/shots/ngrok-signup.png"
           alt="The ngrok sign-up card: Sign up with GitHub, Sign up with Google, or name, email and password"
-          caption="ngrok.com, Sign up. Signing up with GitHub is one click, since you already have that account"
-          className="mx-auto max-w-[420px]"
+          caption="ngrok.com, Sign up. Signing up with GitHub is one click, since you already have that account. Below these fields: a password and the Sign up button"
+          className="mx-auto max-w-[470px]"
         />
       </ContentSlide>
     ),
@@ -472,10 +473,30 @@ latest: digest: sha256:3f9a... size: 2841`} />
           alt="ngrok dashboard, Your Authtoken: the token shown as dots with a Copy button, and the command ngrok config add-authtoken below it"
           highlight={{ left: 27, top: 40, width: 46, height: 11, label: 'Copy. It stays hidden on screen' }}
           caption="dashboard.ngrok.com, Getting Started, Your Authtoken. The page keeps it as dots. Copy it and paste it into the command on the next slide"
+          className="mx-auto max-w-[940px]"
         />
       </ContentSlide>
     ),
     notes: 'This token is a password. Do not share it. The one in the screenshot was deleted right after the picture was taken.',
+  },
+  {
+    id: 'c3-install-ngrok', section: C3, label: 'Install ngrok',
+    element: (
+      <ContentSlide kicker={C3} title="Install ngrok" lead="One command on Windows. The other two systems have their own" lesson={SESSION}>
+        <Terminal path={ROOT} lines={[
+          { text: 'winget install ngrok -s msstore', kind: 'cmd' },
+          { text: 'Found ngrok [9NLR1Q3B4RZ2]', kind: 'out' },
+          { text: 'Successfully installed', kind: 'ok' },
+          { text: 'ngrok version', kind: 'cmd' },
+          { text: 'ngrok version 3.x', kind: 'ok' },
+        ]} caption="Close and reopen the terminal after installing, so the ngrok command is found" />
+        <DataTable compact className="mt-4" columns={[{ label: 'System' }, { label: 'Command' }]} rows={[
+          ['macOS', 'brew install ngrok'],
+          ['Linux', 'snap install ngrok'],
+        ]} />
+      </ContentSlide>
+    ),
+    notes: 'Commands read off ngrok.com/download on 2026-09-15. Windows also offers the Microsoft Store page and scoop install ngrok. Linux also has an apt repository route, longer; snap is one line. If winget is missing on an older Windows, install App Installer from the Microsoft Store first.',
   },
   {
     id: 'c3-start-the-tunnel', section: C3, label: 'Start the tunnel',
@@ -523,9 +544,9 @@ latest: digest: sha256:3f9a... size: 2841`} />
         <Shot
           src="/shots/github-add-webhook.png"
           alt="GitHub's Add webhook form: Payload URL, Content type, Secret, SSL verification, the event choice with Just the push event selected, Active ticked, and the Add webhook button"
-          highlight={{ left: 1.5, top: 19, width: 97, height: 18, label: 'type your URL, then set content type to application/json' }}
-          caption="Settings, Webhooks, Add webhook. Three changes: paste your Payload URL, change Content type to application/json, keep Just the push event. Then Add webhook"
-          className="mx-auto max-w-[760px]"
+          highlight={{ left: 1.5, top: 38, width: 97, height: 36, label: 'type your URL, then set content type to application/json' }}
+          caption="Settings, Webhooks, Add webhook. Paste your Payload URL, change Content type to application/json. Lower down, keep Just the push event, then Add webhook"
+          className="mx-auto mt-3 max-w-[900px]"
         />
       </ContentSlide>
     ),
@@ -1065,6 +1086,7 @@ Finished: FAILURE`} />
           src="/shots/aws-signup.png"
           alt="The AWS sign-up form with empty Root user email address and AWS account name fields, next to the offer of USD 100 in credits for up to 6 months"
           caption="signin.aws.amazon.com/signup. Only the email and account name on this screen. Later screens ask for address and payment and are not shown"
+          className="mx-auto mt-3 max-w-[570px]"
         />
       </ContentSlide>
     ),
