@@ -36,7 +36,7 @@ export const ROOT = 'C:\\nxttrendz'
 
 /** The example Docker ID and dev domain. Slides say to replace both. */
 export const DOCKER_ID = 'ravi123'
-export const DEV_DOMAIN = 'calm-owl-42.ngrok-free.app'
+export const DEV_DOMAIN = 'decaf-reword-clarify.ngrok-free.dev'
 
 /**
  * A STAND-IN FOR A SCREENSHOT THAT DOES NOT EXIST YET.
