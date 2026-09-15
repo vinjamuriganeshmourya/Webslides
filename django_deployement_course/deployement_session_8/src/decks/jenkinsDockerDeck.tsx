@@ -213,7 +213,12 @@ Finished: FAILURE`} />
     id: 'c1-plugin', section: C1, label: 'Docker Pipeline plugin',
     element: (
       <ContentSlide kicker={C1} title="Docker Pipeline Plugin" lead="Manage Jenkins, then Plugins, then Available plugins. Search for Docker Pipeline and install it" lesson={SESSION}>
-        <PendingShot of="The Available plugins page with Docker Pipeline found" at="Jenkins → Manage Jenkins → Plugins → Available plugins" shows="The search box with Docker Pipeline typed, the plugin row, and the Install button" />
+        <Shot
+          src="/shots/jenkins-plugin-docker-pipeline.png"
+          alt="The Available plugins page with Docker Pipeline typed in the search box and the one matching plugin row with its Install checkbox"
+          highlight={{ left: 0.5, top: 40, width: 9, height: 26, label: 'tick, then Install' }}
+          caption="Manage Jenkins, Plugins, Available plugins. Tick the box, then the Install button at the top right"
+        />
       </ContentSlide>
     ),
     notes: 'The pipeline we write later uses plain sh commands, so this plugin is not strictly needed for it. Install it anyway: every team you join has it.',
@@ -267,7 +272,11 @@ docker push ${DOCKER_ID}/nxttrendz-backend`} />
     id: 'c2-the-store', section: C2, label: 'The credentials store',
     element: (
       <ContentSlide kicker={C2} title="The Credentials Store" lead="Jenkins keeps secrets encrypted. Each one gets an ID, and jobs use the ID" lesson={SESSION}>
-        <PendingShot of="The Credentials page with the global store" at="Jenkins → Manage Jenkins → Credentials → System → Global credentials" shows="The empty list and the Add Credentials button" />
+        <Shot
+          src="/shots/jenkins-credentials-empty.png"
+          alt="The Global credentials page, empty, with an Add Credentials button"
+          caption="Manage Jenkins, Credentials, System, Global. Empty until the next two slides"
+        />
       </ContentSlide>
     ),
     notes: 'The secret never appears in a job, a Jenkinsfile or a log. If it would be printed, Jenkins shows **** instead.',
