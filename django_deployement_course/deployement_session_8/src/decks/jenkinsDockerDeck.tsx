@@ -467,7 +467,12 @@ latest: digest: sha256:3f9a... size: 2841`} />
     id: 'c3-authtoken', section: C3, label: 'Copy your authtoken',
     element: (
       <ContentSlide kicker={C3} title="Copy Your Authtoken" lead="After signing in, the dashboard shows one long token. Copy it" lesson={SESSION}>
-        <PendingShot of="The Your Authtoken page" at="dashboard.ngrok.com → Getting Started → Your Authtoken" shows="The token box and the Copy button. The token in the capture is revoked afterwards" />
+        <Shot
+          src="/shots/ngrok-authtoken.png"
+          alt="ngrok dashboard, Your Authtoken: the token shown as dots with a Copy button, and the command ngrok config add-authtoken below it"
+          highlight={{ left: 27, top: 40, width: 46, height: 11, label: 'Copy. It stays hidden on screen' }}
+          caption="dashboard.ngrok.com, Getting Started, Your Authtoken. The page keeps it as dots. Copy it and paste it into the command on the next slide"
+        />
       </ContentSlide>
     ),
     notes: 'This token is a password. Do not share it. The one in the screenshot was deleted right after the picture was taken.',
