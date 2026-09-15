@@ -236,6 +236,25 @@ on a slide as a table so nobody is hunting mid-signup.
 AWS. Say so before it happens, or somebody will think they have been billed for
 the course.
 
+### 4.2b The Free Tier changed. Checked 2026-09-15, and the slides follow this
+
+The draft below and its table of "four protections" assumed the old Free Tier:
+twelve months, 750 hours a month of one small instance. **That tier no longer
+exists for new accounts.** Read off `aws.amazon.com/free` and its FAQ, and off
+the sign-up page itself while capturing slide 83:
+
+| New Free plan | Consequence for this course |
+|---|---|
+| USD 100 in credits on sign-up, up to 200 by completing activities | More than the course needs |
+| **No charge unless you upgrade to a Paid plan** | "Keep it at zero" is one rule: never click Upgrade |
+| A payment method is still required, for identity | The eight-item list stands |
+| EC2 is available on the Free plan | The deploying sessions work without upgrading |
+| **The account closes itself at 6 months**, data kept 90 days | The AWS sessions must finish inside six months of sign-up |
+
+Slides 81, 85 and 86 were rewritten to this on 2026-09-15. Slide 85, cancelling
+the e-mandate, is kept on instruction and reframed as an extra lock rather than
+the thing that keeps the account free.
+
 ### 4.3 Auto pay, and cancelling it after activation
 
 What you asked for, with the mechanism named correctly. In India, automatic

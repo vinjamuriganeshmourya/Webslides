@@ -1003,9 +1003,9 @@ Finished: FAILURE`} />
     id: 'aws-why-now', section: 'Closing', label: 'Create your AWS account today',
     element: (
       <ContentNoteSlide kicker={CLOSING_KICKER} title="Create Your AWS Account Today" lead="You will need it for deploying. Activation can take up to three days, so start now" lesson={SESSION} points={[
-        { text: 'An account can activate in minutes, or take up to 24 hours', icon: 'info' },
-        { text: 'Paying by UPI can take 48 to 72 hours', icon: 'warning' },
-        { text: 'This account is for learning only, not for real use', icon: 'shield' },
+        { text: 'An account can activate in minutes, or take up to 24 hours. UPI can take 48 to 72', icon: 'info' },
+        { text: 'A new account gets USD 100 in credits, and up to 200. Nothing is charged unless you upgrade', icon: 'check' },
+        { text: 'The account closes itself after 6 months. Finish the deploying sessions inside that', icon: 'warning' },
       ]} note={{ kind: 'warning', title: 'Nobody collects your card details', body: 'Sign up on your own device with your own details. Not the trainer, not the chat, not a shared sheet.' }} />
     ),
     notes: 'Rule 2b: "deploying", not "session 10". Say both sentences in the callout out loud.',
@@ -1051,7 +1051,7 @@ Finished: FAILURE`} />
   {
     id: 'aws-autopay', section: 'Closing', label: 'Auto pay, and cancelling it',
     element: (
-      <ProceduralStepsSlide kicker={CLOSING_KICKER} title="Auto Pay, and Cancelling It" lead="Automatic payment is set up with your bank. Cancel it in your bank app, not in AWS" lesson={SESSION} steps={[
+      <ProceduralStepsSlide kicker={CLOSING_KICKER} title="Auto Pay, and Cancelling It" lead="On the Free plan AWS does not charge you. Cancelling auto pay in your bank app is one extra lock" lesson={SESSION} steps={[
         { title: 'Open your bank or UPI app', detail: 'Not the AWS website', icon: 'info' },
         { title: 'Find AutoPay or e-mandates', detail: 'The name differs by bank', icon: 'target' },
         { title: 'Find Amazon Web Services and choose Cancel', icon: 'cross' },
@@ -1062,16 +1062,16 @@ Finished: FAILURE`} />
   {
     id: 'aws-keep-it-zero', section: 'Closing', label: 'Keep it at zero',
     element: (
-      <ContentSlide kicker={CLOSING_KICKER} title="Keep It at Zero" lead="Cancelling auto pay stops the money leaving. It does not stop the bill. Four things do" lesson={SESSION}>
+      <ContentSlide kicker={CLOSING_KICKER} title="Keep It at Zero" lead="Four habits. The first one is the one that matters" lesson={SESSION}>
         <DataTable columns={[{ label: 'Do this' }, { label: 'Why' }]} rows={[
-          ['Stay inside the Free Tier', 'One small server, 750 hours a month, for twelve months'],
-          ['Set a budget alert at zero', 'AWS emails you the moment a charge is coming'],
-          ['Stop the server when you finish', 'A stopped server costs nothing'],
-          ['Cancel the auto pay', 'Nothing leaves your account without you deciding'],
-        ]} highlight={[2]} />
+          ['Stay on the Free plan. Never click Upgrade', 'AWS does not charge the Free plan. Only a Paid plan can bill you'],
+          ['Stop the server when you finish', 'A running server uses credits. A stopped one does not'],
+          ['Set a budget alert', 'AWS emails you before the credits run out'],
+          ['Cancel the auto pay in your bank app', 'One extra lock, so nothing can leave your account by mistake'],
+        ]} highlight={[1]} />
       </ContentSlide>
     ),
-    notes: 'Be straight: cancelling the mandate means an unpaid bill and a suspended account, not no bill. The course costs nothing if you stay inside the Free Tier. It cannot promise you will never be charged, because that depends on what you run.',
+    notes: 'Checked on aws.amazon.com/free on 2026-09-15. The old twelve month, 750 hour tier is gone for new accounts. Free plan: USD 100 credits on sign up, up to 200, EC2 included, a payment method required for identity only, no charge unless you upgrade, account closes at six months with data kept 90 days. The course fits inside that. The one thing that can cost money is clicking Upgrade.',
   },
   {
     id: 'what-comes-next', section: 'Closing', label: 'What comes next',
