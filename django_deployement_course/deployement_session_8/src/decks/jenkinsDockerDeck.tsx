@@ -289,7 +289,7 @@ docker push ${DOCKER_ID}/nxttrendz-backend`} />
           src="/shots/dockerhub-token-created.png"
           alt="Docker Hub's Copy access token page after generating a token: the warning that it is displayed only once, then its description, expiry and access permissions"
           caption="hub.docker.com, Account settings, Personal access tokens, Generate new token. Copy it now, it is shown once. This one was made Read-only. Yours needs Read and Write, because the pipeline pushes"
-          className="mt-3"
+          className="mx-auto mt-6 max-w-[760px]"
         />
       </ContentSlide>
     ),
