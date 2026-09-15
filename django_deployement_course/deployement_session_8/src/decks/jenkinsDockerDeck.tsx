@@ -285,7 +285,11 @@ docker push ${DOCKER_ID}/nxttrendz-backend`} />
     id: 'c2-docker-hub-token', section: C2, label: 'A Docker Hub token',
     element: (
       <ContentSlide kicker={C2} title="A Docker Hub Token" lead="Machines get a token, not your real password. A leaked token can be deleted without changing your account" lesson={SESSION}>
-        <PendingShot of="The New Access Token form" at="hub.docker.com → Account Settings → Security → New Access Token" shows="Description jenkins, permission Read and Write, and the Generate button. The token on the capture is revoked" />
+        <Shot
+          src="/shots/dockerhub-token-created.png"
+          alt="Docker Hub's Copy access token page after generating a token: the warning that it is displayed only once, then its description, expiry and access permissions"
+          caption="hub.docker.com, Account settings, Personal access tokens, Generate new token. Copy it now. It is shown once. Pick Read and Write, because the pipeline pushes"
+        />
       </ContentSlide>
     ),
   },
@@ -449,7 +453,12 @@ latest: digest: sha256:3f9a... size: 2841`} />
     id: 'c3-ngrok-account', section: C3, label: 'Create an ngrok account',
     element: (
       <ContentSlide kicker={C3} title="Create an ngrok Account" lead="Go to ngrok.com and sign up. The free plan is enough for this course" lesson={SESSION}>
-        <PendingShot of="The ngrok sign-up page" at="ngrok.com → Sign up" shows="Email and password, or sign up with GitHub or Google" />
+        <Shot
+          src="/shots/ngrok-signup.png"
+          alt="The ngrok sign-up card: Sign up with GitHub, Sign up with Google, or name, email and password"
+          caption="ngrok.com, Sign up. Signing up with GitHub is one click, since you already have that account"
+          className="mx-auto max-w-[420px]"
+        />
       </ContentSlide>
     ),
     notes: 'This is the slowest beat in the session. Every learner signs up. Budget time for it.',
