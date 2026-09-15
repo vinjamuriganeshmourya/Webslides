@@ -8,7 +8,7 @@ it has been replaced by this file. The kit's rules still apply, and they live at
 
 | | |
 |---|---|
-| Slides | **88**, rev2 of 2026-09-11 |
+| Slides | **84**, rev2 of 2026-09-11, Test stage removed 2026-09-15 |
 | `devPort` | 5219 |
 | `htmlName` | `deployment-session-8` |
 | Deck file | `src/decks/jenkinsDockerDeck.tsx`, plus `src/decks/deckShared.tsx` |

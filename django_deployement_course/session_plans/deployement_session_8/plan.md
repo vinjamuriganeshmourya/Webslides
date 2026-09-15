@@ -514,3 +514,22 @@ chrome, which session 7 added and which slides 35, 36, 40, 53 and 54 all want.
 - **The AWS Free Tier clock starts in session 8, not session 10.** Twelve months
   from account creation, so two sessions of the twelve are spent before the first
   instance launches. It costs nothing and is worth knowing.
+
+## Revision, 2026-09-15: no Test stage, job created earlier
+
+On instruction ("remove test stage we dont have any tests"). The project has no
+test suite, so the pipeline is Checkout, Build, Push. Removed from the deck:
+Add the SECRET_KEY Credential, Stage 2: Test, Tests Run Inside the Image, Why
+the Test Needs SECRET_KEY, Only the Backend Has Tests. The `environment` block
+has no `credentials()` line. Exit Codes now follows Stage 2: Build. The failure
+demo pushes a Dockerfile typo (`requirement.txt`) so Build goes red and Push
+never runs; the whole-flow figure's decision is "Both images build?".
+
+Also on instruction ("slide 29 this is not yet created at this place ryt?"):
+the job was referenced from concept 2 onwards but only created on Two Stages.
+The Repository URL slide is now Create the Job (New Item → nxttrendz-build-test
+→ Pipeline), Two Stages opens that job's Configure, and the masked-log example
+belongs to hello-jenkins, the only job that exists in concept 2.
+
+Deck is 84 slides. Section 5 above is the rev2 list and is one to five slides
+off from here on; the deck file is the reference for numbering.
