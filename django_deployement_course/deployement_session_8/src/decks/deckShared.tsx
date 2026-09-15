@@ -35,7 +35,7 @@ export const CLOSING_KICKER = 'Before We Meet Again'
 export const ROOT = 'C:\\nxttrendz'
 
 /** The example Docker ID and dev domain. Slides say to replace both. */
-export const DOCKER_ID = 'ravi123'
+export const DOCKER_ID = 'jeevansravanth'
 export const DEV_DOMAIN = 'decaf-reword-clarify.ngrok-free.dev'
 
 /**
