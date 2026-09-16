@@ -12,11 +12,13 @@ import {
   ThankYouSlide,
   WelcomeSlide,
 } from '@/slides'
-import { Callout, CodeBlock } from '@/ui'
+import { Callout, CodeBlock, DataTable } from '@/ui'
 import { AnnotatedShot } from './figures/AnnotatedShot'
 import { ShellPanel } from './figures/ShellPanel'
 import { CloudArchitecture } from './figures/aws/CloudArchitecture'
 import { Permissions } from './figures/Permissions'
+import { TimeoutVsRefused } from './figures/TimeoutVsRefused'
+import { SG_THREE_RULES, SG_PORT_COLUMN, SG_RULE_3000, SG_NEW_ROW_FORM } from './shotBoxes'
 import {
   SESSION,
   C1,
@@ -755,6 +757,358 @@ volumes:
           { text: 'The server runs images, it does not build them', sub: 'image: instead of build:' },
           { text: 'A new volume starts empty', sub: 'Run migrate once' },
           { text: 'It is running, and it is not reachable', sub: 'Those are two different things' },
+        ]}
+      />
+    ),
+  },
+
+  /* ── CONCEPT 4 · SECURITY GROUPS ────────────────────────────────────── */
+  {
+    id: 'c4-divider',
+    section: C4,
+    label: '04',
+    element: <SectionBreakerSlide index={4} title={C4} lesson={SESSION} />,
+  },
+  {
+    id: 'c4-question',
+    section: C4,
+    label: 'Who is saying no',
+    element: (
+      <QuestionSlide
+        kicker={C4}
+        question="The containers are up and the page will not load. Who is saying no?"
+        qualifier="It is not the app, because the app never sees the request"
+        lesson={SESSION}
+      />
+    ),
+  },
+  {
+    id: 'c4-what-it-is',
+    section: C4,
+    label: 'The door list',
+    element: (
+      <ContentSlide
+        kicker={C4}
+        title="The Security Group"
+        lead="A firewall in front of your instance. You met it as the door list when you launched"
+        lesson={SESSION}
+        points={[
+          { text: 'Nothing is open until you open it', icon: 'lock' },
+          { text: 'You can only allow. There is no rule that blocks', icon: 'shield' },
+          { text: 'Traffic going out is already allowed', icon: 'arrow' },
+        ]}
+      />
+    ),
+    notes:
+      'The third point is the one they have already seen without noticing: docker pull worked, and nobody ' +
+      'opened anything for it.',
+  },
+  {
+    id: 'c4-outbound',
+    section: C4,
+    label: 'Why the pull worked',
+    element: (
+      <ContentSlide
+        kicker={C4}
+        title="This Is Why the Pull Worked"
+        lead="You never opened a port for Docker Hub, and you did not need to"
+        lesson={SESSION}
+      >
+        <Callout kind="success" title="Out is open, in is closed">
+          A server reaching out to the internet is allowed by default. The internet reaching in is not.
+          That is why pulling an image needed nothing, and serving a page needs a rule
+        </Callout>
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c4-anatomy',
+    section: C4,
+    label: 'What a rule says',
+    element: (
+      <ContentSlide
+        kicker={C4}
+        title="What a Rule Says"
+        lead="Every rule answers three questions, and no more"
+        lesson={SESSION}
+      >
+        <DataTable
+          columns={[{ label: 'Type' }, { label: 'Port' }, { label: 'Source', weight: 2 }]}
+          rows={[
+            ['which protocol', 'which door', 'who may knock'],
+            ['SSH', '22', 'just your own address'],
+            ['Custom TCP', '3000', 'everyone'],
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c4-cidr',
+    section: C4,
+    label: 'Reading the source',
+    element: (
+      <ContentSlide
+        kicker={C4}
+        title="Reading the Source"
+        lead="Two values cover everything you need today"
+        lesson={SESSION}
+        points={[
+          { text: '0.0.0.0/0 means every address on the internet', icon: 'globe' },
+          { text: '49.200.108.250/32 means exactly one address, and that one is yours', icon: 'target' },
+          { text: 'The console fills in your own address when you pick My IP', icon: 'info' },
+        ]}
+      />
+    ),
+    notes:
+      'Do not teach subnet masks. They need to read two values today and that is all this slide is for.',
+  },
+  {
+    id: 'c4-three-rules',
+    section: C4,
+    label: 'The rules you have',
+    element: (
+      <ContentSlide
+        kicker={C4}
+        title="The Rules You Have"
+        lead="Three of them, all created when you launched the instance"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-06-sg-three-rules.png"
+          alt="The nxttrendz-sg security group showing three inbound rules: SSH on 22 from one address, SSH on 22 from an AWS range, and Custom TCP on 8000 from anywhere"
+          highlights={[{ ...SG_THREE_RULES, step: 1, label: 'three rules', labelAt: 'below' }]}
+          spotlight
+          frameWidth={760}
+          caption="EC2 → Security Groups → your group → Inbound rules"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c4-missing-3000',
+    section: C4,
+    label: 'No rule for 3000',
+    element: (
+      <ContentSlide
+        kicker={C4}
+        title="Look at the Ports"
+        lead="Twenty two, twenty two, eight thousand. Three thousand is not there"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-06-sg-three-rules.png"
+          alt="The same three rules, with the Port range column highlighted showing 22, 22 and 8000"
+          highlights={[{ ...SG_PORT_COLUMN, step: 1, label: 'no 3000', labelAt: 'below' }]}
+          spotlight
+          frameWidth={760}
+          caption="The frontend listens on 3000, and nothing is allowed to reach it"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'The highlight is the column, not a rule, because the failure is about what is MISSING from it. That ' +
+      'is also why 8000 answered: it has a rule and 3000 does not.',
+  },
+  {
+    id: 'c4-add-rule',
+    section: C4,
+    label: 'Add the rule',
+    element: (
+      <ContentSlide
+        kicker={C4}
+        title="Add One Rule"
+        lead="Custom TCP, port 3000, source Anywhere"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-08-new-rule-3000.png"
+          alt="The Edit inbound rules form with a fourth row added: Custom TCP, port 3000, described as the React frontend"
+          highlights={[{ ...SG_NEW_ROW_FORM, step: 1, label: 'the row you add', labelAt: 'below' }]}
+          spotlight
+          frameWidth={780}
+          caption="EC2 → Security Groups → your group → Edit inbound rules → Add rule"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c4-source-snag',
+    section: C4,
+    label: 'A snag when saving',
+    element: (
+      <ContentSlide
+        kicker={C4}
+        title="If Save Refuses"
+        lead="Choosing Anywhere does not always fill the source box in"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-09-source-required-error.png"
+          alt="The form refusing to save, with the message CIDR block, a security group ID or a prefix list has to be specified"
+          frameWidth={700}
+          caption="Type 0.0.0.0/0 into the source box and pick it from the list that appears"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+    notes: 'This happened during capture. It costs a minute if you know, and ten if you do not.',
+  },
+  {
+    id: 'c4-four-rules',
+    section: C4,
+    label: 'Four rules',
+    element: (
+      <ContentSlide
+        kicker={C4}
+        title="Saved"
+        lead="Rules apply straight away. Nothing restarts and nothing redeploys"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-11-sg-four-rules.png"
+          alt="The security group now showing four inbound rules, including Custom TCP on port 3000 from anywhere"
+          highlights={[{ ...SG_RULE_3000, step: 1, label: 'the new rule', labelAt: 'below' }]}
+          spotlight
+          frameWidth={760}
+          caption="The browser tab that had been waiting loaded while this banner was still on screen"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c4-site-loads',
+    section: C4,
+    label: 'The site loads',
+    element: (
+      <ContentSlide
+        kicker={C4}
+        title="The Site Loads"
+        lead="Your app, on the public internet, from any device"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-12-site-loads-empty.png"
+          alt="The NxtTrendz login page loading in a browser over the public address"
+          frameWidth={700}
+          caption="Reload the tab that was waiting. No restart was needed"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c4-arch',
+    section: C4,
+    label: 'The doors now',
+    element: (
+      <ContentSlide
+        kicker={C4}
+        title="The Doors Now"
+        lead="Three open, and one that was never there"
+        lesson={SESSION}
+      >
+        <CloudArchitecture state="doors" scale={ARCH} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c4-justify',
+    section: C4,
+    label: 'Justify every door',
+    element: (
+      <ContentSlide
+        kicker={C4}
+        title="Justify Every Door"
+        lead="If you cannot say out loud why a port is open, close it"
+        lesson={SESSION}
+      >
+        <DataTable
+          columns={[{ label: 'Port' }, { label: 'Open to' }, { label: 'Why', weight: 3 }]}
+          rows={[
+            ['22', 'your address only', 'only you administer this server'],
+            ['3000', 'everyone', 'the app. Users are the point'],
+            ['8000', 'everyone', 'the API, which the browser calls directly'],
+            ['5432', 'no rule at all', 'there is no database server to reach'],
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c4-no-db-port',
+    section: C4,
+    label: 'The database has no door',
+    element: (
+      <ContentSlide
+        kicker={C4}
+        title="The Database Has No Door"
+        lead="It is a file inside the volume, and only the backend container can open it"
+        lesson={SESSION}
+      >
+        <Callout kind="warning" title="The day this becomes a real database server">
+          A database port never belongs in a security group that faces the internet. Do not publish it in
+          the compose file, and do not allow it in the group. Two layers, both closed
+        </Callout>
+      </ContentSlide>
+    ),
+    notes:
+      'Exposed databases are found by scanners within hours. They do not need the statistic today, they ' +
+      'need the rule.',
+  },
+  {
+    id: 'c4-decoder',
+    section: C4,
+    label: 'Timeout against refused',
+    element: (
+      <ContentSlide
+        kicker={C4}
+        title="Timeout Against Refused"
+        lead="Two failures that look alike and mean opposite things"
+        lesson={SESSION}
+      >
+        <TimeoutVsRefused />
+      </ContentSlide>
+    ),
+    notes:
+      'They have already seen the top row today. They will see the bottom row later in the session, on the ' +
+      'login request. Point back to this slide when it happens.',
+  },
+  {
+    id: 'c4-ip-moved',
+    section: C4,
+    label: 'When your own IP moves',
+    element: (
+      <ContentSlide
+        kicker={C4}
+        title="When Your Own Address Moves"
+        lead="You allowed SSH from My IP at home, then opened the laptop somewhere else"
+        lesson={SESSION}
+        points={[
+          { text: 'SSH starts timing out, and nothing on the server changed', icon: 'warning' },
+          { text: 'Your address changed, and the rule still names the old one', icon: 'info' },
+          { text: 'Edit the rule and choose My IP again', icon: 'check' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'c4-recap',
+    section: C4,
+    label: 'Recap',
+    element: (
+      <RecapSlide
+        kicker={C4}
+        title={C4}
+        lesson={SESSION}
+        points={[
+          { text: 'Nothing is open until you open it', sub: 'And you can only allow, never block' },
+          { text: 'Every open port needs a reason you can say out loud', sub: 'The database needs no port at all' },
+          { text: 'Timeout is the firewall, refused is the app', sub: 'Two symptoms, two places to look' },
         ]}
       />
     ),

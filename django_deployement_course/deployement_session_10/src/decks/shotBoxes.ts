@@ -36,3 +36,7 @@ export const SG_PORT_COLUMN: ShotHighlight = { left: 68.5, top: 55, width: 10, h
 
 /** The rule that fixed it, alone, in the list of four. */
 export const SG_RULE_3000: ShotHighlight = { left: 15.5, top: 65, width: 82.5, height: 4 }
+
+/** The fourth row being composed on the Edit inbound rules form: Custom TCP,
+ *  3000, and the description. Verified with verify-box.sh. */
+export const SG_NEW_ROW_FORM: ShotHighlight = { left: 8, top: 48, width: 82, height: 8 }
