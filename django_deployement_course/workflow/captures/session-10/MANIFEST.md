@@ -314,3 +314,42 @@ existed. That is the honest version and it costs four frames.
 
 The laptop Jenkins still holds a job under the old name. It is superseded by
 the EC2 one and nothing points at it any more.
+
+## The architecture diagrams
+
+`diagrams/`, eight SVGs with matching 1600x900 PNGs. The SVGs are plain
+editable text, so a value can be corrected without regenerating anything.
+
+Rendered with headless Chrome, because neither rsvg-convert nor inkscape is on
+this machine. At `--window-size=1600,900` Chrome silently clips the bottom
+32 px, so they are shot at 1600x1000 and cropped. Worth knowing before anyone
+re-renders one.
+
+| File | Shown before | What it adds |
+|---|---|---|
+| `arch-01-what-we-require` | **anything is created** | The specification sheet. Both servers with type, vCPU, RAM, image, disk, Region, Zone, VPC, subnet, and every inbound rule as port / source / why. Plus what is deliberately not required |
+| `arch-02-the-gap` | the opening | Laptop with Jenkins behind ngrok, GitHub, Docker Hub. AWS dashed and empty. No line reaches it |
+| `arch-03-ssh-in` | the first SSH | The instance solid, one arrow, port 22 with the key named |
+| `arch-04-containers` | `compose up` | Two containers and the volume. 3000 and 8000 still shut |
+| `arch-05-doors-open` | the rule is saved | The door band: 22, 3000, 8000 ticked, **5432 crossed out with no rule and no container** |
+| `arch-06-elastic-ip` | the Elastic IP | The pinned address, the three it replaced struck through |
+| `arch-07-jenkins-joins` | the second instance | Both servers in the VPC, GitHub straight to Jenkins, the private SSH hop labelled with **why** the rule allows it, and "ngrok is no longer needed" |
+| `arch-08-finished` | the closing frame | The whole system, four stages listed, and `git push` marked as the only human action |
+
+### Two corrections made during review
+
+The first render of `arch-02` drew the webhook arrow from **GitHub to Docker
+Hub**, which is wrong: a webhook goes to Jenkins, and at that point Jenkins is
+on the laptop behind ngrok. Redrawn so the webhook loops back to the laptop the
+long way round, which also sets up `arch-07` deleting that loop.
+
+`arch-08` had the volume cylinder overlapping the frontend box, and the Users
+arrow terminating on the volume rather than on the app's ports. Both fixed.
+
+### Known limits
+
+- Rendered with the DejaVu fallback, because Segoe UI is not installed here.
+  DejaVu is wider, so on a machine with Segoe UI every label gets slightly more
+  room, never less.
+- `arch-03` is deliberately sparse. Nothing is running inside the Region yet,
+  which reads correctly in sequence and looks empty on its own.
