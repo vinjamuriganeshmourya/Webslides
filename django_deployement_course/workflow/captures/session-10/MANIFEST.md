@@ -353,3 +353,49 @@ arrow terminating on the volume rather than on the app's ports. Both fixed.
   room, never less.
 - `arch-03` is deliberately sparse. Nothing is running inside the Region yet,
   which reads correctly in sequence and looks empty on its own.
+
+## The build server gets an Elastic IP too
+
+User, 2026-09-16: *"lets use elastic for that as well and use that url on
+webhook for jenkins server as well"*. Correct, and for a sharper reason than
+the app server had.
+
+The app server's address was written into a Docker image. The build server's is
+written into **GitHub's webhook configuration**. If it moves, GitHub keeps
+posting to an address that no longer answers, nothing builds, and there is no
+error anywhere anyone is looking. A silent break is worse than a loud one.
+
+| | Before | After |
+|---|---|---|
+| Build server address | `3.108.220.155`, handed out at launch | Elastic IP **`3.108.1.66`** |
+| Webhook target | `http://3.108.220.155:8080/github-webhook/` | `http://3.108.1.66:8080/github-webhook/` |
+
+**Three places had to change, not one.** The webhook, Jenkins's own record of
+its address under `Manage Jenkins → System` which it uses for every link it
+generates, and the deck's constants. Missing the middle one leaves Jenkins
+emailing build links to a dead address.
+
+**Proved, not assumed.** The old address went to `HTTP 000` the instant the new
+one attached, exactly as the app server's had. Then an empty commit was pushed
+and **build 2 ran**, started by the GitHub push, and deployed `IMAGE_TAG=2` to
+the app server over the private network. The full chain works on the new
+address.
+
+### A note for whoever runs this live
+
+The webhook edit **would not save through the GitHub web form** under browser
+automation: the field accepted the new value, Update webhook was clicked, and
+the list still showed the old URL. It went through immediately with the CLI:
+
+```bash
+gh api -X PATCH repos/<owner>/<repo>/hooks/<id> \
+  -f "config[url]=http://3.108.1.66:8080/github-webhook/" \
+  -f "config[content_type]=json"
+```
+
+A learner clicking by hand will be fine. Anyone scripting it should use the API.
+
+### Two Elastic IPs are now allocated
+
+Both are attached, so both are free. Both are billed the moment they are not,
+so **releasing both** is part of shutting down.

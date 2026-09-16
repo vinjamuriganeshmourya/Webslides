@@ -88,7 +88,7 @@ the TR never mentions, all real, all load-bearing, and all of which happened:
 | 4 | `Security Groups` | 36 to 55 | `DoorList`, the instance edge with its doors |
 | 5 | `A Permanent Address` | 56 to 67 | `AddressTag`, loose luggage tag becoming a pinned plate |
 | 6 | `Shipping a Fix` | 68 to 84 | `LastMile`, the gap the pipeline does not cross |
-| 7 | `Jenkins on AWS` | 85 to 104 | `TwoServers`, the VPC with both machines |
+| 7 | `Jenkins on AWS` | 85 to 107 | `TwoServers`, the VPC with both machines |
 
 Rule 20: Key Takeaways restates exactly these seven names.
 
@@ -263,7 +263,16 @@ beat marked **[A]** needs an architecture state, and **[C]** names its capture.
 100. **[R]** GitHub must reach Jenkins, and `jenkins-sg` only allows you.
      GitHub publishes its ranges at `api.github.com/meta`.
 101. Four rules on 8080. **[C]** `jen-09`, `jen-10`.
-102. Repoint the webhook. The trailing `/github-webhook/` matters.
+102. **[R]** The build server needs a permanent address too, and for a sharper
+     reason than the app server did: **the webhook is configured to point at
+     it.** A moving address breaks the hook silently, and nobody notices until
+     a push does not build.
+102a. Allocate a second Elastic IP and associate it with the build server.
+     Same two clicks as concept 5, and the old address dies the same instant.
+102b. Repoint the webhook at it. The trailing `/github-webhook/` matters.
+102c. Jenkins also stores its own URL, under `Manage Jenkins → System`. Change
+     it, or every build link it emails points at an address that no longer
+     answers.
 103. **Build 1, entirely inside AWS.** Five stages, 2 min 10 sec, Deploy to a
      private address. **[C]** `jen-11`. **ngrok is gone.**
 104. The hook log proves both halves: the delivery, and the rule that allowed
@@ -333,10 +342,11 @@ beat marked **[A]** needs an architecture state, and **[C]** names its capture.
 | `REGION` / `ZONE` | `ap-south-1`, Asia Pacific (Mumbai) / `ap-south-1b` |
 | `VPC_CIDR` | `172.31.0.0/16` |
 | `APP_PRIVATE_IP` | `172.31.7.32` |
-| `ELASTIC_IP` | `13.202.184.214` |
+| `APP_ELASTIC_IP` | `13.202.184.214` |
 | `ADDRESSES_IN_ORDER` | `15.207.88.14`, `13.203.216.68`, `65.2.153.167`, `13.127.157.193` |
 | `APP_SG` | `nxttrendz-sg` |
-| `JENKINS_IP` / `JENKINS_PRIVATE_IP` | `3.108.220.155` / `172.31.15.67` |
+| `JENKINS_ELASTIC_IP` / `JENKINS_PRIVATE_IP` | `3.108.1.66` / `172.31.15.67` |
+| `WEBHOOK_URL` | `http://3.108.1.66:8080/github-webhook/` |
 | `JENKINS_SG` | `jenkins-sg` |
 | `JOB_NAME` | `nxttrendz-pipeline` |
 | `GITHUB_HOOK_RANGES` | `192.30.252.0/22`, `185.199.108.0/22`, `140.82.112.0/20`, `143.55.64.0/20` |
