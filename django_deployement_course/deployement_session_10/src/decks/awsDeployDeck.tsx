@@ -21,6 +21,9 @@ import { ThreePlaces } from './figures/ThreePlaces'
 import { MemoryBar } from './figures/MemoryBar'
 import { WhoseLocalhost } from './figures/WhoseLocalhost'
 import { InsideTheImage } from './figures/InsideTheImage'
+import { BuildVsImage } from './figures/BuildVsImage'
+import { CidrRuler } from './figures/CidrRuler'
+import { GroupAsSource } from './figures/GroupAsSource'
 import { LastMile } from './figures/LastMile'
 import { SG_THREE_RULES, SG_PORT_COLUMN, SG_RULE_3000, SG_NEW_ROW_FORM } from './shotBoxes'
 import {
@@ -685,12 +688,9 @@ volumes:
         title="Why image and Not build"
         lead="The server runs what the pipeline built. It does not build its own copy"
         lesson={SESSION}
-        points={[
-          { text: 'build: would make the server compile its own version', icon: 'warning' },
-          { text: 'Nothing has tested that version, because it did not exist until now', icon: 'cross' },
-          { text: 'image: runs the exact thing that passed', icon: 'check' },
-        ]}
-      />
+      >
+        <BuildVsImage />
+      </ContentSlide>
     ),
   },
   {
@@ -906,12 +906,13 @@ volumes:
         title="Reading the Source"
         lead="Two values cover everything you need today"
         lesson={SESSION}
-        points={[
-          { text: '0.0.0.0/0 means every address on the internet', icon: 'globe' },
-          { text: '49.200.108.250/32 means exactly one address, and that one is yours', icon: 'target' },
-          { text: 'The console fills in your own address when you pick My IP', icon: 'info' },
-        ]}
-      />
+      >
+        <CidrRuler />
+        <Callout kind="note" title="You will not have to type either of them">
+          The console fills in your own address when you choose My IP, and offers 0.0.0.0/0 when you
+          choose Anywhere
+        </Callout>
+      </ContentSlide>
     ),
     notes:
       'Do not teach subnet masks. They need to read two values today and that is all this slide is for.',
@@ -2498,6 +2499,21 @@ IMAGE_TAG=6`}
         kicker={C7}
         title="A Rule With No Address in It"
         lead="Allow port 22 from the build server's security group, rather than from an address"
+        lesson={SESSION}
+      >
+        <GroupAsSource />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c7-group-as-source-shot',
+    section: C7,
+    label: 'The rule in the console',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="What That Looks Like"
+        lead="The Source column holds a group name where every other row holds an address"
         lesson={SESSION}
       >
         <AnnotatedShot
