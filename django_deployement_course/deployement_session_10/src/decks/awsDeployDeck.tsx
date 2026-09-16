@@ -14,6 +14,7 @@ import {
 import { Callout, CodeBlock, DataTable, SyntaxBreakdown } from '@/ui'
 import { AnnotatedShot } from './figures/AnnotatedShot'
 import { ShellPanel } from './figures/ShellPanel'
+import { BrowserFrame } from './figures/BrowserFrame'
 import { CloudArchitecture } from './figures/aws/CloudArchitecture'
 import { Permissions } from './figures/Permissions'
 import { TimeoutVsRefused } from './figures/TimeoutVsRefused'
@@ -665,6 +666,39 @@ export const awsDeployDeck: SlideDef[] = [
     ),
   },
   {
+    id: 'c3-nano',
+    section: C3,
+    label: 'Creating a file',
+    element: (
+      <ContentSlide
+        kicker={C3}
+        title="Creating a File on the Server"
+        lead="There is no editor window here. You open a file, type in it, then save and close"
+        lesson={SESSION}
+      >
+        <SyntaxBreakdown
+          mode="command"
+          parts={[
+            { token: 'nano', label: 'the editor', body: 'A text editor that runs inside the terminal' },
+            { token: 'docker-compose.yml', label: 'the file', body: 'If it does not exist, nano creates it when you save' },
+          ]}
+        />
+        <DataTable
+          compact
+          columns={[{ label: 'To do this' }, { label: 'Press' }]}
+          rows={[
+            ['Save the file', 'Ctrl and O, then Enter'],
+            ['Close the editor', 'Ctrl and X'],
+            ['Leave without saving', 'Ctrl and X, then N'],
+          ]}
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'Nobody guesses Ctrl and O. nano prints its shortcuts along the bottom but writes Ctrl as a caret, ' +
+      'so ^O looks like nothing in particular. Say it out loud.',
+  },
+  {
     id: 'c3-one-word',
     section: C3,
     label: 'One word per service',
@@ -672,7 +706,7 @@ export const awsDeployDeck: SlideDef[] = [
       <ContentSlide
         kicker={C3}
         title="One Word Changes"
-        lead="Open it with nano, then type it. It is your own file with build swapped for image"
+        lead="Open it with the command you just saw. It is your own file, with build swapped for image"
         lesson={SESSION}
       >
         <CodeBlock
@@ -720,39 +754,6 @@ volumes:
         <BuildVsImage />
       </ContentSlide>
     ),
-  },
-  {
-    id: 'c3-nano',
-    section: C3,
-    label: 'Creating a file',
-    element: (
-      <ContentSlide
-        kicker={C3}
-        title="Creating a File on the Server"
-        lead="There is no editor window here. You open a file, type in it, then save and close"
-        lesson={SESSION}
-      >
-        <SyntaxBreakdown
-          mode="command"
-          parts={[
-            { token: 'nano', label: 'the editor', body: 'A text editor that runs inside the terminal' },
-            { token: 'docker-compose.yml', label: 'the file', body: 'If it does not exist, nano creates it when you save' },
-          ]}
-        />
-        <DataTable
-          compact
-          columns={[{ label: 'To do this' }, { label: 'Press' }]}
-          rows={[
-            ['Save the file', 'Ctrl and O, then Enter'],
-            ['Close the editor', 'Ctrl and X'],
-            ['Leave without saving', 'Ctrl and X, then N'],
-          ]}
-        />
-      </ContentSlide>
-    ),
-    notes:
-      'Nobody guesses Ctrl and O. nano prints its shortcuts along the bottom but writes Ctrl as a caret, ' +
-      'so ^O looks like nothing in particular. Say it out loud.',
   },
   {
     id: 'c3-env',
@@ -835,33 +836,6 @@ volumes:
       'the door into the next concept.',
   },
   {
-    id: 'c3-what-is-curl',
-    section: C3,
-    label: 'What curl is',
-    element: (
-      <ContentSlide
-        kicker={C3}
-        title="curl"
-        lead="A browser without the browser. It asks a server for something and prints the answer"
-        lesson={SESSION}
-      >
-        <SyntaxBreakdown
-          mode="command"
-          parts={[
-            { token: 'curl', label: 'the command', body: 'Makes one request and prints what comes back' },
-            { token: 'http://', label: 'the protocol', after: '', body: 'Plain web traffic, because this server has no certificate' },
-            { token: '<your-address>', label: 'which machine', after: '', fill: 'placeholder', body: 'Your own public address' },
-            { token: ':3000', label: 'which port', after: '', body: 'Which door on that machine to knock at' },
-            { token: '/', label: 'which page', body: 'The path, exactly as it would be in a browser' },
-          ]}
-        />
-      </ContentSlide>
-    ),
-    notes:
-      'Beginners have often never used curl. Two minutes here stops the next slide being about the tool ' +
-      'instead of about the result. A browser retries and caches; curl says plainly what happened.',
-  },
-  {
     id: 'c3-two-ports',
     section: C3,
     label: 'One port answers',
@@ -890,6 +864,33 @@ volumes:
     notes:
       'This is the strongest evidence in the session. Both containers are up, and one port answers in less ' +
       'than a tenth of a second while the other never answers at all.',
+  },
+  {
+    id: 'c3-what-is-curl',
+    section: C3,
+    label: 'What curl is',
+    element: (
+      <ContentSlide
+        kicker={C3}
+        title="curl"
+        lead="A browser without the browser. It asks a server for something and prints the answer"
+        lesson={SESSION}
+      >
+        <SyntaxBreakdown
+          mode="command"
+          parts={[
+            { token: 'curl', label: 'the command', body: 'Makes one request and prints what comes back' },
+            { token: 'http://', label: 'the protocol', after: '', body: 'Plain web traffic, because this server has no certificate' },
+            { token: '<your-address>', label: 'which machine', after: '', fill: 'placeholder', body: 'Your own public address' },
+            { token: ':3000', label: 'which port', after: '', body: 'Which door on that machine to knock at' },
+            { token: '/', label: 'which page', body: 'The path, exactly as it would be in a browser' },
+          ]}
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'Beginners have often never used curl. Two minutes here stops the next slide being about the tool ' +
+      'instead of about the result. A browser retries and caches; curl says plainly what happened.',
   },
   {
     id: 'c3-recap',
@@ -1169,21 +1170,14 @@ volumes:
         lead="Your app, on the public internet, from any device"
         lesson={SESSION}
       >
-        <div className="flex flex-col items-center gap-3">
-          <CodeBlock
-            className="max-w-[560px]"
-            filename="in your browser"
-            language="text"
-            code={'http://<your-address>:3000/'}
-          />
-          <AnnotatedShot
-            src="/shots/dep-12-site-loads-empty.png"
-            alt="The NxtTrendz login page loading in a browser over the public address"
-            frameWidth={600}
-            caption="Reload the tab that was waiting. No restart was needed"
-            className="w-fit"
-          />
-        </div>
+        <BrowserFrame
+          className="mx-auto"
+          src="/shots/dep-12-site-loads-empty.png"
+          alt="The NxtTrendz login page loading in a browser over the public address"
+          url="http://<your-address>:3000/"
+          width={620}
+          caption="Reload the tab that was waiting. No restart was needed"
+        />
       </ContentSlide>
     ),
   },
@@ -1590,21 +1584,14 @@ volumes:
         lead="The app answers on the new address, and will keep answering on it after a restart"
         lesson={SESSION}
       >
-        <div className="flex flex-col items-center gap-3">
-          <CodeBlock
-            className="max-w-[560px]"
-            filename="in your browser"
-            language="text"
-            code={'http://<your-elastic-ip>:3000/'}
-          />
-          <AnnotatedShot
-            src="/shots/dep-12-site-loads-empty.png"
-            alt="The application loading in a browser on the Elastic IP"
-            frameWidth={600}
-            caption="Same app, permanent address"
-            className="w-fit"
-          />
-        </div>
+        <BrowserFrame
+          className="mx-auto"
+          src="/shots/dep-12-site-loads-empty.png"
+          alt="The application loading in a browser on the Elastic IP"
+          url="http://<your-elastic-ip>:3000/"
+          width={620}
+          caption="Same app, permanent address"
+        />
       </ContentSlide>
     ),
   },
@@ -2012,7 +1999,7 @@ volumes:
           alt="The Unlock Jenkins screen asking for the administrator password"
           frameWidth={700}
           caption="Read the password from the server, then install the suggested plugins"
-          className="mr-auto w-fit"
+          className="mx-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -2119,13 +2106,10 @@ volumes:
         <AnnotatedShot
           src="/shots/dep-26-credential-kinds.png"
           alt="The Add Credentials dialog showing the six kinds, including SSH Username with private key"
-          frameWidth={640}
-          caption="Leave the ID field blank and Jenkins invents a random one, which nothing will match"
-          className="mr-auto w-fit"
+          frameWidth={520}
+          caption="Leave the ID blank and Jenkins invents a random one. It cannot be changed later, so you would delete the credential and add it again"
+          className="mx-auto w-fit"
         />
-        <Callout kind="warning" title="Jenkins will not let you change an ID afterwards">
-          If you leave it blank, delete the credential and add it again
-        </Callout>
       </ContentSlide>
     ),
     notes: 'This happened during capture and cost a failed build with a confusing message.',
@@ -2343,12 +2327,13 @@ volumes:
         lead="You have a pipeline you can trust now. Time to use it"
         lesson={SESSION}
       >
-        <AnnotatedShot
+        <BrowserFrame
+          className="mx-auto"
           src="/shots/dep-20-login-blocked-cors.png"
           alt="The application login page loaded over the public address, with nothing having arrived after signing in"
-          frameWidth={640}
+          url="http://<your-elastic-ip>:3000/"
+          width={620}
           caption="The page loads. The data does not"
-          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -2432,12 +2417,13 @@ volumes:
         lead="Before the address was fixed, the console said something different"
         lesson={SESSION}
       >
-        <AnnotatedShot
+        <BrowserFrame
+          className="mx-auto"
           src="/shots/dep-13-login-fails-localhost.png"
           alt="The application login page with the browser console showing a connection refused error against localhost port 8000"
-          frameWidth={640}
+          url="http://<your-address>:3000/"
+          width={620}
           caption="Refused, and instantly. The request reached a machine, and nothing was listening on it"
-          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -2618,12 +2604,13 @@ volumes:
         lead="Your app, with your data, on the public internet"
         lesson={SESSION}
       >
-        <AnnotatedShot
+        <BrowserFrame
+          className="mx-auto"
           src="/shots/dep-22-products-live.png"
           alt="The application product list loaded over the public address, showing real products with prices and ratings"
-          frameWidth={640}
+          url="http://<your-elastic-ip>:3000/"
+          width={620}
           caption="Open it on a phone. Send the address to somebody"
-          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -2870,9 +2857,9 @@ IMAGE_TAG=6`}
         <AnnotatedShot
           src="/shots/jen-14-rename-form.png"
           alt="The Jenkins rename form with the current job name in the field and a warning that the new name is the same as the current name"
-          frameWidth={640}
+          frameWidth={460}
           caption="The job page → Rename"
-          className="mr-auto w-fit"
+          className="mx-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -2891,9 +2878,9 @@ IMAGE_TAG=6`}
         <AnnotatedShot
           src="/shots/jen-16-renamed.png"
           alt="The Jenkins job after renaming, with its build history intact"
-          frameWidth={640}
+          frameWidth={460}
           caption="The build history survives, and so does the webhook, because GitHub matches on the repository"
-          className="mr-auto w-fit"
+          className="mx-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -2909,12 +2896,13 @@ IMAGE_TAG=6`}
         lead="This build reached your users without anyone opening a terminal"
         lesson={SESSION}
       >
-        <AnnotatedShot
+        <BrowserFrame
+          className="mx-auto"
           src="/shots/jen-12-live-after-aws-deploy.png"
           alt="The application product list loaded over the public address after an automatic deployment"
-          frameWidth={640}
+          url="http://<your-elastic-ip>:3000/"
+          width={620}
           caption="The last change you made arrived here on its own"
-          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -2973,28 +2961,6 @@ IMAGE_TAG=6`}
             ['9', 'Elastic IPs attached, and instances stopped when idle'],
           ]}
         />
-      </ContentSlide>
-    ),
-  },
-  {
-    id: 'close-not-production',
-    section: 'Closing',
-    label: 'What is not production yet',
-    element: (
-      <ContentSlide
-        kicker={CLOSING_KICKER}
-        title="What This Is Not, Yet"
-        lead="Worth saying plainly, so nothing here surprises you later"
-        lesson={SESSION}
-        points={[
-          { text: 'Both servers are development servers, not production ones', icon: 'warning' },
-          { text: 'Debug mode is on, and there is no HTTPS and no domain name', icon: 'info' },
-          { text: 'One machine, so if it stops, the site is down', icon: 'server' },
-        ]}
-      >
-        <Callout kind="note" title="This is the real thing, at small scale">
-          Every one of those has a standard answer, and each answer assumes exactly what you now have
-        </Callout>
       </ContentSlide>
     ),
   },
