@@ -213,3 +213,58 @@ ssh -i nxttrendz-key.pem ubuntu@3.108.220.155 \
 After the wizard, what remains is a repeat of work already captured once: the
 SSH Agent plugin, the `ec2-ssh-key` credential, the job, and repointing the
 GitHub webhook away from ngrok to `http://3.108.220.155:8080/github-webhook/`.
+
+## The flow, run end to end inside AWS
+
+Build **#1** on the EC2 Jenkins, 2026-09-16. Started by the GitHub webhook
+arriving directly at `3.108.220.155:8080`, with **no ngrok anywhere**. Took
+2 min 10 sec.
+
+| Stage | Time |
+|---|---|
+| Checkout SCM | 1s |
+| Checkout | 0.91s |
+| Build | 1m 8s |
+| Push | 32s |
+| Deploy | 17s |
+
+The Deploy log is the frame that closes the course:
+
+```
++ ssh -o StrictHostKeyChecking=no ubuntu@172.31.7.32
+      cd ~/nxttrendz &&
+      sed -i 's/^IMAGE_TAG=.*/IMAGE_TAG=1/' .env &&
+      docker compose pull &&
+      docker compose up -d
+```
+
+A **private** address, reached because the app server's security group names
+`jenkins-sg` as the source. Nothing in that command mentions a public address.
+
+| File | What it shows |
+|---|---|
+| `jen-11-build-1-on-aws` | Five green stages on the EC2 Jenkins, with the Deploy log and the private address in it |
+| `jen-12-live-after-aws-deploy` | The product list, live, on the build the AWS pipeline deployed |
+| `transcripts/15-deployed-from-aws-jenkins.txt` | `IMAGE_TAG=1` and both containers on `:1`, 20 seconds old |
+
+### Two things to say on a slide
+
+**The tag numbering restarts.** A new Jenkins counts from 1, so the deployed
+image is `:1` while Docker Hub still holds `:4`, `:6`, `:7` and `:8` from the
+laptop. Worth naming, or the room will think something went backwards.
+
+**The build really is slow on a `t3.micro`.** Build took 1 minute 8 seconds and
+the whole run 2 minutes 10, on 908 MiB of RAM with 4 GiB of swap doing real
+work. It completes, which is the useful finding, and the room should expect to
+wait.
+
+### Setup notes worth keeping
+
+- The plugin and the job were installed **without the web interface**, with
+  `jenkins-plugin-cli` and by copying `config.xml` into `jenkins_home` over
+  SSH. Useful to know, but the slide should show the UI path, because that is
+  what a student does.
+- **The credential ID is easy to get wrong.** Jenkins fills the ID field with a
+  UUID if you leave it blank, and the Jenkinsfile then cannot find it. This
+  happened during capture and is worth a slide of its own: the ID is not
+  cosmetic, it is the name the pipeline calls.
