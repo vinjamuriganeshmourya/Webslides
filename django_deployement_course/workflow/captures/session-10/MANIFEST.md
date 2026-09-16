@@ -399,3 +399,22 @@ A learner clicking by hand will be fine. Anyone scripting it should use the API.
 
 Both are attached, so both are free. Both are billed the moment they are not,
 so **releasing both** is part of shutting down.
+
+## Captures the deck deliberately does not use
+
+Ten frames are kept here and not put on a slide. They are intermediate steps
+whose neighbours already carry the point, and a slide for each would pad the
+deck without teaching anything:
+
+`dep-03-start-initiated` the green banner between stopped and running, covered
+by `dep-04`. `dep-10-rule-complete` a half-filled form between `dep-08` and
+`dep-11`. `dep-24-plugin-installed` the "no restart needed" confirmation, which
+the slide says in a line. `dep-21-login-works`, `dep-30-live-after-auto-deploy`
+and `jen-12` are three photographs of the same working product page, and the
+deck uses `dep-22` and `jen-12`. `dep-27` and `dep-28` are Jenkins build pages
+that `jen-11` covers in one frame. `jen-04-launched` is a launch confirmation
+that `jen-05` supersedes by showing both instances. `jen-13` and `jen-15` are
+the rename before and mid-typing, where `jen-14` and `jen-16` carry it.
+
+They stay because a later revision may want one, and because deleting evidence
+of a real run is the wrong instinct.
