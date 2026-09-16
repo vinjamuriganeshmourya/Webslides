@@ -101,55 +101,42 @@ Real output, saved as text because the deck renders terminals through
 | `dep-25-credentials-store` | 73 | The Global store holding `dockerhub-credentials` from session 8. The same drawer, a second key going in |
 | `dep-26-credential-kinds` | 73 | The six credential kinds, with SSH Username with private key among them |
 
-## Still to capture, and what it is waiting on
+## The Deploy stage, captured
 
-The Jenkins Deploy stage, concept 6 from beat 72 onward: the SSH credential,
-the fourth stage, the four-stage graph, and a deploy that reaches the server
-with nobody touching it.
+Build **#8** was started by the GitHub webhook, built both images, pushed them,
+and then updated the server over SSH. Nobody logged in. Deploy took 6 seconds.
 
-Everything is in place except one step, which is the account holder's:
+| File | Plan beat | What it shows |
+|---|---|---|
+| `dep-27-job-build-8-green` | 78 | The job page. #8 green, and #5's red failure from session 8 still in the list |
+| `dep-28-started-by-github-push` | 78 | "Started by GitHub push by jeevan170902", commit `b985ec1`, took 31 sec |
+| `dep-29-five-stages-deploy-log` | 78, 80 | **The frame the session builds to.** Five green stages, and the Deploy log showing the ssh command, `docker compose pull`, and both containers recreated |
+| `dep-30-live-after-auto-deploy` | 79 | The product list on tag 8, live, after a deploy no human touched |
+| `transcripts/13-deployed-by-jenkins.txt` | 79 | `docker compose ps` on the server: both services on `:8`, up 24 seconds |
 
-**Done already.** Jenkins is signed in. The SSH Agent plugin is installed, no
-restart needed. The server's compose file now reads its tag from `IMAGE_TAG`
-in `.env`, so a deploy is a one-line change rather than an edit of the compose
-file. The Jenkinsfile Deploy stage is written and committed locally in the app
-repo as `b985ec1`, **not pushed**, so no build goes red waiting on a credential
-that does not exist yet. The Jenkins container has `ssh`, `ssh-agent` and
-`docker` on its PATH, and it reaches EC2 from 49.200.108.250, which rule
-`sgr-051fb0ee7bd294a8a` already allows on port 22.
+### How the tag reaches the server
 
-**Owed by the user.** Add the credential. Writing a private key into a secret
-store is not Claude's to do, and the auto-mode classifier blocks it as well:
+The compose file on the server no longer names a tag. It reads one:
 
-  `Manage Jenkins → Credentials → System → Global → Add Credentials`
-  - Kind: **SSH Username with private key**
-  - ID: **`ec2-ssh-key`** (the Jenkinsfile names it exactly)
-  - Username: **`ubuntu`**
-  - Private key: **Enter directly**, pasted from `nxttrendz-key.pem`
-  - Passphrase: empty
-
-The dialog is already open in the browser at that page.
-
-**Then, to finish.** Push the app repo (`git push origin main` in
-`/home/nxtwave/nxttrendz`) and capture the four-stage graph, the Deploy console
-log, and the site picking up the new build with nobody touching the server.
-
-The Deploy stage as committed:
-
-```groovy
-stage('Deploy') { steps {
-    sshagent(['ec2-ssh-key']) {
-        sh '''
-            ssh -o StrictHostKeyChecking=no ubuntu@$EC2_HOST "
-                cd ~/nxttrendz &&
-                sed -i 's/^IMAGE_TAG=.*/IMAGE_TAG=$BUILD_NUMBER/' .env &&
-                docker compose pull &&
-                docker compose up -d
-            "
-        '''
-    }
-} }
+```yaml
+image: jeevansravanth/nxttrendz-backend:${IMAGE_TAG}
 ```
+
+`IMAGE_TAG` lives in `.env` beside it, and the Deploy stage rewrites that one
+line with `sed` before pulling. That is why the stage is four short commands
+and not an edit of a YAML file, and it is worth its own slide: the deploy is a
+one-line change because the file was written to make it one.
+
+### The build numbers tell the story on their own
+
+| Build | What it carried | How it reached the server |
+|---|---|---|
+| 6 | the state the room starts in | pulled by hand |
+| 7 | the CORS fix | a human logged in, edited a tag, ran `up -d` |
+| 8 | the Deploy stage itself | Jenkins, alone, in 6 seconds |
+
+Build 8 deploying the very stage that deploys it is a genuinely nice closing
+beat, and it happened by itself.
 
 ## Clean-up owed
 
