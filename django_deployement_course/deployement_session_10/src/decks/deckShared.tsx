@@ -29,8 +29,11 @@ export const C2 = 'Docker on the Server'
 export const C3 = 'Running the Stack'
 export const C4 = 'Security Groups'
 export const C5 = 'A Permanent Address'
-export const C6 = 'Shipping a Fix'
-export const C7 = 'Jenkins on AWS'
+/* Revision 3 of the plan swapped these two. Jenkins moves to AWS BEFORE the
+ * code fix ships, because the learner's tunnel is probably already dead and
+ * because otherwise the whole Jenkins setup is done twice. Plan section 4a. */
+export const C6 = 'Jenkins on AWS'
+export const C7 = 'Shipping a Fix'
 
 export const CLOSING_KICKER = 'Before You Leave'
 
