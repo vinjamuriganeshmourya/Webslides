@@ -7,7 +7,6 @@ import {
   KeyTakeawaysSlide,
   PracticeSlide,
   QuestionSlide,
-  RecapSlide,
   SectionBreakerSlide,
   ThankYouSlide,
   WelcomeSlide,
@@ -91,14 +90,15 @@ export const awsDeployDeck: SlideDef[] = [
     section: 'Opening',
     label: 'Where we left off',
     element: (
-      <RecapSlide
+      <ContentSlide
         kicker="Recap"
         title="Where We Left Off"
+        lead="Three things are already true before today starts"
         lesson={SESSION}
         points={[
-          { text: 'Two images sit on Docker Hub', sub: 'Jenkins built them and pushed them for you' },
-          { text: 'An EC2 instance sits in Mumbai', sub: 'Launched last session, then stopped' },
-          { text: 'Nothing connects the two', sub: 'That is the whole of today' },
+          { text: 'Two images sit on Docker Hub, built and pushed for you by Jenkins', icon: 'check' },
+          { text: 'An EC2 instance sits in Mumbai, launched last session and then stopped', icon: 'server' },
+          { text: 'Nothing connects the two, and that is the whole of today', icon: 'target' },
         ]}
       />
     ),
@@ -116,7 +116,7 @@ export const awsDeployDeck: SlideDef[] = [
         lead="Everything outside AWS already works. None of it reaches the server"
         lesson={SESSION}
       >
-        <div className="mt-5"><CloudArchitecture state="gap" scale={ARCH} /></div>
+        <div className="mt-8"><CloudArchitecture state="gap" scale={ARCH} /></div>
       </ContentSlide>
     ),
     notes:
@@ -176,6 +176,27 @@ export const awsDeployDeck: SlideDef[] = [
     notes: 'Let them answer. Somebody will say the console again, and they are right that it works.',
   },
   {
+    id: 'c1-stopped',
+    section: C1,
+    label: 'It is stopped',
+    element: (
+      <ContentSlide
+        kicker={C1}
+        title="Step 1. Find It Stopped"
+        lead="Your instance is exactly where you left it, and it is costing nothing"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-01-instance-stopped.png"
+          alt="The EC2 instances list showing nxttrendz-server in the Stopped state with no public address"
+          frameWidth={760}
+          caption="EC2 → Instances. Note the empty Public IPv4 column"
+          className="mr-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
     id: 'c1-start-instance',
     section: C1,
     label: 'Start the instance',
@@ -196,6 +217,27 @@ export const awsDeployDeck: SlideDef[] = [
       </ContentSlide>
     ),
     notes: 'Stop instance is greyed out, which is how you know it really is stopped.',
+  },
+  {
+    id: 'c1-running',
+    section: C1,
+    label: 'Running again',
+    element: (
+      <ContentSlide
+        kicker={C1}
+        title="Step 3. Running Again"
+        lead="It takes about a minute, and the status checks keep initialising for a while after that"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-04-running-new-address.png"
+          alt="The instances list with the instance now Running and a public address in the Public IPv4 column"
+          frameWidth={760}
+          caption="A public address has appeared, and it is not the one you had before"
+          className="mr-auto w-fit"
+        />
+      </ContentSlide>
+    ),
   },
   {
     id: 'c1-address-changed',
@@ -369,14 +411,15 @@ export const awsDeployDeck: SlideDef[] = [
     section: C1,
     label: 'Recap',
     element: (
-      <RecapSlide
+      <ContentSlide
         kicker={C1}
-        title={C1}
+        title="What You Just Did"
+        lead="Three things to take out of this part"
         lesson={SESSION}
         points={[
-          { text: 'SSH runs your commands on a machine somewhere else', sub: 'You type here, it runs there' },
-          { text: 'The key file must be readable only by you', sub: 'chmod 400, or SSH will not use it' },
-          { text: 'The prompt tells you which machine you are on', sub: 'Check it before you run anything' },
+          { text: 'SSH runs your commands on a machine somewhere else. You type here, it runs there' },
+          { text: 'The key file must be readable only by you. chmod 400, or SSH will not use it' },
+          { text: 'The prompt tells you which machine you are on. Check it before you run anything' },
         ]}
       />
     ),
@@ -540,14 +583,15 @@ export const awsDeployDeck: SlideDef[] = [
     section: C2,
     label: 'Recap',
     element: (
-      <RecapSlide
+      <ContentSlide
         kicker={C2}
-        title={C2}
+        title="What You Just Did"
+        lead="Three things to take out of this part"
         lesson={SESSION}
         points={[
-          { text: 'A new server starts with nothing on it', sub: 'You install Docker once, per server' },
-          { text: 'Group changes need a fresh login', sub: 'exit, then connect again' },
-          { text: 'The server pulls images by name', sub: 'It never sees your source code' },
+          { text: 'A new server starts with nothing on it. You install Docker once, per server' },
+          { text: 'Group changes need a fresh login. exit, then connect again' },
+          { text: 'The server pulls images by name. It never sees your source code' },
         ]}
       />
     ),
@@ -585,7 +629,7 @@ export const awsDeployDeck: SlideDef[] = [
         lead="Two containers and a volume, inside the instance"
         lesson={SESSION}
       >
-        <div className="mt-5"><CloudArchitecture state="containers" scale={ARCH} /></div>
+        <div className="mt-8"><CloudArchitecture state="containers" scale={ARCH} /></div>
       </ContentSlide>
     ),
   },
@@ -757,14 +801,15 @@ volumes:
     section: C3,
     label: 'Recap',
     element: (
-      <RecapSlide
+      <ContentSlide
         kicker={C3}
-        title={C3}
+        title="What You Just Did"
+        lead="Three things to take out of this part"
         lesson={SESSION}
         points={[
-          { text: 'The server runs images, it does not build them', sub: 'image: instead of build:' },
-          { text: 'A new volume starts empty', sub: 'Run migrate once' },
-          { text: 'It is running, and it is not reachable', sub: 'Those are two different things' },
+          { text: 'The server runs images, it does not build them. image: instead of build:' },
+          { text: 'A new volume starts empty. Run migrate once' },
+          { text: 'It is running, and it is not reachable. Those are two different things' },
         ]}
       />
     ),
@@ -921,6 +966,27 @@ volumes:
       'is also why 8000 answered: it has a rule and 3000 does not.',
   },
   {
+    id: 'c4-edit-form',
+    section: C4,
+    label: 'Open the edit form',
+    element: (
+      <ContentSlide
+        kicker={C4}
+        title="Open Edit Inbound Rules"
+        lead="Every existing rule is listed, and Add rule is under them"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-07-edit-inbound-rules.png"
+          alt="The Edit inbound rules form showing the three existing rules with an Add rule button below them"
+          frameWidth={760}
+          caption="EC2 → Security Groups → your group → Edit inbound rules"
+          className="mr-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
     id: 'c4-add-rule',
     section: C4,
     label: 'Add the rule',
@@ -1020,7 +1086,7 @@ volumes:
         lead="Three open, and one that was never there"
         lesson={SESSION}
       >
-        <div className="mt-5"><CloudArchitecture state="doors" scale={ARCH} /></div>
+        <div className="mt-8"><CloudArchitecture state="doors" scale={ARCH} /></div>
       </ContentSlide>
     ),
   },
@@ -1109,14 +1175,15 @@ volumes:
     section: C4,
     label: 'Recap',
     element: (
-      <RecapSlide
+      <ContentSlide
         kicker={C4}
-        title={C4}
+        title="What You Just Did"
+        lead="Three things to take out of this part"
         lesson={SESSION}
         points={[
-          { text: 'Nothing is open until you open it', sub: 'And you can only allow, never block' },
-          { text: 'Every open port needs a reason you can say out loud', sub: 'The database needs no port at all' },
-          { text: 'Timeout is the firewall, refused is the app', sub: 'Two symptoms, two places to look' },
+          { text: 'Nothing is open until you open it. And you can only allow, never block' },
+          { text: 'Every open port needs a reason you can say out loud. The database needs no port at all' },
+          { text: 'Timeout is the firewall, refused is the app. Two symptoms, two places to look' },
         ]}
       />
     ),
@@ -1228,50 +1295,137 @@ volumes:
         lead="One address, reserved to your account and pinned to the instance"
         lesson={SESSION}
       >
-        <div className="mt-5"><CloudArchitecture state="elastic" scale={ARCH} /></div>
+        <div className="mt-8"><CloudArchitecture state="elastic" scale={ARCH} /></div>
       </ContentSlide>
     ),
   },
   {
-    id: 'c5-allocate',
+    id: 'c5-find-page',
     section: C5,
-    label: 'Allocate it',
+    label: 'Find Elastic IPs',
     element: (
       <ContentSlide
         kicker={C5}
-        title="Allocate It"
-        lead="Reserve an address from Amazon's pool. It belongs to your account now"
+        title="Step 1. Find the Page"
+        lead="It is in the left menu of EC2, under Network and Security"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-14-elastic-ips-empty.png"
+          alt="The Elastic IP addresses page in the EC2 console, empty, with the Allocate Elastic IP address button in the top right"
+          frameWidth={760}
+          caption="EC2 → Elastic IPs. You have none yet, so the list is empty"
+          className="mr-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c5-allocate-form',
+    section: C5,
+    label: 'Allocate the address',
+    element: (
+      <ContentSlide
+        kicker={C5}
+        title="Step 2. Allocate One"
+        lead="Take the defaults. Amazon's pool, and your own Region"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-15-allocate-form.png"
+          alt="The Allocate Elastic IP address form with Amazon's pool of IPv4 addresses selected and the network border group set to the Region"
+          frameWidth={760}
+          caption="Click Allocate Elastic IP address, then Allocate. There is nothing to fill in"
+          className="mr-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'Nobody needs to change anything on this form. Say so, or half the room will read every option ' +
+      'looking for the one they are supposed to pick.',
+  },
+  {
+    id: 'c5-allocated',
+    section: C5,
+    label: 'It is yours now',
+    element: (
+      <ContentSlide
+        kicker={C5}
+        title="Step 3. It Is Yours Now"
+        lead="The address is reserved to your account, and it is attached to nothing"
         lesson={SESSION}
       >
         <AnnotatedShot
           src="/shots/dep-16-allocated.png"
           alt="The Elastic IP addresses list showing one allocated address, with the Associated instance ID column empty"
           frameWidth={760}
-          caption="EC2 → Elastic IPs → Allocate Elastic IP address"
+          caption="Reserved, and not yet in use"
           className="mr-auto w-fit"
         />
         <Callout kind="warning" title="Look at the Associated instance column">
-          It is empty. An address you hold and do not use is the one state AWS charges for
+          It is empty, and that is the one state AWS charges for. Do not stop here
         </Callout>
       </ContentSlide>
     ),
   },
   {
-    id: 'c5-associate',
+    id: 'c5-associate-form',
     section: C5,
-    label: 'Associate it',
+    label: 'Start associating',
     element: (
       <ContentSlide
         kicker={C5}
-        title="Attach It to the Instance"
-        lead="Now it is the instance's address, and it stays that way through a stop and start"
+        title="Step 4. Attach It"
+        lead="Select the address, then Actions, then Associate Elastic IP address"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-17-associate-form.png"
+          alt="The Associate Elastic IP address form, with Instance selected as the resource type and an empty instance field"
+          frameWidth={760}
+          caption="Resource type stays on Instance. The private IP field can be left blank"
+          className="mr-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c5-choose-instance',
+    section: C5,
+    label: 'Choose the instance',
+    element: (
+      <ContentSlide
+        kicker={C5}
+        title="Step 5. Choose the Instance"
+        lead="Click the box and your running instances appear. Pick the app server"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-18-associate-instance-chosen.png"
+          alt="The associate form with the app server instance chosen in the instance field"
+          frameWidth={760}
+          caption="Then Associate. If you have two instances by now, read the name carefully"
+          className="mr-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c5-associated',
+    section: C5,
+    label: 'Attached',
+    element: (
+      <ContentSlide
+        kicker={C5}
+        title="Step 6. Attached"
+        lead="The same row now names an instance, and the instance's private address beside it"
         lesson={SESSION}
       >
         <AnnotatedShot
           src="/shots/dep-19-associated.png"
           alt="The Elastic IP now showing an associated instance ID and the instance's private address beside it"
           frameWidth={760}
-          caption="Actions → Associate Elastic IP address → choose the instance"
+          caption="From here the address survives every stop and start"
           className="mr-auto w-fit"
         />
       </ContentSlide>
@@ -1379,14 +1533,15 @@ volumes:
     section: C5,
     label: 'Recap',
     element: (
-      <RecapSlide
+      <ContentSlide
         kicker={C5}
-        title={C5}
+        title="What You Just Did"
+        lead="Three things to take out of this part"
         lesson={SESSION}
         points={[
-          { text: 'A free public address changes on every stop', sub: 'The private one never does' },
-          { text: 'It matters because the address gets written into files', sub: 'One of them is inside an image' },
-          { text: 'An Elastic IP is free while attached', sub: 'Release it when you are done' },
+          { text: 'A free public address changes on every stop. The private one never does' },
+          { text: 'It matters because the address gets written into files. One of them is inside an image' },
+          { text: 'An Elastic IP is free while attached. Release it when you are done' },
         ]}
       />
     ),
@@ -1503,7 +1658,7 @@ volumes:
         lead="A second machine in the same network as the first"
         lesson={SESSION}
       >
-        <div className="mt-5"><CloudArchitecture state="jenkins" scale={ARCH} /></div>
+        <div className="mt-8"><CloudArchitecture state="jenkins" scale={ARCH} /></div>
       </ContentSlide>
     ),
   },
@@ -1689,6 +1844,29 @@ volumes:
       'stage is added here rather than there for exactly this reason.',
   },
   {
+    id: 'c6-plugin',
+    section: C6,
+    label: 'The SSH Agent plugin',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="Install the SSH Agent Plugin"
+        lead="It is not one of the suggested plugins, and the Deploy stage will not work without it"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-23-ssh-agent-plugin.png"
+          alt="The Jenkins plugin manager with SSH Agent found in the available plugins list"
+          frameWidth={760}
+          caption="Manage Jenkins → Plugins → Available plugins, then search for SSH Agent"
+          className="mr-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'No restart is needed. Jenkins says so on the next screen.',
+  },
+  {
     id: 'c6-new-token',
     section: C6,
     label: 'A new Docker Hub token',
@@ -1704,6 +1882,27 @@ volumes:
           { text: 'Your Docker Hub ID is the username, the token is the password', icon: 'info' },
         ]}
       />
+    ),
+  },
+  {
+    id: 'c6-cred-store',
+    section: C6,
+    label: 'The credential store',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="Where Credentials Live"
+        lead="One drawer, shared by every job on this Jenkins"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-25-credentials-store.png"
+          alt="The Jenkins global credentials store listing the stored credentials with an Add Credentials button"
+          frameWidth={760}
+          caption="Manage Jenkins → Credentials → System → Global → Add Credentials"
+          className="mr-auto w-fit"
+        />
+      </ContentSlide>
     ),
   },
   {
@@ -1800,6 +1999,27 @@ volumes:
       'it is not a page you leave open to everyone.',
   },
   {
+    id: 'c6-six-rules',
+    section: C6,
+    label: 'Six rules now',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="Six Rules on the Build Server"
+        lead="Two for you, and four so GitHub can knock"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/jen-10-jenkins-sg-six-rules.png"
+          alt="The jenkins-sg security group showing six inbound rules, two from the developer address and four GitHub ranges on port 8080"
+          frameWidth={760}
+          caption="Your address on 22 and 8080, and the four published GitHub ranges on 8080"
+          className="mr-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
     id: 'c6-repoint',
     section: C6,
     label: 'Repoint the webhook',
@@ -1873,14 +2093,15 @@ volumes:
     section: C6,
     label: 'Recap',
     element: (
-      <RecapSlide
+      <ContentSlide
         kicker={C6}
-        title={C6}
+        title="What You Just Did"
+        lead="Three things to take out of this part"
         lesson={SESSION}
         points={[
-          { text: 'A build server needs a public address of its own', sub: 'Then GitHub reaches it directly' },
-          { text: 'Nothing transfers from the old Jenkins', sub: 'Plugins, credentials and jobs are created once, here' },
-          { text: 'It needs more disk and more memory than the app', sub: 'Different job, different size' },
+          { text: 'A build server needs a public address of its own. Then GitHub reaches it directly' },
+          { text: 'Nothing transfers from the old Jenkins. Plugins, credentials and jobs are created once, here' },
+          { text: 'It needs more disk and more memory than the app. Different job, different size' },
         ]}
       />
     ),
@@ -1981,6 +2202,27 @@ volumes:
     notes:
       'This catches almost everyone once. The page comes FROM the server, and then it runs on the visitor ' +
       'machine, so localhost is theirs.',
+  },
+  {
+    id: 'c7-refused-shot',
+    section: C7,
+    label: 'The refused error',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="What the First Bug Looked Like"
+        lead="Before the address was fixed, the console said something different"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-13-login-fails-localhost.png"
+          alt="The application login page with the browser console showing a connection refused error against localhost port 8000"
+          frameWidth={760}
+          caption="Refused, and instantly. The request reached a machine, and nothing was listening on it"
+          className="mr-auto w-fit"
+        />
+      </ContentSlide>
+    ),
   },
   {
     id: 'c7-refused-decoder',
@@ -2272,6 +2514,27 @@ IMAGE_TAG=6`}
       'because it never named a machine.',
   },
   {
+    id: 'c7-five-rules',
+    section: C7,
+    label: 'Five rules now',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="The App Server Now Has Five"
+        lead="And the new one names a group where every other rule names an address"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/jen-07-app-sg-five-rules.png"
+          alt="The app server security group with five inbound rules, the new one showing a security group as its source instead of a CIDR block"
+          frameWidth={760}
+          caption="Look at the Source column. One of these is not an address"
+          className="mr-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
     id: 'c7-four-stages',
     section: C7,
     label: 'Four stages',
@@ -2318,7 +2581,7 @@ IMAGE_TAG=6`}
         lead="One push, four stages, and an app on an address that never moves"
         lesson={SESSION}
       >
-        <div className="mt-5"><CloudArchitecture state="finished" scale={ARCH} /></div>
+        <div className="mt-8"><CloudArchitecture state="finished" scale={ARCH} /></div>
       </ContentSlide>
     ),
   },
@@ -2345,20 +2608,42 @@ IMAGE_TAG=6`}
     section: C7,
     label: 'Recap',
     element: (
-      <RecapSlide
+      <ContentSlide
         kicker={C7}
-        title={C7}
+        title="What You Just Did"
+        lead="Three things to take out of this part"
         lesson={SESSION}
         points={[
-          { text: 'Some things can be fixed on the server, some cannot', sub: 'Anything inside an image needs a new image' },
-          { text: 'A pipeline that stops at the registry is not finished', sub: 'Somebody is still carrying the last mile' },
-          { text: 'Server to server rules can name a group, not an address', sub: 'Then nothing needs re-pinning' },
+          { text: 'Some things can be fixed on the server, some cannot. Anything inside an image needs a new image' },
+          { text: 'A pipeline that stops at the registry is not finished. Somebody is still carrying the last mile' },
+          { text: 'Server to server rules can name a group, not an address. Then nothing needs re-pinning' },
         ]}
       />
     ),
   },
 
   /* ── CLOSING ────────────────────────────────────────────────────────── */
+  {
+    id: 'close-rename-form',
+    section: 'Closing',
+    label: 'The rename form',
+    element: (
+      <ContentSlide
+        kicker={'Closing'}
+        title="Rename It"
+        lead="Jenkins refuses a name that is the same as the current one, which is a useful check"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/jen-14-rename-form.png"
+          alt="The Jenkins rename form with the current job name in the field and a warning that the new name is the same as the current name"
+          frameWidth={760}
+          caption="The job page → Rename"
+          className="mr-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
   {
     id: 'close-rename',
     section: 'Closing',
@@ -2375,6 +2660,27 @@ IMAGE_TAG=6`}
           alt="The Jenkins job after renaming, with its build history intact"
           frameWidth={760}
           caption="The build history survives, and so does the webhook, because GitHub matches on the repository"
+          className="mr-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'close-live',
+    section: 'Closing',
+    label: 'Live, deployed by itself',
+    element: (
+      <ContentSlide
+        kicker={'Closing'}
+        title="Live, and Nobody Deployed It"
+        lead="This build reached your users without anyone opening a terminal"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/jen-12-live-after-aws-deploy.png"
+          alt="The application product list loaded over the public address after an automatic deployment"
+          frameWidth={760}
+          caption="The last change you made arrived here on its own"
           className="mr-auto w-fit"
         />
       </ContentSlide>
@@ -2511,9 +2817,9 @@ IMAGE_TAG=6`}
         title="Practice"
         prompt="Three things to try before the next session"
         tasks={[
-          { text: 'Stop your instance, start it again, and check the site still loads', sub: 'The Elastic IP should make this uneventful' },
-          { text: 'Break something on purpose and read the symptom', sub: 'Remove the 3000 rule, and confirm you get a timeout rather than a refusal' },
-          { text: 'Change one word in the app and push it', sub: 'Watch four stages and then reload the site' },
+          { text: 'Stop your instance, start it again, and check the site still loads. The Elastic IP should make this uneventful' },
+          { text: 'Break something on purpose and read the symptom. Remove the 3000 rule, and confirm you get a timeout rather than a refusal' },
+          { text: 'Change one word in the app and push it. Watch four stages and then reload the site' },
         ]}
       />
     ),
