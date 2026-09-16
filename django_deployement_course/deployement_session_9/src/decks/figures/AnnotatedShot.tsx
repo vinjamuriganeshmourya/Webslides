@@ -51,6 +51,18 @@ export interface ShotHighlight {
   label?: ReactNode
   /** Circled number at the box's top-left corner, matching a numbered caption. */
   step?: number
+  /**
+   * Which corner the circled number sits on.
+   *
+   * Default: top-left, or top-right when the label sits left or above. Two
+   * boxes stacked near one another put their badges (and one box's badge and
+   * the other's label pill) on top of each other, which a reviewer sees
+   * immediately and no harness can: `qa`, `align-check` and `video-safe` all
+   * measure the frame, not what is drawn inside it (hard rule 17). So a slide
+   * that stacks boxes moves the lower badge to the corner furthest from its
+   * neighbour.
+   */
+  badgeAt?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
   /** Which side of the box the label sits on. */
   labelAt?: ShotLabelSide
   /** Move the label clear of the box and draw an arrow from it back to the box. */
@@ -101,6 +113,28 @@ const MIN_SRC_H_PCT = 14
 const LABEL_GAP = 8
 const POINTER_GAP = 46
 const BADGE = 28
+/** Clear air between the badge and the box's border, so the badge never sits on the content. */
+const BADGE_GAP = 6
+
+/**
+ * WHICH SIDE OF ITS BOX A BADGE SITS ON, DECIDED FOR THE WHOLE SET.
+ *
+ * User, 2026-09-16, after badges collided on three slides: when two highlights
+ * would put their badges near each other, alternate the sides, so the first
+ * badge hangs off the left of its box and the next off the right. Boxes in a
+ * capture are usually stacked down one column, so alternating is what actually
+ * keeps them apart, and it needs no per-slide coordinates.
+ *
+ * Order of precedence: an explicit `badgeAt` on the box wins; then the label,
+ * because a badge must never land on its own label; then the alternation.
+ */
+function badgeSide(box: ShotHighlight, index: number): { right: boolean; bottom: boolean } {
+  if (box.badgeAt) return { right: box.badgeAt.endsWith('right'), bottom: box.badgeAt.startsWith('bottom') }
+  const side = box.labelAt ?? 'below'
+  if (box.label && (side === 'left' || side === 'above')) return { right: true, bottom: false }
+  if (box.label && side === 'right') return { right: false, bottom: false }
+  return { right: index % 2 === 1, bottom: false }
+}
 
 const DIM = colors.ink
 const DIM_OPACITY = 0.58
@@ -444,11 +478,13 @@ export function AnnotatedShot({
   if (measured) {
     for (const b of boxes) {
       const r = boxRect(b, W, H)
-      const badgeRight = !!b.label && ((b.labelAt ?? 'below') === 'left' || (b.labelAt === 'above' && !b.pointer))
+      const badgeRight = badgeSide(b, boxes.indexOf(b)).right
       if (b.step !== undefined) {
-        hang.top = Math.max(hang.top, BADGE / 2 + 2 - r.y)
-        if (badgeRight) hang.right = Math.max(hang.right, r.x + r.w + BADGE / 2 + 2 - W)
-        else hang.left = Math.max(hang.left, BADGE / 2 + 2 - r.x)
+        const out = BADGE + BADGE_GAP + 2
+        hang.top = Math.max(hang.top, -r.y)
+        hang.bottom = Math.max(hang.bottom, r.y + r.h - H)
+        if (badgeRight) hang.right = Math.max(hang.right, r.x + r.w + out - W)
+        else hang.left = Math.max(hang.left, out - r.x)
       }
       const l = labelRect(b, r)
       if (l) {
@@ -520,7 +556,7 @@ export function AnnotatedShot({
                   className="absolute"
                   style={{ left: `${b.left}%`, top: `${b.top}%`, width: `${b.width}%`, height: `${b.height}%` }}
                 >
-                  <HighlightBox box={b} glow={spotlight} color={palette[i]} />
+                  <HighlightBox box={b} index={i} glow={spotlight} color={palette[i]} />
                 </Reveal>
               ))}
             </RevealGroup>
@@ -571,8 +607,9 @@ export function AnnotatedShot({
 
 /* ------------------------------------------------------------------ */
 
-function HighlightBox({ box, glow, color }: { box: ShotHighlight; glow: boolean; color: HighlightColor }) {
+function HighlightBox({ box, index, glow, color }: { box: ShotHighlight; index: number; glow: boolean; color: HighlightColor }) {
   const side = box.labelAt ?? 'below'
+  const { right: badgeRight, bottom: badgeBottom } = badgeSide(box, index)
   const gap = box.pointer ? POINTER_GAP : LABEL_GAP
   return (
     <>
@@ -596,8 +633,19 @@ function HighlightBox({ box, glow, color }: { box: ShotHighlight; glow: boolean;
             width: BADGE,
             height: BADGE,
             color: color.badgeText,
-            ...(box.label && (side === 'left' || (side === 'above' && !box.pointer)) ? { right: -BADGE / 2 } : { left: -BADGE / 2 }),
-            top: -BADGE / 2,
+            /*
+              THE BADGE SITS OUTSIDE THE BOX, ALWAYS.
+
+              User, 2026-09-16: "a highlight must make its content easier to
+              read, never harder". A badge hung half over the corner covered the
+              first characters of what the box was pointing at (the VPC id on
+              The Default VPC). So it is pushed fully clear on the horizontal
+              axis and aligned to the box's own top or bottom edge; the overlay
+              layer is a sibling of the frame, so it may hang outside the image,
+              and `hang` below reserves the room for it.
+            */
+            ...(badgeRight ? { right: -(BADGE + BADGE_GAP) } : { left: -(BADGE + BADGE_GAP) }),
+            ...(badgeBottom ? { bottom: 0 } : { top: 0 }),
             fontSize: 15,
             background: color.line,
             boxShadow: `0 0 0 2px ${colors.white}, 0 2px 8px ${alpha(colors.ink, 0.35)}`,

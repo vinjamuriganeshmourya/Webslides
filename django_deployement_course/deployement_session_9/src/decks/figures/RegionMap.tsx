@@ -4,6 +4,7 @@ import { colors } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
 import { T, E, c4 } from '@/ui/figureTiming'
 import { INDIA, INDIA_ISLANDS, WORLD_LAND, type Ring } from './regionMapGeo'
+import { REGION_CODE, ZONES } from '../deckShared'
 
 /**
  * RegionMap — Regions are places, and a Region is more than one building.
@@ -172,7 +173,7 @@ function CityLabel({ name, code, tone }: { name: string; code: string; tone: str
 export function RegionMap({
   state,
   className = '',
-  zones = ['ap-south-1a', 'ap-south-1b', 'ap-south-1c'],
+  zones = ZONES,
 }: {
   state: RegionMapState
   className?: string
@@ -222,7 +223,7 @@ function World({ instant }: { instant: boolean }) {
       </svg>
 
       <Block x={mumbaiLabel.x} y={mumbaiLabel.y} w={mumbaiLabel.w} delay={at(5)} instant={instant}>
-        <CityLabel name="Mumbai" code="ap-south-1" tone={colors.ink} />
+        <CityLabel name="Mumbai" code={REGION_CODE} tone={colors.ink} />
       </Block>
       <Block x={hyderabadLabel.x} y={hyderabadLabel.y} w={hyderabadLabel.w} delay={at(6)} instant={instant}>
         <CityLabel name="Hyderabad" code="ap-south-2" tone={colors.ink} />
@@ -277,7 +278,7 @@ function Zones({ instant, zones }: { instant: boolean; zones: [string, string, s
       </svg>
 
       <Block x={mumbaiLabel.x} y={mumbaiLabel.y} w={mumbaiLabel.w} delay={at(2)} instant={instant}>
-        <CityLabel name="Mumbai" code="ap-south-1" tone={colors.ink} />
+        <CityLabel name="Mumbai" code={REGION_CODE} tone={colors.ink} />
       </Block>
       <Block x={hyderabadLabel.x} y={hyderabadLabel.y} w={hyderabadLabel.w} delay={at(2)} instant={instant}>
         <CityLabel name="Hyderabad" code="ap-south-2" tone={colors.ink} />
@@ -285,7 +286,7 @@ function Zones({ instant, zones }: { instant: boolean; zones: [string, string, s
 
       <Block x={CITY.x + 16} y={CITY.y - 12} w={330} delay={at(3)} instant={instant}>
         <span className="inline-block rounded-pill border bg-white px-3 py-0.5 text-xs font-semibold leading-5" style={{ borderColor: colors.brand, color: colors.brand }}>
-          the Mumbai Region, ap-south-1, one city
+          the Mumbai Region, {REGION_CODE}, one city
         </span>
       </Block>
 

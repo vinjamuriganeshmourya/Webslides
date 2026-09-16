@@ -3,6 +3,7 @@ import { colors } from '@/design/tokens'
 import { T } from '@/ui/figureTiming'
 import { Rise, FadeIn, drawAnim, useFigureAnim, at } from './figureMotion'
 import { ServerGlyph } from './CloudPicture'
+import { PUBLIC_IP } from '../deckShared'
 
 /**
  * MachineCard — the same server box, with three facts pinned to three places
@@ -32,7 +33,7 @@ const RIGHT = { x: BOX.x + BOX.w + 18, w: W - (BOX.x + BOX.w + 18) }
 const LEFT = { x: 0, w: BOX.x - 18 }
 
 export function MachineCard({
-  address = '13.235.67.89',
+  address = PUBLIC_IP,
   tags = ['address', 'power', 'key'],
   label = 'instance',
   className = '',

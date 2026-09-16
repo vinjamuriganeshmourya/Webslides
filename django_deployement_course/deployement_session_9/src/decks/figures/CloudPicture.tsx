@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { colors } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
 import { T, E, c4 } from '@/ui/figureTiming'
+import { DATA_CENTRE, PORT_APP, PORT_SSH, PRIVATE_IP, PUBLIC_IP, VPC_CIDR, ZONES } from '../deckShared'
 
 /**
  * CloudPicture — one illustration that grows through a deck.
@@ -307,15 +308,15 @@ export function CloudPicture({
   state,
   revealFrom = state,
   className = '',
-  publicAddress = '13.235.67.89',
-  privateAddress = '172.31.8.142',
-  vpcRange = '172.31.0.0/16',
-  dataCentre = 'Amazon Data Centre, Mumbai',
-  zones = ['ap-south-1a', 'ap-south-1b', 'ap-south-1c'],
+  publicAddress = PUBLIC_IP,
+  privateAddress = PRIVATE_IP,
+  vpcRange = VPC_CIDR,
+  dataCentre = DATA_CENTRE,
+  zones = ZONES,
   containers = ['backend', 'frontend'],
   doorList = [
-    { port: '22', who: 'you' },
-    { port: '8000', who: 'everyone' },
+    { port: String(PORT_SSH), who: 'you' },
+    { port: String(PORT_APP), who: 'everyone' },
   ],
 }: {
   state: CloudPictureState

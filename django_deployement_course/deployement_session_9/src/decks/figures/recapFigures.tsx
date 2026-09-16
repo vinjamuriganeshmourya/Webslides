@@ -5,6 +5,7 @@ import { LaptopGlyph, ServerGlyph } from './CloudPicture'
 import { Meter } from './Meter'
 import { PlaceLadder } from './PlaceLadder'
 import { Scaled } from './Scaled'
+import { PRIVATE_IP, PUBLIC_IP, VPC_CIDR } from '../deckShared'
 
 const LockIcon = iconByName.lock
 
@@ -45,7 +46,7 @@ export function LaptopCrossed() {
 }
 
 /** The server box with its public address on a chip. */
-export function ServerWithAddress({ address = '13.235.67.89' }: { address?: string }) {
+export function ServerWithAddress({ address = PUBLIC_IP }: { address?: string }) {
   return (
     <div className="flex flex-col items-center gap-2">
       <Mono>{address}</Mono>
@@ -119,7 +120,7 @@ export function LadderAll() {
 }
 
 /** The dashed VPC frame with two instances inside it. */
-export function VpcFrame({ range = '172.31.0.0/16' }: { range?: string }) {
+export function VpcFrame({ range = VPC_CIDR }: { range?: string }) {
   return (
     <div className="relative rounded-2xl px-2.5 pb-2.5 pt-6" style={{ border: `2px dashed ${colors.brand}` }}>
       <span className="absolute -top-3 left-3 rounded-full bg-white px-2 font-mono text-[11px] font-bold leading-5" style={{ color: colors.brand }}>
@@ -134,7 +135,7 @@ export function VpcFrame({ range = '172.31.0.0/16' }: { range?: string }) {
 }
 
 /** One instance, two addresses: public outside, private inside. */
-export function TwoAddresses({ pub = '13.235.67.89', priv = '172.31.8.142' }: { pub?: string; priv?: string }) {
+export function TwoAddresses({ pub = PUBLIC_IP, priv = PRIVATE_IP }: { pub?: string; priv?: string }) {
   return (
     <div className="flex items-center gap-3">
       <ServerGlyph title="instance" sub="two addresses" h={90} light="on" className="w-[108px]" />

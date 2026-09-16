@@ -3,6 +3,7 @@ import { colors } from '@/design/tokens'
 import { T, E, c4 } from '@/ui/figureTiming'
 import { Rise, FadeIn, FadeG, useFigureAnim, at, ease } from './figureMotion'
 import { LaptopGlyph, ServerGlyph } from './CloudPicture'
+import { KEY_FILE } from '../deckShared'
 
 /**
  * LockAndKey — a key file on your laptop, and the lock it fits on the instance.
@@ -28,7 +29,7 @@ export type LockAndKeyState = 'apart' | 'fitted'
 const W = 440
 const H = 240
 const LAPTOP = { x: 16, y: 96, w: 150 }
-const FILE = { x: 40, y: 40, w: 104, h: 110 }
+const FILE = { x: 40, y: 40, w: 136, h: 110 }
 const KEY = { size: 28 }
 const BOX = { x: 300, y: 30, w: 120, h: 170 }
 const HOLE = { cx: BOX.x + BOX.w / 2, cy: BOX.y + 118, r: 13 }
@@ -39,7 +40,7 @@ const LINE = { x1: KEY_FROM.x + KEY.size + 6, y1: KEY_FROM.y + KEY.size / 2, x2:
 
 export function LockAndKey({
   state,
-  keyName = 'my-key.pem',
+  keyName = KEY_FILE,
   chip,
   className = '',
 }: {
@@ -85,7 +86,7 @@ export function LockAndKey({
         <div className="relative rounded-xl bg-white p-2 shadow-card" style={{ height: FILE.h, border: `2px solid ${colors.brand}` }}>
           {/* the folded corner */}
           <span className="absolute right-0 top-0 size-4 rounded-bl-md" style={{ background: colors.surface2, borderLeft: `2px solid ${colors.brand}`, borderBottom: `2px solid ${colors.brand}`, borderTopRightRadius: 10 }} />
-          <div className="mt-4 break-all font-mono text-xs font-semibold leading-4 text-ink">{keyName}</div>
+          <div className="mt-4 break-words font-mono text-[11px] font-semibold leading-4 text-ink">{keyName}</div>
           <div className="mt-1 text-[11px] leading-4" style={{ color: colors.body }}>a file</div>
         </div>
       </Rise>
