@@ -268,3 +268,49 @@ wait.
   UUID if you leave it blank, and the Jenkinsfile then cannot find it. This
   happened during capture and is worth a slide of its own: the ID is not
   cosmetic, it is the name the pipeline calls.
+
+## The job gets a name that is true
+
+User, 2026-09-16: *"Now i dont want name to nxttrendz-build-test remove test and
+give a proper name."*
+
+The job was called `nxttrendz-build-test` since session 8, and session 8 then
+removed the Test stage on instruction. The name has been wrong ever since. It
+is now **`nxttrendz-pipeline`**, which is what it is: Checkout, Build, Push,
+Deploy.
+
+| File | What it shows |
+|---|---|
+| `jen-13-job-old-name` | The job as it was, with the stale name in the breadcrumb and the heading |
+| `jen-14-rename-form` | Rename Pipeline, with Jenkins refusing a no-op: "The new name is the same as the current name" |
+| `jen-15-new-name-typed` | `nxttrendz-pipeline` in the field |
+| `jen-16-renamed` | Renamed, **and build #1's history survives**. The permalinks still point at it |
+| `jen-17-github-hook-log` | **The best frame in this set.** See below |
+
+### Why the hook log frame is worth a slide of its own
+
+```
+Started by event from 140.82.115.248 → http://3.108.220.155:8080/github-webhook/
+Done. Took 4 ms
+Changes found
+```
+
+That source address, `140.82.115.248`, sits inside `140.82.112.0/20`, one of
+the four GitHub ranges added to `jenkins-sg`. The rule and the traffic it
+allowed are visible on the same frame. A room that has just been told "open
+8080 to GitHub's published ranges" can check the claim against the log in front
+of them.
+
+It also answers the question a rename always raises: **the webhook is not
+addressed to the job.** GitHub posts to `/github-webhook/` and Jenkins matches
+on the repository URL, so the name can change freely. Nothing in the Jenkinsfile
+names the job either.
+
+### What the deck has to be honest about
+
+**Session 8's captures show `nxttrendz-build-test`**, and session 8 is frozen.
+Session 10 renames it on screen rather than pretending the old name never
+existed. That is the honest version and it costs four frames.
+
+The laptop Jenkins still holds a job under the old name. It is superseded by
+the EC2 one and nothing points at it any more.
