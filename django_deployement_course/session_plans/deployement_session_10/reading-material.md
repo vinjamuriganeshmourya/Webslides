@@ -86,7 +86,7 @@ application privately, which section 9 uses.
 | Image | **Ubuntu Server 26.04 LTS** | same as the app server |
 | Disk | **20 GiB gp3** | not 8. Docker builds accumulate layers and images fast |
 | Private address | `172.31.15.67` | same VPC as the app server, which is the whole point |
-| Public address | `3.108.220.155` | GitHub must be able to reach it |
+| Public address | Elastic IP `3.108.1.66` | GitHub must be able to reach it, **at an address that does not move** |
 | Security group | `jenkins-sg` | |
 
 **Its doors.**
@@ -850,12 +850,24 @@ Add one rule per range, all on port 8080:
 
 ![Six rules](../../workflow/captures/session-10/jen-10-jenkins-sg-six-rules.png)
 
-### 9.7 Repoint the webhook
+### 9.7 Give the build server a permanent address, then repoint the webhook
+
+The app server needed an Elastic IP because its address was written into an
+image. The build server needs one for a sharper reason: **the webhook points at
+it.** If that address moves, GitHub keeps posting to an address that no longer
+answers, nothing builds, and there is no error anywhere you are looking.
+
+Same two steps as section 7: allocate, then associate. The old address dies the
+same instant.
+
+Then there are **two** places to change, not one. The webhook, and Jenkins's own
+record of its address under `Manage Jenkins → System`, which it uses for every
+link it generates.
 
 **GitHub path:** `repository → Settings → Webhooks → the hook → Payload URL`
 
 ```
-http://3.108.220.155:8080/github-webhook/
+http://3.108.1.66:8080/github-webhook/
 ```
 
 The trailing `/github-webhook/` matters, and so does the trailing slash.
@@ -905,7 +917,7 @@ The hook log proves both the delivery and the rule that allowed it:
 ![The hook log](../../workflow/captures/session-10/jen-17-github-hook-log.png)
 
 ```
-Started by event from 140.82.115.248 → http://3.108.220.155:8080/github-webhook/
+Started by event from 140.82.115.248 → http://3.108.1.66:8080/github-webhook/
 Done. Took 4 ms
 Changes found
 ```
@@ -923,7 +935,7 @@ section 9.6.
 DEVELOPER ── git push ─────→ GITHUB            ← the only manual step
                                 │ webhook, 8080
                                 ▼
-                       JENKINS on EC2  (3.108.220.155, jenkins-sg)
+                       JENKINS on EC2  (3.108.1.66, jenkins-sg)
                          Checkout → Build → Push → Deploy
                                 │                      │
                           push  ▼                      │ ssh 22, private

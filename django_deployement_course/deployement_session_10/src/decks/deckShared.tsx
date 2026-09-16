@@ -53,7 +53,13 @@ export const APP_SG_NAME = 'nxttrendz-sg'
 /* ---- the build server --------------------------------------------------- */
 
 export const JENKINS_NAME = 'nxttrendz-jenkins'
-export const JENKINS_IP = '3.108.220.155'
+/** The build server needs a permanent address for the same reason the app
+ *  server did, and a sharper one: GitHub's webhook is configured to point at
+ *  it. A moving address means every stop and start silently breaks the hook,
+ *  and nobody notices until a push does not build. */
+export const JENKINS_ELASTIC_IP = '3.108.1.66'
+export const JENKINS_IP_BEFORE = '3.108.220.155'
+export const WEBHOOK_URL = `http://${'3.108.1.66'}:8080/github-webhook/`
 export const JENKINS_PRIVATE_IP = '172.31.15.67'
 export const JENKINS_DISK = '20 GiB'
 export const JENKINS_SWAP = '4 GiB'
@@ -81,7 +87,7 @@ export const SWAP_IN_USE = '486 MiB'
 
 /* ---- addresses ---------------------------------------------------------- */
 
-export const ELASTIC_IP = '13.202.184.214'
+export const APP_ELASTIC_IP = '13.202.184.214'
 
 /** Every public address this one instance has had, oldest first. Three came
  *  from session 9, the fourth from this session's start. The argument for an
@@ -134,6 +140,8 @@ export const TAG_START = '6'
 export const TAG_CORS_FIX = '7'
 export const TAG_FIRST_AUTO = '8'
 export const TAG_FIRST_FROM_AWS = '1'
+/** Build 2 proved the webhook still arrives once Jenkins moved to its Elastic IP. */
+export const TAG_ON_JENKINS_ELASTIC = '2'
 
 export const CRED_DOCKERHUB = 'dockerhub-credentials'
 export const CRED_SSH = 'ec2-ssh-key'

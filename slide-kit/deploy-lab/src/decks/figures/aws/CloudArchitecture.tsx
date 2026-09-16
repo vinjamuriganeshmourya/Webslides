@@ -272,7 +272,7 @@ export function CloudArchitecture({ state = 'gap', scale = 1 }: { state?: ArchSt
                               w={400}
                               h={266}
                               name="nxttrendz-jenkins"
-                              spec={['t3.micro, 20 GiB gp3', 'jenkins-sg', 'private 172.31.15.67', 'public 3.108.220.155']}
+                              spec={['t3.micro, 20 GiB gp3', 'jenkins-sg', 'private 172.31.15.67']}
                               state={state === 'jenkins' ? 'adding' : 'built'}
                               delay={0.45}
                             >
@@ -299,6 +299,15 @@ export function CloudArchitecture({ state = 'gap', scale = 1 }: { state?: ArchSt
                                     </span>
                                   ))}
                                 </div>
+                              </div>
+                              <div
+                                className="absolute flex items-center gap-1.5 rounded-lg bg-white px-2 py-1"
+                                style={{ left: 14, top: 206, border: `2px solid ${CATEGORY.compute}` }}
+                              >
+                                <AwsIcon kind="resource" name="elastic-ip" size={18} title="Elastic IP" />
+                                <span className="text-[12px] font-bold leading-[18px]" style={{ color: INK }}>
+                                  Elastic IP 3.108.1.66
+                                </span>
                               </div>
                             </InstanceCard>
                           )}
