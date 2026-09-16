@@ -24,6 +24,7 @@ import { InsideTheImage } from './figures/InsideTheImage'
 import { BuildVsImage } from './figures/BuildVsImage'
 import { CidrRuler } from './figures/CidrRuler'
 import { GroupAsSource } from './figures/GroupAsSource'
+import { NgrokDetour } from './figures/NgrokDetour'
 import { LastMile } from './figures/LastMile'
 import { SG_THREE_RULES, SG_PORT_COLUMN, SG_RULE_3000, SG_NEW_ROW_FORM } from './shotBoxes'
 import {
@@ -1578,12 +1579,9 @@ volumes:
         title="On Your Laptop"
         lead="GitHub cannot reach a laptop, so you put a tunnel in front of it"
         lesson={SESSION}
-        points={[
-          { text: 'A laptop has no public address', icon: 'cross' },
-          { text: 'The tunnel gave you one, borrowed', icon: 'link' },
-          { text: 'Close the laptop and the pipeline stops existing', icon: 'warning' },
-        ]}
-      />
+      >
+        <NgrokDetour state="tunnel" />
+      </ContentSlide>
     ),
   },
   {
@@ -2043,6 +2041,24 @@ volumes:
         </Callout>
       </ContentSlide>
     ),
+  },
+  {
+    id: 'c6-direct',
+    section: C6,
+    label: 'A straight line now',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="A Straight Line Now"
+        lead="The same webhook, with the detour deleted"
+        lesson={SESSION}
+      >
+        <NgrokDetour state="direct" />
+      </ContentSlide>
+    ),
+    notes:
+      'Put this next to the earlier frame if you can. The two pictures make the argument for moving ' +
+      'Jenkins better than any sentence does.',
   },
   {
     id: 'c6-it-builds',
