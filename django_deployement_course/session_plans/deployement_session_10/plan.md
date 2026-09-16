@@ -321,19 +321,23 @@ beat marked **[A]** needs an architecture state, and **[C]** names its capture.
 
 ## 9. The verified constants for `deckShared.tsx`
 
+> **Names only. No resource IDs on a slide or a figure.** User instruction,
+> 2026-09-16: *"just name are enough, what are you adding ids"*. An instance ID,
+> an AMI ID, a security group ID, a VPC ID and a subnet ID are all noise to a
+> learner: they are unique to one account and mean nothing in a classroom. The
+> deck prints `nxttrendz-server`, `Ubuntu Server 26.04 LTS`, `nxttrendz-sg` and
+> `172.31.0.0/16`. The IDs stay in `MANIFEST.md` for anyone reproducing the run.
+
 | Constant | Value |
 |---|---|
 | `REGION` / `ZONE` | `ap-south-1`, Asia Pacific (Mumbai) / `ap-south-1b` |
-| `VPC_ID` / `VPC_CIDR` | `vpc-0292256715a0e0ab2` / `172.31.0.0/16` |
-| `SUBNET_ID` | `subnet-0b52b9ce32d8053c0` |
-| `APP_INSTANCE_ID` | `i-06031b2ad99f0b796` |
+| `VPC_CIDR` | `172.31.0.0/16` |
 | `APP_PRIVATE_IP` | `172.31.7.32` |
-| `ELASTIC_IP` / `ALLOCATION_ID` | `13.202.184.214` / `eipalloc-0947cde9d5ed8fa6a` |
+| `ELASTIC_IP` | `13.202.184.214` |
 | `ADDRESSES_IN_ORDER` | `15.207.88.14`, `13.203.216.68`, `65.2.153.167`, `13.127.157.193` |
-| `APP_SG` | `nxttrendz-sg`, `sg-03340990eb18a3456` |
-| `JENKINS_INSTANCE_ID` | `i-0c96a9a3b4803cefc` |
+| `APP_SG` | `nxttrendz-sg` |
 | `JENKINS_IP` / `JENKINS_PRIVATE_IP` | `3.108.220.155` / `172.31.15.67` |
-| `JENKINS_SG` | `jenkins-sg`, `sg-0a8dd5bcc3a3e91a8` |
+| `JENKINS_SG` | `jenkins-sg` |
 | `JOB_NAME` | `nxttrendz-pipeline` |
 | `GITHUB_HOOK_RANGES` | `192.30.252.0/22`, `185.199.108.0/22`, `140.82.112.0/20`, `143.55.64.0/20` |
 | `MY_IP_CIDR` | `49.200.108.250/32` |
