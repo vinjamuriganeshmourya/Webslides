@@ -685,7 +685,7 @@ volumes:
     element: (
       <ContentSlide
         kicker={C3}
-        title="Why image and Not build"
+        title="Why image, Not build"
         lead="The server runs what the pipeline built. It does not build its own copy"
         lesson={SESSION}
       >
@@ -756,7 +756,7 @@ volumes:
         <AnnotatedShot
           src="/shots/dep-05-closed-port-times-out.png"
           alt="Chrome showing This site cannot be reached, the address took too long to respond, ERR_CONNECTION_TIMED_OUT"
-          frameWidth={700}
+          frameWidth={640}
           caption="Nothing. It waits about fifteen seconds and gives up"
           className="mr-auto w-fit"
         />
@@ -1069,7 +1069,7 @@ volumes:
         <AnnotatedShot
           src="/shots/dep-12-site-loads-empty.png"
           alt="The NxtTrendz login page loading in a browser over the public address"
-          frameWidth={700}
+          frameWidth={640}
           caption="Reload the tab that was waiting. No restart was needed"
           className="mr-auto w-fit"
         />
@@ -1858,7 +1858,7 @@ volumes:
         <AnnotatedShot
           src="/shots/dep-23-ssh-agent-plugin.png"
           alt="The Jenkins plugin manager with SSH Agent found in the available plugins list"
-          frameWidth={760}
+          frameWidth={640}
           caption="Manage Jenkins → Plugins → Available plugins, then search for SSH Agent"
           className="mr-auto w-fit"
         />
@@ -1899,7 +1899,7 @@ volumes:
         <AnnotatedShot
           src="/shots/dep-25-credentials-store.png"
           alt="The Jenkins global credentials store listing the stored credentials with an Add Credentials button"
-          frameWidth={760}
+          frameWidth={640}
           caption="Manage Jenkins → Credentials → System → Global → Add Credentials"
           className="mr-auto w-fit"
         />
@@ -2058,7 +2058,7 @@ volumes:
         <AnnotatedShot
           src="/shots/jen-11-build-1-on-aws.png"
           alt="A Jenkins build on the EC2 server showing all stages green, started by a GitHub push"
-          frameWidth={760}
+          frameWidth={640}
           caption="Started by GitHub push. The tunnel is gone and nothing misses it"
           className="mr-auto w-fit"
         />
@@ -2079,7 +2079,7 @@ volumes:
         <AnnotatedShot
           src="/shots/jen-17-github-hook-log.png"
           alt="The Jenkins GitHub hook log showing the delivery, the source address it came from and the URL it was posted to"
-          frameWidth={760}
+          frameWidth={640}
           caption="That address sits inside one of the four ranges you allowed a moment ago"
           className="mr-auto w-fit"
         />
@@ -2129,7 +2129,7 @@ volumes:
         <AnnotatedShot
           src="/shots/dep-20-login-blocked-cors.png"
           alt="The application login page loaded over the public address, with nothing having arrived after signing in"
-          frameWidth={700}
+          frameWidth={640}
           caption="The page loads. The data does not"
           className="mr-auto w-fit"
         />
@@ -2218,7 +2218,7 @@ volumes:
         <AnnotatedShot
           src="/shots/dep-13-login-fails-localhost.png"
           alt="The application login page with the browser console showing a connection refused error against localhost port 8000"
-          frameWidth={760}
+          frameWidth={640}
           caption="Refused, and instantly. The request reached a machine, and nothing was listening on it"
           className="mr-auto w-fit"
         />
@@ -2404,7 +2404,7 @@ volumes:
         <AnnotatedShot
           src="/shots/dep-22-products-live.png"
           alt="The application product list loaded over the public address, showing real products with prices and ratings"
-          frameWidth={700}
+          frameWidth={640}
           caption="Open it on a phone. Send the address to somebody"
           className="mr-auto w-fit"
         />
@@ -2579,7 +2579,7 @@ IMAGE_TAG=6`}
         <AnnotatedShot
           src="/shots/dep-29-five-stages-deploy-log.png"
           alt="The Jenkins stages view with every stage green, and the Deploy stage log showing the ssh command, the pull and both containers being recreated"
-          frameWidth={760}
+          frameWidth={640}
           caption="Read the log. It is the same four commands, in the same order"
           className="mr-auto w-fit"
         />
@@ -2653,7 +2653,7 @@ IMAGE_TAG=6`}
         <AnnotatedShot
           src="/shots/jen-14-rename-form.png"
           alt="The Jenkins rename form with the current job name in the field and a warning that the new name is the same as the current name"
-          frameWidth={760}
+          frameWidth={640}
           caption="The job page → Rename"
           className="mr-auto w-fit"
         />
@@ -2674,7 +2674,7 @@ IMAGE_TAG=6`}
         <AnnotatedShot
           src="/shots/jen-16-renamed.png"
           alt="The Jenkins job after renaming, with its build history intact"
-          frameWidth={760}
+          frameWidth={640}
           caption="The build history survives, and so does the webhook, because GitHub matches on the repository"
           className="mr-auto w-fit"
         />
@@ -2695,7 +2695,7 @@ IMAGE_TAG=6`}
         <AnnotatedShot
           src="/shots/jen-12-live-after-aws-deploy.png"
           alt="The application product list loaded over the public address after an automatic deployment"
-          frameWidth={760}
+          frameWidth={640}
           caption="The last change you made arrived here on its own"
           className="mr-auto w-fit"
         />
@@ -2737,7 +2737,7 @@ IMAGE_TAG=6`}
     element: (
       <ContentSlide
         kicker={CLOSING_KICKER}
-        title="Ten Things You Already Did Right"
+        title="Nine Things You Already Did Right"
         lead="Most security is ordinary discipline applied every time, not a separate tool"
         lesson={SESSION}
       >
@@ -2748,13 +2748,12 @@ IMAGE_TAG=6`}
             ['1', 'SSH open to your address only, never to everyone'],
             ['2', 'The database has no port and no rule'],
             ['3', 'Key based login only, with the key readable by you alone'],
-            ['4', 'Secrets in .env and in the credential store, never in Git'],
-            ['5', '.dockerignore keeps .env and .git out of your images'],
-            ['6', 'Machines authenticate with tokens you can revoke, not passwords'],
-            ['7', 'A unique tag per build, so any release can be rolled back'],
-            ['8', 'The server runs image, never build'],
-            ['9', 'Server to server access named a group, not an address'],
-            ['10', 'Elastic IPs attached, and instances stopped when idle'],
+            ['4', 'Secrets in .env and the credential store, and .dockerignore keeps them out of images'],
+            ['5', 'Machines authenticate with tokens you can revoke, not passwords'],
+            ['6', 'A unique tag per build, so any release can be rolled back'],
+            ['7', 'The server runs image, never build'],
+            ['8', 'Server to server access named a group, not an address'],
+            ['9', 'Elastic IPs attached, and instances stopped when idle'],
           ]}
         />
       </ContentSlide>
@@ -2811,13 +2810,13 @@ IMAGE_TAG=6`}
       <KeyTakeawaysSlide
         lesson={SESSION}
         points={[
-          { text: C1, sub: 'SSH runs your commands on a machine somewhere else' },
-          { text: C2, sub: 'A new server starts empty and pulls images by name' },
-          { text: C3, sub: 'The server runs what the pipeline built' },
+          { text: C1, sub: 'Your commands, run on a machine elsewhere' },
+          { text: C2, sub: 'A new server starts empty' },
+          { text: C3, sub: 'It runs what the pipeline built' },
           { text: C4, sub: 'Nothing is open until you open it' },
-          { text: C5, sub: 'An address written into files has to stop moving' },
-          { text: C6, sub: 'A build server needs a public address of its own' },
-          { text: C7, sub: 'A pipeline stopping at the registry is not finished' },
+          { text: C5, sub: 'An address in a file must stop moving' },
+          { text: C6, sub: 'It needs an address of its own' },
+          { text: C7, sub: 'Stopping at the registry is not finished' },
         ]}
       />
     ),
