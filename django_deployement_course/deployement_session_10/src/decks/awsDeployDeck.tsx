@@ -116,7 +116,7 @@ export const awsDeployDeck: SlideDef[] = [
         lead="Everything outside AWS already works. None of it reaches the server"
         lesson={SESSION}
       >
-        <CloudArchitecture state="gap" scale={ARCH} />
+        <div className="mt-5"><CloudArchitecture state="gap" scale={ARCH} /></div>
       </ContentSlide>
     ),
     notes:
@@ -191,7 +191,7 @@ export const awsDeployDeck: SlideDef[] = [
           alt="The EC2 Instances list with nxttrendz-server selected and the Instance state menu open, showing Start instance available and Stop instance greyed out"
           frameWidth={760}
           caption="EC2 → Instances → select the instance → Instance state → Start instance"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -585,7 +585,7 @@ export const awsDeployDeck: SlideDef[] = [
         lead="Two containers and a volume, inside the instance"
         lesson={SESSION}
       >
-        <CloudArchitecture state="containers" scale={ARCH} />
+        <div className="mt-5"><CloudArchitecture state="containers" scale={ARCH} /></div>
       </ContentSlide>
     ),
   },
@@ -601,6 +601,8 @@ export const awsDeployDeck: SlideDef[] = [
         lesson={SESSION}
       >
         <CodeBlock
+          className="max-w-[840px]"
+          fontSize={13}
           filename="docker-compose.yml, on the server"
           language="yaml"
           code={`services:
@@ -712,7 +714,7 @@ volumes:
           alt="Chrome showing This site cannot be reached, the address took too long to respond, ERR_CONNECTION_TIMED_OUT"
           frameWidth={700}
           caption="Nothing. It waits about fifteen seconds and gives up"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -887,7 +889,7 @@ volumes:
           spotlight
           frameWidth={760}
           caption="EC2 → Security Groups → your group → Inbound rules"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -910,7 +912,7 @@ volumes:
           spotlight
           frameWidth={760}
           caption="The frontend listens on 3000, and nothing is allowed to reach it"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -934,9 +936,9 @@ volumes:
           alt="The Edit inbound rules form with a fourth row added: Custom TCP, port 3000, described as the React frontend"
           highlights={[{ ...SG_NEW_ROW_FORM, step: 1, label: 'the row you add', labelAt: 'below' }]}
           spotlight
-          frameWidth={780}
+          frameWidth={760}
           caption="EC2 → Security Groups → your group → Edit inbound rules → Add rule"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -957,7 +959,7 @@ volumes:
           alt="The form refusing to save, with the message CIDR block, a security group ID or a prefix list has to be specified"
           frameWidth={700}
           caption="Type 0.0.0.0/0 into the source box and pick it from the list that appears"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -981,7 +983,7 @@ volumes:
           spotlight
           frameWidth={760}
           caption="The browser tab that had been waiting loaded while this banner was still on screen"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -1002,7 +1004,7 @@ volumes:
           alt="The NxtTrendz login page loading in a browser over the public address"
           frameWidth={700}
           caption="Reload the tab that was waiting. No restart was needed"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -1018,7 +1020,7 @@ volumes:
         lead="Three open, and one that was never there"
         lesson={SESSION}
       >
-        <CloudArchitecture state="doors" scale={ARCH} />
+        <div className="mt-5"><CloudArchitecture state="doors" scale={ARCH} /></div>
       </ContentSlide>
     ),
   },
@@ -1226,7 +1228,7 @@ volumes:
         lead="One address, reserved to your account and pinned to the instance"
         lesson={SESSION}
       >
-        <CloudArchitecture state="elastic" scale={ARCH} />
+        <div className="mt-5"><CloudArchitecture state="elastic" scale={ARCH} /></div>
       </ContentSlide>
     ),
   },
@@ -1246,7 +1248,7 @@ volumes:
           alt="The Elastic IP addresses list showing one allocated address, with the Associated instance ID column empty"
           frameWidth={760}
           caption="EC2 → Elastic IPs → Allocate Elastic IP address"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
         <Callout kind="warning" title="Look at the Associated instance column">
           It is empty. An address you hold and do not use is the one state AWS charges for
@@ -1270,7 +1272,7 @@ volumes:
           alt="The Elastic IP now showing an associated instance ID and the instance's private address beside it"
           frameWidth={760}
           caption="Actions → Associate Elastic IP address → choose the instance"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -1336,6 +1338,7 @@ volumes:
         lesson={SESSION}
       >
         <CodeBlock
+          className="max-w-[840px]"
           filename="docker-compose.yml, on the server"
           language="yaml"
           code={`    environment:
@@ -1500,7 +1503,7 @@ volumes:
         lead="A second machine in the same network as the first"
         lesson={SESSION}
       >
-        <CloudArchitecture state="jenkins" scale={ARCH} />
+        <div className="mt-5"><CloudArchitecture state="jenkins" scale={ARCH} /></div>
       </ContentSlide>
     ),
   },
@@ -1520,7 +1523,7 @@ volumes:
           alt="The EC2 launch form, named nxttrendz-jenkins, with Ubuntu selected"
           frameWidth={760}
           caption="EC2 → Instances → Launch instances. Name it so you can tell the two apart"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -1541,7 +1544,7 @@ volumes:
           alt="A new security group named jenkins-sg with two rules, SSH on 22 and Custom TCP on 8080, both sourced from My IP"
           frameWidth={760}
           caption="Port 22 to administer it, port 8080 to open the Jenkins page"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -1565,7 +1568,7 @@ volumes:
           alt="The storage section of the launch form, changed from 8 GiB to 20 GiB"
           frameWidth={760}
           caption="Every build leaves layers behind, and they add up faster than anyone expects"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -1586,7 +1589,7 @@ volumes:
           alt="The EC2 instances list showing both nxttrendz-server and nxttrendz-jenkins running"
           frameWidth={760}
           caption="Different jobs, different sizes, same network"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -1654,7 +1657,7 @@ volumes:
           alt="The Unlock Jenkins screen asking for the administrator password"
           frameWidth={700}
           caption="Read the password from the server, then install the suggested plugins"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -1719,7 +1722,7 @@ volumes:
           alt="The Add Credentials dialog showing the six kinds, including SSH Username with private key"
           frameWidth={640}
           caption="Leave the ID field blank and Jenkins invents a random one, which nothing will match"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
         <Callout kind="warning" title="Jenkins will not let you change an ID afterwards">
           If you leave it blank, delete the credential and add it again
@@ -1788,7 +1791,7 @@ volumes:
           alt="The jenkins-sg inbound rules with four additional rules on port 8080, one for each GitHub webhook range"
           frameWidth={760}
           caption="GitHub publishes the addresses its webhooks come from. Add one rule per range, all on 8080"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -1808,6 +1811,7 @@ volumes:
         lesson={SESSION}
       >
         <CodeBlock
+          className="max-w-[840px]"
           filename="GitHub → your repository → Settings → Webhooks → Payload URL"
           language="text"
           code={`http://<your-jenkins-elastic-ip>:8080/github-webhook/`}
@@ -1835,7 +1839,7 @@ volumes:
           alt="A Jenkins build on the EC2 server showing all stages green, started by a GitHub push"
           frameWidth={760}
           caption="Started by GitHub push. The tunnel is gone and nothing misses it"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -1856,7 +1860,7 @@ volumes:
           alt="The Jenkins GitHub hook log showing the delivery, the source address it came from and the URL it was posted to"
           frameWidth={760}
           caption="That address sits inside one of the four ranges you allowed a moment ago"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -1905,7 +1909,7 @@ volumes:
           alt="The application login page loaded over the public address, with nothing having arrived after signing in"
           frameWidth={700}
           caption="The page loads. The data does not"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -2020,6 +2024,7 @@ volumes:
         lesson={SESSION}
       >
         <CodeBlock
+          className="max-w-[840px]"
           filename="backend/myproject/settings.py, on your machine"
           language="python"
           code={`CORS_ALLOWED_ORIGINS = [
@@ -2158,7 +2163,7 @@ volumes:
           alt="The application product list loaded over the public address, showing real products with prices and ratings"
           frameWidth={700}
           caption="Open it on a phone. Send the address to somebody"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -2176,6 +2181,7 @@ volumes:
         lesson={SESSION}
       >
         <CodeBlock
+          className="max-w-[840px]"
           filename="docker-compose.yml and .env, on the server"
           language="yaml"
           code={`    image: <your-docker-id>/nxttrendz-backend:\${IMAGE_TAG}
@@ -2202,6 +2208,7 @@ IMAGE_TAG=6`}
         lesson={SESSION}
       >
         <CodeBlock
+          className="max-w-[840px]"
           filename="Jenkinsfile, after the Push stage"
           language="groovy"
           code={`stage('Deploy') {
@@ -2256,7 +2263,7 @@ IMAGE_TAG=6`}
           alt="The app server's inbound rules gaining a new SSH rule whose source is the jenkins-sg security group rather than a CIDR block"
           frameWidth={760}
           caption="Any machine in that group may connect, and no address is written down anywhere"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -2293,9 +2300,9 @@ IMAGE_TAG=6`}
         <AnnotatedShot
           src="/shots/dep-29-five-stages-deploy-log.png"
           alt="The Jenkins stages view with every stage green, and the Deploy stage log showing the ssh command, the pull and both containers being recreated"
-          frameWidth={780}
+          frameWidth={760}
           caption="Read the log. It is the same four commands, in the same order"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -2311,7 +2318,7 @@ IMAGE_TAG=6`}
         lead="One push, four stages, and an app on an address that never moves"
         lesson={SESSION}
       >
-        <CloudArchitecture state="finished" scale={ARCH} />
+        <div className="mt-5"><CloudArchitecture state="finished" scale={ARCH} /></div>
       </ContentSlide>
     ),
   },
@@ -2366,9 +2373,9 @@ IMAGE_TAG=6`}
         <AnnotatedShot
           src="/shots/jen-16-renamed.png"
           alt="The Jenkins job after renaming, with its build history intact"
-          frameWidth={740}
+          frameWidth={760}
           caption="The build history survives, and so does the webhook, because GitHub matches on the repository"
-          className="mx-auto w-fit"
+          className="mr-auto w-fit"
         />
       </ContentSlide>
     ),
@@ -2385,15 +2392,15 @@ IMAGE_TAG=6`}
         lesson={SESSION}
       >
         <DataTable
+          compact
           columns={[{ label: 'What you built' }, { label: 'The problem it removed', weight: 2 }]}
           rows={[
             ['A Docker image', 'it works on my machine'],
-            ['A compose file', 'remembering the order to start things in'],
+            ['A compose file', 'remembering the start up order'],
             ['Docker Hub', 'images trapped on one computer'],
             ['A Jenkins pipeline', 'forgetting a step under pressure'],
             ['A webhook', 'even having to press the button'],
-            ['An EC2 instance', 'no always on computer of your own'],
-            ['A security group', 'the wrong people reaching it'],
+            ['EC2 and a security group', 'no public machine, and the wrong people reaching it'],
             ['An Elastic IP', 'an address that moved under you'],
             ['Jenkins on EC2', 'a laptop being part of production'],
           ]}
@@ -2418,14 +2425,14 @@ IMAGE_TAG=6`}
           rows={[
             ['1', 'SSH open to your address only, never to everyone'],
             ['2', 'The database has no port and no rule'],
-            ['3', 'Key based login only, and the key file readable by you alone'],
+            ['3', 'Key based login only, with the key readable by you alone'],
             ['4', 'Secrets in .env and in the credential store, never in Git'],
             ['5', '.dockerignore keeps .env and .git out of your images'],
             ['6', 'Machines authenticate with tokens you can revoke, not passwords'],
             ['7', 'A unique tag per build, so any release can be rolled back'],
             ['8', 'The server runs image, never build'],
             ['9', 'Server to server access named a group, not an address'],
-            ['10', 'An Elastic IP attached, and instances stopped when idle'],
+            ['10', 'Elastic IPs attached, and instances stopped when idle'],
           ]}
         />
       </ContentSlide>
@@ -2484,11 +2491,11 @@ IMAGE_TAG=6`}
         points={[
           { text: C1, sub: 'SSH runs your commands on a machine somewhere else' },
           { text: C2, sub: 'A new server starts empty and pulls images by name' },
-          { text: C3, sub: 'The server runs what the pipeline built, never its own copy' },
-          { text: C4, sub: 'Nothing is open until you open it, and every door needs a reason' },
-          { text: C5, sub: 'An address that gets written into files has to stop moving' },
+          { text: C3, sub: 'The server runs what the pipeline built' },
+          { text: C4, sub: 'Nothing is open until you open it' },
+          { text: C5, sub: 'An address written into files has to stop moving' },
           { text: C6, sub: 'A build server needs a public address of its own' },
-          { text: C7, sub: 'A pipeline that stops at the registry is not finished' },
+          { text: C7, sub: 'A pipeline stopping at the registry is not finished' },
         ]}
       />
     ),
