@@ -92,11 +92,44 @@ Real output, saved as text because the deck renders terminals through
   dev server, with `DEBUG = True`. Slide 85 says so rather than implying this is
   a production configuration.
 
-## Still to capture
+## Still to capture, and what it is waiting on
 
-The Jenkins Deploy stage, concept 6 second half: the SSH credential, the
-fourth stage, the four-stage graph, and a deploy that reaches the server with
-nobody touching it.
+The Jenkins Deploy stage, concept 6 from beat 72 onward: the SSH credential,
+the fourth stage, the four-stage graph, and a deploy that reaches the server
+with nobody touching it.
+
+**Blocked on a Jenkins sign-in.** Jenkins is running at `localhost:8080` and
+the sign-in form is open in the browser with the credentials already filled by
+the password manager. Signing in is the account holder's to do, not Claude's.
+Once signed in, the remaining steps are:
+
+1. `Manage Jenkins → Credentials → System → Global` → add a credential of kind
+   **SSH Username with private key**, ID `ec2-ssh-key`, username `ubuntu`,
+   key pasted from `nxttrendz-key.pem`.
+2. Add the Deploy stage to the Jenkinsfile, after Push:
+
+   ```groovy
+   stage('Deploy') {
+       steps {
+           sshagent(['ec2-ssh-key']) {
+               sh '''
+                   ssh -o StrictHostKeyChecking=no ubuntu@13.202.184.214 "
+                       cd ~/nxttrendz &&
+                       sed -i 's|:[0-9]*$|:'$BUILD_NUMBER'|' docker-compose.yml &&
+                       docker compose pull && docker compose up -d
+                   "
+               '''
+           }
+       }
+   }
+   ```
+
+   The SSH Agent plugin has to be installed for `sshagent` to resolve.
+3. Push any change and capture the four-stage graph and the console log.
+
+The network path is already open: Jenkins runs in a container on the user's
+machine, so it reaches EC2 from 49.200.108.250, which rule
+`sgr-051fb0ee7bd294a8a` already allows on port 22.
 
 ## Clean-up owed
 
