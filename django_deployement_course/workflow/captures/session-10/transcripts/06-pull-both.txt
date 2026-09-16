@@ -1,0 +1,66 @@
+6: Pulling from jeevansravanth/nxttrendz-backend
+8729990e38d8: Pulling fs layer
+6310eb16bf42: Pulling fs layer
+d4a378e57055: Pulling fs layer
+630ac71b5d84: Pulling fs layer
+6bd54ebeb5af: Pulling fs layer
+3d2c3ff37d4c: Pulling fs layer
+fcc0c733ee54: Pulling fs layer
+d86973c25e51: Pulling fs layer
+44136fa355b3: Download complete
+3d2c3ff37d4c: Download complete
+d86973c25e51: Download complete
+d4a378e57055: Download complete
+25cc9eda412e: Download complete
+6bd54ebeb5af: Download complete
+8729990e38d8: Download complete
+6310eb16bf42: Download complete
+630ac71b5d84: Download complete
+6310eb16bf42: Pull complete
+d4a378e57055: Pull complete
+6bd54ebeb5af: Pull complete
+3d2c3ff37d4c: Pull complete
+d86973c25e51: Pull complete
+630ac71b5d84: Pull complete
+fcc0c733ee54: Download complete
+fcc0c733ee54: Pull complete
+8729990e38d8: Pull complete
+Digest: sha256:f3dac49ac13fe0437097d551153c8c87b55238221d4f31e022807d4fa6416f62
+Status: Downloaded newer image for jeevansravanth/nxttrendz-backend:6
+docker.io/jeevansravanth/nxttrendz-backend:6
+=====
+6: Pulling from jeevansravanth/nxttrendz-frontend
+44136fa355b3: Already exists
+d59e2dfc8640: Pulling fs layer
+09a0d70b3e60: Pulling fs layer
+3716d7ce7b50: Pulling fs layer
+74f52863f775: Pulling fs layer
+efbef6f9e333: Pulling fs layer
+55afa1ecc21d: Pulling fs layer
+16da5a640377: Pulling fs layer
+a2980c1fee17: Pulling fs layer
+09a0d70b3e60: Download complete
+a2980c1fee17: Download complete
+16da5a640377: Download complete
+55afa1ecc21d: Download complete
+7285e79a710d: Download complete
+55afa1ecc21d: Pull complete
+d59e2dfc8640: Download complete
+efbef6f9e333: Download complete
+3716d7ce7b50: Download complete
+efbef6f9e333: Pull complete
+09a0d70b3e60: Pull complete
+a2980c1fee17: Pull complete
+16da5a640377: Pull complete
+3716d7ce7b50: Pull complete
+74f52863f775: Download complete
+d59e2dfc8640: Pull complete
+74f52863f775: Pull complete
+Digest: sha256:2f81cdf6b0519a77f220f1d0ac7bc7a32a35538ed79c3378c89ad8709e7b79ab
+Status: Downloaded newer image for jeevansravanth/nxttrendz-frontend:6
+docker.io/jeevansravanth/nxttrendz-frontend:6
+=====
+WARNING: This output is designed for human readability. For machine-readable output, please use --format.
+IMAGE                                 ID             DISK USAGE   CONTENT SIZE   EXTRA
+jeevansravanth/nxttrendz-backend:6    f3dac49ac13f        295MB         69.5MB        
+jeevansravanth/nxttrendz-frontend:6   2f81cdf6b051        607MB          152MB        

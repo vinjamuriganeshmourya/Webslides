@@ -1,7 +1,9 @@
 <!-- cSpell:ignore nxttrendz deployement NxtWave colour Mumbai ap-south-1 t3.micro AMI CIDR sshagent dockerignore gunicorn Kubernetes usermod corsheaders runserver -->
 # Deployment · Session 10: "Deploying Your App on AWS"
 
-**STATUS: DRAFT, awaiting sign-off.** The course's final session, and the only
+**STATUS: DRAFT, awaiting sign-off. The hands-on has been run and captured**, so
+§5 is backed by real output rather than prediction. See §10. The course's final
+session, and the only
 one that ends with a URL anyone can open.
 
 Instruction, 2026-09-16: *"Now the Session 9 is freezed now we need to prepare
@@ -205,9 +207,28 @@ Rule 20: Key Takeaways restates exactly these six names.
 **Concept 5 · A Permanent Address**
 
 53. Question: what happens to the address the next time the instance stops?
-54. It has already happened twice, and the room watched it in session 9.
-55. An Elastic IP is an address you reserve and keep.
-56. Allocate it. `EC2 → Elastic IPs → Allocate Elastic IP address`.
+54. It has already happened **four times**. Three in session 9, and once more
+    when this session started the instance. Print the four addresses in order,
+    with the private address unchanged beside them.
+55. **Why not just use the public address AWS gives you?** The question the room
+    actually asks, answered before the Elastic IP is named. User instruction,
+    2026-09-16: *"Ensure that we must required to explain why Elastic IP is
+    Required instead of going with public ip."*
+55a. Because the address is not something you only type into a browser. It gets
+    **written down in three places**, and this session has already written it
+    into two of them:
+    - `VITE_API_BASE_URL` in the compose file on the server
+    - `CORS_ALLOWED_ORIGINS` in `settings.py`, which is **inside the image**
+    - the host the Jenkins Deploy stage connects to, in the Jenkinsfile
+55b. The middle one is the argument that settles it. That address is baked into
+    a Docker image. Changing it is not an edit, it is **a commit, a build, a
+    push and a redeploy**. A free public address that moves on every stop would
+    make that the price of every restart.
+55c. And it really does move. Show it: the moment the Elastic IP was attached,
+    the old address stopped answering. `HTTP 000` against 13.127.157.193, on
+    the same command that had answered `HTTP 200` a minute earlier.
+56. An Elastic IP is an address you reserve and keep. Allocate it.
+    `EC2 → Elastic IPs → Allocate Elastic IP address`.
 57. Associate it with the instance.
 58. **The reason it had to happen before the next concept**: the address is
     about to be written into source code that gets built into an image.
@@ -330,3 +351,61 @@ error, not a retyped one.
   `/home/nxtwave/nxttrendz` on 2026-09-16. If a slide and the TR disagree, check
   the app before changing the slide.
 - **Session name.** "Deploying Your App on AWS" is the working title.
+
+## 10. The hands-on was run, and these are its facts
+
+Executed end to end on 2026-09-16 against the user's own account. Captures and
+transcripts are in `django_deployement_course/workflow/captures/session-10/`,
+indexed by `MANIFEST.md` with each file mapped to the beat it serves.
+
+**These are the values `deckShared.tsx` must carry.** They come from the run,
+not from the plan, so the deck and the screenshots cannot disagree.
+
+| Constant | Value |
+|---|---|
+| `INSTANCE_ID` | `i-06031b2ad99f0b796` |
+| `PUBLIC_IP_ON_START` | `13.127.157.193` (fourth address, handed out on start) |
+| `ELASTIC_IP` | `13.202.184.214` |
+| `ALLOCATION_ID` | `eipalloc-0947cde9d5ed8fa6a` |
+| `PRIVATE_IP` | `172.31.7.32`, unchanged throughout |
+| `HOSTNAME` | `ip-172-31-7-32` |
+| `AMI_NAME` | `Ubuntu Server 26.04 LTS` |
+| `DOCKER_VERSION` | `29.1.3` |
+| `COMPOSE_VERSION` | `2.40.3` |
+| `IMAGE_BACKEND` | `jeevansravanth/nxttrendz-backend` |
+| `IMAGE_FRONTEND` | `jeevansravanth/nxttrendz-frontend` |
+| `TAG_BEFORE` | `6`, the build the server started on |
+| `TAG_AFTER` | `7`, the build carrying the CORS fix |
+| `PROJECT_DIR` | `~/nxttrendz` on the server, so containers are named `nxttrendz-backend-1` and `nxttrendz-frontend-1` |
+| `SG_RULE_3000` | `sgr-0e4417318ae688a36`, Custom TCP 3000 from `0.0.0.0/0` |
+| `DEMO_USER` | `ravi`, password set on the server during the run |
+
+### What the run proved, with numbers
+
+| Claim on a slide | The measurement behind it |
+|---|---|
+| Port 8000 was already open, 3000 was not | 8000 answered `HTTP 200` in 0.073s. 3000 gave `curl: (28) Connection timed out after 15006 milliseconds` |
+| Rules apply immediately, with no restart | The browser tab that had been hanging on 3000 loaded the site while the save confirmation was still on screen |
+| Timeout is the firewall, refused is the app | Both were captured in one session. 3000 timed out through the security group. The login POST to `localhost:8000` was **refused**, instantly, because it reached a machine with nothing listening |
+| The old address dies the moment the Elastic IP attaches | The same curl went from `HTTP 200` to `HTTP 000` against `13.127.157.193` |
+| The pipeline reaches Docker Hub fast, and stops there | Tag `7` appeared on Docker Hub inside 40 seconds of `git push`. The server kept running `6` until a human logged in |
+
+### Two things the run changed in the plan
+
+- **The `nano` beat is honest but not literal.** The compose file was written
+  with `scp` and edited with `sed` during capture, because a headless run
+  cannot drive `nano`. The resulting file is identical. Transcript 12 says so
+  in its own header rather than pretending otherwise.
+- **The database had to be seeded by hand.** `seed.json` is untracked in git, so
+  Jenkins never builds it into the image and a fresh volume starts empty. The
+  run copied it across and ran `loaddata`. Either the deck shows that step, or
+  `seed.json` gets committed to the app repo before the session runs. **This is
+  a decision for sign-off**, and the second option is cleaner.
+
+### Still owed
+
+The Jenkins Deploy stage, concept 6 from beat 72 onward, is not yet captured.
+Everything before it is.
+
+The Elastic IP is allocated and associated. It is free attached and billed
+detached, so releasing it belongs with stopping the instance at the end.
