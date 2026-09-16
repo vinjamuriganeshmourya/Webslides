@@ -30,9 +30,42 @@ several sizes and in its `useInstant()` state.
 
 ## 3. The architecture states
 
-One drawing that grows. Dashed grey is not built yet, brand blue is being
-added now, solid quiet is already built. Specified in full in the diagram
-agent's brief; summarised here so a slide author knows which to reach for.
+**Built as a React component, not as eight exported images.** User instruction,
+2026-09-16: *"instead lets directly build interactive components using official
+icons"*.
+
+`CloudArchitecture` in `src/decks/figures/aws/` takes a `state` and grows. It
+uses the **official AWS Architecture Icons**, release 07312026, and AWS's own
+group-border conventions, both installed in `slide-kit/assets/aws/` with the
+conventions written up in the README beside them.
+
+Why a component and not eight files: eight static images drift, so a port
+changes and seven of them still show the old one. Here every value comes from
+one place, the reveal is tied to the deck's stepper so the picture grows while
+the instructor talks, and `useInstant()` is honoured so a Ctrl+arrow jump lands
+on the finished frame rather than replaying an animation nobody is watching.
+
+Three pieces, all session-owned for now:
+
+| File | What it is |
+|---|---|
+| `awsTokens.ts` | AWS's group colours and which are dashed, plus the category colours. Read out of the official SVGs, not copied from a blog |
+| `AwsIcon.tsx` | One official icon at the size AWS intended. Guards the commonest mistake: a **service** square where a **resource** icon belongs |
+| `GroupBox.tsx` | A group border in AWS's colour and line style, with three states: `pending`, `adding`, `built` |
+| `CloudArchitecture.tsx` | The whole picture, with the seven states below and the labelled connectors |
+
+The eight rendered SVGs stay in `workflow/captures/session-10/diagrams/` as a
+reference for what the component should look like, and for the reading
+material, which is Markdown and cannot run React.
+
+### The states the component takes
+
+`gap` · `ssh` · `containers` · `doors` · `elastic` · `jenkins` · `finished`
+
+The requirement sheet stays a separate figure, because it is a table rather
+than a picture and shares nothing with the growing drawing.
+
+### The old mapping, still true for the reading material
 
 | File | Shown before | Adds |
 |---|---|---|
