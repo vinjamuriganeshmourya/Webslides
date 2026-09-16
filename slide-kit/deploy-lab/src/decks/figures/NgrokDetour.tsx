@@ -51,8 +51,8 @@ export function NgrokDetour({ state = 'tunnel' }: { state?: 'tunnel' | 'direct' 
           <>
             {/* the borrowed tunnel, drawn as the long way round it is */}
             <rect x={380} y={18} width={160} height={58} rx={10} fill={colors.white} stroke={colors.warning} strokeWidth={2} strokeDasharray="6 5" />
-            <text x={460} y={42} fontSize={14} fontWeight={700} fill={colors.warning} textAnchor="middle">a tunnel service</text>
-            <text x={460} y={62} fontSize={12} fill={colors.body} textAnchor="middle">borrowed address</text>
+            <text x={460} y={42} fontSize={14} fontWeight={700} fill={colors.warning} textAnchor="middle">ngrok</text>
+            <text x={460} y={62} fontSize={12} fill={colors.body} textAnchor="middle">a borrowed public address</text>
             <motion.path
               d="M200,140 C280,140 300,47 380,47"
               fill="none" stroke={colors.muted} strokeWidth={2.5} strokeDasharray="6 5"
@@ -64,7 +64,7 @@ export function NgrokDetour({ state = 'tunnel' }: { state?: 'tunnel' | 'direct' 
               initial={instant ? false : { pathLength: 0 }} animate={{ pathLength: 1 }} transition={draw(0.5)}
             />
             <text x={430} y={252} fontSize={14} fill={colors.body} textAnchor="middle">
-              The address changes every time the tunnel restarts
+              The ngrok address changes every time the tunnel restarts
             </text>
           </>
         ) : (
@@ -78,7 +78,7 @@ export function NgrokDetour({ state = 'tunnel' }: { state?: 'tunnel' | 'direct' 
               webhook, port 8080
             </text>
             <text x={430} y={252} fontSize={14} fill={colors.body} textAnchor="middle">
-              No tunnel, and an address that does not move
+              No ngrok, and an address that does not move
             </text>
           </>
         )}
