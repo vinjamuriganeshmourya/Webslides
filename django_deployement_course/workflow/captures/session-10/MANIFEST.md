@@ -178,9 +178,16 @@ and its address would otherwise have to be pinned in a rule and re-pinned every
 time the build server was replaced. Naming `jenkins-sg` means **any** instance
 in that group may connect, and no address appears anywhere.
 
-It also means the Deploy stage should target the app server's **private**
-address, `172.31.7.32`, because both instances sit in the same VPC. That is a
-change from the committed Jenkinsfile, which still names the Elastic IP.
+It also means the Deploy stage targets the app server's **private** address,
+`172.31.7.32`, because both instances sit in the same VPC. That change is
+committed in the app repo as `467a17b` and **held unpushed**, because the
+laptop Jenkins cannot reach a private address and would fail the moment it
+built.
+
+**The path is proven**, in `transcripts/14-private-path-proof.txt`: from the
+Jenkins instance, port 22 on `172.31.7.32` answers with a real sshd banner, and
+port 8000 answers too. No address is written in any rule, and the traffic never
+leaves AWS.
 
 ### The memory finding, which the deck should state plainly
 
