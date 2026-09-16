@@ -12,10 +12,11 @@ import {
   ThankYouSlide,
   WelcomeSlide,
 } from '@/slides'
-import { Callout, Chip } from '@/ui'
+import { Callout } from '@/ui'
 import { AnnotatedShot } from './figures/AnnotatedShot'
 import { ShellPanel } from './figures/ShellPanel'
 import { CloudArchitecture } from './figures/aws/CloudArchitecture'
+import { Permissions } from './figures/Permissions'
 import {
   SESSION,
   C1,
@@ -211,6 +212,335 @@ export const awsDeployDeck: SlideDef[] = [
     notes:
       'Hard rule 4: name the problem, do not open it. Concept 5 opens it, and by then they will have ' +
       'seen the address written into two files, which is what makes it matter.',
+  },
+
+  {
+    id: 'c1-ssh-what',
+    section: C1,
+    label: 'What SSH is',
+    element: (
+      <ContentSlide
+        kicker={C1}
+        title="SSH"
+        lead="Secure Shell. You type on your own machine, and the commands run on the server"
+        lesson={SESSION}
+        points={[
+          { text: 'It is how every Linux server in the world is run', icon: 'globe' },
+          { text: 'The console button works too, but only from a browser', icon: 'info' },
+          { text: 'A script can use SSH. A button is not something a script can press', icon: 'target' },
+        ]}
+      />
+    ),
+    notes:
+      'The third point is the one that matters later. The Deploy stage at the end of the session is a script, ' +
+      'and it uses exactly this.',
+  },
+  {
+    id: 'c1-key-file',
+    section: C1,
+    label: 'The key file',
+    element: (
+      <ContentSlide
+        kicker={C1}
+        title="The Key File"
+        lead={`AWS gave you ${KEY_FILE} when you created the key pair. It is the only way in`}
+        lesson={SESSION}
+      >
+        <Permissions mode={644} />
+      </ContentSlide>
+    ),
+    notes:
+      'It is in the Downloads folder. AWS keeps no copy: if the file is lost, the instance cannot be reached ' +
+      'again and a new key pair means a new instance.',
+  },
+  {
+    id: 'c1-failure-permissions',
+    section: C1,
+    label: 'SSH refuses the key',
+    element: (
+      <ContentSlide
+        kicker={C1}
+        title="SSH Refuses the Key"
+        lead="The first attempt fails, and the message says exactly why"
+        lesson={SESSION}
+      >
+        <ShellPanel
+          title="Your machine"
+          prompt={LOCAL_PROMPT}
+          fontSize={14}
+          lines={[
+            { text: `ssh -i ${KEY_FILE} ${SSH_USER}@${ADDRESS_ON_START}`, kind: 'cmd' },
+            { text: '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', kind: 'out' },
+            { text: '@         WARNING: UNPROTECTED PRIVATE KEY FILE!          @', kind: 'out' },
+            { text: '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', kind: 'out' },
+            { text: `Permissions 0644 for '${KEY_FILE}' are too open.`, kind: 'out' },
+            { text: 'It is required that your private key files are NOT accessible by others.', kind: 'out' },
+            { text: 'This private key will be ignored.', kind: 'out' },
+            { text: `${SSH_USER}@${ADDRESS_ON_START}: Permission denied (publickey).`, kind: 'out' },
+          ]}
+          caption="Read the message before changing anything. It names the file, the permissions and the reason"
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'Real output from the capture run. Point at the line that says 0644: the number is the whole problem ' +
+      'and the next slide is the fix.',
+  },
+  {
+    id: 'c1-chmod',
+    section: C1,
+    label: 'chmod 400',
+    element: (
+      <ContentSlide
+        kicker={C1}
+        title="chmod 400"
+        lead="Make the file readable by you and by nobody else"
+        lesson={SESSION}
+      >
+        <Permissions mode={400} />
+      </ContentSlide>
+    ),
+    notes:
+      'The picture does the explaining. Two of the three lines are cut. Do not put a table of read, write ' +
+      'and execute bits on this slide: they only need the idea today.',
+  },
+  {
+    id: 'c1-connected',
+    section: C1,
+    label: 'Inside the server',
+    element: (
+      <ContentSlide
+        kicker={C1}
+        title="Inside the Server"
+        lead="The prompt changed, and that is the proof"
+        lesson={SESSION}
+      >
+        <ShellPanel
+          title={`The instance, in Mumbai`}
+          prompt={LOCAL_PROMPT}
+          fontSize={14}
+          lines={[
+            { text: `chmod 400 ${KEY_FILE}`, kind: 'cmd' },
+            { text: `ssh -i ${KEY_FILE} ${SSH_USER}@${ADDRESS_ON_START}`, kind: 'cmd' },
+            { text: 'Welcome to Ubuntu 26.04 LTS (GNU/Linux 7.0.0-1006-aws x86_64)', kind: 'out' },
+            { text: '', kind: 'out' },
+            { text: `  Usage of /:   30.7% of 6.61GB   IPv4 address for ens5: ${APP_PRIVATE_IP}`, kind: 'out' },
+            { text: '', kind: 'out' },
+            { text: `${SSH_USER}@${APP_HOSTNAME}:~$`, kind: 'out' },
+          ]}
+          caption={`The prompt now reads ${SSH_USER}@${APP_HOSTNAME}, which is the private address of a machine in a Mumbai data centre`}
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'Ask them to read the prompt out loud. Every command from here runs on the server, not on the laptop. ' +
+      'exit brings them home.',
+  },
+  {
+    id: 'c1-command-parts',
+    section: C1,
+    label: 'The command',
+    element: (
+      <ContentSlide
+        kicker={C1}
+        title="Three Parts"
+        lead="Every SSH command names a key, a user and a machine"
+        lesson={SESSION}
+        points={[
+          { text: `-i ${KEY_FILE} is the key, your half of the pair`, icon: 'key' },
+          { text: `${SSH_USER}@ is the user. Ubuntu images always use this name, and it is not root`, icon: 'lock' },
+          { text: 'The address is the machine. It is the one that keeps changing', icon: 'globe' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'c1-recap',
+    section: C1,
+    label: 'Recap',
+    element: (
+      <RecapSlide
+        kicker={C1}
+        title={C1}
+        lesson={SESSION}
+        points={[
+          { text: 'SSH runs your commands on a machine somewhere else', sub: 'You type here, it runs there' },
+          { text: 'The key file must be readable only by you', sub: 'chmod 400, or SSH will not use it' },
+          { text: 'The prompt tells you which machine you are on', sub: 'Check it before you run anything' },
+        ]}
+      />
+    ),
+  },
+
+  /* ── CONCEPT 2 · DOCKER ON THE SERVER ───────────────────────────────── */
+  {
+    id: 'c2-divider',
+    section: C2,
+    label: '02',
+    element: <SectionBreakerSlide index={2} title={C2} lesson={SESSION} />,
+  },
+  {
+    id: 'c2-question',
+    section: C2,
+    label: 'What is missing',
+    element: (
+      <QuestionSlide
+        kicker={C2}
+        question="Your images are on Docker Hub and you are on the server. What is missing?"
+        qualifier="Both halves exist. Nothing joins them yet"
+        lesson={SESSION}
+      />
+    ),
+  },
+  {
+    id: 'c2-no-docker',
+    section: C2,
+    label: 'No Docker',
+    element: (
+      <ContentSlide
+        kicker={C2}
+        title="A New Server Has Nothing"
+        lead="It is a clean Ubuntu. Docker is not on it"
+        lesson={SESSION}
+      >
+        <ShellPanel
+          title="The instance"
+          prompt={REMOTE_PROMPT}
+          fontSize={15}
+          lines={[
+            { text: 'docker --version', kind: 'cmd' },
+            { text: 'bash: docker: command not found', kind: 'out' },
+          ]}
+          caption="Your laptop has Docker because you installed it. This machine is new"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c2-install',
+    section: C2,
+    label: 'Install Docker',
+    element: (
+      <ContentSlide
+        kicker={C2}
+        title="Install Docker"
+        lead="Three commands, and the third one needs you to log out afterwards"
+        lesson={SESSION}
+      >
+        <ShellPanel
+          title="The instance"
+          prompt={REMOTE_PROMPT}
+          fontSize={14}
+          lines={[
+            { text: 'sudo apt-get update', kind: 'cmd' },
+            { text: 'sudo apt-get install -y docker.io docker-compose-v2', kind: 'cmd' },
+            { text: `sudo usermod -aG docker ${SSH_USER}`, kind: 'cmd' },
+          ]}
+          caption="The first refreshes the package list, the second installs Docker and Compose, the third lets you run Docker without sudo"
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'Do not let them skip the log out. Group membership is read when a session starts, so the third ' +
+      'command does nothing until they exit and connect again.',
+  },
+  {
+    id: 'c2-reconnect',
+    section: C2,
+    label: 'Log out and back in',
+    element: (
+      <ContentSlide
+        kicker={C2}
+        title="Log Out and Back In"
+        lead="Your groups are read when the session starts, so the new one is not active yet"
+        lesson={SESSION}
+      >
+        <ShellPanel
+          title="The instance"
+          prompt={REMOTE_PROMPT}
+          fontSize={15}
+          lines={[
+            { text: 'exit', kind: 'cmd' },
+            { text: `ssh -i ${KEY_FILE} ${SSH_USER}@${ADDRESS_ON_START}`, kind: 'cmd' },
+            { text: 'docker --version', kind: 'cmd' },
+            { text: 'Docker version 29.1.3, build 29.1.3-0ubuntu4.1', kind: 'out' },
+            { text: 'docker compose version', kind: 'cmd' },
+            { text: 'Docker Compose version 2.40.3+ds1-0ubuntu1', kind: 'out' },
+          ]}
+          caption="Now Docker answers without sudo"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c2-pull',
+    section: C2,
+    label: 'Pull the images',
+    element: (
+      <ContentSlide
+        kicker={C2}
+        title="Pull Your Images"
+        lead="This is what Docker Hub was for"
+        lesson={SESSION}
+      >
+        <ShellPanel
+          title="The instance"
+          prompt={REMOTE_PROMPT}
+          fontSize={14}
+          lines={[
+            { text: 'docker pull <your-docker-id>/nxttrendz-backend:6', kind: 'cmd' },
+            { text: 'Status: Downloaded newer image for nxttrendz-backend:6', kind: 'out' },
+            { text: 'docker pull <your-docker-id>/nxttrendz-frontend:6', kind: 'cmd' },
+            { text: 'Status: Downloaded newer image for nxttrendz-frontend:6', kind: 'out' },
+          ]}
+          caption="Use your own Docker Hub ID and the tag of your last green build"
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'Every learner has their own Docker Hub ID and their own tag numbers. Say so here rather than letting ' +
+      'them copy the one on the slide.',
+  },
+  {
+    id: 'c2-never-saw-code',
+    section: C2,
+    label: 'No source code',
+    element: (
+      <ContentSlide
+        kicker={C2}
+        title="This Server Has Never Seen Your Code"
+        lead="No clone, no build, no Dockerfile. It downloaded two finished images by name"
+        lesson={SESSION}
+        points={[
+          { text: 'Your machine built the images', icon: 'code' },
+          { text: 'Docker Hub kept them', icon: 'server' },
+          { text: 'The server only runs them', icon: 'play' },
+        ]}
+      >
+        <Callout kind="success" title="Two things happened quietly">
+          No docker login was needed, because the repositories are public. And no firewall rule was needed,
+          because traffic going out of a server is allowed by default. The second one comes back later
+        </Callout>
+      </ContentSlide>
+    ),
+    notes: 'Plant the outbound point here. Concept 4 collects it when they ask why the pull worked.',
+  },
+  {
+    id: 'c2-recap',
+    section: C2,
+    label: 'Recap',
+    element: (
+      <RecapSlide
+        kicker={C2}
+        title={C2}
+        lesson={SESSION}
+        points={[
+          { text: 'A new server starts with nothing on it', sub: 'You install Docker once, per server' },
+          { text: 'Group changes need a fresh login', sub: 'exit, then connect again' },
+          { text: 'The server pulls images by name', sub: 'It never sees your source code' },
+        ]}
+      />
+    ),
   },
 ]
 

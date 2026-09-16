@@ -19,7 +19,7 @@ export function Permissions({ mode = 644 }: { mode?: 644 | 400 }) {
   ]
 
   return (
-    <div className="flex items-center justify-center gap-10">
+    <div className="flex items-center justify-center gap-3">
       <div className="flex flex-col gap-4">
         {who.map((w, i) => (
           <motion.div
@@ -43,16 +43,16 @@ export function Permissions({ mode = 644 }: { mode?: 644 | 400 }) {
         ))}
       </div>
 
-      <svg width={180} height={210} aria-hidden>
+      <svg width={210} height={200} aria-hidden>
         {who.map((w, i) => {
-          const y = 30 + i * 74
+          const y = 28 + i * 68
           return (
             <g key={w.label}>
               <motion.line
                 x1={0}
                 y1={y}
-                x2={150}
-                y2={105}
+                x2={206}
+                y2={96}
                 stroke={w.allowed ? colors.brand : colors.line}
                 strokeWidth={w.allowed ? 2.5 : 2}
                 strokeDasharray={w.allowed ? undefined : '5 5'}
@@ -61,7 +61,7 @@ export function Permissions({ mode = 644 }: { mode?: 644 | 400 }) {
                 transition={instant ? { duration: 0 } : { duration: 0.86, delay: 0.3 + i * 0.1 }}
               />
               {!w.allowed && (
-                <g transform={`translate(${72},${(y + 105) / 2 - 2})`}>
+                <g transform={`translate(${104},${(y + 96) / 2})`}>
                   <circle r={13} fill={colors.white} stroke={colors.danger} strokeWidth={2} />
                   <path d="M-5,-5 L5,5 M5,-5 L-5,5" stroke={colors.danger} strokeWidth={2.5} strokeLinecap="round" />
                 </g>
