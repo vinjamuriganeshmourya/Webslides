@@ -10,6 +10,14 @@
  * that proves each one is named in
  * `django_deployement_course/workflow/captures/session-10/MANIFEST.md`.
  * If you are tempted to change one, change the capture first.
+ *
+ * NO RESOURCE IDS LIVE HERE, DELIBERATELY. User instruction, 2026-09-16:
+ * "just name are enough, what are you adding ids". An instance ID, an AMI ID,
+ * a security group ID, a VPC ID and a subnet ID are unique to one account and
+ * mean nothing to a learner, so a slide names `nxttrendz-server` and
+ * `nxttrendz-sg` instead. The IDs are kept in the captures MANIFEST for
+ * anyone reproducing the run, and there is nothing to import here that would
+ * let one back onto a slide by accident.
  */
 
 export const SESSION = 'Deploying Your App on AWS'
@@ -31,30 +39,25 @@ export const CLOSING_KICKER = 'Before You Leave'
 export const REGION_NAME = 'Asia Pacific (Mumbai)'
 export const REGION_CODE = 'ap-south-1'
 export const ZONE = 'ap-south-1b'
-export const VPC_ID = 'vpc-0292256715a0e0ab2'
 export const VPC_CIDR = '172.31.0.0/16'
-export const SUBNET_ID = 'subnet-0b52b9ce32d8053c0'
+export const SUBNET_DESC = 'one subnet, in ap-south-1b'
 
 /* ---- the application server -------------------------------------------- */
 
 export const APP_NAME = 'nxttrendz-server'
-export const APP_INSTANCE_ID = 'i-06031b2ad99f0b796'
 export const APP_PRIVATE_IP = '172.31.7.32'
 export const APP_HOSTNAME = 'ip-172-31-7-32'
 export const APP_DISK = '8 GiB'
 export const APP_SG_NAME = 'nxttrendz-sg'
-export const APP_SG_ID = 'sg-03340990eb18a3456'
 
 /* ---- the build server --------------------------------------------------- */
 
 export const JENKINS_NAME = 'nxttrendz-jenkins'
-export const JENKINS_INSTANCE_ID = 'i-0c96a9a3b4803cefc'
 export const JENKINS_IP = '3.108.220.155'
 export const JENKINS_PRIVATE_IP = '172.31.15.67'
 export const JENKINS_DISK = '20 GiB'
 export const JENKINS_SWAP = '4 GiB'
 export const JENKINS_SG_NAME = 'jenkins-sg'
-export const JENKINS_SG_ID = 'sg-0a8dd5bcc3a3e91a8'
 export const JOB_NAME = 'nxttrendz-pipeline'
 export const JOB_NAME_OLD = 'nxttrendz-build-test'
 
@@ -65,7 +68,6 @@ export const INSTANCE_VCPU = '2 vCPU'
 export const INSTANCE_RAM = '1 GiB'
 export const DISK_TYPE = 'gp3'
 export const AMI_NAME = 'Ubuntu Server 26.04 LTS'
-export const AMI_ID = 'ami-01a00762f46d584a1'
 export const SSH_USER = 'ubuntu'
 export const KEY_NAME = 'nxttrendz-key'
 export const KEY_FILE = `${KEY_NAME}.pem`
@@ -80,7 +82,6 @@ export const SWAP_IN_USE = '486 MiB'
 /* ---- addresses ---------------------------------------------------------- */
 
 export const ELASTIC_IP = '13.202.184.214'
-export const ALLOCATION_ID = 'eipalloc-0947cde9d5ed8fa6a'
 
 /** Every public address this one instance has had, oldest first. Three came
  *  from session 9, the fourth from this session's start. The argument for an

@@ -54,18 +54,17 @@ application privately, which section 9 uses.
 | Setting | Value | Why this value |
 |---|---|---|
 | Name | `nxttrendz-server` | names the thing it is |
-| Instance ID | `i-06031b2ad99f0b796` | assigned by AWS at launch |
 | Instance type | **t3.micro** | 2 vCPU, 1 GiB RAM. Free tier eligible, and enough to run two small containers |
-| Image | **Ubuntu Server 26.04 LTS**, `ami-01a00762f46d584a1` | the same Linux the course has used throughout |
+| Image | **Ubuntu Server 26.04 LTS** | the same Linux the course has used throughout |
 | Disk | **8 GiB gp3** | holds Ubuntu, Docker and two images with room to spare |
 | Region | **Asia Pacific (Mumbai)**, `ap-south-1` | nearest to the room |
 | Availability Zone | `ap-south-1b` | one building inside that Region |
-| VPC | `vpc-0292256715a0e0ab2`, `172.31.0.0/16` | the account's default private network |
-| Subnet | `subnet-0b52b9ce32d8053c0` | the slice of that network this instance sits in |
+| VPC | `172.31.0.0/16` | the account's default private network |
+| Subnet | one subnet, in `ap-south-1b` | the slice of that network this instance sits in |
 | Private address | `172.31.7.32` | never changes, never leaves AWS |
 | Public address | Elastic IP `13.202.184.214` | section 7 explains why it must be Elastic |
 | Key pair | `nxttrendz-key`, RSA, `.pem` | the only way in |
-| Security group | `nxttrendz-sg`, `sg-03340990eb18a3456` | the door list |
+| Security group | `nxttrendz-sg` | the door list |
 
 **Its doors.** Five rules, and each one has to be justifiable out loud.
 
@@ -73,7 +72,7 @@ application privately, which section 9 uses.
 |---|---|---|
 | 22 | `49.200.108.250/32` | you, and only you, administer the server |
 | 22 | `13.233.177.0/29` | AWS's own browser Connect service in Mumbai |
-| 22 | `sg-0a8dd5bcc3a3e91a8` | the build server, named by **security group** and not by address |
+| 22 | `jenkins-sg` | the build server, named by **security group** and not by address |
 | 3000 | `0.0.0.0/0` | the React frontend. Users are the point |
 | 8000 | `0.0.0.0/0` | the Django API, which the browser calls directly |
 | ~~5432~~ | **no rule** | there is no database server. See 1.4 |
@@ -83,13 +82,12 @@ application privately, which section 9 uses.
 | Setting | Value | Why this value |
 |---|---|---|
 | Name | `nxttrendz-jenkins` | |
-| Instance ID | `i-0c96a9a3b4803cefc` | |
 | Instance type | **t3.micro** | free tier again, **plus 4 GiB of swap added by hand**. See the warning below |
 | Image | **Ubuntu Server 26.04 LTS** | same as the app server |
 | Disk | **20 GiB gp3** | not 8. Docker builds accumulate layers and images fast |
 | Private address | `172.31.15.67` | same VPC as the app server, which is the whole point |
 | Public address | `3.108.220.155` | GitHub must be able to reach it |
-| Security group | `jenkins-sg`, `sg-0a8dd5bcc3a3e91a8` | |
+| Security group | `jenkins-sg` | |
 
 **Its doors.**
 
