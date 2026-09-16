@@ -22,8 +22,8 @@ folder beside them.
 5. [Running the stack](#5-running-the-stack)
 6. [Security groups](#6-security-groups)
 7. [A permanent address](#7-a-permanent-address)
-8. [Shipping a fix through the pipeline](#8-shipping-a-fix-through-the-pipeline)
-9. [Moving Jenkins into AWS](#9-moving-jenkins-into-aws)
+8. [Moving Jenkins into AWS](#8-moving-jenkins-into-aws)
+9. [Shipping a fix through the pipeline](#9-shipping-a-fix-through-the-pipeline)
 10. [The finished system](#10-the-finished-system)
 11. [Hardening checklist](#11-hardening-checklist)
 12. [What is still not production](#12-what-is-still-not-production)
@@ -585,11 +585,228 @@ docker compose up -d
 
 ---
 
-## 8. Shipping a fix through the pipeline
+## 8. Moving Jenkins into AWS
+
+> **Why this comes before the code fix.** The product list is still empty and we
+> know exactly why, so it is tempting to fix it now. Two things say otherwise.
+>
+> Your webhook is probably already broken: session 8 pointed it at an ngrok
+> tunnel, and a free ngrok URL changes every time the tunnel restarts. Check it
+> before you assume a push will build anything.
+>
+> And everything Jenkins holds, its plugins, its credentials and its jobs, lives
+> in a volume that does not travel. Setting all of that up on the laptop and
+> then again on EC2 is the same fifteen minutes twice.
+>
+> So: move the build server first, then send the fix through the pipeline that
+> will carry every fix after it.
+
+![Jenkins joins](../../workflow/captures/session-10/diagrams/arch-07-jenkins-joins.png)
+
+**What this step requires:** a second EC2 instance. The full specification is
+in section 1.3, and you should read it again before launching.
+
+### 8.1 Why
+
+Session 8 ran Jenkins on a laptop and needed **ngrok** to let GitHub's webhook
+reach it, because a laptop has no public address. That workaround exists only
+because of where Jenkins was running.
+
+Put Jenkins on EC2 and it has a public address of its own. **The webhook goes
+straight there and ngrok disappears.**
+
+### 8.2 Launch it
+
+**Console path:** `EC2 → Instances → Launch instances`
+
+Name `nxttrendz-jenkins`, Ubuntu 26.04, t3.micro, key pair `nxttrendz-key`.
+
+![The launch form](../../workflow/captures/session-10/jen-01-launch-name-ubuntu.png)
+
+Create a new security group named `jenkins-sg` with **both rules scoped to My
+IP**: SSH on 22, and Custom TCP on 8080.
+
+![jenkins-sg](../../workflow/captures/session-10/jen-02-jenkins-sg-rules.png)
+
+Raise storage from 8 GiB to **20 GiB**.
+
+![20 GiB](../../workflow/captures/session-10/jen-03-storage-20gib.png)
+
+![Two instances](../../workflow/captures/session-10/jen-05-two-instances.png)
+
+### 8.3 Swap, then Docker, then Jenkins
+
+```bash
+sudo fallocate -l 4G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+
+sudo apt-get update
+sudo apt-get install -y docker.io docker-compose-v2
+sudo usermod -aG docker ubuntu
+
+sudo docker run -d --name jenkins --restart unless-stopped \
+  -p 8080:8080 -p 50000:50000 \
+  -v jenkins_home:/var/jenkins_home \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  jenkins/jenkins:lts
+```
+
+Jenkins builds Docker images, so it needs the Docker CLI inside its own
+container and access to the host's socket:
+
+```bash
+sudo docker exec -u root jenkins apt-get update
+sudo docker exec -u root jenkins apt-get install -y docker.io
+sudo docker exec -u root jenkins chmod 666 /var/run/docker.sock
+```
+
+### 8.4 Unlock it
+
+![Unlock Jenkins](../../workflow/captures/session-10/jen-08-unlock-jenkins.png)
+
+```bash
+sudo docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+```
+
+Install suggested plugins, create the admin user, then add the SSH Agent plugin
+and both credentials again. **Nothing transfers from the laptop Jenkins.** Its
+jobs, plugins and credentials live in its own volume.
+
+| What to recreate | ID it must have |
+|---|---|
+| Docker Hub token | `dockerhub-credentials` |
+| The `.pem` | `ec2-ssh-key` |
+| The pipeline job | any name. It is `nxttrendz-pipeline` here |
+
+### 8.5 Let the build server reach the app server privately
+
+Both instances sit in the same VPC, so Jenkins can reach the app server on its
+**private** address, `172.31.7.32`. That traffic never touches the internet.
+
+Add one rule to `nxttrendz-sg`, and make its **source a security group** rather
+than an address:
+
+**Console path:** `EC2 → Security Groups → nxttrendz-sg → Edit inbound rules →
+Add rule`, Type SSH, Source `jenkins-sg`.
+
+![Security group as source](../../workflow/captures/session-10/jen-06-sg-source-is-jenkins-sg.png)
+
+![Five rules](../../workflow/captures/session-10/jen-07-app-sg-five-rules.png)
+
+**Why this is better than an address.** Any instance in `jenkins-sg` may
+connect. Replace the build server, give it a new address, and nothing needs
+re-pinning. No address appears in the rule at all.
+
+Then point the Deploy stage at the private address:
+
+```groovy
+EC2_HOST = '172.31.7.32'
+```
+
+### 8.6 Let GitHub in
+
+`jenkins-sg` allows 8080 from your address only, so GitHub's delivery would be
+dropped. GitHub publishes the addresses its webhooks come from at
+`https://api.github.com/meta`, under `hooks`.
+
+Add one rule per range, all on port 8080:
+
+```
+192.30.252.0/22
+185.199.108.0/22
+140.82.112.0/20
+143.55.64.0/20
+```
+
+![GitHub's ranges](../../workflow/captures/session-10/jen-09-github-webhook-ranges.png)
+
+![Six rules](../../workflow/captures/session-10/jen-10-jenkins-sg-six-rules.png)
+
+### 8.7 Give the build server a permanent address, then repoint the webhook
+
+The app server needed an Elastic IP because its address was written into an
+image. The build server needs one for a sharper reason: **the webhook points at
+it.** If that address moves, GitHub keeps posting to an address that no longer
+answers, nothing builds, and there is no error anywhere you are looking.
+
+Same two steps as section 7: allocate, then associate. The old address dies the
+same instant.
+
+Then there are **two** places to change, not one. The webhook, and Jenkins's own
+record of its address under `Manage Jenkins → System`, which it uses for every
+link it generates.
+
+**GitHub path:** `repository → Settings → Webhooks → the hook → Payload URL`
+
+```
+http://3.108.1.66:8080/github-webhook/
+```
+
+The trailing `/github-webhook/` matters, and so does the trailing slash.
+
+### 8.8 Watch it run
+
+![Build 1 on AWS](../../workflow/captures/session-10/jen-11-build-1-on-aws.png)
+
+| Stage | Time |
+|---|---|
+| Checkout SCM | 1s |
+| Checkout | 0.91s |
+| Build | 1m 8s |
+| Push | 32s |
+| Deploy | 17s |
+
+```
++ ssh -o StrictHostKeyChecking=no ubuntu@172.31.7.32
+      cd ~/nxttrendz &&
+      sed -i 's/^IMAGE_TAG=.*/IMAGE_TAG=1/' .env &&
+      docker compose pull &&
+      docker compose up -d
+```
+
+**A private address, and no laptop anywhere in the chain.**
+
+> **Build numbers restart.** A new Jenkins counts from 1, so the deployed image
+> is `:1` even though Docker Hub still holds `:4` through `:8` from the laptop.
+> Nothing went backwards.
+
+### 8.9 Give the job a name that is true
+
+The job has been called `nxttrendz-build-test` since session 8, and session 8
+removed the Test stage. The name has been wrong ever since.
+
+**Console path:** `job → Rename`
+
+![Rename](../../workflow/captures/session-10/jen-14-rename-form.png)
+
+![Renamed](../../workflow/captures/session-10/jen-16-renamed.png)
+
+Build history survives, and so does the webhook: GitHub posts to
+`/github-webhook/` and Jenkins matches on the repository URL, not the job name.
+
+The hook log proves both the delivery and the rule that allowed it:
+
+![The hook log](../../workflow/captures/session-10/jen-17-github-hook-log.png)
+
+```
+Started by event from 140.82.115.248 → http://3.108.1.66:8080/github-webhook/
+Done. Took 4 ms
+Changes found
+```
+
+`140.82.115.248` sits inside `140.82.112.0/20`, one of the four ranges added in
+section 9.6.
+
+---
+
+## 9. Shipping a fix through the pipeline
 
 **What this step requires:** the running app, and the session 8 pipeline.
 
-### 8.1 The site loads and the product list stays empty
+### 9.1 The site loads and the product list stays empty
 
 Open the site, log in, and nothing happens. The page gives no error. The
 browser console does.
@@ -618,7 +835,7 @@ No 'Access-Control-Allow-Origin' header is present on the requested resource.
 **CORS**, from session 1, the security guard at the gate. The backend's allowed
 origin list still names only `http://localhost:3000`.
 
-### 8.2 This one cannot be fixed on the server
+### 9.2 This one cannot be fixed on the server
 
 ```python
 CORS_ALLOWED_ORIGINS = [
@@ -643,7 +860,7 @@ git commit -m "Allow the deployed frontend origin through CORS"
 git push origin main
 ```
 
-### 8.3 The pipeline runs, and stops short
+### 9.3 The pipeline runs, and stops short
 
 The webhook fires. Jenkins checks out, builds both images, pushes them. Tag `7`
 appeared on Docker Hub **40 seconds after the push**.
@@ -671,7 +888,7 @@ Now the login returns `200` and the product list fills.
 
 ![The product list, live](../../workflow/captures/session-10/dep-22-products-live.png)
 
-### 8.4 Kill the manual step
+### 9.4 Kill the manual step
 
 Make the tag a variable instead of a hardcoded number. In the compose file on
 the server:
@@ -721,209 +938,6 @@ It needs two things in Jenkins.
 
 Push any change and watch four stages go green, then reload the site without
 touching a terminal.
-
----
-
-## 9. Moving Jenkins into AWS
-
-![Jenkins joins](../../workflow/captures/session-10/diagrams/arch-07-jenkins-joins.png)
-
-**What this step requires:** a second EC2 instance. The full specification is
-in section 1.3, and you should read it again before launching.
-
-### 9.1 Why
-
-Session 8 ran Jenkins on a laptop and needed **ngrok** to let GitHub's webhook
-reach it, because a laptop has no public address. That workaround exists only
-because of where Jenkins was running.
-
-Put Jenkins on EC2 and it has a public address of its own. **The webhook goes
-straight there and ngrok disappears.**
-
-### 9.2 Launch it
-
-**Console path:** `EC2 → Instances → Launch instances`
-
-Name `nxttrendz-jenkins`, Ubuntu 26.04, t3.micro, key pair `nxttrendz-key`.
-
-![The launch form](../../workflow/captures/session-10/jen-01-launch-name-ubuntu.png)
-
-Create a new security group named `jenkins-sg` with **both rules scoped to My
-IP**: SSH on 22, and Custom TCP on 8080.
-
-![jenkins-sg](../../workflow/captures/session-10/jen-02-jenkins-sg-rules.png)
-
-Raise storage from 8 GiB to **20 GiB**.
-
-![20 GiB](../../workflow/captures/session-10/jen-03-storage-20gib.png)
-
-![Two instances](../../workflow/captures/session-10/jen-05-two-instances.png)
-
-### 9.3 Swap, then Docker, then Jenkins
-
-```bash
-sudo fallocate -l 4G /swapfile
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
-echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-
-sudo apt-get update
-sudo apt-get install -y docker.io docker-compose-v2
-sudo usermod -aG docker ubuntu
-
-sudo docker run -d --name jenkins --restart unless-stopped \
-  -p 8080:8080 -p 50000:50000 \
-  -v jenkins_home:/var/jenkins_home \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  jenkins/jenkins:lts
-```
-
-Jenkins builds Docker images, so it needs the Docker CLI inside its own
-container and access to the host's socket:
-
-```bash
-sudo docker exec -u root jenkins apt-get update
-sudo docker exec -u root jenkins apt-get install -y docker.io
-sudo docker exec -u root jenkins chmod 666 /var/run/docker.sock
-```
-
-### 9.4 Unlock it
-
-![Unlock Jenkins](../../workflow/captures/session-10/jen-08-unlock-jenkins.png)
-
-```bash
-sudo docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
-```
-
-Install suggested plugins, create the admin user, then add the SSH Agent plugin
-and both credentials again. **Nothing transfers from the laptop Jenkins.** Its
-jobs, plugins and credentials live in its own volume.
-
-| What to recreate | ID it must have |
-|---|---|
-| Docker Hub token | `dockerhub-credentials` |
-| The `.pem` | `ec2-ssh-key` |
-| The pipeline job | any name. It is `nxttrendz-pipeline` here |
-
-### 9.5 Let the build server reach the app server privately
-
-Both instances sit in the same VPC, so Jenkins can reach the app server on its
-**private** address, `172.31.7.32`. That traffic never touches the internet.
-
-Add one rule to `nxttrendz-sg`, and make its **source a security group** rather
-than an address:
-
-**Console path:** `EC2 → Security Groups → nxttrendz-sg → Edit inbound rules →
-Add rule`, Type SSH, Source `jenkins-sg`.
-
-![Security group as source](../../workflow/captures/session-10/jen-06-sg-source-is-jenkins-sg.png)
-
-![Five rules](../../workflow/captures/session-10/jen-07-app-sg-five-rules.png)
-
-**Why this is better than an address.** Any instance in `jenkins-sg` may
-connect. Replace the build server, give it a new address, and nothing needs
-re-pinning. No address appears in the rule at all.
-
-Then point the Deploy stage at the private address:
-
-```groovy
-EC2_HOST = '172.31.7.32'
-```
-
-### 9.6 Let GitHub in
-
-`jenkins-sg` allows 8080 from your address only, so GitHub's delivery would be
-dropped. GitHub publishes the addresses its webhooks come from at
-`https://api.github.com/meta`, under `hooks`.
-
-Add one rule per range, all on port 8080:
-
-```
-192.30.252.0/22
-185.199.108.0/22
-140.82.112.0/20
-143.55.64.0/20
-```
-
-![GitHub's ranges](../../workflow/captures/session-10/jen-09-github-webhook-ranges.png)
-
-![Six rules](../../workflow/captures/session-10/jen-10-jenkins-sg-six-rules.png)
-
-### 9.7 Give the build server a permanent address, then repoint the webhook
-
-The app server needed an Elastic IP because its address was written into an
-image. The build server needs one for a sharper reason: **the webhook points at
-it.** If that address moves, GitHub keeps posting to an address that no longer
-answers, nothing builds, and there is no error anywhere you are looking.
-
-Same two steps as section 7: allocate, then associate. The old address dies the
-same instant.
-
-Then there are **two** places to change, not one. The webhook, and Jenkins's own
-record of its address under `Manage Jenkins → System`, which it uses for every
-link it generates.
-
-**GitHub path:** `repository → Settings → Webhooks → the hook → Payload URL`
-
-```
-http://3.108.1.66:8080/github-webhook/
-```
-
-The trailing `/github-webhook/` matters, and so does the trailing slash.
-
-### 9.8 Watch it run
-
-![Build 1 on AWS](../../workflow/captures/session-10/jen-11-build-1-on-aws.png)
-
-| Stage | Time |
-|---|---|
-| Checkout SCM | 1s |
-| Checkout | 0.91s |
-| Build | 1m 8s |
-| Push | 32s |
-| Deploy | 17s |
-
-```
-+ ssh -o StrictHostKeyChecking=no ubuntu@172.31.7.32
-      cd ~/nxttrendz &&
-      sed -i 's/^IMAGE_TAG=.*/IMAGE_TAG=1/' .env &&
-      docker compose pull &&
-      docker compose up -d
-```
-
-**A private address, and no laptop anywhere in the chain.**
-
-> **Build numbers restart.** A new Jenkins counts from 1, so the deployed image
-> is `:1` even though Docker Hub still holds `:4` through `:8` from the laptop.
-> Nothing went backwards.
-
-### 9.9 Give the job a name that is true
-
-The job has been called `nxttrendz-build-test` since session 8, and session 8
-removed the Test stage. The name has been wrong ever since.
-
-**Console path:** `job → Rename`
-
-![Rename](../../workflow/captures/session-10/jen-14-rename-form.png)
-
-![Renamed](../../workflow/captures/session-10/jen-16-renamed.png)
-
-Build history survives, and so does the webhook: GitHub posts to
-`/github-webhook/` and Jenkins matches on the repository URL, not the job name.
-
-The hook log proves both the delivery and the rule that allowed it:
-
-![The hook log](../../workflow/captures/session-10/jen-17-github-hook-log.png)
-
-```
-Started by event from 140.82.115.248 → http://3.108.1.66:8080/github-webhook/
-Done. Took 4 ms
-Changes found
-```
-
-`140.82.115.248` sits inside `140.82.112.0/20`, one of the four ranges added in
-section 9.6.
 
 ---
 

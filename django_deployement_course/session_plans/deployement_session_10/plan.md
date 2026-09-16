@@ -1,7 +1,7 @@
 <!-- cSpell:ignore nxttrendz deployement NxtWave colour Mumbai ap-south CIDR sshagent gunicorn Kubernetes usermod corsheaders runserver eipalloc -->
 # Deployment · Session 10: "Deploying Your App on AWS"
 
-**STATUS: revision 2, awaiting sign-off.** Revision 1 was written before the
+**STATUS: revision 3, awaiting sign-off.** Revision 1 was written before the
 hands-on and predicted the flow. **This revision replicates the flow as it
 actually ran on 2026-09-16**, beat for beat, with the capture that proves each
 one. Revision 1 is kept beside this file as `plan.rev1.md`.
@@ -87,10 +87,43 @@ the TR never mentions, all real, all load-bearing, and all of which happened:
 | 3 | `Running the Stack` | 26 to 35 | `BuildVsImage`, why the server never builds |
 | 4 | `Security Groups` | 36 to 55 | `DoorList`, the instance edge with its doors |
 | 5 | `A Permanent Address` | 56 to 67 | `AddressTag`, loose luggage tag becoming a pinned plate |
-| 6 | `Shipping a Fix` | 68 to 84 | `LastMile`, the gap the pipeline does not cross |
-| 7 | `Jenkins on AWS` | 85 to 107 | `TwoServers`, the VPC with both machines |
+| 6 | `Jenkins on AWS` | 68 to 92 | `TwoServers`, the VPC with both machines |
+| 7 | `Shipping a Fix` | 93 to 110 | `LastMile`, the gap the pipeline does not cross |
+
+**Concepts 6 and 7 are the other way round from the order the hands-on ran in,
+and revision 3 swapped them deliberately.** Two reasons, both about the room
+rather than about the technology, and §4a has the detail.
 
 Rule 20: Key Takeaways restates exactly these seven names.
+
+## 4a. Why Jenkins moves to AWS **before** the CORS fix
+
+The hands-on ran in the other order: the Deploy stage was added to the laptop
+Jenkins, and then Jenkins moved to EC2 and everything was built again. That is
+what happened, and it is the wrong thing to teach.
+
+**Reason one: the student's webhook is probably already dead.** Session 8 gives
+every student an ngrok tunnel, and a free ngrok URL changes every time the
+tunnel restarts. Between session 8 and session 10 that has almost certainly
+happened. A concept that opens with "push, and watch your pipeline build" will
+fail for most of the room, for a reason that has nothing to do with the lesson.
+Moving Jenkins to a permanent address first removes that failure mode
+completely, and the dead tunnel becomes the *motivation* rather than a blocker.
+
+**Reason two: the setup would otherwise be done twice.** The SSH Agent plugin,
+the Docker Hub credential, the SSH credential and the job all live in a Jenkins
+volume and none of it transfers. Adding the Deploy stage on the laptop and then
+rebuilding it on EC2 is roughly fifteen minutes of identical clicking, twice,
+and a room that has just done something twice stops believing the second time
+mattered.
+
+So the order is: fix the app's address, move the build server, then ship the
+code fix through the pipeline that will carry every fix after it.
+
+The cost is that the room sits with a visibly broken product list for the whole
+of concept 6. **That is a feature.** The bug is named at the end of concept 5,
+the room knows exactly what it is, and concept 6 opens by saying that before we
+can fix it we need a pipeline we can trust.
 
 ## 5. The spine, as it actually ran
 
@@ -205,96 +238,105 @@ beat marked **[A]** needs an architecture state, and **[C]** names its capture.
 67. Named, not opened: a domain in front of the address, HTTPS in front of
     that. Recap.
 
-### Concept 6 · Shipping a Fix
+### Concept 6 · Jenkins on AWS
 
-68. The browser console. The word the room already knows from session 1:
+68. Question: where is Jenkins running right now?
+69. On a laptop. And GitHub cannot reach a laptop, which is why session 8 needed
+    ngrok. Figure `NgrokDetour`, drawn as the long way round it is.
+70. **Check your tunnel.** A free ngrok URL changes every time it restarts, so
+    for most of the room the webhook in GitHub is already pointing at nothing.
+    Have them look. This is the motivation, and it is real.
+71. **[R]** What we require: a second instance. Full spec, and **20 GiB not 8**,
+    because Docker builds accumulate. **[A]** `arch-07-jenkins-joins`.
+72. **What this costs.** The free tier is 750 instance hours a month. Two
+    instances running together spend it twice as fast. Say it plainly.
+73. Launch it. **[C]** `jen-01`.
+74. `jenkins-sg`, both rules scoped to My IP for now. **[C]** `jen-02`.
+75. Storage to 20 GiB. **[C]** `jen-03`.
+76. Two instances in one list. **[C]** `jen-05`.
+77. **Swap, and why.** 908 MiB of RAM, Jenkins idles at 436, leaving 133 free.
+    Figure `MemoryBar`, measured, not decorative.
+78. Docker, then Jenkins in a container, then the Docker CLI inside it.
+79. Unlock it. **[C]** `jen-08`.
+80. **Nothing transfers.** Plugins, credentials and jobs live in the old volume.
+    A table of what to recreate, and this is the only time it is done.
+81. The Docker Hub credential. **Session 8 told you to delete that token**, so
+    this needs a new one. ID exactly `dockerhub-credentials`.
+82. **The ID is the name the pipeline calls.** Leave it blank and Jenkins
+    invents a UUID and the build fails. Figure `IdIsTheName`. This happened
+    during capture.
+83. The SSH Agent plugin, which is not installed by default. **[C]** `dep-23`, `dep-24`.
+84. The `ec2-ssh-key` credential, the `.pem` pasted whole. **[C]** `dep-25`, `dep-26`.
+85. The job, pointed at the same repository.
+86. **[R]** The build server needs a permanent address, and for a sharper reason
+    than the app server had: **the webhook is configured to point at it.** A
+    moving address breaks the hook silently, and nobody notices until a push
+    does not build.
+87. Allocate a second Elastic IP and associate it. Same two clicks as concept 5,
+    and the old address dies the same instant.
+88. **Three places, not one.** The webhook, Jenkins's own record of its URL under
+    `Manage Jenkins → System`, and later the Jenkinsfile. Missing the middle one
+    leaves Jenkins emailing links to a dead address.
+89. **[R]** GitHub must reach Jenkins, and `jenkins-sg` only allows you. GitHub
+    publishes its ranges at `api.github.com/meta`.
+90. Four rules on 8080. **[C]** `jen-09`, `jen-10`.
+91. Repoint the webhook. The trailing `/github-webhook/` matters.
+92. Push anything. **The build runs, entirely inside AWS.** **[C]** `jen-11`.
+    The hook log proves both halves: the delivery, and the rule that allowed it.
+    `140.82.115.248` sits inside `140.82.112.0/20`. **[C]** `jen-17`. **ngrok is
+    gone.** Recap.
+
+### Concept 7 · Shipping a Fix
+
+93. Back to the empty product list from concept 5. The browser console names it:
     blocked by CORS policy. **[C]** `dep-20`.
-69. Before the Elastic IP it said something different: `ERR_CONNECTION_REFUSED`
+94. Before the Elastic IP it said something different: `ERR_CONNECTION_REFUSED`
     against `localhost:8000`. **[C]** `dep-13`. **Refused, not timed out**, and
     beat 54's decoder explains why in one line.
-70. Why: the frontend runs in the **visitor's** browser. Figure `WhoseLocalhost`.
-71. **This one cannot be fixed on the server.** It is in `settings.py`, and
+95. Why: the frontend runs in the **visitor's** browser. Figure `WhoseLocalhost`.
+96. **This one cannot be fixed on the server.** It is in `settings.py`, and
     `settings.py` is inside the image. Figure `InsideTheImage`.
-72. So the fix goes where every change has gone since session 7: the source.
-    One line.
-73. Commit, push.
-74. The webhook fires. Three stages green. Tag `7` on Docker Hub **40 seconds
-    after the push**.
-75. **And nothing changed on the server.** Still running `:6`. **[C]** transcript 11.
-76. **Failure 4, the honest one.** A human SSHes in, edits a tag, runs `up -d`.
-    Do it on camera, once. **[C]** transcript 12. Figure `LastMile`.
-77. The list fills. **The app works end to end on the public internet.**
-    **[C]** `dep-22`.
-78. Now kill the manual step. Make the tag a variable: `${IMAGE_TAG}` in the
-    compose file, `IMAGE_TAG=7` in `.env`. Figure `TagAsVariable`.
-79. **[R]** What this needs: the SSH Agent plugin, and one credential.
-80. The plugin is not installed by default. **[C]** `dep-23`, `dep-24`.
-81. The credential store, already holding session 8's Docker Hub token.
-    **[C]** `dep-25`, `dep-26`.
-82. **The ID is the name the pipeline calls.** Leave it blank and Jenkins
-    invents a UUID and the stage fails. Figure `IdIsTheName`. This happened.
-83. The Deploy stage, built up line by line. `sshagent`, ssh, sed, pull, up.
-84. Push. Four stages green, 6 seconds of Deploy, nobody touched the server.
-    **[C]** `dep-29`. Recap.
-
-### Concept 7 · Jenkins on AWS
-
-85. Question: where is Jenkins running right now?
-86. On a laptop. And GitHub cannot reach a laptop, which is why session 8
-    needed ngrok. Figure `NgrokDetour`, drawn as the long way round it is.
-87. **[R]** What we require: a second instance. Full spec, and **20 GiB not 8**,
-    because Docker builds accumulate. **[A]** `arch-07-jenkins-joins`.
-88. Launch it. **[C]** `jen-01`.
-89. `jenkins-sg`, both rules scoped to My IP. **[C]** `jen-02`.
-90. Storage to 20 GiB. **[C]** `jen-03`.
-91. Two instances in one list. **[C]** `jen-05`.
-92. **Swap, and why.** 908 MiB of RAM, Jenkins idles at 436, leaving 133 free.
-    Figure `MemoryBar`, measured, not decorative.
-93. Docker, then Jenkins in a container, then the Docker CLI inside it.
-94. Unlock it. **[C]** `jen-08`.
-95. **Nothing transfers.** Plugins, credentials and jobs live in the old
-    volume. A table of what to recreate.
-96. **[R]** Jenkins must reach the app server. It could use the Elastic IP, but
-    both machines are in the same VPC.
-97. **Add a rule whose source is a security group**, not an address.
-    **[C]** `jen-06`, `jen-07`. Figure `GroupAsSource`.
-98. Why that is better: replace the build server and nothing needs re-pinning.
-99. Point the Deploy stage at `172.31.7.32`.
-100. **[R]** GitHub must reach Jenkins, and `jenkins-sg` only allows you.
-     GitHub publishes its ranges at `api.github.com/meta`.
-101. Four rules on 8080. **[C]** `jen-09`, `jen-10`.
-102. **[R]** The build server needs a permanent address too, and for a sharper
-     reason than the app server did: **the webhook is configured to point at
-     it.** A moving address breaks the hook silently, and nobody notices until
-     a push does not build.
-102a. Allocate a second Elastic IP and associate it with the build server.
-     Same two clicks as concept 5, and the old address dies the same instant.
-102b. Repoint the webhook at it. The trailing `/github-webhook/` matters.
-102c. Jenkins also stores its own URL, under `Manage Jenkins → System`. Change
-     it, or every build link it emails points at an address that no longer
-     answers.
-103. **Build 1, entirely inside AWS.** Five stages, 2 min 10 sec, Deploy to a
-     private address. **[C]** `jen-11`. **ngrok is gone.**
-104. The hook log proves both halves: the delivery, and the rule that allowed
-     it. `140.82.115.248` sits inside `140.82.112.0/20`. **[C]** `jen-17`. Recap.
+97. So the fix goes where every change has gone since session 7: the source.
+    One line, naming your own Elastic IP.
+98. Commit, push.
+99. The webhook fires. Three stages green. Tag on Docker Hub **40 seconds after
+    the push**.
+100. **And nothing changed on the server.** Still the old tag. **[C]** transcript 11.
+101. **Failure 4, the honest one.** A human SSHes in, edits a tag, runs `up -d`.
+     Do it on camera, once. **[C]** transcript 12. Figure `LastMile`.
+102. The list fills. **The app works end to end on the public internet.**
+     **[C]** `dep-22`.
+103. Now kill the manual step. Make the tag a variable: `${IMAGE_TAG}` in the
+     compose file, `IMAGE_TAG=` in `.env`. Figure `TagAsVariable`.
+104. **[R]** What this needs: nothing new. The plugin and the credential were
+     added in concept 6, which is the whole reason they were done there.
+105. The Deploy stage, built up line by line: `sshagent`, ssh, sed, pull, up.
+118. **It targets the private address**, `172.31.7.32`, because both machines
+     are in the same VPC.
+119. **Add the rule whose source is a security group**, not an address.
+     **[C]** `jen-06`, `jen-07`. Figure `GroupAsSource`.
+120. Why that is better: replace the build server and nothing needs re-pinning.
+121. `StrictHostKeyChecking=no`, and why it is there.
+116. Push. **Four stages green, and nobody touched the server.** **[C]** `dep-29`.
+     Recap.
 
 ### Closing
 
-105. The job has been called `build-test` since session 8, which removed the
+117. The job has been called `build-test` since session 8, which removed the
      Test stage. Rename it. **[C]** `jen-13` to `jen-16`.
-106. Build history survives, and so does the webhook, because GitHub matches on
+118. Build history survives, and so does the webhook, because GitHub matches on
      the repository URL and not the job name.
-107. **[A]** `arch-08-finished`. The whole system, one picture. The only manual
+119. **[A]** `arch-08-finished`. The whole system, one picture. The only manual
      step marked.
-108. Continuous Deployment. The full term from session 7, now earned.
-109. What each layer removed. Ten rows.
-110. The hardening checklist, ten rows, each naming the session that taught it.
-111. **What is still not production**: `runserver`, the Vite dev server,
+120. Continuous Deployment. The full term from session 7, now earned.
+121. What each layer removed. Ten rows.
+116. The hardening checklist, ten rows, each naming the session that taught it.
+117. **What is still not production**: `runserver`, the Vite dev server,
      `DEBUG = True`, no HTTPS, one server. Named, not opened.
-112. **Stop both instances and release the Elastic IP before you leave.**
-113. Key takeaways: the seven concept names.
-114. Practice.
-115. Where this leads. Feedback. Thank you.
+118. **Stop both instances and release the Elastic IP before you leave.**
+119. Key takeaways: the seven concept names.
+120. Practice.
+121. Where this leads. Feedback. Thank you.
 
 ## 6. Decisions to confirm at sign-off
 
@@ -306,7 +348,7 @@ beat marked **[A]** needs an architecture state, and **[C]** names its capture.
 | D4 | Show the security-group-as-source rule | **Yes, it is the best idea in the session** | It is how real multi-server setups talk, and the TR mentions it only in passing |
 | D5 | The `t3.micro` memory finding | **On a slide, with the numbers** | The room will hit it. Better they expect it |
 | D6 | Quiz frames | **None**, as in sessions 8 and 9 | Third running. Propose recording it as a course rule |
-| D7 | Length | **No cap.** 115 beats lands near 140 to 150 slides | Standing instruction to elaborate |
+| D7 | Length | **No cap.** 121 beats lands near 140 to 150 slides | Standing instruction to elaborate |
 | D8 | A new figure lab | **Yes, `slide-kit/deploy-lab`** | §12.1. Fourteen new figures is too many to prototype inside the deck |
 
 ## 7. Still open
