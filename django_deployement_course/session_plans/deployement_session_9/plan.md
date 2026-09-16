@@ -349,3 +349,263 @@ source before they are typed onto a slide. Each slide prints its source.
 | 26 | t3.micro 2 vCPU 1 GB, t3.small 2 vCPU 2 GB, t3.medium 2 vCPU 4 GB | EC2 instance types page, or the console capture |
 | 41 | USD 100 credit, up to 200, no charge unless upgraded, closes at 6 months | aws.amazon.com/free and its FAQ, as recorded in session 8 plan §4.2b |
 | 42 | the four Mumbai prices | EC2 and EBS pricing pages, Region Asia Pacific (Mumbai) |
+
+---
+
+## 12. Revision 3, 2026-09-16: the session launches an EC2 instance
+
+**Scope change, given by the user after rev2 was signed off and generated:**
+
+> "Also include hands-on on creation of EC2 in the process. Explain each
+> concept instead of explaining randomly."
+
+Two further corrections on the same day, folded into the same pass:
+
+> "Take access through browser and take screenshot create and add parallel to
+> the existing explanation in the flow of creation an EC2" — attempted. The
+> account is still not activated: `ec2/home` redirects to
+> `signup.aws.amazon.com/billing/signup/incomplete`, so every screen of the
+> launch flow stays a `PendingShot` with its exact `at` path, and the captures
+> are taken the day the account activates.
+
+> Every source printed on a slide carries its link, so the exported HTML is
+> clickable. The label is the anchor; the raw URL is never printed.
+
+### D1 is reversed
+
+| Decision | Rev2 | Revision 3 |
+|---|---|---|
+| D1 Hands on the keyboard? | **No launching.** The room only *finds* things | **The room launches one t3.micro instance and stops it before the session ends.** The zero-spend budget is still created |
+
+The reason rev2 gave for D1 ("creating an instance belongs to the next
+session") no longer holds: the user wants the creation taught here, and the
+next session starts from a running instance and logs in to it over SSH.
+
+### Concept 3 is renamed and rebuilt
+
+`Regions and Networks` becomes **`Launching an Instance`**. The agenda line,
+the divider, the concept recap and Key Takeaways all read the `C3` constant in
+`src/decks/deckShared.tsx`, so the rename lands once (hard rule 20: the agenda
+and the takeaways carry the same four names, word for word).
+
+Its spine is the launch form, one field per slide, and each field's concept is
+explained at the field that uses it rather than in a tour of its own:
+
+1. What a Region Is, then Pick the Nearest: the Region is set before the form
+   is opened, because the instance is created in the Region at the top right
+2. Availability Zones
+3. Launch Instance: EC2 → Instances → Launch instance
+4. Name and Tags
+5. Application and OS Image, where the AMI is named and expanded
+6. AMI: the Docker-image analogy, at the field
+7. Instance Type, then The t3 Sizes, at the field
+8. Key Pair, at the field, with the .pem file downloading once and never again
+9. Network settings, field by field: VPC, The Default VPC, Subnets, Three
+   Subnets, Public IP, Security Group, The Door List
+10. Configure Storage: 8 GiB gp3, and the disk billed while stopped
+11. Summary and Launch
+12. Instance Running, then Two Addresses read off that row
+13. Stop or Terminate
+
+Concept 2 keeps what AWS is, the two doors, the market share, the 240
+services, the console, finding EC2 and what an instance is, and **ends with one
+overview slide, `Six Decisions`**, that names the six sections of the form and
+opens none of them (hard rule 4). Instance type, AMI and Key pair moved out of
+concept 2 into the field that uses them.
+
+### Counts
+
+| | Rev2 | Revision 3 |
+|---|---|---|
+| Concept 2 | divider + 13 | divider + 11 |
+| Concept 3 | divider + 10 | divider + 23 |
+| Deck | 63 | **74** |
+| Pending captures | 8 | **19**, fourteen of them in concept 3 |
+
+### Other slides that had to follow (hard rule 9)
+
+- Agenda sub line for C3
+- `Your Account First`: "nothing is created except one budget alert" becomes
+  the honest line, one t3.micro for part of the session, a few cents of credit
+- `Where We Left Off`: "today we launch the computer that will run them"
+- `What Costs Money`: the first meter is the instance the room just launched
+- `Practice`: `Launch, then stop`, ending with Instance state → Stop instance
+- `What Comes Next`: the next session logs in over SSH and installs Docker
+- `Not the Shop` becomes **`Not the App`**: amazon.in is the e-commerce app
+  people use, not "a shop", and `TwoDoors` draws a phone on the left step
+
+### New figure
+
+`src/decks/figures/LaunchForm.tsx`: the six sections of the launch form as one
+labelled panel, numbered in the order the form asks for them, each with one
+plain line saying what it decides. It is never a mock screenshot: no AWS
+chrome, no orange button, no field values. The real screens are the captures on
+the slides that follow.
+
+---
+
+## 13. Capture checklist: the exact values that must be on screen
+
+User, 2026-09-16, and it is strict: every name, port, address and Security
+Group in the figures, tables, captions and pending-capture lines is the SAME
+value the screenshot will show, and the walk-through is exactly the path a
+student follows, with no shortcut a student would not take. The values are
+declared once in `src/decks/deckShared.tsx` and every slide and figure reads
+them from there. This table is the same set, for whoever takes the screenshots.
+
+### The canonical values
+
+| Value | What it is |
+|---|---|
+| Region | `Asia Pacific (Mumbai)`, `ap-south-1` |
+| Availability Zone | `ap-south-1a` (siblings `ap-south-1b`, `ap-south-1c`) |
+| Instance name, typed | `nxttrendz-server` |
+| AMI, chosen | `Ubuntu Server 24.04 LTS` |
+| Instance type, chosen | `t3.micro` |
+| Key pair name, typed | `nxttrendz-key`, giving the file `nxttrendz-key.pem` |
+| Security Group name, typed | `nxttrendz-sg` |
+| VPC range | `172.31.0.0/16` |
+| Disk | `8 GiB`, `gp3` |
+| Ports | 22 open to My IP, 8000 open to Anywhere, **5432 never listed** |
+| Public IPv4, private IPv4 | `13.235.67.89`, `172.31.8.142` are EXAMPLES. AWS assigns them. Replace both constants with the real values off the capture the moment the instance is launched |
+
+### The Security Group rules to create
+
+| Type | Port | Source | On the slide |
+|---|---|---|---|
+| SSH | 22 | My IP | Yes, ticked as Allow SSH traffic from |
+| Custom TCP | 8000 | Anywhere | Yes, added as a second rule |
+| PostgreSQL | 5432 | — | **Nothing is added.** It stays closed, and that is the point of The Door List (TR 11 §4) |
+
+### The captures, in deck order
+
+| Slide | `at` path | What must be on screen |
+|---|---|---|
+| A Data Centre | `aws.amazon.com/about-aws/global-infrastructure` | The map of Regions and the count of Data Centres |
+| Pick the Nearest | `Console → top right → Region` | The Region list, `Asia Pacific (Mumbai) ap-south-1` selected, `Asia Pacific (Hyderabad) ap-south-2` below it |
+| Launch Instance | `EC2 → Instances → Launch instance` | The empty instances table, the orange Launch instance button, `Asia Pacific (Mumbai)` at the top right |
+| Name and Tags | `EC2 → Instances → Launch instance → Name and tags` | `nxttrendz-server` typed into Name |
+| Application and OS Image | `EC2 → Instances → Launch instance → Application and OS Images (Amazon Machine Image)` | Ubuntu chosen, `Ubuntu Server 24.04 LTS`, Free tier eligible |
+| Instance Type | `EC2 → Instances → Launch instance → Instance type` | `t3.micro`, its 2 vCPU, 1 GiB and hourly price |
+| Key Pair | `EC2 → Instances → Launch instance → Key pair (login) → Create new key pair` | `nxttrendz-key` typed, RSA, `.pem` |
+| The Default VPC | `EC2 → Instances → Launch instance → Network settings → Edit → VPC` | The default VPC and `172.31.0.0/16` |
+| Three Subnets | `EC2 → Instances → Launch instance → Network settings → Edit → Subnet` | The three subnets `ap-south-1a`, `1b`, `1c`, with `ap-south-1a` chosen |
+| Public IP | `EC2 → Instances → Launch instance → Network settings → Edit → Auto-assign public IP` | The dropdown reading `Enable` |
+| Security Group | `EC2 → Instances → Launch instance → Network settings → Firewall (security groups)` | Create security group, `nxttrendz-sg` typed, SSH 22 from My IP, Custom TCP 8000 from Anywhere, nothing for 5432 |
+| Configure Storage | `EC2 → Instances → Launch instance → Configure storage` | One root volume, `8 GiB`, `gp3` |
+| Summary and Launch | `EC2 → Instances → Launch instance → Summary → Launch instance` | The six answers in the Summary panel, Number of instances 1, the Launch instance button |
+| Instance Running | `EC2 → Instances` | One row: `nxttrendz-server`, Instance state `Running`, the public IPv4 address, the instance ID |
+| Stop or Terminate | `EC2 → Instances → Instance state → Stop instance` | The Instance state menu open, with the instance selected |
+| The Billing Page | `Console → account name (top right) → Billing and Cost Management` | The month-to-date total reading USD 0.00 and the Free plan credits panel |
+| A Budget Alert | `Billing and Cost Management → Budgets → Create budget` | Use a template (simplified), Zero spend budget chosen, the name and email fields |
+
+Two addresses and the instance ID are read off the Instance Running capture and
+written back into `PUBLIC_IP` and `PRIVATE_IP` in `deckShared.tsx`, so the Two
+Addresses table and the recap figures print the same numbers the screenshot
+shows. Every slide that prints one already says AWS assigns it and a student's
+own will differ.
+
+**Billing → Credits is not captured.** On a Free plan account it lists
+redeemable credits and reads USD 0.00: the Free plan credit is not a redeemable
+credit. The Free plan credit is shown on the Free plan status panel and the
+Cost and usage widget, both of which are already real captures on Check Your
+Credits. The Free Plan Credits slide was dropped rather than made to promise a
+page that does not show the number (user, 2026-09-16).
+
+**Sign In is done.** `public/shots/aws-signin-root.png`, taken 2026-09-16 with
+the Email address field empty, renders through `AnnotatedShot` with the Root
+user option and the email field as highlights 1 and 2.
+
+---
+
+## 14. Flow review changes applied, 2026-09-16
+
+From `flow-review.md` beside this file, the additive and ordering changes only.
+Its merge and cut proposals were **not** applied: the user's standing
+instruction for this deck is to elaborate, not to shrink.
+
+1. **The budget alert moves into the account block**, straight after Check Your
+   Credits, so the zero-spend alarm is set before anything can run. Its lead
+   now reads as part of getting the account ready: *"Nothing is running yet, so
+   set the alarm first."* Concept 4's recap still carries it.
+2. **Concept 3 reads why, then where to click**, on all six sections: `AMI`
+   before `Application and OS Image`, `The t3 Sizes` before `Instance Type`,
+   and `The Door List` before `Security Group`. `VPC` before `The Default VPC`
+   already read that way.
+3. **Two rule breaches fixed.** `What the Cloud Gives You` defined the cloud
+   with "Data Centre" and "server", both taught later; its lead now says "a
+   building full of computers" and "always on". **SSH is expanded once**, on
+   `Instance`, where it first appears: "using SSH, which is Secure Shell".
+4. **A question slide opens concept 3 and concept 4**: `Which city should it
+   be?` and `What has it cost so far?`, restoring beginner rule 3 to the two
+   longest concepts. **Summary and Launch is now the checkpoint**: it lists the
+   six answers in the order the form asked for them and sends the room back to
+   Six Decisions before the click.
+5. **Stop Your Instance** is added before Key Takeaways, so the session's most
+   consequential action happens in the room rather than as homework. It reuses
+   the `Instance state → Stop instance` capture.
+6. **The Console and Find EC2 move ahead of The Market Share**, which puts a
+   keyboard beat earlier and shortens the longest stretch where the room only
+   watches.
+
+Deck: **76 slides**, concept 3 is divider + 24.
+
+---
+
+## 15. The launch was done for real, 2026-09-16
+
+The account activated and the whole walk-through was performed on it. Eighteen
+uncropped captures, `ec2-01` to `ec2-18`, are in
+`deployement_session_9/public/shots/` (originals in
+`workflow/captures/session-9/`), and concept 3 now runs on them. The
+`PendingShot` frames they replace are gone.
+
+### The console corrected the plan, and the deck follows the console
+
+| Planned | What the console did | Where it lands |
+|---|---|---|
+| AMI `Ubuntu Server 24.04 LTS` | The Quick Start list offers **`Ubuntu Server 26.04 LTS`**, `ami-01a00762f46d584a1`, username `ubuntu` | `AMI_NAME`, `AMI_ID`, `SSH_USER` |
+| Subnet chosen in `ap-south-1a` | The Subnet field was left on **`No preference`**, and AWS placed the instance in **`ap-south-1b`** | `ZONE`, and the slide is now `No Preference` |
+| SSH from `My IP`, app from Anywhere | Exactly that: `22` from `49.200.108.250/32`, Custom TCP `8000` from `0.0.0.0/0`, nothing for `5432` | `MY_IP_CIDR`, `ANYWHERE_CIDR` |
+
+Everything else matches: `nxttrendz-server`, `nxttrendz-key` giving
+`nxttrendz-key.pem`, `nxttrendz-sg`, `t3.micro` at USD 0.0112 an hour, `8 GiB`
+`gp3`, VPC `172.31.0.0/16`.
+
+What AWS assigned, now in `deckShared.tsx` and read by every slide and figure:
+instance `i-06031b2ad99f0b796`, VPC `vpc-0292256715a0e0ab2`, subnet
+`subnet-0b52b9ce32d8053c0`, security group `sg-03340990eb18a3456`, public
+`15.207.88.14` at launch and `13.203.216.68` after a Stop and a Start, private
+`172.31.7.32`, hostname `ip-172-31-7-32`, public DNS
+`ec2-13-203-216-68.ap-south-1.compute.amazonaws.com`.
+
+### Four teaching beats the walk-through produced
+
+1. **Connect, Two Ways** and **The SSH Client Tab** (`ec2-16`, `ec2-17`): the
+   Connect page's two tabs, the username that came with the AMI, and the Public
+   DNS name as the readable form of the public address.
+2. **The SSH Command**: AWS's own two lines, rendered as a terminal panel, not
+   a screenshot. `chmod 400` then `ssh -i … ubuntu@<public DNS>`.
+3. **Connect Refused** (`ec2-18`): the browser Connect fails because port 22 is
+   open only to the learner's own address. The door list, working.
+4. **Inside the Instance**: the real transcript, and the teaching point that the
+   machine's own name IS its private address. Then **Instance Stopped** and
+   **The Address Changed** (`ec2-14`, `ec2-15`): a Stop and Start hands out a
+   new public address while the private one does not move, which is why the
+   next session pins one with an Elastic IP.
+
+### Counts
+
+Deck **88 slides**, concept 3 is divider + 36. Four captures are still pending:
+the Data Centre photograph, Configure storage, the Billing page and the budget
+template.
+
+### Two notes for whoever reviews the captures
+
+- The account name and account ID are visible at the top right of every console
+  capture, because this deck's rule is that a full-screen console capture is
+  never cropped. No slide prints the account ID, but the pixels carry it. If it
+  should not ship, the captures need retaking with that chip out of frame, not
+  retouching (hard rule 11).
+- `ec2-16` has a browser extension toast at the bottom of the frame. Worth
+  retaking when convenient.

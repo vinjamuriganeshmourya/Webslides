@@ -24,7 +24,13 @@ export interface Door {
   sign: string
   /** Path to the mark shown above the door, from `public/`. */
   mark: string
-  step: 'bag' | 'server'
+  /**
+   * What stands on the step under the door. `app` is a phone with the shopping
+   * app open, the door the room has actually used (user, 2026-09-16: the left
+   * door is the e-commerce app, not a shop). `bag` is the older shopping-bag
+   * glyph, kept for any deck still passing it.
+   */
+  step: 'app' | 'bag' | 'server'
 }
 
 const W = 460
@@ -78,7 +84,7 @@ export function TwoDoors({
           <div className="relative mx-auto mt-2 overflow-hidden rounded-t-[55px] bg-white shadow-card" style={{ width: DOOR.w, height: DOOR.h, border: `2px solid ${colors.brand}`, borderBottom: 'none' }}>
             <div className="absolute inset-x-0 top-9 text-center font-heading text-[17px] font-bold leading-6" style={{ color: colors.brand }}>{d.sign}</div>
             <div className="absolute inset-x-0 bottom-0 flex h-[52px] items-end justify-center pb-1.5" style={{ background: colors.surface2 }}>
-              {d.step === 'bag' ? <Bag /> : <ServerGlyph title="" sub="" h={42} light="on" className="w-[66px] !rounded-lg" />}
+              {d.step === 'app' ? <AppPhone /> : d.step === 'bag' ? <Bag /> : <ServerGlyph title="" sub="" h={42} light="on" className="w-[66px] !rounded-lg" />}
             </div>
           </div>
         </Rise>
@@ -88,6 +94,20 @@ export function TwoDoors({
         <span className="text-[18px] font-semibold leading-6 text-ink">{caption}</span>
       </Rise>
     </div>
+  )
+}
+
+/** A phone with the shopping app open on it, 40px tall. */
+function AppPhone() {
+  return (
+    <svg width="30" height="44" viewBox="0 0 30 44" fill="none" aria-hidden>
+      <rect x="1.5" y="1.5" width="27" height="41" rx="4" fill={colors.white} stroke={colors.ink} strokeWidth={1.8} />
+      <rect x="5" y="7" width="20" height="26" rx="2" fill={colors.surface2} />
+      <path d="M11 15h8l-.7 8.5h-6.6L11 15z" fill={colors.white} stroke={colors.ink} strokeWidth={1.4} strokeLinejoin="round" />
+      <path d="M13 15v-1.4a2 2 0 0 1 4 0V15" fill="none" stroke={colors.ink} strokeWidth={1.4} strokeLinecap="round" />
+      <rect x="10" y="26" width="10" height="3" rx="1.5" fill={colors.brand} />
+      <rect x="11" y="36.5" width="8" height="2" rx="1" fill={colors.ink} />
+    </svg>
   )
 }
 

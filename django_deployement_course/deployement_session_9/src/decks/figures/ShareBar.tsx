@@ -51,6 +51,7 @@ const TRACK_W = W - LABEL_W - VALUE_W - 40
 export function ShareBar({
   items = DEFAULT_ITEMS,
   source = 'Synergy Research Group, Q2 2026',
+  sourceHref,
   unit = '%',
   /** What 100% of the track means. Defaults to the sum of the values. */
   total,
@@ -58,6 +59,12 @@ export function ShareBar({
 }: {
   items?: ShareItem[]
   source?: string
+  /**
+   * The page the figures were read from. When set, the source name becomes a
+   * link (user, 2026-09-16: a source printed on a slide must be clickable in
+   * the exported HTML). The URL itself is never printed: the label carries it.
+   */
+  sourceHref?: string
   unit?: string
   total?: number
   className?: string
@@ -133,7 +140,19 @@ export function ShareBar({
         animate={{ opacity: 1 }}
         transition={{ duration: T.label, delay: T.lead + items.length * T.stagger + T.draw * 0.8, ease }}
       >
-        Source: {source}
+        Source:{' '}
+        {sourceHref ? (
+          <a
+            href={sourceHref}
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: colors.brand, textDecorationLine: 'underline', textUnderlineOffset: 2 }}
+          >
+            {source}
+          </a>
+        ) : (
+          source
+        )}
       </motion.p>
     </div>
   )
