@@ -12,7 +12,7 @@ import {
   ThankYouSlide,
   WelcomeSlide,
 } from '@/slides'
-import { Callout } from '@/ui'
+import { Callout, CodeBlock } from '@/ui'
 import { AnnotatedShot } from './figures/AnnotatedShot'
 import { ShellPanel } from './figures/ShellPanel'
 import { CloudArchitecture } from './figures/aws/CloudArchitecture'
@@ -32,6 +32,8 @@ import {
   ADDRESS_ON_START,
   KEY_FILE,
   SSH_USER,
+  T_8000_OK,
+  T_3000_TIMEOUT,
 } from './deckShared'
 
 /**
@@ -538,6 +540,221 @@ export const awsDeployDeck: SlideDef[] = [
           { text: 'A new server starts with nothing on it', sub: 'You install Docker once, per server' },
           { text: 'Group changes need a fresh login', sub: 'exit, then connect again' },
           { text: 'The server pulls images by name', sub: 'It never sees your source code' },
+        ]}
+      />
+    ),
+  },
+
+  /* ── CONCEPT 3 · RUNNING THE STACK ──────────────────────────────────── */
+  {
+    id: 'c3-divider',
+    section: C3,
+    label: '03',
+    element: <SectionBreakerSlide index={3} title={C3} lesson={SESSION} />,
+  },
+  {
+    id: 'c3-question',
+    section: C3,
+    label: 'What starts them',
+    element: (
+      <QuestionSlide
+        kicker={C3}
+        question="The images are on the server now. What starts them?"
+        qualifier="You have answered this before, on your own machine"
+        lesson={SESSION}
+      />
+    ),
+    notes: 'They wrote the answer themselves when they wrote the compose file. Let them say it.',
+  },
+  {
+    id: 'c3-arch',
+    section: C3,
+    label: 'What we are building',
+    element: (
+      <ContentSlide
+        kicker={C3}
+        title="What We Are Building"
+        lead="Two containers and a volume, inside the instance"
+        lesson={SESSION}
+      >
+        <CloudArchitecture state="containers" scale={ARCH} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c3-one-word',
+    section: C3,
+    label: 'One word per service',
+    element: (
+      <ContentSlide
+        kicker={C3}
+        title="One Word Changes"
+        lead="It is your own compose file, with build swapped for image on each service"
+        lesson={SESSION}
+      >
+        <CodeBlock
+          filename="docker-compose.yml, on the server"
+          language="yaml"
+          code={`services:
+  backend:
+    image: <your-docker-id>/nxttrendz-backend:6
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - db_data:/app/data
+  frontend:
+    image: <your-docker-id>/nxttrendz-frontend:6
+    ports:
+      - "3000:3000"
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000
+    depends_on:
+      - backend
+volumes:
+  db_data:`}
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'Do not explain VITE_API_BASE_URL yet. It is wrong, they will find out later, and finding out is the ' +
+      'lesson. Hard rule 4: it is on the slide because it is in the file, not because it is being taught.',
+  },
+  {
+    id: 'c3-why-image',
+    section: C3,
+    label: 'Why image and not build',
+    element: (
+      <ContentSlide
+        kicker={C3}
+        title="Why image and Not build"
+        lead="The server runs what the pipeline built. It does not build its own copy"
+        lesson={SESSION}
+        points={[
+          { text: 'build: would make the server compile its own version', icon: 'warning' },
+          { text: 'Nothing has tested that version, because it did not exist until now', icon: 'cross' },
+          { text: 'image: runs the exact thing that passed', icon: 'check' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'c3-env',
+    section: C3,
+    label: 'The env file',
+    element: (
+      <ContentSlide
+        kicker={C3}
+        title="The .env File"
+        lead="On this server it holds one line"
+        lesson={SESSION}
+      >
+        <CodeBlock filename=".env, on the server" language="text" code={`SECRET_KEY=<a long random value>`} />
+        <Callout kind="note" title="There are no database settings here">
+          This app keeps its data in a file inside the db_data volume, so there is no database host, no
+          database user and no database password to set
+        </Callout>
+      </ContentSlide>
+    ),
+    notes:
+      'Say this plainly or somebody will spend ten minutes looking for DB_HOST because they saw it in a ' +
+      'tutorial.',
+  },
+  {
+    id: 'c3-up',
+    section: C3,
+    label: 'Start it',
+    element: (
+      <ContentSlide
+        kicker={C3}
+        title="Start It"
+        lead="The same command you have run all course, on a machine in Mumbai"
+        lesson={SESSION}
+      >
+        <ShellPanel
+          title="The instance"
+          prompt={REMOTE_PROMPT}
+          fontSize={14}
+          lines={[
+            { text: 'docker compose up -d', kind: 'cmd' },
+            { text: ' Container nxttrendz-backend-1   Started', kind: 'out' },
+            { text: ' Container nxttrendz-frontend-1  Started', kind: 'out' },
+            { text: 'docker compose exec backend python manage.py migrate', kind: 'cmd' },
+            { text: ' Applying contenttypes.0001_initial... OK', kind: 'out' },
+          ]}
+          caption="A fresh volume means an empty database, so the tables have to be created once"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c3-open-it',
+    section: C3,
+    label: 'Open it',
+    element: (
+      <ContentSlide
+        kicker={C3}
+        title="Open It"
+        lead="Both containers are up. Put the address in a browser"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-05-closed-port-times-out.png"
+          alt="Chrome showing This site cannot be reached, the address took too long to respond, ERR_CONNECTION_TIMED_OUT"
+          frameWidth={700}
+          caption="Nothing. It waits about fifteen seconds and gives up"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'Let the silence sit. The containers are running and the page will not load, and that contradiction is ' +
+      'the door into the next concept.',
+  },
+  {
+    id: 'c3-two-ports',
+    section: C3,
+    label: 'One port answers',
+    element: (
+      <ContentSlide
+        kicker={C3}
+        title="One Port Answers, One Does Not"
+        lead="Measured from the same machine, one second apart"
+        lesson={SESSION}
+      >
+        <ShellPanel
+          title="Your machine"
+          prompt={LOCAL_PROMPT}
+          fontSize={14}
+          lines={[
+            { text: 'curl http://<your-address>:8000/api/products/', kind: 'cmd' },
+            { text: `HTTP 200, in ${T_8000_OK}`, kind: 'out' },
+            { text: '', kind: 'out' },
+            { text: 'curl http://<your-address>:3000/', kind: 'cmd' },
+            { text: `curl: (28) Connection timed out after ${T_3000_TIMEOUT}`, kind: 'out' },
+          ]}
+          caption="Same server, same moment. The difference is not the app"
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'This is the strongest evidence in the session. Both containers are up, and one port answers in less ' +
+      'than a tenth of a second while the other never answers at all.',
+  },
+  {
+    id: 'c3-recap',
+    section: C3,
+    label: 'Recap',
+    element: (
+      <RecapSlide
+        kicker={C3}
+        title={C3}
+        lesson={SESSION}
+        points={[
+          { text: 'The server runs images, it does not build them', sub: 'image: instead of build:' },
+          { text: 'A new volume starts empty', sub: 'Run migrate once' },
+          { text: 'It is running, and it is not reachable', sub: 'Those are two different things' },
         ]}
       />
     ),
