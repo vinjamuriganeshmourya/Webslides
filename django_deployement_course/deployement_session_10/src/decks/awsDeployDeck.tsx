@@ -20,6 +20,9 @@ import { Permissions } from './figures/Permissions'
 import { TimeoutVsRefused } from './figures/TimeoutVsRefused'
 import { ThreePlaces } from './figures/ThreePlaces'
 import { MemoryBar } from './figures/MemoryBar'
+import { WhoseLocalhost } from './figures/WhoseLocalhost'
+import { InsideTheImage } from './figures/InsideTheImage'
+import { LastMile } from './figures/LastMile'
 import { SG_THREE_RULES, SG_PORT_COLUMN, SG_RULE_3000, SG_NEW_ROW_FORM } from './shotBoxes'
 import {
   SESSION,
@@ -36,6 +39,7 @@ import {
   ADDRESS_ON_START,
   KEY_FILE,
   SSH_USER,
+  CLOSING_KICKER,
   T_8000_OK,
   T_3000_TIMEOUT,
 } from './deckShared'
@@ -1877,6 +1881,672 @@ volumes:
       />
     ),
   },
+
+  /* ── CONCEPT 7 · SHIPPING A FIX ─────────────────────────────────────── */
+  {
+    id: 'c7-divider',
+    section: C7,
+    label: '07',
+    element: <SectionBreakerSlide index={7} title={C7} lesson={SESSION} />,
+  },
+  {
+    id: 'c7-back-to-empty',
+    section: C7,
+    label: 'Back to the empty list',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="Back to the Empty List"
+        lead="You have a pipeline you can trust now. Time to use it"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-20-login-blocked-cors.png"
+          alt="The application login page loaded over the public address, with nothing having arrived after signing in"
+          frameWidth={700}
+          caption="The page loads. The data does not"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c7-open-console',
+    section: C7,
+    label: 'Ask the browser',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="Ask the Browser"
+        lead="The page says nothing. The console says exactly what is wrong"
+        lesson={SESSION}
+      >
+        <ShellPanel
+          title="Browser console"
+          prompt=">"
+          fontSize={13}
+          lines={[
+            { text: "Access to fetch at 'http://<your-address>:8000/api/users/login/'", kind: 'out' },
+            { text: "from origin 'http://<your-address>:3000' has been blocked by", kind: 'out' },
+            { text: 'CORS policy: No Access-Control-Allow-Origin header is present', kind: 'out' },
+            { text: 'on the requested resource.', kind: 'out' },
+          ]}
+          caption="A word you already know, from the very first session of this course"
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'Let them name it. CORS was taught at the start of the course as the guard at the gate, and here it ' +
+      'is guarding a gate they now own.',
+  },
+  {
+    id: 'c7-two-bugs',
+    section: C7,
+    label: 'Two bugs, not one',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="There Were Two Bugs"
+        lead="You fixed one of them earlier without seeing this message"
+        lesson={SESSION}
+      >
+        <DataTable
+          columns={[{ label: 'What the browser said' }, { label: 'What it meant', weight: 2 }, { label: 'Fixed by', weight: 2 }]}
+          rows={[
+            ['Connection refused', 'the request went to the visitor own machine', 'pointing the frontend at the real address'],
+            ['Blocked by CORS policy', 'it reached the API, and the API refused to answer', 'still to do'],
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c7-whose-localhost',
+    section: C7,
+    label: 'Whose localhost',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="Whose localhost?"
+        lead="The first bug, drawn. The frontend runs in the visitor browser, not on your server"
+        lesson={SESSION}
+      >
+        <WhoseLocalhost />
+      </ContentSlide>
+    ),
+    notes:
+      'This catches almost everyone once. The page comes FROM the server, and then it runs on the visitor ' +
+      'machine, so localhost is theirs.',
+  },
+  {
+    id: 'c7-refused-decoder',
+    section: C7,
+    label: 'Refused, not timed out',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="Refused, Not Timed Out"
+        lead="Your decoder from earlier, on a real failure"
+        lesson={SESSION}
+      >
+        <TimeoutVsRefused show="refused" />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c7-cannot-fix-here',
+    section: C7,
+    label: 'This one is sealed in',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="This One Cannot Be Fixed on the Server"
+        lead="The allowed origin list lives in settings.py, and settings.py is inside the image"
+        lesson={SESSION}
+      >
+        <InsideTheImage />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c7-the-fix',
+    section: C7,
+    label: 'One line of source',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="One Line, in the Source"
+        lead="Add the address the browser is actually coming from"
+        lesson={SESSION}
+      >
+        <CodeBlock
+          filename="backend/myproject/settings.py, on your machine"
+          language="python"
+          code={`CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://<your-elastic-ip>:3000",
+]`}
+        />
+        <Callout kind="note" title="Keep the localhost line">
+          You still run this app on your own machine. Both origins are allowed, and neither breaks the other
+        </Callout>
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c7-push-it',
+    section: C7,
+    label: 'Push it',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="Push It"
+        lead="The same three commands you have used since the Git session"
+        lesson={SESSION}
+      >
+        <ShellPanel
+          title="Your machine"
+          prompt={LOCAL_PROMPT}
+          fontSize={15}
+          lines={[
+            { text: 'git add backend/myproject/settings.py', kind: 'cmd' },
+            { text: 'git commit -m "Allow the deployed frontend origin through CORS"', kind: 'cmd' },
+            { text: 'git push origin main', kind: 'cmd' },
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c7-hub-fast',
+    section: C7,
+    label: 'Docker Hub, in seconds',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="Docker Hub Has It Already"
+        lead="The webhook fired, the stages ran, and a new tag appeared in well under a minute"
+        lesson={SESSION}
+        points={[
+          { text: 'Checkout, Build and Push all went green', icon: 'check' },
+          { text: 'A new image tag is waiting, named after the build number', icon: 'rocket' },
+          { text: 'Nobody typed anything after git push', icon: 'bolt' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'c7-server-unchanged',
+    section: C7,
+    label: 'The server did not change',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="And the Server Did Not Change"
+        lead="It is still running the old image, and the product list is still empty"
+        lesson={SESSION}
+      >
+        <ShellPanel
+          title="The instance"
+          prompt={REMOTE_PROMPT}
+          fontSize={14}
+          lines={[
+            { text: "docker compose ps --format '{{.Service}} {{.Image}}'", kind: 'cmd' },
+            { text: 'backend   <your-docker-id>/nxttrendz-backend:6', kind: 'out' },
+            { text: 'frontend  <your-docker-id>/nxttrendz-frontend:6', kind: 'out' },
+          ]}
+          caption="Docker Hub has the new build. This machine has never heard of it"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c7-last-mile',
+    section: C7,
+    label: 'The last mile',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="The Last Mile"
+        lead="Your pipeline stops at Docker Hub. Somebody has to carry it the rest of the way"
+        lesson={SESSION}
+      >
+        <LastMile />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c7-by-hand',
+    section: C7,
+    label: 'Do it by hand, once',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="Do It by Hand, Once"
+        lead="So that you know exactly what you are about to automate"
+        lesson={SESSION}
+      >
+        <ShellPanel
+          title="The instance"
+          prompt={REMOTE_PROMPT}
+          fontSize={14}
+          lines={[
+            { text: 'nano docker-compose.yml', kind: 'cmd' },
+            { text: 'docker compose pull', kind: 'cmd' },
+            { text: 'docker compose up -d', kind: 'cmd' },
+            { text: ' Container nxttrendz-backend-1   Started', kind: 'out' },
+            { text: ' Container nxttrendz-frontend-1  Started', kind: 'out' },
+          ]}
+          caption="Change the tag, pull the new images, recreate the containers"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c7-it-works',
+    section: C7,
+    label: 'It works',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="It Works"
+        lead="Your app, with your data, on the public internet"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-22-products-live.png"
+          alt="The application product list loaded over the public address, showing real products with prices and ratings"
+          frameWidth={700}
+          caption="Open it on a phone. Send the address to somebody"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+    notes: 'Let them enjoy this one. It is the moment the course has been building to since the first session.',
+  },
+  {
+    id: 'c7-tag-variable',
+    section: C7,
+    label: 'Make the tag a variable',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="Make the Tag a Variable"
+        lead="A script cannot edit a YAML file easily. It can change one line in a text file"
+        lesson={SESSION}
+      >
+        <CodeBlock
+          filename="docker-compose.yml and .env, on the server"
+          language="yaml"
+          code={`    image: <your-docker-id>/nxttrendz-backend:\${IMAGE_TAG}
+    image: <your-docker-id>/nxttrendz-frontend:\${IMAGE_TAG}
+
+# and in .env beside it
+IMAGE_TAG=6`}
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'This is why the Deploy stage ends up being four short commands rather than a YAML editing exercise. ' +
+      'The file was written to make the deploy easy.',
+  },
+  {
+    id: 'c7-deploy-stage',
+    section: C7,
+    label: 'The Deploy stage',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="A Fourth Stage"
+        lead="It does exactly what you just did, in the same order"
+        lesson={SESSION}
+      >
+        <CodeBlock
+          filename="Jenkinsfile, after the Push stage"
+          language="groovy"
+          code={`stage('Deploy') {
+    steps {
+        sshagent(['ec2-ssh-key']) {
+            sh '''
+                ssh -o StrictHostKeyChecking=no ubuntu@$EC2_HOST "
+                    cd ~/nxttrendz &&
+                    sed -i 's/^IMAGE_TAG=.*/IMAGE_TAG=$BUILD_NUMBER/' .env &&
+                    docker compose pull &&
+                    docker compose up -d
+                "
+            '''
+        }
+    }
+}`}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c7-private-address',
+    section: C7,
+    label: 'Over the private network',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="It Uses the Private Address"
+        lead="Both machines are in the same network, so this traffic never touches the internet"
+        lesson={SESSION}
+        points={[
+          { text: 'The Elastic IP is for the outside world, not for your own machines', icon: 'globe' },
+          { text: 'The private address never changes, so nothing has to be updated', icon: 'check' },
+          { text: 'StrictHostKeyChecking=no stops SSH asking a question no script can answer', icon: 'terminal' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'c7-group-as-source',
+    section: C7,
+    label: 'A rule with no address',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="A Rule With No Address in It"
+        lead="Allow port 22 from the build server's security group, rather than from an address"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/jen-06-sg-source-is-jenkins-sg.png"
+          alt="The app server's inbound rules gaining a new SSH rule whose source is the jenkins-sg security group rather than a CIDR block"
+          frameWidth={760}
+          caption="Any machine in that group may connect, and no address is written down anywhere"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'This is the best idea in the session. Replace the build server tomorrow and this rule still works, ' +
+      'because it never named a machine.',
+  },
+  {
+    id: 'c7-four-stages',
+    section: C7,
+    label: 'Four stages',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="Push Again"
+        lead="Four stages, and nobody logs in to anything"
+        lesson={SESSION}
+      >
+        <LastMile bridged />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c7-deploy-log',
+    section: C7,
+    label: 'The deploy log',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="The Deploy Log"
+        lead="The last stage, doing by itself what you did by hand ten minutes ago"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-29-five-stages-deploy-log.png"
+          alt="The Jenkins stages view with every stage green, and the Deploy stage log showing the ssh command, the pull and both containers being recreated"
+          frameWidth={780}
+          caption="Read the log. It is the same four commands, in the same order"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c7-arch',
+    section: C7,
+    label: 'The whole system',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="The Whole System"
+        lead="One push, four stages, and an app on an address that never moves"
+        lesson={SESSION}
+      >
+        <CloudArchitecture state="finished" scale={ARCH} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c7-cd',
+    section: C7,
+    label: 'Continuous Deployment',
+    element: (
+      <ContentSlide
+        kicker={C7}
+        title="Continuous Deployment"
+        lead="You have been saying the words since the Jenkins session. Now you have built it"
+        lesson={SESSION}
+        points={[
+          { text: 'A code change becomes a live release', icon: 'rocket' },
+          { text: 'With no human action after git push', icon: 'check' },
+          { text: 'And any release can be rolled back, because every build has its own tag', icon: 'shield' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'c7-recap',
+    section: C7,
+    label: 'Recap',
+    element: (
+      <RecapSlide
+        kicker={C7}
+        title={C7}
+        lesson={SESSION}
+        points={[
+          { text: 'Some things can be fixed on the server, some cannot', sub: 'Anything inside an image needs a new image' },
+          { text: 'A pipeline that stops at the registry is not finished', sub: 'Somebody is still carrying the last mile' },
+          { text: 'Server to server rules can name a group, not an address', sub: 'Then nothing needs re-pinning' },
+        ]}
+      />
+    ),
+  },
+
+  /* ── CLOSING ────────────────────────────────────────────────────────── */
+  {
+    id: 'close-rename',
+    section: 'Closing',
+    label: 'Rename the job',
+    element: (
+      <ContentSlide
+        kicker={CLOSING_KICKER}
+        title="Give the Job an Honest Name"
+        lead="It has been called build-test since the Jenkins session, and there is no test stage in it"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/jen-16-renamed.png"
+          alt="The Jenkins job after renaming, with its build history intact"
+          frameWidth={740}
+          caption="The build history survives, and so does the webhook, because GitHub matches on the repository"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'close-layers',
+    section: 'Closing',
+    label: 'What each layer removed',
+    element: (
+      <ContentSlide
+        kicker={CLOSING_KICKER}
+        title="What Each Layer Removed"
+        lead="Every one of these was a real problem before you solved it"
+        lesson={SESSION}
+      >
+        <DataTable
+          columns={[{ label: 'What you built' }, { label: 'The problem it removed', weight: 2 }]}
+          rows={[
+            ['A Docker image', 'it works on my machine'],
+            ['A compose file', 'remembering the order to start things in'],
+            ['Docker Hub', 'images trapped on one computer'],
+            ['A Jenkins pipeline', 'forgetting a step under pressure'],
+            ['A webhook', 'even having to press the button'],
+            ['An EC2 instance', 'no always on computer of your own'],
+            ['A security group', 'the wrong people reaching it'],
+            ['An Elastic IP', 'an address that moved under you'],
+            ['Jenkins on EC2', 'a laptop being part of production'],
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'close-hardening',
+    section: 'Closing',
+    label: 'Hardening checklist',
+    element: (
+      <ContentSlide
+        kicker={CLOSING_KICKER}
+        title="Ten Things You Already Did Right"
+        lead="Most security is ordinary discipline applied every time, not a separate tool"
+        lesson={SESSION}
+      >
+        <DataTable
+          compact
+          columns={[{ label: '' }, { label: 'What you did', weight: 3 }]}
+          rows={[
+            ['1', 'SSH open to your address only, never to everyone'],
+            ['2', 'The database has no port and no rule'],
+            ['3', 'Key based login only, and the key file readable by you alone'],
+            ['4', 'Secrets in .env and in the credential store, never in Git'],
+            ['5', '.dockerignore keeps .env and .git out of your images'],
+            ['6', 'Machines authenticate with tokens you can revoke, not passwords'],
+            ['7', 'A unique tag per build, so any release can be rolled back'],
+            ['8', 'The server runs image, never build'],
+            ['9', 'Server to server access named a group, not an address'],
+            ['10', 'An Elastic IP attached, and instances stopped when idle'],
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'close-not-production',
+    section: 'Closing',
+    label: 'What is not production yet',
+    element: (
+      <ContentSlide
+        kicker={CLOSING_KICKER}
+        title="What This Is Not, Yet"
+        lead="Worth saying plainly, so nothing here surprises you later"
+        lesson={SESSION}
+        points={[
+          { text: 'Both servers are development servers, not production ones', icon: 'warning' },
+          { text: 'Debug mode is on, and there is no HTTPS and no domain name', icon: 'info' },
+          { text: 'One machine, so if it stops, the site is down', icon: 'server' },
+        ]}
+      >
+        <Callout kind="note" title="This is the real thing, at small scale">
+          Every one of those has a standard answer, and each answer assumes exactly what you now have
+        </Callout>
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'close-shut-down',
+    section: 'Closing',
+    label: 'Before you leave',
+    element: (
+      <ContentSlide
+        kicker={CLOSING_KICKER}
+        title="Before You Close the Laptop"
+        lead="Both instances and both addresses cost money while they exist"
+        lesson={SESSION}
+        points={[
+          { text: 'Stop both instances, the app server and the build server', icon: 'target' },
+          { text: 'Release both Elastic IPs, because a detached one is billed', icon: 'warning' },
+          { text: 'Your images stay on Docker Hub, and cost nothing', icon: 'check' },
+        ]}
+      />
+    ),
+    notes:
+      'Do this together, on screen, before anyone leaves. Releasing the addresses is the step people forget ' +
+      'and it is the one that shows up on a bill.',
+  },
+  {
+    id: 'takeaways',
+    section: 'Closing',
+    label: 'Key takeaways',
+    element: (
+      <KeyTakeawaysSlide
+        lesson={SESSION}
+        points={[
+          { text: C1, sub: 'SSH runs your commands on a machine somewhere else' },
+          { text: C2, sub: 'A new server starts empty and pulls images by name' },
+          { text: C3, sub: 'The server runs what the pipeline built, never its own copy' },
+          { text: C4, sub: 'Nothing is open until you open it, and every door needs a reason' },
+          { text: C5, sub: 'An address that gets written into files has to stop moving' },
+          { text: C6, sub: 'A build server needs a public address of its own' },
+          { text: C7, sub: 'A pipeline that stops at the registry is not finished' },
+        ]}
+      />
+    ),
+    notes: 'Hard rule 20: these are the seven divider names, in order, and nothing else.',
+  },
+  {
+    id: 'practice',
+    section: 'Closing',
+    label: 'Practice',
+    element: (
+      <PracticeSlide
+        lesson={SESSION}
+        title="Practice"
+        prompt="Three things to try before the next session"
+        tasks={[
+          { text: 'Stop your instance, start it again, and check the site still loads', sub: 'The Elastic IP should make this uneventful' },
+          { text: 'Break something on purpose and read the symptom', sub: 'Remove the 3000 rule, and confirm you get a timeout rather than a refusal' },
+          { text: 'Change one word in the app and push it', sub: 'Watch four stages and then reload the site' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'whats-next',
+    section: 'Closing',
+    label: 'Where this leads',
+    element: (
+      <ContentSlide
+        kicker={CLOSING_KICKER}
+        title="Where This Leads"
+        lead="You started this course with an app on localhost. You are ending it with a service on the internet"
+        lesson={SESSION}
+        points={[
+          { text: 'A domain name and HTTPS in front of the address you now own', icon: 'globe' },
+          { text: 'A managed database instead of a file, when the data matters more', icon: 'database' },
+          { text: 'More servers, and something to coordinate them, when one is not enough', icon: 'network' },
+        ]}
+      >
+        <Callout kind="success" title="None of that replaces what you built">
+          Every one of those tools assumes you already understand images, registries, pipelines, gates and
+          firewalls. You do
+        </Callout>
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'feedback',
+    section: 'Closing',
+    label: 'Feedback',
+    element: (
+      <FeedbackSlide
+        lesson={SESSION}
+        title="How did this session land?"
+        prompt="Two minutes of feedback makes the next one sharper."
+      />
+    ),
+  },
+  { id: 'thank-you', section: 'Closing', label: 'Thank you', element: <ThankYouSlide lesson={SESSION} /> },
 ]
 
 export const awsDeployMeta: DeckMeta = {
