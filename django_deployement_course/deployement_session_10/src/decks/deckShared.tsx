@@ -20,7 +20,7 @@
  * let one back onto a slide by accident.
  */
 
-export const SESSION = 'Deploying Your App on AWS'
+export const SESSION = 'Deploying Docker on AWS'
 export const COURSE = 'React + Django Integration · Deployment'
 
 /* The seven concepts. Key Takeaways restates exactly these, hard rule 20. */

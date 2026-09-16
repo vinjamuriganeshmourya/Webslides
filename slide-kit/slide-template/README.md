@@ -24,20 +24,80 @@ npm run typecheck  # tsc, no emit
 
 ## Presenting — controls
 
+This table is what `src/deck/useKeyboardNav.ts` actually binds. It used to list
+`Space`, `Home`, `End`, `O`, `N`, `F` and click-to-advance, none of which the
+player has ever had, so if a key is not below it does nothing.
+
 | Action | Keys / Mouse |
 | --- | --- |
-| **Next fragment / slide** | `→` · `Space` · `PageDown` · **click anywhere** |
-| Previous | `←` · `PageUp` |
-| First / last slide | `Home` / `End` |
-| Overview grid | `O` |
-| Speaker notes | `N` |
-| Fullscreen | `F` |
-| Close overlay | `Esc` |
+| **Forward** | `→` · `PageDown` |
+| **Back** | `←` · `PageUp` |
+| The other one of the pair | `Ctrl` + `→` / `←` |
+| Swap what the plain arrows do (whole slides ⇄ build steps) | `S` |
+| Jump to a slide, by name or number | `G` |
+| **Play this slide again from the top** | `R` |
+| **Open or close the marker** | `M` |
+| Fullscreen | the control-bar button, bottom left |
+
+The plain arrows move by whole slides *or* by build steps, whichever the mode
+pill in the control bar says, and `S` swaps the pair. `PageUp` / `PageDown`
+follow the plain arrows, because that is what a hardware clicker sends and a
+clicker cannot send `Ctrl`.
+
+### The marker
+
+`M` opens it. Ink is vector, stored in the slide's own 1280×720 coordinates, so
+it stays sharp in a window, in fullscreen, on a projector, and in the built
+single-file HTML. The palette is the small tab docked to the right wall; it
+expands on hover and on keyboard focus, and it can be dragged up and down the
+wall to get it off whatever the slide is showing.
+
+**Three pens, because they are three jobs.** The `pen` writes: it paints well
+under its nib width so it reads as handwriting, for putting a value in a blank or
+ticking a line of code. The `marker pen` gestures: the same opaque ink at 1.6× the
+nib, for a circle round a term that has to carry to the back of the room. The
+`highlighter` marks where, not what: much wider, translucent, multiplied over the
+words so they stay readable. Every stroke also paints a contrasting halo behind
+itself, which is what lets one ink colour work on both the navy stage and the
+light content slides.
+
+| Action | Keys |
+| --- | --- |
+| Pen · marker pen · highlighter | `1` `2` `3` |
+| Line · arrow · rectangle · ellipse | `4` `5` `6` `7` |
+| Eraser (removes whole strokes it is dragged across) | `E` |
+| Erase everything inside a dragged box | `Shift` + `E` |
+| Erase this sheet, undoably | `Delete` **twice**, within 3s |
+| Hide the ink without erasing it | `H` |
+| This slide's ink ⇄ one sheet for the whole deck | `A` |
+| Cycle ink colour · nib thickness | `C` · `T` |
+| Undo · redo | `Ctrl` + `Z` · `Ctrl` + `Shift` + `Z` |
+| Put the pen down, keeping the ink | `Esc` |
+| Constrain a shape (45° line, square, circle) | hold `Shift` while dragging |
+
+Verify the marker after any change to the player:
+
+```bash
+export CHROME_PATH=/opt/google/chrome/chrome
+npm run build:html && node marker-check.mjs      # 48 checks, must print CLEAN
+```
+
+It drives a real pointer over the built HTML from `file://`, because that is the
+artefact an instructor opens and a marker that works only under Vite is a marker
+that does not work.
+
+Ink is kept **per slide** by default and stays in memory for the session, so
+leaving a slide and coming back brings the drawing back, and `A` switches to a
+single sheet that stays put while the slides move under it. A stroke is stamped
+with the build step it was drawn over and is only painted once the build reaches
+that step again, which is also what makes `R` honest: replay restages the slide
+from the top and the ink returns in the order the class first saw it. Nothing is
+written to disk.
 
 **Click-to-reveal:** slide headings appear immediately; body content (bullets,
-cards, flow nodes, steps, callouts, quiz options…) is revealed **one click at a
-time** — so you control the pace. When all fragments are shown, the next click
-advances to the next slide. The counter shows `slide / total · fragment / max`.
+cards, flow nodes, steps, callouts, quiz options…) is revealed **one press at a
+time**, so you control the pace. When every fragment is shown, the next press
+advances to the next slide.
 Deep-link to any slide with `#/<n>` (e.g. `/#/12`); append `?all` to reveal every
 fragment at once (used for the overview thumbnails).
 
