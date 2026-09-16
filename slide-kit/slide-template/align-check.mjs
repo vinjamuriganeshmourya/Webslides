@@ -108,6 +108,18 @@ const TOL = 10
  * straight over them. A constant that encodes another constant's old value breaks
  * silently, which this repo has now paid for three times.
  *
+ * AND IT GREW AGAIN, FROM 335 TO 409, when the bar took a REPLAY button and a
+ * MARKER button. Measured on the built deck at 1280x720:
+ * `{left: 20, top: 664, right: 407, bottom: 704}`, plus the usual 2px of slack.
+ * The marker button's "this slide has ink" dot is absolutely positioned inside the
+ * button precisely so that it cannot move this number.
+ *
+ * The MARKER PALETTE is deliberately not in this table. It is only in the DOM while
+ * the marker is open, which is never during a harness run, and a zone that is
+ * usually absent is a zone that would fail slides for a collision the room never
+ * sees. It is parked one row higher than the control bar for the same reason it is
+ * not listed: see `annotate/AnnotationToolbar.tsx`.
+ *
  * MEASURE IT AGAIN IF THE BAR CHANGES: open the deck, and read
  * `document.querySelector('div.absolute.bottom-4.left-5').getBoundingClientRect()`.
  * The bar is fixed-width by construction, so one reading is the whole answer: the
@@ -115,7 +127,7 @@ const TOL = 10
  * precisely so this number cannot depend on which slide is up.
  */
 const CHROME = [
-  { name: 'controls', x1: 18, y1: 660, x2: 335, y2: 706 },
+  { name: 'controls', x1: 18, y1: 660, x2: 409, y2: 706 },
   { name: 'footer mark', x1: 1172, y1: 660, x2: 1248, y2: 706 },
 ]
 

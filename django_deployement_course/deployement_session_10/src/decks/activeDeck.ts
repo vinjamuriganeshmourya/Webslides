@@ -16,4 +16,4 @@
  *
  * So: to point a session at a different deck, edit THIS FILE ONLY. Two lines.
  */
-export { sampleDeck as deck, sampleMeta as meta } from './sampleDeck'
+export { awsDeployDeck as deck, awsDeployMeta as meta } from './awsDeployDeck'
