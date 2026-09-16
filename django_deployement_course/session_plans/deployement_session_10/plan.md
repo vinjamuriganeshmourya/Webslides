@@ -176,16 +176,20 @@ beat marked **[A]** needs an architecture state, and **[C]** names its capture.
 ### Concept 3 · Running the Stack
 
 26. Question: the images are here. What starts them?
-27. Session 4's compose file, with one word changed per service.
-28. **`build:` becomes `image:`**, and why. Figure `BuildVsImage`: two paths,
+27. **How you create a file on this machine**: `nano`, broken down, and the
+    two key combinations that save and close. Before any file is shown, not
+    after: the room cannot type a file it has not been told how to open.
+28. Session 4's compose file, with one word changed per service.
+29. **`build:` becomes `image:`**, and why. Figure `BuildVsImage`: two paths,
     one ending in "something no pipeline tested".
-29. Write it on the server. The file, built up.
 30. The `.env` holds `SECRET_KEY` and nothing else. Said explicitly so nobody
     hunts for database credentials that do not exist.
 31. `docker compose up -d`, `ps`. Both listening. **[C]** transcript 08.
 32. Fresh volume means empty database. `migrate`. **[C]** transcript 09.
 33. **The moment, attempted.** Open `http://<address>:3000`.
 34. **Failure 2. It times out.** **[C]** `dep-05`. Concept 4 opens on it.
+34a. `curl` broken down, straight after the two-port demo that used it, so
+    the explanation lands on a command the room has just watched run.
 35. Recap, honest: it is running, and it is not reachable.
 
 ### Concept 4 · Security Groups
@@ -331,9 +335,11 @@ beat marked **[A]** needs an architecture state, and **[C]** names its capture.
 120. Continuous Deployment. The full term from session 7, now earned.
 121. What each layer removed. Ten rows.
 116. The hardening checklist, ten rows, each naming the session that taught it.
-117. **What is still not production**: `runserver`, the Vite dev server,
-     `DEBUG = True`, no HTTPS, one server. Named, not opened.
-118. **Stop both instances and release the Elastic IP before you leave.**
+117. **Stop both instances and release the Elastic IP before you leave.**
+
+     Dropped in review: a separate "what is still not production" slide. The
+     hardening checklist above it already names every one of those items and
+     says which session answers it, so the extra slide only repeated the list.
 119. Key takeaways: the seven concept names.
 120. Practice.
 121. Where this leads. Feedback. Thank you.
