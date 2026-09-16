@@ -402,10 +402,28 @@ not from the plan, so the deck and the screenshots cannot disagree.
   `seed.json` gets committed to the app repo before the session runs. **This is
   a decision for sign-off**, and the second option is cleaner.
 
+### The Deploy stage was captured too
+
+Build 8 was started by the webhook, built and pushed both images, then updated
+the server over SSH in 6 seconds with nobody logged in. Three things the plan
+should now say outright:
+
+- **The pipeline has four stages, not five.** Session 8 removed Test, so Deploy
+  is the fourth. Beat 72 says "a fourth stage".
+- **The SSH Agent plugin was not installed** and had to be added, with no
+  restart. That is a real beat and a callback to session 8's plugin work.
+- **The tag reaches the server through `IMAGE_TAG` in `.env`**, not by editing
+  the compose file. The compose file names `${IMAGE_TAG}` and the Deploy stage
+  rewrites one line with `sed`. Worth its own slide: the deploy is short because
+  the file was written to make it short.
+
+The build numbers carry the argument without any help: 6 is where the room
+starts, 7 is the CORS fix a human carried by hand, and 8 is the Deploy stage
+deploying itself.
+
 ### Still owed
 
-The Jenkins Deploy stage, concept 6 from beat 72 onward, is not yet captured.
-Everything before it is.
+Nothing. The whole session has been run and captured.
 
 The Elastic IP is allocated and associated. It is free attached and billed
 detached, so releasing it belongs with stopping the instance at the end.
