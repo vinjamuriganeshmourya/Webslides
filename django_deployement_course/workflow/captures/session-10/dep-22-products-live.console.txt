@@ -1,0 +1,7 @@
+[response] 200 http://13.202.184.214:8000/api/users/login/
+[response] 200 http://13.202.184.214:8000/api/cart/
+[response] 200 http://13.202.184.214:8000/api/cart/
+[response] 200 http://13.202.184.214:8000/api/products/?page=1&ordering=-price&category=&search=&rating=
+[response] 200 http://13.202.184.214:8000/api/products/?is_prime=true&page_size=6
+[response] 200 http://13.202.184.214:8000/api/products/?page=1&ordering=-price&category=&search=&rating=
+[response] 200 http://13.202.184.214:8000/api/products/?is_prime=true&page_size=6
