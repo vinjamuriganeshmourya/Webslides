@@ -211,7 +211,7 @@ function Wires({ state }: { state: ArchState }) {
       {line('M76,82 L76,102', INK, false, 0.1, 'dev')}
       {/* the webhook: a long detour to the laptop, until Jenkins moves into AWS */}
       {!showHook && line('M152,133 C210,133 210,52 152,52', PENDING, true, 0.2, 'hook-old')}
-      {!showHook && cap(238, 96, 'webhook via ngrok', PENDING)}
+      {!showHook && cap(252, 74, 'webhook via ngrok', PENDING)}
       {showHook && line('M152,115 L288,115', ADDING, false, 0.2, 'hook-new')}
       {showHook && cap(220, 104, 'webhook 8080')}
       {/* administering the server */}
@@ -312,9 +312,9 @@ export function CloudArchitecture({ state = 'gap', scale = 1 }: { state?: ArchSt
                             </InstanceCard>
                           )}
                           <InstanceCard
-                            x={hasJenkins ? 424 : 210}
+                            x={hasJenkins ? 424 : 154}
                             y={8}
-                            w={402}
+                            w={hasJenkins ? 402 : 520}
                             h={266}
                             name="nxttrendz-server"
                             spec={['t3.micro, 8 GiB gp3', 'nxttrendz-sg', 'private 172.31.7.32']}
@@ -323,11 +323,11 @@ export function CloudArchitecture({ state = 'gap', scale = 1 }: { state?: ArchSt
                           >
                             {hasContainers && (
                               <>
-                                <ContainerPill x={14} y={96} w={372} label="backend, Django" port="8000" delay={0.6} />
-                                <ContainerPill x={14} y={140} w={372} label="frontend, React" port="3000" delay={0.72} />
+                                <ContainerPill x={14} y={96} w={hasJenkins ? 372 : 490} label="backend, Django" port="8000" delay={0.6} />
+                                <ContainerPill x={14} y={140} w={hasJenkins ? 372 : 490} label="frontend, React" port="3000" delay={0.72} />
                                 <div
                                   className="absolute flex items-center gap-2 rounded-lg px-2.5 py-1"
-                                  style={{ left: 14, top: 186, width: 372, border: `2px solid ${CATEGORY.storage}` }}
+                                  style={{ left: 14, top: 186, width: hasJenkins ? 372 : 490, border: `2px solid ${CATEGORY.storage}` }}
                                 >
                                   <img src="/assets/tech/sqlite.png" alt="" style={{ width: 16, height: 16 }} />
                                   <span className="text-[12px] leading-[18px]" style={{ color: BODY }}>
