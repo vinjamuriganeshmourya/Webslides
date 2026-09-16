@@ -92,44 +92,64 @@ Real output, saved as text because the deck renders terminals through
   dev server, with `DEBUG = True`. Slide 85 says so rather than implying this is
   a production configuration.
 
+## Jenkins captures
+
+| File | Plan beat | What it shows |
+|---|---|---|
+| `dep-23-ssh-agent-plugin` | 72 | Plugin manager, SSH Agent found. It provides the `sshagent` step and was NOT installed before this session |
+| `dep-24-plugin-installed` | 72 | Installed, with "you can start using the installed plugins right away". No restart |
+| `dep-25-credentials-store` | 73 | The Global store holding `dockerhub-credentials` from session 8. The same drawer, a second key going in |
+| `dep-26-credential-kinds` | 73 | The six credential kinds, with SSH Username with private key among them |
+
 ## Still to capture, and what it is waiting on
 
 The Jenkins Deploy stage, concept 6 from beat 72 onward: the SSH credential,
 the fourth stage, the four-stage graph, and a deploy that reaches the server
 with nobody touching it.
 
-**Blocked on a Jenkins sign-in.** Jenkins is running at `localhost:8080` and
-the sign-in form is open in the browser with the credentials already filled by
-the password manager. Signing in is the account holder's to do, not Claude's.
-Once signed in, the remaining steps are:
+Everything is in place except one step, which is the account holder's:
 
-1. `Manage Jenkins → Credentials → System → Global` → add a credential of kind
-   **SSH Username with private key**, ID `ec2-ssh-key`, username `ubuntu`,
-   key pasted from `nxttrendz-key.pem`.
-2. Add the Deploy stage to the Jenkinsfile, after Push:
-
-   ```groovy
-   stage('Deploy') {
-       steps {
-           sshagent(['ec2-ssh-key']) {
-               sh '''
-                   ssh -o StrictHostKeyChecking=no ubuntu@13.202.184.214 "
-                       cd ~/nxttrendz &&
-                       sed -i 's|:[0-9]*$|:'$BUILD_NUMBER'|' docker-compose.yml &&
-                       docker compose pull && docker compose up -d
-                   "
-               '''
-           }
-       }
-   }
-   ```
-
-   The SSH Agent plugin has to be installed for `sshagent` to resolve.
-3. Push any change and capture the four-stage graph and the console log.
-
-The network path is already open: Jenkins runs in a container on the user's
-machine, so it reaches EC2 from 49.200.108.250, which rule
+**Done already.** Jenkins is signed in. The SSH Agent plugin is installed, no
+restart needed. The server's compose file now reads its tag from `IMAGE_TAG`
+in `.env`, so a deploy is a one-line change rather than an edit of the compose
+file. The Jenkinsfile Deploy stage is written and committed locally in the app
+repo as `b985ec1`, **not pushed**, so no build goes red waiting on a credential
+that does not exist yet. The Jenkins container has `ssh`, `ssh-agent` and
+`docker` on its PATH, and it reaches EC2 from 49.200.108.250, which rule
 `sgr-051fb0ee7bd294a8a` already allows on port 22.
+
+**Owed by the user.** Add the credential. Writing a private key into a secret
+store is not Claude's to do, and the auto-mode classifier blocks it as well:
+
+  `Manage Jenkins → Credentials → System → Global → Add Credentials`
+  - Kind: **SSH Username with private key**
+  - ID: **`ec2-ssh-key`** (the Jenkinsfile names it exactly)
+  - Username: **`ubuntu`**
+  - Private key: **Enter directly**, pasted from `nxttrendz-key.pem`
+  - Passphrase: empty
+
+The dialog is already open in the browser at that page.
+
+**Then, to finish.** Push the app repo (`git push origin main` in
+`/home/nxtwave/nxttrendz`) and capture the four-stage graph, the Deploy console
+log, and the site picking up the new build with nobody touching the server.
+
+The Deploy stage as committed:
+
+```groovy
+stage('Deploy') { steps {
+    sshagent(['ec2-ssh-key']) {
+        sh '''
+            ssh -o StrictHostKeyChecking=no ubuntu@$EC2_HOST "
+                cd ~/nxttrendz &&
+                sed -i 's/^IMAGE_TAG=.*/IMAGE_TAG=$BUILD_NUMBER/' .env &&
+                docker compose pull &&
+                docker compose up -d
+            "
+        '''
+    }
+} }
+```
 
 ## Clean-up owed
 
