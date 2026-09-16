@@ -427,3 +427,50 @@ Nothing. The whole session has been run and captured.
 
 The Elastic IP is allocated and associated. It is free attached and billed
 detached, so releasing it belongs with stopping the instance at the end.
+
+## 11. Architecture first, every time
+
+Instruction, 2026-09-16: *"build AWS Architecture images before building any
+instance or using any service for more clarity."*
+
+**This is a hard rule for this deck.** No instance is launched, no service is
+opened and no rule is written until the room has seen a picture of what is
+about to exist. The picture comes first, the console second, the terminal
+third. A student who has seen the shape before clicking knows what the click is
+for.
+
+### One figure, nine states
+
+`CloudArchitecture`, session-owned, prototyped in `slide-kit/cloud-lab` before
+a slide is written (hard rule 17). It is one drawing that grows, in the way
+session 9's `CloudPicture` grew, so the room never re-learns a new diagram.
+
+The part that does not exist yet is drawn **dashed and grey**. The part being
+built on this slide is drawn **solid and in brand colour**. Everything already
+built stays solid and quiet.
+
+| State | Shown before | What it adds |
+|---|---|---|
+| `A0` | the opening recap | Laptop with Jenkins and ngrok, GitHub, Docker Hub, and an AWS box holding one stopped instance. **No line reaches AWS.** That gap is the session |
+| `A1` | starting the instance | The instance wakes. A public address appears, drawn as a luggage tag, deliberately loose |
+| `A2` | the first SSH | Laptop to instance, port 22, and the key on the line |
+| `A3` | `docker compose up` | Two containers inside the instance, plus the volume. Docker Hub to instance, the pull |
+| `A4` | the security group edit | The door list on the instance edge. Ports 22, 3000, 8000 drawn as doors, the database drawn with no door at all |
+| `A5` | the Elastic IP | The loose luggage tag is replaced by an address pinned to the instance |
+| `A6` | the Deploy stage | Jenkins on the laptop reaches the instance over SSH. The webhook still arrives through ngrok, drawn as a long awkward detour |
+| `A7` | **launching the Jenkins instance** | A second instance inside the AWS box, in the same VPC, with `jenkins-sg`. The laptop empties out. **The ngrok detour disappears** |
+| `A8` | the closing picture | GitHub to Jenkins EC2 directly, Jenkins EC2 to Docker Hub, Jenkins EC2 to the app instance **over the private network**, users on the Elastic IP |
+
+### Why A7 is the payoff
+
+Session 8 needed ngrok because GitHub cannot reach a laptop. A6 draws that as
+the ugly detour it is. A7 deletes it: Jenkins now has a public address of its
+own, so the webhook arrives directly. The reference calls this out as the bonus
+that the course earns, and the two diagrams side by side make the argument
+without a sentence.
+
+### The rule in one line, for whoever builds the slides
+
+**Every hands-on slide that creates or changes an AWS resource is preceded by
+the `CloudArchitecture` state for that step.** If a beat in §5 has no state
+listed above and it creates something, add one rather than skipping it.

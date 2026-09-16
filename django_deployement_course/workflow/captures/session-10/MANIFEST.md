@@ -143,3 +143,66 @@ beat, and it happened by itself.
 The Elastic IP `eipalloc-0947cde9d5ed8fa6a` is **allocated and associated**. It
 is free while attached and billed the moment it is not, so releasing it is part
 of shutting the session down, alongside stopping the instance.
+
+## Jenkins on AWS
+
+Second instance, launched 2026-09-16 through the console the way a student
+would, so the reference's closing bonus stops being a footnote: Jenkins gets a
+public address of its own and the ngrok detour from session 8 disappears.
+
+| Constant | Value |
+|---|---|
+| `JENKINS_INSTANCE_ID` | `i-0c96a9a3b4803cefc` |
+| `JENKINS_IP` | `3.108.220.155` |
+| `JENKINS_SG` | `jenkins-sg`, `sg-0a8dd5bcc3a3e91a8` |
+| `JENKINS_DISK` | 20 GiB gp3, because Docker builds fill 8 |
+| `JENKINS_SWAP` | 4 GiB, added by hand |
+| App SG rule added | `sgr-022e997bb5d041332`, SSH 22 sourced from `jenkins-sg` |
+
+| File | What it shows |
+|---|---|
+| `jen-01-launch-name-ubuntu` | The launch form, named `nxttrendz-jenkins`, same Ubuntu 26.04 AMI as the app server |
+| `jen-02-jenkins-sg-rules` | `jenkins-sg` with two rules, **both My IP**: 22 to administer, 8080 for the UI |
+| `jen-03-storage-20gib` | Storage raised from 8 to 20 GiB, with the summary agreeing |
+| `jen-04-launched` | Launch succeeded, `i-0c96a9a3b4803cefc` |
+| `jen-05-two-instances` | **Two instances in one list.** The app server on its Elastic IP, the build server on a plain public address |
+| `jen-06-sg-source-is-jenkins-sg` | The app server's new rule being written, with a **security group as the source** rather than a CIDR |
+| `jen-07-app-sg-five-rules` | Five rules, the new one showing `sg-0a8dd5bcc3a3e91a8` as a link rather than an address |
+| `jen-08-unlock-jenkins` | Unlock Jenkins, reached over the public internet at `3.108.220.155:8080` |
+
+### Why the security-group source matters, and where it is taught
+
+The reference mentions in passing that a rule can name another security group.
+Here it is the natural answer: Jenkins must reach the app server on port 22,
+and its address would otherwise have to be pinned in a rule and re-pinned every
+time the build server was replaced. Naming `jenkins-sg` means **any** instance
+in that group may connect, and no address appears anywhere.
+
+It also means the Deploy stage should target the app server's **private**
+address, `172.31.7.32`, because both instances sit in the same VPC. That is a
+change from the committed Jenkinsfile, which still names the Elastic IP.
+
+### The memory finding, which the deck should state plainly
+
+`t3.micro` gives 908 MiB of usable RAM. Jenkins alone took 436 MiB before a
+single build ran, leaving 133 MiB free. **4 GiB of swap was added and 486 MiB
+of it was already in use at idle.** A Docker build of the frontend on top of
+that is going to be slow. This is real guidance for the room, not a footnote:
+the free tier's smallest instance will run a build server, and it will not
+enjoy it.
+
+### Blocked, and why
+
+The Jenkins setup wizard needs the unlock password pasted and then an admin
+account created with a password. Both are the account holder's to do. The
+unlock password on this instance is in
+`/var/jenkins_home/secrets/initialAdminPassword`, readable with:
+
+```bash
+ssh -i nxttrendz-key.pem ubuntu@3.108.220.155 \
+  "sudo docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword"
+```
+
+After the wizard, what remains is a repeat of work already captured once: the
+SSH Agent plugin, the `ec2-ssh-key` credential, the job, and repointing the
+GitHub webhook away from ngrok to `http://3.108.220.155:8080/github-webhook/`.
