@@ -1,7 +1,7 @@
 <!-- cSpell:ignore nxttrendz deployement NxtWave colour Mumbai ap-south CIDR sshagent gunicorn Kubernetes usermod corsheaders runserver eipalloc -->
 # Deployment · Session 10: "Deploying Your App on AWS"
 
-**STATUS: revision 3, awaiting sign-off.** Revision 1 was written before the
+**STATUS: revision 3. Deck built, 138 slides.** Revision 1 was written before the
 hands-on and predicted the flow. **This revision replicates the flow as it
 actually ran on 2026-09-16**, beat for beat, with the capture that proves each
 one. Revision 1 is kept beside this file as `plan.rev1.md`.
