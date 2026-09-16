@@ -27,7 +27,14 @@ import { GroupAsSource } from './figures/GroupAsSource'
 import { NgrokDetour } from './figures/NgrokDetour'
 import { DoorList } from './figures/DoorList'
 import { LastMile } from './figures/LastMile'
-import { SG_THREE_RULES, SG_PORT_COLUMN, SG_RULE_3000, SG_NEW_ROW_FORM } from './shotBoxes'
+import {
+  SG_THREE_RULES,
+  SG_PORT_COLUMN,
+  SG_RULE_3000,
+  SG_NEW_ROW_FORM,
+  INSTANCES_ELASTIC_COLUMNS,
+  WEBHOOK_NGROK_URL,
+} from './shotBoxes'
 import {
   SESSION,
   C1,
@@ -1546,6 +1553,62 @@ volumes:
     ),
   },
   {
+    id: 'c5-proof-console',
+    section: C5,
+    label: 'The console agrees',
+    element: (
+      <ContentSlide
+        kicker={C5}
+        title="Check It in the Console"
+        lead="The Public IPv4 column and the Elastic IP column now hold the same value"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-31-instances-with-elastic-ip.png"
+          alt="The EC2 instances list with both instances running, the Public IPv4 and Elastic IP columns holding the same address for each"
+          highlights={[{ ...INSTANCES_ELASTIC_COLUMNS, step: 1, label: 'the same address twice', labelAt: 'below' }]}
+          spotlight
+          inset="auto"
+          frameWidth={700}
+          caption="EC2 → Instances. The Elastic IP did not sit beside the public address, it became it"
+          className="mr-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'The two columns matching is the proof. Before this, Elastic IP was empty and Public IPv4 held a ' +
+      'borrowed address that AWS could take back.',
+  },
+  {
+    id: 'c5-proof-browser',
+    section: C5,
+    label: 'And the browser agrees',
+    element: (
+      <ContentSlide
+        kicker={C5}
+        title="And in the Browser"
+        lead="The app answers on the new address, and will keep answering on it after a restart"
+        lesson={SESSION}
+      >
+        <div className="flex flex-col items-center gap-3">
+          <CodeBlock
+            className="max-w-[560px]"
+            filename="in your browser"
+            language="text"
+            code={'http://<your-elastic-ip>:3000/'}
+          />
+          <AnnotatedShot
+            src="/shots/dep-12-site-loads-empty.png"
+            alt="The application loading in a browser on the Elastic IP"
+            frameWidth={600}
+            caption="Same app, permanent address"
+            className="w-fit"
+          />
+        </div>
+      </ContentSlide>
+    ),
+  },
+  {
     id: 'c5-pricing',
     section: C5,
     label: 'What it costs',
@@ -1662,7 +1725,7 @@ volumes:
       <ContentSlide
         kicker={C6}
         title="On Your Laptop"
-        lead="GitHub cannot reach a laptop, so you put a tunnel in front of it"
+        lead="GitHub cannot reach a laptop, so you put ngrok in front of it"
         lesson={SESSION}
       >
         <NgrokDetour state="tunnel" />
@@ -1681,14 +1744,64 @@ volumes:
         lesson={SESSION}
       >
         <Callout kind="error" title="For most of you it is already dead">
-          A free tunnel gets a new address every time it restarts. The URL saved in GitHub is the one from
-          the day you set it up, and it almost certainly no longer exists
+          A free ngrok tunnel gets a new address every time it restarts. The URL saved in GitHub is the
+          one from the day you set it up, and it almost certainly no longer exists
         </Callout>
       </ContentSlide>
     ),
     notes:
       'Have them actually look. This is not a hypothetical, and a room that has just seen its own broken ' +
       'webhook does not need persuading about what comes next.',
+  },
+  {
+    id: 'c6-current-payload',
+    section: C6,
+    label: 'The payload URL today',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="What Your Webhook Points At Today"
+        lead="An ngrok address, which is a public door opened in front of your own laptop"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/jen-18-webhook-ngrok-url.png"
+          alt="The GitHub webhook settings page with the Payload URL field holding an ngrok address ending in github-webhook"
+          highlights={[{ ...WEBHOOK_NGROK_URL, step: 1, label: 'an ngrok address', labelAt: 'below' }]}
+          spotlight
+          inset="auto"
+          frameWidth={700}
+          caption="GitHub → your repository → Settings → Webhooks"
+          className="mr-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c6-why-ngrok-helped',
+    section: C6,
+    label: 'What ngrok was doing',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="What ngrok Was Doing for You"
+        lead="It gave your laptop a public address it does not have, and forwarded whatever arrived"
+        lesson={SESSION}
+        points={[
+          { text: 'GitHub posts to the ngrok address, because it is on the public internet', icon: 'globe' },
+          { text: 'ngrok forwards that request down a tunnel your laptop opened from the inside', icon: 'link' },
+          { text: 'Your laptop never needed a public address, which is exactly why it worked', icon: 'check' },
+        ]}
+      >
+        <Callout kind="warning" title="And exactly why it keeps breaking">
+          The tunnel is opened from your side, so the address is only yours while it is open. Close the
+          laptop or restart ngrok and a different address is handed out
+        </Callout>
+      </ContentSlide>
+    ),
+    notes:
+      'This is worth the two minutes. A room that understands ngrok forwarded from the outside in will ' +
+      'understand immediately why a server with its own address does not need it.',
   },
   {
     id: 'c6-requirement',

@@ -40,3 +40,11 @@ export const SG_RULE_3000: ShotHighlight = { left: 15.5, top: 66, width: 82.5, h
 /** The fourth row being composed on the Edit inbound rules form: Custom TCP,
  *  3000, and the description. Verified with verify-box.sh. */
 export const SG_NEW_ROW_FORM: ShotHighlight = { left: 8, top: 48, width: 82, height: 8 }
+
+/** Both instances' Public IPv4 and Elastic IP columns, side by side. The point
+ *  is that the two columns now hold the SAME value: the Elastic IP became the
+ *  public address rather than sitting beside it. Verified. */
+export const INSTANCES_ELASTIC_COLUMNS: ShotHighlight = { left: 76.5, top: 20.5, width: 23, height: 12 }
+
+/** The Payload URL field on GitHub, still holding an ngrok address. Verified. */
+export const WEBHOOK_NGROK_URL: ShotHighlight = { left: 37, top: 38, width: 44, height: 5 }
