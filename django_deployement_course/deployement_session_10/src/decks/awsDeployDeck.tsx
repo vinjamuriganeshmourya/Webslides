@@ -19,6 +19,7 @@ import { CloudArchitecture } from './figures/aws/CloudArchitecture'
 import { Permissions } from './figures/Permissions'
 import { TimeoutVsRefused } from './figures/TimeoutVsRefused'
 import { ThreePlaces } from './figures/ThreePlaces'
+import { MemoryBar } from './figures/MemoryBar'
 import { SG_THREE_RULES, SG_PORT_COLUMN, SG_RULE_3000, SG_NEW_ROW_FORM } from './shotBoxes'
 import {
   SESSION,
@@ -1379,6 +1380,499 @@ volumes:
           { text: 'A free public address changes on every stop', sub: 'The private one never does' },
           { text: 'It matters because the address gets written into files', sub: 'One of them is inside an image' },
           { text: 'An Elastic IP is free while attached', sub: 'Release it when you are done' },
+        ]}
+      />
+    ),
+  },
+
+  /* ── CONCEPT 6 · JENKINS ON AWS ─────────────────────────────────────── */
+  {
+    id: 'c6-divider',
+    section: C6,
+    label: '06',
+    element: <SectionBreakerSlide index={6} title={C6} lesson={SESSION} />,
+  },
+  {
+    id: 'c6-question',
+    section: C6,
+    label: 'Where is Jenkins',
+    element: (
+      <QuestionSlide
+        kicker={C6}
+        question="Where is Jenkins running right now?"
+        qualifier="Not where your app is"
+        lesson={SESSION}
+      />
+    ),
+  },
+  {
+    id: 'c6-on-a-laptop',
+    section: C6,
+    label: 'On a laptop',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="On Your Laptop"
+        lead="GitHub cannot reach a laptop, so you put a tunnel in front of it"
+        lesson={SESSION}
+        points={[
+          { text: 'A laptop has no public address', icon: 'cross' },
+          { text: 'The tunnel gave you one, borrowed', icon: 'link' },
+          { text: 'Close the laptop and the pipeline stops existing', icon: 'warning' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'c6-check-tunnel',
+    section: C6,
+    label: 'Check your webhook',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="Check Your Webhook Now"
+        lead="Open your repository settings and look at the payload URL"
+        lesson={SESSION}
+      >
+        <Callout kind="error" title="For most of you it is already dead">
+          A free tunnel gets a new address every time it restarts. The URL saved in GitHub is the one from
+          the day you set it up, and it almost certainly no longer exists
+        </Callout>
+      </ContentSlide>
+    ),
+    notes:
+      'Have them actually look. This is not a hypothetical, and a room that has just seen its own broken ' +
+      'webhook does not need persuading about what comes next.',
+  },
+  {
+    id: 'c6-requirement',
+    section: C6,
+    label: 'What we require',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="What We Require"
+        lead="A second instance, and it is not the same size as the first"
+        lesson={SESSION}
+      >
+        <DataTable
+          columns={[{ label: 'Setting' }, { label: 'The app server' }, { label: 'The build server' }, { label: 'Why', weight: 2 }]}
+          rows={[
+            ['Instance type', 't3.micro', 't3.micro', 'both free tier eligible'],
+            ['Disk', '8 GiB', '20 GiB', 'builds pile up images and layers'],
+            ['Swap', 'none', '4 GiB', 'a build needs more memory than it has'],
+            ['Open to', 'everyone, on 3000 and 8000', 'you and GitHub, on 8080', 'nobody else needs Jenkins'],
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c6-cost',
+    section: C6,
+    label: 'What it costs',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="Two Instances, Twice the Burn"
+        lead="The free tier is 750 instance hours a month, counted across all of them"
+        lesson={SESSION}
+        points={[
+          { text: 'One instance running all month uses about 730 hours', icon: 'info' },
+          { text: 'Two running together use it twice as fast', icon: 'warning' },
+          { text: 'Stop both when you finish for the day', icon: 'check' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'c6-arch',
+    section: C6,
+    label: 'What we are adding',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="What We Are Adding"
+        lead="A second machine in the same network as the first"
+        lesson={SESSION}
+      >
+        <CloudArchitecture state="jenkins" scale={ARCH} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c6-launch',
+    section: C6,
+    label: 'Launch it',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="Launch It"
+        lead="Same steps you already know, same Ubuntu image, same key pair"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/jen-01-launch-name-ubuntu.png"
+          alt="The EC2 launch form, named nxttrendz-jenkins, with Ubuntu selected"
+          frameWidth={760}
+          caption="EC2 → Instances → Launch instances. Name it so you can tell the two apart"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c6-sg',
+    section: C6,
+    label: 'Its own security group',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="Its Own Security Group"
+        lead="Both rules point at your own address, and nothing else yet"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/jen-02-jenkins-sg-rules.png"
+          alt="A new security group named jenkins-sg with two rules, SSH on 22 and Custom TCP on 8080, both sourced from My IP"
+          frameWidth={760}
+          caption="Port 22 to administer it, port 8080 to open the Jenkins page"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'GitHub is not allowed in yet, on purpose. That rule comes later in this concept, once there is ' +
+      'something for GitHub to talk to.',
+  },
+  {
+    id: 'c6-disk',
+    section: C6,
+    label: 'More disk',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="Give It More Disk"
+        lead="Eight is enough to run two images. It is not enough to keep building them"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/jen-03-storage-20gib.png"
+          alt="The storage section of the launch form, changed from 8 GiB to 20 GiB"
+          frameWidth={760}
+          caption="Every build leaves layers behind, and they add up faster than anyone expects"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c6-two-instances',
+    section: C6,
+    label: 'Two instances',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="Two Machines Now"
+        lead="One runs your app. One builds it"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/jen-05-two-instances.png"
+          alt="The EC2 instances list showing both nxttrendz-server and nxttrendz-jenkins running"
+          frameWidth={760}
+          caption="Different jobs, different sizes, same network"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c6-memory',
+    section: C6,
+    label: 'It needs swap',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="It Needs Swap"
+        lead="Measured on this machine, before a single build started"
+        lesson={SESSION}
+      >
+        <MemoryBar />
+      </ContentSlide>
+    ),
+    notes:
+      'These are real numbers from the build server. 133 MiB free with nothing happening is why the swap ' +
+      'file is not optional. Builds will be slow, and they will finish.',
+  },
+  {
+    id: 'c6-install',
+    section: C6,
+    label: 'Set it up',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="Swap, Docker, Jenkins"
+        lead="In that order, because each one needs the last"
+        lesson={SESSION}
+      >
+        <ShellPanel
+          title="The build server"
+          prompt="ubuntu@ip-172-31-15-67:~$"
+          fontSize={13}
+          lines={[
+            { text: 'sudo fallocate -l 4G /swapfile && sudo chmod 600 /swapfile', kind: 'cmd' },
+            { text: 'sudo mkswap /swapfile && sudo swapon /swapfile', kind: 'cmd' },
+            { text: 'sudo apt-get update && sudo apt-get install -y docker.io docker-compose-v2', kind: 'cmd' },
+            { text: 'sudo docker run -d --name jenkins --restart unless-stopped \\', kind: 'cmd' },
+            /* continuation lines of the command above, so they take no prompt */
+            { text: '  -p 8080:8080 -v jenkins_home:/var/jenkins_home \\', kind: 'out' },
+            { text: '  -v /var/run/docker.sock:/var/run/docker.sock jenkins/jenkins:lts', kind: 'out' },
+          ]}
+          caption="The socket mount is what lets Jenkins build images, exactly as it did on your laptop"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c6-unlock',
+    section: C6,
+    label: 'Unlock it',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="Unlock It"
+        lead="Same first screen you saw when you installed Jenkins the first time"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/jen-08-unlock-jenkins.png"
+          alt="The Unlock Jenkins screen asking for the administrator password"
+          frameWidth={700}
+          caption="Read the password from the server, then install the suggested plugins"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c6-nothing-transfers',
+    section: C6,
+    label: 'Nothing transfers',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="Nothing Comes With It"
+        lead="Your plugins, credentials and jobs live in the old Jenkins, and they stay there"
+        lesson={SESSION}
+      >
+        <DataTable
+          columns={[{ label: 'What to create again' }, { label: 'It must be called', weight: 2 }]}
+          rows={[
+            ['The Docker Hub credential', 'dockerhub-credentials'],
+            ['The SSH key credential', 'ec2-ssh-key'],
+            ['The SSH Agent plugin', 'not installed by default'],
+            ['The pipeline job', 'any name you like'],
+          ]}
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'This is the only time they do this. The old Jenkins is finished with after today, and the deploy ' +
+      'stage is added here rather than there for exactly this reason.',
+  },
+  {
+    id: 'c6-new-token',
+    section: C6,
+    label: 'A new Docker Hub token',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="You Need a New Docker Hub Token"
+        lead="You were told to delete the old one after you used it, and you should have"
+        lesson={SESSION}
+        points={[
+          { text: 'Create a fresh token with read and write access', icon: 'key' },
+          { text: 'Add it as a Username with password credential', icon: 'shield' },
+          { text: 'Your Docker Hub ID is the username, the token is the password', icon: 'info' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'c6-credential-id',
+    section: C6,
+    label: 'The ID matters',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="The ID Is Not a Label"
+        lead="It is the name your Jenkinsfile calls. Get it wrong and the build cannot find it"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-26-credential-kinds.png"
+          alt="The Add Credentials dialog showing the six kinds, including SSH Username with private key"
+          frameWidth={640}
+          caption="Leave the ID field blank and Jenkins invents a random one, which nothing will match"
+          className="mx-auto w-fit"
+        />
+        <Callout kind="warning" title="Jenkins will not let you change an ID afterwards">
+          If you leave it blank, delete the credential and add it again
+        </Callout>
+      </ContentSlide>
+    ),
+    notes: 'This happened during capture and cost a failed build with a confusing message.',
+  },
+  {
+    id: 'c6-elastic-too',
+    section: C6,
+    label: 'This one needs an address too',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="This Machine Needs a Permanent Address Too"
+        lead="And for a sharper reason than the app server had"
+        lesson={SESSION}
+        points={[
+          { text: 'GitHub stores this address in your webhook settings', icon: 'link' },
+          { text: 'If it moves, GitHub keeps posting to an address that answers nothing', icon: 'warning' },
+          { text: 'No error appears anywhere you are looking. Pushes just stop building', icon: 'cross' },
+        ]}
+      >
+        <Callout kind="note" title="A silent break is worse than a loud one">
+          The app server told you it was broken by not loading. This one will not tell you anything
+        </Callout>
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c6-three-places-again',
+    section: C6,
+    label: 'Three places again',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="Three Places, Again"
+        lead="Allocate and attach a second Elastic IP, then change all three"
+        lesson={SESSION}
+        points={[
+          { text: 'The webhook payload URL, in your GitHub repository settings', icon: 'link' },
+          { text: "Jenkins's own record of its address, under Manage Jenkins then System", icon: 'settings' },
+          { text: 'The host the Deploy stage connects to, later in this session', icon: 'terminal' },
+        ]}
+      >
+        <Callout kind="warning" title="The middle one is the easy one to miss">
+          Jenkins uses it for every link it puts in an email or a build page
+        </Callout>
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c6-github-ranges',
+    section: C6,
+    label: 'Let GitHub in',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="Let GitHub In"
+        lead="Your group allows only your own address, so GitHub is still shut out"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/jen-09-github-webhook-ranges.png"
+          alt="The jenkins-sg inbound rules with four additional rules on port 8080, one for each GitHub webhook range"
+          frameWidth={760}
+          caption="GitHub publishes the addresses its webhooks come from. Add one rule per range, all on 8080"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'Four rules rather than opening 8080 to the world. Jenkins can start builds and read your code, so ' +
+      'it is not a page you leave open to everyone.',
+  },
+  {
+    id: 'c6-repoint',
+    section: C6,
+    label: 'Repoint the webhook',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="Repoint the Webhook"
+        lead="From the tunnel that no longer exists, to an address that will not move"
+        lesson={SESSION}
+      >
+        <CodeBlock
+          filename="GitHub → your repository → Settings → Webhooks → Payload URL"
+          language="text"
+          code={`http://<your-jenkins-elastic-ip>:8080/github-webhook/`}
+        />
+        <Callout kind="warning" title="Both ends of that path matter">
+          It is github-webhook, and it ends with a slash. Without either, GitHub gets an error and nothing
+          builds
+        </Callout>
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c6-it-builds',
+    section: C6,
+    label: 'It builds',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="Push Anything"
+        lead="The build runs, and no laptop is involved at any point"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/jen-11-build-1-on-aws.png"
+          alt="A Jenkins build on the EC2 server showing all stages green, started by a GitHub push"
+          frameWidth={760}
+          caption="Started by GitHub push. The tunnel is gone and nothing misses it"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c6-hook-log',
+    section: C6,
+    label: 'Proof it arrived',
+    element: (
+      <ContentSlide
+        kicker={C6}
+        title="Proof It Arrived"
+        lead="Jenkins records the address the webhook came from"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/jen-17-github-hook-log.png"
+          alt="The Jenkins GitHub hook log showing the delivery, the source address it came from and the URL it was posted to"
+          frameWidth={760}
+          caption="That address sits inside one of the four ranges you allowed a moment ago"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'Worth pausing on. The rule they wrote and the traffic it allowed are on the same screen, so they can ' +
+      'check the claim rather than take it.',
+  },
+  {
+    id: 'c6-recap',
+    section: C6,
+    label: 'Recap',
+    element: (
+      <RecapSlide
+        kicker={C6}
+        title={C6}
+        lesson={SESSION}
+        points={[
+          { text: 'A build server needs a public address of its own', sub: 'Then GitHub reaches it directly' },
+          { text: 'Nothing transfers from the old Jenkins', sub: 'Plugins, credentials and jobs are created once, here' },
+          { text: 'It needs more disk and more memory than the app', sub: 'Different job, different size' },
         ]}
       />
     ),
