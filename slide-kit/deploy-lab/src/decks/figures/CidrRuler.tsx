@@ -42,10 +42,10 @@ export function CidrRuler() {
       <div>
         <div className="mb-2 flex items-baseline gap-3">
           <span className="font-mono text-[18px] font-bold" style={{ color: colors.brand }}>
-            49.200.108.250/32
+            &lt;your address&gt;/32
           </span>
           <span className="text-[15px]" style={{ color: colors.body }}>
-            exactly one address, and it is yours
+            exactly one address, and yours is not the same as anyone else's
           </span>
         </div>
         <div className="relative h-9 w-full rounded-lg border-2" style={{ borderColor: colors.line }}>
@@ -63,7 +63,7 @@ export function CidrRuler() {
             className="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] font-bold"
             style={{ color: colors.brand }}
           >
-            this sliver, and nothing else
+            your own sliver, and nothing else
           </motion.div>
         </div>
         <div className="mt-1 text-[13px]" style={{ color: colors.body }}>

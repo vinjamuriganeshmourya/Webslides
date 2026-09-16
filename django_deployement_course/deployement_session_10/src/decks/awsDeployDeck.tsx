@@ -11,7 +11,7 @@ import {
   ThankYouSlide,
   WelcomeSlide,
 } from '@/slides'
-import { Callout, CodeBlock, DataTable } from '@/ui'
+import { Callout, CodeBlock, DataTable, SyntaxBreakdown } from '@/ui'
 import { AnnotatedShot } from './figures/AnnotatedShot'
 import { ShellPanel } from './figures/ShellPanel'
 import { CloudArchitecture } from './figures/aws/CloudArchitecture'
@@ -25,6 +25,7 @@ import { BuildVsImage } from './figures/BuildVsImage'
 import { CidrRuler } from './figures/CidrRuler'
 import { GroupAsSource } from './figures/GroupAsSource'
 import { NgrokDetour } from './figures/NgrokDetour'
+import { DoorList } from './figures/DoorList'
 import { LastMile } from './figures/LastMile'
 import { SG_THREE_RULES, SG_PORT_COLUMN, SG_RULE_3000, SG_NEW_ROW_FORM } from './shotBoxes'
 import {
@@ -402,12 +403,31 @@ export const awsDeployDeck: SlideDef[] = [
         title="Three Parts"
         lead="Every SSH command names a key, a user and a machine"
         lesson={SESSION}
-        points={[
-          { text: `-i ${KEY_FILE} is the key, your half of the pair`, icon: 'key' },
-          { text: `${SSH_USER}@ is the user. Ubuntu images always use this name, and it is not root`, icon: 'lock' },
-          { text: 'The address is the machine. It is the one that keeps changing', icon: 'globe' },
-        ]}
-      />
+      >
+        <SyntaxBreakdown
+          mode="command"
+          parts={[
+            { token: 'ssh', label: 'the command', body: 'Opens a shell on another machine' },
+            {
+              token: `-i ${KEY_FILE}`,
+              label: 'the key',
+              body: 'Your half of the key pair. Without it the server refuses you',
+            },
+            {
+              token: SSH_USER,
+              label: 'the user',
+              body: 'Ubuntu images always use this name. It is not root and it is not your own name',
+            },
+            { token: '@', label: 'at', after: '', body: 'Separates the user from the machine' },
+            {
+              token: '<your-address>',
+              label: 'the machine',
+              fill: 'placeholder',
+              body: 'The public address of your instance. This is the part that keeps changing',
+            },
+          ]}
+        />
+      </ContentSlide>
     ),
   },
   {
@@ -645,7 +665,7 @@ export const awsDeployDeck: SlideDef[] = [
       <ContentSlide
         kicker={C3}
         title="One Word Changes"
-        lead="It is your own compose file, with build swapped for image on each service"
+        lead="Open it with nano, then type it. It is your own file with build swapped for image"
         lesson={SESSION}
       >
         <CodeBlock
@@ -695,6 +715,39 @@ volumes:
     ),
   },
   {
+    id: 'c3-nano',
+    section: C3,
+    label: 'Creating a file',
+    element: (
+      <ContentSlide
+        kicker={C3}
+        title="Creating a File on the Server"
+        lead="There is no editor window here. You open a file, type in it, then save and close"
+        lesson={SESSION}
+      >
+        <SyntaxBreakdown
+          mode="command"
+          parts={[
+            { token: 'nano', label: 'the editor', body: 'A text editor that runs inside the terminal' },
+            { token: 'docker-compose.yml', label: 'the file', body: 'If it does not exist, nano creates it when you save' },
+          ]}
+        />
+        <DataTable
+          compact
+          columns={[{ label: 'To do this' }, { label: 'Press' }]}
+          rows={[
+            ['Save the file', 'Ctrl and O, then Enter'],
+            ['Close the editor', 'Ctrl and X'],
+            ['Leave without saving', 'Ctrl and X, then N'],
+          ]}
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'Nobody guesses Ctrl and O. nano prints its shortcuts along the bottom but writes Ctrl as a caret, ' +
+      'so ^O looks like nothing in particular. Say it out loud.',
+  },
+  {
     id: 'c3-env',
     section: C3,
     label: 'The env file',
@@ -702,9 +755,16 @@ volumes:
       <ContentSlide
         kicker={C3}
         title="The .env File"
-        lead="On this server it holds one line"
+        lead="Same editor, same two keys to save. On this server it holds one line"
         lesson={SESSION}
       >
+        <ShellPanel
+          title="The instance"
+          prompt={REMOTE_PROMPT}
+          fontSize={15}
+          lines={[{ text: 'nano .env', kind: 'cmd' }]}
+          caption="Type the line below, then Ctrl and O, Enter, Ctrl and X"
+        />
         <CodeBlock filename=".env, on the server" language="text" code={`SECRET_KEY=<a long random value>`} />
         <Callout kind="note" title="There are no database settings here">
           This app keeps its data in a file inside the db_data volume, so there is no database host, no
@@ -766,6 +826,33 @@ volumes:
     notes:
       'Let the silence sit. The containers are running and the page will not load, and that contradiction is ' +
       'the door into the next concept.',
+  },
+  {
+    id: 'c3-what-is-curl',
+    section: C3,
+    label: 'What curl is',
+    element: (
+      <ContentSlide
+        kicker={C3}
+        title="curl"
+        lead="A browser without the browser. It asks a server for something and prints the answer"
+        lesson={SESSION}
+      >
+        <SyntaxBreakdown
+          mode="command"
+          parts={[
+            { token: 'curl', label: 'the command', body: 'Makes one request and prints what comes back' },
+            { token: 'http://', label: 'the protocol', after: '', body: 'Plain web traffic, because this server has no certificate' },
+            { token: '<your-address>', label: 'which machine', after: '', fill: 'placeholder', body: 'Your own public address' },
+            { token: ':3000', label: 'which port', after: '', body: 'Which door on that machine to knock at' },
+            { token: '/', label: 'which page', body: 'The path, exactly as it would be in a browser' },
+          ]}
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'Beginners have often never used curl. Two minutes here stops the next slide being about the tool ' +
+      'instead of about the result. A browser retries and caches; curl says plainly what happened.',
   },
   {
     id: 'c3-two-ports',
@@ -844,14 +931,15 @@ volumes:
       <ContentSlide
         kicker={C4}
         title="The Security Group"
-        lead="A firewall in front of your instance. You met it as the door list when you launched"
+        lead="A firewall in front of your instance. Nothing is open until you open it"
         lesson={SESSION}
-        points={[
-          { text: 'Nothing is open until you open it', icon: 'lock' },
-          { text: 'You can only allow. There is no rule that blocks', icon: 'shield' },
-          { text: 'Traffic going out is already allowed', icon: 'arrow' },
-        ]}
-      />
+      >
+        <DoorList state="closed" />
+        <Callout kind="note" title="You can only allow, never block">
+          There is no rule that shuts a port. Everything you do not list is already shut, which is why a
+          new instance is safe before you have written a single rule
+        </Callout>
+      </ContentSlide>
     ),
     notes:
       'The third point is the one they have already seen without noticing: docker pull worked, and nobody ' +
@@ -868,9 +956,9 @@ volumes:
         lead="You never opened a port for Docker Hub, and you did not need to"
         lesson={SESSION}
       >
+        <DoorList state="outbound" />
         <Callout kind="success" title="Out is open, in is closed">
-          A server reaching out to the internet is allowed by default. The internet reaching in is not.
-          That is why pulling an image needed nothing, and serving a page needs a rule
+          Doors only face one way. Serving a page needs a rule, and fetching an image does not
         </Callout>
       </ContentSlide>
     ),
@@ -909,9 +997,9 @@ volumes:
         lesson={SESSION}
       >
         <CidrRuler />
-        <Callout kind="note" title="You will not have to type either of them">
-          The console fills in your own address when you choose My IP, and offers 0.0.0.0/0 when you
-          choose Anywhere
+        <Callout kind="warning" title="My IP is different for every one of you">
+          The console fills in whatever address you are connecting from right now. Nobody in the room
+          gets the same value, so do not copy the one on any screen. Choose My IP and let it fill itself in
         </Callout>
       </ContentSlide>
     ),
@@ -934,10 +1022,14 @@ volumes:
           alt="The nxttrendz-sg security group showing three inbound rules: SSH on 22 from one address, SSH on 22 from an AWS range, and Custom TCP on 8000 from anywhere"
           highlights={[{ ...SG_THREE_RULES, step: 1, label: 'three rules', labelAt: 'below' }]}
           spotlight
+          inset="auto"
           frameWidth={760}
           caption="EC2 → Security Groups → your group → Inbound rules"
           className="mr-auto w-fit"
         />
+        <Callout kind="note" title="Your rules will show a different address">
+          The SSH rule holds whoever set it up. Yours holds you, and it will not match the screen
+        </Callout>
       </ContentSlide>
     ),
   },
@@ -957,6 +1049,7 @@ volumes:
           alt="The same three rules, with the Port range column highlighted showing 22, 22 and 8000"
           highlights={[{ ...SG_PORT_COLUMN, step: 1, label: 'no 3000', labelAt: 'below' }]}
           spotlight
+          inset="auto"
           frameWidth={760}
           caption="The frontend listens on 3000, and nothing is allowed to reach it"
           className="mr-auto w-fit"
@@ -1004,6 +1097,7 @@ volumes:
           alt="The Edit inbound rules form with a fourth row added: Custom TCP, port 3000, described as the React frontend"
           highlights={[{ ...SG_NEW_ROW_FORM, step: 1, label: 'the row you add', labelAt: 'below' }]}
           spotlight
+          inset="auto"
           frameWidth={760}
           caption="EC2 → Security Groups → your group → Edit inbound rules → Add rule"
           className="mr-auto w-fit"
@@ -1049,6 +1143,7 @@ volumes:
           alt="The security group now showing four inbound rules, including Custom TCP on port 3000 from anywhere"
           highlights={[{ ...SG_RULE_3000, step: 1, label: 'the new rule', labelAt: 'below' }]}
           spotlight
+          inset="auto"
           frameWidth={760}
           caption="The browser tab that had been waiting loaded while this banner was still on screen"
           className="mr-auto w-fit"
@@ -1067,13 +1162,21 @@ volumes:
         lead="Your app, on the public internet, from any device"
         lesson={SESSION}
       >
-        <AnnotatedShot
-          src="/shots/dep-12-site-loads-empty.png"
-          alt="The NxtTrendz login page loading in a browser over the public address"
-          frameWidth={640}
-          caption="Reload the tab that was waiting. No restart was needed"
-          className="mr-auto w-fit"
-        />
+        <div className="flex flex-col items-center gap-3">
+          <CodeBlock
+            className="max-w-[560px]"
+            filename="in your browser"
+            language="text"
+            code={'http://<your-address>:3000/'}
+          />
+          <AnnotatedShot
+            src="/shots/dep-12-site-loads-empty.png"
+            alt="The NxtTrendz login page loading in a browser over the public address"
+            frameWidth={600}
+            caption="Reload the tab that was waiting. No restart was needed"
+            className="w-fit"
+          />
+        </div>
       </ContentSlide>
     ),
   },
@@ -1135,24 +1238,6 @@ volumes:
     notes:
       'Exposed databases are found by scanners within hours. They do not need the statistic today, they ' +
       'need the rule.',
-  },
-  {
-    id: 'c4-decoder',
-    section: C4,
-    label: 'Timeout against refused',
-    element: (
-      <ContentSlide
-        kicker={C4}
-        title="Timeout Against Refused"
-        lead="Two failures that look alike and mean opposite things"
-        lesson={SESSION}
-      >
-        <TimeoutVsRefused />
-      </ContentSlide>
-    ),
-    notes:
-      'They have already seen the top row today. They will see the bottom row later in the session, on the ' +
-      'login request. Point back to this slide when it happens.',
   },
   {
     id: 'c4-ip-moved',
@@ -1700,6 +1785,9 @@ volumes:
           caption="Port 22 to administer it, port 8080 to open the Jenkins page"
           className="mr-auto w-fit"
         />
+        <Callout kind="note" title="Choose My IP rather than typing an address">
+          It fills in your own, which is different from everyone else's and changes when you move network
+        </Callout>
       </ContentSlide>
     ),
     notes:
