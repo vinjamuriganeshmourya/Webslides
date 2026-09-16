@@ -18,6 +18,7 @@ import { ShellPanel } from './figures/ShellPanel'
 import { CloudArchitecture } from './figures/aws/CloudArchitecture'
 import { Permissions } from './figures/Permissions'
 import { TimeoutVsRefused } from './figures/TimeoutVsRefused'
+import { ThreePlaces } from './figures/ThreePlaces'
 import { SG_THREE_RULES, SG_PORT_COLUMN, SG_RULE_3000, SG_NEW_ROW_FORM } from './shotBoxes'
 import {
   SESSION,
@@ -1109,6 +1110,275 @@ volumes:
           { text: 'Nothing is open until you open it', sub: 'And you can only allow, never block' },
           { text: 'Every open port needs a reason you can say out loud', sub: 'The database needs no port at all' },
           { text: 'Timeout is the firewall, refused is the app', sub: 'Two symptoms, two places to look' },
+        ]}
+      />
+    ),
+  },
+
+  /* ── CONCEPT 5 · A PERMANENT ADDRESS ────────────────────────────────── */
+  {
+    id: 'c5-divider',
+    section: C5,
+    label: '05',
+    element: <SectionBreakerSlide index={5} title={C5} lesson={SESSION} />,
+  },
+  {
+    id: 'c5-question',
+    section: C5,
+    label: 'What happens on stop',
+    element: (
+      <QuestionSlide
+        kicker={C5}
+        question="What happens to the address the next time you stop the instance?"
+        qualifier="You have already seen the answer, more than once"
+        lesson={SESSION}
+      />
+    ),
+  },
+  {
+    id: 'c5-four-addresses',
+    section: C5,
+    label: 'Four addresses',
+    element: (
+      <ContentSlide
+        kicker={C5}
+        title="Four Addresses, One Machine"
+        lead="Every stop and start hands the old one back and takes a new one"
+        lesson={SESSION}
+      >
+        <DataTable
+          columns={[{ label: 'When' }, { label: 'Public address', weight: 2 }, { label: 'Private address', weight: 2 }]}
+          rows={[
+            ['at launch', ADDRESSES_IN_ORDER[0], APP_PRIVATE_IP],
+            ['after a restart', ADDRESSES_IN_ORDER[1], APP_PRIVATE_IP],
+            ['later that session', ADDRESSES_IN_ORDER[2], APP_PRIVATE_IP],
+            ['when you started it today', ADDRESSES_IN_ORDER[3], APP_PRIVATE_IP],
+          ]}
+        />
+      </ContentSlide>
+    ),
+    notes:
+      'The right column never changes. Point at it. The private address is stable and the public one is not, ' +
+      'and that difference is the whole concept.',
+  },
+  {
+    id: 'c5-why-not-free',
+    section: C5,
+    label: 'Why not use the free one',
+    element: (
+      <QuestionSlide
+        kicker={C5}
+        question="Why not just use the free address AWS keeps giving you?"
+        qualifier="It works. You have been using it all session"
+        lesson={SESSION}
+      />
+    ),
+    notes:
+      'This is the question the room actually has, so ask it before answering it. "Because it changes" is ' +
+      'not an answer on its own: changing only matters if something depends on it.',
+  },
+  {
+    id: 'c5-three-places',
+    section: C5,
+    label: 'Written in three places',
+    element: (
+      <ContentSlide
+        kicker={C5}
+        title="The Address Is Written Down"
+        lead="Not just typed into a browser. By the end of today it sits in three files"
+        lesson={SESSION}
+      >
+        <ThreePlaces />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c5-sealed',
+    section: C5,
+    label: 'The one in the image',
+    element: (
+      <ContentSlide
+        kicker={C5}
+        title="One of Them Is Sealed In"
+        lead="The middle card decides it. That address is inside a built image"
+        lesson={SESSION}
+        points={[
+          { text: 'You cannot edit a file inside an image', icon: 'lock' },
+          { text: 'Changing it means a commit, a build, a push and a redeploy', icon: 'warning' },
+          { text: 'A free address that moves would make a full release the price of every restart', icon: 'bolt' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'c5-arch',
+    section: C5,
+    label: 'What we are adding',
+    element: (
+      <ContentSlide
+        kicker={C5}
+        title="What We Are Adding"
+        lead="One address, reserved to your account and pinned to the instance"
+        lesson={SESSION}
+      >
+        <CloudArchitecture state="elastic" scale={ARCH} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c5-allocate',
+    section: C5,
+    label: 'Allocate it',
+    element: (
+      <ContentSlide
+        kicker={C5}
+        title="Allocate It"
+        lead="Reserve an address from Amazon's pool. It belongs to your account now"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-16-allocated.png"
+          alt="The Elastic IP addresses list showing one allocated address, with the Associated instance ID column empty"
+          frameWidth={760}
+          caption="EC2 → Elastic IPs → Allocate Elastic IP address"
+          className="mx-auto w-fit"
+        />
+        <Callout kind="warning" title="Look at the Associated instance column">
+          It is empty. An address you hold and do not use is the one state AWS charges for
+        </Callout>
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c5-associate',
+    section: C5,
+    label: 'Associate it',
+    element: (
+      <ContentSlide
+        kicker={C5}
+        title="Attach It to the Instance"
+        lead="Now it is the instance's address, and it stays that way through a stop and start"
+        lesson={SESSION}
+      >
+        <AnnotatedShot
+          src="/shots/dep-19-associated.png"
+          alt="The Elastic IP now showing an associated instance ID and the instance's private address beside it"
+          frameWidth={760}
+          caption="Actions → Associate Elastic IP address → choose the instance"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c5-old-dies',
+    section: C5,
+    label: 'The old one dies',
+    element: (
+      <ContentSlide
+        kicker={C5}
+        title="The Old Address Stops Answering"
+        lead="Straight away. The same command, a minute apart"
+        lesson={SESSION}
+      >
+        <ShellPanel
+          title="Your machine"
+          prompt={LOCAL_PROMPT}
+          fontSize={14}
+          lines={[
+            { text: 'curl http://<the-old-address>:3000/', kind: 'cmd' },
+            { text: 'HTTP 200', kind: 'out' },
+            { text: '', kind: 'out' },
+            { text: 'curl http://<the-old-address>:3000/', kind: 'cmd' },
+            { text: 'HTTP 000', kind: 'out' },
+          ]}
+          caption="Anything holding the old address is now pointing at nothing"
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c5-pricing',
+    section: C5,
+    label: 'What it costs',
+    element: (
+      <ContentSlide
+        kicker={C5}
+        title="What It Costs"
+        lead="Attached is free. Held and unused is billed"
+        lesson={SESSION}
+        points={[
+          { text: 'Attached to a running instance, you pay nothing', icon: 'check' },
+          { text: 'Allocated and attached to nothing, you pay', icon: 'warning' },
+          { text: 'So release it when you release the instance', icon: 'target' },
+        ]}
+      >
+        <Callout kind="note" title="Why AWS prices it that way">
+          Addresses are limited. The charge exists to stop people holding ones they are not using
+        </Callout>
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c5-point-frontend',
+    section: C5,
+    label: 'Point the frontend at it',
+    element: (
+      <ContentSlide
+        kicker={C5}
+        title="Point the Frontend at It"
+        lead="The compose file on the server still says localhost. Change it and bring the stack back up"
+        lesson={SESSION}
+      >
+        <CodeBlock
+          filename="docker-compose.yml, on the server"
+          language="yaml"
+          code={`    environment:
+      VITE_API_BASE_URL: http://<your-elastic-ip>:8000`}
+        />
+        <ShellPanel
+          title="The instance"
+          prompt={REMOTE_PROMPT}
+          fontSize={14}
+          lines={[{ text: 'docker compose up -d', kind: 'cmd' }]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'c5-still-empty',
+    section: C5,
+    label: 'Still empty',
+    element: (
+      <ContentSlide
+        kicker={C5}
+        title="The Product List Is Still Empty"
+        lead="Log in and nothing arrives. The page gives no error"
+        lesson={SESSION}
+      >
+        <Callout kind="error" title="Something else is refusing it">
+          The address is right now, and the request does reach the server. We come back to this, and the
+          browser will tell us exactly what is wrong
+        </Callout>
+      </ContentSlide>
+    ),
+    notes:
+      'Name it and move on. The room now has an open question they can hold, and the answer needs a working ' +
+      'pipeline, which is the next concept.',
+  },
+  {
+    id: 'c5-recap',
+    section: C5,
+    label: 'Recap',
+    element: (
+      <RecapSlide
+        kicker={C5}
+        title={C5}
+        lesson={SESSION}
+        points={[
+          { text: 'A free public address changes on every stop', sub: 'The private one never does' },
+          { text: 'It matters because the address gets written into files', sub: 'One of them is inside an image' },
+          { text: 'An Elastic IP is free while attached', sub: 'Release it when you are done' },
         ]}
       />
     ),
