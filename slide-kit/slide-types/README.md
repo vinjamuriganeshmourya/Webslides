@@ -91,10 +91,17 @@ from any session that still has it.
 `ContainerJourney` · `FanOut` · `GateFlow` · `LaneFlow` · `SpineFlow` ·
 `StepLedger` · `TrackSwitch` ·
 `DataTable` · `FileTree` · `FlowChart` · `HandRitual` · `JourneyRoadmap` ·
-`LayerStack` · `MachineBoundary` · `Nova` · `OneProcessRule` · `Orchestra` ·
+`LayerStack` · `MachineBoundary` · `NestedBoundary` · `Nova` · `OneProcessRule` · `Orchestra` ·
 `SocketBridge` · `TunnelPath` ·
 `ScenarioCard` · `StackUp` · `StatusList` · `StepList` · `SyntaxBreakdown` ·
 `Terminal` · `Shot` · `TwoRuntimes` · `VolumeSurvival` · `YamlNesting`
+
+`NestedBoundary` draws containment as boxes inside boxes, the innermost solid:
+Docker-inside-Docker is its default. It is the PAIR of `SocketBridge`, which draws
+the same two things side by side with a socket between; the two share a dashed
+boundary style so a deck can show the wrong arrangement then the right one.
+Reach for it when the claim is "this is stuck inside that". Not for a stack of
+peers, which is `LayerStack`.
 
 `SyntaxBreakdown` builds its specimen line FROM its `parts` array, so the diagram
 and the legend under it cannot drift apart. The first draft took a separate

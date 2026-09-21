@@ -1,5 +1,5 @@
 import type { SlideDef, DeckMeta } from '@/deck/types'
-import { BoundaryBridge, CodeBlock, FanOut, SpineFlow, LaneFlow, StepLedger, CircuitMap, GateFlow, TrackSwitch } from '@/ui'
+import { BoundaryBridge, CodeBlock, FanOut, SpineFlow, LaneFlow, StepLedger, CircuitMap, GateFlow, TrackSwitch, NestedBoundary } from '@/ui'
 import type { FlowchartFigureProps } from '@/ui'
 import {
   WelcomeSlide,
@@ -181,6 +181,17 @@ export const sampleDeck: SlideDef[] = [
         subtitle="A shared language that lets a client ask a server for exactly what it needs."
       />
     ),
+  },
+  {
+    id: 'fig-nested-boundary',
+    label: 'NestedBoundary',
+    section: 'Concepts',
+    element: (
+      <ContentSlide kicker="Figures" title="NestedBoundary" lead="Boxes inside boxes, the innermost solid. For a claim of the shape: this is stuck inside that" lesson="Gallery">
+        <NestedBoundary className="mx-auto max-w-[840px]" />
+      </ContentSlide>
+    ),
+    notes: 'FOR: containment, and what containment traps. Docker-inside-Docker is the default. MUST NOT carry a stack of peers, which is LayerStack, or an outsider trying to get in, which is MachineBoundary. CONFUSABLE WITH SocketBridge, its pair: the same two things side by side instead of nested. Show this one, then that one.',
   },
   {
     id: 'what-is-api',
