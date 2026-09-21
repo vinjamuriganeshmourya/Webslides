@@ -1952,12 +1952,54 @@ export const jenkinsCicdDeck: SlideDef[] = [
             },
             { text: "f3a9c1d24b8e4f7a9c0d1e2f3a4b5c6d", kind: "ok" },
           ]}
-          caption="docker exec runs a command inside a running container"
+          /* Line 2 is the password. It is the one string in this deck the room
+             has to copy character for character, and `kind: "ok"` alone only
+             makes it green among grey. */
+          highlight={[2]}
+          caption="This is the string to copy. The next screen is where it goes"
         />
       </ContentSlide>
     ),
     notes:
       "Say why the password is hidden in there: only someone who controls the machine can read a file inside a container, so nobody on the network can claim this Jenkins. Reading a file inside a container is a session 1 skill, and this is the first time it has had a real reason. Copy the string into the browser.",
+  },
+  {
+    /*
+      WHERE THE STRING FROM THE SLIDE BEFORE ACTUALLY GOES.
+
+      Asked for on 2026-09-21: the deck printed the password and then jumped to
+      the plugins screen, so the one action joining them was never shown.
+
+      `wiz-1-unlock.png` was captured in the same wizard run as the three screens
+      below and then never placed. It is the screen as you land on it, with the
+      field empty, which is what the room sees at the moment they have the string
+      on their clipboard and nowhere obvious to put it.
+
+      NO HIGHLIGHT BOX, matching the three wizard slides: the screen has one
+      input and one button, so a box would be the noise hard rule 11 warns about.
+    */
+    id: "c3-paste-password",
+    section: C3,
+    label: "Paste the Password",
+    element: (
+      <ContentSlide
+        kicker={C3}
+        title="Paste the Password"
+        lead="One box, and the string you just printed goes in it. The field masks what you paste, so a row of dots is the only confirmation you get"
+        lesson={SESSION}
+      >
+        <div className="mx-auto w-full max-w-[540px]">
+          <Shot
+            src="/shots/wiz-1-unlock.png"
+            alt="The Unlock Jenkins screen, with the Administrator password field and a Continue button"
+            chrome={{ url: "http://localhost:8080/" }}
+            caption="Jenkins names the same file you just read, then asks for what was in it"
+          />
+        </div>
+      </ContentSlide>
+    ),
+    notes:
+      "Point at the file path on the screen first: it is the very file the previous slide read, so the two slides are one action. Warn them the box masks the paste. Somebody always thinks nothing happened and pastes a second time, which gives them the string twice and a rejected password, so say it now: if it is rejected, clear the box completely before pasting again. Then Continue.",
   },
   {
     /*

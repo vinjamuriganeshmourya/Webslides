@@ -74,6 +74,18 @@ export function Terminal({
   chrome = 'vscode',
   /** The `powershell` window's title bar text. Ignored by `vscode`. */
   title = 'Windows PowerShell',
+  /**
+   * Line numbers to mark, 1-based over `lines`, the same shape and the same
+   * 1-based counting as `CodeBlock`'s `highlight`.
+   *
+   * For the one line in a transcript that the room has to DO something with: a
+   * value to copy, the line that carries the verdict. `kind: 'ok'` already
+   * colours a success line green, and green among grey is not enough when the
+   * task is "copy exactly this".
+   *
+   * Keep it to one line. A panel with three marked lines has none.
+   */
+  highlight,
   className = '',
 }: {
   path: string
@@ -82,8 +94,10 @@ export function Terminal({
   fontSize?: number
   chrome?: 'vscode' | 'powershell'
   title?: string
+  highlight?: number[]
   className?: string
 }) {
+  const marked = new Set(highlight ?? [])
   return (
     <div className={className}>
       <div className="overflow-hidden rounded-card shadow-card" style={{ background: GROUND[chrome] }}>
@@ -150,6 +164,16 @@ export function Terminal({
                 className="whitespace-pre-wrap break-words"
                 style={{
                   color: kind === 'ok' ? '#4EC9A0' : kind === 'err' ? ERR : '#B9B9B9',
+                  /* Amber, the same "look here" as `Shot`'s highlight box, and a
+                     colour no terminal `kind` already uses: green is success,
+                     red is error, so neither can double as emphasis. Inset to
+                     the line box rather than a background on the text, so a
+                     wrapped line marks as one block. */
+                  ...(marked.has(i + 1) && {
+                    background: 'rgba(245,158,11,0.20)',
+                    boxShadow: '0 0 0 1.5px rgba(245,158,11,0.75)',
+                    borderRadius: 4,
+                  }),
                 }}
               >
                 {l.text || '\u00A0'}
