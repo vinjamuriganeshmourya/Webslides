@@ -13,10 +13,12 @@ import {
   WelcomeSlide,
 } from '@/slides'
 import {
+  Callout,
   CodeBlock,
   DataTable,
   FileTree,
   GateFlow,
+  LayerStack,
   MachineBoundary,
   Shot,
   SocketBridge,
@@ -32,7 +34,7 @@ import {
  * DEPLOYMENT SESSION 8 — "Setting Up Jenkins for Docker Builds", rev2
  *
  * Plan: `../../session_plans/deployement_session_8/plan.md`, rev2 2026-09-11.
- * 84 slides. The whole Jenkins flow: Docker access, credentials, GitHub and the
+ * 86 slides. The whole Jenkins flow: Docker access, credentials, GitHub and the
  * webhook through a tunnel, then the full Jenkinsfile with Checkout, Build
  * and Push, and a failure stopping the line. No Test stage: the project has
  * no tests (user, 2026-09-15). The sessions after this one
@@ -126,7 +128,7 @@ export const jenkinsDockerDeck: SlideDef[] = [
   {
     id: 'c1-not-found', section: C1, label: 'docker: not found',
     element: (
-      <ContentSlide kicker={C1} title="docker: not found" lead="Add a docker command to the hello-jenkins job. The build fails with this error" lesson={SESSION}>
+      <ContentSlide kicker={C1} title="docker: not found" lead="Open hello-jenkins, then Configure, then Build Steps, then Execute shell. Put docker build -t nxttrendz-backend . in the box, Save, then Build Now" lesson={SESSION}>
         <CodeBlock filename="Jenkins → hello-jenkins → #2 → Console Output" language="text" showLineNumbers={false} code={`+ docker build -t nxttrendz-backend .
 /var/jenkins_home/workspace/hello-jenkins@tmp/script.sh: 1:
 docker: not found
@@ -139,17 +141,28 @@ Finished: FAILURE`} />
   {
     id: 'c1-docker-inside-docker', section: C1, label: 'Docker inside Docker?',
     element: (
-      <ContentNoteSlide kicker={C1} title="Docker Inside Docker?" lead="The first idea is to install a full Docker Engine inside the Jenkins container" lesson={SESSION} points={[
-        { text: 'Jenkins runs inside a container', icon: 'info' },
-        { text: 'The pipeline needs to run docker build', icon: 'info' },
-        { text: 'A second engine inside the container builds images that are trapped inside it', icon: 'warning' },
-      ]} note={{ kind: 'warning', title: 'Heavy, and not needed', body: 'There is a lighter way. It starts with one fact about what the word docker means.' }} />
+      /* The three bullets said one thing three times, and the nesting is what
+         the room actually needs to see, so the argument moved into a figure.
+         `LayerStack` reads top-down as containment. The bottom two layers are
+         `breaks` because an image built by the inner engine is only visible to
+         the inner engine, which is the whole reason nobody does this. */
+      <ContentNoteSlide kicker={C1} title="Docker Inside Docker?" lead="Jenkins is inside a container, but its pipeline needs to run docker commands. The first idea is to give Jenkins its own Docker Engine inside that container" lesson={SESSION} note={{ kind: 'warning', title: 'Heavy, and not needed', body: 'There is a lighter way. It starts with one fact about what the word docker means.' }}>
+        <LayerStack
+          layers={[
+            { label: 'Host Docker Engine', note: 'the real one', state: 'shared' },
+            { label: 'Jenkins container', state: 'ships' },
+            { label: 'A second Docker Engine', note: 'installed inside', state: 'breaks' },
+            { label: 'The image it builds', note: 'trapped in here', state: 'breaks' },
+          ]}
+          width={360}
+        />
+      </ContentNoteSlide>
     ),
   },
   {
     id: 'c1-client-and-daemon', section: C1, label: 'Client and daemon',
     element: (
-      <ContentSlide kicker={C1} title="Client and Daemon" lead="The docker command is a small client. A separate program, the daemon, does the work" lesson={SESSION}>
+      <ContentSlide kicker={C1} title="Docker Outside of Docker" lead="The docker command is a small client. A separate program, the daemon, does the work. Leave the daemon on the host and put only the client in the container, and the nesting disappears" lesson={SESSION}>
         <SocketBridge />
       </ContentSlide>
     ),
@@ -170,7 +183,7 @@ Finished: FAILURE`} />
   {
     id: 'c1-restart-jenkins', section: C1, label: 'Restart Jenkins',
     element: (
-      <ContentSlide kicker={C1} title="Restart Jenkins" lead="Stop the container, remove it, and run it again with the socket mounted" lesson={SESSION}>
+      <ContentSlide kicker={C1} title="Restart Jenkins" lead="Stop the container, remove it, and run it again with one extra mount. -v /var/run/docker.sock:/var/run/docker.sock is the whole change, and it is what gives Jenkins access to the host Docker Engine" lesson={SESSION}>
         <Terminal path={ROOT} lines={[
           { text: 'docker stop jenkins && docker rm jenkins', kind: 'cmd' },
           { text: 'jenkins', kind: 'out' },
@@ -180,7 +193,7 @@ Finished: FAILURE`} />
           { text: '  -v /var/run/docker.sock:/var/run/docker.sock \\', kind: 'cmd' },
           { text: '  jenkins/jenkins:lts', kind: 'cmd' },
           { text: '9f2c4b8e1a7d3c5f6b0a2e4d8c1f3a5b7d9e0c2a4f6b8d1e3c5a7f9b0d2e4c6a', kind: 'ok' },
-        ]} caption="Removing the container is safe. Every setting is in the jenkins_home volume" />
+        ]} highlight={[6]} caption="Removing the container is safe. Every setting is in the jenkins_home volume" />
       </ContentSlide>
     ),
     notes: 'Say why removing it is safe before anyone panics: admin user, plugins and the job all live in the volume, and the new container attaches to it.',
@@ -197,9 +210,33 @@ Finished: FAILURE`} />
     notes: 'Kit defect: this panel is a fixed 900px block and reaches 177px into the instructor rectangle. Recorded in the plan. Not fixed here.',
   },
   {
+    id: 'c1-socket-simple-flow', section: C1, label: 'The socket, simple flow',
+    element: (
+      <ContentSlide kicker={C1} title="The Docker Socket, Simple Flow" lead="The same picture as before, now with the mount in it. The client in the container writes to a socket file, and that file belongs to the host" lesson={SESSION}>
+        {/* Deliberately the SAME figure as slide 9, relabelled, not a second
+            drawing of one idea. The room has read this shape once; what is new
+            here is that the wire is a mounted file. */}
+        <SocketBridge wireLabel="/var/run/docker.sock, shared by -v" footnote="One file, visible on both sides of the container wall. That is the whole trick." />
+      </ContentSlide>
+    ),
+    notes: 'Trace it left to right with a finger: the client, the socket file, the engine. Then say the -v flag put that file inside the container, which is the only reason the left half can reach the right half.',
+  },
+  {
+    id: 'c1-what-is-happening', section: C1, label: 'What is happening',
+    element: (
+      <ContentSlide kicker={C1} title="What Is Happening" lead="Four parts, and each one has exactly one job" lesson={SESSION} points={[
+        { text: 'Jenkins has the Docker CLI, and it sends docker build', sub: 'The CLI builds nothing. It only knows how to ask', icon: 'terminal' },
+        { text: 'The Docker socket is the connection to the engine', sub: 'A file at /var/run/docker.sock that the engine listens on', icon: 'link' },
+        { text: 'The -v flag shares the host socket with Jenkins', sub: 'Without it the CLI has nothing to write to, and the build fails', icon: 'folder' },
+        { text: 'The host Docker Engine actually builds the image', sub: 'So the image lands on your machine, where you can see it', icon: 'server' },
+      ]} />
+    ),
+    notes: 'The slide to come back to when somebody is lost later. Four parts, one job each. The last is the payoff: the host engine did the building, so docker images on the host can see the result, which is what the verification slide depends on.',
+  },
+  {
     id: 'c1-install-the-client', section: C1, label: 'Install the client',
     element: (
-      <ContentSlide kicker={C1} title="Install the Client" lead="The Jenkins image does not include the docker command. Install it once" lesson={SESSION}>
+      <ContentSlide kicker={C1} title="Install the Client" lead="The task: go inside the running Jenkins container and install the Docker CLI. The Jenkins image does not include it, so this is done once" lesson={SESSION}>
         <Terminal path={ROOT} lines={[
           { text: 'docker exec -u root jenkins bash -c "apt-get update && apt-get install -y docker.io"', kind: 'cmd' },
           { text: 'Get:1 http://deb.debian.org/debian bookworm InRelease', kind: 'out' },
@@ -208,6 +245,18 @@ Finished: FAILURE`} />
         ]} caption="-u root runs the command as root inside the container. Installing packages needs it" />
       </ContentSlide>
     ),
+  },
+  {
+    id: 'c1-install-piece-by-piece', section: C1, label: 'That command, piece by piece',
+    element: (
+      <CommandSyntaxSlide kicker={C1} title="That Command, Piece by Piece" lead="Four pieces, read left to right, and the whole line says one sentence" lesson={SESSION} parts={[
+        { token: 'docker exec', label: 'go inside', body: 'Run a command inside a container that is already running' },
+        { token: '-u root', label: 'as the administrator', body: 'Installing packages needs root, and the jenkins user is not' },
+        { token: 'jenkins', label: 'which container', body: 'The container name, the one the socket was mounted into' },
+        { token: 'bash -c', label: 'run this inside', body: 'Hand the rest of the line to a shell in the container' },
+      ]} note={{ kind: 'info', title: 'The whole line, in one sentence', body: 'Enter the Jenkins container as root, refresh the packages, install Docker.' }} />
+    ),
+    notes: 'Read the sentence in the note out loud, then point back at the pieces. They have met docker exec before, reading the initial admin password out of the container, so name that callback.',
   },
   {
     id: 'c1-plugin', section: C1, label: 'Docker Pipeline plugin',
@@ -325,10 +374,26 @@ docker push ${DOCKER_ID}/nxttrendz-backend`} />
     notes: 'Captured 2026-09-15 with the token box left empty on purpose. Keep the ID stable. Changing it later means editing every Jenkinsfile that uses it.',
   },
   {
+    id: 'c2-bind-the-credential', section: C2, label: 'Bind it to the job',
+    element: (
+      <ProceduralStepsSlide kicker={C2} title="Bind the Credential to the Job" lead="Freestyle jobs reach the store through Credentials Binding. Five clicks, once per job" lesson={SESSION} steps={[
+        /* Four steps, not five: at five the last detail line sat 1px under the
+           player controls, which only align-check.mjs sees. Opening the job and
+           finding the section are one movement anyway. */
+        { title: 'Open the job, Configure, then Build Environment', detail: 'A section of the Configure page, above Build Steps', icon: 'settings' },
+        { title: 'Tick Use secret text(s) or file(s)', detail: 'A Bindings block appears underneath it', icon: 'check' },
+        { title: 'Add Username and password (separated)', detail: 'Separated, because the shell step wants two values, not one string', icon: 'key' },
+        { title: 'Name the two variables', detail: 'DOCKER_USERNAME and DOCKER_PASSWORD, and the shell step uses those names', icon: 'code' },
+      ]} />
+    ),
+    notes: 'Separated is the choice people get wrong: the other option hands over one combined string, and the login line here wants the two halves apart. The variable names are theirs to pick, and these are the ones the rest of the deck uses.',
+  },
+  {
     id: 'c2-masked', section: C2, label: 'Masked in the log',
     element: (
-      <ContentSlide kicker={C2} title="Masked in the Log" lead="The real value reaches the command. The log shows four stars" lesson={SESSION}>
-        <CodeBlock filename="Jenkins → hello-jenkins → #3 → Console Output" language="text" showLineNumbers={false} code={`+ docker login -u ${DOCKER_ID} -p ****
+      <ContentSlide kicker={C2} title="Use It, Without Printing It" lead="The shell step names the two variables. Jenkins fills in the real values as it runs, and masks them on the way to the log" lesson={SESSION}>
+        <CodeBlock filename="Jenkins → hello-jenkins → Configure → Build Steps → Execute shell" language="bash" showLineNumbers={false} code={'echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin'} />
+        <CodeBlock className="mt-4" filename="Jenkins → hello-jenkins → #3 → Console Output" language="text" showLineNumbers={false} code={`+ docker login -u ${DOCKER_ID} -p ****
 Login Succeeded
 + docker push ${DOCKER_ID}/nxttrendz-backend:latest
 latest: digest: sha256:3f9a... size: 2841`} />
@@ -337,28 +402,17 @@ latest: digest: sha256:3f9a... size: 2841`} />
     notes: 'CAPTURE pending, slide 24. Compare with the wrong-way slide: same command, same result, and nobody who opens the build can read the password.',
   },
   {
-    id: 'c2-kinds', section: C2, label: 'Kinds of credential',
+    id: 'c2-password-stdin', section: C2, label: 'Why --password-stdin',
     element: (
-      <ContentSlide kicker={C2} title="Kinds of Credential" lead="Jenkins has one kind for each shape of secret. Pick the one that matches" lesson={SESSION}>
-        <div className="grid grid-cols-[auto_1fr] gap-8 items-start">
-          <Shot
-            src="/shots/jenkins-credential-kinds.png"
-            alt="The Add Credentials dialog listing the kinds: Username with password, GitHub App, SSH Username with private key, Secret file, Secret text, and the Next button"
-            caption="The first step of Add Credentials"
-            className="max-w-[320px]"
-          />
-          <DataTable compact columns={[{ label: 'Kind' }, { label: 'Shape' }, { label: 'In this project' }]} rows={[
-            ['Username with password', 'Two parts', 'Docker Hub. A private GitHub repository'],
-            ['Secret text', 'One value', 'An API key that has no username. Not used here'],
-            ['Secret file', 'A whole file', 'Not used here'],
-            ['SSH username with private key', 'A key pair', 'Not used here'],
-          ]} />
-        </div>
-      </ContentSlide>
+      <ContentNoteSlide kicker={C2} title="Why --password-stdin" lead="Typed by hand, docker login asks for the password and waits. Nobody is there to answer it in a job" lesson={SESSION} points={[
+        { text: 'docker login -u ravi123 stops and prompts for a password', sub: 'Fine at your own keyboard, and a build that hangs forever on a server', icon: 'warning' },
+        { text: '--password-stdin reads the password from the input instead of asking', sub: 'echo sends the value in, so the command never needs a human', icon: 'check' },
+      ]} note={{ kind: 'note', title: 'It keeps the secret out of the process list too', body: 'A password passed with -p is visible to anyone who can list running processes on that machine. Read from the input, it is not.' }} />
     ),
+    notes: 'Two reasons, and the first is the one they will hit: a job that prompts is a job that hangs. The second matters more in the long run and is harder to see, so lead with the hang.',
   },
 
-  /* ═══ CONCEPT 3 · Connecting to GitHub, 19 ══════════════════════════ */
+  /* ═══ CONCEPT 3 · Connecting to GitHub, 19 ══════════════════ */
   { id: 'c3-divider', section: C3, label: '03', element: <SectionBreakerSlide index={3} title={C3} lesson={SESSION} /> },
   {
     id: 'c3-public', section: C3, label: 'Public repository',
@@ -458,7 +512,7 @@ latest: digest: sha256:3f9a... size: 2841`} />
   {
     id: 'c3-how-a-tunnel-works', section: C3, label: 'How a tunnel works',
     element: (
-      <ContentSlide kicker={C3} title="How a Tunnel Works" lead="Your laptop connects out to ngrok first. GitHub's message travels back down that connection" lesson={SESSION}>
+      <ContentSlide kicker={C3} title="How a Tunnel Works" lead="localhost from GitHub's point of view means GitHub's own server, not your laptop. ngrok publishes an address on the internet and forwards whatever arrives there to localhost:8080" lesson={SESSION}>
         <TunnelPath />
       </ContentSlide>
     ),
@@ -516,14 +570,17 @@ latest: digest: sha256:3f9a... size: 2841`} />
   {
     id: 'c3-start-the-tunnel', section: C3, label: 'Start the tunnel',
     element: (
-      <ContentSlide kicker={C3} title="Start the Tunnel" lead="Two commands. The second prints your public address on the Forwarding line" lesson={SESSION}>
+      <ContentSlide kicker={C3} title="Start the Tunnel" lead="Two commands. The second prints your public address on the Forwarding line. That address, with /github-webhook/ on the end, is what GitHub will post to" lesson={SESSION}>
         <Terminal path={ROOT} lines={[
           { text: 'ngrok config add-authtoken <paste your token here>', kind: 'cmd' },
           { text: 'Authtoken saved to configuration file', kind: 'ok' },
           { text: 'ngrok http 8080', kind: 'cmd' },
           { text: 'Session Status    online', kind: 'out' },
           { text: `Forwarding        https://${DEV_DOMAIN} -> http://localhost:8080`, kind: 'ok' },
-        ]} caption="Leave this window open. Closing it closes the tunnel" />
+        /* The Payload URL slide that used to follow was cut on review, so its
+           one load-bearing fact lives here now: the trailing slash. Without it
+           GitHub returns 404 while everything else looks correct. */
+        ]} highlight={[5]} caption="Copy the https address. It must end in /github-webhook/, trailing slash included, or GitHub gets a 404" />
       </ContentSlide>
     ),
     notes: 'Your address will be different from the one on the slide. Everyone has their own.',
@@ -543,16 +600,6 @@ latest: digest: sha256:3f9a... size: 2841`} />
     notes: 'Checked against ngrok.com/pricing on 2026-09-10. The stable dev domain is what makes this work across sessions.',
   },
   {
-    id: 'c3-payload-url', section: C3, label: 'The Payload URL',
-    element: (
-      <CommandSyntaxSlide kicker={C3} title="The Payload URL" lead="GitHub needs one address. It has three parts, and the last part is easy to forget" lesson={SESSION} parts={[
-        { token: 'https://', label: 'scheme', body: 'The tunnel uses HTTPS, which GitHub requires', after: '' },
-        { token: 'DEV-DOMAIN', label: 'your dev domain', body: 'From the Forwarding line. Yours is different', fill: 'placeholder', after: '' },
-        { token: '/github-webhook/', label: 'the endpoint', body: 'Where Jenkins listens. Keep the slash at the end' },
-      ]} note={{ kind: 'warning', title: 'The last slash and the path matter', body: 'Without /github-webhook/ GitHub posts to the Jenkins front page and gets 403, No valid crumb. The build never starts.' }} />
-    ),
-  },
-  {
     id: 'c3-add-the-webhook', section: C3, label: 'Add the webhook',
     element: (
       <ContentSlide kicker={C3} title="Add the Webhook" lead="In your repository: Settings, Webhooks, Add webhook. Fill the form" lesson={SESSION}>
@@ -569,7 +616,7 @@ latest: digest: sha256:3f9a... size: 2841`} />
   {
     id: 'c3-two-stages', section: C3, label: 'Two stages',
     element: (
-      <ContentSlide kicker={C3} title="Two Stages" lead="Give the job something to run before the first push. Open nxttrendz-build-test, Configure, Pipeline, paste this, Save" lesson={SESSION}>
+      <ContentSlide kicker={C3} title="Two Stages" lead="Open nxttrendz-build-test, Configure, Pipeline, paste this, Save. The highlighted line is the example repository: replace it with your own" lesson={SESSION}>
         <CodeBlock filename="Jenkins → nxttrendz-build-test → Configure → Pipeline → Script" language="groovy" fontSize={13} code={`pipeline {
     agent any
     stages {
@@ -584,7 +631,7 @@ latest: digest: sha256:3f9a... size: 2841`} />
             }
         }
     }
-}`} highlight={[11]} />
+}`} highlight={[7]} />
       </ContentSlide>
     ),
     notes: 'Read it as plain English for now: two stages, fetch then build. ./backend, not a dot, because the Dockerfile is in the app folder. No Docker ID and no tag yet. This is a test that the wiring works.',
@@ -657,26 +704,19 @@ Finished: SUCCESS`} />
     id: 'c4-image-on-your-machine', section: C4, label: 'The image on your machine',
     element: (
       <ContentSlide kicker={C4} title="Your Image List" lead="Jenkins built it through the shared socket, so it is in your own image list" lesson={SESSION}>
+        {/* This panel ran `docker images | grep nxttrendz`, which cannot work
+            here: every terminal in this deck is VS Code's integrated terminal
+            and ROOT is `C:\nxttrendz`, so the shell is PowerShell, which has no
+            grep. Asking for the macOS form surfaced the bug. */}
         <Terminal path={ROOT} lines={[
-          { text: 'docker images | grep nxttrendz', kind: 'cmd' },
+          { text: 'docker images | Select-String nxttrendz', kind: 'cmd' },
           { text: 'nxttrendz-backend   latest   7c1f4b2e9a83   About a minute ago   214MB', kind: 'ok' },
-        ]} caption="The same list your own builds go to" />
+        ]} caption="PowerShell, in the VS Code terminal. The same list your own builds go to" />
+        <Callout kind="note" title="On macOS and Linux">
+          The pipe is the same and the filter has a different name: docker images | grep nxttrendz
+        </Callout>
       </ContentSlide>
     ),
-  },
-  {
-    id: 'c4-before-and-after', section: C4, label: 'Before and after',
-    element: (
-      <ContentSlide kicker={C4} title="Before and After" lead="The same four steps. None of them were yours" lesson={SESSION}>
-        <DataTable columns={[{ label: 'Before' }, { label: 'Now' }]} rows={[
-          ['Open a terminal in the project folder', 'Jenkins clones the repository into a fresh folder'],
-          ['Remember which folder has the Dockerfile', 'The pipeline says ./backend every time'],
-          ['Type docker build and wait', 'The Build stage runs it'],
-          ['Forget to do it', 'A push starts it. Forgetting is not possible'],
-        ]} />
-      </ContentSlide>
-    ),
-    notes: 'Plan asks for SwapRows here. It is on the kit/lit-surfaces branch and not on main yet. Swap this DataTable when it merges.',
   },
   {
     id: 'c4-pipeline-as-code', section: C4, label: 'Pipeline as code',
