@@ -18,8 +18,8 @@ import {
   DataTable,
   FileTree,
   GateFlow,
-  LayerStack,
   MachineBoundary,
+  NestedBoundary,
   Shot,
   SocketBridge,
   StatusList,
@@ -142,20 +142,13 @@ Finished: FAILURE`} />
     id: 'c1-docker-inside-docker', section: C1, label: 'Docker inside Docker?',
     element: (
       /* The three bullets said one thing three times, and the nesting is what
-         the room actually needs to see, so the argument moved into a figure.
-         `LayerStack` reads top-down as containment. The bottom two layers are
-         `breaks` because an image built by the inner engine is only visible to
-         the inner engine, which is the whole reason nobody does this. */
-      <ContentNoteSlide kicker={C1} title="Docker Inside Docker?" lead="Jenkins is inside a container, but its pipeline needs to run docker commands. The first idea is to give Jenkins its own Docker Engine inside that container" lesson={SESSION} note={{ kind: 'warning', title: 'Heavy, and not needed', body: 'There is a lighter way. It starts with one fact about what the word docker means.' }}>
-        <LayerStack
-          layers={[
-            { label: 'Host Docker Engine', note: 'the real one', state: 'shared' },
-            { label: 'Jenkins container', state: 'ships' },
-            { label: 'A second Docker Engine', note: 'installed inside', state: 'breaks' },
-            { label: 'The image it builds', note: 'trapped in here', state: 'breaks' },
-          ]}
-          width={360}
-        />
+         the room needs to SEE, so the argument is a figure. First try was
+         `LayerStack`, which rendered as four flat bars: a stack of equals, when
+         the point is that nothing here is equal. `NestedBoundary` draws boxes
+         inside boxes, in the same dashed style `SocketBridge` uses on the next
+         slide, so 8 and 9 read as the same two things arranged two ways. */
+      <ContentNoteSlide kicker={C1} title="Docker Inside Docker?" lead="Jenkins runs in a container, and its pipeline needs docker. The first idea: a second Docker Engine, installed inside that container" lesson={SESSION} note={{ kind: 'warning', title: 'Heavy, and not needed', body: 'There is a lighter way. It starts with one fact about what the word docker means.' }}>
+        <NestedBoundary className="mx-auto max-w-[840px]" />
       </ContentNoteSlide>
     ),
   },
