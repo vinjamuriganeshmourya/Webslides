@@ -1,5 +1,6 @@
 import { SlideBase } from '@/ui/SlideBase'
 import { SlideHeader } from '@/ui/SlideHeader'
+import { SlideLead } from '@/ui/SlideLead'
 import { StatusList } from '@/ui/StatusList'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
 import { SLIDE_FAMILY } from '@/motion/continuity'
@@ -40,15 +41,27 @@ export function StatusPointsSlide({
   stepped = true,
   lesson,
 }: StatusPointsSlideProps) {
-  /* Same lead-less guard as `ContentSlide`: a header with no lead stops at
-     y=168, and a wide figure following it reaches into the instructor-video
-     rectangle at x 913..1280, y 0..220. The recovered space goes to the text. */
-  const visualGuard = lead ? '' : 'pt-[52px]'
+  /* Same lead-less guard as `ContentSlide`: a header stops at y=168, and a wide
+     figure following it with nothing between reaches into the instructor-video
+     rectangle at x 913..1280, y 0..220. The recovered space goes to the text.
+     The test still reads `lead` because the lead still occupies that band; it is
+     now one line of body-lg in the well rather than a line inside the header. */
+  /* `pt-[3px]` with a lead, not '': the well's top measures y=217, three pixels
+     inside the instructor-video reserve. See the long note in `ContentSlide.tsx`,
+     which carries the measurement and the still-open oversized-block case. */
+  const visualGuard = lead ? 'pt-[3px]' : 'pt-[52px]'
   const immediate = Boolean(children) || !stepped
   return (
     <SlideBase variant="light" lesson={lesson}>
       <div className="flex h-full flex-col">
-        <SlideHeader kicker={kicker} title={title} lead={lead} tone={tone} />
+        <SlideHeader kicker={kicker} title={title} tone={tone} />
+        {/*
+          The point opens the well, above the verdict rows and outside the centred
+          block so it stays anchored under the heading rather than drifting down
+          with a short list. In the row column it would read as an unmarked
+          verdict, which is the one thing every row here carries.
+        */}
+        {lead && <SlideLead tone={tone}>{lead}</SlideLead>}
         <div className="flex min-h-0 flex-1 flex-col justify-center">
           {children ? (
             /* The list takes the wider column, matching `ContentSlide`: a

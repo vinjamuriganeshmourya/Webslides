@@ -138,6 +138,45 @@ export interface ScenarioSlideProps extends Base {
   beats: ScenarioBeat[]
 }
 
+export interface QuestionSlideProps extends Base {
+  kicker?: string
+  /** The question. One question, and nothing else on the slide. */
+  question: ReactNode
+  /**
+   * At most one short line under the question, for a constraint the room needs
+   * in order to answer ("assume the container is already running").
+   *
+   * NOT for a hint, and never for the answer. If the slide needs explaining, it
+   * is not a question slide.
+   */
+  qualifier?: ReactNode
+  /**
+   * The answers the room is choosing BETWEEN, two or three of them, rendered as
+   * equal boxes under the question.
+   *
+   * They exist so a posed question has something to point at while hands go up:
+   * "yes or no" said out loud is an instruction the slide has to carry in words,
+   * and the same pair drawn as two boxes is the ask itself. Keep them to a word
+   * or two each.
+   *
+   * STILL NOT THE ANSWER, and nothing here may hint at which box is right: no
+   * ticks, no colour split, no ordering by likelihood. The boxes are drawn
+   * identically on purpose. If one of them needs explaining, this is not a
+   * question slide.
+   */
+  choices?: ReactNode[]
+  tone?: Tone
+}
+
+export interface QuestionPointsSlideProps extends Base {
+  kicker?: string
+  question: ReactNode
+  qualifier?: ReactNode
+  /** Revealed one click at a time, after the question. */
+  points: (BulletItem | string)[]
+  tone?: Tone
+}
+
 export interface KeyTakeawaysSlideProps extends Base {
   kicker?: string
   title?: ReactNode

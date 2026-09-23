@@ -8,6 +8,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "build:html": "tsc -b && vite build -c vite.singlefile.config.ts && node scripts/inline-assets.mjs && node scripts/inline-fonts.mjs",
+    "build:review": "vite build -c vite.review.config.ts",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
     "sync:check": "node sync-kit.mjs --check",

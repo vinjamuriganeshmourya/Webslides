@@ -1,4 +1,5 @@
 import { SlideBase, SlideHeader, StepList } from '@/ui'
+import { SlideLead } from '@/ui/SlideLead'
 import { Reveal } from '@/motion/Reveal'
 import type { ProceduralStepsSlideProps } from './types'
 import { SLIDE_FAMILY } from '@/motion/continuity'
@@ -21,8 +22,14 @@ export function ProceduralStepsSlide({
     <SlideBase variant="light" lesson={lesson}>
       <div className="flex h-full flex-col justify-center">
         <Reveal dir="up">
-          <SlideHeader kicker={kicker} title={title} lead={lead} tone={tone} />
+          <SlideHeader kicker={kicker} title={title} tone={tone} />
         </Reveal>
+        {/*
+          The point opens the well, between the heading and the first numbered
+          step. It stays outside `StepList` so it is not drawn against the rail
+          the list runs down its steps, which would read as an unnumbered step.
+        */}
+        {lead && <SlideLead tone={tone}>{lead}</SlideLead>}
         <StepList
           steps={steps}
           tone={tone}

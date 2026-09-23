@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { useInstant } from "@/motion/instant";
-import { accentByTone, type Tone } from "@/design/tokens";
+import { accentByTone, colors, type Tone } from "@/design/tokens";
 
 /**
  * Comparison table.
@@ -73,13 +73,46 @@ export function DataTable({
   const headerEnd = HEAD_START + (columns.length - 1) * HEAD_STEP + 0.35;
 
   return (
+    /*
+      A LIT SURFACE, NOT A WHITE RECTANGLE (STYLE_GUIDE section 9).
+
+      `bg-white shadow-card-soft` gave the table a neutral, almost invisible
+      drop and one flat fill, so on a slide beside a `Callout` or a `Terminal`
+      it read as the flattest thing on the frame — a region the content sat in
+      rather than a panel sitting on the slide. It now carries the deck's
+      standard treatment: a top-left highlight, a ramp that lands just off
+      white, a shadow tinted with the table's OWN tone rather than with neutral
+      black, and a white hairline along the top edge.
+
+      The tinted shadow is what lets two tables of different tones on
+      neighbouring slides read as different objects rather than as the same
+      object repainted.
+    */
     <div
-      className={`overflow-hidden rounded-card border border-line bg-white shadow-card-soft ${className}`}
+      className={`overflow-hidden rounded-card border border-line ${className}`}
+      style={{
+        background:
+          'radial-gradient(120% 90% at 10% 0%, #FFFFFF 0%, #FFFFFF 52%, #F6F9FE 100%)',
+        boxShadow: [
+          `0 10px 28px -16px ${color}66`,
+          `0 2px 6px -4px ${colors.brandDeep}1f`,
+          'inset 0 1px 0 0 #FFFFFF',
+        ].join(', '),
+      }}
     >
-      {/* Header — labels arrive first, left to right */}
+      {/* Header — labels arrive first, left to right.
+          Its tint gets the same ramp, so the header reads as the raised lip of
+          the panel rather than as a coloured stripe painted onto it. */}
       <div
         className="grid items-end gap-x-2"
-        style={{ gridTemplateColumns: grid, background: `${color}0f` }}
+        style={{
+          gridTemplateColumns: grid,
+          background: [
+            'radial-gradient(120% 140% at 12% 0%, #FFFFFFb3 0%, #FFFFFF00 64%)',
+            `linear-gradient(135deg, ${color}0a 0%, ${color}14 100%)`,
+          ].join(', '),
+          boxShadow: `inset 0 -1px 0 0 ${color}29`,
+        }}
       >
         {columns.map((c, i) => (
           <motion.div
@@ -114,11 +147,21 @@ export function DataTable({
             className="grid items-center gap-x-2 border-t border-line"
             style={{
               gridTemplateColumns: grid,
+              /* A highlighted row is the one thing on the table the slide is
+                 pointing at, so it gets lit rather than merely tinted: the same
+                 ramp plus a hairline on its own top edge, which is what lifts it
+                 off the rows around it instead of staining it. */
               background: hl.has(r + 1)
-                ? `${color}0a`
+                ? [
+                    'radial-gradient(100% 200% at 6% 0%, #FFFFFFcc 0%, #FFFFFF00 70%)',
+                    `linear-gradient(135deg, ${color}0f 0%, ${color}1f 100%)`,
+                  ].join(', ')
                 : r % 2
                   ? "#FBFDFF"
                   : undefined,
+              boxShadow: hl.has(r + 1)
+                ? `inset 0 1px 0 0 #FFFFFF, inset 3px 0 0 0 ${color}`
+                : undefined,
             }}
             initial={instant ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}

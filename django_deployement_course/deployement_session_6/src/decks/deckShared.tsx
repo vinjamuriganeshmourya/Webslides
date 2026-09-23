@@ -21,16 +21,48 @@ export const COURSE = 'React + Django Integration · Deployment'
    kicker on every content slide inside that concept, and the Key Takeaways
    items. Written once so all four uses cannot drift. */
 /*
-   C1 IS FOUR WORDS, NOT FIVE. The planned wording was "Images Trapped on One
-   Machine", and at that length the agenda slide's right-hand column reaches
-   x=999, which is 86px inside the instructor-video rectangle. Shortening the
-   constant fixes the agenda, the divider, the kicker on fifteen slides and the
-   Key Takeaways item in one edit, which is why they all read it from here.
+   KEEP C1 AND C4 SHORT. The planned C1 was "Images Trapped on One Machine",
+   and at that length the agenda slide's right-hand column reaches x=999, which
+   is 86px inside the instructor-video rectangle. So the ceiling here is about
+   twenty characters, and any rewording has to stay under the one that fits.
+   The wording itself was then changed for a second reason: "trapped" is
+   figurative, and the review asked for plain statements. Editing the constant
+   fixes the agenda, the divider, the kicker on fifteen slides and the Key
+   Takeaways item at once, which is why they all read it from here.
 */
-export const C1 = 'Trapped on One Machine'
+/*
+  C1 IS SHORTER THAN THE REVIEW ASKED FOR, AND THE LIMIT IS MEASURED.
+
+  The review named this concept "Docker Hub and Image Repositories". At 33
+  characters it renders 501px wide on the agenda, from x=544 to x=1045, and the
+  instructor-video reserve begins at x=913 — so `video-safe.mjs` failed slide 4
+  by 132px. Only the FIRST agenda item is affected: items two to four sit below
+  y=220 and clear the reserve however long they are, which is why
+  "Pushing and Pulling Docker Images" is fine at the same length.
+
+  `AgendaSlide` positions item titles absolutely at `text-[27px]` with no width
+  cap and no prop to constrain them, so the ceiling for item one is about 24
+  characters. The real fix is a width cap in that kit component; until that
+  lands, the name has to fit.
+*/
+export const C1 = 'Docker Hub and Images'
 export const C2 = 'Image Naming and Tagging'
-export const C3 = 'Login, Push, Pull'
-export const C4 = 'Versioning, and a push Target'
+export const C3 = 'Pushing and Pulling Docker Images'
+export const C4 = 'Image Versioning with Tags'
+
+/*
+   EARLIER SESSIONS ARE NAMED, NEVER NUMBERED, IN RENDERED COPY.
+
+   "the promise from session 1" means nothing to a learner who joined late, sat
+   a session out of order, or simply does not count the same way the calendar
+   does. The name is the thing they remember, so slide copy carries the name and
+   only the speaker notes and the code comments may still count.
+*/
+export const S1 = 'Introduction to Docker'
+export const S2 = 'Docker File Creation'
+export const S3 = 'Docker Compose for Multi-Container Apps'
+export const S4 = 'Running the Real App with Docker'
+export const S5 = 'Automating Deployment with Makefile'
 
 /** Every terminal in this deck runs from the project root, as in sessions 4 and 5. */
 export const AT_ROOT = 'C:\\nxttrendz'
@@ -41,6 +73,13 @@ export const IMAGE = 'nxttrendz-backend'
 /** `ravi123/nxttrendz-backend`, written once because eleven slides render it. */
 export const REPO = `${DOCKER_ID}/${IMAGE}`
 
+/* The frontend is the project's SECOND image, and by the end of this session
+   both are on Hub: the app is two services, so one repository runs half an
+   application. The backend stays the worked example throughout, and the
+   frontend is the slide where the room applies the pattern once. */
+export const FE_IMAGE = 'nxttrendz-frontend'
+export const FE_REPO = `${DOCKER_ID}/${FE_IMAGE}`
+
 /**
  * Inline code, at body size, on a light slide.
  *
@@ -50,7 +89,18 @@ export const REPO = `${DOCKER_ID}/${IMAGE}`
  */
 export function Code({ children }: { children: ReactNode }) {
   return (
-    <code className="rounded-md bg-surface-2 px-1.5 py-0.5 font-mono text-[0.94em] text-brand-deep">
+    /* `text-brand-600`, NOT `text-brand-deep`.
+
+       `brand` carries the numeric ramp 50..900 plus DEFAULT; `deep` exists only
+       in the `nw` group. So `text-brand-deep` matched no rule in the generated
+       stylesheet and every inline chip in this deck has been rendering in
+       INHERITED ink rather than the brand blue it was written to use. Nothing
+       failed: Tailwind drops an unknown utility silently, and a chip in body ink
+       looks deliberate enough that no harness or reviewer caught it.
+
+       `brand.600` is `#0146C7`, which the config's own comment marks as `nw.deep`
+       — the exact colour that was intended. */
+    <code className="rounded-md bg-surface-2 px-1.5 py-0.5 font-mono text-[0.94em] text-brand-600">
       {children}
     </code>
   )
@@ -86,14 +136,32 @@ export function Tech({
   label?: string
   size?: number
 }) {
+  /*
+    THE LABEL STAYS ON THE SENTENCE'S BASELINE.
+
+    This was `inline-flex items-center`, which makes the whole logo-plus-label
+    a single inline box. An inline-flex box aligns its BOTTOM edge to the text
+    baseline, so mid-sentence the label sat lower than the words either side of
+    it: "Docker Hub works both ways" rendered with the first two words dropped.
+    Only the image should be optically centred; the label is ordinary inline
+    text and must share the baseline with what follows it.
+
+    `whitespace-nowrap` keeps the logo and its label on one line together.
+
+    Session 5 had already fixed this in its own deck and the fix never reached
+    anyone else, so the canonical copy now lives in the kit at `src/ui/Tech.tsx`.
+    This deck keeps a local one only because its `TECH_SRC` is trimmed to the
+    five logos it renders: session 4 measured ten unused logos at 290 KB, and
+    this session has no `jenkins.png` or `github.png` on disk at all.
+  */
   return (
-    <span className="inline-flex items-center gap-2">
+    <span className="whitespace-nowrap">
       <img
         src={TECH_SRC[name]}
         alt=""
         draggable={false}
-        style={{ height: size, width: size }}
-        className="object-contain"
+        style={{ height: size, width: size, verticalAlign: '-0.2em' }}
+        className="mr-1.5 inline-block object-contain"
       />
       {label ? <span>{label}</span> : null}
     </span>
@@ -143,6 +211,42 @@ export const MK_TARGETS_ONLY = MK_SEVEN
 /**
  * Slide 46: the new part of the file only, exactly as TR §4.4 gives it.
  *
+ * BOTH IMAGES. The app is two services, so a `push` that publishes only the
+ * backend ships half an application. One variable per image keeps every line
+ * readable at a glance; a shell loop over both names would be shorter and would
+ * introduce `for`, `do` and `$$` to a room that has met none of them.
+ *
+ * THE `:latest` PAIR IS BACK, AND ITS REMOVAL WAS THE WRONG CALL.
+ *
+ * It was cut on the reasoning that this concept has just finished teaching that
+ * a server pulling `latest` can never say which build it is running, so
+ * publishing that tag in the ritual the session ends on would contradict the
+ * session. Asked for on review: "we also need to point the version with latest."
+ *
+ * That reasoning conflated two different things. `c4-latest-lies` argues against
+ * DEPLOYING from `latest`, never against publishing it, and the deck already
+ * says so four frames before this one: `c4-unique-tags` walks the room through
+ * exactly four commands, `docker tag ...:v2`, `docker tag ...:latest`,
+ * `docker push ...:v2` and `docker push ...:latest`, under the lead
+ * "professional teams give every build a unique tag, and move `latest` as a
+ * convenience on top of it". `c4-repo-history` then draws `latest` as a pointer
+ * sitting beside the versions it resolves to.
+ *
+ * So the file that exists to COLLECT the commands they just typed was leaving
+ * out half of them. The contradiction was the omission, not the inclusion.
+ *
+ * EIGHT LINES, GROUPED BY IMAGE. `docker tag` only writes a second reference to
+ * an image ID that already exists, so the two tags cost nothing and the two
+ * pushes are the only work. Each image's four lines sit together, separated by a
+ * blank line, so the block reads as two units of the same shape rather than as
+ * eight instructions.
+ *
+ * WHY `LATEST` IS A VARIABLE HERE. It is not overridden the way `VERSION` is
+ * (`c4-override-version` teaches `make push VERSION=v2`, and nobody overrides
+ * `latest`), so it earns its place on a different ground: it puts the tag's name
+ * in the header beside `VERSION`, where the two names the file publishes can be
+ * read together without parsing eight recipe lines.
+ *
  * NOT THE WHOLE FILE. The full file plus `push` is 24 lines, and at any legible
  * size that panel is 480px tall, which puts its top edge above y=220 and inside
  * the instructor-video rectangle. Slide 3 already showed the seven targets, so
@@ -155,13 +259,25 @@ export const MK_TARGETS_ONLY = MK_SEVEN
 export const MK_WITH_PUSH =
   `.PHONY: build up down logs migrate superuser shell push\n\n` +
   `DOCKER_ID = ravi123\n` +
-  `IMAGE_NAME = nxttrendz-backend\n` +
-  `VERSION = v1\n\n` +
+  `BACKEND = nxttrendz-backend\n` +
+  `FRONTEND = nxttrendz-frontend\n` +
+  `VERSION = v1\n` +
+  `LATEST = latest\n\n` +
   `push:\n` +
-  `\tdocker tag $(IMAGE_NAME) $(DOCKER_ID)/$(IMAGE_NAME):$(VERSION)\n` +
-  `\tdocker tag $(IMAGE_NAME) $(DOCKER_ID)/$(IMAGE_NAME):latest\n` +
-  `\tdocker push $(DOCKER_ID)/$(IMAGE_NAME):$(VERSION)\n` +
-  `\tdocker push $(DOCKER_ID)/$(IMAGE_NAME):latest\n`
+  `\tdocker tag $(BACKEND) $(DOCKER_ID)/$(BACKEND):$(VERSION)\n` +
+  `\tdocker tag $(BACKEND) $(DOCKER_ID)/$(BACKEND):$(LATEST)\n` +
+  `\tdocker push $(DOCKER_ID)/$(BACKEND):$(VERSION)\n` +
+  `\tdocker push $(DOCKER_ID)/$(BACKEND):$(LATEST)\n` +
+  /* A BLANK LINE, NOT A TAB-ONLY ONE. This separator arrived as `\t\n`, which is
+     a recipe line holding nothing but its own indentation. GNU make ignores a
+     whitespace-only line inside a recipe, so it ran correctly, but it is a line
+     a learner copying the file by eye cannot see and would not reproduce. An
+     empty line is ignored by exactly the same rule and is what it looks like. */
+  `\n` +
+  `\tdocker tag $(FRONTEND) $(DOCKER_ID)/$(FRONTEND):$(VERSION)\n` +
+  `\tdocker tag $(FRONTEND) $(DOCKER_ID)/$(FRONTEND):$(LATEST)\n` +
+  `\tdocker push $(DOCKER_ID)/$(FRONTEND):$(VERSION)\n` +
+  `\tdocker push $(DOCKER_ID)/$(FRONTEND):$(LATEST)\n`
 
 /**
  * The `push access denied` refusal, on slides 22 and 49.

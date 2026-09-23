@@ -13,7 +13,7 @@
 > | This guide says | The rule says |
 > |---|---|
 > | "Em-dash for the reveal beat (~1 per 3 slides)" (§5) | **Never use a spaced em dash** in any rendered string. Use a comma, colon, full stop or parentheses. |
-> | "2–4 content slides per concept" (`SLIDE_WORKFLOW.md`) | A numbered series the learner weighs individually gets **one item per slide**, even past 4. |
+> | "at least five content slides per concept" (`SLIDE_WORKFLOW.md`) | A numbered series the learner weighs individually gets **one item per slide**, even past 4. |
 > | — | Never say **stranger**; say *others*. |
 > | — | Commands render in a **VS Code `Terminal`** with the prompt path, one panel per terminal. |
 > | — | A later problem is **named, never opened**: no tools, no stages, and not greyed out. |
@@ -169,3 +169,76 @@ ahead of the instructor; the same set arriving one item per click is n beats of 
 talk. This is the one place a `Step` belongs on a supporting visual, and it does
 not conflict with hard rule 6: rule 6 is about a visual that SUPPORTS text
 arriving after that text. When the items ARE the content, no text is waiting.
+
+---
+
+## 9. Surfaces are lit. Flat boxes are the default that has to be argued away
+
+A figure is a drawing of objects, and an object has a thickness. A rectangle
+with a 2px border and one flat fill is not an object, it is a region, and a
+figure built out of regions reads as a diagram of a diagram. The room sees a
+wireframe where it should see a thing.
+
+**Every panel, tile, box and boundary in a figure carries a light source, and it
+is the same light source across the whole deck: top-left.**
+
+### The recipe
+
+Four parts, always in this order. They compose; dropping one is what makes a
+surface look *almost* right.
+
+```tsx
+style={{
+  background: [
+    // 1. the highlight: a soft white radial parked at the top-left corner.
+    //    This is what makes it read as LIT rather than as a two-tone fill.
+    'radial-gradient(120% 100% at 14% 0%, #FFFFFF99 0%, #FFFFFF00 62%)',
+    // 2. the ramp: 135deg, and it must travel far enough to see.
+    `linear-gradient(135deg, ${light} 0%, ${mid} 52%, ${dark} 100%)`,
+  ].join(', '),
+  boxShadow: [
+    // 3. the drop shadow, TINTED WITH THE SURFACE'S OWN COLOUR, never black.
+    `0 3px 10px -4px ${accent}59`,
+    // 4. the two hairlines that give the box a thickness:
+    'inset 0 1px 0 0 #FFFFFFb3',      //    white along the top edge
+    `inset 0 -1px 0 0 ${accent}2e`,   //    the accent, darker, along the bottom
+  ].join(', '),
+}}
+```
+
+- **The tint, not black.** A neutral shadow under three differently-coloured
+  tiles makes all three the same object with different paint. A shadow in each
+  tile's own accent is what lets a brand tile and two teal tiles tell each other
+  apart at the back of a room.
+- **The ramp has to travel.** `brand` to `brandDark` across a 44px-tall box moves
+  too few pixels to register from ten metres, and the first pass at `LayerStack`
+  shipped exactly that: at 3x zoom it still read as a flat slab. A solid fill
+  starts *above* the base colour (`#4C7AFD` is `brand` lifted ~12%) and lands on
+  `brandDark`, so the box travels a real distance corner to corner.
+- **Amplitude follows the job, structure does not.** A tint carrying dark text
+  gets a gentler ramp than a solid carrying white, or it looks stained rather
+  than lit. But every state keeps all four parts. Lighting one state and leaving
+  its neighbours flat reads as two figures, not as emphasis.
+- **Flatter means less light, never no light.** The state that should recede
+  keeps its hairlines and drops only the shadow. `LayerStack`'s `host` layer is
+  the reference: it is someone else's machine, so it sits flatter than what
+  travels.
+- **Text on a ramp needs help.** A label that read fine on a flat fill goes muddy
+  at the dark end. A lit surface gives its label a `textShadow` and gives a muted
+  note its own tint rather than a flat `opacity`.
+
+### Where the accent tints come from
+
+`src/design/tokens.ts`, with an alpha suffix, exactly as above. The one accepted
+literal is a tint *above* the base colour, because the palette only ramps darker
+(`brand`, `brandDark`, `brandDeep`) and minting a token for one figure's
+highlight is the tail wagging the dog. Comment it where you write it.
+
+**Why this rule exists.** The whole treatment was worked out on
+`deployement_session_1_v3`, applied to `MachineBoundary`, `LayerStack` and
+`ContainerJourney` there, and then **left in that session**. The kit copies stayed
+flat, so sessions 2 through 7 all shipped flat figures, and the session 4 review
+came back with *"the container depth is missing, all are very flat"* — a whole
+deck's worth of rework for a recipe that already existed and had never been
+promoted. This is section 6 of the generate-slides skill, and it is the rule this
+repo most often breaks.

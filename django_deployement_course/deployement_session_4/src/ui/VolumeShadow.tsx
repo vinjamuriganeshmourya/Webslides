@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { colors, easing } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
+import { SurfaceDefs, surface, TopHighlight } from '@/ui/svgDepth'
 
 /**
  * Why the volume mounts at `/app/data` and not at `/app`.
@@ -47,22 +48,38 @@ function Panel({
       animate={{ opacity: active ? 1 : 0.34, y: 0 }}
       transition={{ duration: 0.5, delay: instant ? 0 : delay, ease: easing.soft }}
     >
-      <rect x={x} y={34} width={BOX.w} height={BOX.h} rx={14} fill={colors.white} stroke={paint} strokeWidth={2.5} />
+      {/* The panel, lit (STYLE_GUIDE section 9). `fill={colors.white}` on both
+          halves made the wrong one and the right one the same flat object, and
+          the tinted shadow is what tells them apart before a single label has
+          been read: the wrong panel's is red, the correct one's is green. */}
+      <rect
+        x={x}
+        y={34}
+        width={BOX.w}
+        height={BOX.h}
+        rx={14}
+        {...surface(wrong ? 'danger' : 'teal')}
+        strokeWidth={2.5}
+      />
+      <TopHighlight x={x} y={34} width={BOX.w} rx={14} />
 
       <text x={x + BOX.w / 2} y={22} textAnchor="middle" fontSize={14} fontWeight={800} fill={paint}>
         {wrong ? 'db_data:/app' : 'db_data:/app/data'}
       </text>
 
       {/* /app, holding the code that came from the image */}
+      {/* /app is the layer that gets covered, so it sits FLATTER than the panel
+          around it: `flat` keeps its ramp and drops its shadow, which is how the
+          style guide says a surface recedes without going dead. */}
       <rect
         x={x + 20}
         y={58}
         width={BOX.w - 40}
         height={90}
         rx={10}
-        fill={codeDim ? colors.surface : colors.surface2}
-        stroke={colors.line}
+        {...surface('neutral', { flat: true })}
         strokeWidth={1.5}
+        opacity={codeDim ? 0.55 : 1}
       />
       <text x={x + 32} y={78} fontSize={13} fontWeight={800} fontFamily="ui-monospace, monospace" fill={colors.ink}>
         /app
@@ -98,7 +115,7 @@ function Panel({
           width={BOX.w - 64}
           height={18}
           rx={5}
-          fill={colors.white}
+          {...surface('teal')}
           stroke={colors.success}
           strokeWidth={1.5}
         />
@@ -138,6 +155,7 @@ export function VolumeShadow({ act = 1, className = '' }: { act?: 1 | 2; classNa
   return (
     <div className={className}>
       <svg viewBox="0 0 630 210" className="w-full" role="img" aria-label="A volume mounted at /app shadows the code; mounted at /app/data it does not">
+        <SurfaceDefs />
         <Panel x={12} wrong active={act >= 1} instant={instant} delay={0} />
         <Panel x={368} wrong={false} active={act >= 2} instant={instant} delay={0.14} />
       </svg>

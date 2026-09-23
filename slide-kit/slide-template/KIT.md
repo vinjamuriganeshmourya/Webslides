@@ -37,7 +37,18 @@ reads and never writes.
 | `src/App.tsx`, `src/index.css` | `workflow/` plans, captures, sign-offs |
 | `tailwind.config.ts`, `vite*.config.ts`, `index.html` | `package.json`, `CLAUDE.md`, `README.md` |
 | `qa.mjs`, `video-safe.mjs`, `preview.mjs` | `dist/`, `dist-single/`, `node_modules/` |
-| `scripts/`, `workflow/export/` | |
+| `align-check.mjs`, `marker-check.mjs` | |
+| `scripts/`, `workflow/export/` | `workflow/review/` the review build's output |
+| `review/markComponents.mjs`, `vite.review.config.ts` | |
+
+The last row is the BUILD half of the review app, and all of it that a session
+holds. The app itself is not in the kit: it lives at the repo root in
+`review-app/`, because a reviewer picks a course and a session before there is a
+session folder to be inside of. A session only needs the two files its own
+toolchain uses to produce a reviewable deck — the app shells out to `npx vite
+build -c vite.review.config.ts` here. (`vite*.config.ts` in the row above already
+matches `vite.review.config.ts`; it is named again because a session that predates
+the review app has to be told what it is missing.)
 
 ### The one seam: `src/decks/activeDeck.ts`
 
@@ -145,6 +156,38 @@ the slide is only the proof it renders.
 
 Because `sampleDeck.tsx` is **kit-owned**, a type added to the gallery reaches
 every session on the next `sync-kit.mjs --apply`, which is the point.
+
+---
+
+## Never add a session figure to `src/ui/index.ts`. Import it by path
+
+`src/ui/index.ts` is the `@/ui` barrel and it is **kit-owned**, so
+`sync-kit.mjs --apply` overwrites it wholesale. A session figure re-exported from
+its tail is deleted by the next sync, the figure file itself is left sitting
+untouched beside the deck, and the deck stops compiling with
+`Module '@/ui' has no exported member 'X'`.
+
+So a session-owned figure is imported **by path**:
+
+```tsx
+import { TargetAnatomy } from '@/ui/TargetAnatomy'   // survives every sync
+import { TargetAnatomy } from '@/ui'                 // deleted by the next one
+```
+
+This is what the kit already does for its own figure families
+(`@/ui/points/...`, `@/ui/flowchart/...`), and a path import names a file that no
+sync touches.
+
+**It has now cost four decks.** Session 4 hit it first and recorded it in its
+deck header; the 2026-09-03 kit sync then broke session 5 twice
+(`AutomationLadder`, `TargetAnatomy`) and session 6 twice (`ImageNameAnatomy`,
+`TagPointers`), all four with the same error, because the convention of appending
+to the barrel's tail looks harmless and cannot survive.
+
+The alternative worth considering, if this recurs: have the kit's `index.ts`
+re-export a session-owned `src/ui/session.ts` that `sync-kit.mjs` never touches,
+so a session has a barrel of its own. Not done yet, because a path import is one
+line and needs no kit machinery.
 
 ---
 

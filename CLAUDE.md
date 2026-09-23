@@ -47,6 +47,14 @@ django_deployement_course/  ONE COURSE. Add a sibling folder for another.
     captures/               real screenshots used on slides
   versions/                 source-only zip snapshots (ignored by git)
 
+review-app/                 the deck review app. One server for the whole repo,
+                            slide-wise and component-wise. Its README is the
+                            manual; the section below is the command.
+
+studio/                     Deck Studio: the whole pipeline in a browser, with
+                            headless Claude Code behind it shown as a conversation.
+                            Python server, React UI. Its README is the manual.
+
 testing/
   review_app/               a Streamlit plan-review UI. NOT IN USE. See below.
 
@@ -64,6 +72,13 @@ skills-lock.json             the pin file for the above
                                          Code loads them by description
   settings.json                          shared plugin list (committed)
 ```
+
+**Several people work in this repo.** Before the first edit of anything, read
+[`.claude/skills/branch-from-main/SKILL.md`](.claude/skills/branch-from-main/SKILL.md):
+pull main, branch from it, work there. A branch cut from a stale main looks fine
+for hours and then produces a merge nobody can review. Anything under
+`slide-kit/slide-template/` is a PR, never a direct merge, because
+`sync-kit.mjs --apply` pushes it into every session including signed-off ones.
 
 **Every standing rule in this repo is indexed in [`RULES.md`](RULES.md)**, one
 line each, pointing at the file that holds the full text. Read it when you are
@@ -210,6 +225,47 @@ and a stale count silently skips the tail of the deck.
 
 Each session has its own `CLAUDE.md` with decisions specific to that deck. Read
 it before editing that session.
+
+---
+
+## Reviewing a deck
+
+```bash
+node review-app/server.mjs      # port 5199, any session in any course
+```
+
+Pick a course, a session and a version, then comment on a slide or on a named
+component inside it. Every comment lands in
+
+```
+<course>/workflow/reviews/<session>.review.md
+```
+
+which is the path you then point Claude Code at. It exists so that feedback on a
+deck is a file in the repo rather than a screenshot in a chat: a comment that
+names `CodeBlock` at `src/ui/CodeBlock.tsx:84` is actionable months later, and
+"the grey box on slide 12 is wrong" is not. `review-app/README.md` covers the
+flow, the file format, and what a session needs before it can be reviewed.
+
+---
+
+## The studio
+
+```bash
+cd studio && uv sync && (cd ui && npm install && npm run build)   # once
+uv run python -m server.main                                     # http://127.0.0.1:8600
+```
+
+TR doc → plan → plan sign-off → generate → review → deck sign-off → export, one
+pane each, with Claude Code running headless on your own login and shown as
+messages, tool calls, approval cards and questions.
+The UI owns the files and both sign-offs: the `STATUS` line in `plan.md` (the gate
+`generate-slides` reads) and the review file (the review app's grammar). The model
+steps are one prompt each, `/studio plan|generate|review <course>/<session>`,
+which the studio sends for you. Every session pins a Claude Code
+session id in `session_plans/<session>/studio.json` and resumes it, so a change
+request lands in the conversation that already knows the deck. `studio/README.md`
+is the manual.
 
 ---
 
