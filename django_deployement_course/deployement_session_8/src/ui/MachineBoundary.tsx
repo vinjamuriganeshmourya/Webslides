@@ -31,12 +31,41 @@ function Tile({
   const Icon = iconByName[icon]
   return (
     <div
-      className="flex items-center gap-2.5 rounded-xl border-2 bg-white px-3 py-2"
-      style={{ borderColor: color, opacity: muted ? 0.55 : 1 }}
+      /*
+        LIT LIKE THE LAYER CHIPS, AND FOR THE SAME REASON.
+
+        These were flat white rectangles with a coloured border while every other
+        figure in the deck had been given a light source, so slide 7 was the one
+        place the room saw a different drawing style. The treatment is the same
+        structure at the tint amplitude: a top-left highlight, a ramp that lands
+        just off white, a border-tinted hairline pair, and a shadow tinted with the
+        tile's OWN colour rather than a neutral black, which is what keeps the
+        brand tile and the two teal tiles telling each other apart.
+      */
+      className="flex items-center gap-2.5 rounded-xl border-2 px-3 py-2"
+      style={{
+        borderColor: color,
+        opacity: muted ? 0.55 : 1,
+        background: [
+          'radial-gradient(120% 100% at 14% 0%, #FFFFFF 0%, #FFFFFF00 60%)',
+          `linear-gradient(135deg, #FFFFFF 0%, #FFFFFF 45%, ${color}0f 100%)`,
+        ].join(', '),
+        boxShadow: [
+          `0 3px 10px -4px ${color}4d`,
+          'inset 0 1px 0 0 #FFFFFF',
+          `inset 0 -1px 0 0 ${color}1f`,
+        ].join(', '),
+      }}
     >
       <span
         className="grid h-8 w-8 shrink-0 place-items-center rounded-lg"
-        style={{ background: `${color}18`, color }}
+        style={{
+          /* The icon well gets its own small ramp so it reads as inset rather
+             than as a flat swatch sitting on a lit tile. */
+          background: `linear-gradient(135deg, ${color}14 0%, ${color}24 100%)`,
+          color,
+          boxShadow: `inset 0 1px 0 0 #FFFFFFb3`,
+        }}
       >
         <Icon width={17} height={17} />
       </span>
@@ -97,12 +126,23 @@ export function MachineBoundary({
       {/* Inside the boundary */}
       <Reveal dir="up" className="w-full">
         <div
+          /* The same ramp and shadow the sealed unit carries on slides 18 and 25.
+             Both are dashed boundaries drawn around things that belong together,
+             so they should read as the same kind of object. */
           className="relative rounded-card border-[2.5px] border-dashed px-4 pb-4 pt-6"
-          style={{ borderColor: colors.brand, background: '#F4F8FF' }}
+          style={{
+            borderColor: colors.brand,
+            background:
+              'radial-gradient(120% 90% at 12% 0%, #FFFFFF 0%, #F4F8FF 55%, #E8F0FF 100%)',
+            boxShadow: `0 8px 22px -12px ${colors.brandDeep}59`,
+          }}
         >
           <span
             className="absolute -top-[11px] left-4 rounded-pill px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-white"
-            style={{ background: colors.brand }}
+            style={{
+              background: `linear-gradient(135deg, #4C7AFD 0%, ${colors.brand} 46%, ${colors.brandDark} 100%)`,
+              boxShadow: `0 2px 6px -2px ${colors.brandDeep}66, inset 0 1px 0 0 #FFFFFF59`,
+            }}
           >
             Your machine
           </span>
