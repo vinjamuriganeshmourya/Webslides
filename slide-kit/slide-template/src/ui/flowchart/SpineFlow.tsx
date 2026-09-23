@@ -43,6 +43,27 @@ const SPINE_Y = 40
 const NODE_H = NODE_MIN_H
 const ALT_Y = 232
 
+/*
+  THE STAGE IS ONLY AS TALL AS THE GRAPH IT DRAWS.
+
+  It was a flat 372px, which is the height a graph WITH an off-spine exception
+  needs: the spine ends at 146, the exception row sits at `ALT_Y` 232, and the
+  caption goes under both. A purely linear graph draws nothing in that band and
+  still paid for it, so it rendered as a figure with a 190px hole between it and
+  its own caption, and no harness could see it: `align-check` measures the
+  composite, and a composite that is correctly centred around its own empty
+  middle is still correctly centred.
+
+  Found on session 7's `c2-a-robot-that-watches`, a five-stage pipeline with no
+  decision node, where the caption sat 200px clear of the last card.
+
+  Only graphs with no off-spine node change height. A graph that has one is
+  unaffected, which is every other `SpineFlow` in the repo.
+*/
+const H_BRANCHED = 372
+const H_LINEAR = 208
+const CAPTION_DY = 22
+
 const cx = (i: number) => i * PITCH + SLOT / 2
 const left = (i: number) => i * PITCH
 
@@ -86,17 +107,18 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
   const LOOP = SPINE_END + 3
   const CAPTION = SPINE_END + 4
   const shown = useBeats(CAPTION + 1)
+  const H = altNode ? H_BRANCHED : H_LINEAR
 
   return (
-    <figure className={`relative mx-auto ${className}`} style={{ width: W, height: 372 }}>
+    <figure className={`relative mx-auto ${className}`} style={{ width: W, height: H }}>
       {/* CONNECTORS. One aria-hidden SVG layer under the DOM nodes: the lines are
           geometry, every label above is a real element, per content rule 17. */}
       <svg
         aria-hidden
         className="pointer-events-none absolute inset-0"
         width={W}
-        height={372}
-        viewBox={`0 0 ${W} 372`}
+        height={H}
+        viewBox={`0 0 ${W} ${H}`}
       >
         <FcArrowDefs id="spine" colors={PAINT} />
 
@@ -236,7 +258,7 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
         <FcEdgeLabel
           at={CAPTION} shown={shown[CAPTION]}
           className="absolute text-center text-body-sm"
-          style={{ left: 0, width: W, top: 350, color: colors.body }}
+          style={{ left: 0, width: W, top: H - CAPTION_DY, color: colors.body }}
         >
           {caption}
         </FcEdgeLabel>

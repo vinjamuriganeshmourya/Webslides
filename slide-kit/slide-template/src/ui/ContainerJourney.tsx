@@ -49,18 +49,88 @@ const THEIRS: ChipSpec[] = [
   { label: 'Python', note: '3.10' },
 ]
 
+/*
+  THE CHIPS ARE LIT SURFACES, NOT FLAT FILLS.
+
+  `ships` was one flat `colors.brand` rectangle with a border of the SAME blue,
+  which is a border doing no work: three of them stacked read as a single blue
+  slab rather than as three separate things that travel. It now carries the
+  deck's standard four-part treatment (STYLE_GUIDE section 9): a 135deg ramp
+  starting ABOVE `brand` and landing on `brandDark`, a soft white radial at the
+  top-left that makes it read as lit rather than two-tone, a brand-tinted drop
+  shadow, and inset hairlines top and bottom that give it a thickness.
+
+  A first pass used a `brand` to `brandDark` ramp on its own. Across a box this
+  short that moves too few pixels to register, and at 3x zoom it still looked
+  flat. The radial and the hairlines are what carry it.
+
+  `#4C7AFD` is `brand` lifted about 12%, a literal because the palette has no
+  tint ABOVE `brand`: `brand`, `brandDark` and `brandDeep` all run darker.
+*/
+const SHIP_BG = [
+  'radial-gradient(120% 100% at 14% 0%, #FFFFFF3d 0%, #FFFFFF00 58%)',
+  `linear-gradient(135deg, #4C7AFD 0%, ${colors.brand} 46%, ${colors.brandDark} 100%)`,
+].join(', ')
+
+const SHIP_SHADOW = [
+  `0 3px 10px -3px ${colors.brandDeep}66`,
+  'inset 0 1px 0 0 #FFFFFF59',
+  `inset 0 -1px 0 0 ${colors.brandDeep}33`,
+].join(', ')
+
+/*
+  THE SAME LIGHT SOURCE ON THE OTHER STATE.
+
+  Lighting only the blue chip left the red one flat beside it, and a figure lit
+  from two different places reads as two figures. `breaks` gets the identical
+  structure at a gentler amplitude, because it is a TINT with dark text on it
+  rather than a solid with white text: the ramp depth that reads as dimension on
+  the blue would read as a stain here.
+*/
+const BREAK_BG = [
+  'radial-gradient(120% 100% at 14% 0%, #FFFFFF99 0%, #FFFFFF00 62%)',
+  'linear-gradient(135deg, #FFF5F5 0%, #FEE2E2 52%, #FBCDCD 100%)',
+].join(', ')
+
+const BREAK_SHADOW = [
+  `0 3px 10px -4px ${colors.danger}59`,
+  'inset 0 1px 0 0 #FFFFFFb3',
+  `inset 0 -1px 0 0 ${colors.danger}2e`,
+].join(', ')
+
 function Chip({ spec, tone, dim = false }: { spec: ChipSpec; tone: 'ships' | 'breaks'; dim?: boolean }) {
-  const style =
-    tone === 'ships'
-      ? { background: colors.brand, color: '#fff', borderColor: colors.brand }
-      : { background: '#FEE2E2', color: colors.danger, borderColor: colors.danger }
+  const ships = tone === 'ships'
+  const style = ships
+    ? {
+        background: SHIP_BG,
+        color: '#fff',
+        borderColor: colors.brandDark,
+        boxShadow: SHIP_SHADOW,
+        /* the label has to hold up over the dark end of the ramp too */
+        textShadow: `0 1px 1px ${colors.brandDeep}4d`,
+      }
+    : {
+        background: BREAK_BG,
+        color: colors.danger,
+        borderColor: colors.danger,
+        boxShadow: BREAK_SHADOW,
+      }
   return (
     <div
       className="flex w-full items-center justify-between rounded-lg border-2 px-3 py-2 text-body-sm font-semibold"
       style={{ ...style, opacity: dim ? 0.4 : 1 }}
     >
       <span>{spec.label}</span>
-      {spec.note && <span className="font-mono text-xs opacity-80">{spec.note}</span>}
+      {spec.note && (
+        <span
+          className="shrink-0 font-mono text-xs"
+          /* A flat 0.8 opacity on white over a gradient goes muddy at the dark
+             end of the ramp, so a lit chip tints its note instead. */
+          style={ships ? { color: '#FFFFFFc7' } : { opacity: 0.8 }}
+        >
+          {spec.note}
+        </span>
+      )}
     </div>
   )
 }
@@ -83,7 +153,18 @@ function Machine({
     <div className="w-[250px] shrink-0">
       <div className="mb-1 text-center text-body-sm font-bold text-ink">{title}</div>
       <div className="mb-1 h-4 text-center text-xs font-bold uppercase tracking-wide">{tag}</div>
-      <div className="rounded-xl border-2 bg-white/70 p-3" style={{ borderColor: '#C9D4E2' }}>
+      {/* The machine itself is a surface too, so it gets the same light source at
+          the lowest amplitude in the figure: it is the ground the chips sit on,
+          and it must not compete with them. */}
+      <div
+        className="rounded-xl border-2 p-3"
+        style={{
+          borderColor: '#C9D4E2',
+          background:
+            'radial-gradient(120% 90% at 12% 0%, #FFFFFF 0%, #FBFCFE 55%, #F1F5FA 100%)',
+          boxShadow: `0 6px 18px -14px ${colors.brandDeep}59, inset 0 1px 0 0 #FFFFFF`,
+        }}
+      >
         <div className="flex flex-col gap-2" style={{ minHeight: 132 }}>
           {children}
         </div>

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { Step } from '@/motion/Stepper'
 import { iconByName, type IconName } from './icons'
 
-type CalloutKind = 'note' | 'tip' | 'info' | 'warning' | 'success'
+type CalloutKind = 'note' | 'tip' | 'info' | 'warning' | 'success' | 'error'
 
 const KIND: Record<CalloutKind, { color: string; bg: string; icon: IconName; label: string }> = {
   note: { color: '#0B5FFF', bg: '#EAF1FF', icon: 'info', label: 'Note' },
@@ -10,6 +10,17 @@ const KIND: Record<CalloutKind, { color: string; bg: string; icon: IconName; lab
   info: { color: '#0EA5E9', bg: '#E0F2FE', icon: 'info', label: 'Good to know' },
   warning: { color: '#B45309', bg: '#FEF3C7', icon: 'warning', label: 'Watch out' },
   success: { color: '#15803D', bg: '#DCFCE7', icon: 'check', label: 'Remember' },
+  /*
+    `error` is the fourth verdict, added alongside `StatusList` so a callout and
+    a status row can say the same thing in the same red. `warning` already meant
+    "careful, this can bite you"; there was no kind for "this does not work",
+    and decks were reaching for `warning` to say it, which flattened the two into
+    one colour the room could not tell apart.
+
+    The hexes are `danger.600` / `danger.100` from tailwind.config.ts, matching
+    how the other four rows were written.
+  */
+  error: { color: '#B91C1C', bg: '#FEE2E2', icon: 'cross', label: 'This fails' },
 }
 
 /**

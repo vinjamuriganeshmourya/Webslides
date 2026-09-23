@@ -78,7 +78,16 @@ export function TwoRuntimes({ className = '' }: { className?: string }) {
       {/* Both arrows, because the dependency runs both ways: the UI asks, the API
           answers, and neither is any use alone. A single arrow would read as one
           calling the other and being done. */}
-      <div className="flex w-24 shrink-0 flex-col items-center gap-1">
+      {/*
+        `justify-center`, because this column is a flex item of an `items-stretch`
+        row: it is stretched to the full height of the two cards, but its contents
+        still stack from its top edge, so the arrow pair and its label sat level
+        with the card headings instead of with the gap between the cards. A review
+        of the deck caught it as "the arrows are too high". Centring the column's
+        contents pins the exchange to the middle of the two cards it runs between,
+        and it stays centred when one card grows a wrapped line.
+      */}
+      <div className="flex w-24 shrink-0 flex-col items-center justify-center gap-1">
         <svg width={88} height={44} viewBox="0 0 88 44" style={{ overflow: 'visible' }}>
           <defs>
             <marker id="tr-r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">

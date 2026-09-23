@@ -1,5 +1,5 @@
 import type { SlideDef, DeckMeta } from '@/deck/types'
-import { BoundaryBridge, CodeBlock, FanOut, SpineFlow, LaneFlow, StepLedger, CircuitMap, GateFlow, TrackSwitch } from '@/ui'
+import { BoundaryBridge, CodeBlock, FanOut, FileTree, SwapRows, Terminal, SpineFlow, LaneFlow, StepLedger, CircuitMap, GateFlow, ThreeLanes, TrackSwitch } from '@/ui'
 import type { FlowchartFigureProps } from '@/ui'
 import {
   WelcomeSlide,
@@ -121,6 +121,21 @@ export const sampleDeck: SlideDef[] = [
       'THE PAUSE BEAT. One question, hero scale, optically centred, and nothing else on the slide. No bullets, no figure, no answer: the room answers out loud and the NEXT slide responds. A compound question gets split into two of these.',
   },
   {
+    id: 'sample-question-choices',
+    section: 'Slide types',
+    label: 'Question · choices',
+    element: (
+      <QuestionSlide
+        question="A container writes a file. The container is deleted and recreated. Is the file still there?"
+        qualifier="Nothing else about the setup changes"
+        choices={['Yes', 'No']}
+        lesson="Component Gallery"
+      />
+    ),
+    notes:
+      'THE SAME PAUSE BEAT, WITH THE ANSWERS THE ROOM IS CHOOSING BETWEEN. `choices` takes two or three short strings and draws them as identical boxes under the question. It is FOR replacing the stage direction decks used to print as a bullet ("say yes or no before the next slide"), which told the room how to behave rather than showing it what it was picking. It must NOT carry a hint: the boxes are deliberately drawn the same, so never tint, tick, enlarge or order one of them to signal the answer, and never use it for more than three options. The answer is still the NEXT slide. Confusable with QuestionPointsSlide, which puts the ANSWER on the same frame as click-revealed points and is therefore the wrong type whenever the room is meant to commit first.',
+  },
+  {
     id: 'welcome',
     label: 'Welcome',
     transition: 'zoom',
@@ -199,6 +214,36 @@ export const sampleDeck: SlideDef[] = [
           { text: 'Data usually travels as JSON', sub: 'lightweight & language-agnostic', icon: 'code' },
         ]}
       />
+    ),
+  },
+  {
+    id: 'content-split-default',
+    label: 'Content · points beside a figure (default split)',
+    section: 'Concepts',
+    notes:
+      'THE TWO-COLUMN MODE OF ContentSlide: pass BOTH `points` and children and the bullets and the figure sit side by side. This slide passes neither `split` nor `columnAlign`, so it is the historical rendering — the prose gets 1.4fr against the figure\'s 1fr (649px against 463px) and each column centres itself independently. Worst at: a figure that needs width. 463px is narrower than a `Terminal` line of any length, and `Terminal` wraps `break-words`, so it breaks an image name MID-TOKEN. Reach for `split="even"` there.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="Two columns"
+        title="Points beside a figure"
+        lead="The bullets and the figure are one idea, so they arrive together."
+        points={[
+          { text: 'The list keeps the wider column', icon: 'target' },
+          { text: 'The figure takes what is left', icon: 'bolt' },
+          { text: 'Both animate on slide entry', icon: 'arrow' },
+        ]}
+      >
+        <Terminal
+          path="C:\ecommerce"
+          lines={[
+            { text: 'docker ps', kind: 'cmd' },
+            { text: 'CONTAINER ID   STATUS', kind: 'out' },
+            { text: 'a41f9c2b       Up 2 minutes', kind: 'out' },
+          ]}
+          caption="Short lines fit the narrow column"
+        />
+      </ContentSlide>
     ),
   },
   {
@@ -717,6 +762,95 @@ export const sampleDeck: SlideDef[] = [
             { id: 'c3', label: 'Container 3', note: 'stopped, same image', live: false },
           ]}
           caption="Starting a container never changes the image, which is why the third one is identical to the first."
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'three-lanes',
+    label: 'Three lanes (figure)',
+    section: 'DRF',
+    notes:
+      'FOR THREE NAMED PRACTICES THAT DIFFER ONLY IN HOW FAR THEY REACH ALONG ONE CHAIN. Built for CI, Continuous Delivery and Continuous Deployment, and the contract carries no CI/CD in it: any set of terms whose relationship is CONTAINMENT along a shared sequence fits, and any set whose relationship is not containment does not. `terms` is INNERMOST FIRST and the array order IS the containment claim, so shuffling it is a content error rather than a layout one. `reaches` is the 1-based stage the automation reaches THROUGH, inclusive, and every span, dim boundary and marker in the figure derives from that one number, so no two parts of the figure can disagree about where a term stops. `approval` draws the human decision at a term\'s own boundary, which is the ONLY thing separating the two CDs in every published definition: span length alone states the difference and hides the why. Tones are ROLES (inner, middle, outer), not hexes, so a caller cannot reach a verdict hue: green, amber and red stay reserved for pass, warn and fail, and the ramp doubles as a luminance ramp so the three survive a greyscale projector. It reveals one lane per click, four beats on one frame, which is what lets one slide replace four definition slides without breaking content rule 25. Chosen from four candidates in slide-kit/cicd-reach-lab because it is the shape Atlassian, Red Hat, AWS, CircleCI, IBM and Bitrise all publish, so the room meets it again in any article they read, and because it is the only candidate that asks no lookup of the viewer. It costs height: 394px against the 425px ceiling, so it takes a slide with no points and a one-line lead. ReachBands is the same convention in 276px and stays in the lab.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="How far the robot goes"
+        title="Three lanes"
+        lead="Same chain of stages. The three terms differ only in where the automation stops"
+      >
+        <ThreeLanes
+          stages={[
+            { n: 1, label: 'FETCH', caption: 'get the code' },
+            { n: 2, label: 'TEST', caption: 'run the tests' },
+            { n: 3, label: 'BUILD', caption: 'build the image' },
+            { n: 4, label: 'PUSH', caption: 'image to the registry' },
+            { n: 5, label: 'DEPLOY', caption: 'run on the server' },
+          ]}
+          terms={[
+            { name: 'Continuous Integration', reaches: 2, then: 'You are told at once if it broke', tone: 'inner' },
+            { name: 'Continuous Delivery', reaches: 4, then: 'Ready to go live, and it waits', approval: true, tone: 'middle' },
+            { name: 'Continuous Deployment', reaches: 5, then: 'It goes live on its own', tone: 'outer' },
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'file-tree',
+    label: 'File tree (figure)',
+    section: 'DRF',
+    notes:
+      'FOR "WHERE DOES THIS FILE GO". A slide that shows a file\'s CONTENTS never says which folder it belongs in, and "create a file called Dockerfile" is not an instruction until it does. `state` is what makes it teach: `new` is the file this slide asks them to create (brand, tagged once, on the top-level entry only), `existing` is already there from an earlier slide, `later` is named but not created yet (dashed, italic). `open` names the folder that STARTS open, and its children are drawn INSIDE a recessed well that belongs to it rather than as siblings indented by 22px. It is an accordion: every folder row with children is a real button, clicking one shuts whatever was open, there is no all-shut state, and the well reserves the tallest folder\'s height so nothing on the slide moves when the open folder changes. Use it whenever the tree runs past about six rows: session 4 shipped nine flat rows and the review read them as one list rather than as three folders. OMIT `open` and every folder renders expanded with no chevrons, which is what sessions 2 and 3 ship, so the prop is additive. It must NOT be used as a general nested list: the glyphs are a folder and a file, and the header row is a filesystem path, so pointing it at a taxonomy or a menu makes the slide claim something untrue (rule 8).',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="The starting point"
+        title="Where the new file goes"
+        lead="One folder open at a time, so the room reads three folders rather than one list."
+      >
+        <FileTree
+          root="C:\project"
+          open="backend"
+          entries={[
+            { name: 'backend', folder: true, state: 'existing' },
+            { name: 'manage.py', depth: 1, state: 'existing' },
+            { name: 'requirements.txt', depth: 1, state: 'existing', note: 'about to change' },
+            { name: 'Dockerfile', depth: 1, state: 'new' },
+            { name: '.dockerignore', depth: 1, state: 'later' },
+            { name: 'frontend', folder: true, state: 'existing' },
+            { name: 'package.json', depth: 1, state: 'existing' },
+            { name: 'vite.config.js', depth: 1, state: 'existing' },
+            { name: 'docker-compose.yml', state: 'later', note: 'the next section' },
+          ]}
+          caption="backend is open because this slide points at requirements.txt. Shut folders carry a count, not their contents."
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'swap-rows',
+    label: 'Swap rows (figure)',
+    section: 'DRF',
+    notes:
+      'FOR A COMPARISON WHERE ONE SIDE STANDS IN FOR THE OTHER. A phone\'s speed dial and a Makefile\'s targets; a Python function and a Makefile; a manual ritual and an automated one. Every row is ONE object divided internally, not two boxes with an arrow between them: the familiar side is recessed into it and the new side is raised out of it, so the pairing reads as the sentence "this stands in for that" with no glyph needed. That recessed-to-raised inversion is the argument, and therefore the constraint. It asserts a DIRECTION, so it must NOT be used for two alternatives being weighed against each other, which have none: a DataTable with identical row labels is the figure for that, and drawing peers this way claims something untrue (rule 8). `code` sets both cells of a pairing in monospace, because `make "up"` is a thing you type and reads as the name of an idea when set as prose. There is deliberately no emphasis flag; compareFigure.ts records why it was removed rather than kept and ignored. Chosen in slide-kit/comparison-lab over LedgerCompare, MirrorCards and CallerView, and that lab\'s CLAUDE.md says what each was worse at. Worst at: more than four pairings, because each row is a drawn object rather than a line of text.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="One stands in for the other"
+        title="Swap rows"
+        lead="A Makefile does for your commands exactly what a function does for your code."
+      >
+        <SwapRows
+          leftLabel="A Python function"
+          rightLabel="A Makefile"
+          pairs={[
+            { from: 'make_coffee()', to: 'make "up"', code: true },
+            { from: 'Body of the function', to: 'docker compose command under the target' },
+            { from: 'Caller writes one line', to: 'Anyone running the project types one short word' },
+            { from: 'Caller never reads the body', to: 'Nobody needs to know the Docker flags' },
+          ]}
+          caption="The long thing still exists. It has stopped being anybody's problem."
         />
       </ContentSlide>
     ),

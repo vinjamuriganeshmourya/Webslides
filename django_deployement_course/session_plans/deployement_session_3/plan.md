@@ -3,7 +3,7 @@
 **STATUS: SIGNED OFF 2026-08-20 · GENERATED AND VERIFIED 2026-08-20**
 
 Concept 1 compressed to the comparison at sign-off. The deck is built at
-**69 slides** in `deployement_session_3/`, and §8 below records what verification
+**72 slides** in `deployement_session_3/`, and §8 below records what verification
 actually found and what changed as a result.
 
 | | |
@@ -25,10 +25,10 @@ Four concepts. Every TR section maps under exactly one.
 
 | # | Concept (agenda wording) | TR sections | Ends on the question that opens the next |
 |---|---|---|---|
-| 1 | A Second Container, on the Node Runtime | 1.1 to 1.8 | Two images exist. How do you run them **together**? |
-| 2 | Running Both Containers By Hand | 2.1 to 2.3 | Six commands, all of it in your head. How do we write this down **once**? |
+| 1 | Node Container Image | 1.1 to 1.8 | Two images exist. How do you run them **together**? |
+| 2 | Running Both Python and Node Containers | 2.1 to 2.3 | Six commands, all of it in your head. How do we write this down **once**? |
 | 3 | Writing the docker-compose.yml File | 3.1 to 3.8 | The file is written. What happens when we **run** it? |
-| 4 | Running the Stack, and How Containers Talk | 4.1 to 4.12 | One command runs both. How does one container **find** the other? |
+| 4 | Running the Stack: Integrating the Containers | 4.1 to 4.12 | One command runs both. How does one container **find** the other? |
 
 The recap restates these four as outcomes. Nothing else gets a divider.
 
@@ -101,7 +101,7 @@ Legend for **Assets**: `kit` = already in `src/ui`, `new` = built for this deck,
 | 6 | `agenda` | Today's Agenda | `AgendaSlide` | The four concepts from §1, one gloss line each | Agenda fixture | curve draws, items cue off it | kit |
 | 7 | `setup` | Initial Setup | `ContentSlide` + `Terminal` + `FileTree` | Open `C:\nxttrendz` in VS Code · start Docker Desktop · check `docker --version` · last session's four files are still in `docker-demo` | Two panels: the check command, and the tree it expects | parallel | kit, TR |
 
-### Concept 1: A Second Container (8 to 22)
+### Concept 1: Node Container Image (8 to 22)
 
 **Compressed at sign-off.** The room no longer writes `server.js`, `package.json`
 and the Node Dockerfile one file per slide. It reads the finished Node side and
@@ -111,7 +111,7 @@ Four slides removed: the base-image logo row folds into 10, the one-Dockerfile-p
 
 | # | id | Title | Component | Content | Visual, and why it fits | Motion | Assets |
 |---|---|---|---|---|---|---|---|
-| 8 | `c1-divider` | A Second Container | `SectionBreakerSlide` | index 1, subtitle *Same five instructions, a different runtime* | Divider fixture, navy stage | fade + mark | kit |
+| 8 | `c1-divider` | Node Container Image | `SectionBreakerSlide` | index 1, subtitle *Same five instructions, a different runtime* | Divider fixture, navy stage | fade + mark | kit |
 | 9 | `c1-a-choice` | That Line Was a Choice | `ContentNoteSlide` + `CodeBlock` | `FROM python:3.14-slim` with line 1 highlighted. Nothing about Docker is tied to Python | Their own file with one line lit: the smallest possible change of frame | highlight pulses once on entry | kit |
 | 10 | `c1-runtime` | What is a Runtime | `ContentSlide` + `CardGrid` + logo row | One sentence: the program that runs your code. Python runs `.py`, Node runs `.js`. You have both installed already. Second beat: Docker Hub publishes an official base image per runtime, so `FROM` takes a different word and nothing else changes. Callout: `-slim` and `-alpine` are each runtime's minimal variant | Two cards carrying the vendor PNG, the file type and the command they have typed, over a row of further marks for the claim that there is one per runtime | cards stagger, logo row with them | **png** python, nodejs, java, go, php |
 | 11 | `c1-two-programs` | Your App Is Two Programs | `ContentSlide` + `FileTree` + `DataTable` | `C:\nxttrendz\` with `backend\` (Django, Python) and `frontend\` (React, Node), and neither is any use without the other. Table: runtime · dependency file · start command | Tree names the folders they have; table makes the difference concrete in three rows | tree and table in one `RevealGroup` | kit, **png** react, django |
@@ -127,7 +127,7 @@ Four slides removed: the base-image logo row folds into 10, the one-Dockerfile-p
 | 21 | `c1-rebuild-backend` | Rebuild the Python Side | `ContentSlide` + two `Terminal` panels | Panel 1 (`...\backend`): `docker build -t nxttrendz-backend .`. Panel 2 (`...\docker-demo`): `docker images` showing three rows | Two folders means two panels, side by side (rule S4) | panels reveal together | TR |
 | 22 | `c1-two-images` | Two Images of Your Own | `ContentNoteSlide` + `DataTable` | The three image rows read as a table. Note: `nxttrendz-backend` and `nxttrendz-app` share an IMAGE ID, so Docker stored one image under two names, and `docker rmi nxttrendz-app` drops the old name. Closing line: two images exist, so how do we run them together? | Table because the point is one column, IMAGE ID | rows stagger | TR |
 
-### Concept 2: Running Both By Hand (27 to 36)
+### Concept 2: Running Both Python and Node Containers (27 to 36)
 
 | # | id | Title | Component | Content | Visual, and why | Motion | Assets |
 |---|---|---|---|---|---|---|---|
@@ -156,14 +156,14 @@ Four slides removed: the base-image logo row folds into 10, the one-Dockerfile-p
 | 40 | `c3-environment` | environment | `CodeBuildSlide` | Step 4. `APP_ENV: development` on the backend, `API_URL: http://backend:8000` on the frontend. Note callout: that value is deliberately not `localhost`, and the last section of today is entirely about why | Rule S6: the address is written, the reason is withheld | same | **new** |
 | 41 | `c3-read-it` | Reading It In Code | `ContentNoteSlide` + two `CodeBlock` panels | One line added to each file: `os.environ.get("APP_ENV")` and `process.env.API_URL`. Note: the payoff is that the **same image** runs on your laptop and on a real server, and only these values change. No code edited, no rebuild | Two panels side by side, one per language, so the symmetry is visible | panels together | kit |
 | 42 | `c3-secrets` | Never Put Secrets Here | `ContentNoteSlide` | Real secrets, like Django's `SECRET_KEY` or a database password, must never be typed into `docker-compose.yml`, because that file travels with the project. The standard practice is a separate file Compose reads automatically, kept out of the shared copy. That is set up later in this course | Warning callout is the whole slide. No tool named (rule S1) | callout on entry | kit |
-| 43 | `c3-prediction` | A Prediction | `ContentSlide` | A container writes a file. The container is deleted, and a new one is created from the same image. Is the file still there? | The pause beat. Answered on the next slide, never on this one | question fades in | kit |
+| 43 | `c3-prediction` | A Prediction | `QuestionSlide` (`choices`) | A container writes a file. The container is deleted and recreated. Is the file still there? Qualifier: nothing else about the setup changes | The pause beat. Answered on the next slide, never on this one. Two identical Yes / No boxes, drawn the same so neither hints. 2026-09-02: was a `ContentSlide` whose only bullet was the stage direction "say yes or no before the next slide" | question and boxes land together | kit, `QuestionSlide.choices` added |
 | 44 | `c3-answer-no` | No, and Here is Why | `ContentSlide` + `VolumeSurvival` act 1 | A container's filesystem lives and dies with the container. The image never changes, so nothing the container wrote is kept. Fine for a script that prints. A disaster for anything holding data | `VolumeSurvival` act 1: the container writes, the container is removed, the file goes with it | figure plays with the text | **new** |
 | 45 | `c3-volume` | What is a Volume | `ContentNoteSlide` + `VolumeSurvival` act 2 | Storage Docker keeps on the **host**, your own machine, and plugs into a folder inside the container. Anything written into that folder is outside the container's own filesystem, so it survives. Note: the host is the machine Docker runs on, your laptop today | Act 2 of the same figure: the disk stays, a new container plugs into it and reads the file back | figure plays with the text | **new** |
 | 46 | `c3-volumes` | volumes | `CodeBuildSlide` | Step 5. `- db_data:/app/data`, annotated in two halves: the named volume that lives on the host, and the folder inside the container whose contents must survive. Note callout: the bottom-level `volumes:` block declares the name so Docker creates the storage, and it sits at the far left, level with `services:`, not inside a service | The two-part anatomy is drawn under the line, the way the TR draws it | annotation arrows draw with the line | **new** |
 | 47 | `c3-starts-txt` | Recording Each Start | `ContentSlide` + `CodeBlock` | `app.py` appends to `/app/data/starts.txt` and prints how many lines it has. Ordinary file handling, writing into the one folder that outlives the container | Their own Python, so the volume stops being abstract | panel on entry | kit |
 | 48 | `c3-complete` | The Complete File | `ContentNoteSlide` + `CodeBlock` | The whole `docker-compose.yml`. Read as a sentence: my app is two services, `backend` built from `backend\Dockerfile`, told which mode it is in, keeping its data in a volume; and `frontend`, built from `frontend\Dockerfile`, told where the backend is, started after it. Success callout: two languages, two runtimes, one file, and the setup is no longer knowledge in your head | The assembled artifact closes the build sequence, per the corpus | panel on entry, callout as a step | kit |
 
-### Concept 4: Running the Stack (53 to 67)
+### Concept 4: Running the Stack: Integrating the Containers (53 to 67)
 
 | # | id | Title | Component | Content | Visual, and why | Motion | Assets |
 |---|---|---|---|---|---|---|---|
@@ -180,21 +180,21 @@ Four slides removed: the base-image logo row folds into 10, the one-Dockerfile-p
 | 59 | `c4-summary` | Command Summary | `ContentSlide` + `DataTable` | Seven rows: `up` · `up -d` · `up --build` · `ps -a` · `logs <service>` · `down` · `down -v` | The one slide the room photographs | rows stagger | kit |
 | 60 | `c4-localhost` | localhost Is Not the Other Container | `ContentSlide` + `ComposeNetwork` act 1 | Why was it `http://backend:8000` and not `localhost:8000`, the address that worked all through the integration course? Because `localhost` means "this machine, right here", and inside a container, *here* is the container itself. The request would go straight back into its own container, where nothing is listening. This is the number one multi-container mistake | `ComposeNetwork` act 1: the arrow labelled `localhost:8000` leaves the frontend, curves back into it and turns red | figure and text together, the red beat last | **new** |
 | 61 | `c4-service-name` | Service Names Are Hostnames | `ContentNoteSlide` + `ComposeNetwork` act 2 | Remember the network Compose created without being asked? Every service in the file is attached to it, and on that network each container reaches every other by its **service name** as the hostname. `backend:8000`. Not `localhost`, not an IP address. Note: rename the service to `api:` and the address becomes `api:8000`. Service names are not labels, they are addresses | Act 2: the same arrow relabelled `backend:8000`, crossing the network and turning green | figure and text together | **new** |
-| 62 | `c4-who-uses-which` | Who Uses Which | `ContentNoteSlide` + `DataTable` | One container to another, inside Docker: the service name. Anything else to a container, from outside Docker: not possible until the service opens a port, which comes later in this course. Success callout: inside Docker, a service name is an address | Rule S1: the outside row is named and left unopened, not greyed out | rows stagger | kit |
+| ~~62~~ | ~~`c4-who-uses-which`~~ | ~~Who Uses Which~~ | CUT 2026-09-02 | Removed at review. Its S1 content (anything outside Docker cannot reach in until a port is opened, which comes later in this course) moved to the speaker notes of `c4-same-file-only`, so the instructor still has the one-sentence answer and no frame opens problem 2 | | | |
 | 63 | `c4-same-file-only` | Only Services in the Same File | `ContentNoteSlide` | Only services in the same Compose file share this network, which is why the name works with no setup on your part. A container started by a separate `docker run` is not on it and cannot resolve `backend` | Closes the boundary of the claim, so nobody over-generalises it | callout on entry | kit |
 
-### Back matter (68 to 73)
+### Back matter (67 to 72)
 
 | # | id | Title | Component | Content | Assets |
 |---|---|---|---|---|---|
 | 64 | `quiz` | Quiz Time! | `QuizTimeSlide` | The late checkpoint, at ~93% of the deck | kit |
 | 65 | `takeaways` | Key Takeaways | `KeyTakeawaysSlide` | The four agenda concepts as outcomes: you can containerise an app in any runtime with the same five instructions · you can say why running containers by hand does not scale · you can write a `docker-compose.yml` with services, build, start order, environment and volumes · you can start and stop a whole stack with one command, and address one container from another by its service name | kit |
-| 66 | `practice` | Try it by yourself | `PracticeSlide` | Add a third service of your own on a third runtime, give it one environment variable, make the frontend depend on it, and prove the volume survives a `down` followed by an `up`. The shape, not the solution | kit |
+| 66 | `practice` | Try it by yourself | `PracticeSlide` | Build the session's own two service stack again from an empty folder, without looking at the finished file: both Dockerfiles, then `docker-compose.yml`, then `up` and read both logs, then `down`, `up` and `down -v` against the count. 2026-09-02: was a third service on a third runtime, which is an extension, not practice. Repetition is what this slide is for | kit |
 | 67 | `feedback` | Feedback | `FeedbackSlide` | Fixture | kit |
 | 68 | `next-up` | Next Session | `ContentSlide` | The two scripts step aside and the real `nxttrendz` project moves into this same file, with the same keys. No tool named for a later session (rule S1) | kit |
 | 69 | `thankyou` | Thank You | `ThankYouSlide` | Fixture, mark on stage, `footerLogo={false}` | kit |
 
-**Count: 69 slides**, inside the 55 to 70 corpus band. The compression of concept
+**Count: 72 slides**, inside the 55 to 70 corpus band. The compression of concept
 1 agreed at sign-off removed four slides, which is why the three cuts the draft
 offered are no longer needed: slide 11's logo row is folded into 10, the
 one-Dockerfile-per-folder warning into 14, and the three file-creation slides into

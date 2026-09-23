@@ -1,13 +1,22 @@
 import type { SlideDef } from '@/deck/types'
 import {
+  CommandSyntaxSlide,
   ContentNoteSlide,
   ContentSlide,
   KeyTakeawaysSlide,
+  ProceduralStepsSlide,
   QuestionSlide,
   SectionBreakerSlide,
+  StatusPointsSlide,
   ThankYouSlide,
 } from '@/slides'
-import { CodeBlock, DataTable, TagPointers, Terminal } from '@/ui'
+import { CodeBlock, DataTable, Terminal } from '@/ui'
+/* Session-owned figure, imported from its own file rather than through `@/ui`.
+   `src/ui/index.ts` is kit-owned, so `sync-kit.mjs` overwrites it and the
+   re-export line that used to live at its tail vanished on sync — this file
+   stopped compiling with "Module '@/ui' has no exported member 'TagPointers'".
+   Importing the file directly keeps it out of the kit's way permanently. */
+import { TagPointers } from '@/ui/TagPointers'
 import {
   AT_ROOT,
   C1,
@@ -17,9 +26,12 @@ import {
   Code,
   IMAGE,
   MK_WITH_PUSH,
-  ON_ANOTHER_MACHINE,
-  pushDenied,
   REPO,
+  S1,
+  S2,
+  S3,
+  S4,
+  S5,
   SESSION,
   Tech,
 } from './deckShared'
@@ -43,7 +55,7 @@ import {
  *       artifact at two stages, and `TEXT_GUIDELINES.md` §4 forbids "continued".
  *
  *   L3  THE REFUSAL TEXT COMES FROM `pushDenied()`. Slide 22 shows the same
- *       string for a different cause, and the whole point of slide 49 is that
+ *       string for a different cause, and the whole point of `c3-push-denied-again` is that
  *       one error text has two causes. Two hand-typed copies could drift, and
  *       then the slide would be arguing with itself.
  *
@@ -97,7 +109,7 @@ export const partC4Closing: SlideDef[] = [
             {' on Docker Hub?'}
           </>
         }
-        qualifier="The code changed, the tag did not"
+        qualifier="Code changed, the tag did not"
         lesson={SESSION}
       />
     ),
@@ -124,16 +136,16 @@ export const partC4Closing: SlideDef[] = [
               </>
             ),
           },
-          { text: 'The old build is unrecoverable from that tag' },
+          { text: 'That old build is unrecoverable from that tag' },
         ]}
         note={{
           kind: 'warning',
           title: 'Why this matters',
           body: (
             <>
-              {'A tag is a label on a shelf, not the box on it. Moving the label moves what everyone else finds when they ask for '}
+              {'A tag is a label on a shelf, not the box, so moving it changes what the server gets for '}
               <Code>v1</Code>
-              {', including the server that is running your code right now.'}
+              {'.'}
             </>
           ),
         }}
@@ -146,23 +158,37 @@ export const partC4Closing: SlideDef[] = [
   {
     id: 'c4-latest-lies',
     section: C4,
-    label: 'The latest trap',
+    label: 'Why latest is risky',
     element: (
-      <ContentSlide
+      /*
+        `StatusPointsSlide`, NOT `ContentSlide` WITH THREE BULLETS.
+
+        Every line on this slide is a VERDICT on one word, which is what this
+        type exists for and what a plain bullet cannot show: the rows carry a
+        Careful or a Fails chip, and each gets its one line of consequence
+        underneath. As three unmarked bullets the room had to infer which of the
+        three was the one that ends an incident badly, and the deck was drawing
+        three identical grey ticks over a mostly empty frame.
+
+        The kit had this type from session 4 and this deck used it nowhere.
+      */
+      <StatusPointsSlide
         kicker={C4}
-        title="The latest Trap"
-        lead="The word sounds safe and automatic, which is exactly the problem"
-        points={[
+        title="Why latest Is Risky"
+        lead="This word sounds safe and automatic, and that is the problem"
+        items={[
           {
+            status: 'warning',
             text: (
               <>
                 <Code>latest</Code>
                 {' is only the default tag name, it does not mean newest'}
               </>
             ),
-            icon: 'warning',
+            detail: 'Docker adds it whenever you leave the tag off',
           },
           {
+            status: 'error',
             text: (
               <>
                 {'A server pulling '}
@@ -170,9 +196,13 @@ export const partC4Closing: SlideDef[] = [
                 {' can never say which exact build is running'}
               </>
             ),
-            icon: 'warning',
+            detail: 'Nobody can tell which build is live',
           },
-          { text: 'When a bad build ships, there is no previous tag to roll back to', icon: 'warning' },
+          {
+            status: 'error',
+            text: 'When a bad build reaches the server, no earlier tag exists to return to',
+            detail: 'Nothing earlier to go back to',
+          },
         ]}
         lesson={SESSION}
       />
@@ -181,11 +211,30 @@ export const partC4Closing: SlideDef[] = [
       'Ask who has typed latest without thinking about it. Then read the second bullet twice, because that is the one that ends an incident call badly.',
   },
   {
+    /*
+      FOUR STEPS, NOT FOUR COMMANDS IN ONE PANEL.
+
+      This shipped as a `Terminal` holding four `cmd` lines and NO OUTPUT.
+      Two faults at once:
+
+      - Content rule 25 says one element per slide and names the unit for a
+        command chain: one command. Four arriving assembled is the rule's
+        stated failure, and the caption ("Four commands: two names for one
+        image, then both pushed") was doing the work the drawing should.
+      - A `Terminal` of pure `cmd` lines asserts four commands that printed
+        nothing. The slide-types registry calls this the commonest way this
+        content ships wrong.
+
+      This is also the one procedure in the session a learner repeats on every
+      release, which is exactly what `ProceduralStepsSlide` exists for: each
+      command gets its own row and its own one-line reason, and the rows arrive
+      one click at a time instead of all four at once.
+    */
     id: 'c4-unique-tags',
     section: C4,
     label: 'One tag per build',
     element: (
-      <ContentSlide
+      <ProceduralStepsSlide
         kicker={C4}
         title="One Tag Per Build"
         lead={
@@ -195,24 +244,33 @@ export const partC4Closing: SlideDef[] = [
             {' as a convenience on top of it'}
           </>
         }
+        steps={[
+          {
+            title: <Code>{`docker tag ${IMAGE} ${REPO}:v2`}</Code>,
+            detail: 'Name this build, and the name is never reused',
+            icon: 'file',
+          },
+          {
+            title: <Code>{`docker tag ${IMAGE} ${REPO}:latest`}</Code>,
+            detail: 'Point the convenience name at the same build',
+            icon: 'file',
+          },
+          {
+            title: <Code>{`docker push ${REPO}:v2`}</Code>,
+            detail: 'Publish the version a server can pin to',
+            icon: 'rocket',
+          },
+          {
+            title: <Code>{`docker push ${REPO}:latest`}</Code>,
+            detail: 'Publish the convenience name beside it',
+            icon: 'rocket',
+          },
+        ]}
         lesson={SESSION}
-      >
-        <div className="mx-auto w-full max-w-[980px]">
-          <Terminal
-            path={AT_ROOT}
-            lines={[
-              { text: `docker tag ${IMAGE} ${REPO}:v2`, kind: 'cmd' },
-              { text: `docker tag ${IMAGE} ${REPO}:latest`, kind: 'cmd' },
-              { text: `docker push ${REPO}:v2`, kind: 'cmd' },
-              { text: `docker push ${REPO}:latest`, kind: 'cmd' },
-            ]}
-            caption="Four commands: two names for one image, then both pushed"
-          />
-        </div>
-      </ContentSlide>
+      />
     ),
     notes:
-      'Point out that all four lines act on one image. Two of them are names and two of them are uploads, and the room should be able to tell you which is which.',
+      'Advance one step at a time and say the reason before the command. The two tag commands look identical apart from the last word, which is the point: one image, two names, and only one of them is safe to deploy from.',
   },
   {
     id: 'c4-repo-history',
@@ -224,15 +282,15 @@ export const partC4Closing: SlideDef[] = [
          list the three entries but cannot draw the pointer between two of them. */
       <ContentSlide
         kicker={C4}
-        title="A History That Holds"
-        lead="The repository on Docker Hub now holds a history that never loses a version"
+        title="Every Version Kept"
+        lead="Your repository on Docker Hub now keeps every version"
         lesson={SESSION}
       >
         <div className="mx-auto w-full max-w-[980px]">
           <TagPointers
             repository={REPO}
             tags={[
-              { tag: 'v1', note: "last week's build, still pullable" },
+              { tag: 'v1', note: 'the earlier build, still pullable' },
               { tag: 'v2', note: "today's build" },
               { tag: 'latest', note: 'convenience pointer' },
             ]}
@@ -260,7 +318,7 @@ export const partC4Closing: SlideDef[] = [
             <>
               {'A bad '}
               <Code>v2</Code>
-              {' does not need a rebuild, a revert or a redeploy. It needs the old tag, which is still on Hub because you never reused it. That is what unique tagging buys.'}
+              {' needs no rebuild, only the old tag, still on Hub because you never reused it.'}
             </>
           ),
         }}
@@ -291,9 +349,33 @@ export const partC4Closing: SlideDef[] = [
         title="Makefile"
         lead={
           <>
-            {'Four commands to tag and push, which is what a '}
+            {/* THE LEAD IS ONE LINE BECAUSE THE PANEL GREW.
+
+                MEASURED, because the first two attempts at this lead were both
+                wrong and neither was obviously wrong. `push` went from four
+                recipe lines to eight, so the composite is 427px. The well is NOT
+                a constant 439px: `SlideLead` is `max-w-3xl`, so a lead that
+                wraps to two lines is 66px instead of 33px and takes the extra
+                33px out of the well below it, leaving 406px. At two lines the
+                panel's last rows sat under the control bar, y=658 against a
+                floor of 656; at three lines, y=684.
+
+                So this lead has to fit ONE line at `text-body-lg`, which is what
+                buys the panel its full 439px well and the blank separator line
+                inside the recipe.
+
+                It was also 26 words across two sentences, over rule 26's 20-word
+                cap. The clause about the seven targets being unchanged moved to
+                `notes:`, which is where "you have seen the rest of this file"
+                belongs anyway.
+
+                CONTENT RULE 12: a technology named on a slide carries its logo,
+                and `Tech` is the baseline-safe way to set one mid-sentence. The
+                hand edit that corrected this lead wrote "the Makefile" as plain
+                text and dropped the mark with it. */}
+            {'Both names, both pushed, by the '}
             <Tech name="makefile" label="Makefile" />
-            {' is for. The seven targets from last session sit above this, unchanged'}
+            {' you already have'}
           </>
         }
         lesson={SESSION}
@@ -303,14 +385,14 @@ export const partC4Closing: SlideDef[] = [
             code={MK_WITH_PUSH}
             filename="Makefile"
             language="makefile"
-            highlight={hl(MK_WITH_PUSH, '.PHONY:', 'DOCKER_ID =', 'VERSION =', 'push:', 'docker tag', 'docker push')}
-            fontSize={15}
+            highlight={hl(MK_WITH_PUSH, '.PHONY:', 'DOCKER_ID =', 'BACKEND =', 'FRONTEND =', 'LATEST =','VERSION =', 'push:', 'docker tag', 'docker push')}
+            fontSize={12.5}
           />
         </div>
       </ContentSlide>
     ),
     notes:
-      'The lit lines are the only new ones: the file is otherwise theirs from last session. Read the four commands inside push and match them to the previous terminal.',
+      'The seven targets above this sit unchanged, so say that first: the lit lines are the only new ones and the rest of the file is theirs from last session. Then read the eight commands inside push and match them to the four they typed by hand: same two tags, same two pushes, once per image. Close on which name a server should pin to, and it is the version, never latest.',
   },
   {
     id: 'c4-release-ritual',
@@ -319,8 +401,8 @@ export const partC4Closing: SlideDef[] = [
     element: (
       <ContentSlide
         kicker={C4}
-        title="The Release"
-        lead="The whole release is now two words each"
+        title="Release"
+        lead="Each release step is two words, and one of them publishes both images"
         lesson={SESSION}
       >
         <div className="mx-auto w-full max-w-[860px]">
@@ -330,7 +412,7 @@ export const partC4Closing: SlideDef[] = [
               { text: 'make build', kind: 'cmd' },
               { text: 'make push', kind: 'cmd' },
             ]}
-            caption="Build the image, then ship it"
+            caption="Build both images, then publish each one as its version and as latest"
           />
         </div>
       </ContentSlide>
@@ -339,83 +421,57 @@ export const partC4Closing: SlideDef[] = [
       'Hold this slide longer than it deserves. Last session built the file and this is the session where it starts paying, so name that out loud.',
   },
   {
+    /*
+      A GRAMMAR, NOT A RUN, SO `CommandSyntaxSlide` AND NOT `Terminal`.
+
+      This shipped as a `Terminal` holding one `cmd` line and no output. The
+      slide-types registry names that quadrant error as the commonest way this
+      content ships wrong, and names the symptom exactly: "a one-line `Terminal`
+      reads as a command that printed nothing".
+
+      What this slide teaches is that `VERSION` is a SLOT with a default the
+      command line overrides — the shape of the command, not one execution of
+      it. `CommandSyntaxSlide` draws that shape, builds the specimen line FROM
+      the parts so the diagram and legend cannot drift, and marks the one token
+      the learner substitutes with a dashed chip, which is the first question a
+      learner asks of any syntax line.
+
+      It deliberately takes no `path`: hard rule 3's prompt-and-folder
+      requirement governs a command being RUN, and this one runs nothing. The
+      run is the previous slide's job.
+    */
     id: 'c4-override-version',
     section: C4,
     label: 'Makefile, overriding VERSION',
     element: (
-      <ContentSlide
+      <CommandSyntaxSlide
         kicker={C4}
-        title="Makefile"
+        title="Overriding a Default"
         lead={
           <>
             <Code>VERSION = v1</Code>
-            {' in the file is only a default, and the command line wins, so there is no file edit per release'}
+            {' in the file is only a default, and the command line wins'}
           </>
         }
-        lesson={SESSION}
-      >
-        <div className="mx-auto w-full max-w-[860px]">
-          <Terminal
-            path={AT_ROOT}
-            lines={[{ text: 'make push VERSION=v2', kind: 'cmd' }]}
-            caption="The variable is set for this run only"
-          />
-        </div>
-      </ContentSlide>
-    ),
-    notes:
-      'Point at VERSION=v2 and say that nothing in the file changed. Ask what they would type for v3, and let someone say it before you do.',
-  },
-  {
-    id: 'c4-push-denied-again',
-    section: C4,
-    label: 'Denied again',
-    element: (
-      /* The same refusal shape as slide 22, from `pushDenied()`. One error text,
-         two causes, and naming the ambiguity in the room is cheaper than every
-         learner debugging it alone later. */
-      <ContentSlide
-        kicker={C4}
-        title="Denied Again"
-        lead="On a fresh machine, or after credentials expire, the same refusal comes back for a different reason"
-        points={[
+        parts={[
+          { token: 'make', label: 'Command', body: 'Reads the Makefile in this folder' },
+          { token: 'push', label: 'Target', body: 'The target whose eight lines publish both images' },
           {
-            text: 'If the name is not prefixed with your Docker ID, it is the naming problem from earlier',
-            icon: 'warning',
-          },
-          {
-            text: 'If the name is correctly prefixed and this still appears, it is authentication',
-            icon: 'key',
-          },
-          {
-            text: (
-              <>
-                {'Fix: '}
-                <Code>docker login</Code>
-                {', then retry'}
-              </>
-            ),
-            icon: 'check',
+            token: 'VERSION=v2',
+            label: 'Variable override',
+            body: 'Replaces the default for this run only, with no file edit',
+            fill: 'placeholder',
           },
         ]}
+        note={{
+          kind: 'note',
+          body: 'Nothing in the file changes, so the next release is a different word on the same command.',
+        }}
         lesson={SESSION}
-      >
-        <div className="mx-auto w-full max-w-[860px]">
-          {/* The fresh-machine prompt, not the project root: the slide's whole
-              premise is a machine that has never logged in. Shared with slides
-              36 and 37 so the three cannot disagree. */}
-          <Terminal
-            path={ON_ANOTHER_MACHINE}
-            lines={[
-              { text: 'make push', kind: 'cmd' },
-              { text: pushDenied(REPO), kind: 'out' },
-            ]}
-          />
-        </div>
-      </ContentSlide>
+      />
     ),
     notes:
-      'Say that they have seen this exact text before, and ask what was wrong last time. The point of the slide is that the text does not tell them which of the two it is.',
+      'Point at the dashed chip and say it is the only part that changes per release. Ask what would happen if you left it off, and let someone answer v1 from the file.',
   },
   {
     id: 'c4-full-picture',
@@ -425,19 +481,31 @@ export const partC4Closing: SlideDef[] = [
       <ContentSlide
         kicker={C4}
         title="Six Sessions"
-        lead="The course so far, as one table, and the last row is today"
+        lead="Every session by name, and the last row is today"
         lesson={SESSION}
       >
-        <div className="mx-auto w-full max-w-[980px]">
+        <div className="mx-auto w-full max-w-[1010px]">
+          {/* NAMED, NOT NUMBERED, and one row per session rather than four rows
+              with "3, 4" squeezed into a numeral column. A learner recognises
+              "Docker Compose for Multi-Container Apps"; they do not reliably
+              recognise "3". `compact` because six rows is two more than this
+              table used to carry. */}
           <DataTable
-            columns={[{ label: 'Capability', weight: 2 }, { label: 'Achieved with', weight: 1.4 }, { label: 'Session', weight: 0.7, align: 'center' }]}
-            rows={[
-              ['Package an app and its environment', <Tech key="d1" name="docker" label="Dockerfile" />, '2'],
-              ['Run both runtimes together', <Tech key="d2" name="docker" label="Docker Compose" />, '3, 4'],
-              ['One-word commands', <Tech key="m1" name="makefile" label="Makefile" />, '5'],
-              ['Share images between machines', <Tech key="d3" name="docker" label="Docker Hub push and pull" />, 'this one'],
+            compact
+            columns={[
+              { label: 'Session', weight: 1.5 },
+              { label: 'What it added', weight: 1.6 },
+              { label: 'Achieved with', weight: 1.2 },
             ]}
-            highlight={[4]}
+            rows={[
+              [S1, 'Images and containers', <Tech key="t1" name="docker" label="Docker" />],
+              [S2, 'Package an app and its environment', <Tech key="t2" name="docker" label="Dockerfile" />],
+              [S3, 'Run both runtimes together', <Tech key="t3" name="docker" label="Docker Compose" />],
+              [S4, 'The real app, with volumes and env', <Tech key="t4" name="docker" label="Compose, with volumes" />],
+              [S5, 'One-word commands', <Tech key="t5" name="makefile" label="Makefile" />],
+              [SESSION, 'Share images between machines', <Tech key="t6" name="docker" label="Docker Hub" />],
+            ]}
+            highlight={[6]}
           />
         </div>
       </ContentSlide>
@@ -447,6 +515,101 @@ export const partC4Closing: SlideDef[] = [
   },
 
   /* ══ CLOSING FRAME (51 to 53) ═══════════════════════════════════════════ */
+  {
+    /*
+      THE COMMAND REFERENCE, AND IT IS THE LAST CONTENT SLIDE ON PURPOSE.
+
+      `c3-three-commands` compares four commands across four axes and answers
+      "how do these differ". This answers a different question — "what did we
+      type today, and where" — so it is a reference rather than a comparison,
+      and it belongs at the end where the room can photograph it.
+
+      Every command here has been run earlier in the session: `docker --version`
+      on `setup`, `docker images` on `c1-where-does-it-live`, `docker login` in
+      concept 1, `tag` in concept 2, `push` and `pull` in concept 3, and `run`
+      on `c3-run-anywhere`. Nothing in this table is new, which is what makes it
+      a recap and not a ninth idea (content rule 24).
+
+      `make build` and `make push` are deliberately absent. They are wrappers
+      around these commands rather than commands of their own, and
+      `c4-release-ritual` already shows the pair. A row for each here would
+      claim they belong to the same family as `docker push`.
+    */
+    id: 'c4-command-reference',
+    section: C4,
+    label: 'Command reference',
+    element: (
+      <ContentSlide
+        kicker={C4}
+        title="Commands We Ran"
+        lead="Every command from today, and the machine each one belongs on"
+        lesson={SESSION}
+      >
+        <div className="mx-auto w-full max-w-[1120px]">
+          {/* `compact`, AND A NOTE ABOUT THE TYPE FLOOR.
+
+              The new `qa.mjs` type-floor sweep flags the `Code` chips in this
+              table at 15px against a 16px floor. Dropping `compact` was tried
+              and changed nothing, which is the useful finding: `Code` is
+              `text-[0.94em]` BY DESIGN, deliberately a shade smaller than its
+              surroundings, so in any 16px context it computes to 15px. It is
+              not this table being cramped.
+
+              That makes it a question about the floor rather than about this
+              slide: either 15px is acceptable for an inline chip, or `Code`
+              should be 1em. Left as `compact` because the alternative bought
+              nothing and cost height. */}
+          <DataTable
+            compact
+            columns={[
+              { label: 'Command', weight: 1 },
+              { label: 'What it does', weight: 1.6 },
+              { label: 'Where you run it', weight: 1.1 },
+            ]}
+            rows={[
+              [
+                <Code>docker --version</Code>,
+                'Prints the version, so you know the engine is installed',
+                'Any machine with Docker',
+              ],
+              [
+                <Code>docker images</Code>,
+                'Lists the images this machine already holds',
+                'Any machine with Docker',
+              ],
+              [
+                <Code>docker login</Code>,
+                'Signs this machine in to Docker Hub',
+                'Once per machine, before the first push',
+              ],
+              [
+                <Code>docker tag</Code>,
+                'Adds a second name to an image you already have',
+                'The machine that built the image',
+              ],
+              [
+                <Code>docker push</Code>,
+                'Uploads the named image to Docker Hub',
+                'The machine that built the image',
+              ],
+              [
+                <Code>docker pull</Code>,
+                'Downloads the image from Docker Hub',
+                'Every machine that runs it',
+              ],
+              [
+                <Code>docker run</Code>,
+                'Starts a container from the image',
+                'Every machine that serves traffic',
+              ],
+            ]}
+          />
+        </div>
+      </ContentSlide>
+    ),
+    notes:
+      'Tell the room to photograph this one. Then read the third column down and point out that only two of the seven ever run on a server: pull and run.',
+  },
   {
     id: 'takeaways',
     section: 'Closing',

@@ -2,7 +2,14 @@
 <!-- cSpell:ignore nxttrendz deployement NxtWave colour colours behaviour dockerignore Makefile makefile PHONY runserver venv Vite ravi createsuperuser -->
 # Deployment · Session 6: "Pushing Image to Docker Hub"
 
-**STATUS: SIGNED OFF 2026-08-26 · NOT YET GENERATED**
+**STATUS: SIGNED OFF 2026-08-26 · GENERATED · REVISED 2026-09-08**
+
+**The deck no longer follows this file's slide order.** A flow revision, signed
+off on 2026-09-08, re-ordered concept 1, moved `docker login` to the head of
+concept 2, moved "Denied Again" into concept 3, cut three slides and renamed
+three concepts, taking the deck from 53 slides to 50. **`plan.rev2.md`, beside
+this file, is the record of what changed and why** — read it first, then read
+this file for the content of an individual slide.
 
 Signed on sight, with two standing instructions carried in from session 5:
 **no quiz frames anywhere in this deck**, and the closing frame is Key Takeaways

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { SlideBase } from '@/ui/SlideBase'
 import { SlideHeader } from '@/ui/SlideHeader'
+import { SlideLead } from '@/ui/SlideLead'
 import { BulletList } from '@/ui/content'
 import { Media } from './Media'
 import type { ContentImageSlideProps } from './types'
@@ -73,6 +74,13 @@ function MediaFrame({
  * `video-safe.mjs` fails. `ContentSlide` carries the same guard for the same
  * reason. A media on the LEFT or at the BOTTOM never reaches the rectangle, so it
  * is not held back.
+ *
+ * WHY THAT GUARD STILL TESTS `lead` NOW THE LEAD IS DRAWN IN THE WELL
+ *
+ * It measures the same thing it always did: whether anything sits between the top
+ * of the well and the first row of body content. That used to be a lead inside a
+ * 168px header and is now a lead inside the well, one line of 22px type plus its
+ * margin, which is the same 50-odd pixels either way.
  */
 function ContentWithImage({
   position,
@@ -102,7 +110,21 @@ function ContentWithImage({
   return (
     <SlideBase variant="light" lesson={lesson}>
       <div className="flex h-full flex-col">
-        <SlideHeader kicker={kicker} title={title} lead={lead} tone={tone} />
+        <SlideHeader kicker={kicker} title={title} tone={tone} />
+
+        {/*
+          The point spans the FULL WIDTH under the heading, not the text column.
+
+          This is the one layout where it differs from `ContentSlide`, and it
+          follows the header: the heading here deliberately sits at the slide's own
+          top-left datum rather than inside the text column, so that it does not
+          move when the media does. The lead is the sentence for that heading, so
+          it stays with it. Dropped into the text column it would start at x=664 on
+          the `left` and `top` positions, six hundred pixels away from the title it
+          belongs to, which is the drift this layout's header was hoisted out to
+          fix. `max-w-3xl` keeps the line clear of the video rectangle.
+        */}
+        {lead && <SlideLead tone={tone}>{lead}</SlideLead>}
 
         {horizontal ? (
           <div className="grid min-h-0 flex-1 grid-cols-2 items-center gap-12">

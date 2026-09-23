@@ -1,5 +1,6 @@
 import { SlideBase } from '@/ui/SlideBase'
 import { SlideHeader } from '@/ui/SlideHeader'
+import { SlideLead } from '@/ui/SlideLead'
 import { BulletList } from '@/ui/content'
 import { Callout } from '@/ui/Callout'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
@@ -37,8 +38,21 @@ export function ContentNoteSlide({
       */}
       <RevealGroup className="flex h-full flex-col pb-20" stagger={0.1}>
         <Reveal dir="up">
-          <SlideHeader kicker={kicker} title={title} lead={lead} tone={tone} />
+          <SlideHeader kicker={kicker} title={title} tone={tone} />
         </Reveal>
+
+        {/*
+          The point, first in the well and directly under the heading, ahead of
+          both the note and the bullets. It carries no auto margin, so the pair
+          below it still splits the leftover height between them and the lead
+          stays anchored to the header it introduces.
+
+          `SlideLead` brings its own `RevealGroup` because it left the header's
+          behind. Nesting one inside this group is safe: it sets its own
+          `initial`/`animate`, so it runs its entrance itself rather than taking
+          a slot in this group's stagger.
+        */}
+        {lead && <SlideLead tone={tone}>{lead}</SlideLead>}
 
         {/*
           VERTICAL CENTRING WITHOUT RESTRUCTURING

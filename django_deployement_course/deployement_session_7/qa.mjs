@@ -7,6 +7,69 @@ const TOTAL = Number(process.argv[3] ?? SLIDE_COUNT)
 const OUT = process.argv[4] ?? 'workflow/qa-shots'
 fs.mkdirSync(OUT, { recursive: true })
 
+/**
+ * THE TYPE FLOOR. 16px, and it is `body-sm`, the smallest body step in
+ * `tailwind.config.ts`.
+ *
+ * WHERE THE NUMBER CAME FROM. `src/ui/isolation/isolationFigure.ts` exports it
+ * as `MIN_TEXT_PX`, with the reason: the first pass of that figure family set
+ * machine names at 15px, verb phrases at 11.5px and the slide's own conclusion
+ * at 13px, and the review's verdict was that the concept's punchline had become
+ * the SMALLEST text on the frame. A deck is read from the back of a room and
+ * again, alone, from a recording, so text below the floor is not a style choice,
+ * it is unreadable content. The lab's rule is that the figure fits the type, not
+ * that the type shrinks to fit the figure.
+ *
+ * WHY IT IS A HARNESS CHECK AND NOT JUST A FIGURE CONTRACT. Session 6 slide 8
+ * rendered the concept's conclusion at roughly 7px inside a figure, and
+ * `video-safe.mjs`, `align-check.mjs` and this file all passed it. It was caught
+ * by a human looking at a screenshot. A contract that only one figure family
+ * imports cannot catch that; a sweep over the rendered DOM can.
+ *
+ * Keep this in sync with `MIN_TEXT_PX`. Two constants, one rule, and this repo
+ * has already paid three times for a constant that encoded another constant's
+ * old value.
+ */
+const MIN_TEXT_PX = 16
+
+/**
+ * The 15px kicker is the ONE exemption, and it is deliberately narrow.
+ *
+ * `text-kicker` is a named step in the type scale at 15px: uppercase, 0.14em
+ * tracked, the section label that sits above almost every slide title. Flagging
+ * it would put a finding on nearly every slide in every deck, and a report that
+ * fires everywhere is a report nobody reads.
+ *
+ * It is matched by its rendered SIGNATURE — 15px AND uppercase AND visibly
+ * tracked — not by its class name, so a 15px SENTENCE is still a finding. That
+ * is the point: `align-check.mjs` records at length that an exemption which
+ * fires by accident is worse than no harness, because it is believed. Widen this
+ * and you re-open the 7px hole.
+ */
+const KICKER_PX = 15
+const KICKER_TRACKING_PX = 1.5
+
+/**
+ * The deck's own chrome is UI, not content, so it is not held to the floor: the
+ * control bar's slide counter is `text-[11.5px]` on purpose, the nav and marker
+ * buttons carry icon-sized glyphs, and the footer mark is a logo.
+ *
+ * TWO MECHANISMS, because one is not enough on its own:
+ *
+ *   1. The sweep walks `<section>`, and the control bar is not inside it — it is
+ *      painted over the stage by `SlideStage`, as `align-check.mjs`'s CHROME
+ *      table exists to describe. The footer IS inside the section (it is
+ *      `SlideBase`'s own element, a sibling of the content region), so it is
+ *      excluded by ancestor.
+ *   2. The geometric zones below, copied from `align-check.mjs`, catch anything a
+ *      future refactor moves inside the section. Measured in stage coordinates
+ *      at 1280x720; re-measure them there, not here, if the bar changes.
+ */
+const CHROME = [
+  { name: 'controls', x1: 18, y1: 660, x2: 409, y2: 706 },
+  { name: 'footer mark', x1: 1172, y1: 660, x2: 1248, y2: 706 },
+]
+
 const browser = await chromium.launch(
   process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {},
 )
@@ -36,7 +99,7 @@ for (let i = 1; i <= TOTAL; i++) {
   */
   await page.waitForTimeout(2600)
 
-  const info = await page.evaluate(() => {
+  const info = await page.evaluate((K) => {
     const sec = document.querySelector('section')
     if (!sec) return { error: 'no section' }
     const sr = sec.getBoundingClientRect()
@@ -65,16 +128,63 @@ for (let i = 1; i <= TOTAL; i++) {
       }
     }
     if (content) walk(content)
+
+    /*
+      MINIMUM TYPE SIZE.
+
+      Leaf text only, the same test `align-check.mjs` uses for its chrome
+      collisions: `el.children.length` means the words belong to a descendant, so
+      a wrapper is never the defect. Reporting wrappers would name a slide's
+      outermost div for a 7px label six levels down.
+
+      Findings are keyed by size + text so a figure that repeats one tiny label
+      across eight tiles is one line with a count, not eight lines.
+    */
+    const tinyBy = new Map()
+    for (const el of sec.querySelectorAll('*')) {
+      if (el.children.length) continue
+      // The footer is the NxtWave mark. See the CHROME note.
+      if (el.closest('footer')) continue
+      const txt = (el.textContent || '').trim()
+      if (!txt) continue
+      const b = el.getBoundingClientRect()
+      if (b.width === 0 || b.height === 0) continue
+      const cs = getComputedStyle(el)
+      if (cs.visibility === 'hidden') continue
+      const px = parseFloat(cs.fontSize)
+      if (!(px < K.MIN_TEXT_PX)) continue
+      // The one exemption, matched by rendered signature. See the KICKER note.
+      if (
+        Math.round(px) === K.KICKER_PX &&
+        cs.textTransform === 'uppercase' &&
+        parseFloat(cs.letterSpacing) >= K.KICKER_TRACKING_PX
+      )
+        continue
+      if (
+        K.CHROME.some(
+          (c) => b.left >= c.x1 && b.right <= c.x2 && b.top >= c.y1 && b.bottom <= c.y2,
+        )
+      )
+        continue
+      const key = `${px}|${txt}`
+      const hit = tinyBy.get(key)
+      if (hit) hit.n++
+      else tinyBy.set(key, { px: Math.round(px * 10) / 10, txt: txt.slice(0, 40), n: 1 })
+    }
+    const tiny = [...tinyBy.values()].sort((a, b) => a.px - b.px)
+
     return {
       contentScroll: content ? content.scrollHeight - content.clientHeight : 0,
       overflow: bad.slice(0, 4),
+      tinyCount: tiny.length,
+      tiny: tiny.slice(0, 6),
       title: sec.querySelector('h1,h2')?.textContent?.trim().slice(0, 44) ?? '',
       // The footer carries the NxtWave mark only. The session name used to sit
       // here too, but it collided with the deck's slide counter and duplicated
       // each slide's kicker, so it was removed.
       hasLogo: !!sec.querySelector('footer svg, footer img'),
     }
-  })
+  }, { MIN_TEXT_PX, KICKER_PX, KICKER_TRACKING_PX, CHROME })
 
   await page.screenshot({ path: `${OUT}/${String(i).padStart(2, '0')}.png` })
   report.push({ n: i, ...info })
@@ -94,4 +204,41 @@ for (const r of report) {
   }
 }
 console.log(issues === 0 ? 'ALL 44 CLEAN' : `${issues} slide(s) with issues`)
+
+/*
+  TYPE FLOOR: A WARNING, NOT A FAILURE — AND THAT IS A CHOICE, NOT AN OVERSIGHT.
+
+  It is reported in its own block and deliberately does NOT feed `issues`, so it
+  cannot change the slide-1-and-last-slide baseline every session is signed off
+  against.
+
+  WHY. Two figures in the KIT break the floor today: `src/ui/figures/FanOut.tsx`
+  sets its copy notes at 11.5px and `src/ui/MachineBoundary.tsx` uses `text-xs`
+  (12px). A hard failure would therefore fail every deck that renders either one,
+  for a defect the deck's author did not write and cannot fix from a session —
+  `sync-kit.mjs` would overwrite the fix. A gate that a deck cannot pass by doing
+  its own work correctly gets routed around, and then the whole harness is.
+
+  WHEN IT BECOMES A FAILURE. When those two figures are raised to 16px in the kit
+  (a kit PR, per `KIT.md`), fold `tinyCount` into `issues` above and delete this
+  paragraph. Until then a 7px punchline is VISIBLE in the output, which is the
+  whole gap this check was added to close — it was invisible before.
+*/
+const tinyRows = report.filter((r) => (r.tinyCount ?? 0) > 0)
+if (tinyRows.length) {
+  console.log(`\nWARNING: text below the ${MIN_TEXT_PX}px type floor on ${tinyRows.length} slide(s)`)
+  console.log('slide | px | text (x occurrences)')
+  for (const r of tinyRows) {
+    for (const t of r.tiny) {
+      console.log(
+        `${String(r.n).padStart(2)} | ${String(t.px).padStart(5)} | "${t.txt}"${t.n > 1 ? ` (x${t.n})` : ''}`,
+      )
+    }
+    if (r.tinyCount > r.tiny.length) {
+      console.log(`${String(r.n).padStart(2)} |       | +${r.tinyCount - r.tiny.length} more distinct`)
+    }
+  }
+} else {
+  console.log(`\nTYPE FLOOR CLEAN: no text below ${MIN_TEXT_PX}px`)
+}
 if (errors.length) console.log('CONSOLE ERRORS:', [...new Set(errors)].slice(0, 8))

@@ -58,6 +58,18 @@ const KIT = {
     { path: 'src/slides' },
     { path: 'src/export', except: ['revealSteps.ts'] },
     { path: 'scripts' },
+    /*
+      The BUILD half of the review app. The app itself is independent and lives at
+      the repo root in `review-app/`, because a reviewer picks a course and a
+      session before there is a session folder to be inside of.
+
+      What has to live in the session is only what the session's own toolchain
+      needs in order to produce a reviewable build: this babel plugin, plus
+      `vite.review.config.ts` beside it. Sessions deliberately do not share a
+      package, so each one builds its own deck with its own React and its own vite
+      — the app shells out to `npx vite build -c vite.review.config.ts` here.
+    */
+    { path: 'review' },
     { path: 'workflow/export' },
   ],
   files: [
@@ -87,7 +99,12 @@ const KIT = {
     'chrome-check.mjs',
     'continuity-check.mjs',
     'align-check.mjs',
+    /* The marker's own harness. It drives a real pointer over the BUILT html, so
+       it is the only check here that can catch the marker breaking, and a session
+       that is behind on it is a session whose marker nobody has tested. */
+    'marker-check.mjs',
     'scan-fonts.mjs',
+    'vite.review.config.ts',
     'deck.config.mjs',
   ],
   /** Written only when absent — a session's own values live in them. */

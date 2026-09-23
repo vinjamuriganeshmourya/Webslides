@@ -17,6 +17,13 @@ interface Props {
   arrowMode: ArrowMode
   toggleArrowMode: () => void
   openPicker: () => void
+  /** Play the current slide's entrance and build again from the top. */
+  replay: () => void
+  /** Whether the marker is currently open. */
+  markerActive: boolean
+  toggleMarker: () => void
+  /** Whether THIS slide carries ink, drawn as a dot on the marker button. */
+  hasInk: boolean
 }
 
 /**
@@ -31,15 +38,27 @@ interface Props {
  * So it is one container now: one background, one ring, one blur, one radius, with
  * hairline dividers grouping what belongs together.
  *
- *   counter | back  forward | jump  mode | fullscreen
+ *   counter | back  forward  replay | jump  mode | marker | fullscreen
  *
  * WHY THE GROUPS ARE THOSE GROUPS
  *
  * The counter is a READOUT and never a control, so it sits alone and is not
- * pressable. Back and forward are the pair used every few seconds. Jump and mode
- * are both "change how I am moving", used occasionally and deliberately.
- * Fullscreen is set once at the start of a session and never touched again, so it
- * is last, furthest from the keys that matter.
+ * pressable. Back and forward are the pair used every few seconds, and REPLAY
+ * joins them because it is the third thing that moves you around inside the
+ * material being taught rather than a setting: it is "show that again", which is
+ * what a presenter reaches for in the same breath as "go back". Jump and mode are
+ * both "change how I am moving", used occasionally and deliberately. MARKER is a
+ * group of its own because it is the only control here that changes what the
+ * POINTER does, and it is the only one that opens something. Fullscreen is set once
+ * at the start of a session and never touched again, so it is last, furthest from
+ * the keys that matter.
+ *
+ * THE MARKER BUTTON IS THE ONLY ONE WITH A STATE, and it carries it the way the
+ * rest of this bar carries everything: a background tint and an ink colour, no
+ * ring, no scale, nothing that moves a neighbour. It also shows a dot when the
+ * CURRENT slide has ink on it while the marker is closed, because ink is kept per
+ * slide and a presenter who left a diagram on slide 12 has no other way to know it
+ * is still there before the room sees it.
  *
  * NOTHING CHANGES SIZE, EVER
  *
@@ -146,6 +165,7 @@ function Btn({
   onClick,
   disabled,
   wide = false,
+  on = false,
   children,
 }: {
   label: string
@@ -153,19 +173,37 @@ function Btn({
   disabled?: boolean
   /** For the mode control, which carries a word rather than a glyph. */
   wide?: boolean
+  /**
+   * Latched on, for the marker. COLOUR ONLY, and that is a rule rather than a
+   * style: a selected state drawn with a ring or a heavier border changes the
+   * button's painted size, and every neighbour in a flex row then sits a pixel or
+   * two off where the presenter last saw it.
+   *
+   * THE TINT IS `/10` AND NOT `/12`, AND THAT COST A DEBUGGING SESSION. Tailwind
+   * generates an opacity modifier only for values on its opacity SCALE (0, 5, 10,
+   * 20, 25, and up in fives). `bg-brand/12` is off the scale, so no rule is emitted
+   * for it and the class silently does nothing: the marker button looked identical
+   * whether the marker was open or closed, with no error anywhere. Off-scale values
+   * have to be written as an arbitrary value, `bg-brand/[0.12]`. Reach for a scale
+   * step unless the exact number matters.
+   */
+  on?: boolean
   children: React.ReactNode
 }) {
   return (
     <button
       aria-label={label}
+      aria-pressed={on || undefined}
       onClick={onClick}
       disabled={disabled}
       /* FLEX AND NOT GRID. `place-items-center` on a grid puts two children in two
          ROWS, so the mode control came out with its arrow stacked above its word
          like a road sign. Flex is what "an icon beside a label" means. */
-      className={`inline-flex h-8 shrink-0 items-center justify-center rounded-pill text-muted transition-colors hover:bg-muted/10 hover:text-ink disabled:pointer-events-none disabled:opacity-25 ${
-        wide ? 'gap-1.5 px-2.5' : 'w-8'
-      }`}
+      className={`relative inline-flex h-8 shrink-0 items-center justify-center rounded-pill transition-colors disabled:pointer-events-none disabled:opacity-25 ${
+        on
+          ? 'bg-brand/10 text-brand hover:bg-brand/20'
+          : 'text-muted hover:bg-muted/10 hover:text-ink'
+      } ${wide ? 'gap-1.5 px-2.5' : 'w-8'}`}
     >
       {children}
     </button>
@@ -186,6 +224,10 @@ export function DeckControls({
   arrowMode,
   toggleArrowMode,
   openPicker,
+  replay,
+  markerActive,
+  toggleMarker,
+  hasInk,
 }: Props) {
   const near = usePointerNearBottom()
 
@@ -258,6 +300,21 @@ export function DeckControls({
         </svg>
       </Btn>
 
+      {/* REPLAY. A circular arrow, which is the one glyph every product on a
+          projector has already trained an instructor to read as "again". It is
+          never disabled: replaying a slide with no build steps still replays its
+          entrance, which is exactly what it says it does. */}
+      <Btn label="Play this slide again from the top (R)" onClick={replay}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path
+            d="M20 11a8 8 0 10-2.3 5.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path d="M20 4v7h-7" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </Btn>
+
       <Divide />
 
       <Btn label="Jump to a slide (G)" onClick={openPicker}>
@@ -286,6 +343,36 @@ export function DeckControls({
         <span className="w-[40px] text-left font-mono text-[11.5px] font-semibold leading-none">
           {arrowMode === 'slides' ? 'slide' : 'step'}
         </span>
+      </Btn>
+
+      <Divide />
+
+      <Btn
+        label={`${markerActive ? 'Close' : 'Open'} the marker and draw on this slide (M)`}
+        onClick={toggleMarker}
+        on={markerActive}
+      >
+        {/* A pen nib pointing down-left, angled the way a hand holds one. */}
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path
+            d="M16.5 3.5a2.1 2.1 0 013 3L8 18l-4 1.5L5.5 15.5z"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path d="M14.5 5.5l3 3" strokeLinecap="round" />
+        </svg>
+        {/*
+          THIS SLIDE HAS INK ON IT. Shown only while the marker is CLOSED: with the
+          palette up the ink is on screen and the dot would be noise. Absolutely
+          positioned, so it cannot change the button's size and shift the bar.
+        */}
+        {hasInk && !markerActive && (
+          <span
+            aria-hidden
+            className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full"
+            style={{ background: colors.danger }}
+          />
+        )}
       </Btn>
 
       <Divide />

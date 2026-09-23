@@ -93,11 +93,41 @@ const TOL = 10
  * The deck chrome, in stage coordinates: it is painted ON TOP of slide content,
  * so anything a slide puts here is legible only by luck. Measured from the
  * rendered player, with a couple of px of slack.
- *   left   the slide counter chip, the two nav arrows and the fullscreen button
+ *   left   the slide counter chip, the two nav arrows, the jump-to-slide button,
+ *          the arrow-mode pill and the fullscreen button
  *   right  the NxtWave footer mark
+ *
+ * THE LEFT BOX GREW FROM 252 TO 335, AND THAT IS THE POINT OF THIS COMMENT.
+ *
+ * It was measured when the cluster held a counter and three separate floating
+ * chips. It is one bar now, and it also carries a jump-to-slide button and the
+ * arrow-mode control: `{left: 20, top: 664, right: 333, bottom: 704}`, identical in
+ * both modes, on every hover, and on one-digit and two-digit slide numbers. For as
+ * long as this constant said 252 the harness would have passed any slide with
+ * words between x=252 and x=333 in that band while the deck painted the bar
+ * straight over them. A constant that encodes another constant's old value breaks
+ * silently, which this repo has now paid for three times.
+ *
+ * AND IT GREW AGAIN, FROM 335 TO 409, when the bar took a REPLAY button and a
+ * MARKER button. Measured on the built deck at 1280x720:
+ * `{left: 20, top: 664, right: 407, bottom: 704}`, plus the usual 2px of slack.
+ * The marker button's "this slide has ink" dot is absolutely positioned inside the
+ * button precisely so that it cannot move this number.
+ *
+ * The MARKER PALETTE is deliberately not in this table. It is only in the DOM while
+ * the marker is open, which is never during a harness run, and a zone that is
+ * usually absent is a zone that would fail slides for a collision the room never
+ * sees. It is parked one row higher than the control bar for the same reason it is
+ * not listed: see `annotate/AnnotationToolbar.tsx`.
+ *
+ * MEASURE IT AGAIN IF THE BAR CHANGES: open the deck, and read
+ * `document.querySelector('div.absolute.bottom-4.left-5').getBoundingClientRect()`.
+ * The bar is fixed-width by construction, so one reading is the whole answer: the
+ * counter is `tabular-nums` in a fixed box and the mode label sits in a 40px box,
+ * precisely so this number cannot depend on which slide is up.
  */
 const CHROME = [
-  { name: 'controls', x1: 18, y1: 658, x2: 252, y2: 706 },
+  { name: 'controls', x1: 18, y1: 660, x2: 409, y2: 706 },
   { name: 'footer mark', x1: 1172, y1: 660, x2: 1248, y2: 706 },
 ]
 
@@ -253,7 +283,24 @@ for (let i = 1; i <= TOTAL; i++) {
       const oneToken = cs.fontFamily.includes('Mono') || t.includes('\u00b7')
       if (!oneToken) return
       const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.4
-      const rows = Math.round(el.getBoundingClientRect().height / lh)
+      /*
+        PADDING IS NOT A SECOND LINE.
+
+        This divided the element's full border-box height by its line height,
+        so any padded monospace leaf reported two rows while rendering on one:
+        a `py-2.5` chip at 17px line height measures 40px, and 40/17 rounds to
+        2. Session 3 shipped four such false positives (`starts.txt`,
+        `docker-demo_default` twice, and a `backend:8000 resolves` pill), all
+        confirmed single-line in the rendered screenshots, and a harness whose
+        warnings are known-noisy is a harness people stop reading.
+
+        Measuring the CONTENT box is what the check meant all along: subtract
+        the vertical padding before dividing. A genuine wrap still grows the
+        content box by a full line, so nothing real is masked.
+      */
+      const padY = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0)
+      const contentH = el.getBoundingClientRect().height - padY
+      const rows = Math.round(contentH / lh)
       if (rows >= 2) wrapped.push({ rows, txt: t.slice(0, 56) })
     })
 

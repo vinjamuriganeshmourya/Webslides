@@ -16,13 +16,30 @@
  * `deck.config.json`, so the bare command is correct in every session.
  */
 import { chromium } from 'playwright'
-import { mkdirSync } from 'node:fs'
+import { mkdirSync, rmSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { HTML_FILE, SLIDE_COUNT } from './deck.config.mjs'
 
 const FILE = resolve(process.argv[2] ?? HTML_FILE)
 const OUT = resolve(process.argv[3] ?? 'workflow/preview')
 const TOTAL = Number(process.argv[4] ?? SLIDE_COUNT)
+/*
+  THE FRAME DIRECTORIES ARE CLEARED FIRST, AND A SHRUNK DECK IS WHY.
+
+  This only ever created the directories, so a frame from a previous run with a
+  higher slide number was never removed. `build-preview-page.mjs` derives its
+  headline count from the files on disk, which is the fix for it having once
+  hardcoded "35 slides" above a grid of 48 — but a derived count is only honest
+  if the directory is.
+
+  Session 7 went from 59 slides to 56 and the contact sheet reported 59, listing
+  three frames of slides that no longer exist, with the newest 56 written at
+  14:56 and the ghosts left behind at 14:14. A stale frame is worse than a wrong
+  number: it is a picture of a slide the deck does not have, and it is
+  indistinguishable from a real one.
+*/
+rmSync(`${OUT}/slides`, { recursive: true, force: true })
+rmSync(`${OUT}/motion`, { recursive: true, force: true })
 mkdirSync(`${OUT}/slides`, { recursive: true })
 mkdirSync(`${OUT}/motion`, { recursive: true })
 /*
@@ -40,6 +57,7 @@ mkdirSync(`${OUT}/motion`, { recursive: true })
   alongside the PNG. The PNGs stay: they are the lossless record for reading a
   slide, and the JPEGs exist only to keep the one-file contact sheet shareable.
 */
+rmSync(`${OUT}/thumbs`, { recursive: true, force: true })
 mkdirSync(`${OUT}/thumbs`, { recursive: true })
 const THUMB = { type: 'jpeg', quality: 72 }
 
