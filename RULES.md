@@ -68,6 +68,9 @@ shipped with that exact mistake.
 | 26 | Plain English: write literally, never figuratively |
 | 27 | An illustration is researched before it is drawn, and the source says why that form |
 | 28 | The quiz frame says "Quiz Time!" and nothing else, so it cannot preview the answers |
+| 29 | No company-presentation voice: a title is the topic, a line is the fact |
+| 30 | Every process is shown with a real screenshot |
+| 31 | Every code panel says exactly where the code lives or runs |
 
 ## Process rules
 

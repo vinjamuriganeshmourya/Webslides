@@ -36,6 +36,7 @@ export { FileTree, type FileEntry, type FileState } from './FileTree'
 export { LayerStack, LayerGap, type Layer, type LayerState } from './LayerStack'
 export { MachineBoundary } from './MachineBoundary'
 export { SocketBridge } from './SocketBridge'
+export { NestedBoundary, DIND_LEVELS, type NestedLevel, type BoundaryTone } from './NestedBoundary'
 export { TunnelPath } from './TunnelPath'
 export { JourneyRoadmap } from './JourneyRoadmap'
 export { StepList, FlowChart, type Step, type FlowNode } from './flow'
@@ -194,6 +195,27 @@ export {
 
 export * as Icons from './icons'
 export { iconByName, type IconName } from './icons'
+/*
+  THE PYTHON COURSE FIGURES, promoted from `python/1_programming_with_python`.
+
+  `CodeOutput` is a snippet beside what it printed: the claim every language
+  lesson makes and neither `CodeBlock` (a file) nor `Terminal` (a shell) could.
+  `LogoWall` is marks with their names, for a claim about scale or familiarity.
+  `RadialSpread` is one hub reaching into many places, the form STYLE_GUIDE §8
+  names for "reach" and the kit did not have.
+*/
+export { CodeOutput, type CodeOutputPane } from './CodeOutput'
+export { LogoWall, type WallMark } from './LogoWall'
+export { RadialSpread, type Spoke } from './RadialSpread'
+/* Sessions 2 to 4 of the same course. `PromptCard` is text pasted into an AI
+   tool, `ValueTypeMap` pairs values with their types, `VariableTrace` runs a
+   program one line per click with its variables as boxes, `EvalSteps` rewrites an
+   expression down to its value. */
+export { PromptCard } from './PromptCard'
+export { ValueTypeMap, type ValueTypePair } from './ValueTypeMap'
+export { VariableTrace, type TraceStep } from './VariableTrace'
+export { EvalSteps } from './EvalSteps'
+export { MonoBadge } from './MonoBadge'
 export { Illustration, type IllustrationName } from './characters/Illustration'
 export { Nova, type NovaPose } from './characters/Nova'
 
