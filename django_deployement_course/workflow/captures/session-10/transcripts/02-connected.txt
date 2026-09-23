@@ -1,0 +1,7 @@
+CONNECTED
+ip-172-31-7-32
+ubuntu
+ 09:29:35 up 1 min,  1 user,  load average: 0.14, 0.08, 0.03
+Description:	Ubuntu 26.04 LTS
+bash: line 1: docker: command not found
+docker: not installed

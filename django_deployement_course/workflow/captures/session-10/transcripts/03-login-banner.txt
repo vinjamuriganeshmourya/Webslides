@@ -1,0 +1,33 @@
+Welcome to Ubuntu 26.04 LTS (GNU/Linux 7.0.0-1006-aws x86_64)
+
+ * Documentation:  https://docs.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Wed Sep 16 09:29:34 UTC 2026
+
+  System load:  0.14              Temperature:           -273.1 C
+  Usage of /:   30.7% of 6.61GB   Processes:             119
+  Memory usage: 25%               Users logged in:       0
+  Swap usage:   0%                IPv4 address for ens5: 172.31.7.32
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+0 updates can be applied immediately.
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+
+The list of available updates is more than a week old.
+To check for new updates run: sudo apt update
+
+Last login: Wed Sep 16 09:29:51 2026 from 49.200.108.250
+hostname
+exit
+]3008;start=dd6e3093-34df-4f32-a673-67e2f8bccbfe;machineid=ec20e84a3056ba711fff6aad6b4393ae;user=ubuntu;hostname=ip-172-31-7-32;bootid=30870994-3232-43d8-a32f-b8f59a7e1009;pid=00000000000000001387;type=shell;cwd=/home/ubuntu\[?2004h]0;ubuntu@ip-172-31-7-32: ~[01;32mubuntu@ip-172-31-7-32[00m:[01;34m~[00m$ hostname
+[?2004l]3008;start=974eb219-9eb9-4142-9120-52d1d4fe180a;machineid=ec20e84a3056ba711fff6aad6b4393ae;user=ubuntu;hostname=ip-172-31-7-32;bootid=30870994-3232-43d8-a32f-b8f59a7e1009;pid=00000000000000001387;type=command;cwd=/home/ubuntu\ip-172-31-7-32
+]3008;end=974eb219-9eb9-4142-9120-52d1d4fe180a;exit=success\]3008;start=dd6e3093-34df-4f32-a673-67e2f8bccbfe;machineid=ec20e84a3056ba711fff6aad6b4393ae;user=ubuntu;hostname=ip-172-31-7-32;bootid=30870994-3232-43d8-a32f-b8f59a7e1009;pid=00000000000000001387;type=shell;cwd=/home/ubuntu\[?2004h]0;ubuntu@ip-172-31-7-32: ~[01;32mubuntu@ip-172-31-7-32[00m:[01;34m~[00m$ exit
+[?2004l]3008;start=fad6f593-a1d7-443a-9deb-92419048381a;machineid=ec20e84a3056ba711fff6aad6b4393ae;user=ubuntu;hostname=ip-172-31-7-32;bootid=30870994-3232-43d8-a32f-b8f59a7e1009;pid=00000000000000001387;type=command;cwd=/home/ubuntu\logout
+Connection to 13.127.157.193 closed.

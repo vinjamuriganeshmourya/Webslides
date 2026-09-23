@@ -1,0 +1,7 @@
+[debug] [vite] connecting...
+[debug] [vite] connected.
+[info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[verbose] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+[requestfailed] POST http://localhost:8000/api/users/login/ net::ERR_CONNECTION_REFUSED
+[error] Failed to load resource: net::ERR_CONNECTION_REFUSED
+[pageerror] TypeError: Failed to fetch
