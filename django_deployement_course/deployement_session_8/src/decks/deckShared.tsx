@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { colors } from '@/design/tokens'
 
 /**
  * SHARED CONSTANTS FOR THE SESSION 8 DECK.
@@ -6,66 +7,74 @@ import type { ReactNode } from 'react'
  * Anything two or more slides need lives here, so a change lands once. The deck
  * itself is `jenkinsDockerDeck.tsx` and it is content only.
  *
- * Plan: `../../session_plans/deployement_session_8/plan.md`, signed off
- * 2026-09-10. Session 7's build rules R1 to R20 carry forward; the two that
- * shape almost every string in this file are R15 (every point readable by an
- * absolute beginner) and hard rule 1 (no spaced em dash in any rendered string).
+ * Plan: `../../session_plans/deployement_session_8/plan.md`, rev2 of 2026-09-11.
+ * Hard rules 29, 30 and 31 were written because the first cut of this deck
+ * broke them. Read them before touching a string here.
  */
 
 export const SESSION = 'Setting Up Jenkins for Docker Builds'
 export const COURSE = 'React + Django Integration · Deployment'
 
 /**
- * THE FOUR CONCEPTS, DECLARED ONCE.
+ * THE FOUR CONCEPTS, DECLARED ONCE, ARTICLE-FREE.
  *
  * Hard rule 20: the Key Takeaways slide carries the agenda's items word for
- * word. The only way to guarantee that is for both slides to read the same
- * constants, so neither slide is allowed to type these strings itself. Session
- * 5 shipped reworded takeaways and they had to be replaced.
+ * word, so both slides read these constants. TEXT_GUIDELINES §4a: agenda items
+ * carry no articles and no helping words. Rule 29: the topic, in two or three
+ * words. The first cut had `Secrets Jenkins Can Use Safely`; this is the fix.
  */
-export const C1 = 'Giving Jenkins Docker'
-export const C2 = 'Secrets, Stored Safely'
-export const C3 = 'Connecting to Your Code'
-export const C4 = 'The First Build'
+export const C1 = 'Docker Access'
+export const C2 = 'Storing Secrets'
+export const C3 = 'Connecting to GitHub'
+export const C4 = 'Full Pipeline'
 
-/**
- * The AWS block is deliberately NOT a concept. Plan §4.4: it is a prerequisite
- * errand with a deadline, not something the session teaches, so it gets no
- * divider and no agenda row and sits in the closing block under its own kicker.
- */
+/** The AWS block is an errand with a deadline, not a concept. Plan §4.4. */
 export const CLOSING_KICKER = 'Before We Meet Again'
 
-/** The project root every command in this session runs from. A JS string, so
- *  the backslash is escaped here and single in a JSX attribute. Hard rule 15. */
+/** The project root every command runs from. Escaped here, single in JSX. */
 export const ROOT = 'C:\\nxttrendz'
 
-/*
-  TECHNOLOGY MARKS.
-
-  Literal paths, never a template literal: `scripts/inline-assets.mjs` scans the
-  built HTML for literal `/assets/...` strings, and a template literal ships a
-  broken image in the single-file deck. Session 3 shipped that bug and session 6
-  recorded it as R11.
-*/
-const TECH_SRC = {
-  docker: '/assets/tech/docker.png',
-  git: '/assets/tech/git.png',
-  github: '/assets/tech/github.png',
-  jenkins: '/assets/tech/jenkins.png',
-  vscode: '/assets/tech/vscode.png',
-} as const
-
-export type TechName = keyof typeof TECH_SRC
+/** The example Docker ID and dev domain. Slides say to replace both. */
+export const DOCKER_ID = 'jeevansravanth'
+export const DEV_DOMAIN = 'decaf-reword-clarify.ngrok-free.dev'
 
 /**
- * A technology name with its mark. Hard rule 12: a technology named on a slide
- * carries its logo.
+ * A STAND-IN FOR A SCREENSHOT THAT DOES NOT EXIST YET.
+ *
+ * Hard rule 30 says every process slide carries a real capture. Nineteen of
+ * this deck's captures need the author's running Jenkins, an ngrok login, a
+ * Docker Hub login or an AWS sign-up, none of which exist on the machine that
+ * builds the deck. Until each capture lands, the slide shows this frame, which
+ * says exactly what the picture will be and where on screen the learner will be.
+ *
+ * It is deliberately ugly: a dashed box that cannot be mistaken for a finished
+ * slide in a screenshot or a review. When the PNG exists, replace the element
+ * with a `Shot` and delete nothing else. The deck is not done while one of
+ * these renders.
  */
-export function Tech({ name, label }: { name: TechName; label?: ReactNode }) {
+export function PendingShot({
+  of,
+  at,
+  shows,
+}: {
+  /** What the capture is of, in a few words. */
+  of: string
+  /** The UI path the learner is standing at, for example `Manage Jenkins → Plugins`. */
+  at: string
+  /** The one or two things the capture will show, so the slide still teaches. */
+  shows?: ReactNode
+}) {
   return (
-    <span className="inline-flex items-center gap-1.5 align-baseline">
-      <img src={TECH_SRC[name]} alt="" className="inline-block h-[1em] w-auto translate-y-[0.1em]" />
-      <span>{label ?? name}</span>
-    </span>
+    <div
+      className="flex h-full min-h-[300px] w-full flex-col justify-center gap-3 rounded-card border-[3px] border-dashed px-8 py-6"
+      style={{ borderColor: colors.warning, background: '#FFFBEB' }}
+    >
+      <span className="text-xs font-bold uppercase tracking-wider" style={{ color: colors.warning }}>
+        Screenshot pending
+      </span>
+      <span className="text-body-lg font-semibold" style={{ color: colors.ink }}>{of}</span>
+      <span className="font-mono text-body-sm" style={{ color: colors.body }}>{at}</span>
+      {shows && <div className="mt-2 text-body-sm" style={{ color: colors.body }}>{shows}</div>}
+    </div>
   )
 }

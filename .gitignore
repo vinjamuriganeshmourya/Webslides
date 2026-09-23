@@ -31,6 +31,7 @@
 **/dist-single/*
 !**/dist-single/deployment-session-*.html
 !**/dist-single/base-template.html
+!**/dist-single/python-session-*.html
 **/.vite/
 *.tsbuildinfo
 

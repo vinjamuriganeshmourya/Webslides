@@ -58,6 +58,15 @@ const GROUND = { vscode: '#1E1E1E', powershell: '#0C0C0C' } as const
 */
 const ERR = '#F14C4C'
 
+/* Amber, the same "look here" as `Shot`'s highlight box, and a colour no
+   terminal `kind` already uses: green means success and red means error, so
+   neither can double as emphasis. Applied to the line box rather than the text,
+   so a wrapped line marks as one block. */
+const MARK = (on: boolean) =>
+  on
+    ? { background: 'rgba(245,158,11,0.20)', boxShadow: '0 0 0 1.5px rgba(245,158,11,0.75)', borderRadius: 4 }
+    : undefined
+
 export function Terminal({
   /** The folder the prompt sits in, e.g. `C:\ecommerce\backend`. */
   path,
@@ -152,7 +161,7 @@ export function Terminal({
             const kind = l.kind ?? 'out'
             if (kind === 'cmd') {
               return (
-                <div key={i} className="whitespace-pre-wrap break-words">
+                <div key={i} className="whitespace-pre-wrap break-words" style={MARK(marked.has(i + 1))}>
                   <span style={{ color: '#5A9BD5' }}>{`PS ${path}> `}</span>
                   <span style={{ color: '#F2F2F2' }}>{l.text}</span>
                 </div>
@@ -162,19 +171,7 @@ export function Terminal({
               <div
                 key={i}
                 className="whitespace-pre-wrap break-words"
-                style={{
-                  color: kind === 'ok' ? '#4EC9A0' : kind === 'err' ? ERR : '#B9B9B9',
-                  /* Amber, the same "look here" as `Shot`'s highlight box, and a
-                     colour no terminal `kind` already uses: green is success,
-                     red is error, so neither can double as emphasis. Inset to
-                     the line box rather than a background on the text, so a
-                     wrapped line marks as one block. */
-                  ...(marked.has(i + 1) && {
-                    background: 'rgba(245,158,11,0.20)',
-                    boxShadow: '0 0 0 1.5px rgba(245,158,11,0.75)',
-                    borderRadius: 4,
-                  }),
-                }}
+                style={{ color: kind === 'ok' ? '#4EC9A0' : kind === 'err' ? ERR : '#B9B9B9', ...MARK(marked.has(i + 1)) }}
               >
                 {l.text || '\u00A0'}
               </div>
