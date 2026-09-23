@@ -1,0 +1,938 @@
+import type { SlideDef, DeckMeta } from '@/deck/types'
+import { BoundaryBridge, CodeBlock, FanOut, SpineFlow, LaneFlow, StepLedger, CircuitMap, GateFlow, TrackSwitch, NestedBoundary, CodeOutput, LogoWall, RadialSpread, PromptCard, ValueTypeMap, VariableTrace, EvalSteps } from '@/ui'
+import type { FlowchartFigureProps } from '@/ui'
+import {
+  WelcomeSlide,
+  RecapSlide,
+  AgendaSlide,
+  SectionBreakerSlide,
+  SectionBreakerImageSlide,
+  ContentSlide,
+  ContentLeftImageSlide,
+  ContentRightImageSlide,
+  ContentTopImageSlide,
+  ContentBottomImageSlide,
+  ContentNoteSlide,
+  FlowChartSlide,
+  OnlyImageSlide,
+  ProceduralStepsSlide,
+  ScenarioSlide,
+  QuestionSlide,
+  QuestionPointsSlide,
+  CodeSyntaxSlide,
+  CommandSyntaxSlide,
+  CodeBuildSlide,
+  StatusPointsSlide,
+  ConversationSlide,
+  ChatSlide,
+  ChatCharacterSlide,
+  QuizTimeSlide,
+  BrandSlide,
+  KeyTakeawaysSlide,
+  PracticeSlide,
+  FeedbackSlide,
+  ThankYouSlide,
+} from '@/slides'
+
+export const sampleMeta: DeckMeta = {
+  title: 'Introduction to REST APIs',
+  course: 'Backend Development',
+  lesson: 'REST APIs',
+  presenter: 'NxtWave Instructor',
+}
+
+const FOOTER = 'REST APIs · Backend'
+
+const serializerCode = `from rest_framework import serializers
+from .models import Product
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ["id", "name", "price", "in_stock"]`
+
+/**
+ * The sample deck — a complete lesson that demonstrates every slide type in
+ * the template. Duplicate this file and edit the array to build a new lesson.
+ */
+const viewCode = `from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Product
+from .serializers import ProductSerializer
+
+@api_view(["GET"])
+def product_list(request):
+    products = Product.objects.all()
+    data = ProductSerializer(products, many=True).data
+    return Response(data)`
+
+
+/*
+  ONE PROCESS, RENDERED BY ALL SIX FLOW-CHART FIGURES.
+
+  Deliberately a general process rather than a REST one: these figures go into
+  every deck, and a fixture dressed in this lesson's content would be judged on
+  how well it renders this lesson. It stresses every case the older `FlowChart`
+  cannot draw: a decision written as a QUESTION with BOTH exits labelled, an
+  exception branch, and a loop back to an earlier step.
+*/
+const reviewFlow: Pick<FlowchartFigureProps, 'nodes' | 'edges'> = {
+  nodes: [
+    { id: 'submit', kind: 'start', label: 'Work submitted', caption: 'the learner clicks send', icon: 'rocket', lane: 'Learner', detail: 'Nothing is checked yet. The work is queued and the learner gets an id they can quote.' },
+    { id: 'checks', kind: 'step', label: 'Automated checks run', caption: 'format, tests, limits', icon: 'bolt', lane: 'Grading service', detail: 'Formatting, the test suite, and the size limit. Minutes, not hours, and it runs unattended.' },
+    { id: 'gate', kind: 'decision', label: 'All checks pass?', icon: 'target', lane: 'Grading service', detail: 'The only automatic decision in the process. Everything after it is a person.' },
+    { id: 'review', kind: 'step', label: 'A reviewer reads it', caption: 'judgement, not rules', icon: 'eye', lane: 'Reviewer', detail: 'A human reads for judgement: is the approach sound, not merely does it run.' },
+    { id: 'fix', kind: 'step', label: 'Fix and resubmit', caption: 'as many times as needed', icon: 'pencil', lane: 'Learner', detail: 'The loop with no counter. A submission can come back through here any number of times.' },
+    { id: 'done', kind: 'end', label: 'Marked complete', caption: 'feedback published', icon: 'check', lane: 'Reviewer', detail: 'Feedback is published and the attempt is closed. The loop cannot be re-entered.' },
+  ],
+  edges: [
+    { from: 'submit', to: 'checks', kind: 'main' },
+    { from: 'checks', to: 'gate', kind: 'main' },
+    { from: 'gate', to: 'review', label: 'Yes', kind: 'main' },
+    { from: 'gate', to: 'fix', label: 'No', kind: 'alt' },
+    { from: 'fix', to: 'checks', label: 'run again', kind: 'loop' },
+    { from: 'review', to: 'done', kind: 'main' },
+  ],
+}
+
+const FLOW = { ...reviewFlow, caption: 'The straight run is four steps. Everything else is the loop.' }
+
+export const sampleDeck: SlideDef[] = [
+  {
+    id: 'brand',
+    label: 'Brand',
+    transition: 'fade',
+    notes:
+      'THE OPENING FRAME. The mark and a greeting, nothing else: no session name, no course, no presenter. It carries no footer logo because the hero already is the logo, and two marks on one frame is the duplication rule 7 exists to stop. Keep the greeting SHORT and do not make it "Welcome to today\'s session": WelcomeSlide hardcodes that exact line as its kicker two slides later.',
+    element: <BrandSlide greeting="Welcome!" lesson={FOOTER} />,
+  },
+  {
+    id: 'sample-question',
+    section: 'Slide types',
+    label: 'Question',
+    element: (
+      <QuestionSlide
+        question="If this image is rebuilt next month, does it install the same version?"
+        qualifier="Assume nothing else about the project changed"
+        lesson="Component Gallery"
+      />
+    ),
+    notes:
+      'THE PAUSE BEAT. One question, hero scale, optically centred, and nothing else on the slide. No bullets, no figure, no answer: the room answers out loud and the NEXT slide responds. A compound question gets split into two of these.',
+  },
+  {
+    id: 'welcome',
+    label: 'Welcome',
+    transition: 'zoom',
+    notes:
+      'THE SESSION-NAME FRAME. `minimal` is the shipping form and the one the workflow specifies: the kicker "Welcome to today\'s session" plus the session name, centred, and NOTHING else in the body. No course chip, no presenter, no meta, no mascot, and no body logo, because the footer already carries the one mark. The full-bodied variant (course, subtitle, presenter, meta) still exists on the props type but no shipping deck uses it.',
+    element: (
+      <WelcomeSlide
+        minimal
+        title="Introduction to REST APIs"
+        lesson={FOOTER}
+      />
+    ),
+  },
+  {
+    id: 'recap',
+    label: 'Recap',
+    section: 'Warm-up',
+    transition: 'slide',
+    notes: 'Quick check that the ORM foundation is solid before layering APIs on top.',
+    element: (
+      <RecapSlide
+        lesson={FOOTER}
+        points={[
+          { text: 'Models map Python classes to database tables', sub: 'via Django’s ORM' },
+          { text: 'QuerySets let us read & filter rows lazily' },
+          { text: 'Migrations version our schema over time' },
+          { text: 'The admin site gave us CRUD for free' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'agenda',
+    label: 'Agenda',
+    section: 'Warm-up',
+    element: (
+      <AgendaSlide
+        lesson={FOOTER}
+        items={[
+          { title: 'What is a REST API?', sub: 'The vocabulary of the web' },
+          { title: 'The request and response lifecycle', sub: 'What happens on every call' },
+          { title: 'Django REST Framework', sub: 'Serializers, views and routing' },
+          { title: 'Build an endpoint, step by step', sub: 'From model to JSON' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'sec-1',
+    label: 'Section · Concepts',
+    section: 'Concepts',
+    transition: 'cover',
+    element: (
+      <SectionBreakerSlide
+        index={1}
+        kicker="Section 1"
+        title="What is a REST API?"
+        subtitle="A shared language that lets a client ask a server for exactly what it needs."
+      />
+    ),
+  },
+  {
+    id: 'fig-nested-boundary',
+    label: 'NestedBoundary',
+    section: 'Concepts',
+    element: (
+      <ContentSlide kicker="Figures" title="NestedBoundary" lead="Boxes inside boxes, the innermost solid. For a claim of the shape: this is stuck inside that" lesson="Gallery">
+        <NestedBoundary className="mx-auto max-w-[840px]" />
+      </ContentSlide>
+    ),
+    notes: 'FOR: containment, and what containment traps. Docker-inside-Docker is the default. MUST NOT carry a stack of peers, which is LayerStack, or an outsider trying to get in, which is MachineBoundary. CONFUSABLE WITH SocketBridge, its pair: the same two things side by side instead of nested. Show this one, then that one.',
+  },
+  {
+    id: 'what-is-api',
+    label: 'What is an API',
+    section: 'Concepts',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="Core idea"
+        title="An API is a contract between programs"
+        lead="REST is the most common style for web APIs, built directly on top of HTTP."
+        points={[
+          { text: 'Resources are identified by URLs', sub: 'e.g. /api/products/42/', icon: 'target' },
+          { text: 'Actions are expressed with HTTP verbs', sub: 'GET, POST, PUT, DELETE', icon: 'bolt' },
+          { text: 'Communication is stateless', sub: 'each request stands alone', icon: 'arrow' },
+          { text: 'Data usually travels as JSON', sub: 'lightweight & language-agnostic', icon: 'code' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'client-server',
+    label: 'Client–Server (right image)',
+    section: 'Concepts',
+    element: (
+      <ContentRightImageSlide
+        lesson={FOOTER}
+        kicker="Mental model"
+        title="Client asks, server answers"
+        lead="Your mobile app or browser is the client; Django is the server."
+        media={{ illustration: 'concept-api' }}
+        caption="A single request/response round-trip"
+        points={[
+          { text: 'The client sends a request to a URL' },
+          { text: 'The server does the work and responds' },
+          { text: 'Every response carries a status code' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'lifecycle',
+    label: 'Request lifecycle (flow)',
+    section: 'Concepts',
+    transition: 'rise',
+    notes:
+      'A PROCESS WITH AN ORDER. Note what the colour does and does not do: the first and last nodes are FILLED because they are the two ends of the journey, and every station between them is a neutral white card on one accent because they are all the same kind of thing. Passing a per-node tone is still possible and marks one station out as different. It used to auto-assign a tone per position, which produced a five-colour rainbow encoding nothing. One continuous rail runs behind the row, and the arrows sit on it: that is what makes five cards read as one request travelling.',
+    element: (
+      <FlowChartSlide
+        lesson={FOOTER}
+        kicker="Under the hood"
+        title="The request and response lifecycle"
+        lead="What Django does with every API call."
+        nodes={[
+          { label: 'Client', caption: 'sends GET', icon: 'chat' },
+          { label: 'URL Router', caption: 'urls.py', icon: 'route' },
+          { label: 'View', caption: 'api_view', icon: 'code' },
+          { label: 'Serializer', caption: 'builds JSON', icon: 'bolt' },
+          { label: 'Response', caption: '200 OK', icon: 'check' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'http-methods',
+    label: 'HTTP methods (note)',
+    section: 'Concepts',
+    element: (
+      <ContentNoteSlide
+        lesson={FOOTER}
+        kicker="Verbs"
+        title="Four verbs cover most of REST"
+        points={[
+          { text: 'GET: read a resource', icon: 'arrow', tone: 'brand' },
+          { text: 'POST: create a new resource', icon: 'arrow', tone: 'teal' },
+          { text: 'PUT / PATCH: update a resource', icon: 'arrow', tone: 'accent' },
+          { text: 'DELETE: remove a resource', icon: 'arrow', tone: 'info' },
+        ]}
+        note={{
+          kind: 'tip',
+          title: 'Keep GET safe',
+          body: 'A GET request should never change server state. It is “safe”, so it can be retried or cached freely.',
+        }}
+      />
+    ),
+  },
+  {
+    id: 'question-points',
+    label: 'Question + points',
+    section: 'Concepts',
+    notes:
+      'THE PAUSE BEAT THAT ANSWERS ITSELF. At step 0 this is a QuestionSlide: the question and nothing else, so there is nothing to read instead of think. The points are BUILD STEPS and land only after the room has answered out loud, which is how it keeps content rule 16. Use QuestionSlide instead whenever the answer needs its own slide, a figure or a terminal. That is still the default.',
+    element: (
+      <QuestionPointsSlide
+        lesson={FOOTER}
+        question="Three apps need the same product list. How many times do you write the database query?"
+        qualifier="Assume all three are built by different teams"
+        points={[
+          { text: 'Once, behind an API', sub: 'Every client asks the same URL' },
+          { text: 'No client ever touches the database directly' },
+          { text: 'Change the query in one place and all three follow' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'conversation',
+    label: 'Conversation (transcript)',
+    section: 'Concepts',
+    notes:
+      'A TWO-VOICE EXCHANGE, SET AS A TRANSCRIPT. The dense form: speaker in the gutter, line beside it, full width for the words. Reach for it past four turns or past a dozen words a turn, where bubbles would run off the bottom of the frame. Exactly two voices, and the right-hand one is the voice the deck wants the room to leave in. Note that the name prints only when the speaker changes.',
+    element: (
+      <ConversationSlide
+        lesson={FOOTER}
+        kicker="Why an API"
+        title="Why not just share the database?"
+        speakers={{ left: 'Mobile dev', right: 'Backend dev' }}
+        turns={[
+          { side: 'left', text: 'Could you give the app the database password?' },
+          { side: 'left', text: 'It would be one less network call.' },
+          { side: 'right', text: 'Then every app carries a copy of your schema.' },
+          { side: 'right', text: 'Rename one column and three apps break at once.' },
+          { side: 'left', text: 'So the API is the contract?' },
+          { side: 'right', text: 'Yes. The URL stays put, and the schema underneath stays free to change.' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'chat',
+    label: 'Chat (bubbles)',
+    section: 'Concepts',
+    notes:
+      'THE SAME CONTENT AS A CONVERSATION SLIDE, DRAWN AS MESSAGES. Instantly legible as two people talking, at the cost of the empty column beside each bubble: five one-line turns, no more. Use it where the lesson IS a misconception being voiced and corrected, and the room needs to recognise itself in the first line. Two speakers who agree with each other are a BulletList in a costume.',
+    element: (
+      <ChatSlide
+        lesson={FOOTER}
+        kicker="Reading a response"
+        title="A 404 is not a bug"
+        speakers={{ left: 'Learner', right: 'Mentor' }}
+        turns={[
+          { side: 'left', speaker: 'Learner', text: 'GET /api/products/9 came back 404. Is the server broken?' },
+          { side: 'right', speaker: 'Mentor', text: 'No. It understood you perfectly, and there is no product 9.' },
+          { side: 'left', speaker: 'Learner', text: 'How do I tell that apart from a real failure?' },
+          { side: 'right', speaker: 'Mentor', text: '4xx is you asking wrong. 5xx is the server falling over.' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'chat-character',
+    label: 'Chat with a character',
+    section: 'Concepts',
+    notes:
+      'THE SAME THREAD, WITH NOVA BESIDE IT. The character gives the answering voice a face, which earns its place on the ONE slide in a concept where the exchange is the argument. On three chat slides in a row it is wallpaper, and rule 8 applies to characters too. Nova stands on the LEFT and faces right: the top right is held for the instructor video, and a character on that side would be gesturing off the edge of the slide. The column costs the thread 240px, so four short turns, not five.',
+    element: (
+      <ChatCharacterSlide
+        lesson={FOOTER}
+        kicker="Who does what"
+        title="Where does the JSON come from?"
+        speakers={{ left: 'Learner', right: 'Nova' }}
+        turns={[
+          { side: 'left', speaker: 'Learner', text: 'Who turns the model into JSON?' },
+          { side: 'right', speaker: 'Nova', text: 'The serializer. It is the translator.' },
+          { side: 'left', speaker: 'Learner', text: 'And who picks the status code?' },
+          { side: 'right', speaker: 'Nova', text: 'Your view does, when it builds the Response.' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'sec-2',
+    label: 'Section · DRF (image)',
+    section: 'DRF',
+    transition: 'cover',
+    element: (
+      <SectionBreakerImageSlide
+        index={2}
+        kicker="Section 2"
+        title="Django REST Framework"
+        subtitle="The toolkit that makes building Web APIs fast, clean, and secure."
+        media={{ illustration: 'concept-database' }}
+      />
+    ),
+  },
+  {
+    id: 'serializers',
+    label: 'Serializers (left image)',
+    section: 'DRF',
+    element: (
+      <ContentLeftImageSlide
+        lesson={FOOTER}
+        kicker="The bridge"
+        title="Serializers translate models ↔ JSON"
+        lead="They’re the heart of DRF."
+        media={{ illustration: 'concept-database' }}
+        points={[
+          { text: 'Convert querysets & instances → JSON' },
+          { text: 'Validate incoming request data' },
+          { text: 'ModelSerializer auto-builds the fields' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'serializer-code',
+    label: 'Serializer code',
+    section: 'DRF',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="Code"
+        title="A ModelSerializer in practice"
+        lead="Declare the model and the fields, and DRF handles the rest."
+      >
+        <CodeBlock
+          code={serializerCode}
+          filename="products/serializers.py"
+          language="python"
+          highlight={[4, 6]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'build-steps',
+    label: 'Build steps (procedure)',
+    section: 'DRF',
+    element: (
+      <ProceduralStepsSlide
+        lesson={FOOTER}
+        kicker="Step by step"
+        title="Build a read-only endpoint"
+        lead="From a model to live JSON in five moves."
+        steps={[
+          { title: 'Define the model', detail: 'A Product with name, price, in_stock', icon: 'book' },
+          { title: 'Create a serializer', detail: 'Subclass ModelSerializer', icon: 'bolt' },
+          { title: 'Write the view', detail: 'Decorate with @api_view(["GET"])', icon: 'code' },
+          { title: 'Register the URL', detail: 'Map /api/products/ to the view', icon: 'target' },
+          { title: 'Test in the browsable API', detail: 'DRF gives you a UI for free', icon: 'play' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'view-code',
+    label: 'View code (top image)',
+    section: 'DRF',
+    element: (
+      <ContentTopImageSlide
+        lesson={FOOTER}
+        kicker="Putting it together"
+        title="The view returns a Response"
+        media={{ illustration: 'concept-api' }}
+        points={[
+          { text: '@api_view wires the function into DRF' },
+          { text: 'Response serializes data & sets the status' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'scenario',
+    label: 'Scenario',
+    section: 'DRF',
+    element: (
+      <ScenarioSlide
+        lesson={FOOTER}
+        kicker="Scenario"
+        title="Why this matters"
+        persona="E-commerce team"
+        situation="The new mobile app needs to show a live product catalogue to shoppers."
+        beats={[
+          { label: 'Situation', detail: 'The app has no direct database access.', icon: 'info', tone: 'brand' },
+          { label: 'Action', detail: 'Expose GET /api/products/ with a DRF view + serializer.', icon: 'code', tone: 'teal' },
+          { label: 'Result', detail: 'The app fetches JSON and renders the catalogue anywhere.', icon: 'check', tone: 'success' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'status-codes',
+    label: 'Status codes (bottom image)',
+    section: 'DRF',
+    element: (
+      <ContentBottomImageSlide
+        lesson={FOOTER}
+        kicker="Communicate outcomes"
+        title="Status codes tell the client what happened"
+        media={{ illustration: 'concept-api' }}
+        points={[
+          { text: '2xx: success (200 OK, 201 Created)', tone: 'success' },
+          { text: '4xx: client error (404 Not Found)', tone: 'accent' },
+          { text: '5xx: server error (500)', tone: 'info' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'code-syntax',
+    label: 'Code syntax',
+    section: 'DRF',
+    notes:
+      'THE SHAPE OF A LANGUAGE CONSTRUCT, NOT ONE EXAMPLE OF IT. The specimen line is BUILT from the parts array, so the diagram and the legend under it cannot drift apart. Dashed underline plus the "you replace this" chip answers the first question every learner asks of a syntax line. Four parts is the height budget: a fifth leaves the bottom of the frame. This is not CodeBlock (a file) and not Terminal (a real run); see the quadrant table in SyntaxSlides.tsx.',
+    element: (
+      <CodeSyntaxSlide
+        lesson={FOOTER}
+        kicker="Routing"
+        title="Anatomy of a URL pattern"
+        language="python"
+        parts={[
+          { token: 'path', label: 'The URL helper', body: 'Imported from django.urls. One call per route.', after: '(' },
+          { token: '"api/products/"', label: 'The pattern', fill: 'placeholder', body: 'What the client asks for. No leading slash, and keep the trailing one.', after: ', ' },
+          { token: 'product_list', label: 'The view', fill: 'placeholder', body: 'The function that answers this URL. Passed, never called.', after: ', ' },
+          { token: 'name="products"', label: 'The reverse name', body: 'Lets templates and tests name the URL instead of hardcoding it.', after: ')' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'command-syntax',
+    label: 'Command syntax',
+    section: 'DRF',
+    notes:
+      'THE SHAPE OF A COMMAND. Same figure as the code variant, with a $ prompt instead of a language chip. It deliberately takes no folder path: rule 3 governs Terminal, which shows a command being RUN, and a prompt path here would claim a working directory this slide never demonstrates. Show the actual run in a Terminal on the next slide. Three parts plus a note is the budget.',
+    element: (
+      <CommandSyntaxSlide
+        lesson={FOOTER}
+        kicker="Project setup"
+        title="Creating an app"
+        parts={[
+          { token: 'python manage.py', label: 'The task runner', body: 'Every project-level command goes through this file.' },
+          { token: 'startapp', label: 'The task', body: 'One of about forty. runserver and migrate are the two you will type most.' },
+          { token: 'products', label: 'Your app name', fill: 'placeholder', body: 'Lowercase, plural, no hyphens. It becomes a Python package.', after: '' },
+        ]}
+        note={{
+          kind: 'warning',
+          title: 'It is not wired up yet',
+          body: 'Creating the app does not install it. Add it to INSTALLED_APPS or Django will never load its models.',
+        }}
+      />
+    ),
+  },
+  {
+    id: 'code-build',
+    label: 'Code build',
+    section: 'DRF',
+    notes:
+      'A REAL FILE, ASSEMBLED ONE KEY AT A TIME. Pass the WHOLE file as it stands on this slide, not just the new lines, and list the new ones in highlight: those are the lit ones. The annotation says what the new key does. Across a build sequence give CodeBlock a minHeight equal to its maxHeight, or the panel grows slide by slide and six steps of one file look like six different slides.',
+    element: (
+      <CodeBuildSlide
+        lesson={FOOTER}
+        kicker="The view"
+        title="Answering GET"
+        lead="One decorator, one queryset, one Response."
+        code={viewCode}
+        filename="products/views.py"
+        highlight={[6]}
+        annotation={{
+          key: '@api_view(["GET"])',
+          body: 'Turns a plain Python function into a DRF view, and rejects every verb except GET before your code runs.',
+        }}
+      />
+    ),
+  },
+  {
+    id: 'status-points',
+    label: 'Status points (verdicts)',
+    section: 'DRF',
+    notes:
+      'A LIST WHERE EVERY ROW CARRIES A VERDICT. Four kinds: success, info, warning, error. The verdict IS the content, so if every row would come out success this is a ContentSlide and the colour is decoration. Each row states its verdict in a word as well as a colour, so it survives a projector and greyscale. Rows are build steps by default; pass a figure as children and they switch to a staggered entrance, because rule 6 requires text and its visual to arrive together.',
+    element: (
+      <StatusPointsSlide
+        lesson={FOOTER}
+        kicker="Reading the outcome"
+        title="Four ways a request can end"
+        items={[
+          { status: 'success', text: '200 OK', code: true, detail: 'The product list is in the body.' },
+          { status: 'info', text: '201 Created', code: true, detail: 'A new product exists, and its URL is in the Location header.' },
+          { status: 'warning', text: '404 Not Found', code: true, detail: 'The URL is fine, the product is not. This one is not a bug.' },
+          { status: 'error', text: '500 Server Error', code: true, detail: 'Your view raised an exception. This one is a bug.' },
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'flow-spine',
+    label: 'Flow · SpineFlow',
+    section: 'DRF',
+    notes:
+      'THE DEFAULT FLOW CHART when a process branches. The happy path is an unbroken horizontal line at full weight; the failure drops vertically out of the gate in amber and the loop returns underneath, so it can never be confused with progress. All six of these take the IDENTICAL props, so swapping one for another is a rename. They build one click at a time (Ctrl+arrow), assembling along the path, and the exception only starts once the happy path is complete. Worst at: more than one decision, because there is one row of "below" to drop into.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="A process with branches"
+        title="SpineFlow"
+        lead="The happy path is a straight line, and everything else hangs off it."
+      >
+        <SpineFlow {...FLOW} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'flow-lane',
+    label: 'Flow · LaneFlow',
+    section: 'DRF',
+    notes:
+      'THE SWIMLANE. The only one of the six that answers "whose job is that": a step sits in its owner\'s lane, so handoffs become visible as vertical moves and every crossing is a place the work can stall. It is the only figure that reads the `lane` field. Worst at: a process where every step has the same owner, which is a SpineFlow that has thrown away a third of its height. Needs three lanes to earn its keep.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="A process with branches"
+        title="LaneFlow"
+        lead="The same process, but the vertical axis is who owns each step."
+      >
+        <LaneFlow {...FLOW} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'flow-ledger',
+    label: 'Flow · StepLedger',
+    section: 'DRF',
+    notes:
+      'THE FLOW CHART WITH NO BOXES. STYLE_GUIDE section 8 applied to a process: boxes and arrows draw "discrete units connected by transitions", so if every transition is just "and then", the boxes are decoration. A number in the gutter, a rule per row, the words at full width. Wins on long labels, which every other figure here wraps inside a fixed slot. Worst at: shape. A loop back to step two is a line of text saying so, not a line you can point at.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="A process with branches"
+        title="StepLedger"
+        lead="The same process with no boxes, no arrows and no diagram at all."
+      >
+        <StepLedger {...FLOW} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'flow-circuit',
+    label: 'Flow · CircuitMap',
+    section: 'DRF',
+    notes:
+      'THE TEXTBOOK NOTATION: stadium terminals, rectangles, a real diamond, orthogonal connectors, every exit labelled. Reach for it when the room has met flow charts elsewhere and a house dialect would cost them more than it buys. Worst at: the diamond constrains the copy. Only its middle third is usable, so "All checks pass?" fits and anything longer does not, and the copy is the teaching.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="A process with branches"
+        title="CircuitMap"
+        lead="The textbook notation, drawn properly."
+      >
+        <CircuitMap {...FLOW} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'flow-gate',
+    label: 'Flow · GateFlow',
+    section: 'DRF',
+    notes:
+      'THE DECISION AS A BARRIER WITH PHYSICAL EXTENT. Steps are a card row; the decision is a tall bar standing across the line, with the happy path drawn UNDER it so the line passes through and emerges on the far side. Use it when the check is the point of the slide rather than one step among several. Worst at: a second decision, which has no third vertical level to occupy, and a question past about six words, which starts reading as a title for the whole figure.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="A process with branches"
+        title="GateFlow"
+        lead="The decision is not a step. It is a barrier the work has to get past."
+      >
+        <GateFlow {...FLOW} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'flow-track',
+    label: 'Flow · TrackSwitch',
+    section: 'DRF',
+    notes:
+      'THE ONE WHERE THE LOOP IS THE HERO. A railway: the happy path is one continuous straight rail with stations on it, and at the decision the track switches, peeling away on a curve to a lower return track that merges back on a mirrored curve. Straight line against curved detour is the whole design, and it makes rework feel like a detour that rejoins the journey rather than an arrow pointing backwards. Worst at: it buys one idea with the entire stage, and assumes exactly one loop with room to the right of the gate.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="A process with branches"
+        title="TrackSwitch"
+        lead="A railway. The main line runs straight and rework peels off, then merges back."
+      >
+        <TrackSwitch {...FLOW} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'boundary-bridge',
+    label: 'Boundary bridge (figure)',
+    section: 'DRF',
+    notes:
+      'FOR TWO MACHINES WITH A SHARED THING BETWEEN THEM. Read the constraint before reusing it: the dashed boundaries are labelled "One computer" and "A different computer" IN THE COMPONENT, and the hub carries "On neither machine". Those strings are hardcoded, so this figure ASSERTS a two-machine story with a registry in the middle. It is not a general three-step flow, and pointing it at one makes the slide claim something untrue (rule 8). For a plain process, use FlowChart. Two further rules: every payload arrow runs ALONG the chain, stations[i] to stations[i+1], so nothing points back up it, and `issuedBy` says who TYPED the command, drawn as a subordinate hairline and never as a second arrow. Here push is issued by the laptop (left) and pull by the server (right), and the data still travels left to right in both. Chosen from four candidate designs in slide-kit/flow-lab and promoted to the kit for session 6.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="Shipping it"
+        title="Getting the API onto a server"
+        lead="The image is built once, and the server pulls the same one."
+      >
+        <BoundaryBridge
+          stations={[
+            { label: 'Your laptop', caption: 'where you built the API', icon: 'code', kind: 'source' },
+            { label: 'Docker Hub', caption: 'one copy, addressable by name', icon: 'server', kind: 'hub' },
+            { label: 'The server', caption: 'runs what it pulled', icon: 'devices', kind: 'target' },
+          ]}
+          legs={[
+            { label: 'docker push', sub: 'once per release', issuedBy: 'left' },
+            { label: 'docker pull', sub: 'on every deploy', issuedBy: 'right' },
+          ]}
+          caption="The image never travels laptop to server directly. Neither machine has to trust the other."
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'fan-out',
+    label: 'Fan out (figure)',
+    section: 'DRF',
+    notes:
+      'FOR ONE ARTEFACT AND MANY LIVE COPIES OF IT. The source keeps its single box at full size while every connector leaves it at once, so the room reads MULTIPLICITY rather than sequence, and the source is drawn quiet on purpose (dashed, tinted, no live dot) because the mistake the figure prevents is reading the source as one of the running things. `live` is per copy, so "three containers, one of them stopped" is sayable. It must NOT carry any relationship BETWEEN the copies: they are peers with no connectors between them, so balanced traffic, a shared volume, or copy 2 made from copy 1 are all claims this figure does not make. Confusable with BoundaryBridge, which is two machines and a shared hub between them, and with FlowChart, which is a sequence: reach for FanOut only when one thing becomes several at once. Promoted out of session 1 v2, where it was a deck-local ImageFanout hardcoded to one image and three containers; the contract has no Docker in it.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="One image, many containers"
+        title="Fan out"
+        lead="The image is built once. Every container is started from that one copy."
+      >
+        <FanOut
+          source={{ label: 'Image', caption: 'built once, read only', icon: 'folder' }}
+          copies={[
+            { id: 'c1', label: 'Container 1', note: 'serving traffic', live: true },
+            { id: 'c2', label: 'Container 2', note: 'serving traffic', live: true },
+            { id: 'c3', label: 'Container 3', note: 'stopped, same image', live: false },
+          ]}
+          caption="Starting a container never changes the image, which is why the third one is identical to the first."
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'architecture',
+    label: 'Architecture (only image)',
+    section: 'DRF',
+    transition: 'fade',
+    element: (
+      <OnlyImageSlide
+        lesson={FOOTER}
+        title="The full picture"
+        media={{ illustration: 'concept-api' }}
+        caption="Client → DRF View → Serializer → Database, and back again"
+      />
+    ),
+  },
+  {
+    id: 'code-output',
+    label: 'Code and its output',
+    section: 'Python figures',
+    notes:
+      'A SNIPPET AND EXACTLY WHAT IT PRINTED. Not CodeBlock (a file), not Terminal (a shell with a folder path), not SyntaxBreakdown (the shape of a construct). `location` is the code panel title and names where the code runs, per rule 31. `output` is pasted from a real run, never composed. Two panes compare; `layout="stack"` gives one wide pane for a long traceback line.',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Printing the Result">
+        <CodeOutput
+          panes={[
+            { label: 'No quotes', location: 'Code Playground · main.py', code: 'print(2 + 5)', output: '7' },
+            { label: 'Quotes', location: 'Code Playground · main.py', code: 'print("2 + 5")', output: '2 + 5' },
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'logo-wall',
+    label: 'Logo wall',
+    section: 'Python figures',
+    notes:
+      'MARKS WITH THEIR NAMES, when the marks ARE the argument: scale ("around 700 languages") or familiarity ("the companies you know run on this"). Every mark carries its name (rule 12), every src must be on disk, and if the marks are not the claim this is decoration filling space (rule 8).',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Popular Programming Languages" lead="Around ~ 700 Programming Languages">
+        <LogoWall
+          cols={4}
+          marks={[
+            { src: '/assets/tech/python.png', name: 'Python' },
+            { src: '/assets/tech/django.png', name: 'Django' },
+            { src: '/assets/tech/nodejs.png', name: 'Node.js' },
+            { src: '/assets/tech/react.png', name: 'React' },
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'radial-spread',
+    label: 'Radial spread',
+    section: 'Python figures',
+    notes:
+      'ONE THING REACHING INTO MANY PLACES. STYLE_GUIDE §8 names this the form for "reach", which a grid of cards cannot draw. Spokes draw one after another on entry (the reach is watched, not shown). Not for a sequence, not for alternatives, and not for fewer than four spokes.',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Versatile Language" lead="Has applications in almost every field.">
+        <RadialSpread
+          hub="Python"
+          hubLogo="/assets/tech/python.png"
+          spokes={[
+            { icon: 'bulb', label: 'AI/Machine Learning' },
+            { icon: 'database', label: 'Big Data' },
+            { icon: 'devices', label: 'Smart Device/IOT' },
+            { icon: 'play', label: 'Game Development' },
+            { icon: 'server', label: 'Backend Development' },
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'prompt-card',
+    label: 'Prompt card',
+    section: 'Python figures',
+    notes:
+      'TEXT THE LEARNER PASTES INTO AN AI TOOL. Not a file, not a shell, not a callout: the prompt IS the slide. `location` names where it is typed (rule 31 by analogy). [Bracketed] slots render dashed, like a placeholder part in SyntaxBreakdown. `fontSize` is the lever for a long prompt, never maxHeight.',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Quiz Generation">
+        <PromptCard prompt={"I've just completed learning about [concept]. Can you create a comprehensive quiz to test my understanding of this concept?"} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'value-type-map',
+    label: 'Value to type',
+    section: 'Python figures',
+    notes:
+      'VALUES BESIDE THEIR TYPES, when the pairing is the whole claim: 2 is an Integer and "2" is a String. Two or three rows. A fourth row is a DataTable; a value with no partner is a Chip.',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title={'2 vs 2.0 vs "2.0"'} lead="Mathematical Value vs Character">
+        <ValueTypeMap pairs={[{ value: '2', type: 'Integer' }, { value: '2.0', type: 'Float' }, { value: '"2.0"', type: 'String' }]} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'variable-trace',
+    label: 'Variable trace',
+    section: 'Python figures',
+    notes:
+      'A PROGRAM RUN ONE LINE PER CLICK, variables drawn as boxes (the course\'s container analogy), output appended as it prints. Step 0 is the code alone. Claims exactly steps.length build steps. Every output is pasted from a real run.',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Variable Assignment">
+        <VariableTrace
+          code={'a = 1\nprint(a)\na = 2\nprint(a)'}
+          steps={[
+            { line: 1, boxes: [{ name: 'a', value: '1' }], output: [] },
+            { line: 2, boxes: [{ name: 'a', value: '1' }], output: ['1'] },
+            { line: 3, boxes: [{ name: 'a', value: '2' }], output: ['1'] },
+            { line: 4, boxes: [{ name: 'a', value: '2' }], output: ['1', '2'] },
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'eval-steps',
+    label: 'Evaluation steps',
+    section: 'Python figures',
+    notes:
+      'ONE EXPRESSION REWRITTEN DOWN TO ITS VALUE, one operation per line, the value set apart. For order-of-operations teaching. Not a run (CodeOutput), not a trace (VariableTrace), not a procedure (StepList).',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Approach - 1">
+        <EvalSteps steps={['5 * 2 + 3 * 4', '10 + 12', '22']} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'quiz-time',
+    label: 'Quiz time',
+    section: 'Wrap-up',
+    transition: 'zoom',
+    notes:
+      'THE ANNOUNCEMENT FRAME, AND THE ONLY QUIZ FRAME A DECK HAS. It carries no question by design: questions are delivered by an external quiz component, so this hands over to it. QuizSlide was retired for exactly this reason and sync-kit.mjs deletes it from any session that still has it. Rule 18: every deck carries a quiz frame, and a lone one sits immediately before the takeaways.',
+    element: (
+      <QuizTimeSlide
+        lesson={FOOTER}
+        subtitle="Four questions on serializers, views and status codes."
+      />
+    ),
+  },
+  {
+    id: 'takeaways',
+    label: 'Key Takeaways',
+    section: 'Wrap-up',
+    notes:
+      'THE AGENDA CONCEPTS, VERBATIM. Not reworded outcomes, not a fifth item, not a summary written fresh. The room was promised exactly these four things at the start and this frame is the receipt, so the strings must match the agenda character for character. What changes between the two slides is the UI, not the words. Session 5 shipped reworded outcomes here and they were replaced with the agenda strings.',
+    element: (
+      <KeyTakeawaysSlide
+        lesson={FOOTER}
+        points={[
+          'What is a REST API?',
+          'The request and response lifecycle',
+          'Django REST Framework',
+          'Build an endpoint, step by step',
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'practice',
+    label: 'Practice',
+    section: 'Wrap-up',
+    transition: 'rise',
+    element: (
+      <PracticeSlide
+        lesson={FOOTER}
+        title="Your turn to build"
+        prompt="Create a read-only endpoint for the Product model."
+        tasks={[
+          'Write ProductSerializer (ModelSerializer)',
+          'Add a product_list view with @api_view(["GET"])',
+          'Wire /api/products/ in urls.py',
+          'Return all products as JSON with Response',
+        ]}
+      />
+    ),
+  },
+  {
+    id: 'feedback',
+    label: 'Feedback',
+    section: 'Wrap-up',
+    element: (
+      <FeedbackSlide
+        lesson={FOOTER}
+        title="How did this session land?"
+        prompt="Two minutes of feedback helps us make the next session sharper."
+        link="nxtwave.tech/feedback"
+      />
+    ),
+  },
+  {
+    id: 'thank-you',
+    label: 'Thank you',
+    transition: 'zoom',
+    notes:
+      'THE LAST FRAME, AND IT CARRIES TWO WORDS. No sign-off sentence, no recap of what the room can now do, and no "see you next session": the Next session frame sits immediately before this one and already names what is coming, and a summary here gives the deck two endings. `message` still exists on the props type for a deck that genuinely needs one line, but the default is nothing.',
+    element: (
+      <ThankYouSlide title="Thank you!" />
+    ),
+  },
+]

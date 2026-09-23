@@ -94,7 +94,24 @@ from any session that still has it.
 `LayerStack` · `MachineBoundary` · `NestedBoundary` · `Nova` · `OneProcessRule` · `Orchestra` ·
 `SocketBridge` · `TunnelPath` ·
 `ScenarioCard` · `StackUp` · `StatusList` · `StepList` · `SyntaxBreakdown` ·
-`Terminal` · `Shot` · `TwoRuntimes` · `VolumeSurvival` · `YamlNesting`
+`Terminal` · `Shot` · `TwoRuntimes` · `VolumeSurvival` · `YamlNesting` ·
+`CodeOutput` · `LogoWall` · `RadialSpread` · `PromptCard` · `ValueTypeMap` ·
+`VariableTrace` · `EvalSteps`
+
+### The three Python-course figures
+
+Promoted from `python/1_programming_with_python` on 2026-09-22. All three are DOM,
+never `<svg>` text (content rule 17), and run at the explanatory tier.
+
+| Figure | Reach for it when | Worst at |
+|---|---|---|
+| `CodeOutput` | a snippet and EXACTLY what it printed, side by side, or two such pairs compared. Every code panel names where it runs via `location` (rule 31), and `output` is never composed: run it, paste it | a command typed at a shell (that is `Terminal`), the SHAPE of a construct (`SyntaxBreakdown`), or a file that grows across slides (`CodeBuildSlide`) |
+| `LogoWall` | the claim is scale or familiarity and the marks ARE the argument: "around 700 languages", "the companies you know run on this". Every mark carries its name (rule 12) | decoration. If the marks are not the claim it is pictures filling space, and it cannot say anything about the relationship between them |
+| `PromptCard` | text the learner pastes into an AI tool; `location` says where, `[slots]` render dashed | anything that is a file, a shell command or an aside |
+| `ValueTypeMap` | two or three values paired with their types, when the pairing is the claim | four or more rows (`DataTable`) |
+| `VariableTrace` | a program run one line per click, variables as boxes, output appended | a program with more than three variables, or more than six lines |
+| `EvalSteps` | one expression rewritten down to its value, one operation per line | anything that is not the same expression getting shorter |
+| `RadialSpread` | one thing reaching into many places: one language, five fields. Draws one spoke after another on entry so the reach is watched, not shown. `STYLE_GUIDE.md` §8's form for "reach" | a sequence (`StepList`), alternatives the room chooses between, or fewer than four spokes, which is a comparison drawn oddly |
 
 `NestedBoundary` draws containment as boxes inside boxes, the innermost solid:
 Docker-inside-Docker is its default. It is the PAIR of `SocketBridge`, which draws

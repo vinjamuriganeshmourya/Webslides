@@ -129,14 +129,23 @@ export const jenkinsDockerDeck: SlideDef[] = [
     id: 'c1-not-found', section: C1, label: 'docker: not found',
     element: (
       <ContentSlide kicker={C1} title="docker: not found" lead="Open hello-jenkins, then Configure, then Build Steps, then Execute shell. Put docker build -t nxttrendz-backend . in the box, Save, then Build Now" lesson={SESSION}>
-        <CodeBlock filename="Jenkins → hello-jenkins → #2 → Console Output" language="text" showLineNumbers={false} code={`+ docker build -t nxttrendz-backend .
-/var/jenkins_home/workspace/hello-jenkins@tmp/script.sh: 1:
-docker: not found
-Build step 'Execute shell' marked build as failure
-Finished: FAILURE`} />
+        {/* A REAL capture, 2026-09-21: jenkins/jenkins:lts run locally, the
+            hello-jenkins job created, build #1 an echo and green, the step
+            changed to docker build, build #2 red with exactly this output. The
+            code panel that stood in here quoted the TR and had the script path
+            slightly wrong; the capture is what the room will actually see.
+            Cropped per rule 11 to the breadcrumb, the nav and the output box;
+            the original is in workflow/captures/session-8/. One highlight, on
+            the one line that carries the claim. */}
+        <Shot
+          src="/shots/console-docker-not-found.png"
+          alt="Jenkins Console Output for hello-jenkins build 2: docker build runs, the shell reports docker: not found, and the build finishes FAILURE"
+          caption="localhost:8080/job/hello-jenkins/2/console. The server is fine; the command it was asked to run does not exist inside it"
+          highlight={{ left: 29.5, top: 72.8, width: 38.3, height: 6.4 }}
+        />
       </ContentSlide>
     ),
-    notes: 'CAPTURE pending, slide 7: the real Console Output page. Rule 31: this is browser output, so it is a located code panel and never a shell. Ask the room what is missing before the next slide.',
+    notes: 'Real capture. Ask the room what is missing before the next slide. Almost everyone says "Docker is not installed", which is half right and sets up the next two slides.',
   },
   {
     id: 'c1-docker-inside-docker', section: C1, label: 'Docker inside Docker?',
@@ -148,15 +157,21 @@ Finished: FAILURE`} />
          inside boxes, in the same dashed style `SocketBridge` uses on the next
          slide, so 8 and 9 read as the same two things arranged two ways. */
       <ContentNoteSlide kicker={C1} title="Docker Inside Docker?" lead="Jenkins runs in a container, and its pipeline needs docker. The first idea: a second Docker Engine, installed inside that container" lesson={SESSION} note={{ kind: 'warning', title: 'Heavy, and not needed', body: 'There is a lighter way. It starts with one fact about what the word docker means.' }}>
-        <NestedBoundary className="mx-auto max-w-[840px]" />
+        {/* Full well width, left edge on the header datum at x=64, so the figure
+            lines up with the title above and the note below instead of floating
+            centred between them with empty margins either side. */}
+        <NestedBoundary className="w-full" />
       </ContentNoteSlide>
     ),
   },
   {
     id: 'c1-client-and-daemon', section: C1, label: 'Client and daemon',
     element: (
-      <ContentSlide kicker={C1} title="Docker Outside of Docker" lead="The docker command is a small client. A separate program, the daemon, does the work. Leave the daemon on the host and put only the client in the container, and the nesting disappears" lesson={SESSION}>
-        <SocketBridge />
+      <ContentSlide kicker={C1} title="Docker Outside of Docker" lead="The docker command is a small client and the daemon does the work. Keep the daemon on the host, put only the client in the container" lesson={SESSION}>
+        {/* `outerLabel` draws the host AROUND both boxes. Without it this read as
+            two machines, and slide 8 has just drawn the host as the box that
+            contains everything. Same host label on both slides on purpose. */}
+        <SocketBridge outerLabel="Your machine, the host" hostLabel="Docker Engine, the real one" />
       </ContentSlide>
     ),
     notes: 'Every docker command they have ever typed was the client sending a message through /var/run/docker.sock to the engine. Say the path out loud.',
@@ -205,11 +220,18 @@ Finished: FAILURE`} />
   {
     id: 'c1-socket-simple-flow', section: C1, label: 'The socket, simple flow',
     element: (
-      <ContentSlide kicker={C1} title="The Docker Socket, Simple Flow" lead="The same picture as before, now with the mount in it. The client in the container writes to a socket file, and that file belongs to the host" lesson={SESSION}>
+      <ContentSlide kicker={C1} title="The Docker Socket, Simple Flow" lead="The same picture, now with the mount in it. The CLI writes to a socket file inside the container, and -v made that file the host's own" lesson={SESSION}>
         {/* Deliberately the SAME figure as slide 9, relabelled, not a second
             drawing of one idea. The room has read this shape once; what is new
             here is that the wire is a mounted file. */}
-        <SocketBridge wireLabel="/var/run/docker.sock, shared by -v" footnote="One file, visible on both sides of the container wall. That is the whole trick." />
+        <SocketBridge
+          outerLabel="Your machine, the host"
+          hostLabel="Docker Engine, the real one"
+          wireLabel="the CLI writes here"
+          socketNote="-v /var/run/docker.sock:/var/run/docker.sock"
+          daemonSub="builds the image, on the host"
+          footnote="One file, visible on both sides of the container wall. The -v flag is what put it there."
+        />
       </ContentSlide>
     ),
     notes: 'Trace it left to right with a finger: the client, the socket file, the engine. Then say the -v flag put that file inside the container, which is the only reason the left half can reach the right half.',
@@ -609,13 +631,13 @@ latest: digest: sha256:3f9a... size: 2841`} />
   {
     id: 'c3-two-stages', section: C3, label: 'Two stages',
     element: (
-      <ContentSlide kicker={C3} title="Two Stages" lead="Open nxttrendz-build-test, Configure, Pipeline, paste this, Save. The highlighted line is the example repository: replace it with your own" lesson={SESSION}>
+      <ContentSlide kicker={C3} title="Two Stages" lead="Open nxttrendz-build-test, Configure, Pipeline, paste this, Save. One line is yours to change before you do" lesson={SESSION}>
         <CodeBlock filename="Jenkins → nxttrendz-build-test → Configure → Pipeline → Script" language="groovy" fontSize={13} code={`pipeline {
     agent any
     stages {
         stage('Fetch') {
             steps {
-                git branch: 'main', url: '${REPO}'
+                git branch: 'main', url: '${REPO}'   // replace with your repository URL
             }
         }
         stage('Build') {
@@ -624,7 +646,7 @@ latest: digest: sha256:3f9a... size: 2841`} />
             }
         }
     }
-}`} highlight={[7]} />
+}`} highlight={[6]} />
       </ContentSlide>
     ),
     notes: 'Read it as plain English for now: two stages, fetch then build. ./backend, not a dot, because the Dockerfile is in the app folder. No Docker ID and no tag yet. This is a test that the wiring works.',
@@ -704,10 +726,14 @@ Finished: SUCCESS`} />
         <Terminal path={ROOT} lines={[
           { text: 'docker images | Select-String nxttrendz', kind: 'cmd' },
           { text: 'nxttrendz-backend   latest   7c1f4b2e9a83   About a minute ago   214MB', kind: 'ok' },
-        ]} caption="PowerShell, in the VS Code terminal. The same list your own builds go to" />
-        <Callout kind="note" title="On macOS and Linux">
-          The pipe is the same and the filter has a different name: docker images | grep nxttrendz
+        ]} highlight={[1]} caption="PowerShell, in the VS Code terminal. The same list your own builds go to" />
+        {/* The macOS and Linux form is a command, so it is set as one, not buried
+            in a sentence. Asked for on review: highlight it. */}
+        <div className="mt-5">
+        <Callout kind="note" title="On macOS and Linux, the filter is grep">
+          <code className="rounded-md bg-white/70 px-2 py-0.5 font-mono text-[15px] font-semibold text-ink">docker images | grep nxttrendz</code>
         </Callout>
+        </div>
       </ContentSlide>
     ),
   },
@@ -810,16 +836,6 @@ Finished: SUCCESS`} />
     notes: 'Build #42 produces jeevansravanth/nxttrendz-backend:42 and jeevansravanth/nxttrendz-frontend:42. The second build of each image is fast: Docker reuses the layers that did not change.',
   },
   {
-    id: 'c4-exit-codes', section: C4, label: 'Exit codes are the gate',
-    element: (
-      <ContentNoteSlide kicker={C4} title="Exit Codes" lead="Every command ends with a number. 0 means it worked. Anything else means it failed" lesson={SESSION} points={[
-        { text: 'A non-zero exit from sh fails the stage', icon: 'cross' },
-        { text: 'A failed stage stops the pipeline. Nothing after it runs', icon: 'warning' },
-        { text: 'This is the same Exited (0) you saw with hello-world on the first day', icon: 'info' },
-      ]} note={{ kind: 'info', title: 'One convention does all the enforcing', body: 'Exit codes are the entire machinery of CI/CD.' }} />
-    ),
-  },
-  {
     id: 'c4-stage-push', section: C4, label: 'Stage 4: Push',
     element: (
       <ContentSlide kicker={C4} title="Stage 3: Push" lead="Log in with the stored Docker Hub credential, then push both images" lesson={SESSION}>
@@ -843,11 +859,10 @@ Finished: SUCCESS`} />
   {
     id: 'c4-single-quotes', section: C4, label: 'Single quotes only',
     element: (
-      <ContentNoteSlide kicker={C4} title="Single Quotes Only" lead="Every sh line that touches a secret uses single quotes. This is not a style choice" lesson={SESSION} points={[
-        { text: "Single quotes: the shell reads $DOCKER_PASS and Jenkins masks it", icon: 'check' },
-        { text: 'Double quotes: Groovy pastes the real secret into the script text first', icon: 'cross' },
-        { text: 'Then it can appear in logs and error messages', icon: 'warning' },
-      ]} note={{ kind: 'warning', title: 'Jenkins warns about exactly this', body: 'Rule: any sh line with a credential gets single quotes.' }} />
+      <ContentNoteSlide kicker={C4} title="Single Quotes Only" lead="Every sh line that uses a secret is written in single quotes" lesson={SESSION} points={[
+        { text: 'Write the secret as $DOCKER_PASS, inside single quotes', icon: 'check' },
+        { text: 'Jenkins hides the real value in the build log', icon: 'check' },
+      ]} note={{ kind: 'warning', title: 'The rule', body: 'A line with a credential always gets single quotes.' }} />
     ),
   },
   {

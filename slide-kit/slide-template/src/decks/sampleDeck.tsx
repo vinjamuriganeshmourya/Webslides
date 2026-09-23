@@ -1,5 +1,5 @@
 import type { SlideDef, DeckMeta } from '@/deck/types'
-import { BoundaryBridge, CodeBlock, FanOut, SpineFlow, LaneFlow, StepLedger, CircuitMap, GateFlow, TrackSwitch, NestedBoundary } from '@/ui'
+import { BoundaryBridge, CodeBlock, FanOut, SpineFlow, LaneFlow, StepLedger, CircuitMap, GateFlow, TrackSwitch, NestedBoundary, CodeOutput, LogoWall, RadialSpread, PromptCard, ValueTypeMap, VariableTrace, EvalSteps } from '@/ui'
 import type { FlowchartFigureProps } from '@/ui'
 import {
   WelcomeSlide,
@@ -744,6 +744,121 @@ export const sampleDeck: SlideDef[] = [
         media={{ illustration: 'concept-api' }}
         caption="Client → DRF View → Serializer → Database, and back again"
       />
+    ),
+  },
+  {
+    id: 'code-output',
+    label: 'Code and its output',
+    section: 'Python figures',
+    notes:
+      'A SNIPPET AND EXACTLY WHAT IT PRINTED. Not CodeBlock (a file), not Terminal (a shell with a folder path), not SyntaxBreakdown (the shape of a construct). `location` is the code panel title and names where the code runs, per rule 31. `output` is pasted from a real run, never composed. Two panes compare; `layout="stack"` gives one wide pane for a long traceback line.',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Printing the Result">
+        <CodeOutput
+          panes={[
+            { label: 'No quotes', location: 'Code Playground · main.py', code: 'print(2 + 5)', output: '7' },
+            { label: 'Quotes', location: 'Code Playground · main.py', code: 'print("2 + 5")', output: '2 + 5' },
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'logo-wall',
+    label: 'Logo wall',
+    section: 'Python figures',
+    notes:
+      'MARKS WITH THEIR NAMES, when the marks ARE the argument: scale ("around 700 languages") or familiarity ("the companies you know run on this"). Every mark carries its name (rule 12), every src must be on disk, and if the marks are not the claim this is decoration filling space (rule 8).',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Popular Programming Languages" lead="Around ~ 700 Programming Languages">
+        <LogoWall
+          cols={4}
+          marks={[
+            { src: '/assets/tech/python.png', name: 'Python' },
+            { src: '/assets/tech/django.png', name: 'Django' },
+            { src: '/assets/tech/nodejs.png', name: 'Node.js' },
+            { src: '/assets/tech/react.png', name: 'React' },
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'radial-spread',
+    label: 'Radial spread',
+    section: 'Python figures',
+    notes:
+      'ONE THING REACHING INTO MANY PLACES. STYLE_GUIDE §8 names this the form for "reach", which a grid of cards cannot draw. Spokes draw one after another on entry (the reach is watched, not shown). Not for a sequence, not for alternatives, and not for fewer than four spokes.',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Versatile Language" lead="Has applications in almost every field.">
+        <RadialSpread
+          hub="Python"
+          hubLogo="/assets/tech/python.png"
+          spokes={[
+            { icon: 'bulb', label: 'AI/Machine Learning' },
+            { icon: 'database', label: 'Big Data' },
+            { icon: 'devices', label: 'Smart Device/IOT' },
+            { icon: 'play', label: 'Game Development' },
+            { icon: 'server', label: 'Backend Development' },
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'prompt-card',
+    label: 'Prompt card',
+    section: 'Python figures',
+    notes:
+      'TEXT THE LEARNER PASTES INTO AN AI TOOL. Not a file, not a shell, not a callout: the prompt IS the slide. `location` names where it is typed (rule 31 by analogy). [Bracketed] slots render dashed, like a placeholder part in SyntaxBreakdown. `fontSize` is the lever for a long prompt, never maxHeight.',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Quiz Generation">
+        <PromptCard prompt={"I've just completed learning about [concept]. Can you create a comprehensive quiz to test my understanding of this concept?"} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'value-type-map',
+    label: 'Value to type',
+    section: 'Python figures',
+    notes:
+      'VALUES BESIDE THEIR TYPES, when the pairing is the whole claim: 2 is an Integer and "2" is a String. Two or three rows. A fourth row is a DataTable; a value with no partner is a Chip.',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title={'2 vs 2.0 vs "2.0"'} lead="Mathematical Value vs Character">
+        <ValueTypeMap pairs={[{ value: '2', type: 'Integer' }, { value: '2.0', type: 'Float' }, { value: '"2.0"', type: 'String' }]} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'variable-trace',
+    label: 'Variable trace',
+    section: 'Python figures',
+    notes:
+      'A PROGRAM RUN ONE LINE PER CLICK, variables drawn as boxes (the course\'s container analogy), output appended as it prints. Step 0 is the code alone. Claims exactly steps.length build steps. Every output is pasted from a real run.',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Variable Assignment">
+        <VariableTrace
+          code={'a = 1\nprint(a)\na = 2\nprint(a)'}
+          steps={[
+            { line: 1, boxes: [{ name: 'a', value: '1' }], output: [] },
+            { line: 2, boxes: [{ name: 'a', value: '1' }], output: ['1'] },
+            { line: 3, boxes: [{ name: 'a', value: '2' }], output: ['1'] },
+            { line: 4, boxes: [{ name: 'a', value: '2' }], output: ['1', '2'] },
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'eval-steps',
+    label: 'Evaluation steps',
+    section: 'Python figures',
+    notes:
+      'ONE EXPRESSION REWRITTEN DOWN TO ITS VALUE, one operation per line, the value set apart. For order-of-operations teaching. Not a run (CodeOutput), not a trace (VariableTrace), not a procedure (StepList).',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Approach - 1">
+        <EvalSteps steps={['5 * 2 + 3 * 4', '10 + 12', '22']} />
+      </ContentSlide>
     ),
   },
   {
