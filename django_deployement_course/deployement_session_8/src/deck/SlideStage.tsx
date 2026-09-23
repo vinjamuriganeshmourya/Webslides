@@ -44,6 +44,16 @@ export function SlideStage({ children }: { children: ReactNode }) {
       style={{ perspective: 2000 }}
     >
       <div
+        /*
+          NAMED so tooling can find the slide's own coordinate system.
+
+          This is the box that is exactly SLIDE_WIDTH x SLIDE_HEIGHT, and its
+          `getBoundingClientRect()` therefore carries the current scale. The review
+          app converts a click into slide coordinates against this rect, the same
+          way `AnnotationLayer` converts a pen stroke — a comment pinned at
+          "x 820, y 300" means the same place on a laptop and on a projector.
+        */
+        data-slide-stage=""
         style={{
           position: 'absolute',
           left: '50%',

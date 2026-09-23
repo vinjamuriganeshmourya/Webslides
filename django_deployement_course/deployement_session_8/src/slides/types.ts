@@ -131,6 +131,15 @@ export interface ProceduralStepsSlideProps extends Base {
   lead?: ReactNode
   steps: Step[]
   tone?: Tone
+  /**
+   * Tighten the step spacing and drop the detail text a size. Defaults to
+   * `steps.length > 4`.
+   *
+   * Set it explicitly when the step DETAILS wrap: height comes from lines, not
+   * from the step count, so four steps with two-line details overflow where five
+   * one-liners fit. `ProceduralStepsSlide` has the full reason.
+   */
+  dense?: boolean
 }
 
 export interface ScenarioSlideProps extends Base {
@@ -153,6 +162,21 @@ export interface QuestionSlideProps extends Base {
    * is not a question slide.
    */
   qualifier?: ReactNode
+  /**
+   * The answers the room is choosing BETWEEN, two or three of them, rendered as
+   * equal boxes under the question.
+   *
+   * They exist so a posed question has something to point at while hands go up:
+   * "yes or no" said out loud is an instruction the slide has to carry in words,
+   * and the same pair drawn as two boxes is the ask itself. Keep them to a word
+   * or two each.
+   *
+   * STILL NOT THE ANSWER, and nothing here may hint at which box is right: no
+   * ticks, no colour split, no ordering by likelihood. The boxes are drawn
+   * identically on purpose. If one of them needs explaining, this is not a
+   * question slide.
+   */
+  choices?: ReactNode[]
   tone?: Tone
 }
 
@@ -190,6 +214,12 @@ export interface FeedbackSlideProps extends Base {
 export interface QuizTimeSlideProps extends Base {
   /** Defaults to "Quiz Time!". */
   title?: ReactNode
+  /**
+   * DO NOT USE. Content rule 28: the frame carries "Quiz Time!" and nothing
+   * else. The field stays declared only so already delivered sessions keep
+   * compiling against this type. A subtitle here previews the questions the
+   * external quiz tool is about to ask, and answers some of them.
+   */
   subtitle?: ReactNode
 }
 
