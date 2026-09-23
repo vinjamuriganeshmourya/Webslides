@@ -52,6 +52,7 @@ shipped with that exact mistake.
 | 10 | Verify by rendering, never by reading |
 | 11 | Screenshots are cropped to the point, output highlighted |
 | 12 | A technology named on a slide carries its logo (PNG) |
+| 12b | Slide copy is professional and plain: no casual asides, no long words, no session numbers |
 | 13 | Every asset lives in the central library first |
 | 14 | An approved slide type or transition goes into the kit and the registry |
 | 15 | A backslash in a JSX attribute is literal, so write one |

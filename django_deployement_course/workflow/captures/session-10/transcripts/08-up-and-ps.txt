@@ -1,0 +1,16 @@
+ Network ubuntu_default  Creating
+ Network ubuntu_default  Created
+ Volume ubuntu_db_data  Creating
+ Volume ubuntu_db_data  Created
+ Container ubuntu-backend-1  Creating
+ Container ubuntu-backend-1  Created
+ Container ubuntu-frontend-1  Creating
+ Container ubuntu-frontend-1  Created
+ Container ubuntu-backend-1  Starting
+ Container ubuntu-backend-1  Started
+ Container ubuntu-frontend-1  Starting
+ Container ubuntu-frontend-1  Started
+===PS===
+NAME                IMAGE                                 COMMAND                  SERVICE    CREATED        STATUS                  PORTS
+ubuntu-backend-1    jeevansravanth/nxttrendz-backend:6    "python manage.py ru…"   backend    1 second ago   Up Less than a second   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+ubuntu-frontend-1   jeevansravanth/nxttrendz-frontend:6   "docker-entrypoint.s…"   frontend   1 second ago   Up Less than a second   0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp

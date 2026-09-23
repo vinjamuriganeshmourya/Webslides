@@ -286,6 +286,76 @@ diagram with three named boxes and no marks makes them read all three.
 The logo supports the label; it does not replace it. A mark with no name beside
 it is a guessing game for anyone who does not already know the technology.
 
+## 12b. Slide copy is professional, never casual
+
+**Banned on a slide:** an evaluative aside about how a thing feels. "This is
+annoying", "the fun part", "don't worry", "a bit of a pain", "sadly", "luckily",
+"unfortunately". Also banned: addressing the room's mood rather than the
+subject.
+
+A slide states what is true and what it costs. The instructor supplies warmth,
+emphasis and reassurance out loud, where it belongs and where it can read the
+room. A slide that editorialises takes that job away from them and fixes one
+reading of it into the deck, where it will be read by someone the tone does not
+suit.
+
+Rewrite by naming the mechanism instead of the feeling:
+
+| Casual | Professional |
+|---|---|
+| "A changing address is annoying" | "A changing address costs nothing until it is written into a file" |
+| "Now for the fun part" | (delete it, and let the divider do the work) |
+| "Don't worry if this fails" | "If this fails, the cause is almost always the security group" |
+| "Sadly the free tier only gives 750 hours" | "The free tier is 750 instance hours a month" |
+
+### Never print a session number on a slide
+
+**User, 2026-09-16:** *"No Session number should be mentioned."*
+
+A deck refers to itself and to the course by NAME, never by number. Not in the
+footer, not in a recap, not in a takeaway. "Session 8", "sessions 8 and 9",
+"in session 4" are all banned in rendered copy.
+
+| Banned | Write instead |
+|---|---|
+| "Jenkins built this in session 8" | "Jenkins built this for you" |
+| "Session 9 launched the instance" | "You launched the instance last session" |
+| "as we saw in session 4" | "as you saw when you wrote the compose file" |
+
+Numbers date a deck and break the moment a session is inserted, split or
+re-ordered, and a learner watching a recording has no idea which number they
+are on. **"Last session" is fine. A number is not.** Where the reference needs
+to be specific, name the thing rather than the slot: "when you wrote the
+Jenkinsfile", "when you pushed your first image".
+
+Instructor `notes` may still use numbers, because the instructor is the only
+reader and they know the running order.
+
+### Professional does not mean long words
+
+Said in the same breath, **user, 2026-09-16:** *"also use very simple english
+dont use high vocabulary."* These two pull in the same direction, and it is easy
+to get one by breaking the other: dropping "annoying" and reaching for
+"acquires a cost" trades a casual word for a hard one, which is worse. The room
+reads English as a second language.
+
+So: short, ordinary words, in short sentences. A term the course has taught is
+fine, because it was taught. A long word chosen for tone is not.
+
+| Reaching for tone | Plain |
+|---|---|
+| "it acquires a cost" | "it starts costing something" |
+| "this is subsequently deployed" | "this is deployed after that" |
+| "leverage the pipeline" | "use the pipeline" |
+| "a myriad of services" | "over 240 services" |
+| "ensure that the rule is present" | "check the rule is there" |
+
+This is the second tone correction from the same user. Session 9 removed
+classroom-management voice, "Everyone confirms", "All must". The three rules
+share one root: **a slide carries the fact, the instructor carries the
+delivery.** Hard rule 26 already asked for plain literal English; this says it
+again because it was missed.
+
 ## 13. Every asset lives in the central library first
 
 `slide-kit/assets/` is the one place images are kept: `tech/` for technology

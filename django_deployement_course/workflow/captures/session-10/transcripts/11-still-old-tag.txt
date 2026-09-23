@@ -1,0 +1,2 @@
+backend  jeevansravanth/nxttrendz-backend:6
+frontend  jeevansravanth/nxttrendz-frontend:6
