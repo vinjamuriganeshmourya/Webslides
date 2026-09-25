@@ -39,10 +39,7 @@ import {
   PaidThings, ServerWithAddress, TwoAddresses, VpcFrame,
 } from './figures/recapFigures'
 import { RegionMap } from './figures/RegionMap'
-import { ServiceField } from './figures/ServiceField'
 import { ShellPanel } from './figures/ShellPanel'
-import { ShareBar } from './figures/ShareBar'
-import { SizeChart } from './figures/SizeChart'
 import { TwoDoors } from './figures/TwoDoors'
 import {
   ACCOUNT_KICKER, AMI_ID, AMI_NAME, ANYWHERE_CIDR, AWS_MARK, C1, C2, C3, C4, COURSE,
@@ -309,7 +306,7 @@ export const awsIntroDeck: SlideDef[] = [
   },
   {
     id: 'one-question', section: 'Opening', label: 'One question',
-    element: <QuestionSlide kicker="A question first" question="Where does a website live when it is not on your laptop?" lesson={SESSION} />,
+    element: <QuestionSlide kicker="A question first" question="If a website is not running on your laptop, where is it running?" lesson={SESSION} />,
     notes: 'Take three answers. "A server", "the cloud", "Google" are all fine. The next concept turns the answers into words the room can use.',
   },
 
@@ -350,7 +347,7 @@ export const awsIntroDeck: SlideDef[] = [
   {
     id: 'c1-data-centre', section: C1, label: 'A Data Centre',
     element: (
-      <ContentSlide kicker={C1} title="A Data Centre" lead="AWS counts them on its own page: 124 Availability Zones in 39 Regions" lesson={SESSION}>
+      <ContentSlide kicker={C1} title="A Data Centre" lead="AWS has data centres in different parts of the world. 124 Availability Zones in 39 Regions" lesson={SESSION}>
         <AnnotatedShot
           src="/shots/aws-global-infrastructure.png"
           alt="The AWS Global Infrastructure page: the sentence about 124 Availability Zones within 39 Geographic Regions, the region tabs with Asia Pacific selected, and a globe with a dot on each Region"
@@ -562,33 +559,9 @@ export const awsIntroDeck: SlideDef[] = [
     notes: 'On an account that is not yet active this opens the Complete your account setup page from the account block. On an active account it opens the EC2 dashboard, which is where the next concept starts.',
   },
   {
-    id: 'c2-market-share', section: C2, label: 'The market share',
-    element: (
-      <ContentSlide kicker={C2} title="The Market Share" lead="Close to three in ten cloud servers in the world are rented from AWS. That is why it is the name in job listings" lesson={SESSION}>
-        <ShareBar sourceHref="https://www.srgresearch.com/articles/q2-cloud-market-passes-143-billion-highest-growth-rate-in-eight-years" />
-      </ContentSlide>
-    ),
-    notes: 'Synergy Research Group, Q2 2026: AWS 28, Microsoft Azure 20, Google Cloud 15, the three together 63 percent of world cloud infrastructure. The bars say what a table cannot: AWS is bigger than the next two put together. Re-read the quarterly release if the deck is regenerated.',
-  },
-  {
-    id: 'c2-240-services', section: C2, label: 'Over 240 services',
-    element: (
-      <ContentSlide kicker={C2} title="Over 240 Services" lead="AWS has more than 240 services. This course uses one, EC2, and looks at a second, VPC" lesson={SESSION}>
-        <ServiceField count={240} cols={24} lit={[{ name: 'EC2', note: 'this course' }, { name: 'S3' }, { name: 'RDS' }, { name: 'VPC' }]} className="mb-5" />
-        <CardGrid cols={4}>
-          <Card title="EC2"><p className="text-body-sm">Rents you a computer</p></Card>
-          <Card title="S3"><p className="text-body-sm">Stores files</p></Card>
-          <Card title="RDS"><p className="text-body-sm">Runs a database for you</p></Card>
-          <Card title="VPC"><p className="text-body-sm">Your private network</p></Card>
-        </CardGrid>
-      </ContentSlide>
-    ),
-    notes: 'aws.amazon.com says "over 240 fully featured services", checked 2026-09-15. Older pages say 200. The room does not need 240. Click each card as you name it.',
-  },
-  {
     id: 'c2-ec2-rents', section: C2, label: 'EC2 rents a computer',
     element: (
-      <ContentSlide kicker={C2} title="EC2 Rents a Computer" lead="EC2 is Elastic Compute Cloud, the AWS service that rents you one computer. It is the same server as before, in an Amazon building, running your two containers" lesson={SESSION}>
+      <ContentSlide kicker={C2} title="EC2 Rents a Computer" lead="EC2 (Elastic Compute Cloud) is an AWS service that provides virtual computers (servers) in the cloud. These servers run in AWS data centres and can run applications such as your backend and frontend containers" lesson={SESSION}>
         <CloudPicture state={2} />
       </ContentSlide>
     ),
@@ -597,10 +570,10 @@ export const awsIntroDeck: SlideDef[] = [
   {
     id: 'c2-instance', section: C2, label: 'Instance',
     element: (
-      <ContentSlide kicker={C2} title="Instance" lead="An instance is AWS's word for one rented computer" lesson={SESSION} points={[
-        { text: 'It has a public address, so the internet can reach it', icon: 'globe' },
-        { text: 'It is on until you stop it. It never sleeps', icon: 'bolt' },
-        { text: 'You log in from your laptop with a key file, using SSH, which is Secure Shell', icon: 'key' },
+      <ContentSlide kicker={C2} title="Instance" lead="An instance is a computer that you rent from AWS. EC2 instance = a rented computer in the cloud" lesson={SESSION} points={[
+        { text: 'It has a public IP address so the internet can reach it', icon: 'globe' },
+        { text: 'It keeps running until you stop it', icon: 'bolt' },
+        { text: 'You can connect to it from your laptop using SSH and a key file', icon: 'key' },
       ]}>
         <MachineCard />
       </ContentSlide>
@@ -775,15 +748,17 @@ export const awsIntroDeck: SlideDef[] = [
   {
     id: 'c3-t3-sizes', section: C3, label: 'The t3 sizes',
     element: (
-      <ContentSlide kicker={C3} title="The t3 Sizes" lead={`The instance type is the size of the computer. Every t3 size has two vCPU, memory doubles at each step, and ${INSTANCE_TYPE} is enough for this course`} lesson={SESSION}>
-        <div className="grid grid-cols-[460px_1fr] items-center gap-10">
-          <SizeChart sizes={[{ name: INSTANCE_TYPE, ram: '1 GiB', height: 56 }, { name: 't3.small', ram: '2 GiB', height: 112 }, { name: 't3.medium', ram: '4 GiB', height: 224 }]} />
-          <DataTable compact columns={[{ label: 'Type' }, { label: 'vCPU' }, { label: 'Memory' }, { label: 'Fits this course' }]} rows={[
-            [<code key="a">{INSTANCE_TYPE}</code>, '2', '1 GiB', 'Yes'],
-            [<code key="b">t3.small</code>, '2', '2 GiB', 'More than needed'],
-            [<code key="c">t3.medium</code>, '2', '4 GiB', 'More than needed'],
-          ]} highlight={[0]} />
-        </div>
+      <ContentSlide kicker={C3} title="The t3 Sizes" lead={`For this course, ${INSTANCE_TYPE} is enough because the application does not need a large amount of CPU or memory`} lesson={SESSION}>
+        <DataTable compact columns={[{ label: 'Instance Type' }, { label: 'vCPU' }, { label: 'Memory (RAM)' }, { label: 'For This Course' }]} rows={[
+          [<code key="a">{INSTANCE_TYPE}</code>, '2', '1 GiB', 'Yes'],
+          [<code key="b">t3.small</code>, '2', '2 GiB', 'More than needed'],
+          [<code key="c">t3.medium</code>, '2', '4 GiB', 'More than needed'],
+        ]} highlight={[0]} />
+        <CardGrid cols={3} className="mt-5">
+          <Card title="Instance type"><p className="text-body-sm">The size of the virtual computer you are renting</p></Card>
+          <Card title="vCPU"><p className="text-body-sm">How much CPU processing power the instance has</p></Card>
+          <Card title="Memory (RAM)"><p className="text-body-sm">Temporary working space for running applications</p></Card>
+        </CardGrid>
       </ContentSlide>
     ),
     notes: `One new phrase: instance type. AWS writes GiB. ${INSTANCE_TYPE} costs ${INSTANCE_PRICE} in Mumbai, and a bigger size costs more and does nothing extra for two small containers.`,
@@ -885,7 +860,8 @@ export const awsIntroDeck: SlideDef[] = [
   {
     id: 'c3-subnets', section: C3, label: 'Subnets',
     element: (
-      <ContentSlide kicker={C3} title="Subnets" lead="The next line is the subnet, a slice of the VPC placed in one building. The instance sits in one subnet, with a private address inside and a public address outside" lesson={SESSION}>
+      <ContentSlide kicker={C3} title="Subnets" lead="A subnet is a small network inside a VPC where EC2 instances run. The instance has a private IP inside it and can also have a public IP" lesson={SESSION}>
+        <p className="mb-2 pl-8 font-mono text-body-sm text-ink-muted">VPC → Subnet → EC2 → Private IP + Public IP</p>
         <CloudPicture state={4} />
       </ContentSlide>
     ),
@@ -938,6 +914,16 @@ export const awsIntroDeck: SlideDef[] = [
       </ContentSlide>
     ),
     notes: `One new phrase: Security Group. Port ${PORT_SSH} for you over SSH, port ${PORT_APP} for your users, and port ${PORT_DB} listed nowhere, so a database on the instance cannot be reached from outside. The next slide is where the room creates it.`,
+  },
+  {
+    id: 'c3-door-list-read', section: C3, label: 'Reading the door list',
+    element: (
+      <ContentNoteSlide kicker={C3} title="Reading the Door List" lead="Internet → Security Group → EC2. The Security Group checks the port before a connection reaches the instance" lesson={SESSION} points={[
+        { text: `Port ${PORT_SSH} → You → You can connect using SSH`, icon: 'key' },
+        { text: `Port ${PORT_APP} → Everyone → Anyone on the internet can access your application on port ${PORT_APP}`, icon: 'globe' },
+        { text: `Port ${PORT_DB} → Not listed → Nobody from outside can connect through port ${PORT_DB}`, icon: 'cross' },
+      ]} note={{ kind: 'info', title: 'The check', body: 'If the port is allowed, the connection reaches the EC2. If it is not allowed, the connection is blocked.' }} />
+    ),
   },
   {
     id: 'c3-security-group', section: C3, label: 'Security Group',

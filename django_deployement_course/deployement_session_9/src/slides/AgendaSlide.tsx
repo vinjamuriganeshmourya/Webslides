@@ -44,8 +44,15 @@ const P1 = { x: 545, y: 170 }
 const P2 = { x: 548, y: 505 }
 const P3 = { x: 424, y: 706 }
 
-/** Where the first and last item sit vertically. */
-const Y_TOP = 236
+/**
+ * Where the first and last item sit vertically.
+ *
+ * 268, NOT 236. Item text is CENTRED on this y, so with the `sub` every real deck
+ * passes, the block's top edge sat at y=204: 42px inside the instructor-video
+ * rectangle (y 0..220), and `video-safe.mjs` reported it on every agenda in the
+ * Python course. 268 puts the first item's top edge at about y=236.
+ */
+const Y_TOP = 268
 const Y_BOTTOM = 612
 
 const bezier = (t: number) => {

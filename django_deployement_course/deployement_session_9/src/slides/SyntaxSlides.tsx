@@ -1,5 +1,6 @@
 import { SlideBase } from '@/ui/SlideBase'
 import { SlideHeader } from '@/ui/SlideHeader'
+import { SlideLead } from '@/ui/SlideLead'
 import { Callout } from '@/ui/Callout'
 import { SyntaxBreakdown } from '@/ui/SyntaxBreakdown'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
@@ -49,10 +50,12 @@ import type { CodeSyntaxSlideProps, CommandSyntaxSlideProps } from './types'
  *
  * WHY THE LEAD-LESS GUARD
  *
- * A header with no lead stops at y=168, and the specimen panel is full width, so
- * without the guard its top-right corner sits inside the instructor-video
- * rectangle (x 913..1280, y 0..220) and `video-safe.mjs` fails. `ContentSlide`
- * carries the same 52px guard for the same reason.
+ * A header stops at y=168, and the specimen panel is full width, so with nothing
+ * between the two its top-right corner sits inside the instructor-video rectangle
+ * (x 913..1280, y 0..220) and `video-safe.mjs` fails. `ContentSlide` carries the
+ * same 52px guard for the same reason. The test reads `lead` because a lead is
+ * what fills that band, drawn in the well by `SlideLead` rather than in the
+ * header.
  */
 function SyntaxSlide({
   kicker,
@@ -72,7 +75,14 @@ function SyntaxSlide({
   return (
     <SlideBase variant="light" lesson={lesson}>
       <div className="flex h-full flex-col">
-        <SlideHeader kicker={kicker} title={title} lead={lead} />
+        <SlideHeader kicker={kicker} title={title} />
+        {/*
+          The point opens the well, above the specimen panel and outside the
+          centred block. Inside it, the lead would be centred along with the
+          breakdown and read as a caption on the grammar rather than as the
+          sentence saying which construct is being taken apart.
+        */}
+        {lead && <SlideLead>{lead}</SlideLead>}
         <div className="flex min-h-0 flex-1 flex-col justify-center">
           <RevealGroup className={guard}>
             <Reveal dir="up">
