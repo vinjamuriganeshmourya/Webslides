@@ -43,7 +43,14 @@ const COLORS = {
 }
 
 // One tokenizer regex: comment | string | number | identifier | other.
-const TOKEN = /(#[^\n]*|\/\/[^\n]*)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)|([^A-Za-z0-9_$#"'`]+|.)/g
+//
+// Two details keep `//` comments working. The "other" class excludes `/`, or a
+// run of spaces before `//` swallows the slashes as one plain token and the
+// comment branch is never tried: the words inside the comment then tokenize as
+// keywords, which is how a Groovy line's `// replace with ...` printed `with`
+// in keyword blue. And `//` only opens a comment after whitespace or at line
+// start, so `http://` in a bash line stays plain text.
+const TOKEN = /(#[^\n]*|(?<=^|\s)\/\/[^\n]*)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)|([^A-Za-z0-9_$#"'`/]+|.)/g
 
 function highlightLine(line: string) {
   const out: React.ReactNode[] = []

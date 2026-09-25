@@ -55,7 +55,20 @@ import { NodeShell, lookOf, NODE_MIN_H } from './NodeShell'
  * step it returns to so the loop home is a single straight vertical.
  */
 
-const W = 1100
+/*
+  THE STAGE IS AS WIDE AS THE GRAPH, NOT AS WIDE AS THE WIDEST GRAPH.
+
+  It was a flat 1100px, sized for five spine slots. Session 7's gate has THREE
+  (a card, the gate, a card), which measure 504px and are drawn from the left
+  margin, so the figure sat 260px left of where the room reads the centre.
+  `align-check` passed it every time: the `figure` element is `mx-auto` and its
+  BOX is perfectly centred, so the drift is entirely inside a box the harness
+  reports as correct.
+
+  Derived per render from the walk `slots()` already does, with the left margin
+  repeated on the right, so the figure centres itself through `mx-auto` for any
+  spine length.
+*/
 
 const START = 76
 const SLOT = 176
@@ -105,6 +118,7 @@ function slots(spine: { kind?: string }[]) {
 export function GateFlow({ nodes, edges, caption, className = '' }: FlowchartFigureProps) {
   const g = resolveGraph({ nodes, edges })
   const pos = slots(g.spine)
+  const spineRight = pos.length ? pos[pos.length - 1].x + pos[pos.length - 1].w : START
 
   const gateIdx = g.spine.findIndex((n) => n.kind === 'decision')
   const gate = gateIdx >= 0 ? g.spine[gateIdx] : undefined
@@ -120,6 +134,39 @@ export function GateFlow({ nodes, edges, caption, className = '' }: FlowchartFig
      column when there is no loop to aim at. */
   const retrySlot = loopTargetIdx >= 0 ? pos[loopTargetIdx] : gateSlot
   const retryLeft = retrySlot ? retrySlot.cx - SLOT / 2 : START
+
+  /* The retry card can hang past the last spine slot when it parks under the
+     gate, so the extent is the wider of the two. */
+  const W = Math.max(spineRight, retryLeft + SLOT) + START
+
+  /*
+    WHERE THE EJECTION ARROW ENDS, AND WHY IT IS NOT ALWAYS THE SAME EDGE.
+
+    The exception path used to run down from the gate and then horizontally to
+    `retryLeft + SLOT + 6`, the retry card's RIGHT edge. That is correct only for
+    the shape this figure was designed around, where the work is ejected and
+    travels back LEFTWARD to the step it retries.
+
+    A graph with no loop edge parks the retry card directly under the gate. The
+    horizontal run then travelled RIGHTWARD, past the card, and left its
+    arrowhead floating in space 6px beyond the card's right edge, pointing at
+    nothing. Visible on session 7's `c2-iron-rules`, where the branch is a
+    dead-end `Stop` rather than a retry.
+
+    Three cases, one per relative position. Directly below gets no horizontal
+    run at all: the arrow drops into the card's top edge, which is also the
+    plainest reading of "ejected out of the underside".
+  */
+  const GAP_TO_CARD = 6
+  const dropStraight = !!retrySlot && !!gateSlot && Math.abs(retrySlot.cx - gateSlot.cx) < 1
+  const altPath =
+    gateSlot && retrySlot
+      ? dropStraight
+        ? `M ${gateSlot.cx} ${GATE_BOTTOM} V ${LOWER_TOP - GAP_TO_CARD}`
+        : retrySlot.cx < gateSlot.cx
+          ? `M ${gateSlot.cx} ${GATE_BOTTOM} V ${LOWER_MID} H ${retryLeft + SLOT + GAP_TO_CARD}`
+          : `M ${gateSlot.cx} ${GATE_BOTTOM} V ${LOWER_MID} H ${retryLeft - GAP_TO_CARD}`
+      : ''
 
   /* BEATS. The happy path assembles along itself first: node i lands on beat
      2i, the edge leaving it on 2i+1. The exception only starts once the whole
@@ -179,7 +226,7 @@ export function GateFlow({ nodes, edges, caption, className = '' }: FlowchartFig
             of the checkpoint instead of continuing. */}
         {altEdge && altNode && gateSlot && retrySlot && (
           <FcEdgeDraw
-            d={`M ${gateSlot.cx} ${GATE_BOTTOM} V ${LOWER_MID} H ${retryLeft + SLOT + 6}`}
+            d={altPath}
             at={EXC} shown={shown[EXC]}
             stroke={PAINT.alt}
             markerEnd="url(#gate-alt)"
