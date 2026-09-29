@@ -272,13 +272,9 @@ export function useKeyboardNav(h: Handlers) {
           e.preventDefault()
           h.openPicker()
           break
-        case 's':
-        case 'S':
-          /* Ctrl+S is save. Taking it would train an instructor to lose a file. */
-          if (e.ctrlKey) return
-          e.preventDefault()
-          h.toggleArrowMode()
-          break
+        /* `S` used to swap what the arrows do. Unbound in this deck: the
+           figures draw their own Back / Next / Replay, and a hidden key that
+           silently changes what Next means is the opposite of that. */
         case 'm':
         case 'M':
           if (e.ctrlKey) return

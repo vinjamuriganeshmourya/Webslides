@@ -41,9 +41,17 @@ export function StepControls({
   /** Hide the "3 / 8" counter when the figure already shows its own position. */
   showCount = true,
   mode = 'beats',
+  nextLabel = 'Next',
 }: {
   className?: string
   showCount?: boolean
+  /**
+   * What the forward press is CALLED, in the analogy's own words: `Join them`
+   * on a card that joins three pairs, `Show the numbers` on a dial. The name is
+   * part of the teaching — it says what the press is about to do — and a
+   * generic `Next` throws that away. Course rule R5c.
+   */
+  nextLabel?: string
   /**
    * `beats` — Back · Next · Replay, for a narrative figure the instructor talks
    * over one beat at a time.
@@ -115,7 +123,7 @@ export function StepControls({
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
       <Btn label="Back" onClick={back} enabled={canBack} glyph="back" />
-      <Btn label="Next" onClick={next} enabled={canNext} glyph="next" primary />
+      <Btn label={nextLabel} onClick={next} enabled={canNext} glyph="next" primary />
       <Btn label="Replay" onClick={replay} enabled glyph="replay" ghost />
       {showCount && max > 0 && (
         <span

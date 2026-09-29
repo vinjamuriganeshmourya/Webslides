@@ -78,16 +78,35 @@ function ColumnHead({ label }: { label: string }) {
   )
 }
 
-function Badge({ n, lit }: { n: number; lit: boolean }) {
+/*
+  ONE COLOUR PER PAIR, CARRIED BY BOTH SIDES.
+
+  The right column is out of order on purpose, so something has to say which
+  tile belongs with which. The number does it, and the colour does it faster:
+  the room finds the partner by hue from the back of the room and confirms it by
+  the digit. The reference deck uses three and no more, because a fourth pair
+  would need a hue nobody can name.
+
+  Course rule R5c: the numbering is part of the figure, and it arrives with the
+  join rather than sitting there from the start.
+*/
+const PAIR_TONES = [colors.brand, colors.success, colors.warning] as const
+const toneFor = (i: number) => PAIR_TONES[i % PAIR_TONES.length]
+
+function Badge({ n, lit, tone }: { n: number; lit: boolean; tone: string }) {
   return (
     <span
       className="grid h-8 w-8 shrink-0 place-items-center rounded-full font-heading text-body-sm font-bold"
       style={{
-        background: lit ? colors.brand : colors.surface2,
+        background: lit ? tone : colors.surface2,
         color: lit ? colors.white : colors.muted,
       }}
     >
-      {n}
+      {/* THE NUMBER IS THE REVEAL. Before a pair is joined its tile carries an
+          empty disc, not a grey digit: a digit that is already on screen has
+          done the pairing for the room, which is the one thing this card asks
+          them to do. Course rule R5c. */}
+      {lit ? n : ''}
     </span>
   )
 }
@@ -95,11 +114,13 @@ function Badge({ n, lit }: { n: number; lit: boolean }) {
 function Tile({
   n,
   lit,
+  tone,
   code,
   children,
 }: {
   n: number
   lit: boolean
+  tone: string
   code?: boolean
   children: ReactNode
 }) {
@@ -107,11 +128,11 @@ function Tile({
   return (
     <motion.div
       className="flex min-h-[74px] items-center gap-3 rounded-card border-2 bg-white px-4 py-3 shadow-card-soft"
-      style={{ borderColor: lit ? colors.brand : colors.line, background: lit ? `${colors.brand}0F` : colors.white }}
+      style={{ borderColor: lit ? tone : colors.line, background: lit ? `${tone}12` : colors.white }}
       animate={instant ? {} : { scale: lit ? 1 : 0.995 }}
       transition={{ duration: T.enter, ease: c4(E.out) }}
     >
-      <Badge n={n} lit={lit} />
+      <Badge n={n} lit={lit} tone={tone} />
       <span
         className={`${code ? 'font-mono text-[18px] font-semibold' : 'text-body'} leading-snug`}
         style={{ color: lit ? colors.ink : colors.body }}
@@ -132,7 +153,6 @@ export function MatchPairs({
   const instant = useInstant()
   const shown = useClaimedSteps(pairs.length)
   const joined = shown.filter(Boolean).length
-  const current = joined > 0 ? pairs[joined - 1] : undefined
 
   return (
     <div className={`flex flex-col gap-5 ${className}`}>
@@ -141,7 +161,7 @@ export function MatchPairs({
           <ColumnHead label={leftLabel} />
           <div className="flex flex-col gap-3">
             {pairs.map((p, i) => (
-              <Tile key={`l-${i}`} n={i + 1} lit={joined > i} code={p.code ?? true}>
+              <Tile key={`l-${i}`} n={i + 1} lit={joined > i} tone={toneFor(i)} code={p.code ?? true}>
                 {p.left}
               </Tile>
             ))}
@@ -151,7 +171,7 @@ export function MatchPairs({
           <ColumnHead label={rightLabel} />
           <div className="flex flex-col gap-3">
             {rightOrder.map((idx) => (
-              <Tile key={`r-${idx}`} n={idx + 1} lit={joined > idx}>
+              <Tile key={`r-${idx}`} n={idx + 1} lit={joined > idx} tone={toneFor(idx)}>
                 {pairs[idx].right}
               </Tile>
             ))}
@@ -159,21 +179,23 @@ export function MatchPairs({
         </div>
       </div>
 
-      {/* The reason for the join that was just made. One at a time, so the room
-          reads the reason for the pairing it just called out. */}
-      <div className="min-h-[70px] rounded-card border-l-4 bg-surface px-6 py-4" style={{ borderColor: colors.brand }}>
-        {current && (
+      {/* EVERY REASON STAYS ON SCREEN, each on its own pair's colour. Showing
+          one at a time makes the room re-derive the earlier pairings from
+          memory while the instructor is talking about the current one, and the
+          three reasons together are the recap. Course rule R5c. */}
+      <div className="flex flex-col gap-2">
+        {pairs.map((p, i) => (
           <motion.p
-            key={joined}
-            className="text-body font-medium leading-snug"
-            style={{ color: colors.ink }}
-            initial={instant ? false : { opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
+            key={i}
+            className="border-l-[3px] pl-3 text-body-sm leading-snug"
+            style={{ borderColor: toneFor(i), color: colors.body }}
+            initial={instant ? false : { opacity: 0, x: -6 }}
+            animate={{ opacity: joined > i ? 1 : 0, x: 0 }}
             transition={{ duration: T.enter, ease: c4(E.out) }}
           >
-            {current.why}
+            {p.why}
           </motion.p>
-        )}
+        ))}
       </div>
     </div>
   )

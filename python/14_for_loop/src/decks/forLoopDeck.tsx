@@ -245,7 +245,7 @@ export const forLoopDeck: SlideDef[] = [
             },
           ]}
         />
-        <StepControls className="mt-4 w-full justify-end" showCount={false} />
+        <StepControls className="mt-4 w-full justify-center" showCount={false} nextLabel="Join them" />
       </ContentSlide>
     ),
   },
@@ -494,7 +494,7 @@ export const forLoopDeck: SlideDef[] = [
             },
           ]}
         />
-        <StepControls className="mt-4 w-full justify-end" showCount={false} mode="code" />
+        <StepControls className="mt-4 w-full justify-center" showCount={false} mode="code" />
       </ContentSlide>
     ),
   },
@@ -573,7 +573,7 @@ export const forLoopDeck: SlideDef[] = [
         lead="Fill the pass table by hand first. Nothing here moves until pens are down."
       >
         <VariableTrace code={TASK1_CODE} steps={TASK1_STEPS} location={PY} />
-        <StepControls className="mt-4 w-full justify-end" showCount={false} mode="code" />
+        <StepControls className="mt-4 w-full justify-center" showCount={false} mode="code" />
       </ContentSlide>
     ),
   },
@@ -675,7 +675,7 @@ export const forLoopDeck: SlideDef[] = [
             },
           ]}
         />
-        <StepControls className="mt-4 w-full justify-end" showCount={false} />
+        <StepControls className="mt-4 w-full justify-center" showCount={false} />
       </ContentSlide>
     ),
   },
@@ -748,7 +748,7 @@ export const forLoopDeck: SlideDef[] = [
             },
           ]}
         />
-        <StepControls className="mt-4 w-full justify-end" showCount={false} />
+        <StepControls className="mt-4 w-full justify-center" showCount={false} />
       </ContentSlide>
     ),
   },
@@ -778,7 +778,7 @@ export const forLoopDeck: SlideDef[] = [
     element: (
       <ContentSlide kicker="Check it together" title="Riya's savings, day by day" lesson={SESSION} lead="Input 7.">
         <VariableTrace code={RIYA_CODE} steps={RIYA_STEPS} location={PY} />
-        <StepControls className="mt-4 w-full justify-end" showCount={false} mode="code" />
+        <StepControls className="mt-4 w-full justify-center" showCount={false} mode="code" />
       </ContentSlide>
     ),
   },
@@ -966,7 +966,7 @@ export const forLoopDeck: SlideDef[] = [
         lead="Option B. seats is 4 and booked is 3, so range(1, 1) has no numbers in it."
       >
         <VariableTrace code={SEATS_CODE} steps={SEATS_STEPS} location={PY} />
-        <StepControls className="mt-4 w-full justify-end" showCount={false} mode="code" />
+        <StepControls className="mt-4 w-full justify-center" showCount={false} mode="code" />
       </ContentSlide>
     ),
   },

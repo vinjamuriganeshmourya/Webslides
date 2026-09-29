@@ -245,7 +245,8 @@ export function PhonePlaylist({
   const arrived = at >= target
 
   return (
-    <div className={`grid grid-cols-[320px_1fr] items-start gap-10 ${className}`}>
+    <div className={`flex flex-col ${className}`}>
+    <div className="grid grid-cols-[320px_1fr] items-start gap-10">
       {/* THE PHONE. A fixed frame, so the list grows inside it rather than
           pushing the slide around when the sixth song arrives. */}
       <div
@@ -357,10 +358,12 @@ export function PhonePlaylist({
           many beats are left. */}
       <div className="flex flex-col pt-[6px]">
         <BeatList beats={beats} at={reached - 1} />
-        {/* The controls live in this column, not under the phone: the player's
-            own cluster owns the bottom-left of the stage below y=660. */}
-        <StepControls className="mt-7" />
       </div>
+    </div>
+      {/* CENTRED, between the player's own cluster on the left and the NxtWave
+          mark on the right. Pushed to either edge it sits on one of them.
+          Course rule R5c. */}
+      <StepControls className="mt-5 w-full justify-center" showCount={false} />
     </div>
   )
 }
