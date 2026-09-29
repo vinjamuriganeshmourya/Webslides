@@ -22,6 +22,7 @@ import { SequenceWalk } from './figures/SequenceWalk'
 import { PhonePlaylist } from './figures/PhonePlaylist'
 import { PiggyBank } from './figures/PiggyBank'
 import { MatchPairs } from './figures/MatchPairs'
+import { EverydayLoops } from './figures/EverydayLoops'
 import { RangeDial } from './figures/RangeDial'
 
 /**
@@ -314,30 +315,47 @@ export const forLoopDeck: SlideDef[] = [
         lesson={SESSION}
         lead="One action, and it keeps going by itself until a list runs out."
       >
-        <CardGrid cols={3} className="mx-auto w-[1100px]">
-          <Card icon="check" title="The attendance register">
-            One name, one tick. It stops when the names run out.
-          </Card>
-          {/* The mark, not an icon: content rule 12. The file is the library's
-              own `companies/instagram.png`, copied into `public/assets/`. */}
-          <Card
-            title={
-              <span className="flex items-center gap-2">
-                <img src="/assets/companies/instagram.png" alt="" width={22} height={22} draggable={false} />
-                Instagram stories
-              </span>
-            }
-          >
-            One story, then the next. Nobody types how many there are.
-          </Card>
-          <Card icon="target" title="The billing counter">
-            One item over the scanner, one beep, until the basket is empty.
-          </Card>
-        </CardGrid>
-        <p className="mt-6 text-center text-body-lg font-semibold text-ink">
+        {/* THREE REAL INTERFACES, NOT THREE TEXT CARDS. Course rule R5c: three
+            Cards with a sentence each is the same content with the argument
+            removed. Each screen runs its own idle loop at its own period, so
+            the three never beat in unison and the room sees three different
+            things doing one shape. */}
+        {/* mt-7: the third card's top-right corner sat 21px inside the
+            instructor-video rectangle (x913..1280, y0..220). The three cards
+            are as wide as the well allows, so the fix is vertical, not a
+            narrower figure. */}
+        <EverydayLoops
+          className="mt-4"
+          cards={[
+            {
+              title: 'The attendance register',
+              caption: 'One name, one tick. It stops when the names run out.',
+              scene: { kind: 'register', names: ['Aarav', 'Diya', 'Ishan', 'Riya', 'Zoya'] },
+            },
+            {
+              /* The mark, not an icon: content rule 12. The file is the
+                 library's own `companies/instagram.png`. */
+              title: (
+                <span className="flex items-center gap-2">
+                  <img src="/assets/companies/instagram.png" alt="" width={22} height={22} draggable={false} />
+                  Instagram stories
+                </span>
+              ),
+              caption: 'One story, then the next. Nobody types how many there are.',
+              scene: { kind: 'stories', stories: 5 },
+            },
+            {
+              title: 'The billing counter',
+              caption: 'One item over the scanner, one beep, until the basket is empty.',
+              scene: { kind: 'counter', items: 4, beep: 'beep' },
+            },
+          ]}
+        />
+        <p className="mt-5 text-center text-body-lg font-semibold text-ink">
           Same shape all three times. Take a list. Do one job. Once for each item in it. You never say
           how many.
         </p>
+        <StepControls className="mt-4 w-full justify-center" showCount={false} />
       </ContentSlide>
     ),
   },

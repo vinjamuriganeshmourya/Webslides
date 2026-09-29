@@ -125,8 +125,8 @@ function useCycle(count: number, period: number): number {
   return instant ? 0 : i
 }
 
-const ROW_H = 34
-const ROW_GAP = 8
+const ROW_H = 30
+const ROW_GAP = 6
 const ROW_PITCH = ROW_H + ROW_GAP
 
 /** The attendance register: a tick that walks the names, one at a time. */
@@ -183,7 +183,7 @@ function StoriesScene({ stories, period }: { stories: number; period: number }) 
   const each = period / stories / 1000
   return (
     <div
-      className="flex h-[224px] w-[186px] flex-col justify-between overflow-hidden rounded-[22px] border-[5px] p-2.5"
+      className="flex h-[194px] w-[162px] flex-col justify-between overflow-hidden rounded-[20px] border-[5px] p-2.5"
       style={{ borderColor: colors.nwBlack, backgroundImage: STORY_GRADIENT }}
     >
       <div>
@@ -325,7 +325,7 @@ export function EverydayLoops({ cards, placeholder = 'Yours', className = '' }: 
           }}
         >
           <div
-            className="grid h-[236px] place-items-center rounded-xl2 border"
+            className="grid h-[206px] place-items-center rounded-xl2 border"
             style={{
               borderColor: colors.line,
               background: colors.surface,
