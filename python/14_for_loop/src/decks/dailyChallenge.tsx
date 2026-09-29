@@ -451,7 +451,10 @@ export const dailyChallengeSlides: Record<string, SlideDef> = {
             fontSize={20}
             code={'n = int(input())\nfor counter in range(n):\n    print("* " * (counter + 1))'}
             loopBack={{ from: 3, to: 2 }}
-            className="shrink-0"
+            /* ONLY THE CODE BOX IS CENTRED. The row stays top-aligned so the
+               panels keep their own top edge; `self-center` lifts the short
+               code panel to the middle of the taller column beside it. */
+            className="shrink-0 self-center"
           />
           <IoPanels
             className="w-[340px] shrink-0 pt-[6px]"
@@ -555,7 +558,10 @@ export const dailyChallengeSlides: Record<string, SlideDef> = {
             fontSize={20}
             code={'n = int(input())\nfor counter in range(1, n + 1):\n    print("* " * counter)'}
             loopBack={{ from: 3, to: 2 }}
-            className="shrink-0"
+            /* ONLY THE CODE BOX IS CENTRED. The row stays top-aligned so the
+               panels keep their own top edge; `self-center` lifts the short
+               code panel to the middle of the taller column beside it. */
+            className="shrink-0 self-center"
           />
           <IoPanels
             className="w-[340px] shrink-0 pt-[6px]"
