@@ -23,6 +23,7 @@ import { EverydayShape } from './figures/EverydayShape'
 import { StringWalkCard } from './figures/StringWalkCard'
 import { PiggyMeter } from './figures/PiggyMeter'
 import { FillableCode } from './figures/FillableCode'
+import { DayStrip } from './figures/DayStrip'
 import { dailyChallengeSlides as dc } from './dailyChallenge'
 import { RangeDial } from './figures/RangeDial'
 
@@ -150,6 +151,19 @@ const RIYA_COINS: (string | undefined)[] = [
   '\u20B97',
   undefined,
   undefined,
+]
+
+/* Which day each RIYA_STEPS entry is on. -1 for the steps that are not a day:
+   lines 1 and 2, the loop asking once more, and the print. */
+const RIYA_STEP_DAY = [-1, 0, 1, 2, 3, 4, 5, 6, -1, -1]
+const RIYA_DAYS = [
+  { label: 'Day 1', coin: '\u20B91' },
+  { label: 'Day 2' },
+  { label: 'Day 3', coin: '\u20B93' },
+  { label: 'Day 4' },
+  { label: 'Day 5', coin: '\u20B95' },
+  { label: 'Day 6' },
+  { label: 'Day 7', coin: '\u20B97' },
 ]
 
 const RIYA_NOTES = [
@@ -688,6 +702,9 @@ export const forLoopDeck: SlideDef[] = [
             filling beside the variable boxes, and dropping it turned a story
             back into an exercise. Type comes down a step to make room, which is
             the trade the review asked for. */}
+        {/* The week, so the odd/even rule is visible at a glance rather than
+            one day at a time in a variable box. */}
+        <DayStrip days={RIYA_DAYS} stepDay={RIYA_STEP_DAY} className="mb-3" />
         <div className="flex items-start justify-center gap-7">
           <VariableTrace code={RIYA_CODE} steps={RIYA_STEPS} location={PY} className="flex-1" />
           {/* The bank sits in the middle of its space, like the code panel and

@@ -1,8 +1,10 @@
 import {
   createContext,
+  useState,
   useCallback,
   useContext,
   useId,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -28,6 +30,15 @@ import { useInstant } from './instant'
 interface StepContextValue {
   step: number
   claim: (id: string) => number
+  /**
+   * Tell the Stepper its children's step COUNT has changed, so it re-renders,
+   * rebuilds the registry and reports a new max. A figure whose step count
+   * depends on its own state (the string walk: one step per executed line, so
+   * fifteen for "Python" and seven for "Go") changes that count without the
+   * Stepper above it re-rendering, and the counter would otherwise keep the
+   * number it was first given.
+   */
+  resync: () => void
   /** Highest claimed step on this slide. 0 until the children have registered. */
   max: number
   /** Move the slide's build to an exact step. Clamped by the caller. */
@@ -67,6 +78,31 @@ export function Stepper({
     next: 0,
   })
 
+  /*
+    THE REGISTRY IS REBUILT EVERY RENDER, not accumulated for the life of the
+    slide.
+
+    It used to only ever grow: an id, once claimed, kept its number, and `next`
+    never came back down. That is invisible while a slide's steps are fixed, and
+    wrong the moment they are not. The string-walk card claims one step per
+    executed LINE, so "Python" is 15 and "Go" is 7 -- and switching to "Go" left
+    the counter reading 15, because the seven surviving ids kept their old
+    numbers and `next` remembered the eight that had gone.
+
+    Clearing here is safe because the parent's body runs before its children
+    re-render, so every `Step` and `useClaimedSteps` re-claims in source order
+    on the same pass and `onMax` reports the new total in the layout effect
+    below. It would NOT be safe for a memoised child that skips a render: such a
+    child would fail to re-claim and lose its step. Nothing in this deck memoises
+    a stepped figure, and a figure that needs to should claim through a stable
+    wrapper rather than reintroduce a registry that never shrinks.
+  */
+  reg.current.map.clear()
+  reg.current.next = 0
+
+  const [, setTick] = useState(0)
+  const resync = useCallback(() => setTick((n) => n + 1), [])
+
   const claim = useCallback((id: string) => {
     const r = reg.current
     const existing = r.map.get(id)
@@ -83,8 +119,8 @@ export function Stepper({
   })
 
   const value = useMemo(
-    () => ({ step, claim, max, setStep, replay }),
-    [step, claim, max, setStep, replay],
+    () => ({ step, claim, resync, max, setStep, replay }),
+    [step, claim, resync, max, setStep, replay],
   )
   return <StepContext.Provider value={value}>{children}</StepContext.Provider>
 }
@@ -128,6 +164,12 @@ export function useReveal(): boolean {
 export function useClaimedSteps(count: number): boolean[] {
   const ctx = useContext(StepContext)
   const base = useId()
+  const seen = useRef<number | null>(null)
+  const resync = ctx?.resync
+  useEffect(() => {
+    if (seen.current !== null && seen.current !== count) resync?.()
+    seen.current = count
+  }, [count, resync])
   if (!ctx) return Array.from({ length: count }, () => true)
   const orders = Array.from({ length: count }, (_, i) => ctx.claim(`${base}-${i}`))
   return orders.map((order) => REVEAL_ALL || ctx.step >= order)
