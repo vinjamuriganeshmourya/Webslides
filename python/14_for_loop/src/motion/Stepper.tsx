@@ -164,6 +164,13 @@ export function useStepControls(): {
   canBack: boolean
   canNext: boolean
   available: boolean
+  /**
+   * True under `?all`, where every Step shows at once and the deck's step
+   * counter never moves. A figure that derives its display from `step` MUST
+   * check this, or it renders its step-0 state on every contact sheet and QA
+   * capture while the figures beside it show their last.
+   */
+  allRevealed: boolean
   back: () => void
   next: () => void
   replay: () => void
@@ -193,6 +200,7 @@ export function useStepControls(): {
     canBack: available && step > 0,
     canNext: available && step < max,
     available,
+    allRevealed: REVEAL_ALL,
     toStart: available ? toStart : noop,
     back: available ? back : noop,
     next: available ? next : noop,
