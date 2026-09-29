@@ -87,9 +87,10 @@ function MockQuizCard({ instant }: { instant: boolean }) {
         <style>{`
           @keyframes qtBreathe { 0%,100% { transform: scale(1) } 50% { transform: scale(1.08) } }
           @keyframes qtBlink   { 0%,100% { opacity: 1 } 50% { opacity: .2 } }
+          @keyframes qtSweep   { to { transform: rotate(360deg) } }
         `}</style>
         <div
-          className="flex items-center gap-1.5 rounded-pill px-2.5 py-1 font-heading text-[13px] font-bold"
+          className="flex items-center gap-2 rounded-pill px-3 py-[5px] font-heading text-[14px] font-bold"
           style={{
             background: '#FFEFD6',
             color: '#B45309',
@@ -97,12 +98,25 @@ function MockQuizCard({ instant }: { instant: boolean }) {
           }}
         >
           <span
-            className="h-2 w-2 shrink-0 rounded-full"
+            className="h-[9px] w-[9px] shrink-0 rounded-full"
             style={{ background: '#F59E0B', animation: instant ? undefined : 'qtBlink 1.5s ease-in-out infinite' }}
           />
-          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.4">
+          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.4">
             <circle cx="12" cy="13" r="8" />
-            <path d="M12 13V8M9 2h6" strokeLinecap="round" />
+            <path d="M9 2h6" strokeLinecap="round" />
+            {/* The hand goes round. `transform-box: view-box` is what makes the
+                origin read in the svg's own units instead of the group's bbox,
+                which would put the pivot at the middle of the hand. */}
+            <g
+              style={{
+                transformOrigin: '12px 13px',
+                transformBox: 'view-box',
+                animation: instant ? undefined : 'qtSweep 3s linear infinite',
+              }}
+            >
+              <path d="M12 13V7.5" strokeLinecap="round" />
+            </g>
+            <circle cx="12" cy="13" r="1.3" fill="currentColor" stroke="none" />
           </svg>
           Timer
         </div>
