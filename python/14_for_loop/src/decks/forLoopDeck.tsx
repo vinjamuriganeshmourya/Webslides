@@ -2,19 +2,16 @@ import type { DeckMeta, SlideDef } from '@/deck/types'
 import {
   AgendaSlide,
   BrandSlide,
-  CodeSyntaxSlide,
   ContentSlide,
   FeedbackSlide,
   KeyTakeawaysSlide,
   PracticeSlide,
-  QuestionSlide,
   QuizTimeSlide,
   RecapSlide,
   SectionBreakerSlide,
-  StatusPointsSlide,
   ThankYouSlide,
 } from '@/slides'
-import { Card, CardGrid, CodeBlock, CodeOutput, SwapRows, VariableTrace, StepControls} from '@/ui'
+import { Card, CodeBlock, CodeOutput, SwapRows, VariableTrace, StepControls} from '@/ui'
 import type { TraceStep } from '@/ui'
 import { colors } from '@/design/tokens'
 import { Step } from '@/motion/Stepper'
@@ -24,6 +21,7 @@ import { PiggyBank } from './figures/PiggyBank'
 import { MatchPairs } from './figures/MatchPairs'
 import { EverydayLoops } from './figures/EverydayLoops'
 import { EverydayShape } from './figures/EverydayShape'
+import { dailyChallengeSlides as dc } from './dailyChallenge'
 import { RangeDial } from './figures/RangeDial'
 
 /**
@@ -164,8 +162,6 @@ const SEATS_STEPS: TraceStep[] = [
 ]
 
 /** The star pattern, as it really prints. Trailing space per row is real. */
-const TRIANGLE_4 = '* \n* * \n* * * \n* * * * '
-
 const WORD_LOOP = (w: string) => `word = "${w}"\nfor ch in word:\n    print(ch)\nprint("Done")`
 
 const task2Slide = (
@@ -418,78 +414,11 @@ export const forLoopDeck: SlideDef[] = [
       />
     ),
   },
-  {
-    id: 'can-we-simplify',
-    section: AGENDA.forLoop,
-    label: 'Can We Simplify This?',
-    notes:
-      'Ask it out loud and wait. Three of the six lines only keep count. Content rule 16 keeps this a content slide rather than a question slide, because the room needs the code in front of it to answer.',
-    element: (
-      <ContentSlide
-        kicker="While Loop"
-        title="Can We Simplify This?"
-        lesson={SESSION}
-        lead="Three lines in this loop only keep count. None of them prints anything."
-      >
-        {/* The cards sit UNDER the code, not beside it. Beside it they run from
-            x=699 to x=1216 starting at y=154, which is straight through the
-            instructor-video rectangle; `video-safe.mjs` reported 303px in. */}
-        <CodeBlock
-          filename={PY}
-          className="mx-auto w-[680px]"
-          fontSize={15}
-          code={'a = "Python"\nlength_of_a = len(a)\ncounter = 0\nwhile counter < length_of_a:\n    print(a[counter])\n    counter = counter + 1'}
-          highlight={[2, 3, 4, 6]}
-        />
-        {/* The code is on screen from step 0; the three names are the teaching
-            beats, one per press, so the room reads one line at a time. */}
-        <CardGrid cols={3} className="mt-5">
-          <Card icon="settings" title="Initialization">
-            counter = 0
-          </Card>
-          <Card icon="target" title="Termination condition">
-            while counter &lt; length_of_a:
-          </Card>
-          <Card icon="arrow" title="Updation">
-            counter = counter + 1
-          </Card>
-        </CardGrid>
-      </ContentSlide>
-    ),
-  },
-  {
-    id: 'for-loop-syntax',
-    section: AGENDA.forLoop,
-    label: 'For Loop syntax',
-    element: (
-      <CodeSyntaxSlide
-        kicker={AGENDA.forLoop}
-        title="For Loop"
-        lesson={SESSION}
-        lead="for goes through each item of a sequence, one at a time"
-        language="python"
-        parts={[
-          { token: 'for', label: 'The keyword', body: 'It starts the loop.', after: ' ' },
-          {
-            token: 'each_item',
-            label: 'The loop variable',
-            body: 'It holds one item at a time. You choose this name.',
-            fill: 'placeholder',
-            after: ' ',
-          },
-          { token: 'in', label: 'The keyword', body: 'It reads as "in", and it means it.', after: ' ' },
-          {
-            token: 'sequence',
-            label: 'The sequence',
-            body: 'The items to walk. A string is a sequence of characters.',
-            fill: 'placeholder',
-            after: ':',
-          },
-        ]}
-        note={{ kind: 'note', title: 'The body', body: 'The indented lines under it run once for each item.' }}
-      />
-    ),
-  },
+  dc.s8,
+  dc.s11,
+  dc.s15,
+  dc.s16,
+  dc.s17,
   {
     id: 'string-is-a-sequence',
     section: AGENDA.forLoop,
@@ -579,24 +508,7 @@ export const forLoopDeck: SlideDef[] = [
       </ContentSlide>
     ),
   },
-  {
-    id: 'not-needed',
-    section: AGENDA.forLoop,
-    label: 'Not needed any more',
-    element: (
-      <StatusPointsSlide
-        kicker={AGENDA.forLoop}
-        title="Not needed any more"
-        lesson={SESSION}
-        lead="The for loop walks the sequence itself, so three of the while loop's lines have no job left."
-        items={[
-          { status: 'error', text: 'Initialization', detail: 'No counter to start at 0.' },
-          { status: 'error', text: 'Termination condition', detail: 'The sequence running out is the stop.' },
-          { status: 'error', text: 'Updation', detail: 'The loop moves to the next item on its own.' },
-        ]}
-      />
-    ),
-  },
+  dc.s18,
   {
     id: 'task1-trace',
     section: AGENDA.forLoop,
@@ -662,20 +574,10 @@ export const forLoopDeck: SlideDef[] = [
       />
     ),
   },
-  {
-    id: 'question-sequence-of-numbers',
-    section: AGENDA.range,
-    label: 'How do we make a sequence of numbers?',
-    notes: 'Take the answers out loud. Do not answer it here.',
-    element: (
-      <QuestionSlide
-        kicker={AGENDA.range}
-        question="How do we make a sequence of numbers?"
-        qualifier="A for loop needs a sequence. What if we want numbers, like 0, 1, 2, 3?"
-        lesson={SESSION}
-      />
-    ),
-  },
+  dc.s33,
+  dc.s34,
+  dc.s35,
+  dc.s36,
   {
     id: 'range-dial',
     section: AGENDA.range,
@@ -713,32 +615,6 @@ export const forLoopDeck: SlideDef[] = [
           ]}
         />
         <StepControls className="mt-4 w-full justify-center" showCount={false} />
-      </ContentSlide>
-    ),
-  },
-  {
-    id: 'for-number-in-range',
-    section: AGENDA.range,
-    label: 'for number in range(3)',
-    element: (
-      <ContentSlide
-        kicker={AGENDA.range}
-        title="for number in range(3)"
-        lesson={SESSION}
-        lead="The loop runs once for each number that range gives."
-      >
-        <CodeOutput
-          layout="stack"
-          className="mx-auto w-[760px]"
-          panes={[
-            {
-              location: PY,
-              code: 'for number in range(3):\n    print(number)',
-              output: '0\n1\n2',
-              showLineNumbers: true,
-            },
-          ]}
-        />
       </ContentSlide>
     ),
   },
@@ -835,6 +711,7 @@ export const forLoopDeck: SlideDef[] = [
       />
     ),
   },
+  dc.s37,
   {
     id: 'task3-write-the-loop',
     section: AGENDA.star,
@@ -860,32 +737,7 @@ export const forLoopDeck: SlideDef[] = [
       </ContentSlide>
     ),
   },
-  {
-    id: 'star-solution',
-    section: AGENDA.star,
-    label: 'Solution',
-    element: (
-      <ContentSlide
-        kicker={AGENDA.star}
-        title="Solution"
-        lesson={SESSION}
-        lead="counter goes 0, 1, 2, 3. Each line prints counter + 1 stars."
-      >
-        <CodeOutput
-          className="mx-auto w-[1000px]"
-          panes={[
-            {
-              label: 'Input 4',
-              location: PY,
-              code: 'n = int(input())\nfor counter in range(n):\n    print("* " * (counter + 1))',
-              output: TRIANGLE_4,
-              showLineNumbers: true,
-            },
-          ]}
-        />
-      </ContentSlide>
-    ),
-  },
+  dc.s40,
   {
     id: 'which-one-is-right',
     section: AGENDA.mistake,
@@ -935,32 +787,8 @@ export const forLoopDeck: SlideDef[] = [
       </ContentSlide>
     ),
   },
-  {
-    id: 'simpler-with-range-1-n-1',
-    section: AGENDA.mistake,
-    label: 'Simpler with range(1, n + 1)',
-    element: (
-      <ContentSlide
-        kicker={AGENDA.mistake}
-        title="Simpler with range(1, n + 1)"
-        lesson={SESSION}
-        lead="counter is already the number of stars, so there is nothing to add."
-      >
-        <CodeOutput
-          className="mx-auto w-[1000px]"
-          panes={[
-            {
-              label: 'Input 4',
-              location: PY,
-              code: 'n = int(input())\nfor counter in range(1, n + 1):\n    print("* " * counter)',
-              output: TRIANGLE_4,
-              showLineNumbers: true,
-            },
-          ]}
-        />
-      </ContentSlide>
-    ),
-  },
+  dc.s42,
+  dc.s45,
   {
     id: 'exit-question',
     section: AGENDA.mistake,
