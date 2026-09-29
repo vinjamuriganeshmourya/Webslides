@@ -72,16 +72,18 @@ export interface CodeOutputPane {
 const OUT_INK = { result: colors.ink, error: colors.danger } as const
 
 function OutputPanel({
+  className = '',
   output,
   kind = 'result',
   fontSize,
 }: {
+  className?: string
   output: string
   kind?: 'result' | 'error'
   fontSize?: number
 }) {
   return (
-    <div className="overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
+    <div className={`flex flex-col overflow-hidden rounded-card border border-line bg-white shadow-card-soft ${className}`}>
       <div className="flex items-center gap-2 border-b border-line bg-surface px-4 py-2">
         <span
           className="inline-block h-2 w-2 rounded-full"
@@ -111,7 +113,7 @@ function OutputPanel({
         the single character `7`. The pre now hugs its own text exactly.
       */}
       <div
-        className="overflow-x-auto px-4 py-3 font-mono"
+        className="overflow-x-auto px-4 py-2 font-mono leading-snug"
         style={{ color: OUT_INK[kind], fontSize: fontSize ?? 17, lineHeight: 1.6 }}
       >
         {/* ONE ELEMENT PER LINE, each `whitespace-pre` so leading spaces and
@@ -130,7 +132,7 @@ function OutputPanel({
 function PaneLabel({ label, logo }: { label?: ReactNode; logo?: string }) {
   if (!label && !logo) return null
   return (
-    <div className="mb-2 flex items-center gap-2">
+    <div className="mb-1 flex items-center gap-2">
       {logo && <img src={logo} alt="" aria-hidden className="h-6 w-6 object-contain" />}
       {label && (
         <span className="font-heading text-body-sm font-bold uppercase tracking-wider text-body">
@@ -161,11 +163,14 @@ function RunArrow({ dir }: { dir: 'right' | 'down' }) {
 export function CodeOutput({
   panes,
   outputFontSize,
+  codeFontSize,
   layout = 'row',
   className = '',
 }: {
   /** One pane, or two to compare. Three would be unreadable at 1280x720. */
   panes: CodeOutputPane[]
+  /** Smaller code, for a two-pane comparison whose taller half runs six lines. */
+  codeFontSize?: number
   outputFontSize?: number
   /** Single-pane only: `stack` puts output UNDER code at full width. */
   layout?: 'row' | 'stack'
@@ -174,26 +179,58 @@ export function CodeOutput({
   const two = panes.length > 1
 
   if (two) {
+    /*
+      ONE GRID FOR BOTH PANES, not two independent columns.
+
+      Stacked per pane, a three-line program beside a six-line one gave two code
+      boxes of different heights, so the run arrows sat at different heights and
+      the two output panels began and ended in different places. The whole point
+      of this layout is that the room COMPARES the two, and a comparison whose
+      halves do not line up makes the reader do the aligning.
+
+      Cells are emitted row by row (both labels, both code panels, both arrows,
+      both outputs), so each row sizes to its taller cell and the two columns
+      share it. `h-full` lets the shorter panel grow into the row rather than
+      sit in the top of it.
+    */
     return (
       <RevealGroup
         stagger={T.stagger}
         delayChildren={T.lead}
-        className={`grid grid-cols-2 items-start gap-6 ${className}`}
+        className={`grid grid-cols-2 items-stretch gap-x-6 ${className}`}
       >
         {panes.slice(0, 2).map((p, i) => (
-          <Reveal key={i} dir="up">
+          <Reveal key={`label-${i}`} dir="up">
             <PaneLabel label={p.label} logo={p.logo} />
+          </Reveal>
+        ))}
+        {panes.slice(0, 2).map((p, i) => (
+          <Reveal key={`code-${i}`} dir="up" className="h-full">
             <CodeBlock
+              className="h-full"
               code={p.code}
               filename={p.location}
               language={p.language ?? 'python'}
               showLineNumbers={p.showLineNumbers ?? false}
-              fontSize={16}
+              fontSize={codeFontSize ?? 16}
             />
-            <div className="my-2 flex justify-center">
+          </Reveal>
+        ))}
+        {panes.slice(0, 2).map((_, i) => (
+          <Reveal key={`arrow-${i}`} dir="fade">
+            <div className="my-0.5 flex justify-center">
               <RunArrow dir="down" />
             </div>
-            <OutputPanel output={p.output} kind={p.kind} fontSize={outputFontSize ?? 16} />
+          </Reveal>
+        ))}
+        {panes.slice(0, 2).map((p, i) => (
+          <Reveal key={`out-${i}`} dir="up" className="h-full">
+            <OutputPanel
+              className="h-full"
+              output={p.output}
+              kind={p.kind}
+              fontSize={outputFontSize ?? 16}
+            />
           </Reveal>
         ))}
       </RevealGroup>
@@ -218,7 +255,7 @@ export function CodeOutput({
             showLineNumbers={p.showLineNumbers ?? false}
           />
         </Reveal>
-        <div className="my-2 flex justify-center">
+        <div className="my-0.5 flex justify-center">
           <RunArrow dir="down" />
         </div>
         <Reveal dir="up">

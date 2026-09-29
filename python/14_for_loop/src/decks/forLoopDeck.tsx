@@ -450,9 +450,13 @@ export const forLoopDeck: SlideDef[] = [
             control cluster owns x18..409 below y=660, so the tall pane has to be
             the right-hand one. The short answer first, with the six lines it
             replaces beside it, is also the better read. */}
+        {/* MIDDLE ALIGNED. The two panes are the whole content of this frame,
+            so they sit in the middle of the well rather than at the top of it. */}
+        <div className="flex h-full w-full items-center justify-center">
         <CodeOutput
           className="w-[845px]"
-          outputFontSize={14}
+          outputFontSize={12}
+          codeFontSize={15}
           panes={[
             {
               label: 'The for loop',
@@ -468,6 +472,7 @@ export const forLoopDeck: SlideDef[] = [
             },
           ]}
         />
+        </div>
       </ContentSlide>
     ),
   },
