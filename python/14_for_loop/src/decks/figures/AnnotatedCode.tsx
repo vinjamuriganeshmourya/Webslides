@@ -146,7 +146,7 @@ export function AnnotatedCode({
     .join(' ')
 
   return (
-    <div className={className}>
+    <div className={`${className}`}>
       {/* THE TITLE BAR SPANS THE CODE COLUMNS ONLY. The label rail is a column
           of this same grid, so every label shares a grid row with its line and
           the alignment cannot drift; but the dark surface is painted per cell,
@@ -154,7 +154,7 @@ export function AnnotatedCode({
           The names were inside it, competing with the program for one surface,
           and the room read them as part of the code. */}
       <div
-        className="grid"
+        className="grid w-full"
         style={{ gridTemplateColumns: cols }}
       >
       <div

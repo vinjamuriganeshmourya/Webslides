@@ -103,6 +103,11 @@ function buildSteps(literal: string): RunStep[] {
 export function StringWalkCard({ session, py }: { session: string; py: string }) {
   const instant = useInstant()
   const [literal, setLiteral] = useState(WORDS[0].literal)
+  /* THE SPLIT IS THE COMMITMENT. The reference makes the room answer "one
+     string, or six characters?" and press Split it before anything walks. Until
+     they do, the frame shows the word as ONE thing, because that is the belief
+     the card is about to correct. */
+  const [split, setSplit] = useState(false)
   const chars = literal.slice(1, -1).split('').filter(Boolean)
   const steps = buildSteps(literal)
   const shown = useClaimedSteps(steps.length)
@@ -125,21 +130,52 @@ export function StringWalkCard({ session, py }: { session: string; py: string })
       lead="Pick a word, say how many lines it will print, then step it one line at a time."
     >
       <div className="flex flex-col items-center gap-2">
-        <WordChooser words={WORDS} value={literal} onChange={setLiteral} />
+        <WordChooser
+          words={WORDS}
+          value={literal}
+          onChange={(v) => {
+            setLiteral(v)
+            setSplit(false)
+          }}
+        />
 
-        <div className="flex items-start justify-center gap-6">
+        {/* The CODE keeps its natural width -- a panel stretched past its
+            longest line is just a dark rectangle with a margin -- and the right
+            column takes the rest of the row. The strip, the slots and the
+            output are the things with something to gain from the space. */}
+        <div className="grid w-full grid-cols-2 items-center gap-7">
           <AnnotatedCode
+            className="w-full"
             filename={py}
-            fontSize={15}
+            fontSize={17}
             showLineNumbers
             lineStates={lineStates}
             code={`word = ${literal}\nfor ch in word:\n    print(ch)\nprint("Done")`}
           />
 
-          <div className="flex flex-col gap-2">
+          <div className="flex w-full flex-col gap-2">
             {/* The sequence, with the pointer on the character ch is holding. */}
             <div className="flex items-end gap-1.5">
-              {chars.map((c, i) => (
+              {!split && (
+                <button
+                  type="button"
+                  onClick={() => setSplit(true)}
+                  className="flex items-center gap-3 rounded-card border-2 px-4 py-2"
+                  style={{ borderColor: colors.brand, background: colors.white }}
+                >
+                  <span className="font-mono text-[22px] font-bold" style={{ color: colors.ink }}>
+                    {literal}
+                  </span>
+                  <span
+                    className="rounded-pill px-3 py-1 font-heading text-body-sm font-bold"
+                    style={{ background: colors.brand, color: colors.white }}
+                  >
+                    Split it
+                  </span>
+                </button>
+              )}
+              {split &&
+                chars.map((c, i) => (
                 <span
                   key={i}
                   className="grid h-[42px] w-[42px] place-items-center rounded-lg border-2 font-mono text-[18px] font-bold"
@@ -152,7 +188,8 @@ export function StringWalkCard({ session, py }: { session: string; py: string })
                 >
                   {c}
                 </span>
-              ))}
+                ))}
+              {split && (
               <span
                 className="grid h-[42px] place-items-center rounded-lg border-2 border-dashed px-2 font-heading text-[12px] font-bold"
                 style={{
@@ -162,13 +199,14 @@ export function StringWalkCard({ session, py }: { session: string; py: string })
               >
                 nothing left
               </span>
+              )}
             </div>
 
-            <div className="flex items-start gap-2">
+            <div className="flex w-full items-start gap-2">
               <Slot label="ch" value={s?.ch ?? 'not set yet'} muted={!s?.ch} />
               {/* THE OUTPUT GROWS ONE LINE AT A TIME, which is the whole point:
                   the room watches P arrive, then y, and counts them. */}
-              <div className="min-w-[150px] overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
+              <div className="min-w-[150px] flex-1 overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
                 <div className="border-b border-line bg-surface px-3 py-1 text-center">
                   <span className="font-heading text-body-sm font-bold leading-none" style={{ color: colors.body }}>
                     Output
@@ -214,7 +252,13 @@ export function StringWalkCard({ session, py }: { session: string; py: string })
           )}
         </div>
 
-        <StepControls className="w-full justify-center" showCount mode="code" />
+        {split ? (
+          <StepControls className="w-full justify-center" showCount mode="code" />
+        ) : (
+          <p className="text-center text-body" style={{ color: colors.muted }}>
+            One string, or {chars.length || 'no'} characters? Say which, then press Split it.
+          </p>
+        )}
       </div>
     </ContentSlide>
   )
