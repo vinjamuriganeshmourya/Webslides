@@ -34,10 +34,16 @@ export function PiggyMeter({
   className?: string
 }) {
   const instant = useInstant()
-  const { step } = useStepControls()
-  const i = Math.max(0, Math.min(step, totals.length) - 1)
-  const total = step > 0 ? totals[i] : totals[0]
-  const coin = step > 0 ? coins?.[i] : undefined
+  const { step, allRevealed } = useStepControls()
+  /* Under `?all` the deck's step never moves, so reading `step` alone put the
+     bank at zero beside a trace showing sixteen, on every contact sheet and
+     every QA capture. It cannot claim steps of its own to find out -- that
+     would double the slide's step count -- so it asks whether everything is
+     revealed and lands on the last value. */
+  const shown = allRevealed ? totals.length : step
+  const i = Math.max(0, Math.min(shown, totals.length) - 1)
+  const total = shown > 0 ? totals[i] : totals[0]
+  const coin = shown > 0 && !allRevealed ? coins?.[i] : undefined
 
   return (
     <div className={`flex flex-col items-center ${className}`}>
