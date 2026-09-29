@@ -15,12 +15,12 @@ import { Card, CodeBlock, CodeOutput, SwapRows, VariableTrace, StepControls} fro
 import type { TraceStep } from '@/ui'
 import { colors } from '@/design/tokens'
 import { Step } from '@/motion/Stepper'
-import { SequenceWalk } from './figures/SequenceWalk'
 import { PhonePlaylist } from './figures/PhonePlaylist'
 import { PiggyBank } from './figures/PiggyBank'
 import { MatchPairs } from './figures/MatchPairs'
 import { EverydayLoops } from './figures/EverydayLoops'
 import { EverydayShape } from './figures/EverydayShape'
+import { StringWalkCard } from './figures/StringWalkCard'
 import { dailyChallengeSlides as dc } from './dailyChallenge'
 import { RangeDial } from './figures/RangeDial'
 
@@ -424,45 +424,8 @@ export const forLoopDeck: SlideDef[] = [
     section: AGENDA.forLoop,
     label: '"Python", one character at a time',
     notes:
-      'Ask "one string, or six characters?" and take the vote before you press the key. The fourth beat is the one that matters: print("Done") is reached only after the sequence runs out.',
-    element: (
-      <ContentSlide
-        kicker="A string is a sequence"
-        title={'"Python", one character at a time'}
-        lesson={SESSION}
-        lead="One string, or six characters? Say which, then we split it."
-      >
-        <SequenceWalk
-          holdsLabel="ch"
-          endLabel="nothing left"
-          items={[
-            { label: 'P' },
-            { label: 'y' },
-            { label: 't' },
-            { label: 'h' },
-            { label: 'o' },
-            { label: 'n' },
-          ]}
-          beats={[
-            { at: -1, visible: 0, label: 'One string', caption: 'word holds "Python". Say it: is that one thing, or six?' },
-            { at: -1, label: 'Split it', caption: 'Six characters. A string is a sequence of characters.' },
-            {
-              at: 5,
-              holds: 'n',
-              label: 'One at a time',
-              caption: 'The loop hands ch one character per pass: P, then y, then t, then h, then o, then n.',
-            },
-            {
-              at: 6,
-              holds: 'n',
-              label: 'It runs out',
-              caption: 'The loop asks for the next character. There is none, so the loop ends and print("Done") runs.',
-            },
-          ]}
-        />
-        <StepControls className="mt-4 w-full justify-center" showCount={false} mode="code" />
-      </ContentSlide>
-    ),
+      'A MACHINE, not a slideshow. The room picks the word first and commits to how many characters it is, THEN presses Split it. Take the vote before every word, not only the first: choosing a new word resets the walk on purpose. The empty string is the one that matters.',
+    element: <StringWalkCard session={SESSION} py={PY} />,
   },
   {
     id: 'same-job-two-lines',

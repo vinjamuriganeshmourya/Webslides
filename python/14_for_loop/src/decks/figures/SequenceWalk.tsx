@@ -71,6 +71,8 @@ export interface WalkBeat {
 }
 
 export interface SequenceWalkProps {
+  /** Smaller tiles, for a card that shares the well with a code panel. */
+  compact?: boolean
   items: WalkItem[]
   beats: WalkBeat[]
   /** Names the slot that holds one item at a time: `ch`, `Now playing`. */
@@ -88,10 +90,12 @@ function Tile({
   item,
   state,
   index,
+  compact = false,
 }: {
   item: WalkItem
   state: 'ahead' | 'here' | 'done'
   index: number
+  compact?: boolean
 }) {
   const instant = useInstant()
   const border =
@@ -101,13 +105,13 @@ function Tile({
 
   return (
     <motion.div
-      className="flex w-[104px] flex-col items-center gap-2"
+      className={`flex ${compact ? "w-[72px]" : "w-[104px]"} flex-col items-center gap-2`}
       initial={instant ? false : { opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: T.enter, ease: c4(E.out), delay: instant ? 0 : index * T.stagger }}
     >
       <div
-        className="flex h-[84px] w-full flex-col items-center justify-center rounded-card border-2 shadow-card-soft"
+        className={`flex ${compact ? "h-[62px]" : "h-[84px]"} w-full flex-col items-center justify-center rounded-card border-2 shadow-card-soft`}
         style={{ borderColor: border, background: bg }}
       >
         <span className="font-mono text-[24px] font-bold leading-none" style={{ color: ink }}>
@@ -141,9 +145,9 @@ function Tile({
   )
 }
 
-function SlotBox({ label, value }: { label: string; value: string }) {
+function SlotBox({ label, value, compact = false }: { label: string; value: string; compact?: boolean }) {
   return (
-    <div className="w-[196px] overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
+    <div className={`${compact ? "w-[150px]" : "w-[196px]"} overflow-hidden rounded-card border border-line bg-white shadow-card-soft`}>
       <div className="border-b border-line bg-surface px-3 py-1.5 text-center">
         <span className="font-heading text-body-sm font-bold leading-none" style={{ color: colors.body }}>
           {label}
@@ -167,6 +171,7 @@ export function SequenceWalk({
   holdsLabel,
   tallyLabel,
   endLabel = 'nothing left',
+  compact = false,
   className = '',
 }: SequenceWalkProps) {
   const instant = useInstant()
@@ -183,6 +188,7 @@ export function SequenceWalk({
       <div className="flex items-end gap-3">
         {strip.map((item, i) => (
           <Tile
+            compact={compact}
             key={`${item.label}-${i}`}
             item={item}
             index={i}
@@ -192,9 +198,9 @@ export function SequenceWalk({
         {/* THE RAN-OUT BEAT IS A DRAWN THING, not the absence of one. The whole
             session turns on "what told it to stop?", so the strip has to show
             the pointer asking for a next item and finding none. */}
-        <div className="flex w-[124px] flex-col items-center gap-2">
+        <div className={`flex ${compact ? "w-[92px]" : "w-[124px]"} flex-col items-center gap-2`}>
           <div
-            className="flex h-[84px] w-full items-center justify-center rounded-card border-2 border-dashed px-2 text-center"
+            className={`flex ${compact ? "h-[62px]" : "h-[84px]"} w-full items-center justify-center rounded-card border-2 border-dashed px-2 text-center`}
             style={{
               borderColor: ranOut ? colors.danger : colors.line,
               background: ranOut ? `${colors.danger}0F` : 'transparent',
@@ -225,12 +231,12 @@ export function SequenceWalk({
 
       {(holdsLabel || tallyLabel) && (
         <div className="flex items-start gap-6">
-          {holdsLabel && <SlotBox label={holdsLabel} value={beat.holds ?? NOT_YET} />}
-          {tallyLabel && <SlotBox label={tallyLabel} value={beat.tally ?? NOT_YET} />}
+          {holdsLabel && <SlotBox compact={compact} label={holdsLabel} value={beat.holds ?? NOT_YET} />}
+          {tallyLabel && <SlotBox compact={compact} label={tallyLabel} value={beat.tally ?? NOT_YET} />}
         </div>
       )}
 
-      <div className="min-h-[76px] w-[900px] rounded-card border border-line bg-surface px-7 py-4">
+      <div className="min-h-[76px] w-full max-w-[900px] rounded-card border border-line bg-surface px-7 py-4">
         {reached > 0 && (
           <motion.div
             key={reached}
