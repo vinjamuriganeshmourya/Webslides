@@ -106,12 +106,21 @@ export function StringWalkCard({ session, py }: { session: string; py: string })
   /* THE SPLIT IS THE COMMITMENT. The reference makes the room answer "one
      string, or six characters?" and press Split it before anything walks. Until
      they do, the frame shows the word as ONE thing, because that is the belief
-     the card is about to correct. */
-  const [split, setSplit] = useState(false)
+     the card is about to correct.
+
+     BUT STARTING THE WALK IS THE SAME COMMITMENT, so it splits the word too.
+     The button was the only thing that could, and the deck's own Next does not
+     go through it: pressing Next first left the pointer walking a row of
+     characters that was not on screen, with the un-pressed `Split it` button
+     sitting where they should have been. The press is now one way of saying
+     what the first step says anyway, which is why `split` is derived and only
+     the press is state. */
+  const [splitPressed, setSplitPressed] = useState(false)
   const chars = literal.slice(1, -1).split('').filter(Boolean)
   const steps = buildSteps(literal)
   const shown = useClaimedSteps(steps.length)
   const reached = shown.filter(Boolean).length
+  const split = splitPressed || reached > 0
   const s = reached > 0 ? steps[reached - 1] : undefined
 
   /* Every line the interpreter has already executed, the one it is on now, and
@@ -135,7 +144,7 @@ export function StringWalkCard({ session, py }: { session: string; py: string })
           value={literal}
           onChange={(v) => {
             setLiteral(v)
-            setSplit(false)
+            setSplitPressed(false)
           }}
         />
 
@@ -172,7 +181,7 @@ export function StringWalkCard({ session, py }: { session: string; py: string })
               {!split && (
                 <button
                   type="button"
-                  onClick={() => setSplit(true)}
+                  onClick={() => setSplitPressed(true)}
                   className="flex items-center gap-3 rounded-card border-2 px-4 py-2"
                   style={{ borderColor: colors.brand, background: colors.white }}
                 >
