@@ -124,6 +124,58 @@ team's version from the first rebuild, and all three are pedagogy, not polish:
 abstraction. Fidelity is what makes it recognisable, and the beat list is what
 makes the sequence legible. Neither is decoration.
 
+## R5c. Follow the reference deck's placement, highlighting and chrome
+
+**Feedback, 2026-09-29, third time, slide by slide on session 14.** R5 got the
+subject, R5b got the fidelity, and this is about *layout and control*. The
+review, and what each item means beyond the slide it was raised on:
+
+1. **A container that is numbered keeps its number, and the number arrives with
+   the container.** Not a legend, not a key at the side.
+
+2. **On-slide controls are centred under the figure, and never overlap the
+   footer or the NxtWave mark.** The player's own cluster owns the bottom left
+   and the mark owns the bottom right; a figure's controls belong between them.
+
+3. **A control is named from the analogy, not from the mechanism.** The recap
+   that joins three pairs says **Join them**, not Next. The name is part of the
+   teaching: it tells the room what the press is about to do.
+
+4. **Nothing moves until the presenter presses.** A figure may hold a continuous
+   idle loop (an equaliser, a story bar), but it never advances its own state on
+   a timer. A press is the only thing that changes what the frame says.
+
+5. **A flow beat is three real interfaces, not three text cards.** The source
+   draws the attendance register with real names and a tick moving down,
+   Instagram stories with the progress bars filling, and a billing counter with
+   items crossing a scanner and a `beep`. Three `Card`s with a sentence each is
+   the thing this rule exists to stop: it is the same content with the argument
+   removed.
+
+6. **A code panel labels its parts in place.** Initialization, termination
+   condition and updation are drawn **on the lines they name**, highlighted
+   where they sit. Listing them beside the panel splits the room's attention
+   between two places and neither is the code.
+
+7. **A construct is drawn with its block, its arrow and its indentation.**
+   `for … in …:` over an indented body is a shape, and the shape is the lesson.
+
+8. **The deck's own slides are part of the flow.** The Daily Challenge frames
+   (`Identify the Mistake` and the rest) are not optional context to be referred
+   to; the room sees them, so the plan carries them.
+
+**Why:** the reference is a deck that has been taught from. Every one of these
+was a deliberate choice by somebody who watched a room read the slide, and a
+rebuild that changes them is not a redesign, it is a regression that has not
+been measured.
+
+## R5d. The Quiz Time frame uses the shipped design
+
+The reference deck's Quiz Time slide is the one to use, in the kit's base
+template as well as in this course, so every deck gets it. Decks already
+delivered are not reopened for it (see `RULES.md`, "A new rule never re-opens a
+delivered deck").
+
 The distinction R1 and R5 draw together: **a picture that decorates goes; a
 picture that IS the analogy stays, and gets rebuilt properly.**
 
@@ -134,3 +186,5 @@ picture that IS the analogy stays, and gets rebuilt properly.**
 | 2026-09-22 | No PPT stock illustrations; own figures only where needed; check alignment | R1, R4; session 1 regenerated |
 | 2026-09-29 | Carry the source's built components across; a song analogy gets a real player, a savings analogy gets a real piggy bank, not text | R5; session 14's `PhonePlaylist` and `PiggyBank` |
 | 2026-09-29 | The reference components are still better and more realistic (2nd time) | R5b; `BeatList`, Riya speaking, full phone chrome |
+| 2026-09-29 | Slide-by-slide review: numbering, centred controls, analogy-named buttons, no self-advancing motion, real interfaces, in-place code labels, the Daily Challenge frames | R5c |
+| 2026-09-29 | Use the reference's Quiz Time design, in the base template too | R5d |

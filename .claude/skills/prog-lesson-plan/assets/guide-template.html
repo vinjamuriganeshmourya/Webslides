@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{SESSION_TITLE}}: instructor guide</title>
+<style>
+/* =====================================================================
+   INSTRUCTOR GUIDE — a standalone document. It links to nothing and needs
+   nothing: no presenter file, no worksheet, no network. One entry per card,
+   in the order they are presented, each with a picture of the card, the
+   thread to say, a short do-list and one thing to watch for.
+   ===================================================================== */
+:root{
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+  --dur-fast:140ms; --dur-base:320ms; --dur-morph:900ms;
+  --page:#F3F4F7; --surface:#FFFFFF; --ink:#181B21; --muted:#63697A;
+  --rule:#E2E5EB; --rule2:#EEF0F4; --accent:#4F46E5;
+  --hook:#0B7285; --hook-soft:#E0F2F5;
+  --activity:#B4531A; --activity-soft:#FDF2E6; --quiz:#7C3AED; --exit:#0F766E;
+  --buffer:#9AA1B0; --buffer-soft:#F4F5F7;
+  --warn:#B42318;
+  --code-bg:#101216; --code-ink:#EDEFF3;
+  /* the deck's own palette, for anything the room sees */
+  --dk-blue:#006DAF; --dk-cyan:#3FB5E5; --dk-line:#6A6A6A; --dk-text:#434343;
+  --dk-card:#F2F2F0; --dk-red:#C7454E; --dk-white:#FFFFFF;
+  --shadow:0 1px 2px rgba(20,20,40,.04),0 8px 24px rgba(20,20,40,.06);
+  --sidebar:266px;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  /* the worksheet is printed in black and white, so it is typeset that way:
+     a grotesque for anything scanned, a serif for anything read, a real
+     monospace for code, and a five-step grey scale instead of colour */
+  --sh-head:ui-sans-serif,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --sh-body:Georgia,"Iowan Old Style","Times New Roman",serif;
+  --sh-mono:ui-monospace,"SF Mono",Menlo,Consolas,"DejaVu Sans Mono","Liberation Mono",monospace;
+  --pr-ink:#000000; --pr-mid:#333333; --pr-soft:#6B6B6B; --pr-rule:#B4B4B4; --pr-fill:#ECECEC;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--page);color:var(--ink);
+ font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+ font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+ font:15px/1.62 var(--sans);-webkit-font-smoothing:antialiased}
+.gwrap{max-width:1180px;margin:0 auto;padding:34px 26px 110px}
+.g-h1{font-size:27px;font-weight:750;letter-spacing:-.02em;margin:0 0 6px}
+.g-meta{color:var(--muted);font-size:13.5px;margin:0 0 26px}
+.g-sec{background:var(--surface);border:1px solid var(--rule);border-radius:16px;
+ box-shadow:var(--shadow);padding:22px 26px 24px;margin:0 0 18px}
+.g-sec h3{font-size:17px;font-weight:700;margin:0 0 12px;letter-spacing:-.01em}
+.g-sec h4{font-size:14.5px;font-weight:680;margin:18px 0 5px}
+.g-sec p{margin:0 0 12px}
+.g-sec ol,.g-sec ul{margin:0 0 12px;padding-left:22px}
+.g-sec li{margin:0 0 9px}
+.g-sec>*:last-child{margin-bottom:0}
+table.g-data{width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 12px}
+table.g-data th,table.g-data td{border:1px solid var(--rule);padding:8px 11px;
+ text-align:left;vertical-align:top}
+table.g-data th{background:var(--rule2);font-weight:700;font-size:12.5px}
+table.g-data code{font:12.5px var(--mono)}
+.g-mono{font:12.5px var(--mono);white-space:nowrap}
+
+
+ul.brief{list-style:none;margin:12px 0 0;padding:0}
+ul.brief li{position:relative;padding:5px 0 5px 20px;font-size:13.5px;line-height:1.5;
+ border-top:1px solid var(--rule2)}
+ul.brief li:first-child{border-top:0}
+ul.brief li::before{content:'';position:absolute;left:4px;top:13px;width:5px;height:5px;
+ border-radius:50%;background:var(--muted)}
+ul.brief li.hot{font-weight:600}
+ul.brief li.hot::before{background:var(--activity)}
+.g-sec ul.brief{margin-top:0}
+.g-sec ul.brief li{font-size:14.5px}
+/* ---------------- instructor guide: one entry per card ----------------
+   The thumbnail is a picture of the card, rendered by scripts/render_thumbs.py
+   from the presenter file that the SAME build produced. It cannot go stale
+   inside a build; it can only go stale if somebody edits the presenter and does
+   not rebuild, which is true of everything else here too. */
+
+.ghd{font:700 13px var(--sans);letter-spacing:.06em;text-transform:uppercase;
+ color:var(--muted);margin:32px 0 12px}
+.ghd:first-of-type{margin-top:22px}
+.gcard{display:flex;gap:20px;align-items:flex-start;background:var(--surface);
+ border:1px solid var(--rule);border-radius:16px;box-shadow:var(--shadow);
+ padding:18px 22px;margin:0 0 14px}
+/* 440 x 248 is 16:9, the same shape the card is photographed in, so the
+   picture fills the box exactly and nothing is cropped */
+.gthumb{position:relative;width:440px;height:248px;flex:none;overflow:hidden;
+ margin-right:0;border:1px solid var(--rule);border-radius:10px;background:#fff}
+.gthumb img{display:block;width:100%;height:100%;object-fit:cover}
+.gbody{flex:1;min-width:0}
+.gwhen{font:600 11.5px var(--sans);letter-spacing:.05em;text-transform:uppercase;
+ color:var(--muted);margin:0 0 4px}
+.gbody h4{font-size:16.5px;font-weight:700;margin:0 0 9px;letter-spacing:-.01em}
+/* the running thread of a card: what to say, in order, so that nothing the
+   instructor says starts out of nowhere */
+.gflow{margin:0 0 10px;padding:10px 14px;border-left:3px solid var(--dk-cyan);
+ background:#F2F8FB;border-radius:0 8px 8px 0}
+.gflow>b,.gdo-h{display:block;font:700 11px var(--sans);letter-spacing:.06em;
+ text-transform:uppercase;color:var(--dk-blue);margin:0 0 6px}
+.gflow ol{margin:0;padding-left:18px;font-size:14px;line-height:1.55}
+.gflow li{margin:0 0 6px}
+.gflow li:last-child{margin-bottom:0}
+.gflow em{font-style:normal;color:var(--muted)}
+.gdo{margin:0 0 9px;padding-left:19px;font-size:14px;line-height:1.5}
+.gdo li{margin:0 0 5px}
+.gwatch{margin:0;font-size:13.5px;line-height:1.5;background:#FFF6E8;
+ border-radius:8px;padding:9px 13px}
+.gwatch b{color:#8A5A12}
+@media (max-width:1100px){ .gcard{flex-direction:column}
+  .gthumb{width:100%;height:auto;aspect-ratio:16/9} }
+@media print{ .gthumb{display:none} }
+
+
+@media (max-width:1100px){ .gwrap{padding:24px 16px 80px} }
+@media print{
+  body{background:#fff}
+  .gcard{box-shadow:none;break-inside:avoid}
+  .g-sec{box-shadow:none;break-inside:avoid}
+}
+{{EXTRA_CSS}}
+</style>
+</head>
+<body>
+<div class="gwrap">
+{{GUIDE}}
+</div>
+</body>
+</html>
