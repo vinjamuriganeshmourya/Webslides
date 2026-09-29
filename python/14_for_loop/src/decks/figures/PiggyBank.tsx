@@ -107,51 +107,25 @@ function DayCard({ day, state }: { day: Day; state: 'ahead' | 'here' | 'done' })
   )
 }
 
-export function PiggyBank({
-  days,
-  beats,
-  className = '',
-}: {
-  days: Day[]
-  beats: PiggyBeat[]
-  className?: string
-}) {
-  const instant = useInstant()
-  const { beat, reached } = useBeat(beats)
-  const at = beat?.at ?? -1
-  const ended = beat?.ended ?? false
-  /* Happy on a day a coin goes in, sulking on a day she skips, and happy again
-     once the week is done and the money is in. */
-  const happy = ended || at < 0 || Boolean(days[at]?.coin)
 
+/**
+ * THE BANK ITSELF, exported so a second slide draws the SAME object.
+ *
+ * Riya's story card and the trace card both show money going into a piggy bank.
+ * Drawn twice they would be two near misses of one thing, and the room would
+ * read them as two different banks. Course rule R5b: match the reference's
+ * fidelity, and a redrawing is always a near miss.
+ */
+export function PiggyJar({ happy, width = 196 }: { happy: boolean; width?: number }) {
   return (
-    <div className={`flex flex-col gap-5 ${className}`}>
-      <div className="flex items-start justify-center gap-3">
-        {days.map((d, i) => (
-          <DayCard key={d.label} day={d} state={at === i ? 'here' : at > i ? 'done' : 'ahead'} />
-        ))}
-        <div className="flex w-[110px] flex-col items-center">
-          <div
-            className="flex h-[116px] w-full items-center justify-center rounded-card border-2 border-dashed px-2 text-center"
-            style={{
-              borderColor: ended ? colors.danger : colors.line,
-              background: ended ? `${colors.danger}0F` : 'transparent',
-            }}
-          >
-            <span
-              className="font-heading text-body-sm font-bold leading-tight"
-              style={{ color: ended ? colors.danger : colors.muted }}
-            >
-              no days left
-            </span>
-          </div>
-        </div>
-      </div>
+    <svg
+      width={width}
+      height={Math.round((width * 156) / 196)}
+      viewBox="0 0 150 120"
+      aria-label="A piggy bank"
+      role="img"
+    >
 
-      <div className="grid grid-cols-[300px_1fr] items-center gap-8">
-        {/* THE BANK. Shape only: the total beside it is a DOM element. */}
-        <div className="flex items-center gap-4">
-          <svg width="196" height="156" viewBox="0 0 150 120" aria-label="A piggy bank" role="img">
             <ellipse cx="75" cy="112" rx="52" ry="6" fill={colors.ink} opacity="0.1" />
             <rect x="36" y="90" width="15" height="20" rx="6" fill={PIG_DARK} />
             <rect x="94" y="90" width="15" height="20" rx="6" fill={PIG_DARK} />
@@ -201,7 +175,55 @@ export function PiggyBank({
               </>
             )}
             <rect x="54" y="23" width="36" height="8" rx="4" fill={colors.ink} opacity="0.5" />
-          </svg>
+              </svg>
+  )
+}
+
+export function PiggyBank({
+  days,
+  beats,
+  className = '',
+}: {
+  days: Day[]
+  beats: PiggyBeat[]
+  className?: string
+}) {
+  const instant = useInstant()
+  const { beat, reached } = useBeat(beats)
+  const at = beat?.at ?? -1
+  const ended = beat?.ended ?? false
+  /* Happy on a day a coin goes in, sulking on a day she skips, and happy again
+     once the week is done and the money is in. */
+  const happy = ended || at < 0 || Boolean(days[at]?.coin)
+
+  return (
+    <div className={`flex flex-col gap-5 ${className}`}>
+      <div className="flex items-start justify-center gap-3">
+        {days.map((d, i) => (
+          <DayCard key={d.label} day={d} state={at === i ? 'here' : at > i ? 'done' : 'ahead'} />
+        ))}
+        <div className="flex w-[110px] flex-col items-center">
+          <div
+            className="flex h-[116px] w-full items-center justify-center rounded-card border-2 border-dashed px-2 text-center"
+            style={{
+              borderColor: ended ? colors.danger : colors.line,
+              background: ended ? `${colors.danger}0F` : 'transparent',
+            }}
+          >
+            <span
+              className="font-heading text-body-sm font-bold leading-tight"
+              style={{ color: ended ? colors.danger : colors.muted }}
+            >
+              no days left
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-[300px_1fr] items-center gap-8">
+        {/* THE BANK. Shape only: the total beside it is a DOM element. */}
+        <div className="flex items-center gap-4">
+          <PiggyJar happy={happy} />
           {/* The coin that is going in, on the beat it goes in. */}
           <div className="h-10 w-10">
             {beat?.at !== undefined && at >= 0 && days[at]?.coin && (
