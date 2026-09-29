@@ -68,6 +68,40 @@ export const Play = (p: P) => (
     <path d="M6 4v16l14-8L6 4Z" />
   </svg>
 )
+/* ---- Added for session 14, each because a wrong glyph was in its place ----
+ *
+ * The set is drawn here rather than imported, per this file's own note, but the
+ * geometry follows `lucide-react` (already a dependency, ISC) so a name means
+ * the same picture here as anywhere else in the product.
+ */
+
+/** A stopwatch. `Timer` was drawing a PLAY triangle for a countdown, on six
+ *  frames: a triangle says "start something", not "time is running out". */
+export const Stopwatch = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="12" cy="13" r="8" />
+    <path d="M12 13V9M9 2h6M18.5 6.5l1.5-1.5" />
+  </svg>
+)
+
+/** One trip round, and round again: the picture of a loop. It replaces a play
+ *  triangle on "for goes through each item of a sequence, one at a time". */
+export const Repeat = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M17 2l4 4-4 4" />
+    <path d="M3 11v-1a4 4 0 0 1 4-4h14" />
+    <path d="M7 22l-4-4 4-4" />
+    <path d="M21 13v1a4 4 0 0 1-4 4H3" />
+  </svg>
+)
+
+/** A number. It replaces a play triangle on "The input is one number". */
+export const Hash = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18" />
+  </svg>
+)
+
 export const Target = (p: P) => (
   <svg {...base(p)}>
     <circle cx="12" cy="12" r="9" />
@@ -141,6 +175,9 @@ export const iconByName = {
   star: Star,
   code: Code,
   play: Play,
+  stopwatch: Stopwatch,
+  repeat: Repeat,
+  hash: Hash,
   target: Target,
   rocket: Rocket,
   book: Book,

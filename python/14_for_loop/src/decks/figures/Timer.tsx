@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useInstant } from '@/motion/instant'
 import { colors } from '@/design/tokens'
+import { Stopwatch } from '@/ui/icons'
 import { T, E, c4 } from '@/ui/figureTiming'
 
 /**
@@ -81,6 +82,16 @@ export function Timer({
           )}
         </svg>
       </button>
+      {/* THE STOPWATCH SAYS WHAT THE NUMBERS ARE. Without it the figure is a
+          round button and two digits, which reads as a media player. The play
+          triangle on the button is right and stays: it is a control, and a
+          triangle is what starts a thing. */}
+      <Stopwatch
+        width={18}
+        height={18}
+        aria-hidden
+        style={{ color: done ? colors.danger : colors.muted }}
+      />
       <span
         className="font-mono text-[22px] font-bold leading-none tabular-nums"
         style={{ color: done ? colors.danger : colors.ink }}
