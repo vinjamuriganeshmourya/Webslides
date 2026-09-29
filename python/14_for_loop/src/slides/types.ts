@@ -221,6 +221,17 @@ export interface QuizTimeSlideProps extends Base {
    * external quiz tool is about to ask, and answers some of them.
    */
   subtitle?: ReactNode
+  /**
+   * Which composition to draw. All three carry the same words; they differ in
+   * how much of the frame the mock quiz card is allowed to take.
+   *
+   * `card`    the default. Announcement left, a tilted mock quiz card right.
+   * `row`     no card. The three steps run across the frame as wide numbered
+   *           tiles, for a session whose quiz frame should not compete with a
+   *           dense slide either side of it.
+   * `plain`   type only, centred. For a deck that has already shown the portal.
+   */
+  variant?: 'card' | 'row' | 'plain'
 }
 
 export interface ThankYouSlideProps extends Base {
