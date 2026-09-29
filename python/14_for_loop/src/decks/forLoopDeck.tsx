@@ -436,6 +436,11 @@ export const forLoopDeck: SlideDef[] = [
   dc.s15,
   dc.s16,
   dc.s17,
+  /* 16, 17 and 18 are ONE block in the lesson plan, "the for loop, and the
+     three lines it drops". Splitting them with our own two frames broke the
+     argument in half: 18 is the payoff of 16 and 17 and has to arrive while
+     they are still on the room's screen. */
+  dc.s18,
   {
     id: 'string-is-a-sequence',
     section: AGENDA.forLoop,
@@ -493,7 +498,6 @@ export const forLoopDeck: SlideDef[] = [
       </ContentSlide>
     ),
   },
-  dc.s18,
   {
     id: 'task1-trace',
     section: AGENDA.forLoop,

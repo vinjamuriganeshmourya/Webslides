@@ -88,6 +88,7 @@ export function AnnotatedCode({
   filename,
   annotations = [],
   highlight = [],
+  lineStates,
   loopBack,
   showLineNumbers = true,
   fontSize = 16,
@@ -99,6 +100,17 @@ export function AnnotatedCode({
   annotations?: CodeAnnotation[]
   /** Extra lines to tint that carry no label of their own. */
   highlight?: number[]
+  /**
+   * WHAT THE INTERPRETER HAS DONE TO EACH LINE, which is a different claim from
+   * `highlight`. `highlight` says "look here"; this says "this ran", "this is
+   * running", "this was never reached".
+   *
+   * `unreached` is the one that earns the prop. On `word = ""` the loop body is
+   * never entered, and the ONLY thing on the frame that proves the body ran zero
+   * times is `print(ch)` still sitting grey after the run has finished. A panel
+   * that simply stops highlighting cannot say it.
+   */
+  lineStates?: Record<number, 'ran' | 'running' | 'unreached'>
   /** The loop-back run: `to` is the `for`/`while` line, `from` the last body line. */
   loopBack?: { from: number; to: number }
   showLineNumbers?: boolean
@@ -165,9 +177,18 @@ export function AnnotatedCode({
              key overwrites it, and the row then showed the light slide through a
              translucent blue. The highlight is painted as an image over the panel
              colour so both survive. */
-          const tint = tinted.has(n)
-            ? { backgroundImage: 'linear-gradient(rgba(11,95,255,0.30), rgba(11,95,255,0.30))' }
-            : undefined
+          const st = lineStates?.[n]
+          const tint =
+            st === 'running'
+              ? { backgroundImage: 'linear-gradient(rgba(11,95,255,0.55), rgba(11,95,255,0.55))' }
+              : st === 'ran'
+                ? { backgroundImage: 'linear-gradient(rgba(11,95,255,0.16), rgba(11,95,255,0.16))' }
+                : tinted.has(n)
+                  ? { backgroundImage: 'linear-gradient(rgba(11,95,255,0.30), rgba(11,95,255,0.30))' }
+                  : undefined
+          /* A line that was never reached is dimmed, not tinted: it has to read
+             as "nothing happened here", which an added colour cannot say. */
+          const dim = st === 'unreached' ? { opacity: 0.38 } : undefined
           const role = loopRole(n, loopBack)
           return (
             <Fragment key={n}>
@@ -193,6 +214,7 @@ export function AnnotatedCode({
                   ...(showLineNumbers || loopBack ? {} : { gridColumnStart: 1 }),
                   background: PANEL,
                   ...tint,
+                  ...dim,
                   color: INK.plain,
                 }}
               >
