@@ -402,9 +402,12 @@ export const forLoopDeck: SlideDef[] = [
     id: 'agenda',
     section: 'Hook',
     label: 'What We Will Cover',
+    /* The circle reads the session name over the word Agenda: the small line
+       says WHICH session, the big one says what this frame is. */
     element: (
       <AgendaSlide
-        title="What We Will Cover"
+        kicker={SESSION}
+        title="Agenda"
         lesson={SESSION}
         items={[
           { title: AGENDA.forLoop, sub: 'Walk through a sequence, one item at a time' },

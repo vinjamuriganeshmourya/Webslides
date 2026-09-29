@@ -187,7 +187,13 @@ export function CodeBlock({
         <span className="h-3 w-3 rounded-full bg-[#FF5F57]" />
         <span className="h-3 w-3 rounded-full bg-[#FEBC2E]" />
         <span className="h-3 w-3 rounded-full bg-[#28C840]" />
-        {filename && (
+        {/* THE LABEL BESIDE THE TRAFFIC LIGHTS IS DROPPED WHEN IT ONLY REPEATS
+            THE CHIP. Content rule 31a makes a foundations panel name the
+            LANGUAGE, so `Python` was appearing twice on one title bar. The chip
+            is the one that survives: it is the corner every code panel in the
+            deck already carries, and the slot beside the lights is where a real
+            file path goes on a deck that has one. */}
+        {filename && filename.trim().toLowerCase() !== language.trim().toLowerCase() && (
           <span className="ml-2 font-mono text-body-sm text-white/60">{filename}</span>
         )}
         <span className="ml-auto rounded-pill bg-white/10 px-2 py-0.5 font-mono text-xs uppercase tracking-wide text-white/50">

@@ -1,3 +1,4 @@
+import { colors } from '@/design/tokens'
 import { Fragment } from 'react'
 import { LoopGutter, loopRole } from './loopArrow'
 
@@ -81,7 +82,17 @@ export interface CodeAnnotation {
  * go muddy, and `align-check` cannot see contrast. These three are the colours
  * the code itself is already painted in, so they are known to carry.
  */
-const RAMP = [INK.keyword, INK.string, INK.number]
+/*
+  THE LABEL COLOURS ARE FOR A LIGHT SURFACE, not for the panel.
+
+  They were the syntax palette -- INK.keyword, INK.string, INK.number -- which
+  is tuned to sit on the dark code panel. Once the labels moved OUT of the box
+  they were being read on the slide's near-white ground, where those hues are
+  far too light to carry a bold word at ten metres. These are the deck's own
+  tones, the same three MatchPairs pairs its rows with, so a label and a paired
+  tile read as the same system.
+*/
+const RAMP = [colors.brandDark, colors.success, colors.warning]
 
 export function AnnotatedCode({
   code,
@@ -153,7 +164,12 @@ export function AnnotatedCode({
         <span className="h-3 w-3 rounded-full bg-[#FF5F57]" />
         <span className="h-3 w-3 rounded-full bg-[#FEBC2E]" />
         <span className="h-3 w-3 rounded-full bg-[#28C840]" />
-        <span className="ml-2 font-mono text-body-sm text-white/60">{filename}</span>
+        {/* The chip carries the language; the slot beside the lights stays
+            empty unless a deck has a real file path to put there. See
+            CodeBlock. */}
+        {filename.trim().toLowerCase() !== 'python' && (
+          <span className="ml-2 font-mono text-body-sm text-white/60">{filename}</span>
+        )}
         <span className="ml-auto rounded-pill bg-white/10 px-2 py-0.5 font-mono text-xs uppercase tracking-wide text-white/50">
           python
         </span>
@@ -235,7 +251,7 @@ export function AnnotatedCode({
                           false positive and solve it the same way. */}
                       <span
                         className="inline-flex items-center rounded-pill px-3 py-1"
-                        style={{ background: `${note.paint}26` }}
+                        style={{ background: `${note.paint}1F`, boxShadow: `inset 0 0 0 1.5px ${note.paint}55` }}
                       >
                         <span
                           className="font-heading text-[16px] font-bold leading-none"
