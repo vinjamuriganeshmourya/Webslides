@@ -178,7 +178,7 @@ export const dailyChallengeSlides: Record<string, SlideDef> = {
         lesson={SESSION}
         lead="A new loop that walks through a sequence by itself."
         points={[
-          { text: 'for goes through each item of a sequence, one at a time', icon: 'play' },
+          { text: 'for goes through each item of a sequence, one at a time', icon: 'repeat' },
           { text: 'A string is a sequence', sub: 'A sequence of characters', icon: 'check' },
           { text: 'Numbers can be a sequence too', sub: 'And many more kinds', icon: 'check' },
         ]}
@@ -392,7 +392,7 @@ export const dailyChallengeSlides: Record<string, SlideDef> = {
         lesson={SESSION}
         lead="Write a program to print a right angle triangle pattern. The number N is the input."
         points={[
-          { text: 'The input is one number', sub: 'Read it with int(input())', icon: 'play' },
+          { text: 'The input is one number', sub: 'Read it with int(input())', icon: 'hash' },
           { text: 'It prints N rows', sub: 'Row 1 has one star, row N has N of them', icon: 'check' },
         ]}
       >
