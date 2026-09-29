@@ -19,6 +19,7 @@ import {
   CardGrid,
   Chip,
   DataTable,
+  FlowChart,
   Shot,
   StatTile,
   StepList,
@@ -54,6 +55,7 @@ import {
   EC2_SSH_COMMAND, EC2_SSH_DNS, EC2_SSH_TAB, EC2_STOP_BUTTON, EC2_STOP_WARNING,
   EC2_SUCCESS, EC2_TYPE_BOX, EC2_UBUNTU_TILE,
   EC2_ADD_RULE, EC2_NEW_RULE, EC2_SAVE_RULES, EC2_RULES_COUNT, EC2_RULES_TABLE,
+  EC2_NAV_NETWORK_SECURITY, EC2_CREATE_SG_BUTTON,
   EC2_WELCOME, EC2_ENS5, EC2_BROWSER_IPS, EC2_BROWSER_CMDS,
   BILL_DATA_UNAVAILABLE, BILL_FREE_PANEL, BILL_NAME_EMAIL, BILL_TEMPLATE, BILL_ZERO_SPEND,
   CONNECT_CIDR, GLOBAL_SENTENCE, PUBLIC_IP_FINAL,
@@ -383,15 +385,20 @@ export const awsIntroDeck: SlideDef[] = [
   {
     id: 'c1-laptop-not-server', section: C1, label: 'A laptop is not a server',
     element: (
-      <ContentSlide kicker={C1} title="A Laptop Is Not a Server" lead="Four more things a website needs that a laptop does not give it" lesson={SESSION}>
+      <ContentSlide kicker={C1} title="A Laptop Is Not a Server" lead="A website should run on a computer that is always reachable on the internet. A laptop is not built for that" lesson={SESSION}>
         <DataTable columns={[{ label: 'A website needs' }, { label: 'Your laptop' }]} rows={[
           ['To be on all day and all night', 'Sleeps when the lid closes. Off when you go home'],
           ['To be reachable from outside', 'Behind the college or home wifi. Nobody outside can reach it'],
           ['One address that never changes', 'Gets a new address every time it joins a network'],
           ['Nobody editing the code while it runs', 'You edit the code on it all day'],
         ]} />
+        <CardGrid cols={2} className="mt-4">
+          <Card title="Your laptop is for"><p className="text-body-sm">Writing and testing the website</p></Card>
+          <Card title="A server is for"><p className="text-body-sm">Running the website so other people can reach it anytime</p></Card>
+        </CardGrid>
       </ContentSlide>
     ),
+    notes: 'The two cards at the bottom are the whole slide in one breath: the laptop is where the code is written, the server is where it runs for other people. Neither replaces the other.',
   },
   {
     id: 'c1-what-server-is', section: C1, label: 'What a server is',
@@ -909,7 +916,7 @@ export const awsIntroDeck: SlideDef[] = [
   {
     id: 'c3-door-list', section: C3, label: 'The door list',
     element: (
-      <ContentSlide kicker={C3} title="The Door List" lead={`A Security Group sits in front of the instance and lists which ports may be reached, and by whom. Every port is closed unless it is listed, so port ${PORT_DB} is shut`} lesson={SESSION}>
+      <ContentSlide kicker={C3} title="The Door List" lead="The Security Group checks the port. If the port is allowed, the connection reaches the EC2 instance. If it is not allowed, the connection is blocked" lesson={SESSION}>
         <CloudPicture state={5} />
       </ContentSlide>
     ),
@@ -922,8 +929,29 @@ export const awsIntroDeck: SlideDef[] = [
         { text: `Port ${PORT_SSH} → You → You can connect using SSH`, icon: 'key' },
         { text: `Port ${PORT_APP} → Everyone → Anyone on the internet can access your application on port ${PORT_APP}`, icon: 'globe' },
         { text: `Port ${PORT_DB} → Not listed → Nobody from outside can connect through port ${PORT_DB}`, icon: 'cross' },
-      ]} note={{ kind: 'info', title: 'The check', body: 'If the port is allowed, the connection reaches the EC2. If it is not allowed, the connection is blocked.' }} />
+      ]} note={{ kind: 'info', title: 'Every port is closed unless it is listed', body: `Port ${PORT_DB} is on no row, so a database on the instance cannot be reached from outside.` }} />
     ),
+  },
+  {
+    id: 'c3-where-security-groups-live', section: C3, label: 'Where Security Groups live',
+    element: (
+      <ContentSlide kicker={C3} title="Where Security Groups Live" lead="A Security Group has its own page in the console, under Network and Security" lesson={SESSION}>
+        <AnnotatedShot
+          src="/shots/ec2-25-security-groups-nav.png"
+          alt="The EC2 console left navigation with Network and Security open and Security Groups selected, and the Security Groups list with the orange Create security group button above it"
+          highlights={[
+            { ...EC2_NAV_NETWORK_SECURITY, step: 1, label: 'Network and Security', labelAt: 'right' },
+            { ...EC2_CREATE_SG_BUTTON, step: 2, label: 'Create security group', labelAt: 'below' },
+          ]}
+          spotlight
+          frameWidth={840}
+          mark={AWS_MARK}
+          caption="EC2 → Network and Security → Security Groups. 1 the menu, 2 the button that opens the create form"
+          className="mx-auto w-fit"
+        />
+      </ContentSlide>
+    ),
+    notes: 'Nobody clicks Create security group today: the launch form makes one on the next slide. This page is shown so the room knows a Security Group is a thing of its own, it outlives any one instance, and it is edited here later, which is exactly what happens when the browser Connect is refused.',
   },
   {
     id: 'c3-security-group', section: C3, label: 'Security Group',
@@ -975,9 +1003,12 @@ export const awsIntroDeck: SlideDef[] = [
     id: 'c3-summary-launch', section: C3, label: 'Summary and launch',
     element: (
       <ContentSlide kicker={C3} title="Summary and Launch" lead="The Summary panel lists the six answers. Read it, then click Launch instance" lesson={SESSION} points={[
-        { text: `1 Name ${INSTANCE_NAME}, 2 Image ${AMI_NAME}`, icon: 'check' },
-        { text: `3 Type ${INSTANCE_TYPE}, 4 Key pair ${KEY_NAME}`, icon: 'check' },
-        { text: `5 Network ${SG_NAME}, 6 Disk ${DISK_SIZE} ${DISK_TYPE}`, icon: 'check' },
+        { text: `Name: ${INSTANCE_NAME}`, icon: 'check' },
+        { text: `AMI: ${AMI_NAME}`, icon: 'check' },
+        { text: `Instance type: ${INSTANCE_TYPE}`, icon: 'check' },
+        { text: `Key pair: ${KEY_NAME}`, icon: 'check' },
+        { text: `Security Group: ${SG_NAME}`, icon: 'check' },
+        { text: `Storage: ${DISK_SIZE} ${DISK_TYPE}`, icon: 'check' },
       ]}>
         <AnnotatedShot
           src="/shots/ec2-09-launch-success.png"
@@ -1036,6 +1067,20 @@ export const awsIntroDeck: SlideDef[] = [
       </ContentSlide>
     ),
     notes: `This one page carries everything the form decided: the VPC ${VPC_ID}, the subnet ${SUBNET_ID}, the AMI ${AMI_ID} and both addresses. AWS assigns the addresses and the instance ID, so a student's page shows different numbers.`,
+  },
+  {
+    id: 'c3-page-words', section: C3, label: 'What each line means',
+    element: (
+      <ContentSlide kicker={C3} title="What Each Line Means" lead="Four of the lines on that page, in plain words" lesson={SESSION}>
+        <DataTable columns={[{ label: 'On the instance page' }, { label: 'What it is' }]} rows={[
+          ['VPC', 'Your private network in AWS, where the instance is placed'],
+          ['Public IPv4', 'The instance\'s address on the internet, used to reach it from outside AWS'],
+          ['Private IPv4', 'The instance\'s address inside the VPC, used by other instances in the same VPC'],
+          ['Public DNS', 'A name for the Public IPv4 address'],
+        ]} />
+      </ContentSlide>
+    ),
+    notes: `All four are on the page the room is looking at: the VPC ${VPC_ID}, ${PUBLIC_IP}, ${PRIVATE_IP} and the Public DNS name. The next slide puts the two addresses side by side and says which one changes.`,
   },
   {
     id: 'c3-two-addresses', section: C3, label: 'Two addresses',
@@ -1155,6 +1200,23 @@ export const awsIntroDeck: SlideDef[] = [
     notes: `Type the description too: EC2 Instance Connect, Mumbai, so the rule explains itself in six months. Every Region has its own range for this service, and AWS publishes all of them as a file at ip-ranges.amazonaws.com. ${CONNECT_CIDR} is the Mumbai one, checked on 2026-09-16, and it is eight addresses, not the whole internet.`,
   },
   {
+    id: 'c3-who-connects', section: C3, label: 'Who the browser connects as',
+    element: (
+      <ContentSlide kicker={C3} title="Who the Browser Connects As" lead={`Connect in the browser does not go from your laptop to the instance. AWS makes the SSH connection for you, from its own machines, and that is why the Source on the new rule is ${CONNECT_CIDR}`} lesson={SESSION}>
+        <FlowChart nodes={[
+          { label: 'Your browser', caption: 'the console tab', icon: 'globe' },
+          { label: 'AWS', caption: 'the console itself' },
+          { label: 'EC2 Instance Connect', caption: 'the service that opens the SSH session', tone: 'accent' },
+          { label: INSTANCE_NAME, caption: `port ${PORT_SSH}, over SSH`, icon: 'server' },
+        ]} />
+        <p className="mt-5 text-center text-body">
+          {`The rule reads: allow the EC2 Instance Connect service to reach port ${PORT_SSH} on this instance`}
+        </p>
+      </ContentSlide>
+    ),
+    notes: `This is the slide that answers "why did adding an address fix it". The traffic arrives from an AWS-managed range for the EC2 Instance Connect service, not from the laptop, so rule 1 (${MY_IP_CIDR}, this laptop) never matched it. ${CONNECT_CIDR} is that range in this Region, eight addresses, published by AWS at ip-ranges.amazonaws.com.`,
+  },
+  {
     id: 'c3-three-doors', section: C3, label: 'Three doors now',
     element: (
       <ContentSlide kicker={C3} title="Three Doors Now" lead={`${SG_NAME} now lists three inbound rules: port ${PORT_SSH} for you, port ${PORT_SSH} for the browser, port ${PORT_APP} for your users`} lesson={SESSION}>
@@ -1206,11 +1268,14 @@ export const awsIntroDeck: SlideDef[] = [
           alt="The browser terminal after running hostname, whoami and uptime -p, printing ip-172-31-7-32, ubuntu and up 1 minute"
           highlights={[{ ...EC2_BROWSER_CMDS, step: 1, label: 'hostname · whoami · uptime', labelAt: 'right' }]}
           spotlight
-          frameWidth={840}
+          frameWidth={680}
           mark={AWS_MARK}
-          caption={`hostname prints ${HOSTNAME}, whoami prints ${SSH_USER}, uptime -p prints up 1 minute`}
+          caption={`EC2 → Instances → ${INSTANCE_ID} → Connect → In web browser`}
           className="mx-auto w-fit"
         />
+        <p className="mt-3 text-center text-body">
+          {`You are connected to your EC2 server, logged in as ${SSH_USER}, and the server started 1 minute ago`}
+        </p>
       </ContentSlide>
     ),
     notes: `Say the link out loud: ${HOSTNAME} is ${PRIVATE_IP} with the dots turned into dashes. That is the private address from Two Addresses, and it is the name the machine calls itself. whoami prints ${SSH_USER}, the username that came with the AMI.`,
@@ -1219,23 +1284,33 @@ export const awsIntroDeck: SlideDef[] = [
     id: 'c3-inside-instance', section: C3, label: 'Inside the instance',
     element: (
       <ContentSlide kicker={C3} title="Inside the Instance" lead="Four more commands, and the computer from field 3 answers for itself" lesson={SESSION}>
-        <ShellPanel
-          title={`${SSH_USER}@${HOSTNAME}: ~`}
-          prompt={`${SSH_USER}@${HOSTNAME}:~$`}
-          fontSize={15}
-          lines={[
-            { text: 'uname -srm' },
-            { text: 'Linux 7.0.0-1006-aws x86_64', kind: 'out' },
-            { text: 'uptime -p' },
-            { text: 'up 2 minutes', kind: 'out' },
-            { text: 'df -h /' },
-            { text: '/dev/root       6.7G  2.1G  4.6G  31% /', kind: 'out' },
-            { text: 'free -h' },
-            { text: 'Mem:           908Mi       312Mi', kind: 'out' },
-          ]}
-          caption={`The same session on ${INSTANCE_NAME}, a few commands later`}
-          className="mx-auto w-full max-w-[900px]"
-        />
+        <div className="grid grid-cols-[1fr_340px] items-center gap-6">
+          <ShellPanel
+            title={`${SSH_USER}@${HOSTNAME}: ~`}
+            prompt={`${SSH_USER}@${HOSTNAME}:~$`}
+            fontSize={14}
+            lines={[
+              { text: 'uname -srm' },
+              { text: 'Linux 7.0.0-1006-aws x86_64', kind: 'out' },
+              { text: 'uptime -p' },
+              { text: 'up 2 minutes', kind: 'out' },
+              { text: 'df -h /' },
+              { text: '/dev/root       6.7G  2.1G  4.6G  31% /', kind: 'out' },
+              { text: 'free -h' },
+              { text: 'Mem:           908Mi       312Mi', kind: 'out' },
+            ]}
+            caption={`The same session on ${INSTANCE_NAME}, a few commands later`}
+          />
+          <DataTable compact columns={[{ label: 'Command' }, { label: 'What it asks' }]} rows={[
+            [<code key="a">uname -srm</code>, 'Which operating system'],
+            [<code key="b">uptime -p</code>, 'How long it has run'],
+            [<code key="c">df -h /</code>, 'How much disk is left'],
+            [<code key="d">free -h</code>, 'How much memory is left'],
+          ]} />
+        </div>
+        <p className="mt-4 text-center text-body-sm text-ink-muted">
+          {`These four run inside the instance, which is ${AMI_NAME}. They are Linux commands. Your own laptop can be Windows: it only carries the browser tab`}
+        </p>
       </ContentSlide>
     ),
     notes: `Read the four answers against the launch form: Linux on an aws kernel is the AMI, ${DISK_SIZE} of disk with 4.6G free is field 6, and under 1 GiB of memory is ${INSTANCE_TYPE}. Nothing here was typed into the deck by hand; it is the session transcript.`,
@@ -1358,7 +1433,33 @@ export const awsIntroDeck: SlideDef[] = [
         />
       </ContentSlide>
     ),
-    notes: `This is the last row of the Two Addresses table, proved twice: ${PUBLIC_IP}, ${PUBLIC_IP_RESTARTED}, ${PUBLIC_IP_FINAL}, all on one instance, while ${PRIVATE_IP} stayed. Every Stop and Start hands out a new public address, so a link you gave somebody stops working. The next session pins one with an Elastic IP, which is also why an idle Elastic IP appears in Billing.`,
+    notes: `This is the last row of the Two Addresses table, proved twice: ${PUBLIC_IP}, ${PUBLIC_IP_RESTARTED}, ${PUBLIC_IP_FINAL}, all on one instance, while ${PRIVATE_IP} stayed. Every Stop and Start hands out a new public address, so a link you gave somebody stops working. The next slide names the fix.`,
+  },
+  {
+    id: 'c3-elastic-ip', section: C3, label: 'Elastic IP',
+    element: (
+      <ContentSlide kicker={C3} title="Elastic IP" lead="An Elastic IP is a public address you hold on to. Attach one when the server's address has to stay the same across a Stop and a Start" lesson={SESSION}>
+        <div className="space-y-6">
+          <div>
+            <p className="mb-2 text-body-sm font-semibold">Without an Elastic IP, the link you gave somebody stops working</p>
+            <FlowChart nodes={[
+              { label: PUBLIC_IP, caption: 'the address at launch' },
+              { label: 'Stop, then Start', shape: 'pill' },
+              { label: PUBLIC_IP_RESTARTED, caption: 'a different address' },
+            ]} />
+          </div>
+          <div>
+            <p className="mb-2 text-body-sm font-semibold">With an Elastic IP, the link keeps working</p>
+            <FlowChart tone="success" nodes={[
+              { label: 'One Elastic IP', caption: 'yours until you release it' },
+              { label: 'Stop, then Start', shape: 'pill' },
+              { label: 'The same address', caption: 'every time' },
+            ]} />
+          </div>
+        </div>
+      </ContentSlide>
+    ),
+    notes: `Name it here, use it next session. Nothing is attached today, and that is deliberate: an Elastic IP that is NOT attached to a running instance is billed by the hour, which is the third meter in concept 4. The three addresses this instance has had, ${PUBLIC_IP}, ${PUBLIC_IP_RESTARTED} and ${PUBLIC_IP_FINAL}, are the argument for one.`,
   },
   {
     id: 'c3-recap', section: C3, label: 'Launching in one line',
@@ -1407,7 +1508,7 @@ export const awsIntroDeck: SlideDef[] = [
         </CardGrid>
       </ContentSlide>
     ),
-    notes: 'One new phrase: Elastic IP, a public address you keep. The third meter has its bulb off and its digits still moving: it charges with the light off. Prices from the EC2 and EBS pricing pages, Region Asia Pacific (Mumbai).',
+    notes: 'The Elastic IP was named in concept 3, on the slide after the address changed. Here is the other half of it: the third meter has its bulb off and its digits still moving, because an Elastic IP that is attached to nothing charges with the light off. Prices from the EC2 and EBS pricing pages, Region Asia Pacific (Mumbai).',
   },
   {
     id: 'c4-what-is-free', section: C4, label: 'What is free',

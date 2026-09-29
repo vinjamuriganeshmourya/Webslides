@@ -609,3 +609,43 @@ template.
   retouching (hard rule 11).
 - `ec2-16` has a browser extension toast at the bottom of the frame. Worth
   retaking when convenient.
+
+---
+
+## 16. Remarks pass, 2026-09-28
+
+Source: the "Intro to AWS" remarks doc, transcribed into
+`workflow/reviews/deployement_session_9.review.md` with the doc-number to
+slide-id mapping, because the doc was written against the 94-slide build of
+16 September and half of it had already been applied on 25 September.
+
+### Four slides added, deck goes 93 → 97
+
+| New slide | Sits after | Why the remark asked for it |
+|---|---|---|
+| `c3-where-security-groups-live` | `c3-door-list-read` | A Security Group is a thing of its own in the console, under Network and Security, and it outlives any one instance. The room needs to have seen that page before it edits the rules after Connect is refused. Capture `ec2-25-security-groups-nav.png` |
+| `c3-page-words` | `c3-instance-details` | The instance page names VPC, Public IPv4, Private IPv4 and Public DNS in one screen and the deck never said what those four words mean in one place |
+| `c3-who-connects` | `c3-add-one-rule` | "Why did adding an address fix it." The browser Connect does not come from the learner's laptop; AWS's EC2 Instance Connect service makes the SSH connection, which is what the new Source range allows |
+| `c3-elastic-ip` | `c3-address-changed` | The term Elastic IP was used on `c4-what-costs` without ever being defined. It is now defined where the need appears, one slide after the public address changes |
+
+### Six slides reworded
+
+- `c1-laptop-not-server`: the lead states the idea instead of counting rows, and
+  two cards say what a laptop is for and what a server is for.
+- `c3-door-list`: the definition lead was struck out by the remark. The slide now
+  leads on the check itself, allowed port through, everything else blocked.
+- `c3-door-list-read`: its note now carries the closed-by-default fact that the
+  old `c3-door-list` lead used to carry, so nothing was lost.
+- `c3-summary-launch`: the six answers are six points, one below another.
+- `c3-browser-commands`: one sentence under the capture reading the three
+  outputs back in plain words.
+- `c3-inside-instance`: a three-word gloss beside each of the four commands, and
+  a note that these are Linux commands because the instance runs Ubuntu. The
+  learner's own laptop may be Windows; it only carries the browser tab.
+
+### One thing left open
+
+`ec2-25-security-groups-nav.png` comes from a different account than the other
+captures: its rows read `nxttrendz-app-sg` and `vpc-09690abf9070a5eeb`, not the
+deck's `nxttrendz-sg` and `vpc-0292256715a0e0ab2`. Neither highlight touches
+those rows, but the pixels carry two names the deck never uses.

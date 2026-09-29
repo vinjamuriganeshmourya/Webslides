@@ -5,11 +5,12 @@ still apply and live at `slide-kit/slide-template/CLAUDE.md`.
 
 | | |
 |---|---|
-| Slides | **93**, kept in step with `deck.config.json` (the 63 of rev2, plus the launch walk-through: concept 3 is rebuilt as the launch form, one field per slide; concept 2 loses three slides that moved to the field that uses them and gains the Six Decisions overview; concept 4 loses Free Plan Credits and gains a question slide; a question slide opens concept 3; the budget alert moves into the account block; a Stop Your Instance frame sits before Key Takeaways; and concept 3 became the real walk-through on eighteen captures, with Connect, the SSH session, the refused browser Connect and the address change after a restart) |
+| Slides | **97**, kept in step with `deck.config.json` (the 63 of rev2, plus the launch walk-through: concept 3 is rebuilt as the launch form, one field per slide; concept 2 loses three slides that moved to the field that uses them and gains the Six Decisions overview; concept 4 loses Free Plan Credits and gains a question slide; a question slide opens concept 3; the budget alert moves into the account block; a Stop Your Instance frame sits before Key Takeaways; and concept 3 became the real walk-through on eighteen captures, with Connect, the SSH session, the refused browser Connect and the address change after a restart) |
 | `devPort` | 5220 |
 | `htmlName` | `deployment-session-9` |
 | Deck file | `src/decks/awsIntroDeck.tsx`, plus `src/decks/deckShared.tsx` |
-| Plan | `../session_plans/deployement_session_9/plan.md`, **rev2 signed off 2026-09-15, revision 3 recorded 2026-09-16** |
+| Plan | `../session_plans/deployement_session_9/plan.md`, **rev2 signed off 2026-09-15, revision 3 recorded 2026-09-16, remarks pass §16 recorded 2026-09-28** |
+| Review | `../workflow/reviews/deployement_session_9.review.md`, the remarks doc transcribed with its slide-number mapping |
 | Illustration plan | `../session_plans/deployement_session_9/illustrations.md` |
 | Figure lab | `slide-kit/cloud-lab/`, devPort 5236 |
 | TR | `/home/nxtwave/docker_jenkins_aws/10_deploying_docker_on_aws_ec2.md` §1 to §2, `11_aws_ec2_security_and_networking.md` §4 |
