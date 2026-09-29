@@ -179,6 +179,11 @@ export const EC2_NET_VPC: ShotHighlight = { left: 8.2, top: 52.5, width: 11.0, h
 export const EC2_NET_SUBNET: ShotHighlight = { left: 8.2, top: 58.5, width: 20.0, height: 3.0 }
 export const EC2_NET_PUBLIC_IP: ShotHighlight = { left: 8.2, top: 64.5, width: 8.0, height: 3.1 }
 export const EC2_SG_NAME: ShotHighlight = { left: 8.3, top: 11.1, width: 36.0, height: 4.2 }
+
+/* `ec2-25-security-groups-nav.png`, 1253x342: the EC2 left nav with Security
+ * Groups selected, and the orange button that opens the create form. */
+export const EC2_NAV_NETWORK_SECURITY: ShotHighlight = { left: 1.3, top: 16.4, width: 13.3, height: 8.2 }
+export const EC2_CREATE_SG_BUTTON: ShotHighlight = { left: 84.0, top: 17.0, width: 14.4, height: 7.6 }
 export const EC2_SG_RULE_SSH: ShotHighlight = { left: 8.3, top: 31.2, width: 54.5, height: 25.5 }
 export const EC2_SG_RULE_APP: ShotHighlight = { left: 8.3, top: 58.2, width: 54.5, height: 24.5 }
 export const EC2_SUCCESS: ShotHighlight = { left: 1.5, top: 13.8, width: 32.0, height: 7.0 }
