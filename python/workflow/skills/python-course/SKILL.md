@@ -57,8 +57,47 @@ runs all four harnesses (`video-safe`, `qa`, `align-check`, `preview`) and then
 the contact sheet is opened and read, slide by slide, before the deck is
 reported done. Content rule 17: the harnesses cannot see inside a figure.
 
+## R5. An analogy is DRAWN as the thing it is, not as labelled boxes
+
+**Feedback, 2026-09-29, on session 14's first render:** *"why have you not
+carried the component from html to slides? those are most required to make the
+ppt more engaging and more visually appealing … if we are taking the analogy of
+playing songs we had created a Spotify and respective animation, similarly piggy
+bank for code analogy. Not just text, we had added real life representation."*
+
+R1 retired the source's **stock pictures**. It never licensed retiring the
+source's **built figures**, and session 14 read it that way: the pedagogy team's
+lesson plan drew a phone with a playlist on it and a piggy bank that fills with
+coins, and the first cut of the deck replaced both with a row of boxes reading
+`Song 1` to `Song 5` and `Day 1 / ₹1`.
+
+So, alongside R1:
+
+- **A hook or a story beat is drawn as the real object.** A playlist is a
+  playlist: cover art, a song title, an artist, a duration, a play button, and
+  the row that is playing marked as playing. A piggy bank is a piggy bank, with
+  the coin visibly going in and the total climbing on it.
+- **The abstraction is what the slide is postponing.** The hook exists so the
+  room recognises something they already did today and is only then told it has
+  a name. A box labelled `Song 1` is already the diagram, so it asks the room to
+  accept the analogy before they have felt it. `sequence` may not appear on a
+  hook frame.
+- **Abstract tiles are still right where the items really are abstract**: the
+  six characters of `"Python"` are characters, and drawing them as anything else
+  would be the same mistake in reverse.
+- **The source's own figure is the starting point**, rebuilt from kit tokens in
+  DOM (content rule 17), never pasted as an image and never approximated as a
+  company's trademark. Session 14's player carries no brand mark or brand name in
+  its UI: content rule 12 says every logo is fetched into `slide-kit/assets/`
+  first, and a hand-drawn copy of a wordmark is not that. The caption keeps the
+  source's sentence, which is where Spotify is named.
+
+The distinction R1 and R5 draw together: **a picture that decorates goes; a
+picture that IS the analogy stays, and gets rebuilt properly.**
+
 ## Feedback log
 
 | Date | Feedback | Applied as |
 |---|---|---|
 | 2026-09-22 | No PPT stock illustrations; own figures only where needed; check alignment | R1, R4; session 1 regenerated |
+| 2026-09-29 | Carry the source's built components across; a song analogy gets a real player, a savings analogy gets a real piggy bank, not text | R5; session 14's `PhonePlaylist` and `PiggyBank` |
