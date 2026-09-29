@@ -404,12 +404,20 @@ export const dailyChallengeSlides: Record<string, SlideDef> = {
         lesson={SESSION}
         lead="counter goes 0, 1, 2, 3. Each line prints counter + 1 stars."
       >
-        <div className="mx-auto grid w-[1080px] grid-cols-[1fr_300px] items-center gap-10">
+        {/* THE ROW IS TOP-ALIGNED AND THE PANEL HUGS ITS CODE. A `1fr` column
+            stretched a three-line panel to 740px, so the code sat in the left
+            third of a wide dark box with the INPUT/OUTPUT column stranded far to
+            its right; and centring the short panel inside a tall row opened
+            roughly 160px of nothing between the lead and the first line of
+            code. The panel is now its own width, centred in the space it is
+            given, and it starts level with INPUT. */}
+        <div className="mx-auto flex w-[1000px] items-start justify-center gap-12">
           <AnnotatedCode
             filename={PY}
             fontSize={16}
             code={'n = int(input())\nfor counter in range(n):\n    print("* " * (counter + 1))'}
             loopBack={{ from: 3, to: 2 }}
+            className="shrink-0"
           />
           <IoPanels
             panels={[
@@ -479,12 +487,20 @@ export const dailyChallengeSlides: Record<string, SlideDef> = {
         lesson={SESSION}
         lead="Simpler with range(1, n + 1). counter is already the number of stars."
       >
-        <div className="mx-auto grid w-[1080px] grid-cols-[1fr_300px] items-center gap-10">
+        {/* THE ROW IS TOP-ALIGNED AND THE PANEL HUGS ITS CODE. A `1fr` column
+            stretched a three-line panel to 740px, so the code sat in the left
+            third of a wide dark box with the INPUT/OUTPUT column stranded far to
+            its right; and centring the short panel inside a tall row opened
+            roughly 160px of nothing between the lead and the first line of
+            code. The panel is now its own width, centred in the space it is
+            given, and it starts level with INPUT. */}
+        <div className="mx-auto flex w-[1000px] items-start justify-center gap-12">
           <AnnotatedCode
             filename={PY}
             fontSize={16}
             code={'n = int(input())\nfor counter in range(1, n + 1):\n    print("* " * counter)'}
             loopBack={{ from: 3, to: 2 }}
+            className="shrink-0"
           />
           <IoPanels
             panels={[

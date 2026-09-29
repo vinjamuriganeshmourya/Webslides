@@ -203,8 +203,13 @@ export function AnnotatedCode({
                   ? { backgroundImage: 'linear-gradient(rgba(11,95,255,0.30), rgba(11,95,255,0.30))' }
                   : undefined
           /* A line that was never reached is dimmed, not tinted: it has to read
-             as "nothing happened here", which an added colour cannot say. */
-          const dim = st === 'unreached' ? { opacity: 0.38 } : undefined
+             as "nothing happened here", which an added colour cannot say.
+
+             THE OPACITY GOES ON THE TEXT, NOT THE CELL. Fading the cell faded
+             the panel colour with it, so the row came back as a pale grey BAND
+             across a dark panel and read as a highlight: exactly the opposite of
+             what it says. The surface stays opaque; only the code on it fades. */
+          const faded = st === 'unreached'
           const role = loopRole(n, loopBack)
           return (
             <Fragment key={n}>
@@ -230,11 +235,12 @@ export function AnnotatedCode({
                   ...(showLineNumbers || loopBack ? {} : { gridColumnStart: 1 }),
                   background: PANEL,
                   ...tint,
-                  ...dim,
                   color: INK.plain,
                 }}
               >
-                {line ? paint(line) : ' '}
+                <span style={faded ? { opacity: 0.34 } : undefined}>
+                  {line ? paint(line) : ' '}
+                </span>
               </span>
               {annotations.length > 0 && (
                 <span className="flex items-center justify-start gap-2 pl-5">
