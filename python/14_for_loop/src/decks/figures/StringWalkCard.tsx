@@ -138,26 +138,23 @@ export function StringWalkCard({ session, py }: { session: string; py: string })
       lesson={session}
       lead="Pick a word, say how many lines it will print, then step it one line at a time."
     >
-      <div className="flex flex-col items-center gap-2">
-        <WordChooser
-          words={WORDS}
-          value={literal}
-          onChange={(v) => {
-            setLiteral(v)
-            setSplitPressed(false)
-          }}
-        />
+      <div className="flex flex-col gap-2">
 
         {/* The CODE keeps its natural width -- a panel stretched past its
             longest line is just a dark rectangle with a margin -- and the right
             column takes the rest of the row. The strip, the slots and the
             output are the things with something to gain from the space. */}
-        <div className="grid w-full grid-cols-2 items-center gap-7">
-          <div className="flex w-full flex-col gap-2">
+        <div className="grid w-full grid-cols-2 items-stretch gap-5">
+          {/* THE LEGEND CLOSES THE COLUMN. Four lines of code are shorter than
+              the panel beside them, and top-aligned the left half ended a
+              hundred pixels early with a hole under it. The code keeps the size
+              its content asks for and the key sits on the bottom edge, so the
+              two columns share one. */}
+          <div className="flex w-full flex-col justify-between gap-2">
           <AnnotatedCode
             className="w-full"
             filename={py}
-            fontSize={17}
+            fontSize={19}
             showLineNumbers
             lineStates={lineStates}
             code={`word = ${literal}\nfor ch in word:\n    print(ch)\nprint("Done")`}
@@ -175,7 +172,21 @@ export function StringWalkCard({ session, py }: { session: string; py: string })
           </div>
           </div>
 
-          <div className="flex w-full flex-col gap-2">
+          {/* ONE PANEL, NOT FOUR THINGS ON A BACKGROUND. The chooser picks the
+              word, the row under it is that word as a sequence, and the two
+              readouts are what walking it produces. They are one chain of
+              cause and effect, so they sit in one container; the chooser
+              floating above the whole frame read as slide chrome rather than
+              as the control it is. */}
+          <div className="flex w-full flex-col gap-2.5 rounded-card border border-line bg-white/60 p-3 shadow-card-soft">
+            <WordChooser
+              words={WORDS}
+              value={literal}
+              onChange={(v) => {
+                setLiteral(v)
+                setSplitPressed(false)
+              }}
+            />
             {/* The sequence, with the pointer on the character ch is holding. */}
             <div className="flex items-end gap-1.5">
               {!split && (
@@ -200,7 +211,7 @@ export function StringWalkCard({ session, py }: { session: string; py: string })
                 chars.map((c, i) => (
                 <span
                   key={i}
-                  className="grid h-[42px] w-[42px] place-items-center rounded-lg border-2 font-mono text-[18px] font-bold"
+                  className="grid h-[46px] w-[46px] place-items-center rounded-lg border-2 font-mono text-[19px] font-bold"
                   style={{
                     borderColor: s && s.at === i ? colors.brand : colors.line,
                     background: s && s.at === i ? `${colors.brand}14` : colors.white,
@@ -213,7 +224,7 @@ export function StringWalkCard({ session, py }: { session: string; py: string })
                 ))}
               {split && (
               <span
-                className="grid h-[42px] place-items-center rounded-lg border-2 border-dashed px-2 font-heading text-[12px] font-bold"
+                className="grid h-[46px] place-items-center rounded-lg border-2 border-dashed px-2 font-heading text-[12px] font-bold"
                 style={{
                   borderColor: s && s.at >= chars.length ? colors.danger : colors.line,
                   color: s && s.at >= chars.length ? colors.danger : colors.muted,
@@ -234,7 +245,7 @@ export function StringWalkCard({ session, py }: { session: string; py: string })
                     Output
                   </span>
                 </div>
-                <div className="min-h-[104px] px-4 py-2">
+                <div className="min-h-[92px] px-4 py-2">
                   {(s?.out ?? []).map((line, i) => (
                     <motion.div
                       key={`${line}-${i}`}
@@ -253,7 +264,7 @@ export function StringWalkCard({ session, py }: { session: string; py: string })
           </div>
         </div>
 
-        <div className="min-h-[54px] w-full max-w-[940px] rounded-card border border-line bg-surface px-5 py-2">
+        <div className="min-h-[52px] w-full rounded-card border border-line bg-surface px-5 py-2">
           {s && (
             <motion.div
               key={reached}
@@ -302,16 +313,27 @@ function LegendKey({ swatch, label, dim }: { swatch: string; label: string; dim?
 
 function Slot({ label, value, muted }: { label: string; value: string; muted?: boolean }) {
   return (
-    <div className="w-[112px] overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
+    <div className="w-[132px] shrink-0 overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
       <div className="border-b border-line bg-surface px-3 py-1 text-center">
-        <span className="font-heading text-body-sm font-bold leading-none" style={{ color: colors.body }}>
+        <span className="font-mono text-body-sm font-bold leading-none" style={{ color: colors.body }}>
           {label}
         </span>
+        <span className="block text-[11px] leading-tight" style={{ color: colors.muted }}>
+          current character
+        </span>
       </div>
-      <div className="grid h-[104px] place-items-center px-2 text-center">
+      {/* THE VALUE SITS ON ITS OWN TINTED SQUARE, the same tint the character
+          under the pointer carries in the row above. One glance links the two,
+          which is the only thing this card is for. */}
+      <div className="grid h-[92px] place-items-center px-3">
         <span
-          className={muted ? 'font-mono text-[13px]' : 'font-mono text-[22px] font-semibold'}
-          style={{ color: muted ? colors.muted : colors.brandDark }}
+          className={`grid w-full place-items-center rounded-lg py-3 ${
+            muted ? 'font-mono text-[13px]' : 'font-mono text-[28px] font-bold'
+          }`}
+          style={{
+            color: muted ? colors.muted : colors.brandDark,
+            background: muted ? 'transparent' : `${colors.brand}14`,
+          }}
         >
           {value}
         </span>
