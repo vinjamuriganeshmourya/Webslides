@@ -22,6 +22,7 @@ import { EverydayLoops } from './figures/EverydayLoops'
 import { EverydayShape } from './figures/EverydayShape'
 import { StringWalkCard } from './figures/StringWalkCard'
 import { PiggyMeter } from './figures/PiggyMeter'
+import { FillableCode } from './figures/FillableCode'
 import { dailyChallengeSlides as dc } from './dailyChallenge'
 import { RangeDial } from './figures/RangeDial'
 
@@ -688,8 +689,10 @@ export const forLoopDeck: SlideDef[] = [
             back into an exercise. Type comes down a step to make room, which is
             the trade the review asked for. */}
         <div className="flex items-start justify-center gap-7">
-          <VariableTrace code={RIYA_CODE} steps={RIYA_STEPS} location={PY} />
-          <PiggyMeter totals={RIYA_TOTALS} coins={RIYA_COINS} className="mt-6 shrink-0" />
+          <VariableTrace code={RIYA_CODE} steps={RIYA_STEPS} location={PY} className="flex-1" />
+          {/* The bank sits in the middle of its space, like the code panel and
+              the output panel beside it, rather than hanging from the top. */}
+          <PiggyMeter totals={RIYA_TOTALS} coins={RIYA_COINS} className="shrink-0 self-center" />
         </div>
         <StepControls className="mt-3 w-full justify-center" showCount={false} mode="code" />
       </ContentSlide>
@@ -726,9 +729,15 @@ export const forLoopDeck: SlideDef[] = [
         lead="Line 1 is given. Line 2 and the blank on line 3 are yours. The two blanks must agree."
       >
         <div className="grid grid-cols-[1fr_0.8fr] items-center gap-10">
-          <CodeBlock
+          {/* Real blanks, not a picture of one: an answer called out by the
+              room gets typed in, and the two blanks can be seen to agree. */}
+          <FillableCode
             filename={PY}
-            code={'n = int(input())\n___________________________\nprint("* " * ______)'}
+            lines={[
+              { before: 'n = int(input())' },
+              { before: '', blank: 26, placeholder: 'the loop line, with the colon' },
+              { before: 'print("* " * ', blank: 8, after: ')' },
+            ]}
           />
           <Card icon="target" title="For n = 4">
             It prints 4 rows. The last row is * * * *
