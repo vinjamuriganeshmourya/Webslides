@@ -318,6 +318,100 @@ then copied into the session. The same holds for anything else a session needs
 that is not session-specific: an icon, a tech logo, a figure, a slide type. The
 central copy is the real one.
 
+## 6b. Render the reference before you write a line of the deck
+
+**If the session has a pedagogy-team lesson plan, it is a working deck, not a
+spec.** `prog_foundations_LP/<session>/*_student_view_new_design.html` opens in
+a browser and holds one finished slide per `.pcard` -- 24 of them for session
+14. Screenshot every one of them and keep them beside you.
+
+```bash
+# ~40 seconds, once, at the start
+node - <<'JS'
+import { chromium } from 'playwright-core'
+const b = await chromium.launch({ executablePath: process.env.CHROME_PATH })
+const p = await b.newPage({ viewport: { width: 1280, height: 900 } })
+await p.goto('file:///abs/path/to/..._student_view_new_design.html', { waitUntil: 'networkidle' })
+await p.waitForTimeout(1500)
+for (const [i, c] of (await p.$$('.pcard')).entries())
+  await c.screenshot({ path: `/tmp/ref-${String(i + 1).padStart(2, '0')}.png` })
+await b.close()
+JS
+```
+
+**Why this is a numbered step and not a tip.** Session 14 was built by reading
+that file's HTML and CSS as text -- extracting its SVG paths, its chip hexes,
+its `data-anim-labels` -- and rebuilding each slide from the markup, without
+ever rendering it. The result cost the user six to seven hours of sending
+screenshots back: the tilted quiz card, the takeaways map, the three-column
+trace, the day strip, the IO panel sizes. Every one of those was already
+rendered in a file the model had open.
+
+Reading a reference's markup tells you its DOM. It does not tell you what it
+looks like, and what it looks like is the brief.
+
+---
+
+## 6c. Iterate on one slide. Sweep the deck once.
+
+The three harnesses in section 7 settle **2600ms on every slide**. On a
+44-slide deck that is two to four minutes per run, and it reports the same known
+baseline nearly every time. Running it after each edit is the single largest
+waste of wall clock in this repo.
+
+- **While working on a frame:** screenshot that frame alone and look at it.
+  Navigate by hash (`http://localhost:<devPort>/#/31`), not a query parameter.
+- **Before committing a block of work:** run the full sweep once.
+
+Look at every build at **step 0, mid-run and fully revealed.** Most of session
+14's layout defects existed at exactly one of the three: variable boxes that
+appeared mid-run and pushed the controls under the player bar, a caption row
+that was empty until the first press and shifted the column into the lead, a
+week strip whose running totals vanished on the last step.
+
+**And know what the harnesses cannot see.** They catch collisions with the
+instructor-video rectangle and the player bar. They do not catch a recap that
+renders empty, an OUTPUT panel tinted the danger colour, a frozen animation, or
+a figure that is simply ugly. On session 14 the user caught all four. Looking at
+the PNG is the review; the harnesses are the gate.
+
+---
+
+## 6d. Fix the class, not the instance
+
+A correction on one slide is almost always a correction on every slide of that
+shape. Before replying, grep for the construct and fix all of it, then say which
+slides were swept so the user does not have to check.
+
+| What was asked | What it actually was |
+|---|---|
+| "slide 16 centre the code box" | every code-plus-panel frame: 16, 35, 38, 40 |
+| "slides 35 and 38 are too small" | one component, two call sites |
+| an OUTPUT header reading as an error | `IoPanels` `TONE.out = colors.danger`, every IO frame in the deck |
+
+Three separate user rounds were spent on the first row alone.
+
+---
+
+## 6e. One deck, one worker
+
+**Do not split a single deck across parallel agents by slide range.** Slides
+look independent and are not: they share figures, the kit, the step engine and
+the visual system, so two agents given "18 to 30" and "31 to 44" both edit
+`VariableTrace`, `DayStrip` and `dailyChallenge.tsx`.
+
+Session 14 was split three ways. One agent's entire slide-31 rebuild was
+superseded and never merged, because the same slide had been rebuilt
+independently an hour later; another's `DayStrip` change conflicted and had to
+be hand-merged, and contradicted an explicit user instruction. The coordination
+cost lands on the merge, which is the most expensive place for it to land.
+
+Agents are for genuinely separate artefacts: another session, a lab, a research
+pass, a skill write-up. If the user asks for parallel progress on one deck, say
+plainly why the ranges are not separable and offer the alternative.
+
+---
+
 ## 7. Verify by rendering. Never by reading.
 
 Hard rule 10, and the one most often skipped. Reading your own JSX is not
