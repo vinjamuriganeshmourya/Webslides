@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import { motion } from 'framer-motion'
 import { useInstant } from '@/motion/instant'
 import { colors } from '@/design/tokens'
@@ -5,6 +6,8 @@ import { T, E, c4 } from '@/ui/figureTiming'
 import { useBeat, type Beat } from './walk'
 import { BeatCaption } from './BeatCaption'
 import { Riya, SpeechBubble } from './Riya'
+import { Coin } from './Coin'
+import { CeramicLight, CastShadow } from './lighting'
 
 /**
  * PIGGY BANK — Riya's seven days drawn as a week of coins and a bank that
@@ -48,8 +51,6 @@ import { Riya, SpeechBubble } from './Riya'
   without one file per mood, and two files drift.
 */
 const PIG = '#F2789F'
-const PIG_DARK = '#D95C86'
-const PIG_SNOUT = '#ED6A94'
 
 export interface Day {
   label: string
@@ -87,15 +88,12 @@ function DayCard({ day, state }: { day: Day; state: 'ahead' | 'here' | 'done' })
         </span>
         {saves ? (
           <motion.span
-            className="grid h-11 w-11 place-items-center rounded-full font-heading text-[17px] font-bold leading-none"
-            style={{
-              background: lit ? colors.warning : colors.surface2,
-              color: lit ? colors.ink : colors.muted,
-            }}
             animate={instant ? {} : { scale: state === 'here' ? 1.1 : 1 }}
             transition={{ duration: T.accent, ease: c4(E.out) }}
           >
-            {day.coin}
+            <Coin size={44} dim={!lit}>
+              {day.coin}
+            </Coin>
           </motion.span>
         ) : (
           <span
@@ -120,6 +118,11 @@ function DayCard({ day, state }: { day: Day; state: 'ahead' | 'here' | 'done' })
  * fidelity, and a redrawing is always a near miss.
  */
 export function PiggyJar({ happy, width = 196 }: { happy: boolean; width?: number }) {
+  /* Gradient ids must be unique: this jar is drawn twice on some frames, and a
+     duplicate id makes the second one inherit the first's paint. */
+  const u = useId().replace(/:/g, '')
+  const g = (n: string) => `pj-${n}-${u}`
+
   return (
     <svg
       width={width}
@@ -128,57 +131,111 @@ export function PiggyJar({ happy, width = 196 }: { happy: boolean; width?: numbe
       aria-label="A piggy bank"
       role="img"
     >
+      {/* VOLUME, NOT OUTLINE. Flat fills made the bank read as a sticker beside
+          a shaded character. Four things give it a body, in the order light
+          actually works: a diagonal body gradient, a soft occlusion under the
+          belly, a rim light along the lit edge, and one specular highlight. The
+          ground shadow is elliptical and soft rather than a hard disc. */}
+      <defs>
+        <linearGradient id={g('body')} x1="0.2" y1="0" x2="0.8" y2="1">
+          <stop offset="0%" stopColor="#FFA8C6" />
+          <stop offset="45%" stopColor={PIG} />
+          <stop offset="100%" stopColor="#D4527C" />
+        </linearGradient>
+        <radialGradient id={g('occ')} cx="0.5" cy="0.34" r="0.72">
+          <stop offset="55%" stopColor="#8E2F53" stopOpacity="0" />
+          <stop offset="100%" stopColor="#8E2F53" stopOpacity="0.45" />
+        </radialGradient>
+        <radialGradient id={g('spec')} cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id={g('snout')} x1="0.3" y1="0" x2="0.7" y2="1">
+          <stop offset="0%" stopColor="#FF9FBE" />
+          <stop offset="100%" stopColor="#DE5C87" />
+        </linearGradient>
+        <linearGradient id={g('leg')} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#E0658E" />
+          <stop offset="100%" stopColor="#B84167" />
+        </linearGradient>
+        <radialGradient id={g('ground')} cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0%" stopColor={colors.ink} stopOpacity="0.22" />
+          <stop offset="100%" stopColor={colors.ink} stopOpacity="0" />
+        </radialGradient>
+        {/* Glazed ceramic, and the shadows the parts throw on each other. */}
+        <CeramicLight id={g('glaze')} />
+        <CastShadow id={g('drop')} dy={2.5} blur={2.5} opacity={0.3} />
+      </defs>
 
-            <ellipse cx="75" cy="112" rx="52" ry="6" fill={colors.ink} opacity="0.1" />
-            <rect x="36" y="90" width="15" height="20" rx="6" fill={PIG_DARK} />
-            <rect x="94" y="90" width="15" height="20" rx="6" fill={PIG_DARK} />
-            <path
-              d="M24 58 q-10 -2 -9 -10 q1 -7 8 -5 q6 2 3 8"
-              fill="none"
-              stroke={PIG_DARK}
-              strokeWidth="5"
-              strokeLinecap="round"
-            />
-            <ellipse cx="72" cy="62" rx="52" ry="40" fill={PIG} />
-            <path d="M104 30 q14 -10 20 -2 q4 7 -6 16 z" fill={PIG_DARK} />
-            <ellipse cx="120" cy="66" rx="17" ry="15" fill={PIG_SNOUT} />
-            <ellipse cx="115" cy="66" rx="3.2" ry="4.4" fill={PIG_DARK} />
-            <ellipse cx="125" cy="66" rx="3.2" ry="4.4" fill={PIG_DARK} />
-            {/* THE FACE IS THE STATE. Money in, it smiles; a skipped day, it
-                sulks. The mouth and the eye both change, so the mood survives
-                greyscale and a projector. */}
-            {happy ? (
-              <>
-                <path
-                  d="M96 44 q4 -5 8 0"
-                  fill="none"
-                  stroke={colors.ink}
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  opacity="0.8"
-                />
-                <path
-                  d="M84 74 q10 9 19 2"
-                  fill="none"
-                  stroke={PIG_DARK}
-                  strokeWidth="3.2"
-                  strokeLinecap="round"
-                />
-              </>
-            ) : (
-              <>
-                <circle cx="100" cy="46" r="3.4" fill={colors.ink} opacity="0.7" />
-                <path
-                  d="M84 80 q10 -8 19 -2"
-                  fill="none"
-                  stroke={PIG_DARK}
-                  strokeWidth="3.2"
-                  strokeLinecap="round"
-                />
-              </>
-            )}
-            <rect x="54" y="23" width="36" height="8" rx="4" fill={colors.ink} opacity="0.5" />
-              </svg>
+      <ellipse cx="75" cy="112" rx="56" ry="8" fill={`url(#${g('ground')})`} />
+
+      {/* Back legs first, darker, so the body sits in front of them. */}
+      <g filter={`url(#${g('drop')})`}>
+        <rect x="36" y="88" width="15" height="22" rx="7" fill={`url(#${g('leg')})`} />
+        <rect x="94" y="88" width="15" height="22" rx="7" fill={`url(#${g('leg')})`} />
+      </g>
+
+      <path
+        d="M24 58 q-10 -2 -9 -10 q1 -7 8 -5 q6 2 3 8"
+        fill="none"
+        stroke="#C9507A"
+        strokeWidth="5"
+        strokeLinecap="round"
+      />
+
+      {/* Ear behind the head, so the body edge cuts across it. */}
+      <g filter={`url(#${g('drop')})`}>
+        <path d="M104 30 q14 -10 20 -2 q4 7 -6 16 z" fill="#C9507A" />
+      </g>
+
+      <g filter={`url(#${g('glaze')})`}>
+        <ellipse cx="72" cy="62" rx="52" ry="40" fill={`url(#${g('body')})`} />
+      </g>
+      <ellipse cx="72" cy="62" rx="52" ry="40" fill={`url(#${g('occ')})`} />
+      {/* The belly turns away from the lamp, so it darkens before the edge. */}
+      <path d="M26 78 q46 30 92 -6 q-12 30 -46 30 q-34 0 -46 -24 z" fill="#A83F63" opacity="0.16" />
+      {/* No painted rim light or highlight here: `CeramicLight` computes both
+          from the form itself, and a hand-drawn streak on top of a computed one
+          reads as a scratch in the glaze. */}
+
+      {/* The snout sticks OUT, so it drops a shadow on the cheek behind it and
+          takes its own glaze. This is the layer separation a gradient cannot do. */}
+      <g filter={`url(#${g('drop')})`}>
+        <g filter={`url(#${g('glaze')})`}>
+          <ellipse cx="120" cy="66" rx="17" ry="15" fill={`url(#${g('snout')})`} />
+        </g>
+      </g>
+
+      <ellipse cx="115" cy="66" rx="3.2" ry="4.4" fill="#A83F63" />
+      <ellipse cx="125" cy="66" rx="3.2" ry="4.4" fill="#A83F63" />
+
+      {/* THE FACE IS THE STATE. Money in, it smiles; a skipped day, it sulks.
+          The mouth and the eye both change, so the mood survives greyscale and
+          a projector. */}
+      {happy ? (
+        <>
+          <path
+            d="M96 44 q4 -5 8 0"
+            fill="none"
+            stroke={colors.ink}
+            strokeWidth="3"
+            strokeLinecap="round"
+            opacity="0.8"
+          />
+          <path d="M84 74 q10 9 19 2" fill="none" stroke="#A83F63" strokeWidth="3.2" strokeLinecap="round" />
+        </>
+      ) : (
+        <>
+          <circle cx="100" cy="46" r="3.4" fill={colors.ink} opacity="0.7" />
+          <path d="M84 80 q10 -8 19 -2" fill="none" stroke="#A83F63" strokeWidth="3.2" strokeLinecap="round" />
+        </>
+      )}
+
+      {/* The coin slot is a hole, so it gets an inner shadow and a lit lower lip
+          rather than a flat grey bar. */}
+      <rect x="54" y="23" width="36" height="8" rx="4" fill="#7E2E4C" />
+      <rect x="56" y="28.5" width="32" height="2.4" rx="1.2" fill="#FFB9D2" opacity="0.55" />
+    </svg>
   )
 }
 
@@ -267,13 +324,11 @@ export function PiggyBank({
               {beat?.at !== undefined && at >= 0 && days[at]?.coin && (
                 <motion.span
                   key={at}
-                  className="grid h-10 w-10 place-items-center rounded-full font-heading text-[16px] font-bold"
-                  style={{ background: colors.warning, color: colors.ink }}
                   initial={instant ? false : { opacity: 0, y: -26 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: T.travel, ease: c4(E.out) }}
                 >
-                  {days[at].coin}
+                  <Coin size={40}>{days[at].coin}</Coin>
                 </motion.span>
               )}
             </div>
@@ -289,13 +344,11 @@ export function PiggyBank({
             {beat?.at !== undefined && at >= 0 && days[at]?.coin && (
               <motion.span
                 key={at}
-                className="grid h-10 w-10 place-items-center rounded-full font-heading text-[16px] font-bold"
-                style={{ background: colors.warning, color: colors.ink }}
                 initial={instant ? false : { opacity: 0, y: -26 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: T.travel, ease: c4(E.out) }}
               >
-                {days[at].coin}
+                <Coin size={40}>{days[at].coin}</Coin>
               </motion.span>
             )}
           </div>
