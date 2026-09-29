@@ -303,8 +303,14 @@ export function PhonePlaylist({
         </div>
 
         <div className="mt-1 flex items-center justify-between">
+          {/* NOWHERE ON THIS PHONE DOES IT SAY HOW MANY SONGS THERE ARE.
+              That is the whole point of the card: the room is about to be asked
+              what told the playlist to stop, and a "5 songs" label answers it
+              before the question is put. The pedagogy team's own build asserts
+              this in a browser check. The list is the count, and it is counted
+              by looking. */}
           <span className="text-[12px]" style={{ color: DIM }}>
-            {list.length} songs
+            Playlist
           </span>
           <span className="flex items-center gap-2">
           <span className="text-[12px]" style={{ color: DIM }}>
