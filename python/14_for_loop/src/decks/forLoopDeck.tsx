@@ -897,45 +897,54 @@ export const forLoopDeck: SlideDef[] = [
         lesson={SESSION}
         lead="Run it with 7, one line at a time."
       >
-        {/* ONE BLOCK, TWO COLUMNS, EVERY EDGE SHARED.
+        {/* THE WEEK SPANS THE WHOLE FRAME, not the left column.
 
-            LEFT, from x=64: the week, the program that walks it, and the line
-            that reads the input, each the same width so the three stack as one
-            object. The week's tiles are seven equal columns rather than seven
-            fixed 64px boxes, so the strip ends where the code panel ends.
+            It is the one thing on this slide that is about all seven days at
+            once, and boxed into the left column it ended 370px short of the
+            right edge while the column beside it went hungry. Full width it is
+            also wide enough for each tile to carry three readable rows: the
+            day, what that day put in, and the running total under it.
 
-            RIGHT, 340px: what the program prints, and the bank the printing is
-            about. It is padded down 84px because the instructor's video holds
-            x913..1280, y0..220, and this column would otherwise start inside
-            it. Padding the column, not the slide, is what keeps the left one
-            high and closes the hole this frame used to have under its title.
+            `pt-[4px]` is not decoration. The instructor's video holds
+            x913..1280, y0..220, a slide with a lead starts its body at y=217,
+            and this is the first block on the frame wide enough to reach that
+            rectangle. Four pixels is what clears it. */}
+        <div className="flex flex-col gap-2 pt-[8px]">
+          <DayStrip spread days={RIYA_DAYS} stepDay={RIYA_STEP_DAY} />
 
-            The controls close the right column, under the two panels they
-            drive, instead of floating at the end of a full-width row. */}
-        <VariableTrace
-          code={RIYA_CODE}
-          steps={RIYA_STEPS}
-          location={PY}
-          stacked
-          rightClassName="pt-[84px]"
-          aboveCode={<DayStrip spread days={RIYA_DAYS} stepDay={RIYA_STEP_DAY} />}
-          belowCode={
-            /* Fixed height: the caption is empty until the first press, and a
-               row that grows when it fills shifts the whole left column up. */
-            <div className="flex h-[30px] items-baseline gap-4">
-              <span className="shrink-0 font-mono text-body-sm font-bold" style={{ color: colors.body }}>
-                input: 7
-              </span>
-              <StepCaption beats={RIYA_BEATS} className="flex-1" />
-            </div>
-          }
-          rightExtra={
-            <>
-              <PiggyMeter row totals={RIYA_TOTALS} coins={RIYA_COINS} />
-              <StepControls className="justify-center" showCount={false} mode="code" />
-            </>
-          }
-        />
+          {/* LEFT the program, RIGHT one grouped readout: the variables it is
+              holding, what it has printed, and where the money ended up. Three
+              separate cards on the slide background read as three unrelated
+              widgets; they are one answer to "what is true right now". */}
+          <VariableTrace
+            code={RIYA_CODE}
+            steps={RIYA_STEPS}
+            location={PY}
+            stacked
+            groupRight
+            codeFontSize={19}
+            belowCode={
+              /* Fixed height: the caption is empty until the first press, and a
+                 row that grows when it fills shifts the whole left column up. */
+              <div className="flex h-[40px] items-center gap-4 rounded-card border border-line bg-white/60 px-4">
+                <span className="shrink-0 font-heading text-body-sm font-bold" style={{ color: colors.muted }}>
+                  input
+                </span>
+                <span
+                  className="grid h-7 w-9 shrink-0 place-items-center rounded-card font-mono text-body font-bold"
+                  style={{ background: colors.surface, color: colors.ink }}
+                >
+                  7
+                </span>
+                <span className="h-6 w-px shrink-0" style={{ background: colors.line }} />
+                <StepCaption beats={RIYA_BEATS} className="flex-1" />
+              </div>
+            }
+            rightExtra={<PiggyMeter row totals={RIYA_TOTALS} coins={RIYA_COINS} />}
+          />
+
+          <StepControls className="justify-end" showCount={false} mode="code" />
+        </div>
       </ContentSlide>
     ),
   },

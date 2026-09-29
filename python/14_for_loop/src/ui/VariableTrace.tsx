@@ -171,6 +171,8 @@ export function VariableTrace({
   rightExtra,
   belowCode,
   aboveCode,
+  groupRight = false,
+  codeFontSize,
   rightClassName = '',
 }: {
   code: string
@@ -204,6 +206,15 @@ export function VariableTrace({
   belowCode?: ReactNode
   /** Sits above the code panel in `stacked` mode, sharing its width. */
   aboveCode?: ReactNode
+  /**
+   * Draw the right column as ONE panel with a border round it, instead of
+   * three cards floating on the slide background. What it prints and where the
+   * money ended up are one readout; three separate cards read as three
+   * unrelated widgets.
+   */
+  groupRight?: boolean
+  /** Passed through to `CodeBlock`. A frame with room to spare should use it. */
+  codeFontSize?: number
   /**
    * Extra classes on the right column in `stacked` mode. A frame whose right
    * column would otherwise start inside the instructor-video rectangle pads it
@@ -257,6 +268,7 @@ export function VariableTrace({
           className="w-full"
           code={code}
           filename={location}
+          fontSize={codeFontSize}
           highlight={current ? [current.line] : []}
         />
         {stacked && belowCode}
@@ -265,7 +277,11 @@ export function VariableTrace({
       {aside ? (
         <div className={`${stacked ? '' : 'col-span-2'} self-center`}>{aside}</div>
       ) : stacked ? (
-        <div className={`flex flex-col gap-3 self-start ${rightClassName}`}>
+        <div
+          className={`flex flex-col gap-2 self-start ${
+            groupRight ? 'rounded-card border border-line bg-white/60 p-2.5 shadow-card-soft' : ''
+          } ${rightClassName}`}
+        >
           {/* HEIGHT RESERVED FROM THE FIRST FRAME. The boxes appear a step at a
               time; sized to content the column grew under them and pushed the
               output panel, the figure and the controls down the canvas mid-run,

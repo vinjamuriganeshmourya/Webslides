@@ -91,11 +91,19 @@ export function PiggyMeter({
             </span>
           </div>
         )}
-      <div className={row ? 'grid h-[46px] place-items-center' : 'rounded-card border border-line bg-white px-5 py-1.5 shadow-card-soft'}>
+      <div className={row ? 'grid h-[38px] place-items-center' : 'rounded-card border border-line bg-white px-5 py-1.5 shadow-card-soft'}>
         <motion.span
           key={total}
-          className="font-mono text-[26px] font-bold leading-none"
-          style={{ color: colors.brandDark }}
+          /* QUIETER THAN THE VARIABLE IT ECHOES. On the trace frame this number
+             is the third place the room is shown the same value, after the
+             running total under the day and the `total` box the program is
+             actually holding. It earns its place by saying what the number
+             MEANS -- money in a bank -- not by shouting it again, so in `row`
+             mode it drops below the variable box's 24px and off the brand
+             colour. Stacked, on the story frame, it is the only readout there
+             is and keeps its weight. */
+          className={`font-mono font-bold leading-none ${row ? 'text-[20px]' : 'text-[26px]'}`}
+          style={{ color: row ? colors.body : colors.brandDark }}
           initial={instant ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: T.label, ease: c4(E.out) }}

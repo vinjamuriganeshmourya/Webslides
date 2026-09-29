@@ -488,3 +488,135 @@ The set grows the way the framework set does: **at plan time, with the user's
 confirmation, or not at all.** A new move is admitted only when it appears in
 three or more sessions and no existing move renders it. Name the sessions in the
 row. A move with one occurrence is a slide, not a move.
+
+---
+
+# Part VII — Composition: how big, and where
+
+Parts I to VI decide **what** goes on the frame. They stop there, and for a
+long time nothing in this repo picked the question up, so figures were sized by
+whatever the component happened to default to. Slide 31 of session 14 shipped
+with six lines of Python in a panel two-thirds the height of the canvas, the
+week boxed into the left column ending 370px short of the right edge, and the
+bank hanging in the gap between them. Every harness passed. It was still wrong.
+
+Adapted from a layout spec the user supplied. **The four places it does not fit
+this repo are marked; those override it.**
+
+## 1. The golden rule
+
+Never ask *how do I fit this component on the slide?* Ask **how much space does
+this content actually need, and what should the room look at next?**
+
+Content decides size. The teaching move decides priority. The relationship
+between components decides placement. What is left over decides the composition
+— in that order, never the reverse.
+
+A six-line program needs a six-line panel. It does not need half a canvas
+because `CodeBlock` will happily grow to fill one.
+
+## 2. Priority, before any measurement
+
+Label every element on the frame:
+
+| | | Example on a trace frame |
+|---|---|---|
+| **P0** | the room must see this first | the line running now, the value that just changed |
+| **P1** | explains P0 | the variables, the beat caption, the sequence being walked |
+| **P2** | context, must not compete | labels, the analogy object, the controls |
+| **P3** | decorative | washes, background curves |
+
+When space runs short, **cut P3 before shrinking P0**. A frame that shrank its
+running line to keep a decorative glow has its priorities inverted.
+
+## 3. Size from content, not from the component
+
+Estimate before you place:
+
+```
+text     lines x line-height + padding, plus room to wrap
+code     lines x line-height + chrome + padding
+card     the longest label and the widest value, not a round number
+figure   the size at which the thing it argues is legible, and no larger
+```
+
+Then check the **content-to-space ratio** on every block. Mostly empty means
+shrink it, merge it with what it explains, or move it next to that thing.
+Cramped means it needs the room, and something P2 or P3 has to give it up.
+
+The goal is not density. It is enough room to read without wasting frame the
+room could be learning from.
+
+## 4. OUR GEOMETRY — this overrides the source's grid
+
+The source proposes percentage bands (5–7% margins, 65–75% main content). **Do
+not use them.** This repo's canvas is fixed at **1280x720** and has three zones
+that no percentage knows about:
+
+| Zone | Where | Enforced by |
+|---|---|---|
+| the instructor's video | `x913..1280, y0..220` | `video-safe.mjs`, must print CLEAN |
+| the player's control bar | below `y≈654` | `align-check.mjs` CHROME finding |
+| the header datum | kicker `y64`, title `y105`, left edge `x64` | `align-check.mjs` rule S14 |
+
+Rule S14 is the placement rule that actually binds: a body block is either
+**left-aligned on x64** or **centred in the content area**. Anything else is
+drift, and drift reads as a mistake because it is one.
+
+Two consequences worth stating, because both were learned the expensive way:
+
+- A block wide enough to pass `x913` must start **below y220**. Pad that block
+  down, not the whole slide — padding the slide leaves a hole under the title.
+- `ContentSlide` adds a 52px guard when it has **no lead**, for exactly this
+  reason. Giving the frame a lead is often the cheaper fix, and it fills the
+  hole with a sentence instead of air.
+
+## 5. SIZE FOR THE LAST STEP — this the source does not cover at all
+
+Our slides build. The source assumes a static frame, so it never says this:
+
+> **Reserve the height the frame will need at its LAST step, from its first.**
+
+A column sized to what is on screen at step 0 grows as content arrives and
+shoves everything under it down the canvas. Session 14 shipped this twice in
+one day: variable boxes appearing mid-run pushed the controls under the
+player's own bar, and a caption row that was empty until the first press
+shifted the whole column up into the lead.
+
+Fixed heights on anything that fills in later. Check the frame at **step 0, mid-run
+and fully revealed** — a layout is only correct if it is correct at all three.
+
+## 6. Placement
+
+1. **Reading order.** Title → instruction → primary content → explanation →
+   controls. Do not scatter one thought across the frame.
+2. **Related things touch.** Code, the state it is in, and the sentence
+   explaining that state are one group. An explanation on the far side of the
+   frame from what it explains makes the room hunt.
+3. **The current state is the loudest thing.** On a trace frame the room should
+   be able to follow *day → line → variable → total* without searching.
+4. **Do not say the same number three times at the same volume.** Repeat it only
+   in a form that adds something, and drop the emphasis each time.
+   **Adapted:** course rule R5b requires every beat of the reference to be
+   visible, and restating a value in a *different representation* — a coin, a
+   variable box, a bank — is teaching, not duplication. Three identical
+   readouts at identical weight is duplication. The test is whether the second
+   showing answers a question the first one leaves open.
+5. **Dead space is a signal to rebalance, not to fill.** Whitespace that creates
+   hierarchy is doing work. Whitespace nothing is using means a block is the
+   wrong size or in the wrong column.
+
+## 7. The check, before you call it done
+
+The source ends with a visual hierarchy review. Keep it, but in this repo
+**the harnesses are the gate and looking is the review** — they catch different
+things and neither substitutes for the other:
+
+- [ ] What does the eye land on first? Is it P0?
+- [ ] Is any component bigger than its content needs?
+- [ ] Is anything important cramped to keep something decorative?
+- [ ] Do the edges line up — does each block share an edge with the one above it?
+- [ ] Correct at step 0, mid-run **and** fully revealed?
+- [ ] `video-safe` CLEAN, `qa` at its session baseline, `align-check` 0?
+- [ ] Have you **looked at the PNG**? Every defect in the paragraph that opens
+      this Part passed all three harnesses.
