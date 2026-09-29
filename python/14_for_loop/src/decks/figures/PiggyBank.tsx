@@ -22,12 +22,33 @@ import { BeatCaption } from './BeatCaption'
  * measure them and nothing can render on top of anything else. The failure this
  * rule exists for is `<text>` inside an `<svg>`, and there is none here.
  *
- * NO CHARACTER. The source drew Riya as a person. Course rule R1 says a figure
- * earns its place by making an argument a sentence cannot, and the person makes
- * none: her lines are the captions, which are already on the frame.
+ * RIYA IS DRAWN, AND SHE SPEAKS. The first cut left her out, on the reading
+ * that a person makes no argument a sentence cannot. That was overruled twice
+ * (course rule R5b): the line *"I can't add all that by hand!"* in a callout is
+ * the deck narrating, and the same line in her speech bubble is somebody stuck.
+ * The room needs to want the loop, and wanting is something a person does. This
+ * is the case content rule 8 allows and R1 does not cut: she states the
+ * constraint, so she is content.
  *
  * SESSION-LOCAL, AND TEMPORARILY. See `PhonePlaylist`.
  */
+
+/*
+  THE PIG IS PINK, AND PINK IS NOT A THEME COLOUR.
+
+  These are OBJECT colours, the same category as `PhonePlaylist`'s Spotify
+  greens: they describe a real thing the room has to recognise, not the deck's
+  palette, so they do not belong in `tokens.ts` and they are not a style choice a
+  future deck should reuse. A blue piggy bank reads as a blue blob; the pink is
+  what makes it a piggy bank at ten metres.
+
+  Drawn rather than photographed, because the bank changes expression: it smiles
+  on a day money goes in and sulks on a day Riya skips. A PNG cannot do that
+  without one file per mood, and two files drift.
+*/
+const PIG = '#F2789F'
+const PIG_DARK = '#D95C86'
+const PIG_SNOUT = '#ED6A94'
 
 export interface Day {
   label: string
@@ -99,6 +120,9 @@ export function PiggyBank({
   const { beat, reached } = useBeat(beats)
   const at = beat?.at ?? -1
   const ended = beat?.ended ?? false
+  /* Happy on a day a coin goes in, sulking on a day she skips, and happy again
+     once the week is done and the money is in. */
+  const happy = ended || at < 0 || Boolean(days[at]?.coin)
 
   return (
     <div className={`flex flex-col gap-5 ${className}`}>
@@ -129,15 +153,54 @@ export function PiggyBank({
         <div className="flex items-center gap-4">
           <svg width="196" height="156" viewBox="0 0 150 120" aria-label="A piggy bank" role="img">
             <ellipse cx="75" cy="112" rx="52" ry="6" fill={colors.ink} opacity="0.1" />
-            <rect x="34" y="92" width="14" height="18" rx="5" fill={colors.brandDark} />
-            <rect x="96" y="92" width="14" height="18" rx="5" fill={colors.brandDark} />
-            <ellipse cx="72" cy="62" rx="52" ry="40" fill={colors.brand} />
-            <path d="M118 44 q16 -6 20 -16 q4 16 -6 28 z" fill={colors.brandDark} />
-            <ellipse cx="119" cy="66" rx="16" ry="14" fill={colors.brandDark} />
-            <circle cx="115" cy="64" r="3" fill={colors.white} opacity="0.85" />
-            <circle cx="124" cy="64" r="3" fill={colors.white} opacity="0.85" />
-            <circle cx="104" cy="50" r="3.4" fill={colors.ink} opacity="0.75" />
-            <rect x="56" y="24" width="34" height="7" rx="3.5" fill={colors.brandDeep} />
+            <rect x="36" y="90" width="15" height="20" rx="6" fill={PIG_DARK} />
+            <rect x="94" y="90" width="15" height="20" rx="6" fill={PIG_DARK} />
+            <path
+              d="M24 58 q-10 -2 -9 -10 q1 -7 8 -5 q6 2 3 8"
+              fill="none"
+              stroke={PIG_DARK}
+              strokeWidth="5"
+              strokeLinecap="round"
+            />
+            <ellipse cx="72" cy="62" rx="52" ry="40" fill={PIG} />
+            <path d="M104 30 q14 -10 20 -2 q4 7 -6 16 z" fill={PIG_DARK} />
+            <ellipse cx="120" cy="66" rx="17" ry="15" fill={PIG_SNOUT} />
+            <ellipse cx="115" cy="66" rx="3.2" ry="4.4" fill={PIG_DARK} />
+            <ellipse cx="125" cy="66" rx="3.2" ry="4.4" fill={PIG_DARK} />
+            {/* THE FACE IS THE STATE. Money in, it smiles; a skipped day, it
+                sulks. The mouth and the eye both change, so the mood survives
+                greyscale and a projector. */}
+            {happy ? (
+              <>
+                <path
+                  d="M96 44 q4 -5 8 0"
+                  fill="none"
+                  stroke={colors.ink}
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  opacity="0.8"
+                />
+                <path
+                  d="M84 74 q10 9 19 2"
+                  fill="none"
+                  stroke={PIG_DARK}
+                  strokeWidth="3.2"
+                  strokeLinecap="round"
+                />
+              </>
+            ) : (
+              <>
+                <circle cx="100" cy="46" r="3.4" fill={colors.ink} opacity="0.7" />
+                <path
+                  d="M84 80 q10 -8 19 -2"
+                  fill="none"
+                  stroke={PIG_DARK}
+                  strokeWidth="3.2"
+                  strokeLinecap="round"
+                />
+              </>
+            )}
+            <rect x="54" y="23" width="36" height="8" rx="4" fill={colors.ink} opacity="0.5" />
           </svg>
           {/* The coin that is going in, on the beat it goes in. */}
           <div className="h-10 w-10">

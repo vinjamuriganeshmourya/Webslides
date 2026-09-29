@@ -28,6 +28,12 @@ import { useInstant } from './instant'
 interface StepContextValue {
   step: number
   claim: (id: string) => number
+  /** Highest claimed step on this slide. 0 until the children have registered. */
+  max: number
+  /** Move the slide's build to an exact step. Clamped by the caller. */
+  setStep?: (n: number) => void
+  /** Replay this slide from the top of its build, as the R key does. */
+  replay?: () => void
 }
 
 const StepContext = createContext<StepContextValue | null>(null)
@@ -39,10 +45,21 @@ const REVEAL_ALL =
 export function Stepper({
   step,
   onMax,
+  max = 0,
+  setStep,
+  replay,
   children,
 }: {
   step: number
   onMax: (max: number) => void
+  /**
+   * The deck's current step total, fed back in so a figure can draw its own
+   * controls (`useStepControls`). Optional, because the single-file export
+   * renderer mounts a Stepper with no player behind it.
+   */
+  max?: number
+  setStep?: (n: number) => void
+  replay?: () => void
   children: ReactNode
 }) {
   const reg = useRef<{ map: Map<string, number>; next: number }>({
@@ -65,7 +82,10 @@ export function Stepper({
     onMax(reg.current.next)
   })
 
-  const value = useMemo(() => ({ step, claim }), [step, claim])
+  const value = useMemo(
+    () => ({ step, claim, max, setStep, replay }),
+    [step, claim, max, setStep, replay],
+  )
   return <StepContext.Provider value={value}>{children}</StepContext.Provider>
 }
 
@@ -111,6 +131,64 @@ export function useClaimedSteps(count: number): boolean[] {
   if (!ctx) return Array.from({ length: count }, () => true)
   const orders = Array.from({ length: count }, (_, i) => ctx.claim(`${base}-${i}`))
   return orders.map((order) => REVEAL_ALL || ctx.step >= order)
+}
+
+/**
+ * The controls a stepped figure draws on the slide: Back, Next and Replay.
+ *
+ * WHY A FIGURE DRAWS ITS OWN CONTROLS
+ *
+ * A walk figure is making a claim about TIME. A frame that merely changes when
+ * a key is pressed does not say there is a sequence to walk, so three buttons
+ * say it before anything moves: there is a flow, it has a direction, and it can
+ * be gone back through. `pedagogy-to-components` §5.6 is the rule.
+ *
+ * ONE COUNTER, NOT TWO
+ *
+ * These drive the DECK's step, the same one `Ctrl+arrow` and `R` drive. A
+ * figure holding its own index would drift from the keyboard, and the drift
+ * shows up as the buttons and the clicker disagreeing in front of a class.
+ *
+ * `back` and `next` are clamped to this slide's own build and never cross into
+ * the neighbouring slide: moving between slides is the player's job, not a
+ * figure's. At the ends the corresponding button reports itself unavailable
+ * rather than doing something surprising.
+ *
+ * Outside a <Stepper>, or under `?all`, every action is a no-op and `available`
+ * is false, so the overview thumbnails and the QA harnesses never render a live
+ * control.
+ */
+export function useStepControls(): {
+  step: number
+  max: number
+  canBack: boolean
+  canNext: boolean
+  available: boolean
+  back: () => void
+  next: () => void
+  replay: () => void
+} {
+  const ctx = useContext(StepContext)
+  const noop = useCallback(() => {}, [])
+  const set = ctx?.setStep
+  const step = ctx?.step ?? 0
+  const max = ctx?.max ?? 0
+
+  const back = useCallback(() => set?.(Math.max(0, step - 1)), [set, step])
+  const next = useCallback(() => set?.(Math.min(max, step + 1)), [set, step, max])
+  const replay = ctx?.replay ?? noop
+
+  const available = !REVEAL_ALL && !!ctx && !!set
+  return {
+    step,
+    max,
+    canBack: available && step > 0,
+    canNext: available && step < max,
+    available,
+    back: available ? back : noop,
+    next: available ? next : noop,
+    replay: available ? replay : noop,
+  }
 }
 
 type Tag = 'div' | 'li' | 'span' | 'section' | 'p'

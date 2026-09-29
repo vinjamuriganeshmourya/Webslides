@@ -411,7 +411,13 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
               */}
               <InstantContext.Provider value={false}>
                 <ContinuityContext.Provider value={carry}>
-                  <Stepper step={step} onMax={onMax}>
+                  <Stepper
+                    step={step}
+                    onMax={onMax}
+                    max={maxStep}
+                    setStep={setStep}
+                    replay={replaySlide}
+                  >
                     {current?.element}
                   </Stepper>
                 </ContinuityContext.Provider>

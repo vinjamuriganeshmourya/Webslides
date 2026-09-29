@@ -1,9 +1,11 @@
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useInstant } from '@/motion/instant'
 import { colors } from '@/design/tokens'
 import { T, E, c4 } from '@/ui/figureTiming'
 import { useBeat, type Beat } from './walk'
-import { BeatCaption } from './BeatCaption'
+import { BeatList } from './BeatList'
+import { StepControls } from '@/ui'
 
 /**
  * PHONE PLAYLIST — the hook drawn as the thing it is about: a music app on a
@@ -98,25 +100,48 @@ function Row({
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: T.enter, ease: c4(E.out), delay: instant ? 0 : index * T.stagger }}
     >
+      {/* Album ART, not a colour swatch. A flat square reads as a placeholder;
+          a note on a gradient reads as a cover, which is the recognition the
+          hook depends on (course rule R5b). */}
       <span
-        className="h-[30px] w-[30px] shrink-0 rounded"
-        style={{ background: track.art, opacity: state === 'ahead' ? 0.55 : 1 }}
-      />
+        className="grid h-[30px] w-[30px] shrink-0 place-items-center rounded"
+        style={{
+          backgroundImage: `linear-gradient(135deg, ${track.art}, ${track.art}88)`,
+          // A song that has PLAYED greys out; it is done, not gone. A song still
+          // to come stays at full strength, because it is still on the list.
+          opacity: state === 'played' ? 0.4 : 1,
+        }}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden fill="#FFFFFF" opacity="0.9">
+          <path d="M9 18V5l10-2v13" stroke="#FFFFFF" strokeWidth="2" fill="none" strokeLinecap="round" />
+          <circle cx="6.5" cy="18" r="2.5" />
+          <circle cx="16.5" cy="16" r="2.5" />
+        </svg>
+      </span>
       <span className="min-w-0 flex-1">
         <span
           className="block truncate font-heading text-[14px] font-semibold leading-tight"
-          style={{ color: state === 'playing' ? PLAYING : colors.white }}
+          style={{
+            color: state === 'playing' ? PLAYING : colors.white,
+            opacity: state === 'played' ? 0.45 : 1,
+          }}
         >
           {track.title}
         </span>
-        <span className="block truncate text-[12px] leading-tight" style={{ color: DIM }}>
+        <span
+          className="block truncate text-[12px] leading-tight"
+          style={{ color: DIM, opacity: state === 'played' ? 0.5 : 1 }}
+        >
           {track.artist}
         </span>
       </span>
       {state === 'playing' ? (
         <Equaliser />
       ) : (
-        <span className="font-mono text-[12px]" style={{ color: '#6F6F6F' }}>
+        <span
+          className="font-mono text-[12px]"
+          style={{ color: '#6F6F6F', opacity: state === 'played' ? 0.5 : 1 }}
+        >
           {track.length}
         </span>
       )}
@@ -124,25 +149,100 @@ function Row({
   )
 }
 
+/**
+ * THE STATUS BAR SHOWS THE REAL TIME.
+ *
+ * A phone on a slide that reads `9:41` is Apple's press-shot convention, and a
+ * room reads it as a stock image. The clock ticking over with the actual time is
+ * the cheapest thing on the frame that says this is a live screen and not a
+ * picture of one. It updates every 20s so it is never visibly wrong.
+ *
+ * A deck that needs a fixed time for the story it is telling passes `time`:
+ * a lunch payment at 12:48, a late-night reel at 23:10.
+ */
+function useClock(fixed?: string) {
+  const [now, setNow] = useState(() => fixed ?? clockString())
+  useEffect(() => {
+    if (fixed) return
+    const id = setInterval(() => setNow(clockString()), 20000)
+    return () => clearInterval(id)
+  }, [fixed])
+  return fixed ?? now
+}
+
+function clockString() {
+  const d = new Date()
+  const h = d.getHours() % 12 || 12
+  return `${h}:${String(d.getMinutes()).padStart(2, '0')}`
+}
+
 export function PhonePlaylist({
   tracks,
   beats,
   appMark,
   appName,
+  time,
   className = '',
 }: {
   tracks: Track[]
   beats: PlaylistBeat[]
+  /** Fix the status-bar clock when the story needs a particular time. */
+  time?: string
   /** The app's real mark, copied out of `slide-kit/assets/companies/`. */
   appMark?: string
   appName?: string
   className?: string
 }) {
   const instant = useInstant()
+  const clock = useClock(time)
   const { beat, reached } = useBeat(beats)
   const visible = beat?.visible ?? tracks.length
   const list = tracks.slice(0, visible)
   const stopped = beat?.stopped ?? false
+
+  /*
+    THE POINTER TRAVELS; IT DOES NOT TELEPORT.
+
+    The source's fourth beat is "Right to the end, then it stops", which covers
+    the whole tail of the playlist in one click. Rendering that as a jump showed
+    song 1, song 2 and then the end, so the three songs in between were never
+    seen playing and the claim the beat makes -- that it keeps going by itself --
+    was the one thing the figure did not show.
+
+    So a beat that advances by more than one row walks the rows in between,
+    ~380ms each, and only then settles. No extra build steps: the travel happens
+    inside the beat, which keeps the six beats the source wrote (course rule R2).
+
+    It never travels on mount, so `?all`, an instant jump and every harness land
+    on the final state at once rather than watching a playlist play.
+  */
+  const target = beat?.at ?? -1
+  const [shownAt, setShownAt] = useState(target)
+  const prev = useRef<number | null>(null)
+  useEffect(() => {
+    if (prev.current === null || instant) {
+      prev.current = target
+      setShownAt(target)
+      return
+    }
+    const from = prev.current
+    prev.current = target
+    if (target - from <= 1) {
+      setShownAt(target)
+      return
+    }
+    let i = from
+    setShownAt(i)
+    const id = setInterval(() => {
+      i += 1
+      setShownAt(i)
+      if (i >= target) clearInterval(id)
+    }, 380)
+    return () => clearInterval(id)
+  }, [target, instant])
+
+  const at = shownAt
+  const arrived = at >= target
 
   return (
     <div className={`grid grid-cols-[320px_1fr] items-start gap-10 ${className}`}>
@@ -154,12 +254,24 @@ export function PhonePlaylist({
       >
         <div className="flex items-center justify-between">
           <span className="font-heading text-[12px] font-semibold" style={{ color: colors.white }}>
-            9:41
+            {clock}
           </span>
-          <span className="flex items-end gap-[2px]">
-            {[4, 7, 10].map((h) => (
-              <span key={h} className="w-[3px] rounded-sm" style={{ background: colors.white, height: h }} />
-            ))}
+          <span className="flex items-center gap-[5px]">
+            <span className="flex items-end gap-[2px]">
+              {[4, 7, 10].map((h) => (
+                <span key={h} className="w-[3px] rounded-sm" style={{ background: colors.white, height: h }} />
+              ))}
+            </span>
+            <svg width="13" height="10" viewBox="0 0 16 12" aria-hidden fill="none" stroke={colors.white} strokeWidth="1.6" strokeLinecap="round">
+              <path d="M1 4.2a10 10 0 0 1 14 0M3.6 7a6.4 6.4 0 0 1 8.8 0" />
+              <circle cx="8" cy="10" r="0.9" fill={colors.white} stroke="none" />
+            </svg>
+            <span className="flex items-center">
+              <span className="relative h-[9px] w-[17px] rounded-[2px] border" style={{ borderColor: colors.white }}>
+                <span className="absolute inset-[1.5px] right-[5px] rounded-[1px]" style={{ background: colors.white }} />
+              </span>
+              <span className="ml-[1px] h-[4px] w-[1.5px] rounded-r" style={{ background: colors.white }} />
+            </span>
           </span>
         </div>
 
@@ -173,7 +285,7 @@ export function PhonePlaylist({
         )}
 
         <div className="mt-2 flex items-center gap-3">
-          <span className="h-[38px] w-[38px] shrink-0 rounded" style={{ background: PLAYING }} />
+          <span className="h-[32px] w-[32px] shrink-0 rounded" style={{ background: PLAYING }} />
           <span className="min-w-0">
             <span
               className="block font-heading text-[10px] font-bold uppercase tracking-[0.14em]"
@@ -184,27 +296,35 @@ export function PhonePlaylist({
             <span className="block font-heading text-[17px] font-bold leading-tight" style={{ color: colors.white }}>
               Today's Mix
             </span>
+            <span className="block text-[11px] leading-tight" style={{ color: DIM }}>
+              Nxt Studio
+            </span>
           </span>
         </div>
 
-        <div className="mt-2 flex items-center justify-between">
+        <div className="mt-1 flex items-center justify-between">
           <span className="text-[12px]" style={{ color: DIM }}>
             {list.length} songs
+          </span>
+          <span className="flex items-center gap-2">
+          <span className="text-[12px]" style={{ color: DIM }}>
+            Play all
           </span>
           <span className="grid h-9 w-9 place-items-center rounded-full" style={{ background: PLAYING }}>
             <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
               <path d="M3 1.5 L12 7 L3 12.5 Z" fill={SHELL} />
             </svg>
           </span>
+          </span>
         </div>
 
-        <div className="mt-2 flex min-h-0 flex-1 flex-col gap-[2px]">
+        <div className="mt-1 flex min-h-0 flex-1 flex-col gap-[1px]">
           {list.map((t, i) => (
             <Row
               key={t.title}
               track={t}
               index={i}
-              state={beat && beat.at === i ? 'playing' : beat && beat.at > i ? 'played' : 'ahead'}
+              state={at === i ? 'playing' : at > i ? 'played' : 'ahead'}
             />
           ))}
         </div>
@@ -212,7 +332,7 @@ export function PhonePlaylist({
         {/* THE END OF THE LIST IS A DRAWN THING, not the absence of one. "So what
             told it to stop?" is the question the whole session answers. */}
         <div className="mt-1 h-[26px] shrink-0">
-          {stopped && (
+          {stopped && arrived && (
             <motion.div
               className="rounded-lg px-3 py-[5px] text-center font-heading text-[12px] font-bold"
               style={{ background: `${colors.danger}26`, color: '#FF9A9A' }}
@@ -226,7 +346,15 @@ export function PhonePlaylist({
         </div>
       </div>
 
-      <BeatCaption label={beat?.label} caption={beat?.caption} step={reached} className="mt-[104px]" />
+      {/* THE WHOLE FLOW, ALWAYS ON SCREEN. Course rule R5b: one caption at a
+          time turns a sequence into a slideshow, and the room cannot tell how
+          many beats are left. */}
+      <div className="flex flex-col pt-[6px]">
+        <BeatList beats={beats} at={reached - 1} />
+        {/* The controls live in this column, not under the phone: the player's
+            own cluster owns the bottom-left of the stage below y=660. */}
+        <StepControls className="mt-7" />
+      </div>
     </div>
   )
 }

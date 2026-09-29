@@ -221,3 +221,4 @@ export { Nova, type NovaPose } from './characters/Nova'
 
 // Motion helpers re-exported for slide authors.
 export { RevealGroup, Reveal } from '@/motion/Reveal'
+export { StepControls } from './StepControls'
