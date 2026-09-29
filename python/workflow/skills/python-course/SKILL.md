@@ -92,6 +92,38 @@ So, alongside R1:
   first, and a hand-drawn copy of a wordmark is not that. The caption keeps the
   source's sentence, which is where Spotify is named.
 
+## R5b. Match the reference's fidelity, not just its subject
+
+**Feedback, 2026-09-29, second time:** *"still the provided reference are having
+better and realistic components."* R5 got the subject right (a real player, a
+real piggy bank) and the fidelity wrong. Three things separate the pedagogy
+team's version from the first rebuild, and all three are pedagogy, not polish:
+
+1. **Every beat stays visible.** The source lists all six beat labels beside the
+   figure, dims each one as it is consumed and bolds the current one, so the room
+   always sees the whole flow and where it is in it. The rebuild showed **one
+   caption at a time**, which turns a flow into a slideshow and throws away the
+   structural half of the understanding (`pedagogy-to-components` Part I, 6b).
+   Use `BeatList`, never a single caption, on any figure with named beats.
+
+2. **A character who states the constraint says it in a speech bubble.** Riya
+   drawn beside a bubble reading *"I can't add all that by hand!"* is a person
+   with a problem. The same sentence in a `YOUR TURN` callout is narration, and
+   the room hears it as the deck talking rather than as somebody stuck. This is
+   the one case where a drawn human is content and not decoration, and R1 does
+   not cut it.
+
+3. **Product chrome is drawn to the detail that makes it recognisable.** The
+   source's phone has a battery, a wifi glyph, album art, a "Play all" label, a
+   progress line, a now-playing bar and the playlist's owner. Each is cheap and
+   together they are the recognition the hook depends on. A phone missing them
+   reads as a wireframe of a phone, which is a diagram, and a diagram does not
+   buy the motivation a world picture exists to buy.
+
+**Why:** the room has to recognise the object before it will accept the
+abstraction. Fidelity is what makes it recognisable, and the beat list is what
+makes the sequence legible. Neither is decoration.
+
 The distinction R1 and R5 draw together: **a picture that decorates goes; a
 picture that IS the analogy stays, and gets rebuilt properly.**
 
@@ -101,3 +133,4 @@ picture that IS the analogy stays, and gets rebuilt properly.**
 |---|---|---|
 | 2026-09-22 | No PPT stock illustrations; own figures only where needed; check alignment | R1, R4; session 1 regenerated |
 | 2026-09-29 | Carry the source's built components across; a song analogy gets a real player, a savings analogy gets a real piggy bank, not text | R5; session 14's `PhonePlaylist` and `PiggyBank` |
+| 2026-09-29 | The reference components are still better and more realistic (2nd time) | R5b; `BeatList`, Riya speaking, full phone chrome |
