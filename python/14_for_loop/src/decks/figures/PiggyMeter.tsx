@@ -4,6 +4,7 @@ import { useStepControls } from '@/motion/Stepper'
 import { colors } from '@/design/tokens'
 import { T, E, c4 } from '@/ui/figureTiming'
 import { PiggyJar } from './PiggyBank'
+import { Coin } from './Coin'
 
 /**
  * THE BANK, BESIDE THE TRACE.
@@ -63,14 +64,13 @@ export function PiggyMeter({
           {coin && (
             <motion.span
               key={`${i}-${coin}`}
-              className="absolute left-1/2 top-[-6px] grid h-8 w-8 place-items-center rounded-full font-heading text-[14px] font-bold"
-              style={{ background: colors.warning, color: colors.ink }}
+              className="absolute left-1/2 top-[-6px]"
               initial={instant ? false : { opacity: 0, y: -22, x: '-50%' }}
               animate={{ opacity: 1, y: 0, x: '-50%' }}
               exit={{ opacity: 0 }}
               transition={{ duration: T.travel, ease: c4(E.out) }}
             >
-              {coin}
+              <Coin size={34}>{coin}</Coin>
             </motion.span>
           )}
         </AnimatePresence>

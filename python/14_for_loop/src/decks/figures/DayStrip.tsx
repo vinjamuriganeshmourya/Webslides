@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useInstant } from '@/motion/instant'
 import { useStepControls } from '@/motion/Stepper'
 import { colors } from '@/design/tokens'
+import { Coin } from './Coin'
 import { T, E, c4 } from '@/ui/figureTiming'
 
 /**
@@ -85,14 +86,9 @@ export function DayStrip({
 
             <span className={`grid place-items-center ${spread ? 'h-[30px]' : 'h-[26px]'}`}>
               {saves ? (
-                <span
-                  className={`grid place-items-center rounded-full font-heading font-bold leading-none ${
-                    spread ? 'h-[30px] w-[30px] text-body-sm' : 'h-[26px] w-[26px] text-[12px]'
-                  }`}
-                  style={{ background: colors.warning, color: colors.ink }}
-                >
+                <Coin size={spread ? 30 : 26} dim={!(past || here)}>
                   {d.coin}
-                </span>
+                </Coin>
               ) : (
                 <span
                   className={`leading-none ${spread ? 'text-body-sm' : 'text-[12px]'}`}
