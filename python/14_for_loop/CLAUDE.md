@@ -63,6 +63,27 @@ feedback log, are in `../workflow/skills/python-course/SKILL.md`. Read that and
    `slide-kit/assets/` and are copied byte-identical into
    `public/assets/companies/`. Nothing here hand-draws a trademark.
 
+13. **Slide 17, `The same job, in two lines`, is ours and not the source's.**
+   The reference has no side-by-side comparison anywhere in this block: its own
+   slide 18 (our 15) carries the sentence *"The same job as the while loop, in
+   two lines"* as a lead over the for loop alone, with the three dropped lines
+   listed beside it. So our 17 both adds a beat and repeats our 15's headline,
+   after the string walk on 16 has come between them.
+
+   It stays, deliberately. The claim *two lines do what six did* is the payoff of
+   the whole concept, and 15 asserts it while 17 is the only frame in the deck
+   where the room can count the two against the six. The frame is also built
+   around a measured layout the source has no equivalent for: the two panes are
+   capped at 845px so their right edge clears the instructor-video rectangle at
+   x=913, the for loop is the LEFT pane because the 514px while-loop pane cannot
+   sit above the player's control cluster, and the pair is middle-aligned in the
+   well because it is the whole content of the frame. Those notes are in the
+   source beside the call.
+
+   Recorded because the deck's own notes said the deck followed the source's
+   twenty-four stages, and this frame is not one of them. If a later pass wants
+   the repetition gone, the sentence to cut is 15's lead, not this slide.
+
 ## Running it
 
 `vite.config.ts` is a kit file and hardcodes port 5173, so start the server on
