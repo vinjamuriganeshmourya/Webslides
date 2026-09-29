@@ -426,10 +426,17 @@ export const dailyChallengeSlides: Record<string, SlideDef> = {
             roughly 160px of nothing between the lead and the first line of
             code. The panel is now its own width, centred in the space it is
             given, and it starts level with INPUT. */}
-        <div className="mx-auto flex w-[1000px] items-start justify-center gap-12">
+        {/* SIZED FOR THE BACK OF THE ROOM, not to fill the frame. The block was
+            centred and its margins were even, so nothing here was misaligned --
+            it was just small: a three-line solution set at 16px using 45% of a
+            projected canvas. The code is what the room came to read, so it
+            takes the type size it deserves and the panels beside it match.
+            The panel still hugs its own code; a 1fr column stretched it to
+            740px and stranded the INPUT column far to its right. */}
+        <div className="mx-auto flex w-[1090px] items-start justify-center gap-12">
           <AnnotatedCode
             filename={PY}
-            fontSize={16}
+            fontSize={20}
             code={'n = int(input())\nfor counter in range(n):\n    print("* " * (counter + 1))'}
             loopBack={{ from: 3, to: 2 }}
             className="shrink-0"
@@ -509,10 +516,17 @@ export const dailyChallengeSlides: Record<string, SlideDef> = {
             roughly 160px of nothing between the lead and the first line of
             code. The panel is now its own width, centred in the space it is
             given, and it starts level with INPUT. */}
-        <div className="mx-auto flex w-[1000px] items-start justify-center gap-12">
+        {/* SIZED FOR THE BACK OF THE ROOM, not to fill the frame. The block was
+            centred and its margins were even, so nothing here was misaligned --
+            it was just small: a three-line solution set at 16px using 45% of a
+            projected canvas. The code is what the room came to read, so it
+            takes the type size it deserves and the panels beside it match.
+            The panel still hugs its own code; a 1fr column stretched it to
+            740px and stranded the INPUT column far to its right. */}
+        <div className="mx-auto flex w-[1090px] items-start justify-center gap-12">
           <AnnotatedCode
             filename={PY}
-            fontSize={16}
+            fontSize={20}
             code={'n = int(input())\nfor counter in range(1, n + 1):\n    print("* " * counter)'}
             loopBack={{ from: 3, to: 2 }}
             className="shrink-0"

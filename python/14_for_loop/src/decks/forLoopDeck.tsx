@@ -5,7 +5,6 @@ import {
   BrandSlide,
   ContentSlide,
   FeedbackSlide,
-  KeyTakeawaysSlide,
   QuizTimeSlide,
   RecapSlide,
   SectionBreakerSlide,
@@ -26,6 +25,7 @@ import { FillableCode } from './figures/FillableCode'
 import { DayStrip } from './figures/DayStrip'
 import { dailyChallengeSlides as dc } from './dailyChallenge'
 import { RangeDial } from './figures/RangeDial'
+import { TakeawayMap } from './figures/TakeawayMap'
 import { Task1Trace, type TraceBeat } from './figures/Task1Trace'
 import { TaskStepCard } from './figures/TaskStepCard'
 import { ChallengeCard } from './figures/ChallengeCard'
@@ -1120,33 +1120,17 @@ export const forLoopDeck: SlideDef[] = [
     id: 'key-takeaways',
     section: 'Closing',
     label: 'Key Takeaways',
+    notes:
+      'Walk the chain, not the list. A sequence is what you walk, ch carries one item of it per pass, and that is why the sequence decides how many passes happen. Then the two that catch people: range stops before its end value, and an empty sequence means zero passes.',
+    /* THE REFERENCE'S HEADING. It reads `For loop` over `What we did today`;
+       ours read `Key Takeaways` over `For Loop`, the same two words in the
+       other two slots, which made the closing frame look like a different card
+       from the one the room was promised. */
     element: (
-      /* THE REFERENCE'S OWN HEADING. It reads `For loop` over `What we did
-         today`; ours read `Key Takeaways` over `For Loop`, which is the same two
-         words in the other two slots and made the frame look like a different
-         card from the one the room was promised. */
-      <KeyTakeawaysSlide
-        kicker={SESSION}
-        title="What we did today"
-        lesson={SESSION}
-        points={[
-          /* The four agenda strings, word for word (content rule 20). The subs
-             are free, so they carry the three facts the reference's own takeaway
-             map carries and this frame had lost: what range(1, 5) actually
-             gives, what an empty sequence does, and that the sequence is what
-             decides how many passes happen. */
-          {
-            text: AGENDA.forLoop,
-            sub: 'Walk a sequence one item at a time. The sequence decides how many passes happen',
-          },
-          { text: AGENDA.range, sub: 'Makes a sequence of numbers. range(1, 5) gives 1 2 3 4, not 5' },
-          { text: AGENDA.star, sub: 'Write it yourself: one row per pass, and counter stars on each' },
-          {
-            text: AGENDA.mistake,
-            sub: 'range stops before its end value, and an empty sequence means the body never runs',
-          },
-        ]}
-      />
+      <ContentSlide kicker={SESSION} title="What we did today" lesson={SESSION}>
+        <TakeawayMap />
+        <StepControls className="mt-3 w-full justify-center" showCount={false} />
+      </ContentSlide>
     ),
   },
   {

@@ -116,3 +116,29 @@ before trusting the contact sheet.
     different answer to the layout than `stacked` / `aboveCode` / `belowCode`
     / `rightClassName`, and carrying both prop sets would leave
     `VariableTrace` with two ways to say the same thing.
+
+15. **The closing frame is a map of the mechanism, not a bulleted recap, and
+    that overrides content rule 20.** Rule 20 says Key Takeaways restates the
+    four agenda items word for word. `TakeawayMap` does not: it draws the causal
+    chain the session actually taught -- a sequence is what you walk, `ch`
+    carries one item of it per pass, so the sequence is what decides how many
+    passes happen -- with the two things that catch people hanging off the stage
+    each is about.
+
+    The user directed this twice: first to adopt the reference's own takeaways
+    map, which draws seven concepts as a tree with a coloured name-chip on every
+    row, and then to go further and show how the concepts connect rather than
+    just listing them. The reference's reason for the chips is recorded in its
+    own stylesheet: a student looking for `range` finds it in a second instead
+    of reading five sentences to work out which one is about range.
+
+    Rule 20 exists so a recap cannot quietly introduce vocabulary the session
+    never used. That risk is handled differently here: every chip on the map is
+    a word the deck already taught, and the map adds no fifth concept.
+
+16. **Slides 35 and 38 were enlarged for legibility, not to fill the frame.**
+    Both were centred with even margins, so nothing was misaligned; a
+    three-line solution was simply set at 16px and using 45% of a projected
+    canvas. The code is what the room came to read. The panel still hugs its own
+    code, because a `1fr` column previously stretched it to 740px and stranded
+    the INPUT column far to its right.
