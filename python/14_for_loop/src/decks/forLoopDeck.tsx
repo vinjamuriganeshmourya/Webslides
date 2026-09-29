@@ -23,6 +23,7 @@ import { PhonePlaylist } from './figures/PhonePlaylist'
 import { PiggyBank } from './figures/PiggyBank'
 import { MatchPairs } from './figures/MatchPairs'
 import { EverydayLoops } from './figures/EverydayLoops'
+import { EverydayShape } from './figures/EverydayShape'
 import { RangeDial } from './figures/RangeDial'
 
 /**
@@ -351,7 +352,25 @@ export const forLoopDeck: SlideDef[] = [
             },
           ]}
         />
-        <p className="mt-5 text-center text-body-lg font-semibold text-ink">
+        <StepControls className="mt-4 w-full justify-center" showCount={false} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'hook-the-shape',
+    section: 'Hook',
+    label: 'The shape behind it',
+    notes:
+      'The abstraction beat. Five presses: the list, take the next one, do one job, when it ends go back, and then the red line that answers the hook. Ask the room to look for a number in it BEFORE pressing the last one.',
+    element: (
+      <ContentSlide
+        kicker="The shape behind it"
+        title="Take a list. Do one job."
+        lesson={SESSION}
+        lead="The register, the stories and the scanner, with the product taken off. What is left is the same three times."
+      >
+        <EverydayShape className="mt-2" />
+        <p className="mt-4 text-center text-body-lg font-semibold text-ink">
           Same shape all three times. Take a list. Do one job. Once for each item in it. You never say
           how many.
         </p>
