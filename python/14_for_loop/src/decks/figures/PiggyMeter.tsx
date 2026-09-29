@@ -25,12 +25,20 @@ import { PiggyJar } from './PiggyBank'
 export function PiggyMeter({
   totals,
   coins,
+  row = false,
   className = '',
 }: {
   /** The bank's contents after each step, as displayed: '₹0', '₹1', … */
   totals: string[]
   /** The coin that went in on that step, or undefined on a skipped day. */
   coins?: (string | undefined)[]
+  /**
+   * Jar and total side by side instead of stacked. A frame that puts the bank
+   * in a column under the output panel has the width to spare and not the
+   * height: stacked, the bank alone cost this slide 210px and pushed the
+   * controls under the player's own.
+   */
+  row?: boolean
   className?: string
 }) {
   const instant = useInstant()
@@ -46,9 +54,9 @@ export function PiggyMeter({
   const coin = shown > 0 && !allRevealed ? coins?.[i] : undefined
 
   return (
-    <div className={`flex flex-col items-center ${className}`}>
+    <div className={`flex ${row ? 'items-center justify-center gap-3' : 'flex-col items-center'} ${className}`}>
       <div className="relative">
-        <PiggyJar happy={Boolean(coin) || step === 0} width={132} />
+        <PiggyJar happy={Boolean(coin) || step === 0} width={row ? 92 : 132} />
         {/* The coin only exists on a day money went in. On a skipped day there
             is nothing to draw, which is the point of the skipped day. */}
         <AnimatePresence>
@@ -67,7 +75,23 @@ export function PiggyMeter({
           )}
         </AnimatePresence>
       </div>
-      <div className="mt-1 rounded-card border border-line bg-white px-5 py-1.5 shadow-card-soft">
+      {/* In `row` mode the label is the card's own header, one line, the same
+          shape the story card uses. Beside the number it wrapped to three. */}
+      <div
+        className={
+          row
+            ? 'overflow-hidden rounded-card border border-line bg-white shadow-card-soft'
+            : 'mt-1 flex flex-col items-center'
+        }
+      >
+        {row && (
+          <div className="border-b border-line bg-surface px-4 py-1 text-center">
+            <span className="font-heading text-body-sm font-bold leading-none" style={{ color: colors.body }}>
+              In the piggy bank
+            </span>
+          </div>
+        )}
+      <div className={row ? 'grid h-[46px] place-items-center' : 'rounded-card border border-line bg-white px-5 py-1.5 shadow-card-soft'}>
         <motion.span
           key={total}
           className="font-mono text-[26px] font-bold leading-none"
@@ -79,12 +103,15 @@ export function PiggyMeter({
           {total}
         </motion.span>
       </div>
-      <span
-        className="mt-1 font-heading text-body-sm font-bold uppercase tracking-wider"
-        style={{ color: colors.muted }}
-      >
-        in the piggy bank
-      </span>
+      {!row && (
+        <span
+          className="mt-1 font-heading text-body-sm font-bold uppercase tracking-wider"
+          style={{ color: colors.muted }}
+        >
+          in the piggy bank
+        </span>
+      )}
+      </div>
     </div>
   )
 }

@@ -32,7 +32,6 @@ import { ChallengeCard } from './figures/ChallengeCard'
 import { Em, Mono } from './figures/TaskCard'
 import { Timer } from './figures/Timer'
 import { StepCaption } from './figures/StepCaption'
-import { TotalChain } from './figures/TotalChain'
 import { SeatsAnswer } from './figures/SeatsAnswer'
 import { RunThemBoth } from './figures/RunThemBoth'
 
@@ -211,9 +210,6 @@ const RIYA_BEATS = [
 ]
 
 const RIYA_NOTES = RIYA_BEATS.map((b) => `${b.label}. ${b.text}`).join(' ')
-
-/** What `total` holds after each of RIYA_STEPS, plain, for the chain. */
-const RIYA_TOTAL_RUN = ['0', '1', '1', '4', '4', '9', '9', '16', '16', '16']
 
 /* ------------------------------------------------------------------ */
 /* The exit question, traced. seats 4, booked 3.                       */
@@ -890,51 +886,56 @@ export const forLoopDeck: SlideDef[] = [
     section: AGENDA.range,
     label: "Riya's savings, day by day",
     notes: RIYA_NOTES,
+    /* THE LEAD IS LOAD-BEARING, not decoration. Without one `ContentSlide`
+       adds a 52px guard to keep the well clear of the instructor-video
+       rectangle, and this frame opened with a 90px hole under its title. Its
+       right column is already padded down past that rectangle on its own. */
     element: (
-      <ContentSlide kicker="Check it together" title="Riya's savings, day by day" lesson={SESSION}>
-        {/* THE BANK BELONGS ON THIS FRAME. The trace proves the program is
-            right; the bank is what makes it Riya's. The reference draws it
-            filling beside the variable boxes, and dropping it turned a story
-            back into an exercise. Type comes down a step to make room, which is
-            the trade the review asked for. */}
-        {/* The week, so the odd/even rule is visible at a glance rather than
-            one day at a time in a variable box. */}
-        {/* THE WEEK IS LEFT-ALIGNED, NOT CENTRED. The instructor's video sits in
-            x913..1280, y0..220, and a centred strip of seven day tiles reaches
-            into it. Hard against the left margin it ends well short of the
-            reserved box, and it lines up with the code panel under it. */}
-        <DayStrip days={RIYA_DAYS} stepDay={RIYA_STEP_DAY} className="!justify-start" />
-        <div className="flex items-start justify-center gap-7">
-          <VariableTrace code={RIYA_CODE} steps={RIYA_STEPS} location={PY} className="flex-1" />
-          {/* The bank sits in the middle of its space, like the code panel and
-              the output panel beside it, rather than hanging from the top. */}
-          <div className="flex shrink-0 flex-col items-center gap-3 self-center">
-            <PiggyMeter totals={RIYA_TOTALS} coins={RIYA_COINS} />
-            {/* WHERE 16 CAME FROM. A variable box shows the value `total` holds;
-                the chain shows the four additions that built it, superseded
-                values struck through, which is how the reference draws the run.
-                It sits under the bank because it is the same story told in
-                numbers, and because every other place on this frame is either
-                spoken for or inside the reserved video box. */}
-            <TotalChain label="total" values={RIYA_TOTAL_RUN} className="w-[236px]" />
-          </div>
-        </div>
-        {/* THE INPUT, THE SENTENCE AND THE CONTROLS SHARE ONE ROW. Stacked they
-            cost fifty pixels this frame has already spent on the week, the
-            chain, the trace and the bank. `input: 7` sits at the left, directly
-            under the code panel and the `int(input())` that reads it; it was the
-            slide's lead, at the top of the frame and as far from that line as a
-            frame allows. */}
-        <div className="mt-1 flex items-center gap-4">
-          <span
-            className="shrink-0 self-start pt-1 font-mono text-body-sm font-bold"
-            style={{ color: colors.body }}
-          >
-            input: 7
-          </span>
-          <StepCaption beats={RIYA_BEATS} className="flex-1" />
-          <StepControls className="shrink-0" showCount={false} mode="code" />
-        </div>
+      <ContentSlide
+        kicker="Check it together"
+        title="Riya's savings, day by day"
+        lesson={SESSION}
+        lead="Run it with 7, one line at a time."
+      >
+        {/* ONE BLOCK, TWO COLUMNS, EVERY EDGE SHARED.
+
+            LEFT, from x=64: the week, the program that walks it, and the line
+            that reads the input, each the same width so the three stack as one
+            object. The week's tiles are seven equal columns rather than seven
+            fixed 64px boxes, so the strip ends where the code panel ends.
+
+            RIGHT, 340px: what the program prints, and the bank the printing is
+            about. It is padded down 84px because the instructor's video holds
+            x913..1280, y0..220, and this column would otherwise start inside
+            it. Padding the column, not the slide, is what keeps the left one
+            high and closes the hole this frame used to have under its title.
+
+            The controls close the right column, under the two panels they
+            drive, instead of floating at the end of a full-width row. */}
+        <VariableTrace
+          code={RIYA_CODE}
+          steps={RIYA_STEPS}
+          location={PY}
+          stacked
+          rightClassName="pt-[84px]"
+          aboveCode={<DayStrip spread days={RIYA_DAYS} stepDay={RIYA_STEP_DAY} />}
+          belowCode={
+            /* Fixed height: the caption is empty until the first press, and a
+               row that grows when it fills shifts the whole left column up. */
+            <div className="flex h-[30px] items-baseline gap-4">
+              <span className="shrink-0 font-mono text-body-sm font-bold" style={{ color: colors.body }}>
+                input: 7
+              </span>
+              <StepCaption beats={RIYA_BEATS} className="flex-1" />
+            </div>
+          }
+          rightExtra={
+            <>
+              <PiggyMeter row totals={RIYA_TOTALS} coins={RIYA_COINS} />
+              <StepControls className="justify-center" showCount={false} mode="code" />
+            </>
+          }
+        />
       </ContentSlide>
     ),
   },
