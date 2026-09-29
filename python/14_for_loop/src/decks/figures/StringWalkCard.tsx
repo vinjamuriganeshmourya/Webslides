@@ -144,6 +144,7 @@ export function StringWalkCard({ session, py }: { session: string; py: string })
             column takes the rest of the row. The strip, the slots and the
             output are the things with something to gain from the space. */}
         <div className="grid w-full grid-cols-2 items-center gap-7">
+          <div className="flex w-full flex-col gap-2">
           <AnnotatedCode
             className="w-full"
             filename={py}
@@ -152,6 +153,18 @@ export function StringWalkCard({ session, py }: { session: string; py: string })
             lineStates={lineStates}
             code={`word = ${literal}\nfor ch in word:\n    print(ch)\nprint("Done")`}
           />
+          {/* THE LEGEND NAMES THE THREE STATES, because the colours alone do
+              not say what they mean. The third is the one that matters: on the
+              empty word `print(ch)` stays grey after the run has finished, and
+              that is the only thing on the frame proving the body ran zero
+              times. All three are on screen from the start, so the room can
+              read the key before it needs it. */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <LegendKey swatch={`${colors.brand}29`} label="already run" />
+            <LegendKey swatch={colors.brand} label="running now" />
+            <LegendKey swatch={colors.line} dim label="never reached, and it stays grey" />
+          </div>
+          </div>
 
           <div className="flex w-full flex-col gap-2">
             {/* The sequence, with the pointer on the character ch is holding. */}
@@ -261,6 +274,20 @@ export function StringWalkCard({ session, py }: { session: string; py: string })
         )}
       </div>
     </ContentSlide>
+  )
+}
+
+function LegendKey({ swatch, label, dim }: { swatch: string; label: string; dim?: boolean }) {
+  return (
+    <span className="flex items-center gap-1.5">
+      <span
+        className="h-[14px] w-[22px] rounded-[4px] border"
+        style={{ background: swatch, borderColor: colors.line, opacity: dim ? 0.45 : 1 }}
+      />
+      <span className="text-body-sm" style={{ color: colors.body }}>
+        {label}
+      </span>
+    </span>
   )
 }
 

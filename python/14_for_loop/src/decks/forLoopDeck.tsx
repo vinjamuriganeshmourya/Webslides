@@ -737,8 +737,18 @@ export const forLoopDeck: SlideDef[] = [
     notes:
       'Riya\u2019s rule: on an odd day d, she saves \u20b9d. On an even day, she saves nothing. Close on the last beat and hand the problem over.',
     element: (
-      <ContentSlide kicker="A story" title="Riya's piggy bank" lesson={SESSION}>
+      <ContentSlide
+        kicker="A story"
+        title="Riya's piggy bank"
+        lesson={SESSION}
+        lead={"Riya's rule: on an odd day d, she saves \u20b9d. On an even day, she saves nothing."}
+      >
+        {/* SHE SAYS EACH DAY HERSELF. Course rule R5b: the same sentence in a
+            caption is the deck narrating, and wanting the loop is what this
+            beat exists to produce. The six bubbles are the reference's own
+            `.rs-bub` lines, in its order, one per press. */}
         <PiggyBank
+          narrated
           days={[
             { label: 'Day 1', coin: '\u20b91' },
             { label: 'Day 2' },
@@ -756,12 +766,19 @@ export const forLoopDeck: SlideDef[] = [
               caption: 'I want to save money. But I will save only on odd days.',
             },
             { at: 0, total: '\u20b91', label: 'Day 1', caption: 'Day 1 is odd. I put in \u20b91.' },
-            { at: 1, total: '\u20b91', label: 'Day 2', caption: 'Day 2 is even. Nothing for me today!' },
+            {
+              at: 1,
+              total: '\u20b91',
+              label: 'Day 2',
+              voice: 'pig',
+              caption: 'Day 2 is even. Nothing for me today!',
+            },
             { at: 2, total: '\u20b94', label: 'Day 3', caption: 'Day 3 is odd. I put in \u20b93.' },
             {
               at: 6,
               total: '\u20b916',
               label: 'Up to day 7',
+              voice: 'pig',
               caption: 'Day 5 gives \u20b95. Day 7 gives \u20b97. Now I have \u20b916!',
             },
             {
@@ -773,6 +790,13 @@ export const forLoopDeck: SlideDef[] = [
             },
           ]}
         />
+        {/* The hand-off waits for her last bubble. Showing it from the start
+            answers the question the story is still asking. */}
+        <Step>
+          <p className="mt-3 text-center font-heading text-body font-semibold" style={{ color: colors.body }}>
+            Your turn. Write a program that works out Riya’s money for any number of days.
+          </p>
+        </Step>
         <StepControls className="mt-4 w-full justify-center" showCount={false} />
       </ContentSlide>
     ),

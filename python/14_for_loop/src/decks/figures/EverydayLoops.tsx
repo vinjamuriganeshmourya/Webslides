@@ -349,13 +349,16 @@ export function EverydayLoops({ cards, placeholder = 'Yours', className = '' }: 
                   delay: instant ? 0 : i * T.stagger,
                 }}
               >
+                {/* Centred, logo and all. A title carrying a brand mark is a
+                    flex row, and left-aligned it sat off to one side of a
+                    centred caption, so the two halves of the label disagreed. */}
                 <div
-                  className="font-heading text-[18px] font-bold leading-tight"
+                  className="flex items-center justify-center gap-2 text-center font-heading text-[18px] font-bold leading-tight"
                   style={{ color: colors.ink }}
                 >
                   {card.title}
                 </div>
-                <p className="mt-1 text-body-sm" style={{ color: colors.body }}>
+                <p className="mt-1 text-center text-body-sm" style={{ color: colors.body }}>
                   {card.caption}
                 </p>
               </motion.div>

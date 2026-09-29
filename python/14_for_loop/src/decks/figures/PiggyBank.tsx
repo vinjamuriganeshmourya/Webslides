@@ -4,6 +4,7 @@ import { colors } from '@/design/tokens'
 import { T, E, c4 } from '@/ui/figureTiming'
 import { useBeat, type Beat } from './walk'
 import { BeatCaption } from './BeatCaption'
+import { Riya, SpeechBubble } from './Riya'
 
 /**
  * PIGGY BANK — Riya's seven days drawn as a week of coins and a bank that
@@ -61,6 +62,8 @@ export interface PiggyBeat extends Beat {
   total: string
   /** True on the beat where the week runs out. */
   ended?: boolean
+  /** Who says the caption. The bank answers on the days she skips. */
+  voice?: 'riya' | 'pig'
 }
 
 function DayCard({ day, state }: { day: Day; state: 'ahead' | 'here' | 'done' }) {
@@ -182,19 +185,23 @@ export function PiggyJar({ happy, width = 196 }: { happy: boolean; width?: numbe
 export function PiggyBank({
   days,
   beats,
+  narrated = false,
   className = '',
 }: {
   days: Day[]
   beats: PiggyBeat[]
+  /** Riya says the beat herself, in a bubble, instead of a caption line. */
+  narrated?: boolean
   className?: string
 }) {
   const instant = useInstant()
   const { beat, reached } = useBeat(beats)
   const at = beat?.at ?? -1
   const ended = beat?.ended ?? false
-  /* Happy on a day a coin goes in, sulking on a day she skips, and happy again
-     once the week is done and the money is in. */
-  const happy = ended || at < 0 || Boolean(days[at]?.coin)
+  /* Happy on a day a coin goes in, sulking on a day she skips, and worried on
+     the last beat, where the week is over and the sum has outgrown doing it by
+     hand. That worry is the reason the next slide exists. */
+  const happy = !ended && (at < 0 || Boolean(days[at]?.coin))
 
   return (
     <div className={`flex flex-col gap-5 ${className}`}>
@@ -242,7 +249,7 @@ export function PiggyBank({
         </div>
 
         <div className="flex items-center gap-6">
-          <div className="w-[240px] overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
+          <div className="w-[220px] shrink-0 overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
             <div className="border-b border-line bg-surface px-4 py-1.5 text-center">
               <span className="font-heading text-body-sm font-bold leading-none" style={{ color: colors.body }}>
                 In the piggy bank
@@ -261,7 +268,20 @@ export function PiggyBank({
               </motion.span>
             </div>
           </div>
-          <BeatCaption label={beat?.label} caption={beat?.caption} step={reached} className="flex-1" />
+          {narrated ? (
+            /* Day by day, in her own words. The bank takes the line on the days
+               she saves nothing, so a skipped day still has a voice. */
+            <div className="flex flex-1 items-start gap-3">
+              <Riya width={86} mood={happy ? 'happy' : 'worried'} />
+              {beat?.caption && (
+                <SpeechBubble key={reached} from={beat.voice ?? 'riya'} className="flex-1">
+                  {beat.caption}
+                </SpeechBubble>
+              )}
+            </div>
+          ) : (
+            <BeatCaption label={beat?.label} caption={beat?.caption} step={reached} className="flex-1" />
+          )}
         </div>
       </div>
     </div>
