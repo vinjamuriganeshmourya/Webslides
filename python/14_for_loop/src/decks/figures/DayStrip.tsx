@@ -43,7 +43,11 @@ export function DayStrip({
         return (
           <motion.div
             key={d.label}
-            className="flex w-[62px] flex-col items-center gap-1 rounded-card border-2 px-1 py-1.5"
+            /* THE TILE IS A ROW, NOT A COLUMN. Stacked, seven of these cost the
+               frame sixty pixels, and this slide spends its height on the trace,
+               the chain and the bank. Laid out across, a day still reads as one
+               object and the strip is half as tall. */
+            className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-card border px-2 py-0.5"
             style={{
               borderColor: here ? colors.brand : past ? colors.line : colors.line,
               background: here ? `${colors.brand}12` : colors.white,
@@ -57,7 +61,7 @@ export function DayStrip({
             </span>
             {saves ? (
               <span
-                className="grid h-[26px] w-[26px] place-items-center rounded-full font-heading text-[12px] font-bold leading-none"
+                className="grid h-[24px] w-[24px] place-items-center rounded-full font-heading text-[12px] font-bold leading-none"
                 style={{ background: colors.warning, color: colors.ink }}
               >
                 {d.coin}
