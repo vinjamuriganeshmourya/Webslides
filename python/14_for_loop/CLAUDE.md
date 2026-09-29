@@ -99,3 +99,20 @@ npm run build:html && node preview.mjs && node scripts/build-preview-page.mjs
 `preview.mjs` renders the **built**
 `dist-single/python-session-14-for-loop.html`, not the dev server, so rebuild
 before trusting the contact sheet.
+
+14. **`fix/s14-range-18-30` commit `6b1a1da` is deliberately unmerged.** It
+    rebuilds slide 31 — seven equal day columns, `fitCode` and `dense` on
+    `VariableTrace` — and was written in parallel with the rebuild that did
+    land. Both fix the same three defects (narrow strip, over-wide code panel,
+    lead/strip overlap) and the landed one covers all three.
+
+    It is not merged because its day card is a single padded row with the label
+    and the coin side by side, and the user asked for uniform tiles each
+    carrying its own running total on the line under the day. A one-row card
+    has nowhere to put that line. The same collision was resolved the same way
+    when `fix/s14-range-31-44` was merged.
+
+    Kept on its branch rather than cherry-picked: `fitCode` and `dense` are a
+    different answer to the layout than `stacked` / `aboveCode` / `belowCode`
+    / `rightClassName`, and carrying both prop sets would leave
+    `VariableTrace` with two ways to say the same thing.
