@@ -1,6 +1,6 @@
 import type { SlideDef } from '@/deck/types'
 import { CodeSyntaxSlide, ContentSlide } from '@/slides'
-import { CodeBlock, CodeOutput, MonoBadge, StatusList } from '@/ui'
+import { BulletList, CodeBlock, CodeOutput, MonoBadge } from '@/ui'
 import { colors } from '@/design/tokens'
 import { AnnotatedCode } from './figures/AnnotatedCode'
 import { IoPanels } from './figures/IoPanels'
@@ -227,21 +227,36 @@ export const dailyChallengeSlides: Record<string, SlideDef> = {
       >
         <div className="mx-auto grid w-[1080px] grid-cols-[1fr_420px] items-center gap-10">
           <AnnotatedCode filename={PY} fontSize={16} code={WORD_LOOP} loopBack={{ from: 3, to: 2 }} />
-          {/* `immediate`, because the list sits beside a visual and content rule
+          {/* THE HEADING IS WHAT MAKES THESE READ AS RETIRED.
+
+              The reference heads the three with `Not needed any more:` and then
+              lists them quietly, one x each. Ours dropped the heading and put a
+              `NOT NEEDED` badge on three full-width red alert cards, which put
+              more ink on the three lines the for loop DELETES than on the
+              two-line for loop beside them. The room's eye went to the cards,
+              and the cards are the old code.
+
+              So: the sentence above, and a plain x-list under it. No rail, no
+              tint, no badge — the x is the verdict and it is said once per row.
+
+              `immediate`, because the list sits beside a visual and content rule
               6 says the two arrive together.
 
               NOT `code: true`. These are the NAMES of the three parts, not the
               lines themselves, and the mono face set `Termination condition`
               two lines deep in this column: `align-check.mjs` reported it
               wrapped. The lines they name are on the panel to the left. */}
-          <StatusList
-            immediate
-            items={[
-              { status: 'error', label: 'Not needed', text: 'Initialization' },
-              { status: 'error', label: 'Not needed', text: 'Termination condition' },
-              { status: 'error', label: 'Not needed', text: 'Updation' },
-            ]}
-          />
+          <div>
+            <p className="mb-4 text-body-lg font-bold" style={{ color: colors.ink }}>
+              Not needed any more:
+            </p>
+            <BulletList
+              immediate
+              marker="cross"
+              tone="accent"
+              items={['Initialization', 'Termination condition', 'Updation']}
+            />
+          </div>
         </div>
       </ContentSlide>
     ),

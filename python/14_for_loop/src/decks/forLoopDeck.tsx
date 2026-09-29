@@ -15,7 +15,7 @@ import { Card, CodeBlock, CodeOutput, SwapRows, VariableTrace, StepControls} fro
 import type { TraceStep } from '@/ui'
 import { colors } from '@/design/tokens'
 import { Step } from '@/motion/Stepper'
-import { PhonePlaylist } from './figures/PhonePlaylist'
+import { PhonePlaylist, ALBUM_ART } from './figures/PhonePlaylist'
 import { PiggyBank } from './figures/PiggyBank'
 import { MatchPairs } from './figures/MatchPairs'
 import { EverydayLoops } from './figures/EverydayLoops'
@@ -220,7 +220,7 @@ export const forLoopDeck: SlideDef[] = [
     id: 'brand',
     section: 'Opening',
     label: 'Welcome',
-    element: <BrandSlide greeting="Welcome!" lesson={SESSION} />,
+    element: <BrandSlide greeting="Welcome" lesson={SESSION} />,
   },
   {
     id: 'recap',
@@ -231,10 +231,17 @@ export const forLoopDeck: SlideDef[] = [
         kicker="Recap"
         title="Where We Left Off"
         lesson={SESSION}
+        /* ONE MARK, THREE TIMES. These carried a green play, a blue gear and
+           an amber warning, which is a hierarchy the recap does not have: three
+           things the room already knows, of equal weight. The amber also
+           pre-announced the third line as a danger before it had been read, and
+           the danger is the point of the line, not its frame. The reference
+           gives all three the same tick, and `RecapSlide`'s own default is that
+           tick, so the fix is to stop overriding it. */
         points={[
-          { text: 'A while loop repeats a block of code', sub: 'As long as its condition is True', icon: 'play' },
-          { text: 'It needs three lines to work', sub: 'A start value, a condition, and an update', icon: 'settings' },
-          { text: 'Miss the update and it never stops', sub: 'The condition stays True for ever', icon: 'warning' },
+          { text: 'A while loop repeats a block of code', sub: 'As long as its condition is True' },
+          { text: 'It needs three lines to work', sub: 'A start value, a condition, and an update' },
+          { text: 'Miss the update and it never stops', sub: 'The condition stays True for ever' },
         ]}
       />
     ),
@@ -291,13 +298,22 @@ export const forLoopDeck: SlideDef[] = [
         <PhonePlaylist
           appMark="/assets/companies/spotify.png"
           appName="Spotify"
+          /* THE SIX ROWS ARE THE REFERENCE'S OWN, verbatim, down to the
+             durations. The sixth matters most: it is called `One More Song`,
+             which is the name of the beat that adds it, so the row the room is
+             asked to look at says what just happened. Ours had drifted to
+             `One More Time` by `Ravi Menon` and re-cast three of the other
+             artists, which costs the beat its own word for no gain.
+
+             The cover tints come from `ALBUM_ART`, an object-colour set in the
+             figure, not from `tokens.ts`: see its comment there. */
           tracks={[
-            { title: 'Morning Raag', artist: 'Ananya Rao', length: '3:58', art: colors.brand },
-            { title: 'City Lights', artist: 'Kabir Sen', length: '4:12', art: colors.teal },
-            { title: 'Slow Train', artist: 'Meera Iyer', length: '3:21', art: colors.accent },
-            { title: 'Paper Boats', artist: 'Nikhil Das', length: '2:47', art: colors.info },
-            { title: 'Long Way Home', artist: 'Sara Qureshi', length: '5:03', art: colors.brandDeep },
-            { title: 'One More Time', artist: 'Ravi Menon', length: '3:35', art: colors.warning },
+            { title: 'Morning Raag', artist: 'Ananya Rao', length: '3:58', art: ALBUM_ART.plum },
+            { title: 'City Lights', artist: 'The Verandah', length: '4:12', art: ALBUM_ART.sea },
+            { title: 'Old Road', artist: 'Kabir Sen', length: '3:21', art: ALBUM_ART.clay },
+            { title: 'Paper Boats', artist: 'Meera', length: '5:04', art: ALBUM_ART.moss },
+            { title: 'Last Bus Home', artist: 'Nikhil D', length: '3:47', art: ALBUM_ART.rust },
+            { title: 'One More Song', artist: 'Ananya Rao', length: '4:30', art: ALBUM_ART.dusk },
           ]}
           beats={[
             { at: -1, visible: 5, label: 'The list', caption: 'A Spotify playlist you made. Five songs.' },
@@ -315,6 +331,22 @@ export const forLoopDeck: SlideDef[] = [
               label: 'Right to the end, then it stops',
               caption: 'The last song ends and it stops. Nothing says five. So what told it to stop?',
             },
+            /* THE SIXTH SONG PLAYS, AND THE STOP BANNER GOES.
+
+               `Now there are six. It plays six.` is the whole hook: a song
+               nobody counted starts on its own. The frame used to say the
+               opposite of its own caption — the new row sat inert, the tray read
+               `Nothing playing` and the previous beat's red `No songs left. It
+               stops.` was still under it — because `at` was past the end of the
+               list on both of the last two beats. `at: 5` over six tracks puts
+               the pointer ON the new row, so it is highlighted, its equaliser
+               runs and the now-playing tray names it. The banner belongs to the
+               beat before, where the list really had run out, and it retires the
+               moment the sixth song arrives.
+
+               `Your turn` holds the same phone rather than stopping it again:
+               the reference's last frame does, and the question it asks is about
+               the room, not about the player. */
             {
               at: 5,
               visible: 6,
@@ -322,9 +354,8 @@ export const forLoopDeck: SlideDef[] = [
               caption: 'Now there are six. It plays six. You never typed a number.',
             },
             {
-              at: 6,
+              at: 5,
               visible: 6,
-              stopped: true,
               label: 'Your turn',
               caption: 'Where else does one tap keep going till a list runs out?',
             },
@@ -342,7 +373,13 @@ export const forLoopDeck: SlideDef[] = [
         kicker="Your turn"
         title="Where else does this happen?"
         lesson={SESSION}
-        lead="One action, and it keeps going by itself until a list runs out."
+        /* THE QUESTION COMES FIRST. The reference's lead is two sentences and
+           ours kept only the second, which turns an invitation into a
+           statement: the slide's whole job on this beat is to ASK the room for
+           three places, and the three machines behind it are dashed and unnamed
+           until somebody answers. Without the question the frame describes the
+           shape it is supposed to be fishing for. */
+        lead="Where else have you seen this? One action, and it keeps going by itself until a list runs out."
       >
         {/* THREE REAL INTERFACES, NOT THREE TEXT CARDS. Course rule R5c: three
             Cards with a sentence each is the same content with the argument
@@ -398,9 +435,34 @@ export const forLoopDeck: SlideDef[] = [
         lead="The register, the stories and the scanner, with the product taken off. What is left is the same three times."
       >
         <EverydayShape className="mt-2" />
-        <p className="mt-4 text-center text-body-lg font-semibold text-ink">
-          Same shape all three times. Take a list. Do one job. Once for each item in it. You never say
-          how many.
+        {/* A PANEL, AND ONLY THE LEAD-IN IS BOLD.
+
+            The reference draws this as a bordered, left-aligned band with a
+            rail down its left edge, and bolds the first sentence alone:
+            `Same shape all three times.` is the verdict, and the three
+            sentences after it are what the verdict is made of. Ours set the
+            whole line bold and centred with no panel, so the lead-in stopped
+            reading as a lead-in and the band stopped reading as a conclusion
+            drawn from the figure above it.
+
+            NOT `Callout`, although `Callout` is the kit's bordered band and was
+            tried first. It is 95px tall with its icon holder and its title on a
+            line of its own, and this well has about 70px under the figure: the
+            callout squeezed `EverydayShape` out of the frame entirely. The
+            reference's own band is 11px of padding round one line of 15px text,
+            which is a styled paragraph and not a component. Every colour here is
+            a token; nothing is a hex.
+
+            NOT a build step, on purpose: `EverydayShape` owns this slide's five
+            presses and the band is the frame's standing summary, not a sixth. */}
+        <p
+          className="mt-3 rounded-xl2 border-l-4 px-4 py-2.5 text-body-sm"
+          style={{ background: colors.surface, borderColor: colors.brand, color: colors.ink }}
+        >
+          <strong className="font-bold" style={{ color: colors.brandDark }}>
+            Same shape all three times.
+          </strong>{' '}
+          Take a list. Do one job. Once for each item in it. You never say how many.
         </p>
         <StepControls className="mt-4 w-full justify-center" showCount={false} />
       </ContentSlide>

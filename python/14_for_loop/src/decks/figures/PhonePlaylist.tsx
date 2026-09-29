@@ -58,6 +58,26 @@ const SHELL = '#121212'
 const SHELL_2 = '#1E1E1E'
 const DIM = '#A7A7A7'
 
+/*
+  ALBUM ART, AS OBJECT COLOUR.
+
+  The same category as `PiggyBank`'s pink and `EverydayLoops`' cartons: six
+  covers on a music app, muted the way real sleeve art is, and carrying no
+  meaning at all beyond "these are six different records". The palette's own
+  hues are wrong here twice over — six saturated brand colours read as a chart,
+  and the brand blue on a cover reads as a NxtWave product. These are the
+  reference's own six, so the phone the room sees is the phone the pedagogy
+  team drew.
+*/
+export const ALBUM_ART = {
+  plum: '#8E5A9E',
+  sea: '#2E6FA8',
+  clay: '#B4703C',
+  moss: '#3C8A72',
+  rust: '#A34A55',
+  dusk: '#5B62B0',
+} as const
+
 /** The green a music app uses for "playing". Not a brand colour: the kit's own. */
 const PLAYING = colors.success
 
@@ -102,14 +122,18 @@ function Row({
     >
       {/* Album ART, not a colour swatch. A flat square reads as a placeholder;
           a note on a gradient reads as a cover, which is the recognition the
-          hook depends on (course rule R5b). */}
+          hook depends on (course rule R5b).
+
+          THE COVER DOES NOT DIM WHEN A SONG HAS PLAYED. It used to, at 0.4, and
+          six dimmed gradients read as six identical olive tiles: the one thing
+          the covers exist to do, be six visibly different records, was lost on
+          every beat after the first. The reference dims nothing. "Played" is
+          still said, by the title, the artist and the duration going soft, which
+          is where a music app says it too. */}
       <span
         className="grid h-[28px] w-[28px] shrink-0 place-items-center rounded"
         style={{
           backgroundImage: `linear-gradient(135deg, ${track.art}, ${track.art}88)`,
-          // A song that has PLAYED greys out; it is done, not gone. A song still
-          // to come stays at full strength, because it is still on the list.
-          opacity: state === 'played' ? 0.4 : 1,
         }}
       >
         <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden fill="#FFFFFF" opacity="0.9">
