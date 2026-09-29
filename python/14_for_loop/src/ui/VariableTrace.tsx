@@ -90,16 +90,35 @@ export function VariableTrace({
   const reached = shown.filter(Boolean).length
   const current = reached > 0 ? steps[reached - 1] : undefined
 
+  /* ONLY THE CODE PANEL IS CENTRED, and only in its own column.
+     Centring the whole row moved the variable boxes and the output panel too,
+     which was not what was asked and left the row looking like three floating
+     blocks. The other two columns keep their top alignment; the panel is
+     centred in the space its column was given AND fills it, because a panel
+     that shrinks to its longest line reads as compressed when the column around
+     it is half empty. */
   return (
     <div className={`grid grid-cols-[1.25fr_auto_1fr] items-start gap-8 ${className}`}>
-      <CodeBlock code={code} filename={location} highlight={current ? [current.line] : []} />
+      <div className="flex w-full justify-center self-center">
+        <CodeBlock
+          className="w-full"
+          code={code}
+          filename={location}
+          highlight={current ? [current.line] : []}
+        />
+      </div>
 
       <div className="flex min-h-[120px] min-w-[128px] flex-col gap-4 pt-1">
         <span className="font-heading text-body-sm font-bold uppercase tracking-wider text-body">Variables</span>
         {current?.boxes.map((b) => <VariableBox key={b.name} name={b.name} value={b.value} />)}
       </div>
 
-      <div className="overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
+      {/* The output panel is centred in its column too, for the same reason as
+          the code panel: it is the other thing the room reads, and left at the
+          top of a tall cell it floated above a half-empty column. The variable
+          boxes keep their top alignment, because they are a stack that grows
+          downward and has to start from a fixed line. */}
+      <div className="w-full self-center overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
         <div className="flex items-center gap-2 border-b border-line bg-surface px-4 py-2">
           <span className="inline-block h-2 w-2 rounded-full" style={{ background: colors.success }} />
           <span className="font-heading text-body-sm font-bold uppercase tracking-wider text-body">Output</span>
