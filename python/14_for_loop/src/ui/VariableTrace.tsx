@@ -48,8 +48,62 @@ export interface TraceStep {
    output panel, a figure and the controls. At full size three of them wrap to
    two rows, the column grows by 100px the first time a variable appears, and
    everything under it slides off the bottom of the frame mid-run. */
-function VariableBox({ name, value, compact = false }: { name: string; value: string; compact?: boolean }) {
+function VariableBox({
+  name,
+  value,
+  compact = false,
+  row = false,
+}: {
+  name: string
+  value: string
+  compact?: boolean
+  row?: boolean
+}) {
   const instant = useInstant()
+
+  /* `row` is the three-column form: a chip carrying the name's initial, the
+     name beside it, and the value under both. It is wider than it is tall, so
+     three of them stack down a 212px column and stay readable at 30px, where
+     the compact boxes had to drop to 24px to sit side by side. */
+  if (row) {
+    return (
+      <motion.div
+        layout
+        className="flex items-center gap-3 rounded-card border border-line bg-white px-3 py-2 shadow-card-soft"
+        initial={instant ? false : { opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: T.enter, ease: c4(E.out) }}
+      >
+        <span
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-card font-mono text-body font-bold"
+          style={{ background: `${colors.brand}14`, color: colors.brand }}
+        >
+          {name.slice(0, 1)}
+        </span>
+        <div className="min-w-0 flex-1">
+          <span className="block font-mono text-body-sm font-bold leading-none" style={{ color: colors.body }}>
+            {name}
+          </span>
+          <div className="relative h-[34px]">
+            <AnimatePresence mode="popLayout" initial={false}>
+              <motion.span
+                key={value}
+                className="absolute inset-x-0 top-1 font-mono text-[30px] font-bold leading-none"
+                style={{ color: colors.brandDark }}
+                initial={instant ? false : { opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: T.label, ease: c4(E.out) }}
+              >
+                {value}
+              </motion.span>
+            </AnimatePresence>
+          </div>
+        </div>
+      </motion.div>
+    )
+  }
+
   return (
     <motion.div
       layout
@@ -82,19 +136,6 @@ function VariableBox({ name, value, compact = false }: { name: string; value: st
   )
 }
 
-/**
- * ONE SLOT, AND EVERY VALUE IT HAS HELD, in order.
- *
- * ADDITIVE AND OPT-IN (`slots`). The default rendering above shows the CURRENT
- * value only, and that is right for a program whose lines each touch a fresh
- * name. It is wrong for a loop: the whole claim of `n = n + 1` inside a `for` is
- * that one slot is written again and again, and a box that simply swaps 1 for 2
- * shows a different number, not a revisited slot. The reference draws the chain,
- * superseded values struck through, and that chain is the proof.
- *
- * A slot with no value yet reads `not set yet` rather than being absent, so the
- * room can see which names the program is about to fill.
- */
 function ValueChain({ name, history }: { name: string; history: string[] }) {
   const instant = useInstant()
   return (
@@ -173,6 +214,7 @@ export function VariableTrace({
   aboveCode,
   groupRight = false,
   codeFontSize,
+  threeUp = false,
   rightClassName = '',
 }: {
   code: string
@@ -216,6 +258,14 @@ export function VariableTrace({
   /** Passed through to `CodeBlock`. A frame with room to spare should use it. */
   codeFontSize?: number
   /**
+   * THREE columns instead of two: the code, then the variables in a column of
+   * their own, then what it printed. The variables stop being a strip wedged
+   * above the output and become the readable middle of the frame, and the code
+   * gives back width it was not using -- the longest line of a six-line
+   * program does not need 780px.
+   */
+  threeUp?: boolean
+  /**
    * Extra classes on the right column in `stacked` mode. A frame whose right
    * column would otherwise start inside the instructor-video rectangle pads it
    * down from here rather than pushing the whole slide down.
@@ -255,7 +305,9 @@ export function VariableTrace({
      variables column has sized itself to its content, so a chain that grows a
      link (or a task card handing over to the run) slid the code sideways under
      the room's eye. In `slots` mode both columns are pinned. */
-  const cols = stacked
+  const cols = threeUp
+    ? 'grid-cols-[1fr_212px_316px]'
+    : stacked
     ? 'grid-cols-[1fr_340px]'
     : slots
       ? 'grid-cols-[480px_minmax(300px,auto)_1fr]'
@@ -276,6 +328,22 @@ export function VariableTrace({
 
       {aside ? (
         <div className={`${stacked ? '' : 'col-span-2'} self-center`}>{aside}</div>
+      ) : threeUp ? (
+        <>
+          <div className={`flex flex-col gap-2 self-start ${rightClassName}`}>
+            {slots
+              ? slots.map((name) => <ValueChain key={name} name={name} history={chain(name)} />)
+              : current?.boxes.map((b) => <VariableBox row key={b.name} name={b.name} value={b.value} />)}
+          </div>
+          <div
+            className={`flex flex-col gap-3 self-start ${
+              groupRight ? 'rounded-card border border-line bg-white/60 p-2.5 shadow-card-soft' : ''
+            } ${rightClassName}`}
+          >
+            <OutputPane lines={current?.output ?? []} />
+            {rightExtra}
+          </div>
+        </>
       ) : stacked ? (
         <div
           className={`flex flex-col gap-2 self-start ${

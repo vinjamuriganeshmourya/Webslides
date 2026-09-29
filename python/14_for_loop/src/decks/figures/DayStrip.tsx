@@ -40,7 +40,13 @@ export function DayStrip({
   const { step, allRevealed } = useStepControls()
   const shown = allRevealed ? stepDay.length : step
   const at = shown > 0 ? (stepDay[shown - 1] ?? -1) : -1
-  const done = allRevealed ? days.length : at
+  /* THE HIGHEST DAY REACHED, not the current one. The last few steps of the
+     run are lines 6 and the end of the loop, which belong to no day and report
+     `at = -1`; reading `done` off that wiped every running total off the strip
+     exactly when the room had finished earning them. */
+  const seen = stepDay.slice(0, shown).filter((d) => d >= 0)
+  const furthest = seen.length ? Math.max(...seen) : -1
+  const done = allRevealed ? days.length : at >= 0 ? at : furthest + 1
 
   return (
     <div
