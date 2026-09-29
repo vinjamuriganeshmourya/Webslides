@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { DeckMeta, SlideDef } from '@/deck/types'
 import {
   AgendaSlide,
@@ -5,7 +6,6 @@ import {
   ContentSlide,
   FeedbackSlide,
   KeyTakeawaysSlide,
-  PracticeSlide,
   QuizTimeSlide,
   RecapSlide,
   SectionBreakerSlide,
@@ -26,6 +26,10 @@ import { FillableCode } from './figures/FillableCode'
 import { DayStrip } from './figures/DayStrip'
 import { dailyChallengeSlides as dc } from './dailyChallenge'
 import { RangeDial } from './figures/RangeDial'
+import { Task1Trace, type TraceBeat } from './figures/Task1Trace'
+import { TaskStepCard } from './figures/TaskStepCard'
+import { ChallengeCard } from './figures/ChallengeCard'
+import { Em, Mono } from './figures/TaskCard'
 
 /**
  * PYTHON · "For Loop"
@@ -97,19 +101,32 @@ const TASK1_STEPS: TraceStep[] = [
   { line: 6, boxes: [box('word', '"Hi"'), box('n', '2'), box('ch', 'i')], output: ['H', 'i', '2'] },
 ]
 
-/** The source's own beat names, used as the slide's speaker script. */
-const TASK1_NOTES = [
-  'Line 1. word now holds the two characters H and i.',
-  'Line 2. n starts at 0.',
-  'Line 3, first pass. The loop takes the first item out of the sequence. ch is H.',
-  'Line 4. n goes from 0 to 1.',
-  'Line 5. It prints whatever ch is holding right now.',
-  'Line 3, second pass. Back to the loop. It takes the next item. ch is i.',
-  'Line 4. n goes from 1 to 2.',
-  'Line 5. It prints i.',
-  'Line 3, third try. The loop asks for the next item. There is none left, so the loop ends.',
-  'Line 6. It prints n, which is 2. Two characters, two passes.',
-].join(' ')
+/**
+ * The source's eleven beats, LABEL AND SENTENCE KEPT APART.
+ *
+ * They used to be joined into one `notes` string, which put the whole narration
+ * in the speaker view and nothing at all on the frame: the room watched boxes
+ * change with no words anywhere near them. `Task1Trace` renders one of these
+ * under the figure per press, which is what the reference does.
+ *
+ * Beat 1 is the worksheet task itself. The other ten are the executed lines, in
+ * the order `TASK1_STEPS` runs them.
+ */
+const TASK1_BEATS: TraceBeat[] = [
+  { label: 'Worksheet task 1', text: 'Fill the table by hand first. Nothing here moves until pens are down.' },
+  { label: 'Line 1', text: 'word now holds the two characters H and i.' },
+  { label: 'Line 2', text: 'n starts at 0.' },
+  { label: 'Line 3, first pass', text: 'The loop takes the first item out of the sequence. ch is H.' },
+  { label: 'Line 4', text: 'n goes from 0 to 1.' },
+  { label: 'Line 5', text: 'It prints whatever ch is holding right now.' },
+  { label: 'Line 3, second pass', text: 'Back to the loop. It takes the next item. ch is i.' },
+  { label: 'Line 4', text: 'n goes from 1 to 2.' },
+  { label: 'Line 5', text: 'It prints i.' },
+  { label: 'Line 3, third try', text: 'The loop asks for the next item. There is none left, so the loop ends.' },
+  { label: 'Line 6', text: 'It prints n, which is 2. Two characters, two passes.' },
+]
+
+const TASK1_NOTES = TASK1_BEATS.map((b) => `${b.label}. ${b.text}`).join(' ')
 
 /* ------------------------------------------------------------------ */
 /* Riya's savings, traced. The source's 10 labels.                     */
@@ -196,11 +213,24 @@ const SEATS_STEPS: TraceStep[] = [
 /** The star pattern, as it really prints. Trailing space per row is real. */
 const WORD_LOOP = (w: string) => `word = "${w}"\nfor ch in word:\n    print(ch)\nprint("Done")`
 
+/**
+ * ONE STEP OF WORKSHEET TASK 2.
+ *
+ * The reference's card is two columns and a bottom strip: the program on the
+ * left with the line this step edits lit, the instruction and a countdown on the
+ * right, and the rule of the room across the bottom. The first cut was a lead
+ * over a centred code panel, with the instruction, the highlight, the clock and
+ * the rule all missing or in speaker notes.
+ */
 const task2Slide = (
   id: string,
   title: string,
   word: string,
-  lead: string,
+  lines: ReactNode[],
+  seconds: number,
+  ruleTitle: string,
+  rule: string,
+  ruleKind: 'note' | 'warning',
   note: string,
 ): SlideDef => ({
   id,
@@ -208,8 +238,17 @@ const task2Slide = (
   label: title,
   notes: note,
   element: (
-    <ContentSlide kicker="Worksheet task 2" title={title} lesson={SESSION} lead={lead}>
-      <CodeBlock filename={PY} code={WORD_LOOP(word)} className="mx-auto w-[620px]" />
+    <ContentSlide kicker="Worksheet task 2" title={title} lesson={SESSION}>
+      <TaskStepCard
+        py={PY}
+        code={WORD_LOOP(word)}
+        highlightLine={id === 'task2-step1' ? undefined : 1}
+        lines={lines}
+        seconds={seconds}
+        ruleTitle={ruleTitle}
+        rule={rule}
+        ruleKind={ruleKind}
+      />
     </ContentSlide>
   ),
 })
@@ -584,14 +623,10 @@ export const forLoopDeck: SlideDef[] = [
     label: 'Trace it before you run it',
     notes: TASK1_NOTES,
     element: (
-      <ContentSlide
-        kicker="Worksheet task 1"
-        title="Trace it before you run it"
-        lesson={SESSION}
-        lead="Fill the pass table by hand first. Nothing here moves until pens are down."
-      >
-        <VariableTrace code={TASK1_CODE} steps={TASK1_STEPS} location={PY} />
-        <StepControls className="mt-4 w-full justify-center" showCount={false} mode="code" />
+      <ContentSlide kicker="Worksheet task 1" title="Trace it before you run it" lesson={SESSION}>
+        {/* THE BEATS ARE ON THE FRAME. No lead: the first beat IS the lead, and
+            it is the worksheet task, which the card opens on. */}
+        <Task1Trace code={TASK1_CODE} steps={TASK1_STEPS} beats={TASK1_BEATS} py={PY} seconds={120} />
       </ContentSlide>
     ),
   },
@@ -599,22 +634,53 @@ export const forLoopDeck: SlideDef[] = [
     'task2-step1',
     'Step 1: type it, run it',
     'Rain',
-    'Type this program into the playground. Run it as it is, then tick step 1 on the worksheet.',
-    'It prints R, a, i, n, then Done. Worksheet tab and the playground only.',
+    [
+      <>
+        Type this program into the <Em>playground</Em>.
+      </>,
+      <>
+        Run it as it is. Then tick <Em>step 1</Em> on the worksheet.
+      </>,
+    ],
+    60,
+    'Worksheet tab and the playground only.',
+    'Nothing else open.',
+    'note',
+    'It prints R, a, i, n, then Done.',
   ),
   task2Slide(
     'task2-step2',
     'Step 2: change the word',
     'Delhi',
-    'On the worksheet, write how many lines it will print. Then run it.',
-    'Write first, run second. A guess after the run is not a guess. Five characters, so five lines, then Done.',
+    [
+      <>
+        Change line 1 to <Mono>word = "Delhi"</Mono>.
+      </>,
+      <>
+        On the worksheet, write <Em>how many lines</Em> it will print. Then run it.
+      </>,
+    ],
+    90,
+    'Write first, run second.',
+    'A guess after the run is not a guess.',
+    'warning',
+    'Five characters, so five lines, then Done.',
   ),
   task2Slide(
     'task2-step3',
     'Step 3: an empty word',
     '',
-    'Two quote marks, nothing between. Write what it will print, run it, then write what it really printed.',
-    'Does it give an error? Decide before you run. It prints Done and nothing else: an empty sequence means zero passes.',
+    [
+      <>
+        Change line 1 to <Mono>word = ""</Mono>. Two quote marks, nothing between.
+      </>,
+      <>On the worksheet, write what it will print. Run it. Then write what it really printed.</>,
+    ],
+    90,
+    'Write first, run second.',
+    'Does it give an error? Decide before you run.',
+    'warning',
+    'It prints Done and nothing else: an empty sequence means zero passes.',
   ),
 
   /* ── The classroom quiz, where the source puts it ────────────────── */
@@ -652,38 +718,15 @@ export const forLoopDeck: SlideDef[] = [
     section: AGENDA.range,
     label: 'The range dial',
     notes:
-      'Say the two numbers out loud first, and count hands, before each press. Beat 2 is the one the rest of the session depends on: it stops before the end value.',
+      'A MACHINE, not a slideshow. Set the two numbers, take the count of hands, THEN press Show the numbers. Do it again with a different stop, and again with start at 0: the numbers hide the moment either bound moves, so every setting is predicted. The one that has to land is that the stop value never comes out.',
     element: (
       <ContentSlide
         kicker="Predict, then look"
         title="The range dial"
         lesson={SESSION}
-        lead="Say the two numbers out loud first. Which numbers come out, and how many?"
+        lead="Say the two numbers out loud first. Which numbers come out, and how many? Then press the button."
       >
-        <RangeDial
-          max={10}
-          beats={[
-            {
-              stop: 5,
-              label: 'range(n)',
-              caption: 'range(5) gives five numbers. The count starts at 0.',
-            },
-            {
-              stop: 5,
-              markStop: true,
-              label: 'Stops before',
-              caption: '5 is not included. range stops before its end value.',
-            },
-            {
-              start: 1,
-              stop: 5,
-              markStop: true,
-              label: 'range(start, end)',
-              caption: 'range can also start at a number you choose. It still stops before the end.',
-            },
-          ]}
-        />
-        <StepControls className="mt-4 w-full justify-center" showCount={false} />
+        <RangeDial max={10} initialStart={1} initialStop={5} />
       </ContentSlide>
     ),
   },
@@ -738,18 +781,54 @@ export const forLoopDeck: SlideDef[] = [
     id: 'riya-challenge',
     section: AGENDA.range,
     label: "Riya's savings",
+    notes:
+      'Read the problem and the rule out, then the two runs. The SECOND run is the one to collect: everybody should have 25 for 10 days before the next frame.',
     element: (
-      <PracticeSlide
-        kicker="Coding challenge"
-        title="Riya's savings"
-        lesson={SESSION}
-        prompt="Read a number n. Print the total money Riya saves from day 1 to day n, both days included."
-        tasks={[
-          { text: 'Input 7, output 16', sub: 'On an odd day d, she saves \u20b9d. On an even day, she saves nothing' },
-          { text: 'Input 4, output 4', sub: 'Run it with 7 first. It must print 16' },
-          { text: 'Hint: day % 2 == 1', sub: 'It is True only when day is odd' },
-        ]}
-      />
+      <ContentSlide kicker="Coding challenge" title="Riya's savings" lesson={SESSION}>
+        {/* THE SUB-TEXTS WERE CROSS-WIRED. `Input 7, output 16` carried the
+            odd/even rule and `Input 4, output 4` carried "Run it with 7 first",
+            so the rule that decides every answer was filed under a worked
+            example and the second run was nowhere on the frame. The rule now
+            sits with the problem, the examples say only what goes in and what
+            comes out, and both runs are numbered in the order they happen. */}
+        <ChallengeCard
+          title="Riya's savings"
+          statement={
+            <>
+              Read a number <Em>n</Em>. Print the total money Riya saves from <Em>day 1 to day n</Em>,
+              both days included.
+            </>
+          }
+          rule={
+            <>
+              On an odd day <Em>d</Em>, she saves {'\u20B9'}d. On an even day, she saves nothing.
+            </>
+          }
+          examples={[
+            { input: '7', output: '16' },
+            { input: '4', output: '4' },
+          ]}
+          lead={
+            <>
+              Open the <Em>playground</Em>. Write Riya's program.
+            </>
+          }
+          runs={[
+            <>
+              Run it with <Em>7</Em>. It must print <Em>16</Em>.
+            </>,
+            <>
+              Then run it with <Em>10</Em>. Keep that answer ready.
+            </>,
+          ]}
+          seconds={240}
+          hint={
+            <>
+              <Mono>day % 2 == 1</Mono> is True only when <Em>day</Em> is odd.
+            </>
+          }
+        />
+      </ContentSlide>
     ),
   },
   {
