@@ -32,7 +32,12 @@ export function KeyTakeawaysSlide({
           */}
           {lead && <SlideLead tone="nw">{lead}</SlideLead>}
           <div className="flex min-h-0 flex-1 flex-col justify-center">
-            <BulletList items={points} marker="star" tone="nw" />
+            {/* IMMEDIATE, NOT CLICK-GATED. This frame carries no step controls
+                and the deck's arrow keys move slides, so gated points could not
+                be reached at all: the recap rendered as a heading over an empty
+                column. It is also the case `BulletList` documents `immediate`
+                for -- a list beside a supporting visual, which here is Nova. */}
+            <BulletList immediate items={points} marker="star" tone="nw" />
           </div>
         </div>
 

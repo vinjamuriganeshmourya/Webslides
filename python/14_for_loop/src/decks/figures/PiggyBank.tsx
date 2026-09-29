@@ -227,7 +227,60 @@ export function PiggyBank({
         </div>
       </div>
 
-      <div className="grid grid-cols-[300px_1fr] items-center gap-8">
+      {narrated ? (
+        /* SHE STANDS ON THE LEFT AND TALKS ACROSS AT THE BANK. Facing each
+           other is what makes the two of them a conversation rather than two
+           figures on one slide. The bank answers on the days she skips, so a
+           skipped day still has a voice. */
+        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-5">
+          <Riya width={108} mood={happy ? 'happy' : 'worried'} />
+          <div className="flex flex-col gap-3">
+            {beat?.caption && (
+              <SpeechBubble key={reached} from={beat.voice ?? 'riya'}>
+                {beat.caption}
+              </SpeechBubble>
+            )}
+          </div>
+          <div className="flex items-center gap-3">
+          <div className="w-[220px] shrink-0 overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
+            <div className="border-b border-line bg-surface px-4 py-1.5 text-center">
+              <span className="font-heading text-body-sm font-bold leading-none" style={{ color: colors.body }}>
+                In the piggy bank
+              </span>
+            </div>
+            <div className="grid h-[58px] place-items-center">
+              <motion.span
+                key={beat?.total ?? 'none'}
+                className="font-mono text-[30px] font-bold leading-none"
+                style={{ color: colors.brandDark }}
+                initial={instant ? false : { opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: T.label, ease: c4(E.out) }}
+              >
+                {beat?.total ?? '₹0'}
+              </motion.span>
+            </div>
+          </div>
+            <PiggyJar happy={happy} />
+            {/* The coin that is going in, on the beat it goes in. */}
+            <div className="h-10 w-10">
+              {beat?.at !== undefined && at >= 0 && days[at]?.coin && (
+                <motion.span
+                  key={at}
+                  className="grid h-10 w-10 place-items-center rounded-full font-heading text-[16px] font-bold"
+                  style={{ background: colors.warning, color: colors.ink }}
+                  initial={instant ? false : { opacity: 0, y: -26 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: T.travel, ease: c4(E.out) }}
+                >
+                  {days[at].coin}
+                </motion.span>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-[300px_1fr] items-center gap-8">
         {/* THE BANK. Shape only: the total beside it is a DOM element. */}
         <div className="flex items-center gap-4">
           <PiggyJar happy={happy} />
@@ -248,7 +301,7 @@ export function PiggyBank({
           </div>
         </div>
 
-        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6">
           <div className="w-[220px] shrink-0 overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
             <div className="border-b border-line bg-surface px-4 py-1.5 text-center">
               <span className="font-heading text-body-sm font-bold leading-none" style={{ color: colors.body }}>
@@ -268,22 +321,10 @@ export function PiggyBank({
               </motion.span>
             </div>
           </div>
-          {narrated ? (
-            /* Day by day, in her own words. The bank takes the line on the days
-               she saves nothing, so a skipped day still has a voice. */
-            <div className="flex flex-1 items-start gap-3">
-              <Riya width={86} mood={happy ? 'happy' : 'worried'} />
-              {beat?.caption && (
-                <SpeechBubble key={reached} from={beat.voice ?? 'riya'} className="flex-1">
-                  {beat.caption}
-                </SpeechBubble>
-              )}
-            </div>
-          ) : (
             <BeatCaption label={beat?.label} caption={beat?.caption} step={reached} className="flex-1" />
-          )}
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+  </div>
   )
 }

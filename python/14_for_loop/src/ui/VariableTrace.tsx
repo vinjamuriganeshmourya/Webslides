@@ -44,24 +44,30 @@ export interface TraceStep {
   output: string[]
 }
 
-function VariableBox({ name, value }: { name: string; value: string }) {
+/* `compact` is for `stacked` mode, where the boxes share a 340px column with an
+   output panel, a figure and the controls. At full size three of them wrap to
+   two rows, the column grows by 100px the first time a variable appears, and
+   everything under it slides off the bottom of the frame mid-run. */
+function VariableBox({ name, value, compact = false }: { name: string; value: string; compact?: boolean }) {
   const instant = useInstant()
   return (
     <motion.div
       layout
-      className="w-[128px] overflow-hidden rounded-card border border-line bg-white text-center shadow-card-soft"
+      className={`overflow-hidden rounded-card border border-line bg-white text-center shadow-card-soft ${
+        compact ? 'w-[104px]' : 'w-[128px]'
+      }`}
       initial={instant ? false : { opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: T.enter, ease: c4(E.out) }}
     >
-      <div className="border-b border-line bg-surface px-3 py-1.5">
+      <div className={`border-b border-line bg-surface px-3 ${compact ? 'py-1' : 'py-1.5'}`}>
         <span className="font-mono text-body-sm font-bold leading-none text-body">{name}</span>
       </div>
-      <div className="relative grid h-[64px] place-items-center">
+      <div className={`relative grid place-items-center ${compact ? 'h-[42px]' : 'h-[64px]'}`}>
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.span
             key={value}
-            className="font-mono text-[30px] font-semibold leading-none"
+            className={`font-mono font-semibold leading-none ${compact ? 'text-[24px]' : 'text-[30px]'}`}
             style={{ color: colors.brandDark }}
             initial={instant ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -135,6 +141,24 @@ function ValueChain({ name, history }: { name: string; history: string[] }) {
   )
 }
 
+function OutputPane({ lines }: { lines: string[] }) {
+  return (
+    <div className="w-full overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
+      <div className="flex items-center gap-2 border-b border-line bg-surface px-4 py-2">
+        <span className="inline-block h-2 w-2 rounded-full" style={{ background: colors.success }} />
+        <span className="font-heading text-body-sm font-bold uppercase tracking-wider text-body">Output</span>
+      </div>
+      {/* Padding on the wrapper, one line per element: `align-check.mjs`
+          reads a padded or multi-line `<pre>` as one wrapped token. */}
+      <div className="min-h-[64px] px-4 py-3 font-mono text-[17px] leading-relaxed text-ink">
+        {lines.map((line, i) => (
+          <div key={i} className="whitespace-pre">{line}</div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export function VariableTrace({
   code,
   steps,
@@ -143,6 +167,11 @@ export function VariableTrace({
   step,
   aside,
   slots,
+  stacked = false,
+  rightExtra,
+  belowCode,
+  aboveCode,
+  rightClassName = '',
 }: {
   code: string
   steps: TraceStep[]
@@ -162,6 +191,25 @@ export function VariableTrace({
    * replaced by the run: same grid, same column, different right-hand side.
    */
   aside?: ReactNode
+  /**
+   * ADDITIVE, OPT-IN. Two columns instead of three: the code on the left, and
+   * the variables, the output and `rightExtra` STACKED down the right. A frame
+   * that also carries a figure has no room for a third column, and three
+   * quarter-width columns leave the code panel too narrow to read.
+   */
+  stacked?: boolean
+  /** Sits under the output panel in `stacked` mode. Ignored otherwise. */
+  rightExtra?: ReactNode
+  /** Sits under the code panel in `stacked` mode. Ignored otherwise. */
+  belowCode?: ReactNode
+  /** Sits above the code panel in `stacked` mode, sharing its width. */
+  aboveCode?: ReactNode
+  /**
+   * Extra classes on the right column in `stacked` mode. A frame whose right
+   * column would otherwise start inside the instructor-video rectangle pads it
+   * down from here rather than pushing the whole slide down.
+   */
+  rightClassName?: string
   /**
    * ADDITIVE, OPT-IN. Draw these names as VALUE CHAINS instead of single-value
    * boxes, in this order, seeded with `not set yet`. See `ValueChain`.
@@ -196,20 +244,40 @@ export function VariableTrace({
      variables column has sized itself to its content, so a chain that grows a
      link (or a task card handing over to the run) slid the code sideways under
      the room's eye. In `slots` mode both columns are pinned. */
-  const cols = slots ? 'grid-cols-[480px_minmax(300px,auto)_1fr]' : 'grid-cols-[1.25fr_auto_1fr]'
+  const cols = stacked
+    ? 'grid-cols-[1fr_340px]'
+    : slots
+      ? 'grid-cols-[480px_minmax(300px,auto)_1fr]'
+      : 'grid-cols-[1.25fr_auto_1fr]'
   return (
     <div className={`grid ${cols} items-start gap-8 ${className}`}>
-      <div className="flex w-full justify-center self-center">
+      <div className={`flex w-full flex-col gap-3 ${stacked ? 'self-start' : 'justify-center self-center'}`}>
+        {stacked && aboveCode}
         <CodeBlock
           className="w-full"
           code={code}
           filename={location}
           highlight={current ? [current.line] : []}
         />
+        {stacked && belowCode}
       </div>
 
       {aside ? (
-        <div className="col-span-2 self-center">{aside}</div>
+        <div className={`${stacked ? '' : 'col-span-2'} self-center`}>{aside}</div>
+      ) : stacked ? (
+        <div className={`flex flex-col gap-3 self-start ${rightClassName}`}>
+          {/* HEIGHT RESERVED FROM THE FIRST FRAME. The boxes appear a step at a
+              time; sized to content the column grew under them and pushed the
+              output panel, the figure and the controls down the canvas mid-run,
+              until the controls sat under the player's own. */}
+          <div className="flex h-[84px] items-start gap-2.5">
+            {slots
+              ? slots.map((name) => <ValueChain key={name} name={name} history={chain(name)} />)
+              : current?.boxes.map((b) => <VariableBox compact key={b.name} name={b.name} value={b.value} />)}
+          </div>
+          <OutputPane lines={current?.output ?? []} />
+          {rightExtra}
+        </div>
       ) : (
         <>
       <div className="flex min-h-[120px] min-w-[128px] flex-col gap-4 pt-1">
@@ -224,18 +292,8 @@ export function VariableTrace({
           top of a tall cell it floated above a half-empty column. The variable
           boxes keep their top alignment, because they are a stack that grows
           downward and has to start from a fixed line. */}
-      <div className="w-full self-center overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
-        <div className="flex items-center gap-2 border-b border-line bg-surface px-4 py-2">
-          <span className="inline-block h-2 w-2 rounded-full" style={{ background: colors.success }} />
-          <span className="font-heading text-body-sm font-bold uppercase tracking-wider text-body">Output</span>
-        </div>
-        {/* Padding on the wrapper, one line per element: `align-check.mjs`
-            reads a padded or multi-line `<pre>` as one wrapped token. */}
-        <div className="min-h-[64px] px-4 py-3 font-mono text-[17px] leading-relaxed text-ink">
-          {(current?.output ?? []).map((line, i) => (
-            <div key={i} className="whitespace-pre">{line}</div>
-          ))}
-        </div>
+      <div className="w-full self-center">
+        <OutputPane lines={current?.output ?? []} />
       </div>
         </>
       )}

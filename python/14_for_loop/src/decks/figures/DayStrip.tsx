@@ -20,12 +20,20 @@ import { T, E, c4 } from '@/ui/figureTiming'
 export function DayStrip({
   days,
   stepDay,
+  spread = false,
   className = '',
 }: {
   /** One per day: the label, what that day contributed, and the running total. */
   days: { label: string; coin?: string; total: string }[]
   /** Which day each deck step is on. `-1` for a step that is not a day. */
   stepDay: number[]
+  /**
+   * Seven equal columns filling the width given, instead of seven fixed 64px
+   * tiles. A strip that ends 280px short of the code panel under it reads as a
+   * floating object; sharing the panel's right edge makes the week and the
+   * program that walks it one block.
+   */
+  spread?: boolean
   className?: string
 }) {
   const instant = useInstant()
@@ -35,7 +43,11 @@ export function DayStrip({
   const done = allRevealed ? days.length : at
 
   return (
-    <div className={`flex items-center justify-center gap-1 ${className}`}>
+    <div
+      className={
+        spread ? `grid grid-cols-7 gap-2 ${className}` : `flex items-center justify-center gap-1 ${className}`
+      }
+    >
       {days.map((d, i) => {
         const here = i === at
         const past = i < done
@@ -47,7 +59,9 @@ export function DayStrip({
                line of text, so sizing to content made the saving days taller
                than the skipped ones and the row read as two rows. A fixed box
                with three fixed rows keeps the week a week. */
-            className="flex h-[80px] w-[64px] shrink-0 flex-col items-center justify-between rounded-card border-2 px-1 py-1"
+            className={`flex h-[80px] flex-col items-center justify-between rounded-card border-2 px-1 py-1 ${
+              spread ? 'w-full' : 'w-[64px] shrink-0'
+            }`}
             style={{
               borderColor: here ? colors.brand : colors.line,
               background: here ? `${colors.brand}12` : colors.white,
