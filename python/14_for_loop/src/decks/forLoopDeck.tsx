@@ -11,7 +11,7 @@ import {
   SectionBreakerSlide,
   ThankYouSlide,
 } from '@/slides'
-import { Card, CodeBlock, CodeOutput, SwapRows, VariableTrace, StepControls} from '@/ui'
+import { Card, CodeBlock, CodeOutput, VariableTrace, StepControls} from '@/ui'
 import type { TraceStep } from '@/ui'
 import { colors } from '@/design/tokens'
 import { Step } from '@/motion/Stepper'
@@ -30,6 +30,11 @@ import { Task1Trace, type TraceBeat } from './figures/Task1Trace'
 import { TaskStepCard } from './figures/TaskStepCard'
 import { ChallengeCard } from './figures/ChallengeCard'
 import { Em, Mono } from './figures/TaskCard'
+import { Timer } from './figures/Timer'
+import { StepCaption } from './figures/StepCaption'
+import { TotalChain } from './figures/TotalChain'
+import { SeatsAnswer } from './figures/SeatsAnswer'
+import { RunThemBoth } from './figures/RunThemBoth'
 
 /**
  * PYTHON · "For Loop"
@@ -183,18 +188,32 @@ const RIYA_DAYS = [
   { label: 'Day 7', coin: '\u20B97', total: '\u20B916' },
 ]
 
-const RIYA_NOTES = [
-  'Lines 1 and 2. n is 7. total starts at 0.',
-  'Day 1. 1 is odd. total goes from 0 to 1.',
-  'Day 2. 2 is even. The if is False, so total stays 1.',
-  'Day 3. 3 is odd. total goes from 1 to 4.',
-  'Day 4. 4 is even. The if is False, so total stays 4.',
-  'Day 5. 5 is odd. total goes from 4 to 9.',
-  'Day 6. 6 is even. The if is False, so total stays 9.',
-  'Day 7. 7 is odd. total goes from 9 to 16.',
-  'No days left. range stops before 8. The loop ends.',
-  'Line 6. It prints 16. That is Riya\u2019s money after 7 days.',
-].join(' ')
+/**
+ * THE TEN BEATS, AS THEY GO ON THE FRAME.
+ *
+ * They were joined into one `notes:` string, so the room watched the boxes
+ * change with no narration on screen and the recording could not teach from it.
+ * The reference puts the label and the sentence under the trace, one per press
+ * (`Line 6  It prints 16. That is Riya's money after 7 days.`), and `StepCaption`
+ * draws them from this array.
+ */
+const RIYA_BEATS = [
+  { label: 'Lines 1 and 2', text: 'n is 7. total starts at 0.' },
+  { label: 'Day 1', text: '1 is odd. total goes from 0 to 1.' },
+  { label: 'Day 2', text: '2 is even. The if is False, so total stays 1.' },
+  { label: 'Day 3', text: '3 is odd. total goes from 1 to 4.' },
+  { label: 'Day 4', text: '4 is even. The if is False, so total stays 4.' },
+  { label: 'Day 5', text: '5 is odd. total goes from 4 to 9.' },
+  { label: 'Day 6', text: '6 is even. The if is False, so total stays 9.' },
+  { label: 'Day 7', text: '7 is odd. total goes from 9 to 16.' },
+  { label: 'No days left', text: 'range stops before 8. The loop ends.' },
+  { label: 'Line 6', text: 'It prints 16. That is Riya\u2019s money after 7 days.' },
+]
+
+const RIYA_NOTES = RIYA_BEATS.map((b) => `${b.label}. ${b.text}`).join(' ')
+
+/** What `total` holds after each of RIYA_STEPS, plain, for the chain. */
+const RIYA_TOTAL_RUN = ['0', '1', '1', '4', '4', '9', '9', '16', '16', '16']
 
 /* ------------------------------------------------------------------ */
 /* The exit question, traced. seats 4, booked 3.                       */
@@ -203,11 +222,22 @@ const RIYA_NOTES = [
 const SEATS_CODE =
   'seats = int(input())\nbooked = int(input())\nleft = seats - booked\nfor i in range(1, left):\n    print("Seat", i)'
 
-const SEATS_STEPS: TraceStep[] = [
-  { line: 2, boxes: [box('seats', '4'), box('booked', '3')], output: [] },
-  { line: 3, boxes: [box('seats', '4'), box('booked', '3'), box('left', '1')], output: [] },
-  { line: 4, boxes: [box('seats', '4'), box('booked', '3'), box('left', '1')], output: [] },
-  { line: 4, boxes: [box('seats', '4'), box('booked', '3'), box('left', '1')], output: [] },
+/**
+ * THE REFERENCE'S FOUR BEATS, by their own names: the pair, line 3, line 4,
+ * nothing. They were the slide's `lead`, all at once, which answered the exit
+ * question before the frame had asked it.
+ */
+const SEATS_BEATS = [
+  { label: 'The pair', text: 'Option B. seats is 4 and booked is 3.' },
+  { label: 'Line 3', text: 'left is 4 minus 3, which is 1.' },
+  {
+    label: 'Line 4',
+    text: 'range(1, 1) starts at 1 and stops before 1. It has no numbers in it.',
+  },
+  {
+    label: 'Nothing printed',
+    text: 'The loop body never runs, so the screen stays empty.',
+  },
 ]
 
 /** The star pattern, as it really prints. Trailing space per row is real. */
@@ -861,7 +891,7 @@ export const forLoopDeck: SlideDef[] = [
     label: "Riya's savings, day by day",
     notes: RIYA_NOTES,
     element: (
-      <ContentSlide kicker="Check it together" title="Riya's savings, day by day" lesson={SESSION} lead="Input 7.">
+      <ContentSlide kicker="Check it together" title="Riya's savings, day by day" lesson={SESSION}>
         {/* THE BANK BELONGS ON THIS FRAME. The trace proves the program is
             right; the bank is what makes it Riya's. The reference draws it
             filling beside the variable boxes, and dropping it turned a story
@@ -869,14 +899,42 @@ export const forLoopDeck: SlideDef[] = [
             the trade the review asked for. */}
         {/* The week, so the odd/even rule is visible at a glance rather than
             one day at a time in a variable box. */}
-        <DayStrip days={RIYA_DAYS} stepDay={RIYA_STEP_DAY} className="mb-3" />
+        {/* THE WEEK IS LEFT-ALIGNED, NOT CENTRED. The instructor's video sits in
+            x913..1280, y0..220, and a centred strip of seven day tiles reaches
+            into it. Hard against the left margin it ends well short of the
+            reserved box, and it lines up with the code panel under it. */}
+        <DayStrip days={RIYA_DAYS} stepDay={RIYA_STEP_DAY} className="!justify-start" />
         <div className="flex items-start justify-center gap-7">
           <VariableTrace code={RIYA_CODE} steps={RIYA_STEPS} location={PY} className="flex-1" />
           {/* The bank sits in the middle of its space, like the code panel and
               the output panel beside it, rather than hanging from the top. */}
-          <PiggyMeter totals={RIYA_TOTALS} coins={RIYA_COINS} className="shrink-0 self-center" />
+          <div className="flex shrink-0 flex-col items-center gap-3 self-center">
+            <PiggyMeter totals={RIYA_TOTALS} coins={RIYA_COINS} />
+            {/* WHERE 16 CAME FROM. A variable box shows the value `total` holds;
+                the chain shows the four additions that built it, superseded
+                values struck through, which is how the reference draws the run.
+                It sits under the bank because it is the same story told in
+                numbers, and because every other place on this frame is either
+                spoken for or inside the reserved video box. */}
+            <TotalChain label="total" values={RIYA_TOTAL_RUN} className="w-[236px]" />
+          </div>
         </div>
-        <StepControls className="mt-3 w-full justify-center" showCount={false} mode="code" />
+        {/* THE INPUT, THE SENTENCE AND THE CONTROLS SHARE ONE ROW. Stacked they
+            cost fifty pixels this frame has already spent on the week, the
+            chain, the trace and the bank. `input: 7` sits at the left, directly
+            under the code panel and the `int(input())` that reads it; it was the
+            slide's lead, at the top of the frame and as far from that line as a
+            frame allows. */}
+        <div className="mt-1 flex items-center gap-4">
+          <span
+            className="shrink-0 self-start pt-1 font-mono text-body-sm font-bold"
+            style={{ color: colors.body }}
+          >
+            input: 7
+          </span>
+          <StepCaption beats={RIYA_BEATS} className="flex-1" />
+          <StepControls className="shrink-0" showCount={false} mode="code" />
+        </div>
       </ContentSlide>
     ),
   },
@@ -902,7 +960,7 @@ export const forLoopDeck: SlideDef[] = [
     section: AGENDA.star,
     label: 'Write the loop line',
     notes:
-      'For n = 4 it prints 4 rows, and the last row is four stars. Write line 2 in full, with the colon. More than one pair of answers works.',
+      'For n = 4 it prints 4 rows, and the last row is four stars. Start the clock when you have read the task out. Type an answer the room calls out into the blanks so the two can be seen to agree.',
     element: (
       <ContentSlide
         kicker="Worksheet task 3"
@@ -912,18 +970,34 @@ export const forLoopDeck: SlideDef[] = [
       >
         <div className="grid grid-cols-[1fr_0.8fr] items-center gap-10">
           {/* Real blanks, not a picture of one: an answer called out by the
-              room gets typed in, and the two blanks can be seen to agree. */}
+              room gets typed in, and the two blanks can be seen to agree. The
+              two lines that are the learner's are tinted, so the eye lands on
+              the task rather than reading all three to find it. */}
           <FillableCode
             filename={PY}
+            highlight={[2, 3]}
             lines={[
               { before: 'n = int(input())' },
               { before: '', blank: 26, placeholder: 'the loop line, with the colon' },
               { before: 'print("* " * ', blank: 8, after: ')' },
             ]}
           />
-          <Card icon="target" title="For n = 4">
-            It prints 4 rows. The last row is * * * *
-          </Card>
+          <div className="flex flex-col items-start gap-4">
+            <Card icon="target" title="For n = 4">
+              It prints 4 rows. The last row is * * * *
+            </Card>
+            {/* THE TASK'S OWN INSTRUCTION, ON THE FRAME. It was in `notes:`, so
+                the room had nothing on screen saying what to write or where to
+                run it, and the clock that keeps a four-minute task to four
+                minutes was missing entirely. */}
+            <p className="text-body-lg font-medium leading-snug" style={{ color: colors.ink }}>
+              Write line 2 in full, with the colon. Then try it in the playground.
+            </p>
+            <p className="text-body" style={{ color: colors.body }}>
+              More than one pair works.
+            </p>
+            <Timer seconds={240} />
+          </div>
         </div>
       </ContentSlide>
     ),
@@ -934,47 +1008,21 @@ export const forLoopDeck: SlideDef[] = [
     section: AGENDA.mistake,
     label: 'Which one is right?',
     notes:
-      'Hands up for A. Now hands up for B. Count both before you reveal. A drops the last row; B prints all n.',
+      'The line is on the frame now. Move n with the stepper if the room wants another number, take both shows of hands, and only then press Run them both. A drops the last row; B prints all n.',
     element: (
       <ContentSlide
         kicker="Predict, then run"
         title="Which one is right?"
         lesson={SESSION}
-        lead="Both of these start at 1. Which one prints all n rows, for n = 4?"
+        lead="Both of these start at 1. Which one prints all n rows?"
       >
-        {/* VOTE, THEN RUN. The two candidates are on screen at step 0 and the
-            verdict is a build step, so the room commits before it sees which
-            one is right. Collapsing the pair into one reveal is the one thing
-            that destroys this device. */}
-        <div className="grid grid-cols-2 gap-8">
-          <div>
-            <div className="mb-2 font-heading text-body-lg font-bold text-ink">A</div>
-            <CodeBlock
-              filename={PY}
-              showLineNumbers={false}
-              code={'n = int(input())\nfor counter in range(1, n):\n    print("* " * counter)'}
-            />
-          </div>
-          <div>
-            <div className="mb-2 font-heading text-body-lg font-bold text-ink">B</div>
-            <CodeBlock
-              filename={PY}
-              showLineNumbers={false}
-              code={'n = int(input())\nfor counter in range(1, n + 1):\n    print("* " * counter)'}
-            />
-          </div>
-        </div>
-        <Step dir="up" className="mt-6">
-          <SwapRows
-            leftLabel="A · range(1, n)"
-            rightLabel="B · range(1, n + 1)"
-            caption="B is right. A stops before n, so the last row never prints."
-            pairs={[
-              { from: 'counter goes 1, 2, 3', to: 'counter goes 1, 2, 3, 4' },
-              { from: '3 rows printed', to: '4 rows printed' },
-            ]}
-          />
-        </Step>
+        {/* VOTE, THEN RUN. `n` is a number the room can move, both range
+            expressions re-read themselves from it, both output panes stay empty,
+            and nothing resolves until `Run them both` is pressed. The first cut
+            was a single `SwapRows` reveal, which is the one thing that destroys
+            this device: the room reads the answer instead of committing to a
+            guess. */}
+        <RunThemBoth filename={PY} />
       </ContentSlide>
     ),
   },
@@ -995,14 +1043,34 @@ export const forLoopDeck: SlideDef[] = [
       >
         <div className="grid grid-cols-[1.1fr_1fr] items-center gap-10">
           <CodeBlock filename={PY} code={SEATS_CODE} />
-          {/* A plain grid, not `CardGrid`: that one wraps each child in a build
-              step, and all four pairs have to be on screen together for the
-              room to choose between them. */}
-          <div className="grid grid-cols-2 gap-5">
-            <Card title="A">seats = 5, booked = 3</Card>
-            <Card title="B">seats = 4, booked = 3</Card>
-            <Card title="C">seats = 3, booked = 0</Card>
-            <Card title="D">seats = 6, booked = 2</Card>
+          {/* ONE COLUMN, NOT A 2x2 GRID OF CARDS. Four alternatives to one
+              question read DOWN, and a column is what a show of hands is counted
+              against: the eye goes A, B, C, D once instead of tracking across two
+              rows. The letters are small and grey because they are addresses, not
+              content; the pairs are the thing to read. No bordered cards, which
+              made four options look like four separate ideas. */}
+          <div className="flex flex-col gap-4">
+            {[
+              ['A', 'seats = 5, booked = 3'],
+              ['B', 'seats = 4, booked = 3'],
+              ['C', 'seats = 3, booked = 0'],
+              ['D', 'seats = 6, booked = 2'],
+            ].map(([letter, pair]) => (
+              <div key={letter} className="flex items-baseline gap-4">
+                <span
+                  className="w-5 font-heading text-body font-bold"
+                  style={{ color: colors.muted }}
+                >
+                  {letter}
+                </span>
+                <span className="text-body-lg font-medium" style={{ color: colors.ink }}>
+                  {pair}
+                </span>
+              </div>
+            ))}
+            {/* The room is being asked to read five lines and pick one. The
+                clock is what keeps that to two and a half minutes. */}
+            <Timer seconds={150} className="mt-2 self-start" />
           </div>
         </div>
       </ContentSlide>
@@ -1013,16 +1081,22 @@ export const forLoopDeck: SlideDef[] = [
     section: AGENDA.mistake,
     label: 'Why it prints nothing',
     notes:
-      'Option B. seats is 4 and booked is 3. Line 3, left is 1. Line 4, range(1, 1) starts at 1 and stops before 1, so it has no numbers in it. Nothing is printed: the loop body never runs.',
+      SEATS_BEATS.map((b) => `${b.label}. ${b.text}`).join(' '),
     element: (
       <ContentSlide
         kicker="Exit question"
         title="Why it prints nothing"
         lesson={SESSION}
-        lead="Option B. seats is 4 and booked is 3, so range(1, 1) has no numbers in it."
+        lead="Take it one line at a time."
       >
-        <VariableTrace code={SEATS_CODE} steps={SEATS_STEPS} location={PY} />
-        <StepControls className="mt-4 w-full justify-center" showCount={false} mode="code" />
+        {/* THE ANSWER IS NOT IN THE LEAD. It was: the lead named option B and
+            gave `range(1, 1)` away at step 0, so the four beats the reference
+            builds it over had nothing left to reveal. The reasoning now arrives
+            one press at a time, in the caption bar, and the frame carries the
+            three payloads that say WHY the output box is empty. */}
+        <SeatsAnswer code={SEATS_CODE} filename={PY} />
+        <StepCaption beats={SEATS_BEATS} className="mt-4" />
+        <StepControls className="mt-3 w-full justify-center" showCount={false} mode="code" />
       </ContentSlide>
     ),
   },
@@ -1033,14 +1107,30 @@ export const forLoopDeck: SlideDef[] = [
     section: 'Closing',
     label: 'Key Takeaways',
     element: (
+      /* THE REFERENCE'S OWN HEADING. It reads `For loop` over `What we did
+         today`; ours read `Key Takeaways` over `For Loop`, which is the same two
+         words in the other two slots and made the frame look like a different
+         card from the one the room was promised. */
       <KeyTakeawaysSlide
-        title={SESSION}
+        kicker={SESSION}
+        title="What we did today"
         lesson={SESSION}
         points={[
-          { text: AGENDA.forLoop, sub: 'Walk through a sequence, one item at a time' },
-          { text: AGENDA.range, sub: 'Make a sequence of numbers' },
-          { text: AGENDA.star, sub: 'Write it yourself' },
-          { text: AGENDA.mistake, sub: 'range stops before its end value' },
+          /* The four agenda strings, word for word (content rule 20). The subs
+             are free, so they carry the three facts the reference's own takeaway
+             map carries and this frame had lost: what range(1, 5) actually
+             gives, what an empty sequence does, and that the sequence is what
+             decides how many passes happen. */
+          {
+            text: AGENDA.forLoop,
+            sub: 'Walk a sequence one item at a time. The sequence decides how many passes happen',
+          },
+          { text: AGENDA.range, sub: 'Makes a sequence of numbers. range(1, 5) gives 1 2 3 4, not 5' },
+          { text: AGENDA.star, sub: 'Write it yourself: one row per pass, and counter stars on each' },
+          {
+            text: AGENDA.mistake,
+            sub: 'range stops before its end value, and an empty sequence means the body never runs',
+          },
         ]}
       />
     ),

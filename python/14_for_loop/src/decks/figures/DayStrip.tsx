@@ -47,7 +47,7 @@ export function DayStrip({
                line of text, so sizing to content made the saving days taller
                than the skipped ones and the row read as two rows. A fixed box
                with three fixed rows keeps the week a week. */
-            className="flex h-[92px] w-[68px] flex-col items-center justify-between rounded-card border-2 px-1 py-1.5"
+            className="flex h-[80px] w-[64px] shrink-0 flex-col items-center justify-between rounded-card border-2 px-1 py-1"
             style={{
               borderColor: here ? colors.brand : colors.line,
               background: here ? `${colors.brand}12` : colors.white,
