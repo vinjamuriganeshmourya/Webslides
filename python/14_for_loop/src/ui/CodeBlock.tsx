@@ -182,7 +182,13 @@ export function CodeBlock({
   // `language` is also the chip label, so match case-insensitively.
   const isYaml = /^ya?ml$/i.test(language)
   return (
-    <div className={`overflow-hidden rounded-card bg-night-2 shadow-card ${className}`}>
+      /* A MINUTE ELEVATION. Enough to lift the panel off the slide's wash so it
+         reads as a surface rather than a shape painted on it, and not enough to
+         announce itself: 1px of contact plus a short, soft cast. */
+    <div
+      className={`overflow-hidden rounded-card bg-night-2 ${className}`}
+      style={{ boxShadow: '0 1px 2px rgba(16,32,58,0.07), 0 6px 14px -6px rgba(16,32,58,0.13)' }}
+    >
       <div className="flex items-center gap-2 border-b border-white/10 px-4 py-2.5">
         <span className="h-3 w-3 rounded-full bg-[#FF5F57]" />
         <span className="h-3 w-3 rounded-full bg-[#FEBC2E]" />

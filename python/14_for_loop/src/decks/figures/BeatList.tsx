@@ -37,7 +37,7 @@ export function BeatList({
 }) {
   const instant = useInstant()
   return (
-    <ol className={`flex flex-col gap-[10px] ${className}`}>
+    <ol className={`flex flex-col gap-1.5 ${className}`}>
       {beats.map((b, i) => {
         const state = i < at ? 'spent' : i === at ? 'now' : 'ahead'
         return (
@@ -46,10 +46,19 @@ export function BeatList({
               initial={instant ? false : { opacity: 0, x: -8 }}
               animate={{ opacity: state === 'ahead' ? 0.38 : state === 'spent' ? 0.55 : 1, x: 0 }}
               transition={{ duration: T.enter, ease: c4(E.out) }}
-              className="flex gap-3"
+              /* EVERY BEAT IS A ROW WITH A BODY, not a dot and a line floating
+                 in a column. Beside a 238px phone the beats had 600px of space
+                 and used a third of it, so the right half of the frame read as
+                 empty. A tinted row the width of its column is the cheapest
+                 thing that gives the list weight without inventing content. */
+              className="flex items-start gap-2.5 rounded-card border px-3.5 py-2"
+              style={{
+                borderColor: state === 'now' ? colors.brand : colors.line,
+                background: state === 'now' ? `${colors.brand}0F` : colors.white,
+              }}
             >
               <span
-                className="mt-[7px] h-[9px] w-[9px] shrink-0 rounded-full"
+                className="mt-[6px] h-[8px] w-[8px] shrink-0 rounded-full"
                 style={{
                   background: state === 'now' ? colors.brand : colors.line,
                   boxShadow: state === 'now' ? `0 0 0 4px ${colors.brand}22` : undefined,
@@ -57,7 +66,7 @@ export function BeatList({
               />
               <span className="min-w-0">
                 <span
-                  className="block font-heading text-body-lg leading-snug"
+                  className="block font-heading text-body leading-snug"
                   style={{
                     color: state === 'now' ? colors.ink : colors.body,
                     fontWeight: state === 'now' ? 700 : 500,
@@ -68,7 +77,7 @@ export function BeatList({
                 {state === 'now' && b.caption && (
                   <motion.span
                     key={at}
-                    className="mt-1 block text-body-sm leading-snug"
+                    className="mt-0.5 block text-body-sm leading-snug"
                     style={{ color: colors.body }}
                     initial={instant ? false : { opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}

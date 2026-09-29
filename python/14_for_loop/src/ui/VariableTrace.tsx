@@ -184,7 +184,10 @@ function ValueChain({ name, history }: { name: string; history: string[] }) {
 
 function OutputPane({ lines }: { lines: string[] }) {
   return (
-    <div className="w-full overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
+    <div
+      className="w-full overflow-hidden rounded-card border border-line bg-white"
+      style={{ boxShadow: '0 1px 2px rgba(16,32,58,0.07), 0 6px 14px -6px rgba(16,32,58,0.13)' }}
+    >
       <div className="flex items-center gap-2 border-b border-line bg-surface px-4 py-2">
         <span className="inline-block h-2 w-2 rounded-full" style={{ background: colors.success }} />
         <span className="font-heading text-body-sm font-bold uppercase tracking-wider text-body">Output</span>

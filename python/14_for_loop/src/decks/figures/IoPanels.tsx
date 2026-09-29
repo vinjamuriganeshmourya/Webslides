@@ -58,7 +58,10 @@ export function IoPanels({
         const paint = TONE[p.tone ?? (i === 0 ? 'in' : 'out')]
         return (
           <Reveal key={p.label} dir="up">
-            <div className="overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
+            <div
+              className="overflow-hidden rounded-card border border-line bg-white"
+              style={{ boxShadow: '0 1px 2px rgba(16,32,58,0.07), 0 6px 14px -6px rgba(16,32,58,0.13)' }}
+            >
               {/* THE HEADER CARRIES THE PANEL'S OWN TINT, not one neutral grey
                   for both. INPUT and OUTPUT are the two ends of the same run
                   and the room has to tell them apart at a glance from the back;
