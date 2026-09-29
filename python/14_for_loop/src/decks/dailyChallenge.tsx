@@ -433,7 +433,19 @@ export const dailyChallengeSlides: Record<string, SlideDef> = {
             takes the type size it deserves and the panels beside it match.
             The panel still hugs its own code; a 1fr column stretched it to
             740px and stranded the INPUT column far to its right. */}
-        <div className="mx-auto flex w-[1090px] items-start justify-center gap-12">
+        {/* BOTH COLUMNS ANCHORED TO THE FRAME'S OWN EDGES. The code sits on the
+            header datum at x64 and the panels finish at x1216, which is rule
+            S14's centred case. Pinning them to x64 and x1216 instead opened
+            330px of nothing down the middle, because the code panel is only as
+            wide as its own longest line and nothing was going to fill the gap.
+
+            The panel hugs that line on purpose: a `1fr` column stretched it to
+            740px and left the code sitting in the left third of a wide dark
+            box. So the pair is sized from its content and centred, and the
+            margin it leaves is even on both sides instead of pooling in the
+            middle. The panels are padded down 6px because they reach past
+            x913, and the instructor's video holds x913..1280 above y220. */}
+        <div className="mx-auto flex items-start justify-center gap-12">
           <AnnotatedCode
             filename={PY}
             fontSize={20}
@@ -442,6 +454,8 @@ export const dailyChallengeSlides: Record<string, SlideDef> = {
             className="shrink-0"
           />
           <IoPanels
+            className="w-[340px] shrink-0 pt-[6px]"
+            fontSize={20}
             panels={[
               { label: 'Input', text: '4', tone: 'in' },
               { label: 'Output', text: TRIANGLE_4, tone: 'out' },
@@ -523,7 +537,19 @@ export const dailyChallengeSlides: Record<string, SlideDef> = {
             takes the type size it deserves and the panels beside it match.
             The panel still hugs its own code; a 1fr column stretched it to
             740px and stranded the INPUT column far to its right. */}
-        <div className="mx-auto flex w-[1090px] items-start justify-center gap-12">
+        {/* BOTH COLUMNS ANCHORED TO THE FRAME'S OWN EDGES. The code sits on the
+            header datum at x64 and the panels finish at x1216, which is rule
+            S14's centred case. Pinning them to x64 and x1216 instead opened
+            330px of nothing down the middle, because the code panel is only as
+            wide as its own longest line and nothing was going to fill the gap.
+
+            The panel hugs that line on purpose: a `1fr` column stretched it to
+            740px and left the code sitting in the left third of a wide dark
+            box. So the pair is sized from its content and centred, and the
+            margin it leaves is even on both sides instead of pooling in the
+            middle. The panels are padded down 6px because they reach past
+            x913, and the instructor's video holds x913..1280 above y220. */}
+        <div className="mx-auto flex items-start justify-center gap-12">
           <AnnotatedCode
             filename={PY}
             fontSize={20}
@@ -532,6 +558,8 @@ export const dailyChallengeSlides: Record<string, SlideDef> = {
             className="shrink-0"
           />
           <IoPanels
+            className="w-[340px] shrink-0 pt-[6px]"
+            fontSize={20}
             panels={[
               { label: 'Input', text: '4', tone: 'in' },
               { label: 'Output', text: TRIANGLE_4, tone: 'out' },

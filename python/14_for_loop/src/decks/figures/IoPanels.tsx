@@ -37,7 +37,11 @@ export interface IoPanel {
   tone?: 'in' | 'out'
 }
 
-const TONE = { in: colors.success, out: colors.danger } as const
+/* INPUT is blue, OUTPUT is green. `out` used to be `colors.danger`, which was
+   survivable while the tone was a 2px dot and became a lie the moment it tinted
+   the whole header: a correct run's output sat under a red bar that reads as an
+   error. Blue is the value you hand the program, green is what it handed back. */
+const TONE = { in: colors.brand, out: colors.success } as const
 
 export function IoPanels({
   panels,
@@ -55,13 +59,23 @@ export function IoPanels({
         return (
           <Reveal key={p.label} dir="up">
             <div className="overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
-              <div className="flex items-center gap-2 border-b border-line bg-surface px-4 py-2">
-                <span className="inline-block h-2 w-2 rounded-full" style={{ background: paint }} />
-                <span className="font-heading text-body-sm font-bold uppercase tracking-wider text-body">
+              {/* THE HEADER CARRIES THE PANEL'S OWN TINT, not one neutral grey
+                  for both. INPUT and OUTPUT are the two ends of the same run
+                  and the room has to tell them apart at a glance from the back;
+                  a 2px dot was doing all of that work. */}
+              <div
+                className="flex items-center gap-2.5 border-b border-line px-4 py-2.5"
+                style={{ background: `${paint}14` }}
+              >
+                <span className="inline-block h-3 w-3 rounded-full" style={{ background: paint }} />
+                <span
+                  className="font-heading text-body font-bold uppercase tracking-wider"
+                  style={{ color: colors.body }}
+                >
                   {p.label}
                 </span>
               </div>
-              <div className="px-4 py-3">
+              <div className="px-4 py-3.5">
                 {p.text.replace(/\n$/, '').split('\n').map((line, j) => (
                   <div
                     key={j}
