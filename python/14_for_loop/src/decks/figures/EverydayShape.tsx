@@ -102,7 +102,7 @@ export function EverydayShape({ items = 6, className = '' }: { items?: number; c
           aria-hidden
         >
           <path
-            d="M320 0 V34 H150 V-196"
+            d="M320 0 V34 H150 V-117"
             fill="none"
             stroke={colors.brand}
             strokeWidth="2.5"
@@ -111,7 +111,12 @@ export function EverydayShape({ items = 6, className = '' }: { items?: number; c
             vectorEffect="non-scaling-stroke"
           />
         </svg>
-        <svg className="absolute left-[142px] top-[-200px]" width="18" height="14" viewBox="0 0 18 14" aria-hidden>
+        {/* The head stops AT the list box's bottom edge and points up into it.
+            It used to run 79px past that edge, so the tip came to rest beside
+            the "the list" label and read as pointing at the words rather than
+            returning to the items. A return arrow has to arrive at the thing it
+            returns to. */}
+        <svg className="absolute left-[142px] top-[-119px]" width="18" height="14" viewBox="0 0 18 14" aria-hidden>
           <path d="M2 12 L9 2 L16 12" fill="none" stroke={colors.brand} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         <span

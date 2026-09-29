@@ -394,9 +394,9 @@ export const forLoopDeck: SlideDef[] = [
   {
     id: 'todays-topic',
     section: 'Hook',
-    label: "Today's topic",
+    label: "Today's Session",
     transition: 'fade',
-    element: <SectionBreakerSlide kicker="Today's topic" title={SESSION} lesson={SESSION} />,
+    element: <SectionBreakerSlide kicker="Today's Session" title={SESSION} lesson={SESSION} />,
   },
   {
     id: 'agenda',
