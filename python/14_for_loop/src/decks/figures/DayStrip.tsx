@@ -59,8 +59,8 @@ export function DayStrip({
                line of text, so sizing to content made the saving days taller
                than the skipped ones and the row read as two rows. A fixed box
                with three fixed rows keeps the week a week. */
-            className={`flex h-[80px] flex-col items-center justify-between rounded-card border-2 px-1 py-1 ${
-              spread ? 'w-full' : 'w-[64px] shrink-0'
+            className={`flex flex-col items-center justify-between rounded-card border-2 ${
+              spread ? 'h-[84px] w-full px-2 py-1.5' : 'h-[80px] w-[64px] shrink-0 px-1 py-1'
             }`}
             style={{
               borderColor: here ? colors.brand : colors.line,
@@ -70,20 +70,28 @@ export function DayStrip({
             animate={instant ? {} : { scale: here ? 1 : 0.985 }}
             transition={{ duration: T.label, ease: c4(E.out) }}
           >
-            <span className="font-heading text-body-sm font-bold leading-none" style={{ color: colors.ink }}>
+            <span
+              className={`font-heading font-bold leading-none ${spread ? 'text-body' : 'text-body-sm'}`}
+              style={{ color: colors.ink }}
+            >
               {d.label}
             </span>
 
-            <span className="grid h-[26px] place-items-center">
+            <span className={`grid place-items-center ${spread ? 'h-[30px]' : 'h-[26px]'}`}>
               {saves ? (
                 <span
-                  className="grid h-[26px] w-[26px] place-items-center rounded-full font-heading text-[12px] font-bold leading-none"
+                  className={`grid place-items-center rounded-full font-heading font-bold leading-none ${
+                    spread ? 'h-[30px] w-[30px] text-body-sm' : 'h-[26px] w-[26px] text-[12px]'
+                  }`}
                   style={{ background: colors.warning, color: colors.ink }}
                 >
                   {d.coin}
                 </span>
               ) : (
-                <span className="text-[12px] leading-none" style={{ color: colors.muted }}>
+                <span
+                  className={`leading-none ${spread ? 'text-body-sm' : 'text-[12px]'}`}
+                  style={{ color: colors.muted }}
+                >
                   skip
                 </span>
               )}
@@ -93,10 +101,10 @@ export function DayStrip({
                 where the money ended up; this shows the room that a skipped day
                 does not reset it, which is the thing the if statement decides. */}
             <span
-              className="font-mono text-[13px] font-bold leading-none"
+              className={`font-mono font-bold leading-none ${spread ? 'text-[17px]' : 'text-[13px]'}`}
               style={{ color: past || here ? colors.brandDark : colors.line }}
             >
-              {past || here ? d.total : '\u00b7'}
+              {past || here ? d.total : '\u2013'}
             </span>
           </motion.div>
         )
