@@ -221,8 +221,8 @@ export function DeckControls({
   next,
   prev,
   toggleFullscreen,
-  arrowMode,
-  toggleArrowMode,
+  /* arrowMode and toggleArrowMode are still accepted, and deliberately unused:
+     the pill they drove is gone from this deck. See the note below. */
   openPicker,
   replay,
   markerActive,
@@ -327,23 +327,16 @@ export function DeckControls({
         </svg>
       </Btn>
 
-      <Btn
-        label={`Plain arrow keys currently move by ${
-          arrowMode === 'slides' ? 'whole slides' : 'build steps'
-        }. Press to swap. (S)`}
-        onClick={toggleArrowMode}
-        wide
-      >
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-          <path d="M5 12h13M13 7l5 5-5 5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        {/* FIXED BOX. "slide" and "step" are different widths and this label
-            changes while the deck is up, so without it every button to its right
-            steps sideways on the press. */}
-        <span className="w-[40px] text-left font-mono text-[11.5px] font-semibold leading-none">
-          {arrowMode === 'slides' ? 'slide' : 'step'}
-        </span>
-      </Btn>
+      {/* THE SLIDE/STEP TOGGLE IS GONE FROM THIS DECK.
+          Its pill said which way round the plain arrows were, and a figure in
+          this deck draws its own Back / Next / Replay. Two controls claiming to
+          be "next" in one frame is one too many, and the room watches the wrong
+          one. The arrows keep their default: plain moves a slide, Ctrl+arrow
+          steps the build. `S` no longer swaps them.
+
+          SESSION-LOCAL. `src/deck/` is kit-owned, so `sync-kit.mjs --apply`
+          will put the pill back. Making this survive means a deck.config flag
+          in the kit, which is a PR. */}
 
       <Divide />
 
