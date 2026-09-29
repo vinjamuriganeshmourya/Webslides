@@ -167,6 +167,13 @@ export function useStepControls(): {
   back: () => void
   next: () => void
   replay: () => void
+  /**
+   * Back to step 0 WITHOUT remounting the slide. `replay` bumps the deck's
+   * replay counter, which remounts, and a card holding its own state (the word
+   * chooser) loses that state. This is the reset for a figure that has to keep
+   * what the room chose.
+   */
+  toStart: () => void
 } {
   const ctx = useContext(StepContext)
   const noop = useCallback(() => {}, [])
@@ -175,6 +182,7 @@ export function useStepControls(): {
   const max = ctx?.max ?? 0
 
   const back = useCallback(() => set?.(Math.max(0, step - 1)), [set, step])
+  const toStart = useCallback(() => set?.(0), [set])
   const next = useCallback(() => set?.(Math.min(max, step + 1)), [set, step, max])
   const replay = ctx?.replay ?? noop
 
@@ -185,6 +193,7 @@ export function useStepControls(): {
     canBack: available && step > 0,
     canNext: available && step < max,
     available,
+    toStart: available ? toStart : noop,
     back: available ? back : noop,
     next: available ? next : noop,
     replay: available ? replay : noop,
