@@ -68,6 +68,11 @@ skills-lock.json             the pin file for the above
 .claude/
   skills/slide-content-rules/SKILL.md    hard content rules — see next section
   skills/generate-slides/SKILL.md        the whole slide-generation procedure
+  skills/prog-lesson-plan/               VENDORED, verbatim. The pedagogy team's
+                                         own lesson-plan system: 10 references,
+                                         9 scripts, and the reference
+                                         implementations of the panels. Never
+                                         edit in place — see below
   skills/<vendored>                      SYMLINKS into .agents/skills, so Claude
                                          Code loads them by description
   settings.json                          shared plugin list (committed)
@@ -79,6 +84,30 @@ pull main, branch from it, work there. A branch cut from a stale main looks fine
 for hours and then produces a merge nobody can review. Anything under
 `slide-kit/slide-template/` is a PR, never a direct merge, because
 `sync-kit.mjs --apply` pushes it into every session including signed-off ones.
+
+### `.claude/skills/prog-lesson-plan` is VENDORED, and it is the reference
+
+The pedagogy team's own system, copied in **verbatim** from the Programming
+Foundations lesson-plan workspace, because its component building is what this
+course is being held to. **Never edit a file inside it.** Corrections go in this
+repo's own skills, naming what they override.
+
+It builds three self-contained HTML files from Python; this repo builds a React
+deck. What transfers is not its pipeline but its *contracts*:
+
+| Read it for | File |
+|---|---|
+| the predict-then-run panel: Run locked until a vote, answers derived by a checker | `assets/predict-machine-reference.py` |
+| the one-operation-per-press walker | `assets/execution-walker-reference.txt` |
+| the hook's SVG craft | `assets/hook-svg-reference.txt` |
+| panel chrome | `assets/panel-chrome-reference.txt` |
+| the fixed spine and the four recap formats | `assets/standard_slides.py` |
+| the theme the lesson-plan HTML was skinned with | `assets/ndt_theme.py` |
+| browser assertions we have no equivalent for | `scripts/verify_plan.py` |
+| the 23 activities, and the research behind them | `references/activity-library.md`, `references/evidence-base.md` |
+
+Where it and this repo disagree, the vendored file is the evidence and ours is
+the adaptation.
 
 **Every standing rule in this repo is indexed in [`RULES.md`](RULES.md)**, one
 line each, pointing at the file that holds the full text. Read it when you are

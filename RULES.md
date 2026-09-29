@@ -94,6 +94,11 @@ shipped with that exact mistake.
 | A session-owned figure is imported by path, never re-exported from the kit-owned `@/ui` barrel | [`slide-kit/slide-template/KIT.md`](slide-kit/slide-template/KIT.md) |
 | Motion runs at the explanatory tier, roughly double the `animate` skill's UI numbers | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md), section 4b |
 | Vendored skills live in `.agents/skills` and are never edited in place | same, section 4b |
+| `.claude/skills/prog-lesson-plan` is vendored verbatim and never edited in place | [`CLAUDE.md`](CLAUDE.md) |
+| Follow the reference deck's placement, highlighting and chrome | [`python-course/SKILL.md`](python/workflow/skills/python-course/SKILL.md) R5c |
+| On-slide controls are centred, named from the analogy, and never overlap the footer or the mark | same, R5c |
+| Nothing on a frame advances its own state on a timer; a press is the only thing that changes it | same, R5c |
+| A flow beat is real interfaces, not text cards; code labels sit on the lines they name | same, R5c |
 | Kit changes propagate by running `sync-kit.mjs`, never automatically | [`slide-kit/slide-template/KIT.md`](slide-kit/slide-template/KIT.md) |
 | `slideCount` in `deck.config.json` stays current, or sweeps skip the tail | same |
 
