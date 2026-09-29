@@ -89,7 +89,7 @@ export function StringWalkCard({ session, py }: { session: string; py: string })
           the card rode up over its own title. The code and the walk are the two
           halves of one claim and read fine beside each other. */}
       <div className="grid grid-cols-[400px_minmax(0,1fr)] items-start gap-8">
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col items-center gap-3">
           <WordChooser words={WORDS} value={literal} onChange={setLiteral} />
           <CodeBlock
             filename={py}
