@@ -69,7 +69,16 @@ export function SeatsAnswer({
 
   return (
     <div className={`grid grid-cols-[1.1fr_1fr] items-start gap-9 ${className}`}>
-      <AnnotatedCode code={code} filename={filename} fontSize={16} lineStates={lineStates} />
+      {/* ONLY THE CODE BOX IS CENTRED. The row stays top-aligned so the beats
+          and the output beside it keep their own top edge; `self-center` lifts
+          the short code panel to the middle of the taller column. */}
+      <AnnotatedCode
+        className="self-center"
+        code={code}
+        filename={filename}
+        fontSize={16}
+        lineStates={lineStates}
+      />
 
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-4">
