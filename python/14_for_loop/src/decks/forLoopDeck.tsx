@@ -21,6 +21,7 @@ import { MatchPairs } from './figures/MatchPairs'
 import { EverydayLoops } from './figures/EverydayLoops'
 import { EverydayShape } from './figures/EverydayShape'
 import { StringWalkCard } from './figures/StringWalkCard'
+import { PiggyMeter } from './figures/PiggyMeter'
 import { dailyChallengeSlides as dc } from './dailyChallenge'
 import { RangeDial } from './figures/RangeDial'
 
@@ -132,6 +133,22 @@ const RIYA_STEPS: TraceStep[] = [
   { line: 5, boxes: riya('7', '16'), output: [] },
   { line: 3, boxes: riya('7', '16'), output: [] },
   { line: 6, boxes: riya('7', '16'), output: ['16'] },
+]
+
+/* The bank's contents after each of RIYA_STEPS, and the coin that went in.
+   Derived from the same trace, one entry per step, so the two cannot disagree. */
+const RIYA_TOTALS = ['\u20B90', '\u20B91', '\u20B91', '\u20B94', '\u20B94', '\u20B99', '\u20B99', '\u20B916', '\u20B916', '\u20B916']
+const RIYA_COINS: (string | undefined)[] = [
+  undefined,
+  '\u20B91',
+  undefined,
+  '\u20B93',
+  undefined,
+  '\u20B95',
+  undefined,
+  '\u20B97',
+  undefined,
+  undefined,
 ]
 
 const RIYA_NOTES = [
@@ -658,8 +675,16 @@ export const forLoopDeck: SlideDef[] = [
     notes: RIYA_NOTES,
     element: (
       <ContentSlide kicker="Check it together" title="Riya's savings, day by day" lesson={SESSION} lead="Input 7.">
-        <VariableTrace code={RIYA_CODE} steps={RIYA_STEPS} location={PY} />
-        <StepControls className="mt-4 w-full justify-center" showCount={false} mode="code" />
+        {/* THE BANK BELONGS ON THIS FRAME. The trace proves the program is
+            right; the bank is what makes it Riya's. The reference draws it
+            filling beside the variable boxes, and dropping it turned a story
+            back into an exercise. Type comes down a step to make room, which is
+            the trade the review asked for. */}
+        <div className="flex items-start justify-center gap-7">
+          <VariableTrace code={RIYA_CODE} steps={RIYA_STEPS} location={PY} />
+          <PiggyMeter totals={RIYA_TOTALS} coins={RIYA_COINS} className="mt-6 shrink-0" />
+        </div>
+        <StepControls className="mt-3 w-full justify-center" showCount={false} mode="code" />
       </ContentSlide>
     ),
   },
