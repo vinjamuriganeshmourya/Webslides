@@ -34,6 +34,9 @@ import { LoopGutter, loopRole } from './loopArrow'
 
 const KEYWORDS = new Set(['for', 'while', 'in', 'if', 'else', 'elif', 'not', 'and', 'or', 'True', 'False', 'None'])
 
+/** The panel surface, painted per cell so the dark area stops at the code. */
+const PANEL = '#111A2E'
+
 /** `CodeBlock`'s palette, so a panel of each kind can share a slide. */
 const INK = {
   comment: '#6B87A8',
@@ -109,6 +112,7 @@ export function AnnotatedCode({
   /* The column track is built from what this call actually has, so a panel with
      no gutter and no labels is an ordinary two-column code panel and carries no
      empty columns for `align-check` to measure. */
+  const codeColCount = [showLineNumbers, !!loopBack, true].filter(Boolean).length
   const cols = [
     showLineNumbers ? 'auto' : null,
     loopBack ? '34px' : null,
@@ -119,8 +123,21 @@ export function AnnotatedCode({
     .join(' ')
 
   return (
-    <div className={`overflow-hidden rounded-card bg-night-2 shadow-card ${className}`}>
-      <div className="flex items-center gap-2 border-b border-white/10 px-4 py-2.5">
+    <div className={className}>
+      {/* THE TITLE BAR SPANS THE CODE COLUMNS ONLY. The label rail is a column
+          of this same grid, so every label shares a grid row with its line and
+          the alignment cannot drift; but the dark surface is painted per cell,
+          so it stops where the code stops and the names sit OUTSIDE the box.
+          The names were inside it, competing with the program for one surface,
+          and the room read them as part of the code. */}
+      <div
+        className="grid"
+        style={{ gridTemplateColumns: cols }}
+      >
+      <div
+        className="col-start-1 flex items-center gap-2 rounded-t-card border-b border-white/10 bg-night-2 px-4 py-2.5"
+        style={{ gridColumn: `1 / ${codeColCount + 1}` }}
+      >
         <span className="h-3 w-3 rounded-full bg-[#FF5F57]" />
         <span className="h-3 w-3 rounded-full bg-[#FEBC2E]" />
         <span className="h-3 w-3 rounded-full bg-[#28C840]" />
@@ -138,31 +155,55 @@ export function AnnotatedCode({
         `align-check` would read as an untextual box around text.
       */}
       <div
-        className="grid items-center px-4 py-4 font-mono leading-relaxed"
-        style={{ gridTemplateColumns: cols, fontSize, lineHeight: 1.7 }}
+        className="contents font-mono"
+        style={{ fontSize, lineHeight: 1.7 }}
       >
         {lines.map((line, i) => {
           const n = i + 1
           const note = labelOf.get(n)
-          const tint = tinted.has(n) ? { background: 'rgba(11,95,255,0.22)' } : undefined
+          /* A LAYER, not a replacement. Spread after `background: PANEL` a `background`
+             key overwrites it, and the row then showed the light slide through a
+             translucent blue. The highlight is painted as an image over the panel
+             colour so both survive. */
+          const tint = tinted.has(n)
+            ? { backgroundImage: 'linear-gradient(rgba(11,95,255,0.30), rgba(11,95,255,0.30))' }
+            : undefined
           const role = loopRole(n, loopBack)
           return (
             <Fragment key={n}>
               {showLineNumbers && (
-                <span className="select-none pr-4 text-right text-white/25" style={tint}>
+                <span
+                  className="select-none py-[3px] pl-4 pr-4 text-right text-white/25"
+                  style={{ gridColumnStart: 1, background: PANEL, ...tint }}
+                >
                   {n}
                 </span>
               )}
-              {loopBack && <LoopGutter role={role} className="h-full self-stretch" />}
-              <span className="whitespace-pre pl-2 pr-4" style={{ ...tint, color: INK.plain }}>
+              {loopBack && (
+                <span
+                  className="self-stretch"
+                  style={{ background: PANEL, ...(showLineNumbers ? {} : { gridColumnStart: 1 }) }}
+                >
+                  <LoopGutter role={role} className="h-full self-stretch" />
+                </span>
+              )}
+              <span
+                className={`whitespace-pre py-[3px] pl-2 pr-6 ${i === lines.length - 1 ? 'rounded-br-card' : ''}`}
+                style={{
+                  ...(showLineNumbers || loopBack ? {} : { gridColumnStart: 1 }),
+                  background: PANEL,
+                  ...tint,
+                  color: INK.plain,
+                }}
+              >
                 {line ? paint(line) : ' '}
               </span>
               {annotations.length > 0 && (
-                <span className="flex items-center justify-start gap-2 pl-6" style={tint}>
+                <span className="flex items-center justify-start gap-2 pl-5">
                   {note && (
                     <>
                       <span className="font-body text-[16px] leading-none" style={{ color: note.paint }}>
-                        {'\u2192'}
+                        {'\u2190'}
                       </span>
                       {/* The text sits in its own tight-leading span, inside the
                           padded pill. `align-check.mjs` divides a text element's
@@ -188,6 +229,7 @@ export function AnnotatedCode({
             </Fragment>
           )
         })}
+      </div>
       </div>
     </div>
   )
