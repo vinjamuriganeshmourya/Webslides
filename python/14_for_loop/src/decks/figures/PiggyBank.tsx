@@ -318,40 +318,49 @@ export function PiggyBank({
               </motion.span>
             </div>
           </div>
-            <PiggyJar happy={happy} />
-            {/* The coin that is going in, on the beat it goes in. */}
-            <div className="h-10 w-10">
+            {/* THE COIN GOES IN, it does not stand next to the bank. It used to
+                sit in a box beside the jar, which says a coin exists; dropping
+                it through the slot and letting it disappear inside says the
+                money went in, which is the whole sentence the beat is making.
+                The slot is at x72,y27 in the jar's 150x120 viewBox, so at 196px
+                wide it is 94px across and 35px down. */}
+            <span className="relative inline-block">
+              <PiggyJar happy={happy} />
               {beat?.at !== undefined && at >= 0 && days[at]?.coin && (
                 <motion.span
                   key={at}
-                  initial={instant ? false : { opacity: 0, y: -26 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: T.travel, ease: c4(E.out) }}
+                  className="pointer-events-none absolute"
+                  style={{ left: 74, top: 0 }}
+                  initial={instant ? false : { opacity: 0, y: -34, scale: 1 }}
+                  animate={{ opacity: [0, 1, 1, 0], y: [-34, -6, 18, 30], scale: [1, 1, 0.92, 0.72] }}
+                  transition={{ duration: T.travel * 2.2, ease: c4(E.inOut), times: [0, 0.3, 0.75, 1] }}
                 >
                   <Coin size={40}>{days[at].coin}</Coin>
                 </motion.span>
               )}
-            </div>
+            </span>
           </div>
         </div>
       ) : (
         <div className="grid grid-cols-[300px_1fr] items-center gap-8">
         {/* THE BANK. Shape only: the total beside it is a DOM element. */}
         <div className="flex items-center gap-4">
-          <PiggyJar happy={happy} />
-          {/* The coin that is going in, on the beat it goes in. */}
-          <div className="h-10 w-10">
+          {/* The coin drops through the slot, see the note on the narrated row. */}
+          <span className="relative inline-block">
+            <PiggyJar happy={happy} />
             {beat?.at !== undefined && at >= 0 && days[at]?.coin && (
               <motion.span
                 key={at}
-                initial={instant ? false : { opacity: 0, y: -26 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: T.travel, ease: c4(E.out) }}
+                className="pointer-events-none absolute"
+                style={{ left: 74, top: 0 }}
+                initial={instant ? false : { opacity: 0, y: -34 }}
+                animate={{ opacity: [0, 1, 1, 0], y: [-34, -6, 18, 30], scale: [1, 1, 0.92, 0.72] }}
+                transition={{ duration: T.travel * 2.2, ease: c4(E.inOut), times: [0, 0.3, 0.75, 1] }}
               >
                 <Coin size={40}>{days[at].coin}</Coin>
               </motion.span>
             )}
-          </div>
+          </span>
         </div>
 
           <div className="flex items-center gap-6">

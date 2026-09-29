@@ -1,5 +1,22 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+/* REAL ICONS, NOT MY TRACINGS. `lucide-react` is already a dependency at
+   1.24.0, and these are the current, maintained glyphs for the things a music
+   app actually has. Hand-drawn approximations of a home or a shuffle read as
+   dated the moment they sit next to a real product's chrome. `src/ui/icons.tsx`
+   stays dependency-free because it is the KIT's shared set; this is a session
+   figure imitating one specific app, so it uses the real thing. */
+import {
+  CirclePlus,
+  Download,
+  EllipsisVertical,
+  House,
+  Library,
+  Play,
+  Plus,
+  Search,
+  Shuffle,
+} from 'lucide-react'
 import { useInstant } from '@/motion/instant'
 import { colors } from '@/design/tokens'
 import { T, E, c4 } from '@/ui/figureTiming'
@@ -81,24 +98,45 @@ export const ALBUM_ART = {
 /** The green a music app uses for "playing". Not a brand colour: the kit's own. */
 const PLAYING = colors.success
 
+/* STATIC, on purpose. It used to loop for ever. Course rule R5c says nothing on
+   a frame advances its own state on a timer, and a player whose bars dance while
+   the instructor talks over it pulls the room's eye off the instructor. Three
+   bars at rest still say "this is the one playing". */
+/* THE ONE THING ON THIS FRAME THAT MOVES BY ITSELF, and it is allowed to.
+ * Course rule R5c says nothing advances its own STATE on a timer -- the pointer
+ * does not walk the list, the beats do not turn over. Four bars bouncing on the
+ * playing row change nothing the frame says; they say "this one is playing",
+ * which is the one thing a still picture of a music app cannot say. The user
+ * asked for it back by name.
+ *
+ * CSS keyframes, not framer: every framer infinite animation in this deck
+ * writes its first keyframe and then stops ticking, which is recorded in
+ * `QuizTimeSlide`. */
+const BARS = [
+  { h: 5, d: '0.62s', delay: '0s' },
+  { h: 13, d: '0.48s', delay: '-0.18s' },
+  { h: 8, d: '0.55s', delay: '-0.34s' },
+  { h: 11, d: '0.5s', delay: '-0.1s' },
+]
+
 function Equaliser() {
   const instant = useInstant()
   return (
-    <div className="flex h-4 w-5 items-end gap-[3px]">
-      {[0, 1, 2].map((i) => (
-        <motion.span
+    <span className="flex h-[15px] shrink-0 items-end gap-[2px]" aria-label="playing">
+      <style>{`@keyframes ppBar { 0%,100% { transform: scaleY(0.35) } 50% { transform: scaleY(1) } }`}</style>
+      {BARS.map((b, i) => (
+        <span
           key={i}
-          className="w-[3px] rounded-sm"
-          style={{ background: PLAYING, height: 6 }}
-          animate={instant ? { height: 12 } : { height: [5, 16, 8, 14, 6] }}
-          transition={
-            instant
-              ? { duration: 0 }
-              : { duration: 1.1, repeat: Infinity, repeatType: 'mirror', delay: i * 0.16 }
-          }
+          className="w-[2.5px] rounded-[1px]"
+          style={{
+            height: b.h,
+            background: PLAYING,
+            transformOrigin: 'bottom',
+            animation: instant ? undefined : `ppBar ${b.d} ease-in-out ${b.delay} infinite`,
+          }}
         />
       ))}
-    </div>
+    </span>
   )
 }
 
@@ -114,7 +152,7 @@ function Row({
   const instant = useInstant()
   return (
     <motion.div
-      className="flex items-center gap-2.5 rounded-lg px-2 py-0"
+      className="flex shrink-0 items-center gap-2.5 rounded-lg px-2 py-[1px]"
       style={{ background: state === 'playing' ? SHELL_2 : 'transparent' }}
       initial={instant ? false : { opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
@@ -131,20 +169,22 @@ function Row({
           still said, by the title, the artist and the duration going soft, which
           is where a music app says it too. */}
       <span
-        className="grid h-[28px] w-[28px] shrink-0 place-items-center rounded"
+        className="grid h-[26px] w-[26px] shrink-0 place-items-center overflow-hidden rounded-[3px]"
         style={{
-          backgroundImage: `linear-gradient(135deg, ${track.art}, ${track.art}88)`,
+          backgroundImage: `linear-gradient(135deg, ${track.art}, ${track.art}66 55%, #00000055)`,
         }}
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden fill="#FFFFFF" opacity="0.9">
-          <path d="M9 18V5l10-2v13" stroke="#FFFFFF" strokeWidth="2" fill="none" strokeLinecap="round" />
-          <circle cx="6.5" cy="18" r="2.5" />
-          <circle cx="16.5" cy="16" r="2.5" />
-        </svg>
+        {/* A sleeve has a mark on it, not a music note stamped on all six. Two
+            bands at an angle read as artwork at 30px and differ per cover
+            because the tint under them differs. */}
+        <span className="h-full w-full" style={{
+          backgroundImage:
+            'repeating-linear-gradient(115deg, rgba(255,255,255,0.22) 0 3px, rgba(255,255,255,0) 3px 9px)',
+        }} />
       </span>
       <span className="min-w-0 flex-1">
         <span
-          className="block truncate font-heading text-[16px] font-semibold leading-tight"
+          className="block truncate font-heading text-[14px] font-semibold leading-tight"
           style={{
             color: state === 'playing' ? PLAYING : colors.white,
             opacity: state === 'played' ? 0.45 : 1,
@@ -159,16 +199,18 @@ function Row({
           {track.artist}
         </span>
       </span>
-      {state === 'playing' ? (
-        <Equaliser />
-      ) : (
-        <span
-          className="font-mono text-[13px]"
-          style={{ color: '#6F6F6F', opacity: state === 'played' ? 0.5 : 1 }}
-        >
-          {track.length}
-        </span>
-      )}
+      {state === 'playing' && <Equaliser />}
+      {/* The kebab, where a real playlist row puts it. It replaced a duration
+          column: a playlist screen shows the artist under the title and the
+          overflow menu at the end, and the durations were six numbers the room
+          had no use for. */}
+      <EllipsisVertical
+        size={13}
+        color={DIM}
+        aria-hidden
+        className="ml-1 shrink-0"
+        style={{ opacity: state === 'played' ? 0.4 : 0.7 }}
+      />
     </motion.div>
   )
 }
@@ -246,12 +288,23 @@ export function PhonePlaylist({
   const nowTrack = at >= 0 && at < list.length ? list[at] : undefined
 
   return (
-    <div className={`flex flex-col ${className}`}>
-    <div className="grid grid-cols-[368px_1fr] items-start gap-9">
-      {/* THE PHONE. A fixed frame, so the list grows inside it rather than
-          pushing the slide around when the sixth song arrives. */}
+    /* THE GUARD IS CANCELLED HERE. `ContentSlide` adds 52px of top padding on a
+       frame with no lead, to keep the well clear of the instructor-video
+       rectangle at x913..1280, y0..220. This figure does not need it: the phone
+       sits on the header datum at x64, nowhere near that rectangle, and the beat
+       column is padded down past y220 on its own. Those 52px were showing as a
+       band of nothing between the title and the phone. */
+    <div className={`-mt-[34px] flex flex-col ${className}`}>
+    <div className="grid grid-cols-[258px_1fr] items-start gap-9">
+      {/* THE PHONE, AT A PHONE'S PROPORTIONS. It was 368x440, a ratio of 0.84,
+          which is a squat tablet: no phone is that shape and the room reads the
+          shape before it reads anything on it. 258x486 is 0.53, between a
+          modern handset's 0.46 and the 9:16 of an older one.
+
+          A fixed frame, so the list grows inside it rather than pushing the
+          slide around when the sixth song arrives. */}
       <div
-        className="flex h-[440px] flex-col overflow-hidden rounded-[28px] border-[5px] px-3.5 pb-2 pt-2 shadow-card"
+        className="relative flex h-[486px] flex-col overflow-hidden rounded-[32px] border-[6px] px-3.5 pb-2 pt-2 shadow-card"
         style={{ background: SHELL, borderColor: '#2A2A2A' }}
       >
         <div className="flex items-center justify-between">
@@ -277,49 +330,73 @@ export function PhonePlaylist({
           </span>
         </div>
 
-        {appMark && (
-          <div className="mt-2 flex items-center gap-2">
-            <img src={appMark} alt="" width={18} height={18} draggable={false} />
-            <span className="font-heading text-[15px] font-bold" style={{ color: colors.white }}>
-              {appName}
-            </span>
-          </div>
-        )}
+        {/* THE WASH. A playlist screen is not flat black: the cover's colour
+            bleeds down behind the header and fades out over the list. It is the
+            first thing that makes this read as the real app rather than a dark
+            card with rows on it. */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-[190px]"
+          style={{ background: `linear-gradient(180deg, ${PLAYING}59 0%, ${PLAYING}1F 45%, ${SHELL} 100%)` }}
+        />
 
-        <div className="mt-2 flex items-center gap-3">
-          <span className="h-[32px] w-[32px] shrink-0 rounded" style={{ background: PLAYING }} />
-          <span className="min-w-0">
+        {/* NO BACK ARROW. It is the one piece of this screen that carries
+            nothing, and the six songs running out is what the card is FOR: at
+            full header height only four rows fitted, which broke the frame's
+            own argument. Everything here is sized so all six show. */}
+        {/* THE COVER, big and centred, with the app's own mark on it. The first
+            cut showed a 32px green square in a header row, which reads as a
+            swatch; a playlist screen leads with its artwork. */}
+        <div className="relative mt-1 flex justify-center">
+          <span
+            className="relative grid h-[72px] w-[72px] place-items-center overflow-hidden rounded-[5px] shadow-[0_9px_20px_rgba(0,0,0,0.55)]"
+            style={{ backgroundImage: `linear-gradient(145deg, ${PLAYING}, #0C6B3F 60%, #08351F)` }}
+          >
             <span
-              className="block font-heading text-[11px] font-bold uppercase tracking-[0.14em]"
-              style={{ color: DIM }}
-            >
-              Playlist
-            </span>
-            <span className="block font-heading text-[19px] font-bold leading-tight" style={{ color: colors.white }}>
-              Today's Mix
-            </span>
-            <span className="block text-[12px] leading-tight" style={{ color: DIM }}>
-              Nxt Studio
-            </span>
+              className="absolute inset-0"
+              style={{
+                backgroundImage:
+                  'repeating-linear-gradient(120deg, rgba(255,255,255,0.14) 0 6px, rgba(255,255,255,0) 6px 16px)',
+              }}
+            />
+            {appMark && (
+              <img src={appMark} alt="" width={16} height={16} draggable={false} className="absolute left-1.5 top-1.5" />
+            )}
           </span>
-          {/* Play sits in the header, not on a row of its own. The stage is
-              720px tall and the row it used to have cost thirty of them, which
-              is a whole song. The affordance is what matters, not its shelf. */}
-          <span className="ml-auto flex shrink-0 items-center gap-2">
-            <span className="text-[12px]" style={{ color: DIM }}>
-              Play all
-            </span>
-            <span className="grid h-9 w-9 place-items-center rounded-full" style={{ background: PLAYING }}>
-              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
-                <path d="M3 1.5 L12 7 L3 12.5 Z" fill={SHELL} />
-              </svg>
+        </div>
+
+        <div className="relative mt-1.5">
+          <span className="block font-heading text-[16px] font-bold leading-none" style={{ color: colors.white }}>
+            Today's Mix
+          </span>
+          <span className="mt-[3px] flex items-center gap-1.5">
+            {appMark && <img src={appMark} alt="" width={12} height={12} draggable={false} />}
+            <span className="font-heading text-[12px] font-semibold leading-none" style={{ color: DIM }}>
+              {appName ? `Made by ${appName}` : 'Nxt Studio'}
             </span>
           </span>
         </div>
 
-        
+        {/* THE ACTION ROW, the shape a playlist screen actually has: add,
+            download and overflow on the left, shuffle and the one big green
+            play on the right. NOTHING HERE COUNTS THE SONGS -- the card's whole
+            question is what told the music to stop, and a "6 songs" label
+            answers it before it is asked. */}
+        <div className="relative mt-1.5 flex items-center gap-3">
+          <Plus size={17} color={DIM} strokeWidth={2} aria-hidden />
+          <Download size={17} color={DIM} strokeWidth={2} aria-hidden />
+          <EllipsisVertical size={17} color={DIM} aria-hidden />
+          <span className="ml-auto flex items-center gap-3">
+            <Shuffle size={19} color={PLAYING} strokeWidth={2.2} aria-hidden />
+            <span className="grid h-[34px] w-[34px] place-items-center rounded-full" style={{ background: PLAYING }}>
+              <Play size={16} fill={SHELL} color={SHELL} aria-hidden />
+            </span>
+          </span>
+        </div>
 
-        <div className="mt-1 flex min-h-0 flex-1 flex-col gap-0">
+        {/* `overflow-hidden`: the list is the only thing that may be cut, and it
+            is cut at the bottom where a real screen cuts it. Without it the rows
+            ran under the now-playing bar. */}
+        <div className="relative mt-1 flex min-h-0 flex-1 flex-col gap-0 overflow-hidden">
           {list.map((t, i) => (
             <Row
               key={t.title}
@@ -332,59 +409,90 @@ export function PhonePlaylist({
 
         {/* THE END OF THE LIST IS A DRAWN THING, not the absence of one. "So what
             told it to stop?" is the question the whole session answers. */}
-        {/* THE NOW-PLAYING BAR. Every music app has one, and its absence was
+        {stopped && arrived && (
+          <motion.div
+            className="relative mt-1 shrink-0 rounded-md px-2 py-[3px] text-center font-heading text-[12px] font-bold"
+            style={{ background: `${colors.danger}26`, color: '#FF9A9A' }}
+            initial={instant ? false : { opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: T.label, ease: c4(E.out) }}
+          >
+            No songs left. It stops.
+          </motion.div>
+        )}
+
+        {/* THE NOW-PLAYING BAR, TINTED FROM THE RECORD THAT IS PLAYING. Every
+            music app has one and it takes its colour from the cover, which is
+            why it is the strip people recognise at a glance. Its absence was
             the loudest thing missing from the first cut: a player with no
-            now-playing strip reads as a list, not as something that is running.
-            It names the track the pointer is on, so the phone says what is
-            happening without the room re-reading the list. */}
+            now-playing strip reads as a list, not as something running. */}
         <div
-          className="mt-1 flex shrink-0 items-center gap-2 rounded-lg px-2 py-[5px]"
-          style={{ background: SHELL_2 }}
+          className="relative mt-1 flex shrink-0 items-center gap-2 rounded-md px-2 py-[5px]"
+          style={{
+            background: nowTrack
+              ? `linear-gradient(90deg, ${nowTrack.art}E6, ${nowTrack.art}99)`
+              : SHELL_2,
+          }}
         >
           <span
-            className="grid h-[22px] w-[22px] shrink-0 place-items-center rounded"
-            style={{ background: nowTrack ? PLAYING : '#3A3A3A' }}
+            className="grid h-[22px] w-[22px] shrink-0 place-items-center overflow-hidden rounded-[2px]"
+            style={{
+              backgroundImage: nowTrack
+                ? `linear-gradient(135deg, ${nowTrack.art}, #00000066)`
+                : 'linear-gradient(135deg,#3A3A3A,#2A2A2A)',
+            }}
           >
-            <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden fill={SHELL}>
-              <path d="M5 3.5 L19 12 L5 20.5 Z" />
-            </svg>
+            <span className="h-full w-full" style={{
+              backgroundImage:
+                'repeating-linear-gradient(115deg, rgba(255,255,255,0.22) 0 2px, rgba(255,255,255,0) 2px 7px)',
+            }} />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-[13px] leading-[1.15]" style={{ color: colors.white }}>
+            <span className="block truncate text-[11.5px] font-semibold leading-[1.2]" style={{ color: colors.white }}>
               {nowTrack ? nowTrack.title : 'Nothing playing'}
             </span>
-            <span className="block truncate text-[12px] leading-tight" style={{ color: DIM }}>
+            <span className="block truncate text-[10px] leading-tight" style={{ color: '#FFFFFFB3' }}>
               {nowTrack ? nowTrack.artist : "Today\u2019s Mix"}
             </span>
           </span>
+          {/* The bars run here too. This strip is the one a phone keeps on
+              screen, so it is where "something is playing" has to be visible. */}
+          {nowTrack && <Equaliser />}
+          <CirclePlus size={15} color={colors.white} strokeWidth={1.9} aria-hidden className="shrink-0" />
+          <Play size={15} fill={colors.white} color={colors.white} aria-hidden className="shrink-0" />
         </div>
 
-        <div className="mt-1 h-[26px] shrink-0">
-          {stopped && arrived && (
-            <motion.div
-              className="rounded-lg px-3 py-[5px] text-center font-heading text-[13px] font-bold"
-              style={{ background: `${colors.danger}26`, color: '#FF9A9A' }}
-              initial={instant ? false : { opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: T.label, ease: c4(E.out) }}
-            >
-              No songs left. It stops.
-            </motion.div>
-          )}
+        {/* THE TAB BAR. The last thing that says "this is a phone app and not a
+            card with a list on it". */}
+        <div className="relative mt-1 flex shrink-0 items-start justify-around border-t pt-1" style={{ borderColor: '#242424' }}>
+          {[
+            { Icon: House, label: 'Home', on: false },
+            { Icon: Search, label: 'Search', on: true },
+            { Icon: Library, label: 'Your Library', on: false },
+          ].map(({ Icon, label, on }) => (
+            <span key={label} className="flex flex-col items-center gap-[3px]">
+              <Icon size={15} color={on ? colors.white : '#7A7A7A'} strokeWidth={1.9} aria-hidden />
+              <span className="text-[9px] leading-none" style={{ color: on ? colors.white : '#7A7A7A' }}>
+                {label}
+              </span>
+            </span>
+          ))}
         </div>
       </div>
 
-      {/* THE WHOLE FLOW, ALWAYS ON SCREEN. Course rule R5b: one caption at a
-          time turns a sequence into a slideshow, and the room cannot tell how
-          many beats are left. */}
-      <div className="flex flex-col pt-[6px]">
+      {/* The controls live in THIS column, not under the whole figure. Under
+          the figure they cost the phone forty pixels of height, and the phone
+          is the thing that has to keep its proportions. */}
+      {/* CAPPED, NOT PUSHED DOWN. The column starts at x358 and its rows were
+          858px wide, so they ran to x1216 and into the instructor's video
+          rectangle (x913..1280, y0..220). Capping at 548 stops them at x906 and
+          keeps them level with the top of the phone, which padding down would
+          have cost. */}
+      <div className="flex max-w-[548px] flex-col pt-[8px]">
         <BeatList beats={beats} at={reached - 1} />
+        <StepControls className="mt-5 justify-start" showCount={false} />
       </div>
     </div>
-      {/* CENTRED, between the player's own cluster on the left and the NxtWave
-          mark on the right. Pushed to either edge it sits on one of them.
-          Course rule R5c. */}
-      <StepControls className="mt-3 w-full justify-center" showCount={false} />
     </div>
   )
 }
