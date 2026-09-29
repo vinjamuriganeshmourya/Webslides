@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useInstant } from '@/motion/instant'
 import { colors } from '@/design/tokens'
@@ -94,7 +94,7 @@ function Row({
   const instant = useInstant()
   return (
     <motion.div
-      className="flex items-center gap-2.5 rounded-lg px-2 py-[1px]"
+      className="flex items-center gap-2.5 rounded-lg px-2 py-0"
       style={{ background: state === 'playing' ? SHELL_2 : 'transparent' }}
       initial={instant ? false : { opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
@@ -104,7 +104,7 @@ function Row({
           a note on a gradient reads as a cover, which is the recognition the
           hook depends on (course rule R5b). */}
       <span
-        className="grid h-[30px] w-[30px] shrink-0 place-items-center rounded"
+        className="grid h-[28px] w-[28px] shrink-0 place-items-center rounded"
         style={{
           backgroundImage: `linear-gradient(135deg, ${track.art}, ${track.art}88)`,
           // A song that has PLAYED greys out; it is done, not gone. A song still
@@ -120,7 +120,7 @@ function Row({
       </span>
       <span className="min-w-0 flex-1">
         <span
-          className="block truncate font-heading text-[14px] font-semibold leading-tight"
+          className="block truncate font-heading text-[16px] font-semibold leading-tight"
           style={{
             color: state === 'playing' ? PLAYING : colors.white,
             opacity: state === 'played' ? 0.45 : 1,
@@ -129,7 +129,7 @@ function Row({
           {track.title}
         </span>
         <span
-          className="block truncate text-[12px] leading-tight"
+          className="block truncate text-[13px] leading-[1.15]"
           style={{ color: DIM, opacity: state === 'played' ? 0.5 : 1 }}
         >
           {track.artist}
@@ -139,7 +139,7 @@ function Row({
         <Equaliser />
       ) : (
         <span
-          className="font-mono text-[12px]"
+          className="font-mono text-[13px]"
           style={{ color: '#6F6F6F', opacity: state === 'played' ? 0.5 : 1 }}
         >
           {track.length}
@@ -201,60 +201,37 @@ export function PhonePlaylist({
   const stopped = beat?.stopped ?? false
 
   /*
-    THE POINTER TRAVELS; IT DOES NOT TELEPORT.
+    NOTHING ON THIS FRAME MOVES UNTIL THE PRESENTER PRESSES.
 
-    The source's fourth beat is "Right to the end, then it stops", which covers
-    the whole tail of the playlist in one click. Rendering that as a jump showed
-    song 1, song 2 and then the end, so the three songs in between were never
-    seen playing and the claim the beat makes -- that it keeps going by itself --
-    was the one thing the figure did not show.
+    An earlier cut walked the pointer through the songs between two beats on a
+    380ms timer, so that the fourth beat ("right to the end, then it stops")
+    did not jump from song 2 to the end. It fixed the jump and broke something
+    worse: the frame advanced its own state while the instructor was talking
+    over it, and the room watched the slide instead of listening. Course rule
+    R5c: a press is the only thing that changes what the frame says.
 
-    So a beat that advances by more than one row walks the rows in between,
-    ~380ms each, and only then settles. No extra build steps: the travel happens
-    inside the beat, which keeps the six beats the source wrote (course rule R2).
+    The songs in between are still accounted for, by greying: everything the
+    pointer has passed is dimmed, so "played" is visible without anything having
+    to be watched happening.
 
-    It never travels on mount, so `?all`, an instant jump and every harness land
-    on the final state at once rather than watching a playlist play.
+    The idle equaliser on the playing row is the one permitted exception. It
+    loops, but it never changes what the frame SAYS.
   */
-  const target = beat?.at ?? -1
-  const [shownAt, setShownAt] = useState(target)
-  const prev = useRef<number | null>(null)
-  useEffect(() => {
-    if (prev.current === null || instant) {
-      prev.current = target
-      setShownAt(target)
-      return
-    }
-    const from = prev.current
-    prev.current = target
-    if (target - from <= 1) {
-      setShownAt(target)
-      return
-    }
-    let i = from
-    setShownAt(i)
-    const id = setInterval(() => {
-      i += 1
-      setShownAt(i)
-      if (i >= target) clearInterval(id)
-    }, 380)
-    return () => clearInterval(id)
-  }, [target, instant])
-
-  const at = shownAt
-  const arrived = at >= target
+  const at = beat?.at ?? -1
+  const arrived = true
+  const nowTrack = at >= 0 && at < list.length ? list[at] : undefined
 
   return (
     <div className={`flex flex-col ${className}`}>
-    <div className="grid grid-cols-[320px_1fr] items-start gap-10">
+    <div className="grid grid-cols-[368px_1fr] items-start gap-9">
       {/* THE PHONE. A fixed frame, so the list grows inside it rather than
           pushing the slide around when the sixth song arrives. */}
       <div
-        className="flex h-[416px] flex-col overflow-hidden rounded-[28px] border-[5px] px-3 pb-2 pt-2 shadow-card"
+        className="flex h-[440px] flex-col overflow-hidden rounded-[28px] border-[5px] px-3.5 pb-2 pt-2 shadow-card"
         style={{ background: SHELL, borderColor: '#2A2A2A' }}
       >
         <div className="flex items-center justify-between">
-          <span className="font-heading text-[12px] font-semibold" style={{ color: colors.white }}>
+          <span className="font-heading text-[13px] font-semibold" style={{ color: colors.white }}>
             {clock}
           </span>
           <span className="flex items-center gap-[5px]">
@@ -279,7 +256,7 @@ export function PhonePlaylist({
         {appMark && (
           <div className="mt-2 flex items-center gap-2">
             <img src={appMark} alt="" width={18} height={18} draggable={false} />
-            <span className="font-heading text-[13px] font-bold" style={{ color: colors.white }}>
+            <span className="font-heading text-[15px] font-bold" style={{ color: colors.white }}>
               {appName}
             </span>
           </div>
@@ -289,43 +266,36 @@ export function PhonePlaylist({
           <span className="h-[32px] w-[32px] shrink-0 rounded" style={{ background: PLAYING }} />
           <span className="min-w-0">
             <span
-              className="block font-heading text-[10px] font-bold uppercase tracking-[0.14em]"
+              className="block font-heading text-[11px] font-bold uppercase tracking-[0.14em]"
               style={{ color: DIM }}
             >
               Playlist
             </span>
-            <span className="block font-heading text-[17px] font-bold leading-tight" style={{ color: colors.white }}>
+            <span className="block font-heading text-[19px] font-bold leading-tight" style={{ color: colors.white }}>
               Today's Mix
             </span>
-            <span className="block text-[11px] leading-tight" style={{ color: DIM }}>
+            <span className="block text-[12px] leading-tight" style={{ color: DIM }}>
               Nxt Studio
             </span>
           </span>
-        </div>
-
-        <div className="mt-1 flex items-center justify-between">
-          {/* NOWHERE ON THIS PHONE DOES IT SAY HOW MANY SONGS THERE ARE.
-              That is the whole point of the card: the room is about to be asked
-              what told the playlist to stop, and a "5 songs" label answers it
-              before the question is put. The pedagogy team's own build asserts
-              this in a browser check. The list is the count, and it is counted
-              by looking. */}
-          <span className="text-[12px]" style={{ color: DIM }}>
-            Playlist
-          </span>
-          <span className="flex items-center gap-2">
-          <span className="text-[12px]" style={{ color: DIM }}>
-            Play all
-          </span>
-          <span className="grid h-9 w-9 place-items-center rounded-full" style={{ background: PLAYING }}>
-            <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
-              <path d="M3 1.5 L12 7 L3 12.5 Z" fill={SHELL} />
-            </svg>
-          </span>
+          {/* Play sits in the header, not on a row of its own. The stage is
+              720px tall and the row it used to have cost thirty of them, which
+              is a whole song. The affordance is what matters, not its shelf. */}
+          <span className="ml-auto flex shrink-0 items-center gap-2">
+            <span className="text-[12px]" style={{ color: DIM }}>
+              Play all
+            </span>
+            <span className="grid h-9 w-9 place-items-center rounded-full" style={{ background: PLAYING }}>
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
+                <path d="M3 1.5 L12 7 L3 12.5 Z" fill={SHELL} />
+              </svg>
+            </span>
           </span>
         </div>
 
-        <div className="mt-1 flex min-h-0 flex-1 flex-col gap-[1px]">
+        
+
+        <div className="mt-1 flex min-h-0 flex-1 flex-col gap-0">
           {list.map((t, i) => (
             <Row
               key={t.title}
@@ -338,10 +308,37 @@ export function PhonePlaylist({
 
         {/* THE END OF THE LIST IS A DRAWN THING, not the absence of one. "So what
             told it to stop?" is the question the whole session answers. */}
+        {/* THE NOW-PLAYING BAR. Every music app has one, and its absence was
+            the loudest thing missing from the first cut: a player with no
+            now-playing strip reads as a list, not as something that is running.
+            It names the track the pointer is on, so the phone says what is
+            happening without the room re-reading the list. */}
+        <div
+          className="mt-1 flex shrink-0 items-center gap-2 rounded-lg px-2 py-[5px]"
+          style={{ background: SHELL_2 }}
+        >
+          <span
+            className="grid h-[22px] w-[22px] shrink-0 place-items-center rounded"
+            style={{ background: nowTrack ? PLAYING : '#3A3A3A' }}
+          >
+            <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden fill={SHELL}>
+              <path d="M5 3.5 L19 12 L5 20.5 Z" />
+            </svg>
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-[13px] leading-[1.15]" style={{ color: colors.white }}>
+              {nowTrack ? nowTrack.title : 'Nothing playing'}
+            </span>
+            <span className="block truncate text-[12px] leading-tight" style={{ color: DIM }}>
+              {nowTrack ? nowTrack.artist : "Today\u2019s Mix"}
+            </span>
+          </span>
+        </div>
+
         <div className="mt-1 h-[26px] shrink-0">
           {stopped && arrived && (
             <motion.div
-              className="rounded-lg px-3 py-[5px] text-center font-heading text-[12px] font-bold"
+              className="rounded-lg px-3 py-[5px] text-center font-heading text-[13px] font-bold"
               style={{ background: `${colors.danger}26`, color: '#FF9A9A' }}
               initial={instant ? false : { opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
@@ -363,7 +360,7 @@ export function PhonePlaylist({
       {/* CENTRED, between the player's own cluster on the left and the NxtWave
           mark on the right. Pushed to either edge it sits on one of them.
           Course rule R5c. */}
-      <StepControls className="mt-5 w-full justify-center" showCount={false} />
+      <StepControls className="mt-3 w-full justify-center" showCount={false} />
     </div>
   )
 }
