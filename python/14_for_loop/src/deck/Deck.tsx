@@ -171,11 +171,26 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
     }
   }, [gotoSlide])
 
-  // "Next slide" (→): mirror of prevSlide — one slide forward as a cut, skipping
-  // the build steps and landing revealed.
+  /*
+    "Next slide" (→): one slide FORWARD as a cut, landing at step 0.
+
+    It used to land revealed, mirroring prevSlide. That was right when a slide's
+    build was a few bullets; it is wrong now that half this deck's frames are
+    figures whose whole teaching is the build. Landing revealed opened every one
+    of them on its last step: the string walk showed "Done" already printed, the
+    trace showed its final total, and Play and One step arrived disabled, so the
+    room got the answer before the question.
+
+    BACKWARD still lands revealed (prevSlide, below). Going back is going to a
+    frame the room has already been taught, and arriving on a two-thirds-empty
+    slide you have just finished explaining is the trap the original note names.
+    Forward is the teaching direction; backward is the reference direction.
+
+    SESSION-LOCAL. `src/deck/` is kit-owned, so sync-kit will put this back. It
+    wants to be a deck.config flag in the kit, which is a PR.
+  */
   const nextSlide = useCallback(() => {
     if (indexRef.current < total - 1) {
-      pendingFull.current = true
       gotoSlide(indexRef.current + 1, 1, { cut: true })
     }
   }, [total, gotoSlide])
