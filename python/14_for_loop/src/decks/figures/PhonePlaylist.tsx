@@ -92,14 +92,14 @@ function Row({
   const instant = useInstant()
   return (
     <motion.div
-      className="flex items-center gap-2.5 rounded-lg px-2 py-[2px]"
+      className="flex items-center gap-2.5 rounded-lg px-2 py-[1px]"
       style={{ background: state === 'playing' ? SHELL_2 : 'transparent' }}
       initial={instant ? false : { opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: T.enter, ease: c4(E.out), delay: instant ? 0 : index * T.stagger }}
     >
       <span
-        className="h-8 w-8 shrink-0 rounded"
+        className="h-[30px] w-[30px] shrink-0 rounded"
         style={{ background: track.art, opacity: state === 'ahead' ? 0.55 : 1 }}
       />
       <span className="min-w-0 flex-1">
@@ -149,7 +149,7 @@ export function PhonePlaylist({
       {/* THE PHONE. A fixed frame, so the list grows inside it rather than
           pushing the slide around when the sixth song arrives. */}
       <div
-        className="h-[416px] overflow-hidden rounded-[28px] border-[5px] px-3 pb-2 pt-2 shadow-card"
+        className="flex h-[416px] flex-col overflow-hidden rounded-[28px] border-[5px] px-3 pb-2 pt-2 shadow-card"
         style={{ background: SHELL, borderColor: '#2A2A2A' }}
       >
         <div className="flex items-center justify-between">
@@ -198,7 +198,7 @@ export function PhonePlaylist({
           </span>
         </div>
 
-        <div className="mt-2 flex flex-col gap-[2px]">
+        <div className="mt-2 flex min-h-0 flex-1 flex-col gap-[2px]">
           {list.map((t, i) => (
             <Row
               key={t.title}
@@ -211,7 +211,7 @@ export function PhonePlaylist({
 
         {/* THE END OF THE LIST IS A DRAWN THING, not the absence of one. "So what
             told it to stop?" is the question the whole session answers. */}
-        <div className="mt-2 h-[30px]">
+        <div className="mt-1 h-[26px] shrink-0">
           {stopped && (
             <motion.div
               className="rounded-lg px-3 py-[5px] text-center font-heading text-[12px] font-bold"
