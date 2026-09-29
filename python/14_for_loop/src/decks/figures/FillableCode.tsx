@@ -36,13 +36,21 @@ export function FillableCode({
   lines,
   filename = 'Python',
   fontSize = 17,
+  highlight = [],
   className = '',
 }: {
   lines: CodeLine[]
   filename?: string
   fontSize?: number
+  /**
+   * 1-based lines to tint, so the eye lands on the lines the learner has to
+   * fill. The blanks are the task; a panel that tints nothing makes the room
+   * read three lines to find the two that are theirs.
+   */
+  highlight?: number[]
   className?: string
 }) {
+  const tinted = new Set(highlight)
   const [values, setValues] = useState<Record<number, string>>({})
 
   return (
@@ -58,7 +66,15 @@ export function FillableCode({
 
       <div className="px-5 py-4 font-mono" style={{ fontSize, lineHeight: 1.85 }}>
         {lines.map((l, i) => (
-          <div key={i} className="flex items-center whitespace-pre text-white/90">
+          <div
+            key={i}
+            className="-mx-5 flex items-center whitespace-pre px-5 text-white/90"
+            style={
+              tinted.has(i + 1)
+                ? { backgroundImage: 'linear-gradient(rgba(11,95,255,0.30), rgba(11,95,255,0.30))' }
+                : undefined
+            }
+          >
             <span className="select-none pr-4 text-white/25">{i + 1}</span>
             <span>{l.before}</span>
             {l.blank !== undefined && (
