@@ -921,29 +921,33 @@ export const forLoopDeck: SlideDef[] = [
             steps={RIYA_STEPS}
             location={PY}
             stacked
+            threeUp
             groupRight
             codeFontSize={19}
-            belowCode={
-              /* Fixed height: the caption is empty until the first press, and a
-                 row that grows when it fills shifts the whole left column up. */
-              <div className="flex h-[40px] items-center gap-4 rounded-card border border-line bg-white/60 px-4">
-                <span className="shrink-0 font-heading text-body-sm font-bold" style={{ color: colors.muted }}>
-                  input
-                </span>
-                <span
-                  className="grid h-7 w-9 shrink-0 place-items-center rounded-card font-mono text-body font-bold"
-                  style={{ background: colors.surface, color: colors.ink }}
-                >
-                  7
-                </span>
-                <span className="h-6 w-px shrink-0" style={{ background: colors.line }} />
-                <StepCaption beats={RIYA_BEATS} className="flex-1" />
-              </div>
-            }
             rightExtra={<PiggyMeter row totals={RIYA_TOTALS} coins={RIYA_COINS} />}
           />
 
-          <StepControls className="justify-end" showCount={false} mode="code" />
+          {/* THE BEAT RUNS THE FULL WIDTH. Inside the code column it had 560px
+              for a sentence that needs 800, so the last beat wrapped to two
+              lines and broke out of its own bar. It is also the one thing here
+              that is about all three columns at once. Fixed height: it is empty
+              until the first press, and a row that grows when it fills shifts
+              everything above it. */}
+          <div className="flex h-[44px] items-center gap-4 rounded-card border border-line bg-white/60 px-4">
+            <span className="shrink-0 font-heading text-body-sm font-bold" style={{ color: colors.muted }}>
+              input
+            </span>
+            <span
+              className="grid h-7 w-9 shrink-0 place-items-center rounded-card font-mono text-body font-bold"
+              style={{ background: colors.surface, color: colors.ink }}
+            >
+              7
+            </span>
+            <span className="h-6 w-px shrink-0" style={{ background: colors.line }} />
+            <StepCaption beats={RIYA_BEATS} className="flex-1" />
+          </div>
+
+          <StepControls className="justify-center" showCount={false} mode="code" />
         </div>
       </ContentSlide>
     ),
