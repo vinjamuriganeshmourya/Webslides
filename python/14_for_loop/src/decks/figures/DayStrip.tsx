@@ -22,8 +22,8 @@ export function DayStrip({
   stepDay,
   className = '',
 }: {
-  /** One per day: the label and what that day contributed, or nothing. */
-  days: { label: string; coin?: string }[]
+  /** One per day: the label, what that day contributed, and the running total. */
+  days: { label: string; coin?: string; total: string }[]
   /** Which day each deck step is on. `-1` for a step that is not a day. */
   stepDay: number[]
   className?: string
@@ -35,7 +35,7 @@ export function DayStrip({
   const done = allRevealed ? days.length : at
 
   return (
-    <div className={`flex items-center justify-center gap-1.5 ${className}`}>
+    <div className={`flex items-center justify-center gap-1 ${className}`}>
       {days.map((d, i) => {
         const here = i === at
         const past = i < done
@@ -43,9 +43,13 @@ export function DayStrip({
         return (
           <motion.div
             key={d.label}
-            className="flex w-[62px] flex-col items-center gap-1 rounded-card border-2 px-1 py-1.5"
+            /* EVERY TILE THE SAME SIZE. A coin is a 26px disc and "skip" is a
+               line of text, so sizing to content made the saving days taller
+               than the skipped ones and the row read as two rows. A fixed box
+               with three fixed rows keeps the week a week. */
+            className="flex h-[92px] w-[68px] flex-col items-center justify-between rounded-card border-2 px-1 py-1.5"
             style={{
-              borderColor: here ? colors.brand : past ? colors.line : colors.line,
+              borderColor: here ? colors.brand : colors.line,
               background: here ? `${colors.brand}12` : colors.white,
               opacity: past && !here ? 0.55 : 1,
             }}
@@ -55,18 +59,31 @@ export function DayStrip({
             <span className="font-heading text-body-sm font-bold leading-none" style={{ color: colors.ink }}>
               {d.label}
             </span>
-            {saves ? (
-              <span
-                className="grid h-[26px] w-[26px] place-items-center rounded-full font-heading text-[12px] font-bold leading-none"
-                style={{ background: colors.warning, color: colors.ink }}
-              >
-                {d.coin}
-              </span>
-            ) : (
-              <span className="text-[12px] leading-none" style={{ color: colors.muted }}>
-                skip
-              </span>
-            )}
+
+            <span className="grid h-[26px] place-items-center">
+              {saves ? (
+                <span
+                  className="grid h-[26px] w-[26px] place-items-center rounded-full font-heading text-[12px] font-bold leading-none"
+                  style={{ background: colors.warning, color: colors.ink }}
+                >
+                  {d.coin}
+                </span>
+              ) : (
+                <span className="text-[12px] leading-none" style={{ color: colors.muted }}>
+                  skip
+                </span>
+              )}
+            </span>
+
+            {/* THE RUNNING TOTAL, under the day it belongs to. The bank shows
+                where the money ended up; this shows the room that a skipped day
+                does not reset it, which is the thing the if statement decides. */}
+            <span
+              className="font-mono text-[13px] font-bold leading-none"
+              style={{ color: past || here ? colors.brandDark : colors.line }}
+            >
+              {past || here ? d.total : '\u00b7'}
+            </span>
           </motion.div>
         )
       })}
