@@ -5,7 +5,7 @@
 
 All five §7 items carry their defaults: three new components, Quiz Time kept where
 the source puts it, `range(start, end)` introduced on the dial, Feedback and
-Thank you as two slides, portal slides not redrawn. Final count **37**.
+Thank you as two slides, portal slides not redrawn. Final count **36**, after the duplicate session-name card was removed (see the generation record).
 
 **GENERATED 2026-09-29.** The deck is at `python/14_for_loop/`, 37 slides, all
 harnesses at baseline. Five things were done differently from the text below,

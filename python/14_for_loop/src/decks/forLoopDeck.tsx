@@ -13,7 +13,6 @@ import {
   SectionBreakerSlide,
   StatusPointsSlide,
   ThankYouSlide,
-  WelcomeSlide,
 } from '@/slides'
 import { Card, CardGrid, CodeBlock, CodeOutput, SwapRows, VariableTrace, StepControls} from '@/ui'
 import type { TraceStep } from '@/ui'
@@ -192,12 +191,6 @@ export const forLoopDeck: SlideDef[] = [
     section: 'Opening',
     label: 'Welcome',
     element: <BrandSlide greeting="Welcome!" lesson={SESSION} />,
-  },
-  {
-    id: 'session-name',
-    section: 'Opening',
-    label: 'Session name',
-    element: <WelcomeSlide minimal title={SESSION} lesson={SESSION} />,
   },
   {
     id: 'recap',

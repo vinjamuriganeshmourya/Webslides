@@ -7,7 +7,7 @@ Python course. Built from the pedagogy team's lesson plan
 feedback log, are in `../workflow/skills/python-course/SKILL.md`. Read that and
 `.claude/skills/pedagogy-to-components/SKILL.md` before editing.
 
-37 slides. `devPort` 5232.
+36 slides. `devPort` 5232.
 
 ## Decisions specific to this deck
 
@@ -45,7 +45,20 @@ feedback log, are in `../workflow/skills/python-course/SKILL.md`. Read that and
    The first cut drew both as rows of boxes reading `Song 1` and `Day 1 / ₹1`
    and was rejected. Abstract tiles stay only on the string walk, where the
    items really are characters.
-10. **The named products carry their real marks** (content rules 12 and 13).
+10. **Nowhere on the phone does it say how many songs there are.** The card's
+   whole question is *what told it to stop?*, and a `5 songs` label answers it
+   before it is asked. The pedagogy team's own build asserts this in a browser
+   check: the caption may say five, because that is the instructor's line, but
+   the phone may not. The row that showed the count now reads `Playlist`.
+
+11. **The session name does not appear before the hook.** The deck opened with a
+   Welcome card and then a second card reading `For Loop`, two frames before the
+   hook that exists to make the room want a for loop. Naming the topic first
+   answers the hook's question in advance. That card is gone; the name arrives on
+   the `Today's topic` divider after the hook, as the source orders it, and it is
+   the reason this deck is 36 slides and not 37.
+
+12. **The named products carry their real marks** (content rules 12 and 13).
    `companies/spotify.png` and `companies/instagram.png` were already in
    `slide-kit/assets/` and are copied byte-identical into
    `public/assets/companies/`. Nothing here hand-draws a trademark.
