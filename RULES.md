@@ -93,6 +93,11 @@ shipped with that exact mistake.
 | `sampleDeck.tsx` renders EVERY type exported from `src/slides/index.ts` | [`slide-kit/slide-types/README.md`](slide-kit/slide-types/README.md) |
 | A session-owned figure is imported by path, never re-exported from the kit-owned `@/ui` barrel | [`slide-kit/slide-template/KIT.md`](slide-kit/slide-template/KIT.md) |
 | Motion runs at the explanatory tier, roughly double the `animate` skill's UI numbers | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md), section 4b |
+| A pedagogy-team lesson plan is a WORKING DECK: render its `.pcard`s and match them, never rebuild from its markup | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md), section 6b |
+| Iterate with a one-slide screenshot; run the three harnesses once, before committing | same, section 6c |
+| Check every build at step 0, mid-run AND fully revealed | same, section 6c |
+| A correction on one slide is a correction on every slide of that shape: grep the construct, fix the class | same, section 6d |
+| One deck, one worker. Never split a deck across agents by slide range | same, section 6e |
 | Vendored skills live in `.agents/skills` and are never edited in place | same, section 4b |
 | `.claude/skills/prog-lesson-plan` is vendored verbatim and never edited in place | [`CLAUDE.md`](CLAUDE.md) |
 | Follow the reference deck's placement, highlighting and chrome | [`python-course/SKILL.md`](python/workflow/skills/python-course/SKILL.md) R5c |
