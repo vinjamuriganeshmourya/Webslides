@@ -1,6 +1,7 @@
 /** Barrel export for all shared slide building blocks. */
 export { SlideBase, type SlideVariant } from './SlideBase'
 export { SlideHeader } from './SlideHeader'
+export { ZonedFrame, ZONE } from './ZonedFrame'
 export { Logo } from './Logo'
 export { DotGrid, Blob, Orb, WaveArc } from './Decor'
 export { Kicker, Chip, NumberBadge } from './primitives'
@@ -138,7 +139,11 @@ export { StateChange, type StateSide, type StateChangeProps } from './StateChang
 
   Its own header says what `output` may and may not carry.
 */
-export { CodeOutput, type CodeOutputPane } from './CodeOutput'
+export { CodeOutput, OutputPanel, type CodeOutputPane } from './CodeOutput'
+
+/* Arrowheads as plain triangles, never SVG markers: Firefox misplaces markers in
+   the CSS-zoomed stage. See the file header. */
+export { ArrowHead } from './figures/ArrowHead'
 
 export * as Icons from './icons'
 export { iconByName, type IconName } from './icons'
@@ -147,3 +152,28 @@ export { Nova, type NovaPose } from './characters/Nova'
 
 // Motion helpers re-exported for slide authors.
 export { RevealGroup, Reveal } from '@/motion/Reveal'
+
+/*
+  PANELS: slides taught in beats, with their own controls. Built for PF 14
+  "For Loop" (python_programming/for_loop), whose lesson-plan page carried
+  fifteen hand-built ones. Beats are the kit's build steps (`useBeats`), so the
+  deck's keys, `?all` and the harnesses all see them; the panel's buttons are a
+  second way to press the same key. Local-state panels (`StringWalker`,
+  `RangeDial`, `RunCompare`) are played with, not presented, and keep their own.
+*/
+export { useBeats, useCount, useTween, PanelButton, StepControls } from './panels/beats'
+export { Countdown } from './panels/Countdown'
+export { MatchPairs, type MatchItem } from './panels/MatchPairs'
+export { BeatStory, type BeatLine } from './panels/BeatStory'
+export { ExamplesToShape, type Example } from './panels/ExamplesToShape'
+export { VarTrail, SeqBoxes, TraceKey, TraceCaption, DayTrack, CallChip } from './panels/tracePieces'
+export { StringWalker } from './panels/StringWalker'
+export { TracePanel, type TraceBeat } from './panels/TracePanel'
+export { RangeDial } from './panels/RangeDial'
+export { SavingsStory, type SavingsDay, type SavingsBeat } from './panels/SavingsStory'
+export { RunCompare, type RunSide } from './panels/RunCompare'
+export { TakeawayTree, type TakeawayNode } from './panels/TakeawayTree'
+export { PseudoShape, RangeCall, RangeArg, RangePunct, RangeCells, CrossList, OptionList, Row, type PseudoToken } from './panels/figures'
+export { ChallengePanel } from './panels/ChallengePanel'
+export { StoryArt, type StoryArtName } from './characters/StoryArt'
+export { type CodeLineState } from './CodeBlock'

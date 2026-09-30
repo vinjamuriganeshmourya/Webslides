@@ -1,5 +1,5 @@
 import { SlideBase } from '@/ui/SlideBase'
-import { SlideHeader } from '@/ui/SlideHeader'
+import { ZonedFrame } from '@/ui/ZonedFrame'
 import { Step } from '@/motion/Stepper'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
 import { accentByTone, colors } from '@/design/tokens'
@@ -59,60 +59,57 @@ export function ConversationSlide({
   const accent = accentByTone[tone]
   const Row = stepped ? Step : Reveal
   return (
-    <SlideBase variant="light" lesson={lesson}>
-      <div className="flex h-full flex-col">
-        <SlideHeader kicker={kicker} title={title} lead={lead} tone={tone} />
-        <div className="flex min-h-0 flex-1 flex-col justify-center">
-          {/*
-            The gutter is a fixed 150px so every line of dialogue starts on the
-            same left datum. Sized to the gutter, the names would jump left and
-            right with their own length and the transcript would lose the single
-            vertical edge that makes it scannable.
+    <SlideBase variant="light" lesson={lesson} padded={false}>
+      <ZonedFrame kicker={kicker} title={title} lead={lead} tone={tone}>
+        {/*
+          The gutter is a fixed 150px so every line of dialogue starts on the
+          same left datum. Sized to the gutter, the names would jump left and
+          right with their own length and the transcript would lose the single
+          vertical edge that makes it scannable.
 
-            Capped at 1000px rather than 840: this layout is text-only and its
-            tallest content sits well below y=220, so it is not competing with
-            the instructor-video rectangle the way a figure would. The cap is
-            about line length — 1000px at 22px is a comfortable measure, and the
-            full 1152 is not.
-          */}
-          <RevealGroup className="max-w-[1000px] space-y-2" stagger={0.08}>
-            {turns.map((turn, i) => {
-              const right = turn.side === 'right'
-              const name = right ? speakers.right : speakers.left
-              /* The name is printed only when the voice changes. Repeating it on
-                 consecutive turns from the same speaker is noise, and its absence
-                 is itself the signal that the same person is still talking. */
-              const show = turns[i - 1]?.side !== turn.side
-              return (
-                <Row key={i} dir="up" className="grid grid-cols-[150px_1fr] items-start gap-6">
+          Capped at 1000px rather than 840: this layout is text-only and its
+          tallest content sits well below y=220, so it is not competing with
+          the instructor-video rectangle the way a figure would. The cap is
+          about line length — 1000px at 22px is a comfortable measure, and the
+          full 1152 is not.
+        */}
+        <RevealGroup className="max-w-[1000px] space-y-2" stagger={0.08}>
+          {turns.map((turn, i) => {
+            const right = turn.side === 'right'
+            const name = right ? speakers.right : speakers.left
+            /* The name is printed only when the voice changes. Repeating it on
+               consecutive turns from the same speaker is noise, and its absence
+               is itself the signal that the same person is still talking. */
+            const show = turns[i - 1]?.side !== turn.side
+            return (
+              <Row key={i} dir="up" className="grid grid-cols-[150px_1fr] items-start gap-6">
+                <span
+                  className="pt-1 text-right font-heading text-body font-bold uppercase tracking-wide"
+                  style={{ color: show ? (right ? accent : colors.muted) : 'transparent' }}
+                >
+                  {name}
+                </span>
+                {/* The rule is per-row and coloured by voice, so the two sides
+                    read as two columns of speech without indenting either one
+                    away from the datum. */}
+                <span
+                  className="border-l-[3px] pl-6"
+                  style={{ borderColor: right ? accent : colors.line }}
+                >
                   <span
-                    className="pt-1 text-right font-heading text-body font-bold uppercase tracking-wide"
-                    style={{ color: show ? (right ? accent : colors.muted) : 'transparent' }}
+                    className={`block ${
+                      turn.code ? 'font-mono text-body' : 'text-body-lg'
+                    }`}
+                    style={{ color: right ? colors.ink : colors.body }}
                   >
-                    {name}
+                    {turn.text}
                   </span>
-                  {/* The rule is per-row and coloured by voice, so the two sides
-                      read as two columns of speech without indenting either one
-                      away from the datum. */}
-                  <span
-                    className="border-l-[3px] pl-6"
-                    style={{ borderColor: right ? accent : colors.line }}
-                  >
-                    <span
-                      className={`block ${
-                        turn.code ? 'font-mono text-body' : 'text-body-lg'
-                      }`}
-                      style={{ color: right ? colors.ink : colors.body }}
-                    >
-                      {turn.text}
-                    </span>
-                  </span>
-                </Row>
-              )
-            })}
-          </RevealGroup>
-        </div>
-      </div>
+                </span>
+              </Row>
+            )
+          })}
+        </RevealGroup>
+      </ZonedFrame>
     </SlideBase>
   )
 }

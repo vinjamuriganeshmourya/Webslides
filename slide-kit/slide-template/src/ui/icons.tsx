@@ -16,6 +16,13 @@ const base = (p: P) => ({
   ...p,
 })
 
+/** A plain bullet dot: a list whose items are examples, not verdicts (PF 14). */
+export const Dot = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="12" cy="12" r="3.5" fill="currentColor" stroke="none" />
+  </svg>
+)
+
 export const Check = (p: P) => (
   <svg {...base(p)}>
     <path d="M20 6 9 17l-5-5" />
@@ -128,6 +135,7 @@ import {
 
 export const iconByName = {
   check: Check,
+  dot: Dot,
   // The counterpart to `check`. `StatusList` needs a glyph for a row that
   // FAILS, and the warning triangle already means "careful", not "broken".
   cross: Cross,

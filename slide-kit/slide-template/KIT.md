@@ -31,12 +31,12 @@ reads and never writes.
 |---|---|
 | `src/design/` tokens | `src/decks/` the deck itself |
 | `src/motion/` Reveal, Stepper, instant | `src/decks/activeDeck.ts` which deck is live |
-| `src/deck/` the player | `src/export/revealSteps.ts` generated per deck |
+| `src/deck/` the player | `src/export/revealSteps.ts` and `deckCss.ts`, generated per deck |
 | `src/ui/` primitives and figures | `deck.config.json` name, title, slide count |
 | `src/slides/` slide types | `public/shots/` that session's real screenshots |
 | `src/App.tsx`, `src/index.css` | `workflow/` plans, captures, sign-offs |
 | `tailwind.config.ts`, `vite*.config.ts`, `index.html` | `package.json`, `CLAUDE.md`, `README.md` |
-| `qa.mjs`, `video-safe.mjs`, `preview.mjs` | `dist/`, `dist-single/`, `node_modules/` |
+| `qa.mjs`, `video-safe.mjs`, `align-check.mjs`, `fit-check.mjs`, `preview.mjs` | `dist/`, `dist-single/`, `node_modules/` |
 | `scripts/`, `workflow/export/` | |
 
 ### The one seam: `src/decks/activeDeck.ts`
@@ -87,8 +87,21 @@ npx tsc -b --noEmit && npm run build:html
 export CHROME_PATH=/opt/google/chrome/chrome
 node video-safe.mjs      # must print CLEAN
 node qa.mjs              # only slide 1 should be flagged
+node align-check.mjs     # header datum drift
+node fit-check.mjs       # must print CENTRED and LAYOUT STABLE
 node preview.mjs && node scripts/build-preview-page.mjs
 ```
+
+**A SESSION SYNCED PAST 2026-09-22 GAINS THE STAGE FIX AND MUST BE RE-MEASURED.**
+`SlideStage` now fits the canvas with CSS `zoom` instead of `transform: scale()`,
+which is what stopped the deck rendering soft on a projector, and it brings
+`text-rendering: geometricPrecision` with it so the layout stays identical at
+every size. Unrounded glyph advances are slightly wider than hinted ones: the
+mono face measures 8.4px a character rather than 8.0, which is 5%. **Any figure
+whose geometry was computed from a character count has to be checked**, and
+`fit-check.mjs` plus that figure's own measurement harness is how. It has already
+moved one constant: `questions-lab`'s subject panel went from a 466px cap to 488
+or a 54-character line would have scrolled.
 
 `--check` is read-only and exits non-zero when anything is behind, so it works as
 a pre-flight. `--apply` backs up nothing: the repo is the backup, so run it on a
@@ -108,6 +121,12 @@ clean tree.
 6. Once the slide count is final, update `deck.config.json` and regenerate
    `src/export/revealSteps.ts`:
    `node workflow/export/build-reveal-steps.mjs http://localhost:<port> <count>`
+
+`typecheck`, `build` and `build:html` first run `npm run gen`
+(`workflow/export/build-deck-css.mjs`), which writes `src/export/deckCss.ts` and,
+only if it is missing, a placeholder `revealSteps.ts`. Both are gitignored and
+per deck. Without it a fresh copy failed its own type check, because nothing
+generated `deckCss.ts`.
 
 ---
 

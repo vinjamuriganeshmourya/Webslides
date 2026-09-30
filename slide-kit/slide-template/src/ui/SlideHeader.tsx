@@ -68,6 +68,7 @@ export function SlideHeader({
   tone = 'brand',
   onDark = false,
   align = 'left',
+  floor = true,
   className = '',
 }: {
   kicker?: string
@@ -76,6 +77,12 @@ export function SlideHeader({
   tone?: Tone
   onDark?: boolean
   align?: 'left' | 'center'
+  /**
+   * The min-height floor above. `ZonedFrame` turns it off: there the body box
+   * starts at a fixed y=221 whatever the header measures, so the floor only
+   * padded the header past its own zone (y 0..148, content rule 22).
+   */
+  floor?: boolean
   className?: string
 }) {
   const color = accentByTone[tone]
@@ -86,16 +93,64 @@ export function SlideHeader({
   const LeadPart = carry.lead ? Still : Reveal
   return (
     <RevealGroup
-      className={`relative shrink-0 ${lead ? HEADER_MIN_H : HEADER_MIN_H_NO_LEAD} ${
+      className={`relative shrink-0 ${floor ? (lead ? HEADER_MIN_H : HEADER_MIN_H_NO_LEAD) : ''} ${
         centered ? 'text-center' : ''
       } ${className}`}
       stagger={0.08}
     >
       {!centered && (
-        <span
-          className="absolute -left-16 top-1 h-full w-[6px] rounded-pill"
-          style={{ background: `linear-gradient(${color}, ${color}00)` }}
-        />
+        /*
+          TWO BARS, SHORTER, PULLED IN TOWARDS THE TEXT (content rule 23). This
+          replaced ONE full-height rail, `-left-16 top-1 h-full w-[6px]`.
+
+          The geometry is measured off `Rules_beta/graphics.png` rather than
+          chosen, and was judged on `Rules_beta/beta_testing_slides` first. That
+          design was sampled pixel by pixel: a 24px bar occupying x 0..24, an 8px
+          gap, then the 6px rail at x 32..37, both starting at the same y and both
+          carrying the same fade. Each number below is one of those.
+
+          THE EDGE BAR, x 0..24. `-left-16` is -64px, which cancels SlideBase's
+          px-16 gutter exactly, so the bar lands on the frame edge. `w-6` is 24px.
+          Only its right corners are rounded, and only by 2px. The left pair is
+          off-canvas, and rounding a corner nobody can see is how a shape ends up
+          looking lopsided at another aspect ratio. 2px rather than the 6 this
+          first shipped with: the design's first row measures 0.8px narrower than
+          its full width, which is a radius of about two, and it reads as a square
+          bar with the corner taken off rather than as a rounded one. A LANCZOS
+          side-by-side made 6px look right, which is what resampling does to a
+          2px curve; the row-by-row measurement is the one to trust.
+
+          THE GAP, 8px. -32px minus the edge bar's 24px width. It is the whole
+          idea of the pair: two marks close enough to read as one object, with a
+          seam that catches the light. Any wider and they are two unrelated bars.
+
+          THE RAIL, x 32..38, within a pixel of the design's own.
+
+          HEIGHT 80px for both (`h-20`), against the old rail's `h-full`. `h-full` is
+          the header block's own height, so the rail ran the full 168px of a
+          header WITH a lead and, because `top-1` offsets it 4px, finished at
+          y=220 against the block's own 216: 4px longer than the thing it belongs
+          to. At 80px both bars start with the kicker at y=52 and end at y=132,
+          five pixels under the title's baseline, so they bracket exactly the pair
+          rule 19 pins and stop before the description. The design measures 76 and
+          74 of VISIBLE bar, which is the same box: the gradient has faded to
+          nothing before the box ends.
+
+          A fixed height no longer adapts to a two-line title, where the bars stop
+          level with the first line. The gradient has faded by then, so it does
+          not read as short. If it ever does, `h-24` is the next step up, and both
+          bars have to move together.
+        */
+        <>
+          <span
+            className="absolute -left-16 top-1 h-20 w-6 rounded-r-sm"
+            style={{ background: `linear-gradient(${color}, ${color}00)` }}
+          />
+          <span
+            className="absolute -left-8 top-1 h-20 w-[6px] rounded-pill"
+            style={{ background: `linear-gradient(${color}, ${color}00)` }}
+          />
+        </>
       )}
       {kicker && (
         <KickerPart dir="right" className={centered ? 'mb-3 inline-block' : 'mb-3 block'}>

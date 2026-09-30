@@ -41,6 +41,11 @@ shipped with that exact mistake.
 | 19 | The concept and its sub-concept are pinned to the top of every slide |
 | 20 | Key Takeaways restates the agenda concepts, verbatim |
 | 21 | The welcome line is written once |
+| 22 | The slide is laid out in zones: header, Space-1, Space-2, Space-3 |
+| 23 | The header: no tick before the kicker, and a pair of short gradient bars |
+| 24 | Typefaces: Inter for the kicker and content, Poppins for headings |
+| 25 | A heading never wraps: shorten the words, never shrink the font or widen the box |
+| 26 | A code box names its language (Python, Java), never a file |
 
 ## Process rules
 

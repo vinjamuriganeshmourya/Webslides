@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { SlideBase, SlideHeader, BulletList, Illustration } from '@/ui'
+import { SlideBase, ZonedFrame, BulletList, Illustration } from '@/ui'
 import type { RecapSlideProps } from './types'
 
 /**
@@ -11,6 +11,7 @@ export function RecapSlide({
   kicker = 'Recap',
   title = 'Before we begin…',
   points,
+  immediate = false,
   lesson,
 }: RecapSlideProps) {
   const twoCols = points.length > 4
@@ -18,26 +19,21 @@ export function RecapSlide({
   const columns = twoCols ? [points.slice(0, mid), points.slice(mid)] : [points]
 
   return (
-    <SlideBase variant="light" lesson={lesson}>
-      <div className="grid h-full grid-cols-[1.3fr_1fr] items-center gap-10">
+    <SlideBase variant="light" lesson={lesson} padded={false}>
         {/*
-          left — recap checklist
-
-          TOP ALIGNED, like every other slide type in the kit. This column used to
-          be `justify-center` with no height, so the kicker and title floated to
-          the vertical middle of the slide while the identical header on a content
-          slide sat pinned at the top. Two slides running, the heading jumped.
-          `h-full` plus `justify-start` puts it back on the same line as
-          everywhere else and lets `SlideHeader`'s own floor do the spacing.
+          left: the recap checklist, ZONED (content rule 22). The header sits in
+          the header zone like every other content slide, so the heading does not
+          jump between slides, and the list is centred in the body box. The box is
+          narrowed to the old left column (1.3fr of 1152 less the 40px gap) so the
+          list never runs under the mascot.
         */}
-        <div className="flex h-full flex-col justify-start">
-          <SlideHeader kicker={kicker} title={title} tone="success" />
-          <div className={`mt-8 grid gap-x-10 gap-y-0 ${twoCols ? 'grid-cols-2' : 'grid-cols-1'}`}>
+        <ZonedFrame kicker={kicker} title={title} tone="success" bodyWidth={628}>
+          <div className={`grid gap-x-10 gap-y-0 ${twoCols ? 'grid-cols-2' : 'grid-cols-1'}`}>
             {columns.map((group, i) => (
-              <BulletList key={i} items={group} marker="check" tone="success" />
+              <BulletList key={i} items={group} marker="check" tone="success" immediate={immediate} />
             ))}
           </div>
-        </div>
+        </ZonedFrame>
 
         {/*
           right — mascot
@@ -53,7 +49,8 @@ export function RecapSlide({
           that would notice.
         */}
         <motion.div
-          className="relative grid h-full place-items-end justify-items-center"
+          className="absolute grid place-items-end justify-items-center"
+          style={{ left: 732, top: 48, width: 484, height: 608 }}
           initial={{ opacity: 0, scale: 0.88 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.25, duration: 0.65, ease: [0.34, 1.56, 0.64, 1] }}
@@ -61,7 +58,6 @@ export function RecapSlide({
           <div className="pointer-events-none absolute bottom-8 h-56 w-56 rounded-full bg-success/15 blur-2xl" />
           <Illustration name="recap" className="relative h-[66%] w-auto" />
         </motion.div>
-      </div>
     </SlideBase>
   )
 }

@@ -93,5 +93,5 @@ for (const r of report) {
     )
   }
 }
-console.log(issues === 0 ? 'ALL 44 CLEAN' : `${issues} slide(s) with issues`)
+console.log(issues === 0 ? `ALL ${TOTAL} CLEAN` : `${issues} slide(s) with issues`)
 if (errors.length) console.log('CONSOLE ERRORS:', [...new Set(errors)].slice(0, 8))

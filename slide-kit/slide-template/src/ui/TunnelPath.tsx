@@ -1,4 +1,5 @@
 import { colors } from '@/design/tokens'
+import { ArrowHead } from './figures/ArrowHead'
 
 /**
  * TunnelPath — how a request from the public internet reaches a laptop that has
@@ -68,14 +69,6 @@ export function TunnelPath({
   return (
     <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img"
       aria-label="A laptop opens an outbound tunnel to a forwarding service, and an inbound webhook travels back down it">
-      <defs>
-        <marker id="tp-in" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill={colors.brand} />
-        </marker>
-        <marker id="tp-out" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill={colors.accent} />
-        </marker>
-      </defs>
 
       <Box x={40} y={190} w={200} title={sender} sub={senderSub} tone={colors.ink} />
       <Box x={430} y={190} w={240} title={service} sub={serviceSub} tone={colors.brand} solid />
@@ -86,14 +79,17 @@ export function TunnelPath({
 
       {/* Phase 1 — outbound. Drawn right to left because that is the direction it travels. */}
       <text x={550} y={52} textAnchor="middle" fill={colors.accent} fontSize={17} fontWeight={700}>{phaseOne}</text>
-      <line x1={860} y1={95} x2={670} y2={95} stroke={colors.accent} strokeWidth={2.5} strokeDasharray="7 7" markerEnd="url(#tp-out)" />
+      <line x1={860} y1={95} x2={670} y2={95} stroke={colors.accent} strokeWidth={2.5} strokeDasharray="7 7" />
+      <ArrowHead d="M 860 95 L 670 95" color={colors.accent} strokeWidth={2.5} size={7} refX={9} />
       <text x={650} y={79} textAnchor="middle" fill={colors.accent} fontSize={16} fontWeight={600}>the laptop opens the tunnel, outbound</text>
 
       {/* Phase 2 — inbound, riding the pipe phase 1 opened. */}
       <text x={340} y={300} textAnchor="middle" fill={colors.brand} fontSize={17} fontWeight={700}>{phaseTwo}</text>
-      <line x1={240} y1={227} x2={430} y2={227} stroke={colors.brand} strokeWidth={2.5} markerEnd="url(#tp-in)" />
+      <line x1={240} y1={227} x2={430} y2={227} stroke={colors.brand} strokeWidth={2.5} />
+      <ArrowHead d="M 240 227 L 430 227" color={colors.brand} strokeWidth={2.5} size={7} refX={9} />
       <text x={335} y={215} textAnchor="middle" fill={colors.brand} fontSize={16} fontWeight={600}>POST</text>
-      <line x1={670} y1={227} x2={860} y2={227} stroke={colors.brand} strokeWidth={2.5} markerEnd="url(#tp-in)" />
+      <line x1={670} y1={227} x2={860} y2={227} stroke={colors.brand} strokeWidth={2.5} />
+      <ArrowHead d="M 670 227 L 860 227" color={colors.brand} strokeWidth={2.5} size={7} refX={9} />
       <text x={740} y={211} textAnchor="middle" fill={colors.brand} fontSize={16} fontWeight={600}>down the tunnel</text>
 
       <text x={40} y={378} fill={colors.body} fontSize={17}>{footnote}</text>

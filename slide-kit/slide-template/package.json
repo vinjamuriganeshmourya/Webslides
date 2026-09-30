@@ -6,10 +6,11 @@
   "description": "Base template for NxtWave session slide decks: the shared kit (tokens, slide types, player, harnesses) plus a content-free base deck.",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "build:html": "tsc -b && vite build -c vite.singlefile.config.ts && node scripts/inline-assets.mjs && node scripts/inline-fonts.mjs",
+    "gen": "node workflow/export/build-deck-css.mjs",
+    "build": "npm run gen && tsc -b && vite build",
+    "build:html": "npm run gen && tsc -b && vite build -c vite.singlefile.config.ts && node scripts/inline-assets.mjs && node scripts/inline-fonts.mjs",
     "preview": "vite preview",
-    "typecheck": "tsc -b --noEmit",
+    "typecheck": "npm run gen && tsc -b --noEmit",
     "sync:check": "node sync-kit.mjs --check",
     "sync:apply": "node sync-kit.mjs --apply"
   },

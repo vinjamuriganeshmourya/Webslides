@@ -52,6 +52,25 @@ const PAINT = {
   end: colors.success,
 }
 
+/**
+ * Where a line stops short of the box it points at, so the arrowhead's TIP
+ * lands just INSIDE the box edge.
+ *
+ * The marker (`FcArrowDefs`) is 6 stroke-widths wide on a 10-unit box with
+ * `refX="8"`, so on a 2px line its tip sits 2 units x 1.2px = 2.4px PAST the end
+ * of the path. The lines used to stop 6px short, which left every arrowhead
+ * floating 3.6px off its box: first seen on slide 9 of the Authorization deck
+ * (`Rules_beta/Output/authorization`).
+ *
+ * Stopping at exactly 2.4px was the first fix, and it still showed a pale 1px
+ * strip at normal zoom: a pointed tip antialiases to nothing in its last pixel.
+ * So the tip now overshoots by 1.5px. That is safe because the SVG layer sits
+ * UNDER the DOM nodes, so the overshoot tucks beneath the box border.
+ */
+const TIP = 2.4
+const OVERLAP = 1.5
+const STOP = TIP - OVERLAP
+
 export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFigureProps) {
   const g = resolveGraph({ nodes, edges })
   const gateIdx = g.spine.findIndex((n) => n.kind === 'decision')
@@ -105,9 +124,10 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
         {g.spine.slice(0, -1).map((_n, i) => (
           <FcEdgeDraw
             key={`s${i}`}
-            d={`M ${left(i) + SLOT} ${yMid} H ${left(i + 1) - 6}`}
+            d={`M ${left(i) + SLOT} ${yMid} H ${left(i + 1) - STOP}`}
             at={i * 2 + 1} shown={shown[i * 2 + 1]}
             stroke={PAINT.main}
+            crisp
             markerEnd="url(#spine-main)"
           />
         ))}
@@ -116,9 +136,10 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
             what makes it read as leaving the line rather than continuing it. */}
         {altNode && gateIdx >= 0 && (
           <FcEdgeDraw
-            d={`M ${cx(gateIdx)} ${SPINE_Y + NODE_H} V ${ALT_Y - 6}`}
+            d={`M ${cx(gateIdx)} ${SPINE_Y + NODE_H} V ${ALT_Y - STOP}`}
             at={ALT_EDGE} shown={shown[ALT_EDGE]}
             stroke={PAINT.alt}
+            crisp
             markerEnd="url(#spine-alt)"
           />
         )}
@@ -127,10 +148,11 @@ export function SpineFlow({ nodes, edges, caption, className = '' }: FlowchartFi
             into the step it returns to, so it never crosses the spine. */}
         {loopEdge && loopTargetIdx >= 0 && altNode && (
           <FcEdgeDraw
-            d={`M ${left(gateIdx)} ${altMid} H ${cx(loopTargetIdx)} V ${SPINE_Y + NODE_H + 6}`}
+            d={`M ${left(gateIdx)} ${altMid} H ${cx(loopTargetIdx)} V ${SPINE_Y + NODE_H + STOP}`}
             at={LOOP} shown={shown[LOOP]}
             stroke={PAINT.alt}
             dashed
+            crisp
             markerEnd="url(#spine-alt)"
           />
         )}

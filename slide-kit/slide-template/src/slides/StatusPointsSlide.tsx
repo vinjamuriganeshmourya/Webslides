@@ -1,5 +1,5 @@
 import { SlideBase } from '@/ui/SlideBase'
-import { SlideHeader } from '@/ui/SlideHeader'
+import { ZonedFrame } from '@/ui/ZonedFrame'
 import { StatusList } from '@/ui/StatusList'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
 import { SLIDE_FAMILY } from '@/motion/continuity'
@@ -40,31 +40,26 @@ export function StatusPointsSlide({
   stepped = true,
   lesson,
 }: StatusPointsSlideProps) {
-  /* Same lead-less guard as `ContentSlide`: a header with no lead stops at
-     y=168, and a wide figure following it reaches into the instructor-video
-     rectangle at x 913..1280, y 0..220. The recovered space goes to the text. */
-  const visualGuard = lead ? '' : 'pt-[52px]'
+  /* No lead-less guard any more: the zoned body box starts at y=221, the
+     instructor-video rectangle's floor, so a wide figure cannot reach into it. */
   const immediate = Boolean(children) || !stepped
   return (
-    <SlideBase variant="light" lesson={lesson}>
-      <div className="flex h-full flex-col">
-        <SlideHeader kicker={kicker} title={title} lead={lead} tone={tone} />
-        <div className="flex min-h-0 flex-1 flex-col justify-center">
-          {children ? (
-            /* The list takes the wider column, matching `ContentSlide`: a
-               wrapped row in a narrow column reads as though it were set larger
-               than its neighbours even though every row is the same size. */
-            <div className="grid grid-cols-[1.4fr_1fr] items-center gap-10">
-              <StatusList items={items} immediate />
-              <RevealGroup className={visualGuard}>
-                <Reveal dir="up">{children}</Reveal>
-              </RevealGroup>
-            </div>
-          ) : (
-            <StatusList items={items} immediate={immediate} />
-          )}
-        </div>
-      </div>
+    <SlideBase variant="light" lesson={lesson} padded={false}>
+      <ZonedFrame kicker={kicker} title={title} lead={lead} tone={tone}>
+        {children ? (
+          /* The list takes the wider column, matching `ContentSlide`: a
+             wrapped row in a narrow column reads as though it were set larger
+             than its neighbours even though every row is the same size. */
+          <div className="grid grid-cols-[1.4fr_1fr] items-center gap-10">
+            <StatusList items={items} immediate />
+            <RevealGroup>
+              <Reveal dir="up">{children}</Reveal>
+            </RevealGroup>
+          </div>
+        ) : (
+          <StatusList items={items} immediate={immediate} />
+        )}
+      </ZonedFrame>
     </SlideBase>
   )
 }

@@ -144,5 +144,5 @@ Then register the produced files in `src/ui/characters/manifest.ts` and
 
 Edit `tailwind.config.ts` (and mirror `src/design/tokens.ts`). Palette:
 primary `#0B5FFF`, teal `#12B5A8`, accent `#FF8A3D`, success `#16A34A`.
-Fonts: **Sora** (headings) + **Inter** (body) + **JetBrains Mono** (code).
+Fonts: **Poppins** (headings) + **Inter** (kicker and body) + **JetBrains Mono** (code).
 ```

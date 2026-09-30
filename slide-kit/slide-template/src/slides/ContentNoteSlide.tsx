@@ -1,5 +1,5 @@
 import { SlideBase } from '@/ui/SlideBase'
-import { SlideHeader } from '@/ui/SlideHeader'
+import { ZonedFrame } from '@/ui/ZonedFrame'
 import { BulletList } from '@/ui/content'
 import { Callout } from '@/ui/Callout'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
@@ -26,73 +26,53 @@ export function ContentNoteSlide({
   children,
   lesson,
 }: ContentNoteSlideProps) {
+  const noteBlock = (
+    <Callout
+      kind={note.kind}
+      title={note.title}
+      icon={note.icon}
+      className="max-w-none text-body-lg shadow-card ring-1 ring-black/[0.04]"
+    >
+      {note.body}
+    </Callout>
+  )
   return (
-    <SlideBase variant="light" lesson={lesson}>
+    <SlideBase variant="light" lesson={lesson} padded={false}>
       {/*
-        `pb-20` biases the centred body group upward. With the paired auto margins
-        below, free space splits evenly, which puts the group dead centre and
-        slightly low against the header. Reserving padding at the bottom shrinks the
-        space being split, so the group lifts by half that padding while staying
-        centred within what remains.
+        ZONED (content rule 22). The header zone carries the kicker and title,
+        the lead opens the body box, and the body group (points, children, note)
+        is centred in C.png's band on y=434 by `ZonedFrame`. That replaced a
+        `pb-20` bias and paired auto margins, which centred the group in whatever
+        height the header happened to leave.
+
+        The blocks share ONE `RevealGroup` with no wrapper between it and its
+        `Reveal`s: a plain div there breaks framer's variant propagation and
+        kills the stagger.
       */}
-      <RevealGroup className="flex h-full flex-col pb-20" stagger={0.1}>
-        <Reveal dir="up">
-          <SlideHeader kicker={kicker} title={title} lead={lead} tone={tone} />
-        </Reveal>
+      <ZonedFrame kicker={kicker} title={title} lead={lead} tone={tone}>
+        <RevealGroup className="flex flex-col" stagger={0.1}>
+          {/* `noteFirst` puts the definition being taught above its evidence. */}
+          {noteFirst && <Reveal dir="up">{noteBlock}</Reveal>}
 
-        {/*
-          VERTICAL CENTRING WITHOUT RESTRUCTURING
-          The header stays pinned at the top; everything after it is centred in the
-          leftover height. That is done with paired auto margins (`mt-auto` on the
-          first body block, `mb-auto` on the note) rather than by wrapping these in
-          a flex container, because `RevealGroup` is a framer-motion component and
-          a plain wrapper div would break variant propagation, killing the entrance
-          stagger on every child.
+          {points && (
+            <Reveal dir="up" className={noteFirst ? 'mt-10' : undefined}>
+              <BulletList items={points} tone={tone} />
+            </Reveal>
+          )}
 
-          Previously the note carried `mt-auto` alone, which pinned it to the floor.
-          That reads fine with several bullets but on a sparse slide it left the
-          bullet stranded at the top and the note at the bottom with a hole between.
-        */}
-        {/* `noteFirst` swaps the order: the note carries the top auto margin and the
-            points carry the bottom one, so the pair stays centred either way. */}
-        {noteFirst && (
-          <Reveal dir="up" className="mt-auto">
-            <Callout
-              kind={note.kind}
-              title={note.title}
-              icon={note.icon}
-              className="max-w-none text-body-lg shadow-card ring-1 ring-black/[0.04]"
-            >
-              {note.body}
-            </Callout>
-          </Reveal>
-        )}
+          {children && (
+            <Reveal dir="up" className={points || noteFirst ? 'mt-6' : undefined}>
+              {children}
+            </Reveal>
+          )}
 
-        {points && (
-          <Reveal dir="up" className={noteFirst ? 'mb-auto mt-14' : 'mt-auto'}>
-            <BulletList items={points} tone={tone} className="mt-6" />
-          </Reveal>
-        )}
-
-        {children && (
-          <Reveal dir="up" className={points || noteFirst ? undefined : 'mt-auto'}>
-            <div className="mt-6">{children}</div>
-          </Reveal>
-        )}
-
-        {!noteFirst && (
-          <Reveal dir="up" className={`mb-auto ${points || children ? 'mt-16' : 'mt-10'}`}>
-            <Callout
-              kind={note.kind}
-              title={note.title}
-              icon={note.icon}
-              className="max-w-none text-body-lg shadow-card ring-1 ring-black/[0.04]"
-            >
-              {note.body}
-            </Callout>
-          </Reveal>
-        )}
-      </RevealGroup>
+          {!noteFirst && (
+            <Reveal dir="up" className={points || children ? 'mt-10' : undefined}>
+              {noteBlock}
+            </Reveal>
+          )}
+        </RevealGroup>
+      </ZonedFrame>
     </SlideBase>
   )
 }

@@ -182,8 +182,8 @@ build**. `npm run build` runs `tsc -b` first for exactly this reason.
 Path alias `@/` → `src/`, declared in *both* `vite.config.ts` and
 `tsconfig.app.json`.
 
-Fonts load from Google Fonts in `index.html`: **Sora** (headings), **Inter**
-(body), **JetBrains Mono** (code). Match those when reading a Figma text style —
+Fonts load from Google Fonts in `index.html`: **Poppins** (headings), **Inter**
+(kicker and body), **JetBrains Mono** (code). Match those when reading a Figma text style —
 if the design specifies a different family, raise it rather than silently
 substituting.
 
@@ -268,7 +268,53 @@ Inline `style` is legitimate in exactly three cases:
 3. anything driven by a token variable at runtime.
 
 **No responsive design.** There are no breakpoints anywhere. The 1280×720 stage
-is scaled with a transform to fit the viewport; write fixed px and trust it.
+is fitted to the viewport by `SlideStage`; write fixed px and trust it.
+
+**The stage is fitted with CSS `zoom`, not `transform: scale()`, and that is a
+rendering-correctness decision rather than a style one.** `transform` is a PAINT
+operation: the slide is still laid out for a 1280px canvas, rasterised at that
+size and then stretched as a texture, so on a 1080p projector it is 1.5 pixels'
+worth of information spread over 2.25. Whether it shows depends on the
+compositor, which is why the deck rendered crisp in one browser and soft in
+another, and why browser zoom "fixed" it (zoom raises the device scale factor and
+forces a re-rasterise). `zoom` is a LAYOUT operation, so the glyphs are
+rasterised at the size they are shown at, in every engine.
+
+Two things make that safe and both are load-bearing:
+
+- **`.slide-stage` carries `text-rendering: geometricPrecision`.** Re-laying out
+  at a new size means glyph advances have to scale linearly, and by default they
+  are rounded to the pixel grid. Without this, `fit-check.mjs` measured wrap
+  points moving up to 73px between 1x and 1.5x: the same number of lines with
+  different words on them. With it, the layout is stable to a fraction of a
+  pixel.
+- **`perspective` and `transform-style: preserve-3d` are applied only when the
+  playing slide's transition is `flip`.** They used to be unconditional, which
+  put every slide of every deck into a 3D rendering context: the subtree is
+  flattened into a texture up front, and a texture cannot be re-rasterised when
+  it is scaled. The deck was paying that on all 44 slides for one transition no
+  shipping deck uses.
+
+`?fit=transform` forces the old path and `?fit=zoom` forces the new one, so the
+two can be compared in the same browser. Firefox before 126 does not support
+`zoom` and gets the `transform` path automatically via `CSS.supports`.
+
+**The slide is centred by a plain box that CSS alignment can see.** The zoomed
+stage sits inside an unzoomed div that `SlideStage` sizes in JS to the real
+rendered size, and the flex centres that. It is not decoration: `place-items-center`
+on the zoomed element itself was the first version and both engines pinned the
+slide to the top-left with the whole letterbox on the right and the bottom, 578px
+of it at 2000x800, because **grid sizes and aligns an item by its UNZOOMED box**.
+The old `transform` path has its own version of the same trap, described in that
+file. The rule, which cost two rounds to learn: whatever is doing the scaling,
+hand CSS alignment a box whose size it can see.
+
+**`node fit-check.mjs` after any change to the type scale.** It measures every
+text element at 1x, 1.5x and 2x in Chromium and Firefox and fails on a changed
+line count or a box that drifts more than 1.5px once normalised, then checks the
+letterbox is even at five aspect ratios in both fit modes. **None of those five
+is 16:9**, because a stage that fits both axes exactly has no letterbox to get
+wrong, which is exactly how the centring bug got past the first round of checks.
 
 **One hard colour rule.** The deck has a dark family and a light family, and
 they do not share accents:
@@ -410,6 +456,8 @@ npx tsc -b --noEmit         # fastest correctness check
 export CHROME_PATH=/opt/google/chrome/chrome
 node qa.mjs                 # overflow + logo per slide
 node video-safe.mjs         # must print CLEAN
+node align-check.mjs        # header datum drift
+node fit-check.mjs          # layout identical at 1x/1.5x/2x, and centred
 node workflow/export/build-reveal-steps.mjs http://localhost:<port> <count>
 
 node sync-kit.mjs --check ../../django_deployement_course/deployement_session_1_v2   # is that session behind?

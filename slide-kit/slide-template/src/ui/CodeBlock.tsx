@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import { colors } from '@/design/tokens'
 
 /**
  * Lightweight, dependency-free code panel with a title bar and a conservative
@@ -121,11 +122,41 @@ function highlightYamlLine(line: string) {
   ]
 }
 
+/**
+ * What one line of a code box is doing, on a TEACHING slide.
+ *
+ * `highlight` could only say "look here". A trace needs more: the line running
+ * now, the lines already run, a line the program never reaches, a line that is
+ * wrong and a line that is suspicious. PF 14 "For Loop" drew all six by hand in
+ * one deck, on a white slab, and the colours did not survive the move to the
+ * kit's dark ground. These are picked for `night-2`.
+ */
+export type CodeLineState = 'mark' | 'now' | 'ran' | 'dead' | 'warn' | 'error'
+
+const LINE_STATE: Record<CodeLineState, { background?: string; boxShadow?: string; opacity?: number }> = {
+  mark: { background: 'rgba(11,95,255,0.26)', boxShadow: 'inset 3px 0 0 #7FA6FF' },
+  now: { background: 'rgba(11,95,255,0.34)', boxShadow: 'inset 3px 0 0 #7FA6FF' },
+  ran: { background: 'rgba(255,255,255,0.06)' },
+  dead: { opacity: 0.3 },
+  warn: { background: 'rgba(255,176,85,0.2)', boxShadow: 'inset 3px 0 0 #FFB055' },
+  error: { background: 'rgba(239,68,68,0.22)', boxShadow: 'inset 3px 0 0 #EF4444' },
+}
+
+/** The loop-back arrow's colour: the kit's accent, the one warm hue on the dark ground. */
+const LOOP = '#FF8A3D'
+/** Row labels sit on the light slide beside the box, in the brand's dark blue. */
+const LABEL = '#0146C7'
+
 export function CodeBlock({
   code,
   filename,
   language = 'python',
+  chip = true,
   highlight = [],
+  lines: lineStates,
+  loop,
+  labels,
+  rows,
   showLineNumbers = true,
   className = '',
   maxHeight = 470,
@@ -133,10 +164,31 @@ export function CodeBlock({
   fontSize,
 }: {
   code: string
+  /**
+   * The word in the title bar. Content rule 26: the LANGUAGE ("Python"), never
+   * an invented file name, unless the file itself is the lesson (a Dockerfile).
+   */
   filename?: string
   language?: string
+  /**
+   * The language pill on the right of the title bar. Turn it off when
+   * `filename` already names the language, so the word appears once (rule 26).
+   */
+  chip?: boolean
   /** 1-based line numbers to emphasize */
   highlight?: number[]
+  /** Per-line state for a trace: `{ 3: 'now', 1: 'ran', 2: 'ran' }`. Wins over `highlight`. */
+  lines?: Record<number, CodeLineState>
+  /** A loop-back arrow in the gutter from the first line to the last, both 1-based. */
+  loop?: [number, number]
+  /** Labels pinned to the right of the box, one per 1-based line: `{ 3: 'Initialization' }`. */
+  labels?: Record<number, string>
+  /**
+   * Floor, in ROWS, for the code area. The same box on consecutive slides: a run
+   * of code slides passes one `rows` so a shorter file sits in the same box and
+   * nothing jumps as the deck advances (user, PF 14, 2026-09-29).
+   */
+  rows?: number
   showLineNumbers?: boolean
   className?: string
   /**
@@ -174,8 +226,20 @@ export function CodeBlock({
   const hl = new Set(highlight)
   // `language` is also the chip label, so match case-insensitively.
   const isYaml = /^ya?ml$/i.test(language)
-  return (
-    <div className={`overflow-hidden rounded-card bg-night-2 shadow-card ${className}`}>
+  /* One row's height, which the loop arrow and the labels are placed on. The
+     code area's line-height is 1.55 when `fontSize` is set and `text-code`'s 1.6
+     otherwise; every row is pinned to it so a trace tint cannot change it. */
+  const fs = fontSize ?? 17
+  const rowH = Math.round(fs * (fontSize ? 1.55 : 1.6))
+  const PAD = 16 // py-4
+  const floor = rows ? rows * rowH + PAD * 2 : minHeight
+  const rowMid = (n: number) => PAD + (n - 1) * rowH + rowH / 2
+  /* Only a panel that uses the trace features gets pinned rows: every other
+     session's panels keep their natural line boxes, unchanged by a sync. */
+  const pin = Boolean(rows || loop || labels || lineStates)
+
+  const box = (
+    <div className={`overflow-hidden rounded-card bg-night-2 shadow-card ${labels ? '' : className}`}>
       <div className="flex items-center gap-2 border-b border-white/10 px-4 py-2.5">
         <span className="h-3 w-3 rounded-full bg-[#FF5F57]" />
         <span className="h-3 w-3 rounded-full bg-[#FEBC2E]" />
@@ -183,35 +247,109 @@ export function CodeBlock({
         {filename && (
           <span className="ml-2 font-mono text-body-sm text-white/60">{filename}</span>
         )}
-        <span className="ml-auto rounded-pill bg-white/10 px-2 py-0.5 font-mono text-xs uppercase tracking-wide text-white/50">
-          {language}
-        </span>
+        {chip && (
+          <span className="ml-auto rounded-pill bg-white/10 px-2 py-0.5 font-mono text-xs uppercase tracking-wide text-white/50">
+            {language}
+          </span>
+        )}
       </div>
       <pre
-        className="overflow-auto px-4 py-4 font-mono text-code leading-relaxed"
+        className="relative overflow-auto px-4 py-4 font-mono text-code leading-relaxed"
         style={{
           maxHeight,
-          ...(minHeight ? { minHeight } : {}),
+          ...(floor ? { minHeight: floor } : {}),
           ...(fontSize ? { fontSize, lineHeight: 1.55 } : {}),
         }}
       >
-        <code className="grid">
-          {lines.map((line, i) => (
+        {loop && (
+          /* the loop-back arrow: dashed, in the left padding, arrowhead into the
+             loop's first line. A filled triangle, not a CSS border trick, so it
+             sits centred on its shaft at every size. */
+          <span
+            aria-hidden
+            className="pointer-events-none absolute"
+            style={{
+              left: 3,
+              top: rowMid(loop[0]),
+              width: 10,
+              height: rowMid(loop[1]) - rowMid(loop[0]),
+              border: `2px dashed ${LOOP}`,
+              borderRight: 0,
+              borderRadius: '6px 0 0 6px',
+            }}
+          >
             <span
-              key={i}
-              className="grid grid-cols-[auto_1fr] gap-4 rounded px-1"
-              style={hl.has(i + 1) ? { background: 'rgba(11,95,255,0.18)' } : undefined}
-            >
-              {showLineNumbers && (
-                <span className="select-none text-right text-white/25">{i + 1}</span>
-              )}
-              <span className="text-white/90">
-                {line ? (isYaml ? highlightYamlLine(line) : highlightLine(line)) : ' '}
+              className="absolute"
+              style={{
+                right: -8,
+                top: -6,
+                width: 9,
+                height: 10,
+                background: LOOP,
+                clipPath: 'polygon(0 0, 100% 50%, 0 100%)',
+              }}
+            />
+          </span>
+        )}
+        <code className="grid">
+          {lines.map((line, i) => {
+            const state = lineStates?.[i + 1] ?? (hl.has(i + 1) ? 'mark' : undefined)
+            const look = state ? LINE_STATE[state] : undefined
+            return (
+              <span
+                key={i}
+                className={pin ? '-mx-4 grid grid-cols-[auto_1fr] gap-4 px-5' : 'grid grid-cols-[auto_1fr] gap-4 rounded px-1'}
+                style={{
+                  ...(pin ? { height: rowH, alignItems: 'center' } : {}),
+                  transition: 'background-color 200ms, opacity 200ms, box-shadow 200ms',
+                  ...(look ?? {}),
+                  ...(state === 'mark' && !lineStates ? { background: 'rgba(11,95,255,0.18)', boxShadow: 'none' } : {}),
+                }}
+              >
+                {showLineNumbers && (
+                  <span className="select-none text-right text-white/25">{i + 1}</span>
+                )}
+                <span className="text-white/90">
+                  {line ? (isYaml ? highlightYamlLine(line) : highlightLine(line)) : ' '}
+                </span>
               </span>
-            </span>
-          ))}
+            )
+          })}
         </code>
       </pre>
+    </div>
+  )
+
+  if (!labels) return box
+  /* Labels need to sit OUTSIDE the rounded, overflow-hidden box, so the box gets
+     a relative wrapper and the labels are placed on the same row grid. The title
+     bar is 44px (py-2.5 around a 24px line). */
+  const BAR = 45
+  return (
+    <div className={`relative ${className}`}>
+      {box}
+      {Object.entries(labels).map(([n, text]) => (
+        <span
+          key={n}
+          className="pointer-events-none absolute left-full flex items-center whitespace-nowrap font-semibold text-body-lg"
+          style={{ top: BAR + rowMid(+n) - 16, height: 32, paddingLeft: 14, gap: 12, color: LABEL }}
+        >
+          <span className="relative block" style={{ width: 30, height: 2, background: colors.brand }}>
+            <span
+              className="absolute"
+              style={{
+                right: -8,
+                top: -5,
+                width: 10,
+                height: 12,
+                background: colors.brand,
+                clipPath: 'polygon(0 0, 100% 50%, 0 100%)',
+              }}
+            />
+          </span>
+          <span style={{ marginLeft: 6 }}>{text}</span>
+        </span>
+      ))}
     </div>
   )
 }

@@ -43,6 +43,11 @@ export interface RecapSlideProps extends Base {
   kicker?: string
   title?: ReactNode
   points: (BulletItem | string)[]
+  /**
+   * All the points on landing instead of one per click. For a recap the room
+   * reads as one list (PF 14 "For Loop" showed its three at once).
+   */
+  immediate?: boolean
 }
 
 export interface AgendaSlideProps extends Base {
@@ -191,6 +196,13 @@ export interface QuizTimeSlideProps extends Base {
   /** Defaults to "Quiz Time!". */
   title?: ReactNode
   subtitle?: ReactNode
+  /**
+   * The pill above the title. Defaults to "Your turn". PF 14 "For Loop" carries
+   * its own ("Quiz time") and, with it, the three instructions below.
+   */
+  kicker?: string
+  /** What the room does, in order, under the subtitle: "Open the quiz on your portal". */
+  steps?: ReactNode[]
 }
 
 export interface ThankYouSlideProps extends Base {

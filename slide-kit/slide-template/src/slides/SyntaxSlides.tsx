@@ -1,5 +1,5 @@
 import { SlideBase } from '@/ui/SlideBase'
-import { SlideHeader } from '@/ui/SlideHeader'
+import { ZonedFrame } from '@/ui/ZonedFrame'
 import { Callout } from '@/ui/Callout'
 import { SyntaxBreakdown } from '@/ui/SyntaxBreakdown'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
@@ -47,12 +47,10 @@ import type { CodeSyntaxSlideProps, CommandSyntaxSlideProps } from './types'
  * Past five, split across two slides. That is usually the better lesson anyway:
  * five slots is already more than one idea.
  *
- * WHY THE LEAD-LESS GUARD
- *
- * A header with no lead stops at y=168, and the specimen panel is full width, so
- * without the guard its top-right corner sits inside the instructor-video
- * rectangle (x 913..1280, y 0..220) and `video-safe.mjs` fails. `ContentSlide`
- * carries the same 52px guard for the same reason.
+ * NO LEAD-LESS GUARD. The specimen panel is full width, and a header with no
+ * lead used to let it rise into the instructor-video rectangle (x 913..1280,
+ * y 0..220), so it carried a 52px guard. The zoned body box (content rule 22)
+ * starts at y=221 on every slide, which retired the guard.
  */
 function SyntaxSlide({
   kicker,
@@ -68,31 +66,27 @@ function SyntaxSlide({
   mode: 'code' | 'command'
   language?: string
 }) {
-  const guard = lead ? '' : 'pt-[52px]'
   return (
-    <SlideBase variant="light" lesson={lesson}>
-      <div className="flex h-full flex-col">
-        <SlideHeader kicker={kicker} title={title} lead={lead} />
-        <div className="flex min-h-0 flex-1 flex-col justify-center">
-          <RevealGroup className={guard}>
-            <Reveal dir="up">
-              <SyntaxBreakdown
-                parts={parts}
-                mode={mode}
-                language={language}
-                stepped={stepped}
-              />
+    <SlideBase variant="light" lesson={lesson} padded={false}>
+      <ZonedFrame kicker={kicker} title={title} lead={lead}>
+        <RevealGroup>
+          <Reveal dir="up">
+            <SyntaxBreakdown
+              parts={parts}
+              mode={mode}
+              language={language}
+              stepped={stepped}
+            />
+          </Reveal>
+          {note && (
+            <Reveal dir="up" delay={0.06} className="mt-6">
+              <Callout kind={note.kind} title={note.title} asStep={false}>
+                {note.body}
+              </Callout>
             </Reveal>
-            {note && (
-              <Reveal dir="up" delay={0.06} className="mt-6">
-                <Callout kind={note.kind} title={note.title} asStep={false}>
-                  {note.body}
-                </Callout>
-              </Reveal>
-            )}
-          </RevealGroup>
-        </div>
-      </div>
+          )}
+        </RevealGroup>
+      </ZonedFrame>
     </SlideBase>
   )
 }

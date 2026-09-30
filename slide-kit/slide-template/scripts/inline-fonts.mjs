@@ -1,6 +1,6 @@
 // Post-build step for the single-file bundle: replaces the Google Fonts <link>
 // in dist-single/index.html with a <style> block whose @font-face rules carry
-// base64 woff2 payloads, so the deck renders in Sora / Inter / JetBrains Mono
+// base64 woff2 payloads, so the deck renders in Poppins / Inter / JetBrains Mono
 // with no network at all.
 //
 // Run AFTER inline-assets.mjs. Requires network access at build time only.

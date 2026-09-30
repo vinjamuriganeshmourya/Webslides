@@ -1,5 +1,5 @@
 import { SlideBase } from '@/ui/SlideBase'
-import { SlideHeader } from '@/ui/SlideHeader'
+import { ZonedFrame } from '@/ui/ZonedFrame'
 import { ChatThread } from '@/ui/ChatThread'
 import { Illustration } from '@/ui/characters/Illustration'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
@@ -45,15 +45,12 @@ export function ChatSlide({
   lesson,
 }: ChatSlideProps) {
   return (
-    <SlideBase variant="light" lesson={lesson}>
-      <div className="flex h-full flex-col">
-        <SlideHeader kicker={kicker} title={title} lead={lead} tone={tone} />
-        <div className="flex min-h-0 flex-1 flex-col justify-center">
-          <div className="w-full max-w-[840px]">
-            <ChatThread turns={turns} who={speakers} tone={tone} immediate={!stepped} />
-          </div>
+    <SlideBase variant="light" lesson={lesson} padded={false}>
+      <ZonedFrame kicker={kicker} title={title} lead={lead} tone={tone}>
+        <div className="w-full max-w-[840px]">
+          <ChatThread turns={turns} who={speakers} tone={tone} immediate={!stepped} />
         </div>
-      </div>
+      </ZonedFrame>
     </SlideBase>
   )
 }
@@ -98,28 +95,25 @@ export function ChatCharacterSlide({
   lesson,
 }: ChatCharacterSlideProps) {
   return (
-    <SlideBase variant="light" lesson={lesson}>
-      <div className="flex h-full flex-col">
-        <SlideHeader kicker={kicker} title={title} lead={lead} tone={tone} />
-        <div className="flex min-h-0 flex-1 flex-col justify-center">
-          <div className="flex items-center gap-10">
-            {/*
-              The character reveals WITH the first turn rather than being gated
-              behind the thread's steps: hard rule 6 says text and its supporting
-              visual arrive together, and a character that walks on after the
-              conversation has finished is the visual arriving last.
-            */}
-            <RevealGroup className="shrink-0">
-              <Reveal dir="up">
-                <Illustration name={character} facing="right" className="h-[230px] w-[190px]" />
-              </Reveal>
-            </RevealGroup>
-            <div className="min-w-0 flex-1" style={{ maxWidth: 600 }}>
-              <ChatThread turns={turns} who={speakers} tone={tone} immediate={!stepped} />
-            </div>
+    <SlideBase variant="light" lesson={lesson} padded={false}>
+      <ZonedFrame kicker={kicker} title={title} lead={lead} tone={tone}>
+        <div className="flex items-center gap-10">
+          {/*
+            The character reveals WITH the first turn rather than being gated
+            behind the thread's steps: hard rule 6 says text and its supporting
+            visual arrive together, and a character that walks on after the
+            conversation has finished is the visual arriving last.
+          */}
+          <RevealGroup className="shrink-0">
+            <Reveal dir="up">
+              <Illustration name={character} facing="right" className="h-[230px] w-[190px]" />
+            </Reveal>
+          </RevealGroup>
+          <div className="min-w-0 flex-1" style={{ maxWidth: 600 }}>
+            <ChatThread turns={turns} who={speakers} tone={tone} immediate={!stepped} />
           </div>
         </div>
-      </div>
+      </ZonedFrame>
     </SlideBase>
   )
 }

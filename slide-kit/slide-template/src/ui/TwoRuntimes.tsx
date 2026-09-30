@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { colors, easing } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
+import { ArrowHead } from './figures/ArrowHead'
 
 /**
  * "Your application is not one program. It is two, and neither is any use
@@ -80,33 +81,39 @@ export function TwoRuntimes({ className = '' }: { className?: string }) {
           calling the other and being done. */}
       <div className="flex w-24 shrink-0 flex-col items-center gap-1">
         <svg width={88} height={44} viewBox="0 0 88 44" style={{ overflow: 'visible' }}>
-          <defs>
-            <marker id="tr-r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill={colors.brand} />
-            </marker>
-            <marker id="tr-l" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill={colors.teal} />
-            </marker>
-          </defs>
           <motion.path
             d="M 2 13 L 84 13"
             fill="none"
             stroke={colors.brand}
             strokeWidth={3}
-            markerEnd="url(#tr-r)"
             initial={instant ? false : { pathLength: 0 }}
             animate={{ pathLength: 1 }}
             transition={{ duration: 0.5 * t, delay: 0.6 * t, ease: 'easeOut' }}
+          />
+          <ArrowHead
+            d="M 2 13 L 84 13"
+            color={colors.brand}
+            strokeWidth={3}
+            initial={instant ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 * t, delay: 1.0 * t }}
           />
           <motion.path
             d="M 86 33 L 4 33"
             fill="none"
             stroke={colors.teal}
             strokeWidth={3}
-            markerEnd="url(#tr-l)"
             initial={instant ? false : { pathLength: 0 }}
             animate={{ pathLength: 1 }}
             transition={{ duration: 0.5 * t, delay: 0.85 * t, ease: 'easeOut' }}
+          />
+          <ArrowHead
+            d="M 86 33 L 4 33"
+            color={colors.teal}
+            strokeWidth={3}
+            initial={instant ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 * t, delay: 1.25 * t }}
           />
         </svg>
         <span className="text-center text-xs font-bold" style={{ color: colors.body }}>

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { SlideBase } from '@/ui/SlideBase'
-import { SlideHeader } from '@/ui/SlideHeader'
+import { ZonedFrame } from '@/ui/ZonedFrame'
 import { BulletList } from '@/ui/content'
 import { Media } from './Media'
 import type { ContentImageSlideProps } from './types'
@@ -65,14 +65,11 @@ function MediaFrame({
  * So `left` / `right` / `top` / `bottom` now name where the media sits relative
  * to the POINTS, never relative to the header.
  *
- * THE VIDEO-RECTANGLE GUARD
- *
- * x 913..1280, y 0..220 is held for the instructor video. A lead-less header
- * stops at y=168, and both a right-hand media column and a full-width top media
- * reach past x=913, so without the 52px guard they sit inside it and
- * `video-safe.mjs` fails. `ContentSlide` carries the same guard for the same
- * reason. A media on the LEFT or at the BOTTOM never reaches the rectangle, so it
- * is not held back.
+ * ZONED (content rule 22), in `fill` mode. The media is sized as a percentage
+ * of the well, so the well needs a definite height: it is exactly C.png's band,
+ * y 221..647, less the lead. That band starts at the instructor-video
+ * rectangle's floor, which retired the 52px lead-less guard this used to carry
+ * for a right-hand or top media.
  */
 function ContentWithImage({
   position,
@@ -95,26 +92,25 @@ function ContentWithImage({
 
   const horizontal = position === 'left' || position === 'right'
   const mediaFirst = position === 'left' || position === 'top'
-  /* Only a media that can reach x=913 needs holding below the rectangle. */
-  const reachesTheRectangle = position === 'right' || position === 'top'
-  const guard = !lead && reachesTheRectangle ? 'pt-[52px]' : ''
 
   return (
-    <SlideBase variant="light" lesson={lesson}>
-      <div className="flex h-full flex-col">
-        <SlideHeader kicker={kicker} title={title} lead={lead} tone={tone} />
+    <SlideBase variant="light" lesson={lesson} padded={false}>
+      <ZonedFrame kicker={kicker} title={title} lead={lead} tone={tone} mode="fill">
 
         {horizontal ? (
-          <div className="grid min-h-0 flex-1 grid-cols-2 items-center gap-12">
+          /* `grid-rows-1` pins the one row to the well's definite height. Without
+             it the row sizes to the media's own content, the media's 86%
+             resolves against that, and the figure overran the band by 21px. */
+          <div className="grid min-h-0 flex-1 grid-cols-2 grid-rows-1 items-center gap-12">
             {mediaFirst ? (
               <>
-                <MediaFrame media={media} caption={caption} className={`h-[86%] ${guard}`} />
+                <MediaFrame media={media} caption={caption} className="h-[86%]" />
                 {body}
               </>
             ) : (
               <>
                 {body}
-                <MediaFrame media={media} caption={caption} className={`h-[86%] ${guard}`} />
+                <MediaFrame media={media} caption={caption} className="h-[86%]" />
               </>
             )}
           </div>
@@ -122,7 +118,7 @@ function ContentWithImage({
           <div className="flex min-h-0 flex-1 flex-col gap-5">
             {mediaFirst ? (
               <>
-                <MediaFrame media={media} caption={caption} className={`h-[46%] shrink-0 ${guard}`} />
+                <MediaFrame media={media} caption={caption} className="h-[46%] shrink-0" />
                 <div className="flex min-h-0 flex-1 flex-col justify-center">{body}</div>
               </>
             ) : (
@@ -133,7 +129,7 @@ function ContentWithImage({
             )}
           </div>
         )}
-      </div>
+      </ZonedFrame>
     </SlideBase>
   )
 }
