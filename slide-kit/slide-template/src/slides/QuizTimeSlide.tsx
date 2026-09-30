@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { SlideBase } from '@/ui'
+import { SlideBase, ZonedFrame } from '@/ui'
 import { useInstant } from '@/motion/instant'
 import type { QuizTimeSlideProps } from './types'
 
@@ -62,7 +62,13 @@ const LAYERS = [
 /** Where the bulb's glass sits on the shared canvas, for the glow behind it. */
 const BULB_GLOW = { left: '75%', top: '23%' }
 
-export function QuizTimeSlide({ title = 'Quiz Time!', subtitle, lesson }: QuizTimeSlideProps) {
+export function QuizTimeSlide({
+  title = 'Quiz Time!',
+  subtitle,
+  kicker = 'Your turn',
+  steps,
+  lesson,
+}: QuizTimeSlideProps) {
   const instant = useInstant()
   return (
     /*
@@ -75,6 +81,118 @@ export function QuizTimeSlide({ title = 'Quiz Time!', subtitle, lesson }: QuizTi
           kept inside the canvas so the frame overflow sweep stays clean. */}
       <div className="pointer-events-none absolute bottom-8 left-0 h-80 w-80 rounded-full bg-brand/[0.07] blur-3xl" />
 
+      {steps && steps.length > 0 ? (
+        /*
+          WITH STEPS: the kicker and title go in the standard pinned header
+          (content rules 19 and 22), the subtitle is the lead, and the steps are
+          the body in Space-1. The 88px announcement title cannot share its half
+          with three instructions without wrapping (rule 25), so this variant does
+          not try: it is a content frame that happens to announce a quiz.
+          Added for PF 14 "For Loop" (python_programming/for_loop).
+        */
+        <>
+          <ZonedFrame kicker={kicker} title={title} lead={subtitle} mode="top" bodyWidth={560}>
+            <ol className="flex flex-col gap-3">
+              {steps.map((st, i) => (
+                <li
+                  key={i}
+                  className="flex items-center gap-4 rounded-card bg-white px-5 py-3 text-body-lg text-ink shadow-card-soft ring-1 ring-line"
+                >
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand font-heading text-body-sm font-bold text-white">
+                    {i + 1}
+                  </span>
+                  {st}
+                </li>
+              ))}
+            </ol>
+          </ZonedFrame>
+          <div aria-hidden className="pointer-events-none absolute" style={{ left: 640, top: 180, width: 600, height: 500 }}>
+        {/*
+          right — the character on its stage.
+
+          The stage is sized to fill the right half of the canvas. The top
+          padding is what keeps it legal: the scene is tall enough that, centred,
+          its question mark would reach into the rectangle reserved in the top
+          right for the instructor video, so the whole half is pushed down until
+          the tallest element starts below y=220.
+        */}
+        <motion.div
+          className="relative z-10 flex h-full items-center justify-center pt-[160px]"
+          /*
+            THE ONE ANIMATION FOR THE WHOLE FIGURE. It used to carry only a
+            fade and a slide, with the real entrance happening four times
+            underneath it. Now it is the entrance, so it gains a little scale
+            to have some presence on its own, and it has to honour `instant`
+            like everything else that moves on this slide.
+          */
+          initial={instant ? false : { opacity: 0, x: 36, scale: 0.96 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
+          transition={instant ? { duration: 0 } : { delay: 0.4, duration: 1.2, ease: EASE }}
+        >
+          <div className="relative" style={{ width: STAGE_W, height: STAGE_H }}>
+            {/*
+              NO DISC BEHIND THE FIGURE.
+
+              There used to be a pale blue circle here, sized to the stage, that
+              grounded the old flat character. The keyed art does not need it:
+              the four layers carry their own soft shadows, and the circle read
+              as a plate the illustration had been dropped onto rather than as
+              part of the composition.
+            */}
+            {/*
+              THE BULB'S GLOW.
+
+              Drawn here rather than baked into the art. The export carried a
+              blurred backdrop wash behind everything, which had to go when the
+              layers were keyed out — it belonged to no single object and left a
+              grey cast on the slide. A CSS radial glow tied to the bulb's own
+              entrance says the same thing and costs nothing, and it can breathe
+              after it lands, which a baked wash cannot.
+            */}
+            <motion.span
+              aria-hidden
+              className="pointer-events-none absolute z-[2] rounded-full"
+              style={{
+                left: BULB_GLOW.left,
+                top: BULB_GLOW.top,
+                width: 210,
+                height: 210,
+                background:
+                  'radial-gradient(closest-side, rgba(255,196,60,0.42), rgba(255,196,60,0.12) 55%, rgba(255,196,60,0))',
+              }}
+              initial={instant ? false : { opacity: 0, scale: 0.5, x: '-50%', y: '-50%' }}
+              animate={
+                instant
+                  ? { opacity: 1, scale: 1, x: '-50%', y: '-50%' }
+                  : { opacity: [0, 1, 0.72, 1], scale: [0.5, 1.12, 1, 1.06], x: '-50%', y: '-50%' }
+              }
+              transition={
+                instant
+                  ? { duration: 0 }
+                  : { delay: 1.5, duration: 2.6, times: [0, 0.22, 0.55, 1], ease: EASE, repeat: Infinity, repeatType: 'reverse' }
+              }
+            />
+
+            {/*
+              The four layers, stacked on one canvas to recompose the artwork.
+              Static: the stage container above is what animates, so the scene
+              arrives as one picture. See LAYERS.
+            */}
+            {LAYERS.map((layer) => (
+              <img
+                key={layer.key}
+                src={layer.src}
+                alt=""
+                draggable={false}
+                className="absolute inset-0 h-full w-full object-contain"
+                style={{ zIndex: layer.z }}
+              />
+            ))}
+          </div>
+        </motion.div>
+          </div>
+        </>
+      ) : (
       <div className="grid h-full grid-cols-2 items-center">
         {/* left — the announcement, centred against the character */}
         <div className="relative z-10">
@@ -86,7 +204,7 @@ export function QuizTimeSlide({ title = 'Quiz Time!', subtitle, lesson }: QuizTi
           >
             <span className="h-2.5 w-2.5 rounded-full bg-accent" />
             <span className="text-body-sm font-bold uppercase tracking-[0.18em] text-brand-700">
-              Your turn
+              {kicker}
             </span>
           </motion.div>
 
@@ -117,6 +235,7 @@ export function QuizTimeSlide({ title = 'Quiz Time!', subtitle, lesson }: QuizTi
               {subtitle}
             </motion.p>
           )}
+
         </div>
 
         {/*
@@ -203,6 +322,7 @@ export function QuizTimeSlide({ title = 'Quiz Time!', subtitle, lesson }: QuizTi
           </div>
         </motion.div>
       </div>
+      )}
     </SlideBase>
   )
 }

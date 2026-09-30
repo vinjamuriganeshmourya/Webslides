@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { colors, easing } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
+import { ArrowHead } from './figures/ArrowHead'
 
 /**
  * The session's last idea, and the one the TR calls the number one
@@ -100,21 +101,24 @@ export function ComposeNetwork({ act }: { act: 0 | 1 }) {
       <Container x={BE.x} y={BE.y} name="backend" runtime="Python" logo="/assets/tech/python.png" />
 
       <svg className="absolute inset-0" width={W} height={H} style={{ overflow: 'visible' }}>
-        <defs>
-          <marker id={`arw-${act}`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill={stroke} />
-          </marker>
-        </defs>
         <motion.path
           d={path}
           fill="none"
           stroke={stroke}
           strokeWidth={3}
           strokeLinecap="round"
-          markerEnd={`url(#arw-${act})`}
           initial={instant ? false : { pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1.1 * t, delay: 0.5 * t, ease: 'easeInOut' }}
+        />
+        <ArrowHead
+          key={`arw-${act}`}
+          d={path}
+          color={stroke}
+          strokeWidth={3}
+          initial={instant ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.25 * t, delay: 1.5 * t }}
         />
       </svg>
 

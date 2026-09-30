@@ -1,4 +1,5 @@
 import { colors } from '@/design/tokens'
+import { ArrowHead } from './figures/ArrowHead'
 
 /**
  * SocketBridge — one process asking another to do the work, across a boundary
@@ -70,11 +71,6 @@ export function SocketBridge({
   return (
     <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img"
       aria-label="The docker command inside a container, talking over a mounted socket to the Docker daemon on the host">
-      <defs>
-        <marker id="sb-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill={colors.brand} />
-        </marker>
-      </defs>
 
       <Boundary x={40} y={70} w={470} h={250} label={containerLabel} tone={colors.brand} />
       <Boundary x={560} y={70} w={500} h={250} label={hostLabel} tone={colors.ink} />
@@ -82,7 +78,8 @@ export function SocketBridge({
       <Box x={90} y={160} w={200} title="docker CLI" sub="installed inside" tone={colors.brand} />
       <Box x={790} y={160} w={220} title="Docker daemon" sub="already running here" tone={colors.brandDark} />
 
-      <line x1={290} y1={197} x2={790} y2={197} stroke={colors.brand} strokeWidth={2.5} markerEnd="url(#sb-arrow)" />
+      <line x1={290} y1={197} x2={790} y2={197} stroke={colors.brand} strokeWidth={2.5} />
+      <ArrowHead d="M 290 197 L 790 197" color={colors.brand} strokeWidth={2.5} size={7} refX={9} />
       {/* Placed left of the socket box, never at the arrow midpoint. See the header. */}
       <text x={393} y={179} textAnchor="middle" fill={colors.brand} fontSize={16} fontWeight={600}>{wireLabel}</text>
 

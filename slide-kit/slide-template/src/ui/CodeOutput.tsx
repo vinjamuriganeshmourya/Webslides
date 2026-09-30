@@ -85,26 +85,52 @@ export interface CodeOutputPane {
   showLineNumbers?: boolean
 }
 
-const OUT_INK = { result: colors.ink, error: colors.danger } as const
+const OUT_INK = { result: colors.ink, error: colors.danger, input: colors.ink } as const
+const OUT_DOT = { result: colors.success, error: colors.danger, input: colors.brand } as const
+const OUT_TITLE = { result: 'Output', error: 'Error', input: 'Input' } as const
 
-function OutputPanel({
+/**
+ * One output (or input) panel on its own: white card, a header strip with a
+ * dot and a label, the text in mono.
+ *
+ * Exported for the slides that show what went IN as well as what came out, or
+ * an output with no snippet beside it (PF 14 "For Loop": an input, an expected
+ * output, an output). `title` renames the strip for the one honest variant,
+ * "Expected output", on a slide whose program does NOT print it.
+ *
+ * `height` fixes the panel for a trace that fills it line by line: without it
+ * the panel grows with every printed line and pushes the slide below it down.
+ */
+export function OutputPanel({
   output,
   kind = 'result',
+  title,
   fontSize,
+  height,
+  lineHeight = 1.6,
+  after,
+  className = '',
 }: {
   output: string
-  kind?: 'result' | 'error'
+  kind?: 'result' | 'error' | 'input'
+  title?: string
   fontSize?: number
+  height?: number
+  /** Tighter for a panel sized to its longest run (a trace that prints 7 lines). */
+  lineHeight?: number
+  /** A row drawn after the output, inside the panel: "the row you wanted". */
+  after?: ReactNode
+  className?: string
 }) {
   return (
-    <div className="overflow-hidden rounded-card border border-line bg-white shadow-card-soft">
+    <div
+      className={`overflow-hidden rounded-card border border-line bg-white shadow-card-soft ${className}`}
+      style={height ? { height } : undefined}
+    >
       <div className="flex items-center gap-2 border-b border-line bg-surface px-4 py-2">
-        <span
-          className="inline-block h-2 w-2 rounded-full"
-          style={{ background: kind === 'error' ? colors.danger : colors.success }}
-        />
+        <span className="inline-block h-2 w-2 rounded-full" style={{ background: OUT_DOT[kind] }} />
         <span className="font-heading text-body-sm font-bold uppercase tracking-wider text-body">
-          {kind === 'error' ? 'Error' : 'Output'}
+          {title ?? OUT_TITLE[kind]}
         </span>
       </div>
       {/*
@@ -153,11 +179,12 @@ function OutputPanel({
           <pre
             key={i}
             className="m-0 whitespace-pre font-mono"
-            style={{ color: OUT_INK[kind], fontSize: fontSize ?? 17, lineHeight: 1.6 }}
+            style={{ color: OUT_INK[kind], fontSize: fontSize ?? 17, lineHeight }}
           >
             {line === '' ? '\u200b' : line}
           </pre>
         ))}
+        {after}
       </div>
     </div>
   )

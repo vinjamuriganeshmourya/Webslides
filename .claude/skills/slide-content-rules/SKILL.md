@@ -478,3 +478,128 @@ workflow specifies the kicker plus the session name, centred, and nothing else i
 the body: no course chip, no subtitle, no presenter, no meta, no mascot, and no
 body logo, because the footer already carries the one mark. The full-bodied
 variant still exists on the props type; no shipping deck uses it.
+
+## 22. The slide is laid out in zones: header, Space-1, Space-2, Space-3
+
+Every content slide on the 1280x720 canvas is divided into fixed zones, and each
+has one job:
+
+| Zone | Coords | Job |
+|---|---|---|
+| Header | x 0..912, y 0..148 | the kicker and the title, **and nothing else** |
+| Speaker box | x 913..1280, y 0..220 | held empty for the instructor video |
+| Space-1 | x 64..1159, y 251..709 | the content area, and the default answer |
+| Space-2 | x 1159..1214, y 251..658 | a little extra width, taken SECOND |
+| Space-3 | x 64..880, y 162..240 | extra height above, taken LAST |
+
+1. **The header carries the kicker and title only.** The lead moves out of the
+   header and becomes the first block inside Space-1.
+2. **Space-1 is the default.** Fit everything there first, centred within it,
+   not dumped at the top-left.
+3. **Overflow goes Space-1, then Space-2, then Space-3.** Space-2 when the
+   layout needs a little more width; Space-3 only when it needs more room than
+   that gives.
+4. **Space-3 is a hard ceiling.** Nothing above y=162, and nothing in that band
+   past x=880.
+5. **A slide that fits in Space-1 leaves Space-2 and Space-3 empty.**
+6. **Vertical centring.** Normal content is centred between y=221 and y=647, on
+   y=434. Those two lines are a centring guide, not a limit: heavy content or a
+   heavy layout may use the whole of Space-1 down to y=709, plus Space-2 and
+   Space-3 by the order above.
+7. **The left edge is 64**, shared by the header and the body, and the right
+   edge of the padded frame is 1216.
+
+The zones are the user's own annotated templates (`Rules_beta/A.png` for the
+zones, `Rules_beta/C.png` for the centring lines), first applied and judged on
+slide 9 of `Rules_beta/beta_testing_slides` (`ZonedNoteSlide` in its deck file).
+The reason: with the lead inside the header, the header's height changed from
+slide to slide, so the body started at a different height on every slide and
+content was pushed down or packed top-left by whatever the header happened to
+be. Fixed zones give every slide the same body area.
+
+## 23. The header: no tick before the kicker, and a pair of short gradient bars
+
+1. **No accent line before the kicker.** The kicker is the uppercase label on
+   its own: no 3px x 24px tick in front of it, and no gap left where it was.
+2. **Two gradient bars at the left edge, not one full-height rail.**
+   - The edge bar: x 0..24, only its right corners rounded, by 2px.
+   - An 8px gap.
+   - The rail: x 32..38, fully rounded.
+   - Both 80px tall (`h-20`), starting with the kicker at y=52 and ending at
+     y=132, just under the title, and both fading from the tone to transparent.
+
+The design is the user's `Rules_beta/graphics.png`, measured pixel by pixel,
+first judged on `Rules_beta/beta_testing_slides` (`src/ui/primitives.tsx` and
+`src/ui/SlideHeader.tsx` there). The reason: the single rail ran the header's
+full height, including the lead, and ended 4px past the header block it belongs
+to; the pair brackets exactly the kicker and title that rule 19 pins, and the
+tick before the kicker was a second accent competing with them.
+
+**The kit template carries this header** (`src/ui/primitives.tsx` and
+`src/ui/SlideHeader.tsx`, updated 2026-09-24). An existing session gets it the
+next time `sync-kit.mjs --apply` is run on it; until then it still draws the
+tick and the single rail.
+
+## 24. Typefaces: Inter for the kicker and content, Poppins for headings
+
+| Role | Typeface |
+|---|---|
+| Kicker | Inter |
+| Headings (slide titles, card and step titles, everything `font-heading`) | Poppins |
+| Content (leads, bullets, subs, table cells, captions, callouts) | Inter |
+| Code and terminals | JetBrains Mono, unchanged |
+
+Never set another family on a slide, and never hardcode a `font-family` in a
+deck: headings use `font-heading`, everything else inherits `font-body` from
+`SlideBase`.
+
+Poppins replaced Sora on 2026-09-25. The user compared two sets side by side on
+`Rules_beta/typography` (set 1: Inter / Poppins / Inter; set 2: Work Sans /
+Libre Franklin / Work Sans) and chose set 1 for every deck.
+
+**The kit template carries it** (`index.html`, `tailwind.config.ts`,
+`src/design/tokens.ts`). An existing session keeps Sora until `sync-kit.mjs
+--apply` is run on it. Poppins sets wider than Sora, so re-run `qa.mjs` and
+`fit-check.mjs` on a session after syncing it: a title that fitted in Sora can
+wrap in Poppins.
+
+## 25. A heading never wraps: shorten the words
+
+Every heading sits on one line: the slide title, and every card, step or panel
+title set in `font-heading`. When a heading wraps onto a second line, **rewrite
+it shorter**. Keep its meaning, drop words, pick a shorter synonym.
+
+Never fix a wrapping heading any other way:
+
+- not a smaller font size
+- not a wider box, a narrower margin or a changed layout
+- not a manual line break, and not letting it wrap
+
+Check it on the rendered slide, not in the source. Poppins sets wider than
+Sora, so a heading's length in characters no longer tells you whether it fits.
+
+The user set this on 2026-09-25, when Poppins replaced Sora for headings (rule
+24). Poppins is wider, so headings that fitted in Sora can now wrap, in older
+decks after `sync-kit.mjs --apply` and in every new deck.
+
+## 26. A code box names its language, never a file
+
+The title bar of every code box carries the **language** the code is written
+in, and nothing else: `Python`, `Java`, `JavaScript`, `SQL`. Never a file name
+(`mistake.py`, `main.py`, `pattern.py`), and never the file name and the
+language together.
+
+- `CodeBlock`: pass the language as `filename` and leave the chip empty, or
+  the reverse, so the word appears **once**. A pseudocode panel is titled
+  `Pseudocode`.
+- An output panel is titled by what it shows (`Output`, `Input`,
+  `Expected output`), never by a file either.
+- The only exception is a slide whose lesson IS the file: a `Dockerfile`, a
+  `docker-compose.yml`, a `settings.py` the learner has to find on disk. There
+  the file name is the content, and it stays.
+
+The reason: the user reviewed PF 14 "For Loop" (2026-09-29), where every code
+box carried an invented file name (`mistake.py`, `while_loop.py`, `riya.py`,
+`seats.py`). The learner never creates those files; they type into a
+playground. A name that changes from slide to slide reads as seven different
+programs, and it tells the room nothing the language would not.

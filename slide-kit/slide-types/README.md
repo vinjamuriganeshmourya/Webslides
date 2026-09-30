@@ -351,6 +351,40 @@ it.
 
 **These own the stage.** Each is a full 1100px frame at a fixed height, so none of them fits beside a points column in a `ContentSlide`. `SplitCompare` is also a `without` against a `with` and not a mapping: for a correspondence, reach for `AnalogyMap`.
 
+## Panels
+
+Slides taught in beats, with their own Next / Replay, built for PF 14 "For Loop"
+(`Outputs/python_programming/for_loop`). A panel's beats ARE the kit's build
+steps (`useBeats`, `useCount`), so the deck's keys, `?all` and every harness see
+them; the buttons are a second way to press the same key, pinned to one line at
+the foot of the slide (bottom edge y 680) so they never move between beats.
+`StringWalker`, `RangeDial` and `RunCompare` are played with rather than
+presented and keep local state. All on the `@/ui` barrel; gallery section
+"Panels" in `sampleDeck.tsx`.
+
+| Component | Reach for it when | Not for |
+|---|---|---|
+| `MatchPairs` | parts and jobs the room pairs up, one pair per press | a list with verdicts (`StatusPointsSlide`) |
+| `BeatStory` | a figure that changes per beat, one line per beat beside it | a static figure with bullets |
+| `ExamplesToShape` | "where else?": empty boxes, our examples, then the shape they share | one example |
+| `StringWalker` | a for loop over a string, walked statement by statement, word chosen live | a fixed trace (`TracePanel`) |
+| `TracePanel` | a program and its state, one beat per executed statement, one caption | pseudocode dry runs (`TraceTable`) |
+| `RangeDial` | `range(start, stop)` played with: predict, then show | a single fixed call (`RangeCells`) |
+| `SavingsStory` | a rule applied day by day in a story, before the challenge | a trace of code |
+| `ChallengePanel` | a coding challenge with a timer and a hint held for beat 2 | a worksheet task with no problem card |
+| `RunCompare` | two near-identical programs voted on, then run on the same n | one program (`CodeOutput`) |
+| `TakeawayTree` | takeaways that follow from one another | the agenda restated (`KeyTakeawaysSlide`, rule 20) |
+| `Countdown` | a timed task; the instructor starts it | an auto-running poll |
+| `PseudoShape` | the SHAPE of a loop, dark, beside real code | real code |
+| `RangeCall` `RangeCells` `CrossList` `OptionList` `Row` | small static figures and the side-by-side row | |
+
+Kit extensions made with them: `CodeBlock` `chip` / `lines` / `loop` / `labels`
+/ `rows` (content rule 26, and one code box height per run of slides);
+`OutputPanel` exported, with `kind="input"`, `title`, `height`, `lineHeight`,
+`after`; `QuizTimeSlide` `kicker` / `steps` (with steps it uses the pinned
+header, rules 19 and 25); `RecapSlide` `immediate`; icon `dot`; `StoryArt`, the
+source deck's own drawings, central copies in `slide-kit/assets/illustrations/story/`.
+
 ## Transitions and reveals
 
 `slide-kit/slide-template/src/motion/`.

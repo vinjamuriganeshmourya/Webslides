@@ -270,7 +270,7 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
       <div ref={rootRef} className="relative h-full w-full overflow-hidden bg-[#060c1c]">
         <ProgressBar index={index} total={total} onDot={goTo} />
 
-        <SlideStage>
+        <SlideStage flip={kind === 'flip'}>
           <AnimatePresence initial={false} custom={direction} mode="popLayout">
             <motion.div
               key={current?.id ?? index}
@@ -281,7 +281,20 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
               exit="exit"
               transition={cut ? { duration: 0 } : slideTransition}
               className="absolute inset-0"
-              style={{ transformStyle: 'preserve-3d' }}
+              /*
+                `preserve-3d` ONLY FOR THE FLIP, AND THAT IS HALF THE BLUR FIX.
+
+                It used to be unconditional. Together with the `perspective` on
+                the stage wrapper it put every slide of every deck into a 3D
+                rendering context, and a 3D context is a promise to the
+                compositor that the subtree will be transformed in space: the
+                subtree gets flattened into a texture up front, and a texture
+                cannot be re-rasterised when an ancestor scales it. That is the
+                soft text, paid for on all 44 slides to support one transition no
+                shipping deck uses. `rotateY` is the only variant that needs it;
+                see `slideVariants`.
+              */
+              style={kind === 'flip' ? { transformStyle: 'preserve-3d' } : undefined}
             >
               {/*
                 NOT `landFull`. Landing a slide fully revealed means "do not wait

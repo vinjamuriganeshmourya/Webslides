@@ -1,5 +1,4 @@
-import { SlideBase, SlideHeader, StepList } from '@/ui'
-import { Reveal } from '@/motion/Reveal'
+import { SlideBase, ZonedFrame, StepList } from '@/ui'
 import type { ProceduralStepsSlideProps } from './types'
 import { SLIDE_FAMILY } from '@/motion/continuity'
 
@@ -18,17 +17,18 @@ export function ProceduralStepsSlide({
   const dense = steps.length > 4
 
   return (
-    <SlideBase variant="light" lesson={lesson}>
-      <div className="flex h-full flex-col justify-center">
-        <Reveal dir="up">
-          <SlideHeader kicker={kicker} title={title} lead={lead} tone={tone} />
-        </Reveal>
+    <SlideBase variant="light" lesson={lesson} padded={false}>
+      {/* ZONED (content rule 22). This used to centre the HEADER with the steps,
+          so the kicker and title sat at a different height from every other
+          content slide. The header now stays in its zone and only the steps
+          centre. */}
+      <ZonedFrame kicker={kicker} title={title} lead={lead} tone={tone}>
         <StepList
           steps={steps}
           tone={tone}
-          className={`mt-6 max-w-4xl ${dense ? '[&_ol]:space-y-3 [&_p]:text-body-sm' : ''}`}
+          className={`max-w-4xl ${dense ? '[&_ol]:space-y-3 [&_p]:text-body-sm' : ''}`}
         />
-      </div>
+      </ZonedFrame>
     </SlideBase>
   )
 }

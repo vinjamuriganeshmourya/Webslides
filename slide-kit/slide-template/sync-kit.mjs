@@ -25,6 +25,7 @@
  *
  *     src/decks/           the deck itself, and activeDeck.ts pointing at it
  *     src/export/revealSteps.ts   generated per deck
+ *     src/export/deckCss.ts       generated per deck
  *     deck.config.json     name, title, slide count
  *     public/shots/        that session's real screenshots
  *     workflow/            plans, captures, previews, sign-offs
@@ -56,7 +57,7 @@ const KIT = {
     { path: 'src/deck' },
     { path: 'src/ui' },
     { path: 'src/slides' },
-    { path: 'src/export', except: ['revealSteps.ts'] },
+    { path: 'src/export', except: ['revealSteps.ts', 'deckCss.ts'] },
     { path: 'scripts' },
     { path: 'workflow/export' },
   ],
@@ -87,6 +88,7 @@ const KIT = {
     'chrome-check.mjs',
     'continuity-check.mjs',
     'align-check.mjs',
+    'fit-check.mjs',
     'scan-fonts.mjs',
     'deck.config.mjs',
   ],

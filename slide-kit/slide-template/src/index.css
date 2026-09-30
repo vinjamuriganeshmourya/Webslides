@@ -32,6 +32,42 @@ body {
   }
 
   /*
+    THE STAGE: the 1280x720 box that `SlideStage` zooms to fit the screen.
+
+    `text-rendering: geometricPrecision` IS THE WHOLE REASON THIS CLASS EXISTS,
+    and it is what makes zooming the stage safe.
+
+    `zoom` re-lays the slide out at the projected size rather than stretching a
+    texture, which is what makes the deck sharp in every engine. The cost is that
+    layout then has to be scale-invariant, and by default it is not: a font
+    engine rounds each glyph's advance to fit the pixel grid, so the advances at
+    66px are not exactly 1.5x the advances at 44px and a line can break after a
+    different word.
+
+    It was measured rather than argued about. With the body's default
+    `optimizeLegibility`, `fit-check.mjs` found the deck's LINE COUNTS stable at
+    1x, 1.5x and 2x but wrap points moving by up to 73px: same number of lines,
+    different words on them. Harmless on the slides it was measured on, and one
+    long bullet away from being a wrap that changes a block's height.
+
+    `geometricPrecision` tells the engine to use the unrounded, geometric advance
+    for every glyph, so advances scale linearly with size and the text breaks in
+    exactly the same place at every zoom. With it, the same check reports the
+    boxes stable to a fraction of a pixel.
+
+    THE TRADE IS REAL AND IT IS THE RIGHT WAY ROUND HERE. Unrounded advances mean
+    glyphs no longer snap to the pixel grid, which at small sizes on a low-DPI
+    screen is very slightly softer than hinted text. This canvas is projected,
+    its smallest type is 11.5px in one control that nobody reads, and the
+    alternative is a layout that silently differs between the machine it was
+    designed on and the one it is shown on. A deck is a fixed design; it has to
+    land where it was drawn.
+  */
+  .slide-stage {
+    text-rendering: geometricPrecision;
+  }
+
+  /*
     CHARACTER LIFT
     Nova is drawn in brand blue, so on the dark blue closing frames the figure
     sank into the ground and read as a silhouette. Two stacked drop-shadows in

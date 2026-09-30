@@ -335,6 +335,11 @@ every sweep. Screenshot each slide carrying a custom figure and inspect the
 image, or read the contact sheet `build-preview-page.mjs` writes. Content rule
 17 has the detail and the two collisions that prompted it.
 
+**Then check every heading is on one line.** On the screenshots, look at each
+slide title and each card, step or panel title. Any heading that wraps gets
+its words shortened, per content rule 25. Do not shrink the font or widen the
+box.
+
 **All four, every time. `align-check.mjs` is not optional.** `qa.mjs` only
 catches content that leaves the 1280x720 frame and `video-safe.mjs` only
 catches content that enters the instructor-video rectangle. Neither has any
@@ -360,9 +365,9 @@ wastes a sweep:
 
 | Symptom | Lever |
 |---|---|
-| Content sits too high, into the video rectangle | give the slide a `lead`, which grows the header |
+| Content sits too high, into the video rectangle | move it into Space-1, centred on y=434, per content rule 22. **Not** a `lead` in the header: under rule 22 the header holds the kicker and title only, and the lead is the first block in Space-1 |
 | A panel is genuinely too long | `fontSize` on `CodeBlock` or `Terminal`. **Not `maxHeight`**: that only adds an inner scroll, and the harnesses measure the un-clipped rect, so the number does not move |
-| Content is narrow by nature but drawn full width | cap the width and align it left. The rectangle starts at x=913, so a block ending before it can be as tall as the well allows |
+| Content is narrow by nature but drawn full width | cap the width and centre it inside Space-1 (x 64..1159), per content rule 22. The video rectangle is above y=220, so content in Space-1 never meets it |
 
 Before running any of it, **update `slideCount` in `deck.config.json`** if the
 count changed. Every harness reads it, and a stale count makes the sweep stop

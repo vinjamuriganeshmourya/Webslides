@@ -1,4 +1,4 @@
-import { SlideBase, SlideHeader, FlowChart } from '@/ui'
+import { SlideBase, ZonedFrame, FlowChart } from '@/ui'
 import type { FlowChartSlideProps } from './types'
 import { SLIDE_FAMILY } from '@/motion/continuity'
 
@@ -15,13 +15,10 @@ export function FlowChartSlide({
   lesson,
 }: FlowChartSlideProps) {
   return (
-    <SlideBase variant="light" lesson={lesson}>
-      <div className="flex h-full flex-col">
-        <SlideHeader kicker={kicker} title={title} lead={lead} />
-        <div className="mt-8 grid flex-1 place-items-center">
-          <FlowChart nodes={nodes} direction={direction} className="w-full" />
-        </div>
-      </div>
+    <SlideBase variant="light" lesson={lesson} padded={false}>
+      <ZonedFrame kicker={kicker} title={title} lead={lead}>
+        <FlowChart nodes={nodes} direction={direction} className="w-full" />
+      </ZonedFrame>
     </SlideBase>
   )
 }

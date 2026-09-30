@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { SlideBase, SlideHeader, BulletList, Illustration } from '@/ui'
+import { SlideBase, ZonedFrame, BulletList, Illustration } from '@/ui'
 import type { KeyTakeawaysSlideProps } from './types'
 
 /**
@@ -14,19 +14,20 @@ export function KeyTakeawaysSlide({
   lesson,
 }: KeyTakeawaysSlideProps) {
   return (
-    <SlideBase variant="light" lesson={lesson}>
-      <div className="grid h-full grid-cols-[1.3fr_1fr] items-center gap-12">
-        {/* left — the takeaways; header pinned top-left, list centered below */}
-        <div className="flex h-full flex-col">
-          <SlideHeader kicker={kicker} title={title} lead={lead} tone="nw" />
-          <div className="flex min-h-0 flex-1 flex-col justify-center">
-            <BulletList items={points} marker="star" tone="nw" />
-          </div>
-        </div>
+    <SlideBase variant="light" lesson={lesson} padded={false}>
+      {/* left: the takeaways, ZONED (content rule 22). The body box is narrowed
+          to the old left column (1.3fr of 1152 less the 48px gap) so the list
+          never runs under the mascot. */}
+      <ZonedFrame kicker={kicker} title={title} lead={lead} tone="nw" bodyWidth={624}>
+        <BulletList items={points} marker="star" tone="nw" />
+      </ZonedFrame>
 
         {/* right — mascot with soft glow */}
+        {/* right: the mascot, in exactly the box its grid column used to give it
+            (x 736..1216, y 48..656), so it renders where it always did. */}
         <motion.div
-          className="relative grid h-full place-items-end justify-items-center"
+          className="absolute grid place-items-end justify-items-center"
+          style={{ left: 736, top: 48, width: 480, height: 608 }}
           initial={{ opacity: 0, scale: 0.88 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.25, duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}
@@ -34,7 +35,6 @@ export function KeyTakeawaysSlide({
           <div className="absolute h-64 w-64 rounded-full bg-nw-blue/10 blur-2xl" />
           <Illustration name="nova-idea" className="relative h-[60%] w-auto" />
         </motion.div>
-      </div>
     </SlideBase>
   )
 }

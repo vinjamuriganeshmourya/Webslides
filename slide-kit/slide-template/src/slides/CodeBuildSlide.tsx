@@ -1,6 +1,6 @@
 import { Callout, CodeBlock } from '@/ui'
 import { SlideBase } from '@/ui/SlideBase'
-import { SlideHeader } from '@/ui/SlideHeader'
+import { ZonedFrame } from '@/ui/ZonedFrame'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
 import type { CodeBuildSlideProps } from './types'
 
@@ -35,9 +35,13 @@ export function CodeBuildSlide({
   lesson,
 }: CodeBuildSlideProps) {
   return (
-    <SlideBase variant="light" lesson={lesson}>
-      <SlideHeader kicker={kicker} title={title} lead={lead} />
-      <RevealGroup stagger={0.08} className="mt-1 flex items-start gap-6">
+    <SlideBase variant="light" lesson={lesson} padded={false}>
+      {/* ZONED (content rule 22), pinned at the top of the body box rather than
+          centred: the code panel is a fixed box that must not move between the
+          steps of one file, and centring would shift it whenever the annotation
+          beside it changed height. */}
+      <ZonedFrame kicker={kicker} title={title} lead={lead} mode="top">
+      <RevealGroup stagger={0.08} className="flex items-start gap-6">
         <Reveal dir="up" className="w-[600px] shrink-0">
           <CodeBlock
             code={code}
@@ -88,6 +92,7 @@ export function CodeBuildSlide({
           )}
         </Reveal>
       </RevealGroup>
+      </ZonedFrame>
     </SlideBase>
   )
 }

@@ -18,6 +18,8 @@ companies/      company brand marks — PNG, single-colour brand glyphs
 quiz/           quiz-slide decorations (brain, bulb, bubble, mark)
 brand/          logo-nxtwave.png
 illustrations/  third-party scene illustrations for section dividers — SVG
+spot/           3D modelled object icons — PNG cutouts
+cast/           3D people, cut out — PNG cutouts
 ```
 
 Current `tech/` set, tooling and frameworks: `container-white` · `django` ·
@@ -61,6 +63,42 @@ records the licence, both changes made to every file, which divider each one
 serves, and the six candidates that were fetched, looked at and rejected.
 
 Current set: `bookshelves` · `my-location` · `setup` · `switches` · `tasks`.
+
+`spot/` and `cast/` are the 3D set, added 2026-09-22 from the Figma drop in
+`assets/` at the repo root. `spot/` is modelled objects, `cast/` is people, and
+they are the SAME render, which is the only reason they can share a slide.
+
+`spot/`: `alert-triangle-amber` · `alert-triangle-red` · `bug-magnifier` ·
+`bug-on-screen` · `clock` · `code-window` · `file-stack` · `folder-open` ·
+`folder-search` · `hourglass` · `keyboard-hands` · `target-arrow` ·
+`tools-wrench-driver`.
+
+`cast/`: `books-daydreaming` · `desk-thinking` · `hoodie-thinking` ·
+`laptop-cheering` · `laptop-many-questions` · `shrug-unsure` ·
+`student-cheering` · `teacher-books`.
+
+**Their licence is not established, and that is recorded rather than assumed.**
+48 files in the source drop are named `ChatGPT Image <date>.png`, so part of that
+set is generated art rather than licensed stock, and nothing in it carries a
+provenance beyond the Figma page. **These 21 are cleared for internal decks.
+Nothing here goes into a deck that leaves NxtWave until somebody has settled
+where the artwork came from.** `assets/TAGS.md` at the repo root has the full
+tag table, what the other 281 exports are, and why none of the ~20 brand logos in
+that drop was promoted.
+
+Three rules came off the first render and are worth knowing before using either
+folder:
+
+- **`cast/` goes on light grounds only.** The figures are drawn in the deck's own
+  brand blue, so on the navy stage the clothing sinks and the figure reads as a
+  silhouette. `QuizTimeSlide` is on `light` for the same reason and says so.
+- **Nothing goes behind a `cast/` figure.** No disc, no plate, no shadow ellipse.
+  Each is a cutout carrying its own soft shadow, and `QuizTimeSlide` removed
+  exactly such a disc because it read as a plate the art had been dropped onto.
+- **A `spot/` icon is fitted into a SQUARE BOX, never sized by width.** These run
+  from 146x236 to 386x353, so four sized to one width come out at four different
+  heights and their labels land at four different y positions. See `SpotIcon` in
+  `slide-kit/asset-lab`, which is the working reference for all three rules.
 
 A scene illustration is not a logo and not a character. `tech/` is marks,
 `src/ui/characters/` is Nova and the in-repo vector scenes, and this folder is

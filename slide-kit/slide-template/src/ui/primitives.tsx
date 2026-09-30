@@ -1,7 +1,13 @@
 import type { ReactNode } from 'react'
 import { accentByTone, type Tone } from '@/design/tokens'
 
-/** Small uppercase eyebrow label with a leading accent tick. */
+/**
+ * Small uppercase eyebrow label.
+ *
+ * NO LEADING ACCENT TICK (content rule 23). The label used to open with a 3px x
+ * 24px pill in the tone; it was a second accent competing with the header's
+ * gradient bars, and it is gone, with the `gap-2` that spaced it.
+ */
 export function Kicker({
   children,
   tone = 'brand',
@@ -16,10 +22,9 @@ export function Kicker({
   const color = accentByTone[tone]
   return (
     <span
-      className={`inline-flex items-center gap-2 text-kicker uppercase ${className}`}
+      className={`inline-flex items-center text-kicker uppercase ${className}`}
       style={{ color: onDark ? '#FFFFFF' : color }}
     >
-      <span className="inline-block h-[3px] w-6 rounded-pill" style={{ background: color }} />
       {children}
     </span>
   )

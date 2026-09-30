@@ -46,6 +46,31 @@ import {
   FeedbackSlide,
   ThankYouSlide,
 } from '@/slides'
+import {
+  BeatStory as GalleryBeatStory,
+  ChallengePanel as GalleryChallengePanel,
+  CodeBlock as GalleryCodeBlock,
+  Countdown as GalleryCountdown,
+  CrossList as GalleryCrossList,
+  ExamplesToShape as GalleryExamplesToShape,
+  MatchPairs as GalleryMatchPairs,
+  OutputPanel as GalleryOutputPanel,
+  PseudoShape as GalleryPseudoShape,
+  RangeCall as GalleryRangeCall,
+  RangeArg as GalleryRangeArg,
+  RangeCells as GalleryRangeCells,
+  RangeDial as GalleryRangeDial,
+  Row as GalleryRow,
+  RunCompare as GalleryRunCompare,
+  SavingsStory as GallerySavingsStory,
+  SlideBase as GallerySlideBase,
+  StoryArt as GalleryStoryArt,
+  StringWalker as GalleryStringWalker,
+  TakeawayTree as GalleryTakeawayTree,
+  TracePanel as GalleryTracePanel,
+  VarTrail as GalleryVarTrail,
+  ZonedFrame as GalleryZonedFrame,
+} from '@/ui'
 
 export const sampleMeta: DeckMeta = {
   title: 'Introduction to REST APIs',
@@ -896,6 +921,296 @@ export const sampleDeck: SlideDef[] = [
           ]}
         />
       </ContentSlide>
+    ),
+  },
+  {
+    id: 'panel-code-trace',
+    label: 'CodeBlock: trace features',
+    section: 'Panels',
+    notes:
+      "FOR: the kit's one code box when it teaches: `filename=\"Python\" chip={false}` (content rule 26, the language once), `rows` so a run of consecutive code slides keeps one box height, `lines` for a trace (now, ran, dead, warn, error, mark), `loop` for the loop-back arrow and `labels` for per-line annotations. Every row is pinned to one height only when these are used, so other decks' panels are unchanged. Built for PF 14 \"For Loop\".",
+    element: (
+      <GallerySlideBase lesson={FOOTER}>
+        <GalleryZonedFrame kicker="Panels" title="CodeBlock, traced" lead="One code box, with line states, a loop arrow and labels" mode="top" wide>
+          <GalleryCodeBlock
+            code={'counter = 0\nwhile counter < 3:\n    print(counter)\n    counter = counter + 1'}
+            filename="Python"
+            chip={false}
+            fontSize={20}
+            rows={4}
+            loop={[2, 4]}
+            lines={{ 1: 'ran', 2: 'now', 3: 'dead' }}
+            labels={{ 1: 'Initialization', 2: 'Termination condition', 4: 'Updation' }}
+            className="w-[560px]"
+          />
+        </GalleryZonedFrame>
+      </GallerySlideBase>
+    ),
+  },
+  {
+    id: 'panel-output',
+    label: 'OutputPanel',
+    section: 'Panels',
+    notes:
+      'FOR: an output (or input) on its own, with no snippet beside it: `kind="input"` for what went in, `title="Expected output"` for the one honest case where the program on the slide does NOT print it. `height` fixes a panel a trace fills line by line; `lineHeight` tightens one sized for its longest run; `after` draws a row inside it ("the row you wanted"). MUST NOT CARRY: anything not printed by the program, except under the Expected output title.',
+    element: (
+      <GallerySlideBase lesson={FOOTER}>
+        <GalleryZonedFrame kicker="Panels" title="OutputPanel" lead="Input, output, expected output" mode="top" wide>
+          <GalleryRow>
+            <div className="w-[220px]"><GalleryOutputPanel kind="input" output="Python" fontSize={22} /></div>
+            <div className="w-[220px]"><GalleryOutputPanel title="Expected output" output={'P\ny\nt'} fontSize={22} /></div>
+            <div className="w-[220px]"><GalleryOutputPanel output={'0\n1\n2'} fontSize={22} /></div>
+          </GalleryRow>
+        </GalleryZonedFrame>
+      </GallerySlideBase>
+    ),
+  },
+  {
+    id: 'panel-pseudo-shape',
+    label: 'PseudoShape',
+    section: 'Panels',
+    notes:
+      "FOR: the SHAPE of a loop header and the block it repeats, in the kit's dark pseudocode palette, beside real code. The block is a dashed placeholder because it is \"whatever goes here\". MUST NOT CARRY: real code (that is `CodeBlock`). Confusable with `CodeSyntaxSlide`, which names each slot; this draws the repetition.",
+    element: (
+      <GallerySlideBase lesson={FOOTER}>
+        <GalleryZonedFrame kicker="Panels" title="PseudoShape" mode="top" wide>
+          <GalleryPseudoShape
+            head={[{ t: 'for', k: 'control' }, { t: ' each_item ' }, { t: 'in', k: 'control' }, { t: ' sequence', k: 'ident' }, { t: ':' }]}
+            block="Repeating block of code"
+          />
+        </GalleryZonedFrame>
+      </GallerySlideBase>
+    ),
+  },
+  {
+    id: 'panel-range-figures',
+    label: 'RangeCall, RangeCells, CrossList',
+    section: 'Panels',
+    notes:
+      'FOR: `RangeCall` a call drawn big with what each argument means pointed at; `RangeCells` a call and the values it gives as cells; `CrossList` the things a new form makes unnecessary. Static: they arrive with the slide.',
+    element: (
+      <GallerySlideBase lesson={FOOTER}>
+        <GalleryZonedFrame kicker="Panels" title="Range figures" mode="top" wide>
+          <GalleryRow gap={56} align="center">
+            <GalleryRangeCall call={<>range(<GalleryRangeArg>n</GalleryRangeArg>)</>} below="Stops before n" />
+            <GalleryRangeCells call="range(3)" values={[0, 1, 2]} />
+            <GalleryCrossList heading="Not needed any more:" items={['Initialization', 'Updation']} />
+          </GalleryRow>
+        </GalleryZonedFrame>
+      </GallerySlideBase>
+    ),
+  },
+  {
+    id: 'panel-countdown',
+    label: 'Countdown',
+    section: 'Panels',
+    notes:
+      'FOR: a timed hands-on task. The instructor presses play; nothing starts by itself; press again to pause; it warns amber in its last quarter and goes red at zero. Leaving the slide resets it.',
+    element: (
+      <GallerySlideBase lesson={FOOTER}>
+        <GalleryZonedFrame kicker="Panels" title="Countdown" mode="top" wide>
+          <GalleryCountdown seconds={90} />
+        </GalleryZonedFrame>
+      </GallerySlideBase>
+    ),
+  },
+  {
+    id: 'panel-match-pairs',
+    label: 'MatchPairs',
+    section: 'Panels',
+    notes:
+      "FOR: parts on the left, jobs on the right, joined one pair per build step with its explanation line. The right column must NOT be in the left column's order. Opens with nothing joined. Next is labelled Join them.",
+    element: (
+      <GallerySlideBase lesson={FOOTER}>
+        <GalleryZonedFrame kicker="Panels" title="MatchPairs" mode="top" wide>
+          <GalleryMatchPairs
+            left={[{ pair: 1, text: 'x = 0' }, { pair: 2, text: 'x = x + 1' }]}
+            right={[{ pair: 2, text: 'Moves it on' }, { pair: 1, text: 'Sets the start' }]}
+            notes={['The start.', 'The step.']}
+          />
+        </GalleryZonedFrame>
+      </GallerySlideBase>
+    ),
+  },
+  {
+    id: 'panel-beat-story',
+    label: 'BeatStory',
+    section: 'Panels',
+    notes:
+      'FOR: a story told in beats beside a figure that changes with them (`figure(beat)`). Every line is on screen from the first beat, ghosted; only the current one carries its sentence. The last line is the question handed to the room.',
+    element: (
+      <GallerySlideBase lesson={FOOTER}>
+        <GalleryZonedFrame kicker="Panels" title="BeatStory" mode="top" wide>
+          <GalleryBeatStory
+            figureWidth={236}
+            figure={(beat) => <GalleryStoryArt name="playlist-phone" beat={beat} className="h-[410px] w-[236px]" />}
+            lines={[{ title: 'The list', text: 'A playlist.' }, { title: 'One tap', text: 'Song one starts.' }, { title: 'Your turn', text: 'Where else?' }]}
+          />
+        </GalleryZonedFrame>
+      </GallerySlideBase>
+    ),
+  },
+  {
+    id: 'panel-examples-shape',
+    label: 'ExamplesToShape',
+    section: 'Panels',
+    notes:
+      'FOR: four beats: the question with three empty "yours" boxes, our three examples, the shared shape, its closing line. The three boxes share one text size. Art is `StoryArt`.',
+    element: (
+      <GallerySlideBase lesson={FOOTER}>
+        <GalleryZonedFrame kicker="Panels" title="ExamplesToShape" mode="top" wide>
+          <GalleryExamplesToShape
+            ask={{ title: 'Where else?', text: 'One action, and it keeps going.' }}
+            examples={[
+              { art: 'attendance-register', title: 'A register', text: 'One name, one tick.' },
+              { art: 'stories-phone', title: 'Stories', text: 'One story, then the next.' },
+              { art: 'billing-scanner', title: 'A counter', text: 'One item, one beep.' },
+            ]}
+            shape="loop-shape"
+            caption="Same shape all three times."
+          />
+        </GalleryZonedFrame>
+      </GallerySlideBase>
+    ),
+  },
+  {
+    id: 'panel-string-walker',
+    label: 'StringWalker',
+    section: 'Panels',
+    notes:
+      "FOR: the for loop over a string, played with rather than presented: pick a word, Split it, then Play or One step. Steps are computed from the word. Local state: the deck's arrows still change slide. Output panel is sized for seven lines.",
+    element: (
+      <GallerySlideBase lesson={FOOTER}>
+        <GalleryZonedFrame kicker="Panels" title="StringWalker" mode="top" wide>
+          <GalleryStringWalker rows={4} />
+        </GalleryZonedFrame>
+      </GallerySlideBase>
+    ),
+  },
+  {
+    id: 'panel-trace',
+    label: 'TracePanel',
+    section: 'Panels',
+    notes:
+      "FOR: a program on the left, its state on the right, one beat per statement it runs, one caption under both. `aside` is composed per beat from `VarTrail`, `SeqBoxes`, `DayTrack`, `CallChip`, `OutputPanel`. The code box is the deck's one code box (x 64, y 221, 560 wide).",
+    element: (
+      <GallerySlideBase lesson={FOOTER}>
+        <GalleryZonedFrame kicker="Panels" title="TracePanel" mode="top" wide>
+          <GalleryTracePanel
+            code={'n = 0\nn = n + 1\nprint(n)'}
+            rows={3}
+            beats={[
+              { caption: 'n starts at 0.', lines: { 1: 'now' }, aside: <GalleryVarTrail name="n" values={['0']} /> },
+              { caption: 'n goes to 1.', lines: { 1: 'ran', 2: 'now' }, aside: <GalleryVarTrail name="n" values={['0', '1']} /> },
+              { caption: 'It prints 1.', lines: { 1: 'ran', 2: 'ran', 3: 'now' }, aside: <GalleryOutputPanel output="1" fontSize={18} height={96} /> },
+            ]}
+          />
+        </GalleryZonedFrame>
+      </GallerySlideBase>
+    ),
+  },
+  {
+    id: 'panel-range-dial',
+    label: 'RangeDial',
+    section: 'Panels',
+    notes:
+      'FOR: range played with: start and stop steppers, the 0 to 10 cells, Show the numbers, and the sentence that counts them. The stop cell is always drawn crossed. Changing a number hides the answer again.',
+    element: (
+      <GallerySlideBase lesson={FOOTER}>
+        <GalleryZonedFrame kicker="Panels" title="RangeDial" mode="top" wide>
+          <GalleryRangeDial caption="Say the two numbers first." />
+        </GalleryZonedFrame>
+      </GallerySlideBase>
+    ),
+  },
+  {
+    id: 'panel-savings-story',
+    label: 'SavingsStory',
+    section: 'Panels',
+    notes:
+      'FOR: a rule applied day by day until adding by hand stops being reasonable: day tiles, the girl and the pig (`StoryArt`), who speaks, the running total, coins dropping. Sets up a coding challenge.',
+    element: (
+      <GallerySlideBase lesson={FOOTER}>
+        <GalleryZonedFrame kicker="Panels" title="SavingsStory" mode="top" wide>
+          <GallerySavingsStory
+            name="Riya"
+            days={[{ label: 'Day 1', coin: '₹1', at: 2 }, { label: 'Day 2', skip: 'skip', at: 3 }]}
+            beats={[
+              { who: 'girl', says: 'I will save on odd days.', total: '₹0', caption: 'The rule.' },
+              { who: 'girl', says: 'Day 1: ₹1.', total: '₹1', drops: [0], caption: 'The rule.' },
+              { who: 'pig', says: 'Day 2: nothing!', total: '₹1', pigSad: true, caption: 'The rule.' },
+            ]}
+          />
+        </GalleryZonedFrame>
+      </GallerySlideBase>
+    ),
+  },
+  {
+    id: 'panel-challenge',
+    label: 'ChallengePanel',
+    section: 'Panels',
+    notes:
+      'FOR: a problem card with compact input/output examples, how to attempt it, a timer, and a hint that arrives on the second beat.',
+    element: (
+      <GallerySlideBase lesson={FOOTER}>
+        <GalleryZonedFrame kicker="Panels" title="ChallengePanel" mode="top" wide>
+          <GalleryChallengePanel
+            title="A challenge"
+            statement={['Read n. Print n doubled.']}
+            examples={[{ input: '2', output: '4' }]}
+            lead="Open the playground."
+            steps={['Run it with 2.']}
+            seconds={120}
+            hint="Multiply by 2."
+          />
+        </GalleryZonedFrame>
+      </GallerySlideBase>
+    ),
+  },
+  {
+    id: 'panel-run-compare',
+    label: 'RunCompare',
+    section: 'Panels',
+    notes:
+      "FOR: two programs a few characters apart, voted on, then run on the same n. Each side's `rows(n)` MUST be the program's real output. The missing row is drawn dashed inside the wrong side's output. Output panels are sized for the largest n.",
+    element: (
+      <GallerySlideBase lesson={FOOTER}>
+        <GalleryZonedFrame kicker="Panels" title="RunCompare" mode="top" wide>
+          <GalleryRunCompare
+            sides={[
+              { mark: 'A', heading: 'range(1, n)', code: 'for i in range(1, n):\n    print(i)', rows: (n) => Array.from({ length: n - 1 }, (_, i) => String(i + 1)), wrong: true },
+              { mark: 'B', heading: 'range(1, n + 1)', code: 'for i in range(1, n + 1):\n    print(i)', rows: (n) => Array.from({ length: n }, (_, i) => String(i + 1)) },
+            ]}
+            hint="Vote, then run."
+            verdict="B prints n."
+            caption="Hands up for A, then B."
+          />
+        </GalleryZonedFrame>
+      </GallerySlideBase>
+    ),
+  },
+  {
+    id: 'panel-takeaway-tree',
+    label: 'TakeawayTree',
+    section: 'Panels',
+    notes:
+      'FOR: seven takeaways where the later ones follow from the first: a root, two pairs, a chain, one node per beat with its lines. MUST NOT CARRY: an agenda restatement (that is `KeyTakeawaysSlide`, content rule 20).',
+    element: (
+      <GallerySlideBase lesson={FOOTER}>
+        <GalleryZonedFrame kicker="Panels" title="TakeawayTree" mode="top" wide>
+          <GalleryTakeawayTree
+            nodes={[
+              { chip: 'root', text: 'the one idea' },
+              { chip: 'a', text: 'follows from it' },
+              { chip: 'b', text: 'so does this' },
+              { chip: 'c', text: 'from a' },
+              { chip: 'd', text: 'from b' },
+              { chip: 'e', text: 'from both' },
+              { chip: 'f', text: 'the consequence' },
+            ]}
+          />
+        </GalleryZonedFrame>
+      </GallerySlideBase>
     ),
   },
   {

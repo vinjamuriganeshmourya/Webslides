@@ -72,7 +72,7 @@ export const accentByTone = {
 export type Tone = keyof typeof accentByTone
 
 export const fonts = {
-  heading: "'Sora', system-ui, sans-serif",
+  heading: "'Poppins', system-ui, sans-serif",
   body: "'Inter', system-ui, sans-serif",
   mono: "'JetBrains Mono', ui-monospace, monospace",
 } as const

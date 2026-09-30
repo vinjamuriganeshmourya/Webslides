@@ -14,6 +14,7 @@
  * longer `T.draw` for auto-playing figures.
  */
 import type { CSSProperties, ReactNode } from 'react'
+import { ArrowHead } from './ArrowHead'
 import { motion, useReducedMotion } from 'framer-motion'
 import { useClaimedSteps } from '@/motion/Stepper'
 import { T, E, c4 } from '@/ui/figureTiming'
@@ -189,6 +190,7 @@ export function FcEdgeDraw({
   dashed = false,
   markerEnd,
   duration = T.drawStep,
+  crisp = false,
 }: {
   d: string
   at: number
@@ -198,6 +200,16 @@ export function FcEdgeDraw({
   dashed?: boolean
   markerEnd?: string
   duration?: number
+  /**
+   * Snap the LINE to whole device pixels (`shape-rendering: crispEdges`).
+   *
+   * For straight horizontal and vertical edges only. At a fractional stage zoom
+   * (1.2x on a 1536px screen) a 2px line lands on 2.4 device pixels and
+   * antialiases into a soft grey band, while the arrowhead beside it stays sharp,
+   * so the two read as misaligned. A curved edge must NOT set this: crispEdges
+   * turns a curve into a staircase. The arrowhead is never snapped.
+   */
+  crisp?: boolean
 }) {
   const reduce = useReducedMotion()
   const stepped = shown !== undefined
@@ -211,6 +223,7 @@ export function FcEdgeDraw({
         strokeWidth={width}
         strokeLinecap="round"
         strokeLinejoin="round"
+        shapeRendering={crisp ? 'crispEdges' : undefined}
         /* A dashed edge cannot also be drawn by pathLength: both want the dash
            array. The dashed exception paths therefore fade instead, which is the
            honest trade and part of why they read as subordinate. */
@@ -233,26 +246,21 @@ export function FcEdgeDraw({
         }}
       />
       {/*
-        THE ARROWHEAD IS A SECOND PATH, AND IT ARRIVES WHEN THE LINE DOES.
+        THE ARROWHEAD IS A SEPARATE TRIANGLE, AND IT ARRIVES WHEN THE LINE DOES.
 
-        An SVG marker is painted at the path's end VERTEX, and `pathLength` does
-        not move that vertex: it only changes how much of the stroke is dashed
-        in. So a marker on the drawing path itself pops up at its final position
-        immediately, and the figure shows an arrowhead floating in empty space
-        with no line reaching it yet. That was visible on every edge at 700ms.
-
-        This path is identical but stroked transparent, so it contributes nothing
-        but its marker, and it fades in once the draw has actually finished.
-        `stroke` must stay a real paint value rather than `none`, because a path
-        with no stroke is not stroked and therefore renders no markers at all.
+        It used to be an SVG marker on a transparent copy of this path. Two
+        reasons it is not any more: a marker is painted at the path's end vertex
+        from the first frame, so it floated in empty space while the line was
+        still drawing; and Firefox misplaces markers inside the CSS-zoomed stage,
+        which put every arrowhead below its line (see `ArrowHead`). So it is a
+        plain polygon on the same `d`, in the colour `FcArrowDefs` registered for
+        `markerEnd`, fading in once the draw has finished.
       */}
       {markerEnd && (
-        <motion.path
+        <ArrowHead
           d={d}
-          fill="none"
-          stroke="transparent"
+          color={arrowColor(markerEnd) ?? stroke}
           strokeWidth={width}
-          markerEnd={markerEnd}
           initial={reduce ? false : { opacity: 0 }}
           animate={{ opacity: hidden ? 0 : 1 }}
           transition={{
@@ -325,29 +333,24 @@ export function FcEdgeLabel({
 }
 
 /**
- * The arrowhead marker set, defined once per figure.
+ * The arrowhead colours, defined once per figure.
  *
- * Markers cannot inherit `currentColor` through a `<use>` in every engine, so
- * each colour gets its own marker id, namespaced per figure to stop two figures
- * on one slide colliding in the document-wide id space.
+ * NO LONGER A `<marker>` SET. Firefox misplaces SVG markers inside the CSS-zoomed
+ * stage, so arrowheads are drawn as polygons by `ArrowHead` (via `FcEdgeDraw`).
+ * The API is unchanged so every figure keeps its call: this registers each
+ * colour under `${id}-${key}`, and `FcEdgeDraw` resolves its
+ * `markerEnd="url(#id-key)"` against it. Ids stay namespaced per figure, as the
+ * marker ids were. It renders nothing.
  */
+const ARROW_COLORS = new Map<string, string>()
+
 export function FcArrowDefs({ id, colors }: { id: string; colors: Record<string, string> }) {
-  return (
-    <defs>
-      {Object.entries(colors).map(([key, color]) => (
-        <marker
-          key={key}
-          id={`${id}-${key}`}
-          viewBox="0 0 10 10"
-          refX="8"
-          refY="5"
-          markerWidth="6"
-          markerHeight="6"
-          orient="auto-start-reverse"
-        >
-          <path d="M 0 0 L 10 5 L 0 10 z" fill={color} />
-        </marker>
-      ))}
-    </defs>
-  )
+  for (const [key, color] of Object.entries(colors)) ARROW_COLORS.set(`${id}-${key}`, color)
+  return null
+}
+
+/** `url(#spine-main)` to the colour registered for `spine-main`. */
+function arrowColor(markerEnd: string): string | undefined {
+  const m = /^url\(#(.+)\)$/.exec(markerEnd.trim())
+  return m ? ARROW_COLORS.get(m[1]) : undefined
 }

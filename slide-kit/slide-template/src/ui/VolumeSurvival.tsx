@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { colors, easing } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
+import { ArrowHead } from './figures/ArrowHead'
 
 /**
  * The volume idea, in three acts on one figure, so the explanation and its proof
@@ -161,20 +162,22 @@ export function VolumeSurvival({
       <div className="relative mx-auto" style={{ width: CONTAINER.w, height: 42 }}>
         {kept && (
           <svg width={CONTAINER.w} height={42} className="absolute inset-0" style={{ overflow: 'visible' }}>
-            <defs>
-              <marker id="vs-arw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-                <path d="M 0 0 L 10 5 L 0 10 z" fill={colors.teal} />
-              </marker>
-            </defs>
             <motion.path
               d={`M ${CONTAINER.w / 2} 2 L ${CONTAINER.w / 2} 34`}
               fill="none"
               stroke={colors.teal}
               strokeWidth={3}
-              markerEnd="url(#vs-arw)"
               initial={instant ? false : { pathLength: 0 }}
               animate={{ pathLength: 1 }}
               transition={{ duration: 0.5 * t, delay: B.write * t, ease: 'easeOut' }}
+            />
+            <ArrowHead
+              d={`M ${CONTAINER.w / 2} 2 L ${CONTAINER.w / 2} 34`}
+              color={colors.teal}
+              strokeWidth={3}
+              initial={instant ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 * t, delay: (B.write + 0.4) * t }}
             />
           </svg>
         )}
