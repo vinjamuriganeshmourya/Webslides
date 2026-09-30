@@ -652,7 +652,7 @@ export const forLoopDeck: SlideDef[] = [
       <ContentSlide kicker="Worksheet task 1" title="Trace it before you run it" lesson={SESSION}>
         {/* THE BEATS ARE ON THE FRAME. No lead: the first beat IS the lead, and
             it is the worksheet task, which the card opens on. */}
-        <Task1Trace code={TASK1_CODE} steps={TASK1_STEPS} beats={TASK1_BEATS} py={PY} seconds={120} />
+        <Task1Trace code={TASK1_CODE} steps={TASK1_STEPS} beats={TASK1_BEATS} py={PY} seconds={300} />
       </ContentSlide>
     ),
   },
@@ -702,7 +702,7 @@ export const forLoopDeck: SlideDef[] = [
       </>,
       <>On the worksheet, write what it will print. Run it. Then write what it really printed.</>,
     ],
-    90,
+    120,
     'Write first, run second.',
     'Does it give an error? Decide before you run.',
     'warning',
