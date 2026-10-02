@@ -12,10 +12,21 @@ import { defaultPose, type Pose } from './channels'
 import { clipDone, EXPRESSION_CROSSFADE, poseAt, type Timeline } from './compose'
 import { delay, mirror, retime, scaleAction, type Action, type Key, type Tracks } from './track'
 import type { IdleOptions } from './idle'
+import type { LifeOptions } from './life'
 
 export type { IdleOptions } from './idle'
+export type { LifeOptions } from './life'
 
-export type PlayOptions = { speed?: number; amplitude?: number; side?: 'L' | 'R'; repeat?: number; loop?: boolean }
+export type PlayOptions = {
+  speed?: number
+  amplitude?: number
+  side?: 'L' | 'R'
+  repeat?: number
+  loop?: boolean
+  /** 0..1, how much this play differs from the last: the same wave twice
+      is a machine. Default 1 (about 6 percent in size and timing). */
+  variation?: number
+}
 
 export type Controls = {
   pose: Pose
@@ -27,7 +38,17 @@ export type Controls = {
   seek: (t: number) => void
   setClock: (mode: 'auto' | 'manual') => void
   setIdle: (opts: IdleOptions) => void
+  setLife: (opts: LifeOptions | 0) => void
   current: { gesture?: string; expression: string; talking: boolean }
+}
+
+/* A seeded number in -1..1 for the n-th play, so a recording is still
+   repeatable: the same script gives the same variations. */
+function wobble(seed: number, n: number, salt: number): number {
+  let h = (seed * 2246822519 + n * 3266489917 + salt * 668265263) | 0
+  h = Math.imul(h ^ (h >>> 15), 2246822507)
+  h = Math.imul(h ^ (h >>> 13), 3266489909)
+  return (((h ^ (h >>> 16)) >>> 0) / 4294967296) * 2 - 1
 }
 
 declare global {
@@ -50,19 +71,25 @@ function repeatAction(action: Action, n: number): Action {
   return { ...action, duration: action.duration * n, loop: false, tracks }
 }
 
-/* Actions are authored on the screen-left arm; side R is the mirror. */
-function prepare(action: Action, o: PlayOptions): Action {
+/* Actions are authored on the screen-left arm; side R is the mirror. The
+   n-th play is a little bigger or smaller and a little quicker or slower
+   than the last, so a repeated gesture reads as a person repeating it. */
+function prepare(action: Action, o: PlayOptions, seed: number, n: number): Action {
   let a = action
-  if (o.speed && o.speed !== 1) a = retime(a, 1 / o.speed)
-  if (o.amplitude !== undefined && o.amplitude !== 1) a = scaleAction(a, o.amplitude, defaultPose())
+  const vary = o.variation ?? 1
+  const speed = (o.speed ?? 1) * (1 + 0.05 * vary * wobble(seed, n, 1))
+  const amplitude = (o.amplitude ?? 1) * (1 + 0.06 * vary * wobble(seed, n, 2))
+  if (speed !== 1) a = retime(a, 1 / speed)
+  if (amplitude !== 1) a = scaleAction(a, amplitude, defaultPose())
   if (o.side === 'R') a = mirror(a)
   if (o.repeat && o.repeat > 1) a = repeatAction(a, Math.floor(o.repeat))
   if (o.loop !== undefined) a = { ...a, loop: o.loop }
   return a
 }
 
-export function useCharacter(opts: { id?: string; seed?: number; clock?: Clock; idle?: IdleOptions } = {}): Controls {
-  const tl = useRef<Timeline>({ seed: opts.seed ?? 1, idle: opts.idle ?? {} })
+export function useCharacter(opts: { id?: string; seed?: number; clock?: Clock; idle?: IdleOptions; life?: LifeOptions | 0 } = {}): Controls {
+  const tl = useRef<Timeline>({ seed: opts.seed ?? 1, idle: opts.idle ?? {}, life: opts.life })
+  const playsRef = useRef(0)
   const timeRef = useRef(0)
   const poseRef = useRef<Pose>(poseAt(tl.current, 0))
   const currentRef = useRef<Controls['current']>({ expression: 'neutral', talking: false })
@@ -114,7 +141,7 @@ export function useCharacter(opts: { id?: string; seed?: number; clock?: Clock; 
       const t = now()
       /* the old gesture fades out while the new one fades in */
       if (T.gesture && !clipDone(T.gesture, t)) T.prevGesture = { ...T.gesture, stopAt: Math.min(T.gesture.stopAt ?? Infinity, t) }
-      T.gesture = { action: prepare(base, o), start: t }
+      T.gesture = { action: prepare(base, o, T.seed, ++playsRef.current), start: t }
       currentRef.current.gesture = typeof gesture === 'string' ? gesture : gesture.name
       redraw()
     }
@@ -155,7 +182,12 @@ export function useCharacter(opts: { id?: string; seed?: number; clock?: Clock; 
       redraw()
     }
 
-    const api = { play, stop, setExpression, say, seek, setClock: (m: Clock) => setMode(m), setIdle }
+    const setLife: Controls['setLife'] = (o) => {
+      tl.current.life = o === 0 ? 0 : { ...(tl.current.life || {}), ...o }
+      redraw()
+    }
+
+    const api = { play, stop, setExpression, say, seek, setClock: (m: Clock) => setMode(m), setIdle, setLife }
     return { api, render }
   }, [])
 

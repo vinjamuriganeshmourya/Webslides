@@ -38,7 +38,166 @@ shoot.mjs                     contact sheets per action, for review (G)
 record.mjs                    frame-exact video export (G)
 ```
 
+## Art direction (supersedes the drawing notes below where they differ)
+
+The user handed over two reference images; the characters must look like
+them. `reference/arjun.png` and `reference/riya.png` (480 x 463 each). Open
+them with the Read tool before drawing anything. They are flat vector
+illustrations, the Storyset/Freepik corporate style, not the lit 3D look of
+the earlier draft. What is in them, read off the pixels:
+
+**Arjun** (`art: 'soft'`): no outlines anywhere; flat fills with soft shadow
+shapes a shade darker; one gentle vertical gradient on the shirt. Peach skin
+`#F8C9A8`, shade `#E9A98A`, two round rosy cheeks `#F0A08A` low on the
+face. Face a rounded square with a soft jaw; a small ear with one inner
+curve. Hair solid near-black `#151515` with a `#2E2E2E` sheen: a big quiff
+that sweeps from the forehead up and back, ending in two or three soft
+points at the top back, short over the ear with a sideburn in front of it;
+the hairline on the forehead is a shallow curve. Eyes: two small dark brown
+`#3A2A1E` vertical ovals (about 7 x 10 in head space) with a tiny white
+catchlight; thin dark brow arcs above, friendly, not angled. Nose: a short
+bent stroke, not a filled shape. Mouth: a wide open laugh, a D on its side
+with a straight top edge, white upper teeth across the top, a warm red
+`#C9484B` interior, a pinker lower lip. The shirt is white `#FFFFFF` at the
+collar grading to `#DCE9F8` at the hem and sleeves, long sleeves with cuffs,
+a pointed collar; a long navy tie `#1E2B4F` with a knot and a darker
+`#162140` stripe down one edge; a brown belt `#8B5A2B` with a `#C9A24A`
+buckle; navy trousers `#1B2238`; dark shoes `#2A2F45`. Hands are big and
+chunky: rounded fingers, no outlines, a slightly darker line only where two
+fingers meet.
+
+**Riya** (`art: 'line'`): flat fills with thin dark outlines `#1A1F3D`
+(1.3 px in the 400-wide viewBox) on the hands and their finger lines, on the
+collar and on the skirt pockets; nothing else is outlined. Salmon skin
+`#F5A68E`, shade `#E08E75`, a faint pink cheek `#F08A7A`. Face an oval with
+a slightly pointed chin, a small ear with one inner line. Hair navy-black
+`#1A1F3D`: a high bun on top (towards the back) held by a periwinkle band
+`#5B6EE1`, the rest falling behind the shoulders to the waist in one smooth
+wave (hairBack), a few strands framing the face in front of the ear. Eyes:
+tiny dark almond dots with a short lash line, thin arched brows. Nose: a
+small hooked line. Mouth: a small smile line that opens into a small dark
+shape when she talks (mouthStyle 'line'). Blouse periwinkle `#5B6EE1`, shade
+`#4A5BCF`, short sleeves with a straight hem, a white `#FFFFFF` pointed
+collar outlined in the line colour. Skirt navy `#171A3B`, A-line from the
+waist to below the knee, with two curved pocket stitch lines in a lighter
+`#8A8FB8`. Calves salmon below the skirt, simple dark flats.
+
+Both: no feSpecularLighting, no cast-shadow filters, no rim light (that is
+`shading: 'flat'`, the default; `'lit'` keeps the old filters as an option).
+Proportions are about five heads with the hair: see the geometry below,
+which is the new rig geometry. Everything still animates through the same
+channels, so the open mouth, the cheeks, the brows, the big hands and the
+hair are all drawn as parts that move.
+
+Both presets carry `art`, `shading`, `eyes`, `mouthStyle`, `browWeight`,
+`outline` and `belt` on `Skin` (see `src/skins/types.ts`), set by
+`buildSkin` from `CharacterConfig`, which gains `art`, `shading` and
+`face.eyes`, `face.mouth`, `accessories.belt`, and the top style
+`'shirtTie'`.
+
+The match test: `review/match/<skin>.png` is the reference beside the hero
+render at the same height; three judges score likeness 1..10 and the restyle
+loops until both score at least 8.
+
+## Hands: finger position and movement (the user's standing directive)
+
+The user's words: "mind the finger position and movement". Hands are the
+first thing a viewer reads after the face, and a wrong finger is louder
+than a wrong elbow. This section binds every hand pose and every gesture.
+
+**Position.** At every hold a hand is in a NAMED shape from `HAND_POSES`,
+never an interpolation residue. The shapes, as a real hand makes them:
+
+| shape | what the fingers do |
+|---|---|
+| relaxed (hanging) | all four curl gently, pinky most, index least; the thumb rests against the index side, pointing down-forward; the palm faces the thigh |
+| open / presenting | fingers together or barely spread (not fanned), straight with a hint of curve at the last joint; the thumb out at about 40 degrees; the palm faces up or toward the audience |
+| fist / thumbsUp | fingers fully curled with the pinky tightest, knuckles form a ridge; thumb across the fingers (fist) or straight up (thumbsUp); the fist is a compact block, never wider than the palm |
+| point | index straight, middle, ring and pinky curled, the thumb resting on the middle finger, never sticking out |
+| one, two, three | counted fingers straight and together (two and three slightly spread), the rest curled, the thumb holding them down; the palm faces the audience |
+| ok | index and thumb tips touching to make a ring, the other three straight and slightly fanned |
+| stop | the open hand, fingers together, palm square to the audience |
+| cup / hands on hips | fingers curled to about half, the thumb behind (hips) or beside (cup) |
+
+Finger lengths: middle longest, index and ring close, pinky two thirds of
+the middle; a thumb that reaches the index's middle knuckle. The palm is
+about as wide as it is tall. Fingers never pass through each other or
+through the palm, and the thumb never pokes out of a fist.
+
+**Movement.** A hand does not snap. The fingers of a closing hand curl in
+sequence, pinky first, index last, about 15 ms apart (`handKeys` does this);
+an opening hand releases index first. Curling takes 120 to 200 ms; a
+pointing finger extends in about 150 ms with a small overshoot. The hand
+turns on the wrist as the arm moves, so the palm faces where the gesture
+needs it at the hold (the audience for a wave or a stop, up for a present,
+the thigh at rest) and turns back on the return; `palm` changes over the
+same span as the arm, never in one frame. The thumb moves with its own
+timing, slightly after the fingers. A hand that is only holding still still
+lives: 1 to 2 percent of curl drift over a second, never frozen. Between two
+named shapes in one gesture (one, two, three) only the fingers that change
+move; the others hold.
+
+**Evidence and checks.** `review/hands/<skin>-<gesture>.png` is a close-up
+sheet of the moving hand (the shooter crops to the `data-part="hand-R"` or
+`hand-L` box, 12 frames). `tests/hands.test.ts` holds: every gesture's hand
+at its hold matches a named shape; no finger channel moves more than 0.1 per
+frame at 60 fps; curl order pinky first; palm never changes more than 0.08
+per frame. A hand critic (REVIEW.md lens L4h) reads only these sheets.
+
+## Motion: never mechanical (the user's standing directive)
+
+The user's words: "the motion animation is too mechanical". Mechanical means
+joints that start and stop on their own keyframe with the same ease,
+oscillations that are perfect sines, holds that freeze, nothing lagging or
+settling, hair and cloth that never move, and every play identical. The fix
+is a LIFE LAYER in `src/rig/life.ts`, applied by `poseAt` after the layers
+are composed, so every action gets it without being rewritten:
+
+1. **Mass.** Every channel passes through a critically damped spring tuned
+   per class (fingers light and quick, head medium, body heavy), stepped at
+   a fixed 240 Hz from t=0 so it stays a pure function of time. A keyframe
+   that stops dead now settles; a fast move carries past and comes back.
+2. **Lag.** Distal channels are sampled a little behind their parent: elbow
+   30 ms after shoulder, wrist 60, fingers 90, pupils 40 ms after head turn.
+3. **Drift.** Seeded, smooth 1/f-style noise on every channel with
+   class-specific amplitude (head 0.6 deg, arms 0.8 deg, fingers 0.02, brows
+   0.03, body 1 px), so a hold breathes and no two seconds match.
+4. **Secondary motion.** `hairSway`, `clothSway` and `braidSway` channels
+   (add to channels.ts) are derived from the lagged, spring-filtered velocity
+   of head turn and body X and the renderer rotates hairBack, the bun, the
+   braid, the dupatta and a long skirt by a few degrees from them.
+5. **Balance.** Lifting an arm shifts the body a few px the other way,
+   drops the opposite shoulder (twist) and tilts the head toward the hand;
+   a jump bends both knees first. Derived from the arm and body channels.
+6. **Variation.** `play()` scales a gesture's amplitude and timing by a
+   seeded 4 to 8 percent each time it is played, and the oscillating
+   gestures (wave, shake, nod, clap, rubHands, headBob) decay in amplitude,
+   drift in frequency and have a quicker out-stroke than return.
+
+All of it is configurable through `LifeOptions` (`mass`, `lag`, `drift`,
+`secondary`, `balance`, `variation`, each 0..1, default 1) on `useCharacter`
+and `Actor`, and off entirely with `life: 0` for debugging a keyframe.
+`tests/life.test.ts` holds: still deterministic; no pops introduced; a held
+pose moves at least 0.3 px over a second; two plays differ; a stopped arm
+overshoots by 1 to 4 percent and settles within 300 ms.
+
 ## Rig geometry (viewBox 0 0 400 600)
+
+NEW NUMBERS for the art direction above (the old ones are kept further
+down for history and are superseded): ground y=580. Hips (200, 360). Belt
+or waist y=345 (Arjun) / 335 (Riya). Shoulders y=205, pivots at
+x = 200 +- (skin.shoulderHalf - 6); shoulderHalf Arjun 76, Riya 58. Neck
+base (200, 196), neck width 30 / 24. Head centre (200, 120); head-local
+skull rx 50, ry 56, so the crown is y=-56 (hair rises to about -84 for the
+quiff and the bun) and the chin y=56. Face features head-local: eyes at
+(+-20, -2), brows y=-18 from x=+-8 to +-32, nose (4, 12) a short stroke,
+mouth centre (0, 30), ears at (+-50, 2). Upper arm 95, forearm 85, hand 30
+wide. Legs: thighs from the hips to knees at y=470, calves to ankles at
+y=560, shoes to 580. Arjun's torso tapers from shoulderHalf at the top to
+half-width 56 at the belt; Riya's to 40 at the waist, then the skirt flares
+to half-width 62 at y=500.
+
+OLD numbers, superseded:
 
 Front view, standing, ground at y=580. Hips at (200, 400). Shoulders at y=262,
 pivots at x = 200 ± skin.shoulderHalf (about 66). Neck base (200, 252). Head

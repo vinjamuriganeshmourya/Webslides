@@ -165,6 +165,7 @@ shot*.mjs
 **/characters-lab/review/sheets/
 **/characters-lab/review/hero/
 **/characters-lab/review/grids/
+**/characters-lab/review/match/
 **/characters-lab/review/reel/
 **/characters-lab/review/frames/
 **/characters-lab/review/*.mp4

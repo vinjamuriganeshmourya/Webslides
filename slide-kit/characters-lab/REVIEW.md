@@ -56,6 +56,7 @@ reading keys.
 | `grids/configs.png` | 12 configs: all hair styles, every top and bottom, three tones, glasses, beard | configurability, no broken combination |
 | `grids/velocity-<name>.png` | a strip chart per channel | where the speed is, so pops and dead holds are visible |
 | `reel/<skin>-intro.mp4` + `reel/<skin>-intro-sheet.png` | 1 frame per second of the reel | the deliverable itself |
+| `hands/<skin>-<gesture>.png` | 12 close-ups of the moving hand, cropped to its `data-part="hand-R"` (or `hand-L`) box with 20 px margin at 3x | finger position at every step of a gesture; the user's standing directive in CONTRACTS.md "Hands" |
 
 Each sheet carries the time under every frame and the action's keys count.
 Frames are 300 px wide in the tile so a 12-frame sheet is 3600 px, which an
@@ -83,6 +84,14 @@ evidence. It returns findings, not prose:
 | L8 code and API | `src/`, `README.md` | small readable modules, the Actor API a deck author can use in one line, determinism, no duplication between actions, nothing hard-coded that the config should own |
 | L9 timing audit | `src/actions/*.ts` keys, the audit report | every duration against the real-timing table in CONTRACTS.md |
 | L10 reel | reel sheets, the mp4 size and duration | the deliverable plays, frame count matches fps x duration, no blank first frame |
+| L4h fingers | `hands/*.png` close-ups only | the user's directive in CONTRACTS.md "Hands": a named shape at every hold, fingers that curl in sequence and never snap, the thumb where a thumb goes, the palm turned where the gesture needs it |
+| L11 life | idle sheets, velocity strips, two plays of the same gesture side by side | the user's directive in CONTRACTS.md "Motion: never mechanical": inertia and settle, distal lag, holds that breathe, hair and cloth that follow, balance, and no two plays identical |
+
+Two more test files hold those directives in numbers: `tests/hands.test.ts`
+(named shape at the hold, finger continuity 0.1 a frame, pinky-first curl,
+palm continuity) and `tests/life.test.ts` (determinism kept, no pops added,
+a held pose moves, two plays differ, overshoot 1 to 4 percent, settle within
+300 ms).
 
 Every lens also gives a score 1..10 for "a photograph of a person mid-motion
 could look like this", with the three things that most hold the score down.

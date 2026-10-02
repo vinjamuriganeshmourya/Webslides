@@ -1,91 +1,50 @@
-/* The hair catalogue. Every style is a few clusters of paths in head-local
- * space: skull centre at the origin, rx 60 ry 66, crown at y=-66, chin at
- * y=66, ears at (+-60, 2). Light comes from the upper left, as everywhere in
- * the rig, so each mass carries a gradient across it, a sheen stroke along
- * the lit crown and a shade pool where the hair turns away from the lamp.
- * Strand lines run the way the hair was combed. One flat blob reads as a
- * helmet at any size; the clusters and the strands are what make it read as
- * hair, at 120 px on a slide and at 1080 px in a reel.
+/* The hair catalogue, in the flat vector style of reference/arjun.png and
+ * reference/riya.png: every style is a solid mass in the hair colour, one
+ * shade shape a step darker where the mass turns under or away, and one
+ * sheen shape a step lighter where the reference paints a highlight. No
+ * gradients, no strand strokes, no filters: flat shapes read as the
+ * reference does at 120 px on a slide and at 1080 px in a reel, and the
+ * renderer keeps the old lit look behind skin.shading === 'lit' on its own.
  *
- * hairBack is drawn behind the skull, hairFront over the forehead. The
- * renderer wraps the front in a cast-shadow filter, so these just draw the
- * shapes. A braid or a ponytail hangs below the chin (y > 66) over the
- * viewer's right shoulder and still lives inside the head group, so it turns
- * with the head; long hair falls behind both shoulders as hairBack. */
-import { useId, type ReactNode } from 'react'
+ * Head-local space, the NEW skull: centre at the origin, rx 50 ry 56, so the
+ * crown is y=-56 and the chin y=56; ears at (+-50, 2), brows at y=-18, eyes
+ * at (+-20, -2). A quiff or a bun rises to about y=-84. Every front piece
+ * leaves the forehead and the eyes clear: no hairline below y=-34.
+ *
+ * hairBack is drawn behind the skull, hairFront over the forehead. Long hair
+ * (bun, long, wavy) falls behind both shoulders as hairBack, so it reaches
+ * body space (y > 56, down to the waist at about y=230); a braid or a
+ * ponytail hangs over the viewer's right shoulder. Both still live inside
+ * the head group, so they turn with the head. */
+import type { ReactNode } from 'react'
 import type { HairStyle } from '@/skins/config'
 import type { Palette } from '@/skins/types'
 
+type Draw = (p: Palette) => ReactNode
+
 export function hairBack(style: HairStyle, p: Palette): ReactNode | null {
   const draw = BACK[style]
-  return draw ? <Lit p={p}>{draw}</Lit> : null
+  return draw ? draw(p) : null
 }
 
 export function hairFront(style: HairStyle, p: Palette): ReactNode | null {
   const draw = FRONT[style]
-  return draw ? <Lit p={p}>{draw}</Lit> : null
+  return draw ? draw(p) : null
 }
 
-/* One gradient per piece, lit from the upper left. The id comes from useId
- * because two actors share a page and a duplicate id makes the second one
- * inherit the first one's paint. Every path in the piece fills with it; a
- * small lobe (a braid segment, a curl) gets its own full light-to-dark run,
- * which is exactly what makes it read as a separate volume. */
-type Draw = (p: Palette, fill: string) => ReactNode
+/* The band on Riya's bun is the blouse colour in the reference: the palette's
+ * accent, with the reference hex behind it for a palette built without one. */
+const accent = (p: Palette) => p.accent || '#5B6EE1'
 
-function Lit({ p, children }: { p: Palette; children: Draw }) {
-  const id = 'hair' + useId().replace(/:/g, '')
-  return (
-    <>
-      <defs>
-        <linearGradient id={id} x1="0.15" y1="0" x2="0.85" y2="1">
-          <stop offset="0%" stopColor={p.hairLight} />
-          <stop offset="42%" stopColor={p.hair} />
-          <stop offset="100%" stopColor={p.hairShade} />
-        </linearGradient>
-      </defs>
-      {children(p, `url(#${id})`)}
-    </>
-  )
-}
-
-/* The three marks every style is built from. */
-const sheen = (p: Palette, d: string, w = 4, o = 0.5) => (
-  <path d={d} fill="none" stroke={p.hairLight} strokeWidth={w} strokeLinecap="round" opacity={o} />
-)
-const shade = (p: Palette, d: string, o = 0.45) => <path d={d} fill={p.hairShade} opacity={o} />
-/* Strand lines, all in one path, so a style with twelve of them is one node. */
-const strands = (p: Palette, ds: string[], w = 1.6, o = 0.4) => (
-  <path d={ds.join(' ')} fill="none" stroke={p.hairShade} strokeWidth={w} strokeLinecap="round" opacity={o} />
-)
-/* Baby hairs at the temple, in the hair colour: the one thing that stops a
- * pulled-back style from reading as a painted cap. */
-const wisps = (p: Palette, ds: string[]) => (
-  <path d={ds.join(' ')} fill="none" stroke={p.hair} strokeWidth={1.4} strokeLinecap="round" opacity={0.75} />
-)
-
-/* The cap: the silhouette behind the skull that every short style shares,
- * about 10 px proud of the skull at the crown and the sides so a rim of hair
- * shows past the face. Only that rim is ever visible. */
-const CAP = 'M-62 16 C-74 -22 -64 -66 -30 -82 C-12 -90 14 -90 32 -82 C66 -66 76 -22 62 16 Z'
-const CAP_SHEEN = 'M-52 -40 C-44 -66 -20 -84 10 -86'
-const CAP_SHADE = 'M34 -82 C66 -66 76 -22 62 16 L56 16 C66 -24 58 -58 30 -74 Z'
-
-/* The shade that falls on the right of every front piece: the side of the
- * head turned away from the lamp. */
-const RIGHT_SHADE = 'M30 -75 C58 -62 66 -26 58 12 L50 12 C56 -24 50 -52 26 -68 Z'
+/* The three marks every style is built from: the mass, its shade, its sheen. */
+const mass = (p: Palette, d: string, opacity = 1) => <path d={d} fill={p.hair} opacity={opacity} />
+const shade = (p: Palette, d: string) => <path d={d} fill={p.hairShade} />
+const sheen = (p: Palette, d: string) => <path d={d} fill={p.hairLight} />
 
 const BACK: Record<HairStyle, Draw | null> = {
   short: cap,
   sidePart: cap,
-  quiff: (p, fill) => (
-    <>
-      {/* the cap rises at the front so the roll has something behind it */}
-      <path d="M-62 16 C-74 -22 -64 -66 -30 -82 C-8 -96 22 -100 40 -86 C68 -66 76 -22 62 16 Z" fill={fill} />
-      {sheen(p, CAP_SHEEN)}
-      {shade(p, CAP_SHADE)}
-    </>
-  ),
+  quiff: quiffBack,
   curly: curlyBack,
   buzz: null,
   braid: braidBack,
@@ -110,464 +69,315 @@ const FRONT: Record<HairStyle, Draw | null> = {
   wavy: wavyFront,
 }
 
-function cap(p: Palette, fill: string) {
+/* ---- the two presets ---------------------------------------------------- */
+
+/* Arjun's quiff. One near-black mass: from a shallow-curve hairline on the
+ * forehead it sweeps up over the viewer's left, crests at about y=-88, and
+ * runs back to three soft points at the top back right. Short over the ears,
+ * a sideburn in front of each. The sheen is the one lighter patch the
+ * reference paints on the swept front; the shade is the underside of the
+ * points, which on #151515 is almost invisible, as in the reference. */
+function quiffFront(p: Palette) {
   return (
     <>
-      <path d={CAP} fill={fill} />
-      {sheen(p, CAP_SHEEN)}
-      {shade(p, CAP_SHADE)}
+      {mass(
+        p,
+        'M-43 12 C-49 2 -51 -8 -52 -18 C-64 -36 -68 -64 -52 -80 C-42 -90 -24 -92 -10 -90 ' +
+          'C8 -90 26 -90 40 -86 C44 -86 48 -88 50 -90 C48 -84 46 -80 46 -78 C52 -78 60 -76 64 -72 ' +
+          'C60 -68 56 -64 56 -62 C62 -60 68 -56 68 -50 C64 -42 60 -34 58 -26 C57 -20 54 -12 50 -10 ' +
+          'C48 -8 46 -4 44 8 C46 0 46 -8 46 -16 C44 -26 43 -34 36 -40 C28 -45 12 -47 0 -47 ' +
+          'C-12 -47 -28 -45 -36 -40 C-43 -34 -45 -26 -45 -18 C-46 -8 -45 0 -43 12 Z',
+      )}
+      {sheen(p, 'M-58 -38 C-58 -66 -40 -84 -10 -88 C0 -89 8 -87 10 -84 C-14 -80 -34 -68 -42 -44 C-45 -34 -56 -30 -58 -38 Z')}
+      {shade(p, 'M50 -90 C60 -78 68 -64 68 -50 C60 -60 52 -70 36 -80 Z')}
+    </>
+  )
+}
+
+/* A tight cap behind the skull: the rim of hair that shows behind the ears
+ * and keeps the crown dark when a turn slides the front piece sideways. */
+function quiffBack(p: Palette) {
+  return mass(p, 'M-52 12 C-58 -24 -46 -64 0 -64 C46 -64 58 -24 52 12 Z')
+}
+
+/* Riya's bun. The cap sits close to the skull with a parting right of
+ * centre; two strands fall in front of the left ear and one in front of the
+ * right. No sheen: the reference paints her hair as one flat navy mass. */
+function bunFront(p: Palette) {
+  return (
+    <>
+      {mass(
+        p,
+        'M-44 22 C-50 10 -52 -4 -52 -20 C-56 -40 -46 -62 -12 -63 C16 -65 40 -58 50 -40 C54 -28 54 -16 50 -8 ' +
+          'C48 2 46 10 44 16 C45 6 45 -4 46 -16 C46 -26 42 -36 34 -40 C26 -42 20 -42 16 -40 L14 -36 ' +
+          'C10 -43 -4 -46 -16 -44 C-30 -42 -40 -36 -44 -26 C-46 -16 -46 -6 -45 2 C-45 10 -44 16 -44 22 Z',
+      )}
+      {/* the parting: a sliver of scalp from the hairline up toward the bun */}
+      <path d="M14 -36 C15 -42 17 -48 20 -52 C18 -47 17 -41 16 -36 Z" fill={p.skinShade} />
+      {/* the strands in front of the ears */}
+      {mass(p, 'M-46 -14 C-50 -2 -50 12 -45 28 C-43 14 -43 0 -45 -14 Z M-42 -4 C-45 6 -44 12 -41 20 C-40 12 -40 4 -42 -4 Z M46 -12 C50 -2 50 8 45 22 C44 10 44 0 46 -12 Z')}
+      {shade(p, 'M34 -40 C42 -36 46 -26 46 -16 C46 -4 46 6 44 16 C47 4 49 -8 48 -22 C47 -32 42 -40 34 -40 Z')}
+    </>
+  )
+}
+
+/* Behind: a dome a few px proud of the skull, the fall behind both
+ * shoulders in one smooth wave that drifts to the viewer's right and ends at
+ * the waist (y about 230), and the bun high at the back with its band. */
+function bunBack(p: Palette) {
+  return (
+    <>
+      {mass(
+        p,
+        'M-53 10 C-58 -30 -42 -64 0 -64 C42 -64 58 -30 53 10 ' +
+          'C62 30 72 40 76 70 C80 100 84 130 92 160 C100 182 112 196 106 216 C100 232 80 240 58 236 ' +
+          'C30 232 10 220 -10 190 C-30 160 -44 130 -48 90 C-54 60 -56 30 -53 10 Z',
+      )}
+      {/* the bun, its base tucked behind the cap */}
+      <circle cx="16" cy="-74" r="21" fill={p.hair} />
+      {shade(p, 'M28 -58 C38 -63 40 -78 33 -90 C42 -82 42 -64 28 -58 Z')}
+      <path d="M10.4 -54 A21.5 21.5 0 0 1 -5.4 -75.9 L1.6 -74.7 A14.5 14.5 0 0 0 12 -60 Z" fill={accent(p)} />
     </>
   )
 }
 
 /* ---- short styles, read as male by default ---------------------------- */
 
-/* Short: the hairline sits 20 px above the brows and the mass is combed up
- * and back from it. The hairline's centre is off by 4 px on purpose. */
-function shortFront(p: Palette, fill: string) {
+/* The cap behind every short style: about 8 px proud of the skull so a rim
+ * of hair shows past the face. Only that rim is ever visible. */
+const CAP = 'M-52 14 C-62 -19 -53 -56 -25 -70 C-10 -76 12 -76 27 -70 C55 -56 63 -19 52 14 Z'
+const CAP_SHADE = 'M27 -70 C55 -56 63 -19 52 14 L46 14 C55 -20 48 -49 25 -63 Z'
+
+/* The shade down the right of a front piece: the side of the head away from
+ * the lamp, which the flat style keeps as one darker shape. */
+const RIGHT_SHADE = 'M25 -64 C48 -53 55 -22 48 10 L42 10 C47 -20 42 -44 22 -58 Z'
+
+function cap(p: Palette) {
   return (
     <>
-      <path
-        d="M-58 14 C-68 -22 -58 -62 -28 -76 C-10 -83 12 -83 30 -75 C60 -62 68 -22 58 14 L50 14 C50 -4 52 -22 46 -36 C40 -44 24 -48 4 -48 C-18 -48 -38 -44 -46 -34 C-52 -22 -50 -4 -50 14 Z"
-        fill={fill}
-      />
-      {strands(p, [
-        'M-30 -46 C-24 -56 -16 -64 -6 -68',
-        'M-6 -50 C-2 -60 6 -68 18 -72',
-        'M20 -46 C26 -56 36 -62 46 -62',
-        'M-44 -30 C-42 -44 -36 -56 -26 -64',
-        'M34 -40 C42 -50 50 -52 56 -48',
-      ])}
-      {sheen(p, 'M-40 -54 C-26 -70 0 -78 24 -72')}
+      {mass(p, CAP)}
+      {shade(p, CAP_SHADE)}
+    </>
+  )
+}
+
+/* Short: the hairline sits 16 px above the brows, combed up and back. */
+function shortFront(p: Palette) {
+  return (
+    <>
+      {mass(p, 'M-48 12 C-57 -19 -48 -53 -23 -64 C-8 -70 10 -70 25 -64 C50 -53 57 -19 48 12 L42 12 C42 -3 43 -19 38 -31 C33 -37 20 -41 3 -41 C-15 -41 -32 -37 -38 -29 C-43 -19 -42 -3 -42 12 Z')}
+      {sheen(p, 'M-36 -46 C-24 -60 -4 -67 18 -63 C0 -62 -18 -56 -30 -44 Z')}
       {shade(p, RIGHT_SHADE)}
     </>
   )
 }
 
-/* Side part: parted left of centre (from the viewer), the larger side swept
- * right across the forehead and dipping lowest at the right temple. */
-function sidePartFront(p: Palette, fill: string) {
+/* Side part: parted left of centre, the larger side swept right across the
+ * forehead. The shade is the pocket right of the part plus the far side. */
+function sidePartFront(p: Palette) {
   return (
     <>
-      <path
-        d="M-58 14 C-68 -22 -58 -62 -28 -76 C-10 -83 12 -83 30 -75 C60 -62 68 -22 58 14 L50 14 C52 -6 50 -24 40 -32 C26 -40 2 -44 -16 -44 C-34 -42 -46 -36 -48 -24 C-50 -10 -50 2 -50 14 Z"
-        fill={fill}
-      />
-      {/* the dark pocket just right of the part, where the sweep lifts off the scalp */}
-      {shade(p, 'M-16 -44 C-8 -56 2 -64 14 -66 C4 -58 -6 -50 -10 -42 Z', 0.5)}
-      {strands(p, [
-        'M-10 -60 C6 -62 24 -56 36 -42',
-        'M-8 -72 C14 -74 36 -66 48 -50',
-        'M-4 -50 C10 -52 22 -46 30 -38',
-        'M-24 -58 C-34 -54 -42 -46 -46 -36',
-        'M-30 -70 C-40 -62 -46 -52 -50 -40',
-      ])}
-      {/* the parting itself */}
-      {strands(p, ['M-16 -44 C-20 -56 -22 -66 -18 -76'], 2.2, 0.55)}
-      {sheen(p, 'M-6 -70 C14 -74 36 -66 50 -52')}
-      {shade(p, RIGHT_SHADE)}
+      {mass(p, 'M-48 12 C-57 -19 -48 -53 -23 -64 C-8 -70 10 -70 25 -64 C50 -53 57 -19 48 12 L42 12 C43 -5 42 -20 33 -27 C22 -34 2 -37 -13 -37 C-28 -36 -38 -31 -40 -20 C-42 -8 -42 2 -42 12 Z')}
+      {sheen(p, 'M-6 -59 C10 -62 28 -56 40 -44 C28 -52 12 -56 -4 -54 Z')}
+      {shade(p, `M-13 -37 C-7 -48 2 -54 12 -56 C3 -49 -5 -42 -8 -36 Z ${RIGHT_SHADE}`)}
     </>
   )
 }
 
-/* Quiff: the front is lifted into a roll that peaks 30 px above the crown
- * and falls back toward the right; the pocket under the roll is in shadow. */
-function quiffFront(p: Palette, fill: string) {
-  return (
-    <>
-      <path
-        d="M-58 14 C-68 -22 -62 -62 -42 -80 C-30 -98 -4 -106 16 -98 C30 -92 38 -82 40 -74 C58 -60 66 -22 58 14 L50 14 C52 -6 50 -24 44 -36 C30 -46 6 -50 -14 -50 C-32 -48 -44 -40 -48 -28 C-50 -12 -50 2 -50 14 Z"
-        fill={fill}
-      />
-      {shade(p, 'M-44 -62 C-34 -82 -16 -94 4 -96 C-12 -88 -28 -74 -36 -56 Z', 0.5)}
-      {strands(p, [
-        'M-36 -54 C-28 -70 -20 -84 -8 -94',
-        'M-16 -56 C-10 -74 0 -88 14 -94',
-        'M6 -56 C12 -70 22 -80 34 -82',
-        'M24 -50 C34 -60 44 -64 52 -58',
-        'M-46 -36 C-44 -52 -38 -66 -28 -78',
-      ])}
-      {sheen(p, 'M-32 -72 C-22 -92 -2 -100 18 -94', 4.5)}
-      {shade(p, 'M38 -76 C58 -60 66 -26 58 12 L50 12 C56 -24 52 -54 34 -70 Z')}
-    </>
-  )
-}
-
-/* Curly: a cap with curls sitting on it, each curl its own lit volume with a
- * crescent of sheen on its upper left. The hairline is where the lowest row
- * of curls lands, not a drawn line. */
-function curl(fill: string, p: Palette, cx: number, cy: number, r: number, key: string) {
-  return (
-    <g key={key}>
-      <circle cx={cx} cy={cy} r={r} fill={fill} />
-      <path
-        d={`M${cx - r * 0.55} ${cy - r * 0.3} A${r * 0.6} ${r * 0.6} 0 0 1 ${cx + r * 0.05} ${cy - r * 0.62}`}
-        fill="none"
-        stroke={p.hairLight}
-        strokeWidth={r * 0.22}
-        strokeLinecap="round"
-        opacity={0.5}
-      />
-      <path
-        d={`M${cx + r * 0.2} ${cy + r * 0.75} A${r * 0.8} ${r * 0.8} 0 0 0 ${cx + r * 0.78} ${cy + r * 0.15}`}
-        fill="none"
-        stroke={p.hairShade}
-        strokeWidth={r * 0.3}
-        strokeLinecap="round"
-        opacity={0.5}
-      />
-    </g>
-  )
-}
-
+/* Curly: a cap with curls sitting on it. Each curl is a circle in the mass;
+ * the sheen is one path of crescents on the upper-left curls, the shade one
+ * path of crescents on the lower-right ones. */
 const CURLS_BACK: [number, number, number][] = [
-  [-68, -2, 15], [-64, -32, 16], [-48, -60, 15], [-24, -80, 15], [4, -88, 16],
-  [32, -80, 15], [54, -58, 15], [66, -30, 16], [68, 2, 15],
+  [-57, -2, 13], [-53, -27, 13], [-40, -51, 13], [-20, -68, 13], [3, -75, 13], [27, -68, 13], [45, -49, 13], [55, -25, 13], [57, 2, 13],
 ]
 const CURLS_FRONT: [number, number, number][] = [
-  [-50, -14, 10], [-42, -36, 11], [-24, -46, 11], [-2, -50, 11], [20, -47, 11], [38, -38, 10], [50, -22, 9],
-  [-36, -66, 12], [-10, -76, 12], [16, -74, 12], [38, -62, 11],
+  [-42, -12, 8], [-35, -31, 9], [-20, -39, 9], [-2, -42, 9], [17, -40, 9], [32, -32, 8], [42, -19, 8],
+  [-30, -56, 10], [-8, -64, 10], [13, -63, 10], [32, -53, 9],
 ]
+/* A crescent on a circle: the arc between two angles, bowed toward the centre. */
+function crescent(cx: number, cy: number, r: number, a0: number, a1: number): string {
+  const pt = (rad: number, a: number) => `${(cx + rad * Math.cos(a)).toFixed(1)} ${(cy + rad * Math.sin(a)).toFixed(1)}`
+  return `M${pt(r, a0)} A${r} ${r} 0 0 1 ${pt(r, a1)} A${r * 0.9} ${r * 0.9} 0 0 0 ${pt(r, a0)} Z`
+}
+const curls = (p: Palette, cs: [number, number, number][]) => (
+  <>
+    {cs.map(([x, y, r], i) => (
+      <circle key={i} cx={x} cy={y} r={r} fill={p.hair} />
+    ))}
+  </>
+)
 
-function curlyBack(p: Palette, fill: string) {
+function curlyBack(p: Palette) {
   return (
     <>
-      <path d="M-66 20 C-80 -20 -70 -70 -30 -86 C-10 -94 14 -94 34 -86 C76 -70 82 -20 66 20 Z" fill={fill} />
-      {CURLS_BACK.map(([x, y, r], i) => curl(fill, p, x, y, r, `b${i}`))}
-      {shade(p, 'M40 -80 C70 -62 80 -20 70 18 L58 16 C70 -22 62 -56 36 -74 Z', 0.35)}
+      {mass(p, 'M-55 17 C-67 -17 -58 -59 -25 -73 C-8 -80 12 -80 28 -73 C63 -59 68 -17 55 17 Z')}
+      {curls(p, CURLS_BACK)}
+      {shade(p, CURLS_BACK.slice(5).map(([x, y, r]) => crescent(x, y, r * 0.86, -0.3, 1.2)).join(' '))}
     </>
   )
 }
 
-function curlyFront(p: Palette, fill: string) {
+function curlyFront(p: Palette) {
   return (
     <>
-      <path
-        d="M-56 12 C-66 -24 -56 -64 -26 -78 C-8 -86 12 -86 30 -78 C60 -64 66 -24 56 12 L50 12 C50 -6 50 -24 44 -38 C32 -50 8 -56 -4 -56 C-22 -56 -40 -50 -46 -36 C-50 -24 -50 -6 -50 12 Z"
-        fill={fill}
-      />
-      {CURLS_FRONT.map(([x, y, r], i) => curl(fill, p, x, y, r, `f${i}`))}
-      {shade(p, RIGHT_SHADE, 0.35)}
+      {mass(p, 'M-47 10 C-55 -20 -47 -54 -22 -66 C-7 -73 10 -73 25 -66 C50 -54 55 -20 47 10 L42 10 C42 -5 42 -20 37 -32 C27 -42 7 -48 -3 -48 C-18 -48 -33 -42 -38 -31 C-42 -20 -42 -5 -42 10 Z')}
+      {curls(p, CURLS_FRONT)}
+      {sheen(p, CURLS_FRONT.slice(7, 10).map(([x, y, r]) => crescent(x, y, r * 0.8, 3.4, 4.9)).join(' '))}
+      {shade(p, CURLS_FRONT.slice(4, 7).map(([x, y, r]) => crescent(x, y, r * 0.86, -0.3, 1.2)).join(' '))}
     </>
   )
 }
 
-/* Buzz: hair so short the scalp shows through, so the cap is translucent and
- * matte, the sheen is broad and faint, and dashed arcs give it the grain of
- * stubble at reel size. No back piece: nothing stands proud of the skull. */
-function buzzFront(p: Palette, fill: string) {
+/* Buzz: hair so short the scalp shows through, so the cap is translucent.
+ * No back piece: nothing stands proud of the skull. */
+function buzzFront(p: Palette) {
   return (
     <>
-      <path
-        d="M-56 10 C-64 -24 -56 -58 -26 -70 C-8 -76 10 -76 26 -70 C58 -58 66 -24 56 10 L50 10 C50 -8 50 -24 44 -36 C32 -46 8 -50 -2 -50 C-20 -50 -36 -46 -44 -36 C-50 -24 -50 -8 -50 10 Z"
-        fill={fill}
-        opacity={0.86}
-      />
-      <path
-        d="M-44 -24 C-36 -46 -12 -60 12 -60 M-34 -10 C-30 -38 -8 -54 20 -52 M-50 2 C-48 -28 -26 -50 4 -52 M-22 -62 C0 -70 26 -66 44 -48 M-14 -44 C4 -50 24 -44 36 -30 M-46 -40 C-34 -58 -10 -70 14 -70 M8 -42 C22 -44 36 -34 46 -18"
-        fill="none"
-        stroke={p.hairShade}
-        strokeWidth={1.1}
-        strokeDasharray="0.8 2.4"
-        strokeLinecap="round"
-        opacity={0.3}
-      />
-      {sheen(p, 'M-34 -52 C-20 -66 2 -72 22 -66', 6, 0.3)}
-      {shade(p, 'M26 -70 C56 -58 64 -24 56 8 L50 8 C54 -24 48 -50 22 -64 Z', 0.4)}
+      {mass(p, 'M-47 8 C-53 -20 -47 -49 -22 -59 C-7 -64 8 -64 22 -59 C48 -49 55 -20 47 8 L42 8 C42 -7 42 -20 37 -31 C27 -39 7 -42 -2 -42 C-17 -42 -30 -39 -37 -31 C-42 -20 -42 -7 -42 8 Z', 0.86)}
+      {sheen(p, 'M-30 -42 C-20 -54 -2 -60 16 -56 C0 -56 -14 -50 -24 -40 Z')}
+      {shade(p, 'M22 -59 C47 -49 54 -20 47 6 L42 6 C45 -20 40 -42 18 -54 Z')}
     </>
   )
 }
 
 /* ---- long styles, read as female by default --------------------------- */
 
-/* The volume behind the head that every long style starts from: a dome
- * proud of the crown that falls straight past the ears to just below the
- * chin, where the neck and shoulders hide it. Riya's reference drew this. */
-const DOME = 'M-64 20 C-78 -24 -66 -72 -30 -86 C-10 -94 14 -94 34 -86 C72 -72 80 -24 66 20'
-const DOME_SHEEN = 'M-54 -40 C-46 -66 -22 -84 8 -88'
+/* The dome behind every long style: proud of the crown, falling straight
+ * past the ears to just below the chin where the shoulders hide it. */
+const DOME = 'M-53 17 C-65 -20 -55 -61 -25 -73 C-8 -80 12 -80 28 -73 C60 -61 67 -20 55 17'
+const DOME_SHEEN = 'M-44 -34 C-38 -56 -18 -72 8 -74 C-12 -70 -30 -56 -38 -34 Z'
 
-/* Braid: Riya's. The hair gathers behind the right ear and the braid hangs
- * over the viewer's right shoulder, between the neck and the arm, down to
- * the chest. Each segment is two lobes, one from each side, so the plait
- * reads as interlocking strands and not a rope. */
-function braidBack(p: Palette, fill: string) {
-  const lobes: ReactNode[] = []
+/* Braid: the hair gathers behind the right ear and the plait hangs over the
+ * viewer's right shoulder to the chest. Each segment is two lobes, one from
+ * each side; the shade is one path of crescents under the right lobes, so
+ * the plait reads as interlocking strands without a single stroke. */
+function braidBack(p: Palette) {
+  const lobes: string[] = []
+  const shades: string[] = []
   for (let i = 0; i < 7; i++) {
-    const y = 72 + i * 18
-    const cx = 43 + i * 0.5
-    const w = 23 - i * 1.2
-    lobes.push(
-      <g key={i}>
-        <path d={`M${cx} ${y} C${cx - w * 0.8} ${y + 4} ${cx - w * 0.8} ${y + 18} ${cx} ${y + 22} C${cx - w * 0.15} ${y + 16} ${cx - w * 0.15} ${y + 6} ${cx} ${y} Z`} fill={fill} stroke={p.hairShade} strokeWidth={0.8} strokeOpacity={0.5} />
-        <path d={`M${cx} ${y + 9} C${cx + w * 0.8} ${y + 13} ${cx + w * 0.8} ${y + 27} ${cx} ${y + 31} C${cx + w * 0.15} ${y + 25} ${cx + w * 0.15} ${y + 15} ${cx} ${y + 9} Z`} fill={fill} stroke={p.hairShade} strokeWidth={0.8} strokeOpacity={0.5} />
-        <path d={`M${cx - w * 0.5} ${y + 7} Q${cx - w * 0.3} ${y + 2} ${cx - w * 0.1} ${y + 3}`} fill="none" stroke={p.hairLight} strokeWidth={2.4} strokeLinecap="round" opacity={0.5} />
-        <path d={`M${cx + w * 0.15} ${y + 13} Q${cx + w * 0.35} ${y + 10} ${cx + w * 0.5} ${y + 14}`} fill="none" stroke={p.hairLight} strokeWidth={2} strokeLinecap="round" opacity={0.35} />
-      </g>,
-    )
+    const y = 60 + i * 15
+    const cx = 36 + i * 0.4
+    const w = 19 - i
+    lobes.push(`M${cx} ${y} C${cx - w * 0.8} ${y + 3} ${cx - w * 0.8} ${y + 15} ${cx} ${y + 18} C${cx - w * 0.15} ${y + 13} ${cx - w * 0.15} ${y + 5} ${cx} ${y} Z`)
+    lobes.push(`M${cx} ${y + 7} C${cx + w * 0.8} ${y + 11} ${cx + w * 0.8} ${y + 23} ${cx} ${y + 26} C${cx + w * 0.15} ${y + 21} ${cx + w * 0.15} ${y + 12} ${cx} ${y + 7} Z`)
+    shades.push(`M${cx} ${y + 20} C${cx + w * 0.5} ${y + 22} ${cx + w * 0.6} ${y + 18} ${cx + w * 0.62} ${y + 14} C${cx + w * 0.5} ${y + 25} ${cx + w * 0.2} ${y + 26} ${cx} ${y + 26} Z`)
   }
   return (
     <>
-      <path d={`${DOME} C68 44 66 64 64 80 L-62 80 C-66 64 -66 44 -64 20 Z`} fill={fill} />
-      {strands(p, ['M-66 -10 C-70 20 -68 50 -64 78', 'M66 -8 C70 20 68 50 64 78', 'M-58 -46 C-66 -20 -66 10 -62 40'])}
+      {mass(p, `${DOME} C57 37 55 54 53 68 L-52 68 C-55 54 -55 37 -53 17 Z`)}
       {sheen(p, DOME_SHEEN)}
-      {shade(p, 'M36 -84 C72 -70 80 -24 66 20 C68 44 66 64 64 80 L54 80 C58 50 60 20 54 -10 C50 -40 48 -62 30 -76 Z', 0.4)}
-      {/* the gather: hair pulled from behind the ear toward the braid */}
-      <path d="M26 38 C42 40 54 54 54 72 L34 78 C32 60 30 48 22 42 Z" fill={fill} />
-      {strands(p, ['M32 42 C42 50 48 60 48 72', 'M40 44 C48 54 52 62 52 74'], 1.4, 0.45)}
-      {/* the braid proper, over the shoulder; the first lobe laps the gather */}
-      <path d="M31 70 C37 66 49 66 55 70 L55 78 C49 74 37 74 31 78 Z" fill={fill} />
-      {lobes}
-      {/* the tie and the tassel below it */}
-      <ellipse cx="46.5" cy="201" rx="7.5" ry="3.6" fill={p.hairShade} />
-      <path d="M40.5 203 C37.5 212 38.5 222 44.5 230 C46.5 222 48.5 216 46.5 208 C48.5 216 51.5 222 54.5 227 C55.5 218 53.5 210 51.5 203 Z" fill={fill} />
-      {strands(p, ['M43.5 206 C42.5 214 43.5 220 45.5 226', 'M49.5 206 C50.5 214 51.5 218 53.5 224'], 1.2, 0.5)}
-      {sheen(p, 'M41.5 199 Q44.5 197 48.5 198', 2.2, 0.55)}
+      {/* the gather behind the ear, the plait, the tie and the tassel */}
+      {mass(p, 'M22 32 C35 34 45 46 45 61 L28 66 C27 51 25 41 18 36 Z M26 59 C31 56 41 56 46 59 L46 66 C41 63 31 63 26 66 Z')}
+      {mass(p, lobes.join(' '))}
+      <ellipse cx="38.5" cy="167" rx="6" ry="3" fill={p.hairShade} />
+      {mass(p, 'M34 169 C31 177 32 185 37 192 C39 185 40 180 39 173 C40 180 43 185 45 190 C46 182 45 175 43 169 Z')}
+      {shade(p, shades.join(' '))}
     </>
   )
 }
 
-/* Riya's fringe from the reference, scaled to this skull: a curtain that
- * clears the brows by 25 px at the centre and falls to the ears at the
- * sides, with the sheen along its top where the lamp catches the curve. */
-function braidFront(p: Palette, fill: string) {
+/* Riya's old fringe, re-fitted: a curtain that clears the brows by 24 px at
+ * the centre and falls to the ears at the sides. */
+function braidFront(p: Palette) {
   return (
     <>
-      <path
-        d="M-57 -8 C-60 -60 -30 -84 0 -84 C34 -84 64 -60 60 -5 C50 -36 30 -50 2 -50 C-26 -50 -46 -36 -57 -8 Z"
-        fill={fill}
-      />
-      {strands(p, [
-        'M-40 -36 C-30 -50 -14 -58 4 -60',
-        'M24 -52 C36 -46 46 -36 52 -22',
-        'M-10 -52 C-2 -57 12 -57 22 -55',
-        'M-50 -22 C-44 -42 -30 -60 -8 -68',
-      ])}
-      {sheen(p, 'M-41 -49 C-24 -68 5 -74 30 -65', 4.5)}
-      {shade(p, 'M34 -82 C58 -70 64 -40 60 -5 L52 -8 C54 -36 50 -60 28 -74 Z')}
+      {mass(p, 'M-47 -7 C-50 -51 -25 -71 0 -71 C28 -71 53 -51 50 -4 C42 -31 25 -42 2 -42 C-22 -42 -38 -31 -47 -7 Z')}
+      {sheen(p, 'M-34 -42 C-20 -58 4 -64 26 -56 C6 -58 -14 -54 -28 -40 Z')}
+      {shade(p, 'M28 -68 C48 -58 53 -33 50 -4 L43 -7 C45 -30 42 -50 23 -62 Z')}
     </>
   )
 }
 
 /* Ponytail: the tail leaves the back of the head on the right, swings out
- * past the jaw and falls over the shoulder, splitting into tips at the end.
- * It sits inside the arm's line so a hanging arm does not cover it. */
-function ponytailBack(p: Palette, fill: string) {
+ * past the jaw and falls over the shoulder, splitting into tips. */
+function ponytailBack(p: Palette) {
   return (
     <>
-      <path d={CAP} fill={fill} />
-      {sheen(p, CAP_SHEEN)}
+      {mass(p, CAP)}
       {shade(p, CAP_SHADE)}
-      <path
-        d="M8 -2 C28 8 46 22 52 46 C60 90 58 140 54 190 L50 212 L44 196 L40 208 L36 192 C32 140 34 96 28 56 C24 32 18 14 6 2 Z"
-        fill={fill}
-      />
-      {strands(p, [
-        'M26 10 C40 36 46 80 44 150 C44 170 44 184 42 196',
-        'M38 20 C52 50 54 110 48 180',
-        'M18 14 C30 40 36 90 36 150',
-      ])}
-      {sheen(p, 'M24 2 C36 12 46 32 50 54', 3.5)}
-      {shade(p, 'M28 56 C32 100 32 150 36 192 L42 194 C40 150 40 100 36 58 Z', 0.4)}
+      {mass(p, 'M7 -2 C23 7 38 19 43 39 C50 76 48 119 45 161 L42 180 L37 166 L33 176 L30 163 C27 119 28 81 23 48 C20 27 15 12 5 2 Z')}
+      {sheen(p, 'M20 2 C30 10 38 24 42 44 C36 28 28 14 16 6 Z')}
     </>
   )
 }
 
-/* Pulled back tight: every strand runs from the hairline toward the tie,
- * the sheen follows that pull, and baby hairs escape at the temples. */
-function ponytailFront(p: Palette, fill: string) {
+/* Pulled back tight: a smooth cap with the hairline 14 px above the brows. */
+function ponytailFront(p: Palette) {
   return (
     <>
-      <path
-        d="M-56 10 C-66 -22 -58 -62 -28 -76 C-10 -83 12 -83 30 -75 C60 -62 66 -22 56 10 L50 10 C50 -8 50 -22 44 -34 C34 -44 10 -48 -4 -48 C-20 -48 -38 -44 -44 -34 C-50 -22 -50 -8 -50 10 Z"
-        fill={fill}
-      />
-      {strands(p, [
-        'M-40 -40 C-24 -60 0 -74 26 -78',
-        'M-20 -46 C-6 -62 14 -72 34 -74',
-        'M0 -48 C10 -60 24 -68 40 -70',
-        'M20 -46 C30 -56 40 -62 50 -62',
-        'M-46 -24 C-38 -48 -22 -66 -4 -76',
-      ])}
-      {sheen(p, 'M-30 -56 C-14 -72 10 -80 32 -76')}
-      {wisps(p, ['M-50 -6 q-5 6 -3 13', 'M-46 -14 q-6 4 -6 10', 'M49 -4 q5 6 3 13'])}
+      {mass(p, 'M-47 8 C-55 -19 -48 -53 -23 -64 C-8 -70 10 -70 25 -64 C50 -53 55 -19 47 8 L42 8 C42 -7 42 -19 37 -29 C28 -37 8 -41 -3 -41 C-17 -41 -32 -37 -37 -29 C-42 -19 -42 -7 -42 8 Z')}
+      {sheen(p, 'M-30 -44 C-16 -60 6 -68 26 -62 C8 -62 -10 -56 -24 -42 Z')}
       {shade(p, RIGHT_SHADE)}
     </>
   )
 }
 
 /* Bob: the mass behind is wider than the head and curls under at the jaw.
- * The front is a blunt fringe plus two curtains that cover the ears and
- * turn in at the chin; the right curtain lives in the shade. */
-function bobBack(p: Palette, fill: string) {
+ * The front is a blunt fringe plus two curtains over the ears. */
+function bobBack(p: Palette) {
   return (
     <>
-      <path
-        d="M-70 0 C-80 -30 -66 -72 -30 -86 C-10 -94 14 -94 34 -86 C72 -72 84 -30 72 0 C78 30 76 60 66 78 C54 86 36 84 22 80 L-20 80 C-36 84 -54 86 -66 78 C-76 60 -78 30 -70 0 Z"
-        fill={fill}
-      />
-      {strands(p, ['M-72 10 C-76 36 -74 58 -64 76', 'M72 10 C76 36 74 58 64 76'])}
+      {mass(p, 'M-58 0 C-67 -25 -55 -61 -25 -73 C-8 -80 12 -80 28 -73 C60 -61 70 -25 60 0 C65 25 63 51 55 66 C45 73 30 71 18 68 L-17 68 C-30 71 -45 73 -55 66 C-63 51 -65 25 -58 0 Z')}
       {sheen(p, DOME_SHEEN)}
-      {shade(p, 'M36 -84 C74 -70 84 -30 72 0 C78 30 76 60 66 78 L56 76 C66 56 68 30 62 0 C58 -30 52 -62 32 -76 Z', 0.4)}
+      {shade(p, 'M28 -73 C60 -61 70 -25 60 0 C65 25 63 51 55 66 L47 64 C55 48 57 25 52 0 C48 -25 44 -52 27 -64 Z')}
     </>
   )
 }
 
-function bobFront(p: Palette, fill: string) {
+function bobFront(p: Palette) {
   return (
     <>
-      {/* fringe, blunt, 14 px above the brows */}
-      <path
-        d="M-52 -10 C-58 -40 -44 -70 -14 -78 C6 -84 30 -80 44 -70 C58 -58 60 -36 54 -12 L50 -14 C52 -30 46 -40 36 -42 C14 -46 -16 -46 -36 -40 C-46 -36 -50 -26 -48 -12 Z"
-        fill={fill}
-      />
-      {strands(p, [
-        'M-20 -62 C-20 -54 -20 -48 -22 -43',
-        'M6 -64 C6 -56 5 -50 5 -43',
-        'M26 -60 C26 -54 25 -48 24 -43',
-        'M-34 -56 C-36 -50 -38 -46 -40 -41',
-      ], 1.4, 0.35)}
-      {sheen(p, 'M-30 -62 C-10 -74 14 -74 36 -64')}
-      {/* curtains over the ears */}
-      <path d="M-50 -16 C-62 -4 -72 24 -70 50 C-68 66 -60 78 -48 82 C-42 76 -40 68 -42 60 C-46 40 -46 20 -46 -10 Z" fill={fill} />
-      <path d="M50 -18 C62 -6 72 22 70 48 C68 66 60 78 48 82 C42 76 40 68 42 60 C46 40 46 20 46 -12 Z" fill={fill} />
-      {strands(p, ['M-58 0 C-64 24 -64 50 -56 74', 'M58 -2 C64 22 64 48 56 72'], 1.6, 0.35)}
-      {sheen(p, 'M-60 10 C-64 30 -62 50 -56 68', 3)}
-      {shade(p, 'M50 -18 C62 -6 72 22 70 48 C68 66 60 78 48 82 C50 70 54 56 56 44 C58 20 56 0 50 -18 Z', 0.4)}
-      {shade(p, 'M44 -70 C58 -58 60 -36 54 -12 L50 -14 C52 -30 50 -50 40 -62 Z', 0.4)}
+      {mass(p, 'M-43 -8 C-48 -34 -37 -59 -12 -66 C5 -71 25 -68 37 -59 C48 -49 50 -31 45 -10 L42 -12 C43 -25 38 -34 30 -36 C12 -39 -13 -39 -30 -34 C-38 -31 -42 -22 -40 -10 Z')}
+      {mass(p, 'M-42 -14 C-52 -3 -60 20 -58 42 C-57 56 -50 66 -40 70 C-35 64 -33 58 -35 51 C-38 34 -38 17 -38 -8 Z M42 -15 C52 -5 60 19 58 41 C57 56 50 66 40 70 C35 64 33 58 35 51 C38 34 38 17 38 -10 Z')}
+      {sheen(p, 'M-26 -52 C-10 -62 10 -62 30 -54 C12 -58 -8 -58 -22 -48 Z')}
+      {shade(p, 'M42 -15 C52 -5 60 19 58 41 C57 56 50 66 40 70 C42 60 45 47 47 37 C48 17 47 0 42 -15 Z M37 -59 C48 -49 50 -31 45 -10 L42 -12 C43 -25 42 -42 33 -52 Z')}
     </>
   )
 }
 
-/* Long: falls behind both shoulders to the chest, ending in tips. Grooves
- * run its whole length; the right side is in shade. */
-function longBack(p: Palette, fill: string) {
+/* Long: falls behind both shoulders to the chest, ending in tips. */
+function longBack(p: Palette) {
   return (
     <>
-      <path
-        d="M-64 -10 C-76 -40 -64 -74 -30 -86 C-10 -94 14 -94 34 -86 C70 -74 80 -40 66 -10 C74 40 84 110 86 170 C86 190 82 204 76 212 L66 200 L60 214 L52 198 L44 210 C30 206 -30 206 -44 210 L-52 198 L-60 214 L-66 200 L-76 212 C-82 204 -86 190 -86 170 C-84 110 -76 40 -64 -10 Z"
-        fill={fill}
-      />
-      {strands(p, [
-        'M-70 -20 C-80 50 -82 130 -78 200',
-        'M-56 10 C-64 70 -66 140 -62 204',
-        'M70 -16 C80 50 82 130 78 200',
-        'M58 8 C66 70 68 140 64 204',
-      ], 1.8, 0.4)}
+      {mass(p, 'M-53 -8 C-63 -34 -53 -63 -25 -73 C-8 -80 12 -80 28 -73 C58 -63 67 -34 55 -8 C62 34 70 93 72 144 C72 161 68 173 63 180 L55 170 L50 182 L43 168 L37 178 C25 175 -25 175 -37 178 L-43 168 L-50 182 L-55 170 L-63 180 C-68 173 -72 161 -72 144 C-70 93 -63 34 -53 -8 Z')}
       {sheen(p, DOME_SHEEN)}
-      {sheen(p, 'M-72 20 C-78 60 -78 100 -74 140', 3, 0.4)}
-      {shade(p, 'M66 -10 C74 40 84 110 86 170 L78 174 C78 120 70 50 60 -4 Z', 0.4)}
+      {shade(p, 'M55 -8 C62 34 70 93 72 144 L65 147 C65 102 58 42 50 -3 Z')}
     </>
   )
 }
 
-/* Centre parted, just off centre, so the right side carries a little more
- * hair. Each side sweeps from the parting down past the ear to the jaw. */
-function longFront(p: Palette, fill: string) {
+/* Centre parted, just off centre, each side sweeping past the ear to the jaw. */
+function longFront(p: Palette) {
   return (
     <>
-      <path d="M2 -84 C-30 -84 -58 -64 -62 -30 C-66 10 -66 44 -58 78 C-50 82 -44 78 -42 70 C-44 40 -46 10 -44 -20 C-40 -40 -24 -56 2 -62 Z" fill={fill} />
-      <path d="M2 -84 C34 -84 62 -64 64 -30 C68 10 66 44 58 78 C50 82 44 78 42 70 C44 40 46 10 44 -20 C40 -40 26 -58 2 -62 Z" fill={fill} />
-      {strands(p, [
-        'M-40 -56 C-52 -40 -56 -10 -54 30',
-        'M-24 -66 C-40 -50 -48 -20 -48 20',
-        'M24 -66 C40 -52 48 -22 48 24',
-        'M40 -58 C52 -40 56 -8 54 36',
-      ])}
+      {mass(p, 'M2 -71 C-25 -71 -48 -54 -52 -25 C-55 8 -55 37 -48 66 C-42 70 -37 66 -35 59 C-37 34 -38 8 -37 -17 C-33 -34 -20 -48 2 -53 Z M2 -71 C28 -71 52 -54 53 -25 C57 8 55 37 48 66 C42 70 37 66 35 59 C37 34 38 8 37 -17 C33 -34 22 -49 2 -53 Z')}
       {/* the parting, where the scalp shows */}
-      {strands(p, ['M2 -84 C0 -76 0 -70 2 -62'], 2, 0.6)}
-      {sheen(p, 'M-36 -70 C-22 -78 -8 -80 -2 -80', 3.5)}
-      {sheen(p, 'M8 -80 C24 -78 40 -68 50 -52')}
-      {shade(p, 'M44 -20 C46 20 44 50 42 70 L50 74 C54 44 54 10 52 -24 Z', 0.4)}
+      <path d="M2 -71 C0 -65 0 -59 2 -53 C3 -59 3 -65 2 -71 Z" fill={p.skinShade} />
+      {sheen(p, 'M-30 -58 C-18 -66 -8 -68 -1 -68 C-8 -64 -18 -60 -26 -52 Z M8 -68 C20 -66 34 -58 42 -44 C32 -54 20 -62 8 -64 Z')}
+      {shade(p, 'M37 -17 C38 17 37 42 35 59 L42 62 C45 37 45 8 43 -20 Z')}
     </>
   )
 }
 
-/* Bun: a coil sitting high behind the crown, a tight cap in front with every
- * strand pulled toward it, and wisps escaping at the temples. */
-function bunBack(p: Palette, fill: string) {
+/* Wavy: the mass behind falls to the chest with an S-curve down each edge;
+ * the front is a side-swept fringe and two waved locks over the ears. */
+function wavyBack(p: Palette) {
   return (
     <>
-      <circle cx="8" cy="-86" r="22" fill={fill} />
-      {/* the coil, as a spiral of darker line, and the lit edge on its upper left */}
-      <path d="M8 -86 m-15 0 a15 15 0 1 1 30 0 a11 11 0 1 1 -22 0 a6 6 0 1 1 12 0" fill="none" stroke={p.hairShade} strokeWidth={1.8} strokeLinecap="round" opacity={0.5} />
-      {sheen(p, 'M-6 -96 A18 18 0 0 1 10 -104', 3, 0.5)}
-      {shade(p, 'M16 -106 A22 22 0 0 1 22 -70 A17 17 0 0 1 16 -106 Z', 0.4)}
-      <path d="M-60 14 C-70 -22 -60 -62 -28 -76 C-10 -84 12 -84 30 -76 C62 -62 70 -22 60 14 Z" fill={fill} />
-      {sheen(p, 'M-50 -40 C-42 -62 -20 -78 6 -80')}
-      {shade(p, 'M32 -76 C62 -62 70 -22 60 14 L54 14 C62 -24 56 -54 28 -70 Z')}
-    </>
-  )
-}
-
-function bunFront(p: Palette, fill: string) {
-  return (
-    <>
-      <path
-        d="M-56 10 C-66 -22 -58 -62 -28 -76 C-10 -83 12 -83 30 -75 C60 -62 66 -22 56 10 L50 10 C50 -8 50 -22 44 -34 C34 -44 10 -48 -4 -48 C-20 -48 -38 -44 -44 -34 C-50 -22 -50 -8 -50 10 Z"
-        fill={fill}
-      />
-      {strands(p, [
-        'M-40 -40 C-30 -60 -12 -74 6 -80',
-        'M-12 -48 C-6 -62 0 -72 10 -78',
-        'M12 -48 C14 -62 16 -72 16 -78',
-        'M30 -42 C30 -58 26 -70 20 -78',
-        'M46 -30 C44 -50 38 -64 28 -74',
-        'M-46 -26 C-44 -46 -36 -62 -22 -74',
-      ])}
-      {/* a side parting, left of centre */}
-      {strands(p, ['M-14 -48 C-18 -58 -20 -68 -16 -78'], 2.2, 0.55)}
-      {sheen(p, 'M-30 -58 C-16 -72 0 -78 14 -78')}
-      {wisps(p, ['M-50 -6 q-5 6 -3 13', 'M-47 -16 q-7 4 -7 11', 'M49 -4 q5 6 3 13', 'M46 -18 q6 4 7 11'])}
-      {shade(p, RIGHT_SHADE)}
-    </>
-  )
-}
-
-/* Wavy: the mass behind falls to the chest with an S-curve down each edge
- * and grooves that follow it; the front is a side-swept fringe and two
- * waved locks over the ears. */
-function wavyBack(p: Palette, fill: string) {
-  return (
-    <>
-      <path
-        d="M-64 -10 C-76 -40 -64 -74 -30 -86 C-10 -94 14 -94 34 -86 C70 -74 80 -40 66 -10 C76 20 66 50 76 80 C86 110 70 140 78 170 C80 184 74 196 66 198 C62 190 56 192 52 186 C46 190 42 182 36 178 L-36 178 C-42 182 -46 190 -52 186 C-56 192 -62 190 -66 198 C-74 196 -80 184 -78 170 C-70 140 -86 110 -76 80 C-66 50 -76 20 -64 -10 Z"
-        fill={fill}
-      />
-      {strands(p, [
-        'M-68 0 C-80 30 -62 60 -74 90 C-86 120 -66 150 -74 176',
-        'M-54 14 C-64 40 -50 68 -60 96 C-70 124 -54 150 -60 176',
-        'M68 0 C80 30 62 60 74 90 C86 120 66 150 74 176',
-        'M54 14 C64 40 50 68 60 96 C70 124 54 150 60 176',
-      ], 1.8, 0.45)}
+      {mass(p, 'M-53 -8 C-63 -34 -53 -63 -25 -73 C-8 -80 12 -80 28 -73 C58 -63 67 -34 55 -8 C63 17 55 42 63 68 C72 93 58 119 65 144 C67 156 62 166 55 168 C52 161 47 163 43 158 C38 161 35 154 30 151 L-30 151 C-35 154 -38 161 -43 158 C-47 163 -52 161 -55 168 C-62 166 -67 156 -65 144 C-58 119 -72 93 -63 68 C-55 42 -63 17 -53 -8 Z')}
       {sheen(p, DOME_SHEEN)}
-      {sheen(p, 'M-70 30 C-78 50 -62 70 -70 90', 3, 0.4)}
-      {shade(p, 'M66 -10 C76 20 66 50 76 80 C86 110 70 140 78 170 L68 172 C64 140 76 110 66 82 C58 54 66 20 58 -6 Z', 0.4)}
+      {shade(p, 'M55 -8 C63 17 55 42 63 68 C72 93 58 119 65 144 L57 146 C53 119 63 93 55 69 C48 46 55 17 48 -5 Z')}
     </>
   )
 }
 
-function wavyFront(p: Palette, fill: string) {
+function wavyFront(p: Palette) {
   return (
     <>
-      {/* fringe, parted left and swept right, its lower edge a wave */}
-      <path
-        d="M-54 -14 C-62 -40 -50 -68 -22 -78 C2 -86 30 -82 44 -70 C60 -58 62 -36 54 -16 L48 -18 C50 -28 46 -34 38 -36 C26 -42 10 -36 0 -40 C-10 -44 -16 -46 -22 -44 C-32 -42 -40 -36 -44 -26 C-46 -20 -48 -16 -48 -12 Z"
-        fill={fill}
-      />
-      {strands(p, [
-        'M-18 -62 C0 -68 20 -62 34 -46',
-        'M-14 -72 C8 -76 30 -70 44 -56',
-        'M-30 -56 C-40 -50 -44 -40 -46 -30',
-      ])}
-      {strands(p, ['M-22 -44 C-26 -56 -28 -66 -24 -76'], 2.2, 0.55)}
-      {sheen(p, 'M-12 -72 C8 -76 30 -68 44 -54')}
-      {/* waved locks over the ears, each with its own crest phase */}
-      <path d="M-50 -18 C-60 0 -70 20 -64 44 C-60 60 -70 72 -60 84 C-52 86 -44 78 -44 66 C-46 44 -42 20 -46 -4 Z" fill={fill} />
-      <path d="M50 -20 C60 -4 70 14 62 36 C56 54 70 66 62 84 C54 88 46 80 44 68 C44 48 40 22 46 -6 Z" fill={fill} />
-      {strands(p, ['M-56 -4 C-64 14 -62 36 -60 54 C-58 66 -62 76 -58 82', 'M56 -6 C64 10 60 30 58 50 C56 64 62 74 58 82'], 1.6, 0.35)}
-      {sheen(p, 'M-60 4 C-66 20 -64 36 -62 50', 3)}
-      {shade(p, 'M50 -20 C60 -4 70 14 62 36 C56 54 70 66 62 84 C58 72 54 60 54 46 C56 24 54 0 50 -20 Z', 0.4)}
-      {shade(p, 'M44 -70 C60 -58 62 -36 54 -16 L48 -18 C52 -36 50 -52 40 -62 Z', 0.4)}
+      {mass(p, 'M-45 -12 C-52 -34 -42 -58 -18 -66 C2 -73 25 -70 37 -59 C50 -49 52 -31 45 -14 L40 -15 C42 -24 38 -29 32 -31 C22 -36 8 -31 0 -34 C-8 -37 -13 -39 -18 -37 C-27 -36 -33 -31 -37 -22 C-38 -17 -40 -14 -40 -10 Z')}
+      {mass(p, 'M-42 -15 C-50 0 -58 17 -53 37 C-50 51 -58 61 -50 71 C-43 73 -37 66 -37 56 C-38 37 -35 17 -38 -3 Z M42 -17 C50 -3 58 12 52 31 C47 46 58 56 52 71 C45 75 38 68 37 58 C37 41 33 19 38 -5 Z')}
+      {sheen(p, 'M-12 -60 C6 -64 24 -58 36 -46 C24 -54 8 -58 -8 -56 Z')}
+      {shade(p, 'M42 -17 C50 -3 58 12 52 31 C47 46 58 56 52 71 C48 60 45 50 45 38 C47 20 45 0 42 -17 Z M37 -59 C50 -49 52 -31 45 -14 L40 -15 C43 -30 42 -43 33 -52 Z')}
     </>
   )
 }
