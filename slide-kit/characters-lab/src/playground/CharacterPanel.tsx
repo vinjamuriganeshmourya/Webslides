@@ -8,10 +8,14 @@ import { Check, Choice, Color, Select, Slider, Text, type Hex } from './controls
 const TONES = ['fair', 'wheatish', 'medium', 'dusky', 'deep'] as const
 const HAIR_COLORS = ['black', 'darkBrown', 'brown', 'auburn', 'grey'] as const
 const HAIR_STYLES = ['short', 'sidePart', 'quiff', 'curly', 'buzz', 'braid', 'ponytail', 'bob', 'long', 'bun', 'wavy'] as const
-const TOPS = ['shirt', 'tshirt', 'kurta', 'hoodie', 'blouse', 'polo'] as const
+const TOPS = ['shirt', 'shirtTie', 'tshirt', 'kurta', 'hoodie', 'blouse', 'polo'] as const
 const BOTTOMS = ['trousers', 'jeans', 'skirt', 'salwar', 'shorts'] as const
+const ARTS = ['soft', 'line'] as const
+const SHADINGS = ['flat', 'lit'] as const
 const JAWS = ['round', 'oval', 'square'] as const
 const BROWS = ['thin', 'medium', 'thick'] as const
+const EYES = ['oval', 'dot'] as const
+const MOUTHS = ['full', 'line'] as const
 const GLASSES = ['none', 'round', 'rect'] as const
 const BEARDS = ['none', 'stubble', 'short'] as const
 
@@ -36,6 +40,16 @@ function OptionalColor({ label, value, seed, onChange }: { label: string; value?
     <div className="row">
       <Check label={label} checked={value !== undefined} onChange={(on) => onChange(on ? seed : undefined)} />
       {value !== undefined && <Color label="" value={value} onChange={onChange} />}
+    </div>
+  )
+}
+
+/* A segmented control with its label, for the short unions. */
+function Pick<T extends string>({ label, value, options, onChange }: { label: string; value: T; options: readonly T[]; onChange: (v: T) => void }) {
+  return (
+    <div className="field">
+      <label>{label}</label>
+      <Choice value={value} options={options} onChange={onChange} />
     </div>
   )
 }
@@ -86,23 +100,18 @@ export const CharacterPanel = memo(function CharacterPanel({ config, onChange }:
 
       <div className="form">
         <Text label="name" value={config.name} onChange={(name) => set({ name })} />
-        <div className="field">
-          <label>gender</label>
-          <Choice value={config.gender} options={['male', 'female']} onChange={(gender) => set({ gender })} />
-        </div>
+        <Pick label="gender" value={config.gender} options={['male', 'female']} onChange={(gender) => set({ gender })} />
+        <Pick label="art" value={config.art} options={ARTS} onChange={(art) => set({ art })} />
+        <Pick label="shading" value={config.shading ?? 'flat'} options={SHADINGS} onChange={(shading) => set({ shading })} />
 
-        <NamedOrHex<SkinTone> label="skin" value={config.skinTone} names={TONES} seed="#C68642" onChange={(skinTone) => set({ skinTone: skinTone as SkinTone })} />
+        <NamedOrHex<SkinTone> label="skin" value={config.skinTone} names={TONES} seed="#F8C9A8" onChange={(skinTone) => set({ skinTone: skinTone as SkinTone })} />
         <Select label="hair" value={config.hair.style} options={HAIR_STYLES} onChange={(style) => set({ hair: { ...config.hair, style } })} />
-        <NamedOrHex<HairColor> label="hair colour" value={config.hair.color} names={HAIR_COLORS} seed="#3B2A1E" onChange={(color) => set({ hair: { ...config.hair, color: color as HairColor } })} />
+        <NamedOrHex<HairColor> label="hair colour" value={config.hair.color} names={HAIR_COLORS} seed="#151515" onChange={(color) => set({ hair: { ...config.hair, color: color as HairColor } })} />
 
-        <div className="field">
-          <label>jaw</label>
-          <Choice value={config.face.jaw} options={JAWS} onChange={(jaw) => face({ jaw })} />
-        </div>
-        <div className="field">
-          <label>brows</label>
-          <Choice value={config.face.brows} options={BROWS} onChange={(brows) => face({ brows })} />
-        </div>
+        <Pick label="jaw" value={config.face.jaw} options={JAWS} onChange={(jaw) => face({ jaw })} />
+        <Pick label="brows" value={config.face.brows} options={BROWS} onChange={(brows) => face({ brows })} />
+        <Pick label="eyes" value={config.face.eyes} options={EYES} onChange={(eyes) => face({ eyes })} />
+        <Pick label="mouth" value={config.face.mouth} options={MOUTHS} onChange={(mouth) => face({ mouth })} />
         <Slider label="blush" value={config.face.blush ?? 0} min={0} max={1} step={0.05} onChange={(blush) => face({ blush })} />
         <OptionalColor label="lip colour" value={config.face.lip} seed="#B5636B" onChange={(lip) => face({ lip })} />
 
@@ -110,14 +119,16 @@ export const CharacterPanel = memo(function CharacterPanel({ config, onChange }:
         <Color label="top colour" value={config.outfit.topColor} onChange={(topColor) => outfit({ topColor })} />
         <Select label="bottom" value={config.outfit.bottom} options={BOTTOMS} onChange={(bottom) => outfit({ bottom })} />
         <Color label="bottom colour" value={config.outfit.bottomColor} onChange={(bottomColor) => outfit({ bottomColor })} />
-        <OptionalColor label="shoe colour" value={config.outfit.shoeColor} seed="#2B2B2B" onChange={(shoeColor) => outfit({ shoeColor })} />
+        <OptionalColor label="shoe colour" value={config.outfit.shoeColor} seed="#2A2F45" onChange={(shoeColor) => outfit({ shoeColor })} />
+        <OptionalColor label="accent (tie, band)" value={config.outfit.accentColor} seed="#1E2B4F" onChange={(accentColor) => outfit({ accentColor })} />
 
         <Select label="glasses" value={config.accessories.glasses ?? 'none'} options={GLASSES} onChange={(glasses) => acc({ glasses })} />
         <Select label="beard" value={config.accessories.beard ?? 'none'} options={BEARDS} onChange={(beard) => acc({ beard })} />
         <div className="row span">
+          <Check label="belt" checked={!!config.accessories.belt} onChange={(belt) => acc({ belt })} />
+          <Check label="watch" checked={!!config.accessories.watch} onChange={(watch) => acc({ watch })} />
           <Check label="earrings" checked={!!config.accessories.earrings} onChange={(earrings) => acc({ earrings })} />
           <Check label="bindi" checked={!!config.accessories.bindi} onChange={(bindi) => acc({ bindi })} />
-          <Check label="watch" checked={!!config.accessories.watch} onChange={(watch) => acc({ watch })} />
           <Check label="flower" checked={!!config.accessories.flower} onChange={(flower) => acc({ flower })} />
           <Check label="necklace" checked={!!config.accessories.necklace} onChange={(necklace) => acc({ necklace })} />
         </div>

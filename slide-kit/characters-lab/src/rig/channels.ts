@@ -67,6 +67,14 @@ export const CHANNELS = {
   kneeL: 0, // 0..1 bend
   kneeR: 0,
   stance: 0, // -1..1 weight on one foot
+
+  /* secondary motion, -1..1, DERIVED by the life layer from how fast the
+     head and body are moving; actions never write these. The renderer
+     swings hairBack and the bun from hairSway, a braid from braidSway, a
+     dupatta or long skirt from clothSway. */
+  hairSway: 0,
+  braidSway: 0,
+  clothSway: 0,
 } as const
 
 export type Channel = keyof typeof CHANNELS

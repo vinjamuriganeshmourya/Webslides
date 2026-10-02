@@ -6,12 +6,15 @@
 import { ADDITIVE, CHANNEL_NAMES, defaultPose, type Channel, type Pose } from './channels'
 import { sampleAction, type Action } from './track'
 import { idlePose, type IdleOptions } from './idle'
+import { applyLife, type LifeOptions } from './life'
 
 export type Clip = { action: Action; start: number; stopAt?: number }
 
 export type Timeline = {
   seed: number
   idle: IdleOptions
+  /** the life layer (see life.ts); 0 shows the bare keyframes */
+  life?: LifeOptions | 0
   expression?: Clip
   prevExpression?: Clip
   gesture?: Clip
@@ -132,7 +135,8 @@ function applyTalk(pose: Pose, clip: Clip | undefined, t: number) {
   apply(pose, sampleAction(clip.action, t - clip.start), w, (ch) => !TALK_REPLACES.has(ch))
 }
 
-export function poseAt(tl: Timeline, t: number): Pose {
+/** The keyframe layers alone, exact at t. */
+export function composeAt(tl: Timeline, t: number): Pose {
   const rest = defaultPose()
   const pose = defaultPose()
   apply(pose, idlePose(t, tl.seed, tl.idle), 1)
@@ -141,4 +145,11 @@ export function poseAt(tl: Timeline, t: number): Pose {
   applyGesture(pose, tl.gesture, t, rest)
   applyTalk(pose, tl.talk, t)
   return pose
+}
+
+/** What the renderer draws: the layers, with the life layer on top unless
+    the timeline switches it off. */
+export function poseAt(tl: Timeline, t: number): Pose {
+  if (tl.life === 0) return composeAt(tl, t)
+  return applyLife(tl, t, (tt) => composeAt(tl, tt), tl.life ?? {})
 }
