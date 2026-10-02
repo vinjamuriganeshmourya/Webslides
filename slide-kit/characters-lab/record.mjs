@@ -13,8 +13,12 @@
  *
  * Encoding: ffmpeg-static when it is installed (h264 mp4, crf 18). Without
  * it, the ffmpeg Playwright ships decodes only MJPEG and encodes only VP8,
- * so that path screenshots JPEG and writes a webm. With neither, the frame
- * folder is kept and the ffmpeg command to run is printed. */
+ * so that path screenshots JPEG and writes a webm. With neither, the ffmpeg
+ * command to run is printed.
+ *
+ * The frames stay in review/frames/<skin>/ after the encode (the folder is
+ * emptied first): shoot.mjs tiles one per second into the reel sheet, and a
+ * reviewer can open the exact frame a finding names. */
 import { createServer } from 'vite'
 import { chromium } from 'playwright'
 import { spawn } from 'node:child_process'
@@ -55,7 +59,9 @@ if (encoder?.kind === 'vp8' && path.extname(out) !== '.webm') {
   out = out.replace(/\.[^.]*$/, '') + '.webm'
   console.log(`ffmpeg-static is not installed; the Playwright ffmpeg only writes VP8, so the output is ${path.basename(out)}`)
 }
-const framesDir = fs.mkdtempSync(path.join(os.tmpdir(), 'characters-reel-'))
+const framesDir = path.join(ROOT, 'review', 'frames', skin)
+fs.rmSync(framesDir, { recursive: true, force: true })
+fs.mkdirSync(framesDir, { recursive: true })
 
 const { server, url } = await startVite()
 const browser = await chromium.launch()
@@ -90,16 +96,16 @@ try {
 }
 
 fs.mkdirSync(path.dirname(out), { recursive: true })
+console.log(`frames in ${path.relative(process.cwd(), framesDir)}`)
 if (!encoder) {
-  console.log(`no ffmpeg found. Frames are in ${framesDir}. Encode them with:`)
+  console.log('no ffmpeg found. Encode the frames with:')
   console.log(`  ffmpeg -framerate ${fps} -i ${path.join(framesDir, 'frame-%05d.png')} -c:v libx264 -pix_fmt yuv420p -crf 18 ${out}`)
 } else {
   const ok = encoder.kind === 'h264' ? await encodeH264(encoder.bin) : await encodeVp8(encoder.bin)
   if (ok) {
-    fs.rmSync(framesDir, { recursive: true, force: true })
     console.log(`wrote ${path.relative(process.cwd(), out)}  (${frameCount} frames, ${duration.toFixed(2)} s)`)
   } else {
-    console.log(`ffmpeg failed. Frames are kept in ${framesDir}`)
+    console.log('ffmpeg failed')
     process.exitCode = 1
   }
 }

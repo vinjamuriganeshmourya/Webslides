@@ -19,6 +19,11 @@ export type UrlSetup = {
   t?: number
   reel: boolean
   bg: string
+  /** rendered height of the actor in px; the shooter picks it per shot
+      (900 for a sheet frame, 1080 and 120 for the hero stills) */
+  height?: number
+  /** hold one HAND_POSES entry on the ?side hand, for the hand grid */
+  handPose?: string
 }
 
 function num(v: string | null): number | undefined {
@@ -72,5 +77,7 @@ export function readUrl(search: string): UrlSetup | null {
     t: num(q.get('t')),
     reel,
     bg: q.get('bg') ?? (reel ? '#FFFFFF' : '#F6F8FB'),
+    height: num(q.get('height')),
+    handPose: q.get('handPose') ?? undefined,
   }
 }
