@@ -99,6 +99,9 @@ const KIT = {
     'chrome-check.mjs',
     'continuity-check.mjs',
     'align-check.mjs',
+    /* One alignment per slide (content rule 38): a left lead over a centred
+       figure passes the three harnesses above; this one names it. */
+    'mixed-align-check.mjs',
     /* The marker's own harness. It drives a real pointer over the BUILT html, so
        it is the only check here that can catch the marker breaking, and a session
        that is behind on it is a session whose marker nobody has tested. */
