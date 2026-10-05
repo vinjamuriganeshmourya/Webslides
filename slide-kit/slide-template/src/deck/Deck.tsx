@@ -16,6 +16,7 @@ import { useAnnotate } from './annotate/useAnnotate'
 import { AnnotationLayer } from './annotate/AnnotationLayer'
 import { AnnotationToolbar } from './annotate/AnnotationToolbar'
 import { useFullscreen } from './useFullscreen'
+import { useGestureNav } from './useGestureNav'
 import { slideVariants, slideTransition, type SlideTransition } from '@/motion/presets'
 import { Stepper } from '@/motion/Stepper'
 import { InstantContext } from '@/motion/instant'
@@ -46,6 +47,10 @@ function hashIndex(total: number): number {
  *   G              jump to a slide, by name or number
  *   R              replay this slide from the top of its build
  *   M              the marker: draw on the slide (see `annotate/`)
+ *
+ *   trackpad       a two-finger horizontal swipe does what the plain arrows do,
+ *                  one slide per gesture (see `useGestureNav`)
+ *   touch          a swipe left is the plain →, a swipe right the plain ←
  *
  * Speaker notes and click-to-advance are still intentionally omitted.
  */
@@ -294,6 +299,18 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
     replay: replaySlide,
     ann,
     enabled: !pickerOpen,
+  })
+
+  /*
+    THE TRACKPAD AND THE TOUCH SCREEN PRESS THE PLAIN ARROWS. The same pair the
+    keyboard binds, so the mode pill governs all three. Off while the picker is
+    open (it owns the surface) and while the marker is armed (a finger on the
+    ink layer is a stroke, not a swipe).
+  */
+  useGestureNav({
+    fwd: arrowMode === 'steps' ? next : nextSlide,
+    back: arrowMode === 'steps' ? prev : prevSlide,
+    enabled: !pickerOpen && !ann.active,
   })
 
   /*
