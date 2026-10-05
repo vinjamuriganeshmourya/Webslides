@@ -37,7 +37,7 @@ reads and never writes.
 | `src/App.tsx`, `src/index.css` | `workflow/` plans, captures, sign-offs |
 | `tailwind.config.ts`, `vite*.config.ts`, `index.html` | `package.json`, `CLAUDE.md`, `README.md` |
 | `qa.mjs`, `video-safe.mjs`, `preview.mjs` | `dist/`, `dist-single/`, `node_modules/` |
-| `align-check.mjs`, `marker-check.mjs` | |
+| `align-check.mjs`, `mixed-align-check.mjs`, `marker-check.mjs` | |
 | `scripts/`, `workflow/export/` | `workflow/review/` the review build's output |
 | `review/markComponents.mjs`, `vite.review.config.ts` | |
 
