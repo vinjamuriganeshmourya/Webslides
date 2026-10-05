@@ -46,7 +46,13 @@ export interface RecapSlideProps extends Base {
 }
 
 export interface AgendaSlideProps extends Base {
+  /**
+   * The SMALL line in the mark: the session's name (user, 2026-10-05, every
+   * deck). Defaults to `lesson`, so a deck need not pass it; it shrinks to fit
+   * the mark, never clips and never truncates.
+   */
   kicker?: string
+  /** The LARGE word in the mark. `Agenda`, and there is no reason to pass another. */
   title?: ReactNode
   lead?: ReactNode
   items: { title: ReactNode; sub?: ReactNode }[]

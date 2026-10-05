@@ -100,8 +100,11 @@ export const baseDeck: SlideDef[] = [
     label: 'Agenda',
     element: (
       <AgendaSlide
-        kicker="Agenda"
-        title="What We Will Cover"
+        /* The large word is Agenda and the small line is the session's name
+           (user, 2026-10-05, every deck). Both are the defaults; they are
+           written out here so a copied deck shows what it is passing. */
+        kicker={SESSION}
+        title="Agenda"
         lesson={SESSION}
         items={[
           { title: 'The First Concept', sub: 'One divider, then three slides of mixed layouts' },
@@ -110,7 +113,7 @@ export const baseDeck: SlideDef[] = [
       />
     ),
     notes:
-      'The agenda items and the section dividers must use the SAME wording, and so must the key-takeaways list. All three name the concepts here. When they drift, the room cannot tell where it is in the session.',
+      'The agenda items and the section dividers must use the SAME wording, and so must the key-takeaways list. All three name the concepts here. When they drift, the room cannot tell where it is in the session. The mark says Agenda, large, over the session name, small; a long session name shrinks to fit the mark.',
   },
 
   /* ── CONCEPT ONE ─────────────────────────────────────────────────────── */

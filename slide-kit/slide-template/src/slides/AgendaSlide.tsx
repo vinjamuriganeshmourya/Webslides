@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { SlideBase } from '@/ui'
 import { useInstant } from '@/motion/instant'
@@ -22,6 +23,29 @@ import type { AgendaSlideProps } from './types'
  *
  * The first item starts below y=230 so that nothing lands in the rectangle
  * reserved at the top right for the instructor video.
+ *
+ * WHAT THE MARK SAYS (user, 2026-10-05, every deck from now on)
+ *
+ * The large word in the mark is `Agenda`, always. The small line above it is
+ * the SESSION'S NAME. Before this the decks had the mark saying "What We Will
+ * Cover" or "Today's Agenda" with the word Agenda as the small kicker, so the
+ * one slide whose job is to say "this is the agenda for this session" said
+ * neither at a glance. `title` therefore defaults to `Agenda` and `kicker` to
+ * `lesson`, the session name every deck already passes for the footer: a deck
+ * that passes only `lesson` and `items` is right by default, and a deck that
+ * passes anything else as the title is the thing to fix, not this file.
+ *
+ * A session name can be long ("Comparing Strings & Naming Variables") and the
+ * mark is a 268px circle, so the kicker FITS ITSELF. `useFitText` measures it
+ * and steps the size down from 16px until it sits in at most two lines with no
+ * sideways overflow, to a floor of 11px; a single word that still does not fit
+ * at the floor may then break inside itself (`overflow-wrap: anywhere`). It is
+ * never clipped and never truncated: the only thing that gives is the size,
+ * and at the floor the line count, because 11px is the smallest that reads
+ * from a seat and the mark holds five such lines over the word with room. A
+ * 71-character name sits in three lines at 11px, inside the circle. It re-fits
+ * when the webfont lands (the first measurement may be of the fallback face)
+ * and whenever its box changes width.
  */
 
 /*
@@ -90,14 +114,73 @@ const DRAW = 1.9
 /** The line is already moving before the first item lands. */
 const FIRST_AT = 0.45
 
+/**
+ * The kicker's sizes, in px. The top is `text-body-sm`, what it always was; the
+ * floor is the smallest the session name may go and still be read from a seat.
+ */
+const KICKER_MAX = 16
+const KICKER_MIN = 11
+/** At most this many lines of session name above the word. */
+const KICKER_LINES = 2
+/** `leading-snug`, which the kicker keeps at every size. */
+const KICKER_LEADING = 1.375
+
+/**
+ * Shrink a block of text until it fits its box: no more than `KICKER_LINES`
+ * lines tall and no wider than its container. `useLayoutEffect`, so the room
+ * never sees the unshrunk size for a frame. Re-measured when the text changes,
+ * when the box changes width (a `ResizeObserver` on the element; width only, so
+ * the hook's own font-size changes cannot ask for the hook again) and once the
+ * webfonts are ready, because the first measurement may be of the fallback
+ * face.
+ */
+function useFitText(text: unknown) {
+  const ref = useRef<HTMLParagraphElement>(null)
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const fit = () => {
+      let size = KICKER_MAX
+      el.style.fontSize = `${size}px`
+      el.style.overflowWrap = 'normal'
+      const over = () =>
+        el.scrollWidth > el.clientWidth + 1 ||
+        el.scrollHeight > Math.ceil(size * KICKER_LEADING * KICKER_LINES) + 1
+      while (size > KICKER_MIN && over()) {
+        size -= 0.5
+        el.style.fontSize = `${size}px`
+      }
+      /* The floor, and still too wide: one word longer than the box. It may
+         break inside itself rather than run out of the mark. */
+      if (over()) el.style.overflowWrap = 'anywhere'
+    }
+    fit()
+    let width = el.clientWidth
+    const ro = new ResizeObserver(() => {
+      if (el.clientWidth === width) return
+      width = el.clientWidth
+      fit()
+    })
+    ro.observe(el)
+    if (typeof document !== 'undefined' && document.fonts?.ready) {
+      document.fonts.ready.then(fit).catch(() => {})
+    }
+    return () => ro.disconnect()
+  }, [text])
+  return ref
+}
+
 export function AgendaSlide({
-  kicker = 'Agenda',
+  kicker,
   title = 'Agenda',
   items,
   lesson,
 }: AgendaSlideProps) {
   const n = items.length
   const instant = useInstant()
+  /* The session name, unless the deck says otherwise. */
+  const line = kicker ?? lesson ?? 'Agenda'
+  const kickerRef = useFitText(line)
 
   return (
     <SlideBase variant="light" lesson={lesson} padded={false}>
@@ -120,14 +203,34 @@ export function AgendaSlide({
           transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
         />
         <motion.div
-          className="relative grid place-items-center rounded-full text-center"
+          /*
+            ONE COLUMN, THE MARK'S OWN WIDTH, WHATEVER THE TEXT. A bare `grid`
+            gives an `auto` track, and an auto track is sized from its content:
+            one unbreakable word longer than the mark grew the track past the
+            circle and carried the text out of it, where no font size could
+            follow. `minmax(0, 1fr)` pins the track to 268px, so an over-long
+            word is an overflow INSIDE a 188px box, which the fit below sees.
+          */
+          className="relative grid grid-cols-[minmax(0,1fr)] place-items-center rounded-full text-center"
           style={{ width: 268, height: 268, background: colors.nwNavy }}
           initial={{ opacity: 0, scale: 0.86 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="px-10">
-            <p className="text-body-sm font-semibold leading-snug text-white/70">{kicker}</p>
+          {/*
+            `w-full min-w-0`, so the kicker's box is the mark's width less the
+            padding (188px) whatever the text, and the fit above measures
+            against a box that does not itself depend on the text's size.
+            Centred text, so nothing moves for a short name.
+          */}
+          <div className="w-full min-w-0 px-10">
+            <p
+              ref={kickerRef}
+              className="font-semibold leading-snug text-white/70"
+              style={{ fontSize: KICKER_MAX }}
+            >
+              {line}
+            </p>
             <p className="mt-1 font-heading text-[46px] font-extrabold leading-none text-white">
               {title}
             </p>
