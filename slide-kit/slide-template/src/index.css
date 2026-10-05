@@ -20,6 +20,32 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/*
+  CODE SHOWS THE CHARACTERS THE LEARNER TYPES.
+
+  JetBrains Mono ships ligatures: `==` is drawn as one long glyph, `>=` as a
+  single sign, `!=` as a struck equals. On a projector a learner copying from
+  the screen cannot tell what to type (user, 2026-10-05, Python 17 and 18:
+  "== and >= render as one joined glyph"). Both ligature mechanisms are turned
+  off on every code surface: `calt` is the contextual table JetBrains Mono
+  actually builds them with, `liga` the standard one. `font-variant-ligatures:
+  none` is the modern property and the feature string the fallback, so an
+  engine that honours either shows two characters. A monospace ligature keeps
+  the advance of the characters it replaces, so nothing moves: the fix is to
+  the glyphs alone.
+
+  Scoped to monospace surfaces and not set at the root: Inter and Poppins keep
+  their own contextual alternates, which this is not about.
+*/
+.font-mono,
+pre,
+code,
+kbd,
+samp {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+
 /* The slide canvas is a fixed 1280×720 stage that is scaled to fit the
    viewport. Everything inside uses absolute px so it matches the PPTX. */
 @layer components {
