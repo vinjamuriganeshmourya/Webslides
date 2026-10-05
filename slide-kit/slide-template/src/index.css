@@ -18,6 +18,23 @@ body {
   background: #060c1c; /* dark stage behind the slide canvas */
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /*
+    THE BROWSER'S OWN HORIZONTAL GESTURE IS SWITCHED OFF. Chromium reads a
+    horizontal overscroll on a page that cannot scroll as "go back" or "go
+    forward" in history, and Android Chrome and iOS Safari read an edge swipe
+    the same way. `useGestureNav` gives that gesture a meaning (one slide), so
+    a swipe right on slide 3 must not leave the deck for the page before it.
+    `overscroll-behavior-x: none` turns the history gesture off; `touch-action:
+    pan-y pinch-zoom` says the page handles horizontal panning itself, so the
+    browser never starts its own. Vertical scrolling inside a slide and pinch
+    zoom are left alone.
+  */
+  overscroll-behavior-x: none;
+  touch-action: pan-y pinch-zoom;
+}
+
+html {
+  overscroll-behavior-x: none;
 }
 
 /* The slide canvas is a fixed 1280×720 stage that is scaled to fit the
