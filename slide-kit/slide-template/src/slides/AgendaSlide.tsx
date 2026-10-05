@@ -68,16 +68,60 @@ const P1 = { x: 545, y: 170 }
 const P2 = { x: 548, y: 505 }
 const P3 = { x: 424, y: 706 }
 
-/**
- * Where the first and last item sit vertically.
- *
- * 268, NOT 236. Item text is CENTRED on this y, so with the `sub` every real deck
- * passes, the block's top edge sat at y=204: 42px inside the instructor-video
- * rectangle (y 0..220), and `video-safe.mjs` reported it on every agenda in the
- * Python course. 268 puts the first item's top edge at about y=236.
- */
-const Y_TOP = 268
-const Y_BOTTOM = 612
+/*
+  THE POINTS ARE CENTRED ON THE MARK (user, 2026-10-05, every deck from now on).
+
+  The points used to be spread from a fixed y=268 to a fixed y=612 whatever
+  their number, so two points sat with their middle at y=440, one up near the
+  mark's top and the other below the mark altogether. The band the user drew
+  is the mark's orbit ring: y 197 to 535, its midpoint the mark's centre at
+  y=366. The group of points is now centred on that line, whatever the count.
+
+  THE GAP between neighbouring points is `BAND_H / n`, so a small count spreads
+  evenly across the band (two points sit 169px apart, three 113px) with no
+  empty stretch and no crowding, and never less than `GAP_MIN`, the height of a
+  title with its sub line plus breathing room. From five points the group is
+  taller than the band and extends past it equally above and below, which is
+  allowed; past `Y_MIN`..`Y_MAX` (30px of block clear of the canvas edges and
+  the footer bar) the gaps shrink evenly instead, so nothing ever runs off the
+  slide. The badges still sit on the curve: the curve gives x from y, so a
+  point moved up or down slides along the arc by construction.
+
+  THE SPEAKER BOX (x 913..1280, y 0..220, the rectangle `video-safe.mjs`
+  asserts and content rule 32 names) is never entered. A point whose centre is
+  within 100px below the box's bottom edge could reach into its rows once a
+  title wraps, so its text is capped at `VIDEO_LEFT - GUTTER`; every other
+  point is capped at the frame's right edge. A long title or sub therefore
+  wraps inside the width it has, and never extends under the box.
+*/
+/** The mark's centre and its orbit ring: the band the points are centred on. */
+const MARK_CY = 366
+const BAND_H = 338
+/** The least two neighbouring points may be apart, centre to centre. */
+const GAP_MIN = 96
+/** The furthest a point's centre may go: 30px of block each side stays on the canvas and above the footer bar. */
+const Y_MIN = 60
+const Y_MAX = 672
+/** The speaker box's left edge and bottom edge (content rule 32). */
+const VIDEO_LEFT = 913
+const VIDEO_BOTTOM = 220
+/** Below the box by less than this, a point's text is capped short of it. */
+const VIDEO_REACH = 100
+/** The padded frame's right edge (content rule 32) and the gutter kept to the box. */
+const RIGHT_EDGE = 1216
+const GUTTER = 24
+/** The text starts this far right of the badge's centre. */
+const TEXT_DX = 42
+
+/** The y of every point's centre: evenly gapped, the group centred on `MARK_CY`. */
+function pointYs(n: number): number[] {
+  if (n <= 1) return [MARK_CY]
+  let gap = Math.max(BAND_H / n, GAP_MIN)
+  const room = Y_MAX - Y_MIN
+  if ((n - 1) * gap > room) gap = room / (n - 1)
+  const first = MARK_CY - ((n - 1) * gap) / 2
+  return Array.from({ length: n }, (_, i) => first + i * gap)
+}
 
 const bezier = (t: number) => {
   const u = 1 - t
@@ -177,6 +221,7 @@ export function AgendaSlide({
   lesson,
 }: AgendaSlideProps) {
   const n = items.length
+  const ys = pointYs(n)
   const instant = useInstant()
   /* The session name, unless the deck says otherwise. */
   const line = kicker ?? lesson ?? 'Agenda'
@@ -277,8 +322,11 @@ export function AgendaSlide({
       */}
       {items.map((item, i) => {
         const t = n === 1 ? 0.5 : i / (n - 1)
-        const y = n === 1 ? (Y_TOP + Y_BOTTOM) / 2 : Y_TOP + t * (Y_BOTTOM - Y_TOP)
+        const y = ys[i]
         const x = xAt(y)
+        const textLeft = x + TEXT_DX
+        /* Short of the speaker box where the box is in reach, else the frame's edge. */
+        const maxWidth = (y < VIDEO_BOTTOM + VIDEO_REACH ? VIDEO_LEFT - GUTTER : RIGHT_EDGE) - textLeft
         const delay = instant ? 0 : FIRST_AT + t * (DRAW - FIRST_AT - 0.15)
         const rise = { duration: instant ? 0 : 0.55, delay, ease: [0.16, 1, 0.3, 1] as const }
         return (
@@ -299,7 +347,7 @@ export function AgendaSlide({
             </motion.div>
             <motion.div
               className="absolute"
-              style={{ left: x + 42, top: y }}
+              style={{ left: textLeft, top: y, maxWidth }}
               initial={instant ? false : { opacity: 0, x: -14, y: '-50%' }}
               animate={{ opacity: 1, x: 0, y: '-50%' }}
               transition={{ ...rise, delay: delay + 0.08 }}
