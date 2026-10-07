@@ -31,8 +31,9 @@ import type { ChatSlideProps, ChatCharacterSlideProps } from './types'
  * THE HEIGHT BUDGET
  *
  * A one-line bubble with its avatar is about 74px, and each turn adds 12px of
- * gap. The well runs y=220..656, so FIVE one-line turns, or four if two of them
- * wrap. A six-turn exchange is a `ConversationSlide`.
+ * gap. The well runs y=220..656 with no lead under the header, so FIVE one-line
+ * turns, or four if two of them wrap; a lead costs about 50px of that, which is
+ * one turn. A six-turn exchange is a `ConversationSlide`.
  */
 export function ChatSlide({
   kicker,

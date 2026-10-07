@@ -1,0 +1,115 @@
+panel-chrome-reference.txt
+==========================
+
+The card treatments that got a plan past "horrible, very dull". Every one of
+these was a rejection first. They are CSS and markup only; they ride the
+template's own `data-anim` stepper and add no second engine.
+
+Drop what you use into `EXTRA_CSS`. Nothing here needs the template edited.
+
+
+1. A CARD THAT IS ONE PICTURE
+-----------------------------
+For a slide the plan keeps whole: a screenshot, a photograph, a fixed course
+picture. The card is the picture, edge to edge, no padding and no caption.
+
+  <div class="slide-img pic-card"><img class="pic-full" src="data:image/webp;base64,..." alt="..."></div>
+
+  .pic-card{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:12px;background:#fff}
+  .pic-card img.pic-full{position:absolute;inset:0;top:0;right:0;bottom:0;
+   width:100%;height:100%;object-fit:cover;display:block}
+  body.present .pic-card{border:0;border-radius:0}
+
+`inset:0` is written out longhand as well, because the presenter is sometimes
+opened in a browser old enough to ignore it and the picture then collapses to
+nothing with no warning.
+
+
+2. WIDE BODY TEXT SITS IN A SOFT CARD
+-------------------------------------
+A full-width paragraph across a card reads as a document, not a slide. The same
+words inside a tinted card with an accent edge read as deliberate. This one
+change is what a round of "the slides are dull" actually asked for.
+
+  <div class="callout">The machine only knows how to make one copy.</div>
+
+  .callout{background:#F2F8FB;border-left:6px solid var(--dk-cyan);
+   border-radius:14px;padding:14px 20px;margin:10px 0}
+  body.present .callout{padding:clamp(12px,1.8vh,22px) clamp(16px,1.9vw,30px);
+   border-radius:clamp(10px,1.4vh,18px)}
+
+Use it for one line, never for four. Four lines in a tinted box is a document
+with a tint.
+
+
+3. A CAPACITY IS A CLOSED BOX WITH A LID
+----------------------------------------
+Any bounded thing on screen - a list with a fixed size, a buffer, a room for N -
+is drawn as a box with a lid and the words "room for N" on it, in every place it
+appears: the panel, the reveal, and the worksheet column. A number in a sentence
+does not stop anybody. A lid does.
+
+  .lidbox{position:relative;border:2px solid var(--dk-blue);border-radius:10px}
+  .lidbox::before{content:"room for " attr(data-cap);position:absolute;top:-11px;left:12px;
+   background:#fff;padding:0 7px;font:600 12px var(--sans);color:var(--dk-blue)}
+
+When something is pushed into a full box it bounces off the lid and the card
+says why, in one short sentence. It never silently does nothing.
+
+  @keyframes bump{0%,100%{transform:translateY(0)}35%{transform:translateY(-7px)}}
+  .lidbox.full{animation:bump 260ms var(--ease-out)}
+
+
+4. WHAT IS REMOVED, VANISHES
+----------------------------
+A value that came out of a structure is gone. It does not stay as a grey ghost,
+because a ghost is exactly the misconception the beat exists to fix: the room
+already thinks the old thing is still in there somewhere.
+
+  .box.gone{animation:leave 220ms var(--ease-out) forwards}
+  @keyframes leave{to{opacity:0;transform:translateY(-14px) scale(.92)}}
+
+The one exception is a hook whose whole subject is history, where the pile of
+what you left IS the point. Say so in the guide entry if you take it.
+
+
+5. SMALL MOTIONS ON THE EXAMPLE CARDS
+-------------------------------------
+The "where else have you seen this?" cards each play one short motion, once, as
+they are revealed: about two seconds, one moving element, in the spirit of the
+hook and nowhere near its weight. A static grid of three examples is the beat
+most often called flat.
+
+  .ex-card .ex-fig{animation:none}
+  .an-2 .ex-1 .ex-fig,.an-3 .ex-2 .ex-fig,.an-4 .ex-3 .ex-fig{
+   animation:explay 2s var(--ease-in-out) 1 both}
+
+Each card's motion starts on the press that reveals that card, not on load.
+
+
+6. AN ANIMATION INSIDE A STEPPED CARD WAITS FOR ITS STEP
+--------------------------------------------------------
+A CSS `animation` on a figure inside a staged card runs the moment the card is
+built. By the time the instructor presses to reveal it, it has already played
+and the room sees the end state. Hold it:
+
+  .stage[data-anim] .fig-anim{animation-play-state:paused}
+  .stage[data-anim].an-4 .fig-anim{animation-play-state:running}
+
+This is invisible in every screenshot and in every static check. The only way
+to catch it is to step the card in a browser.
+
+
+7. A REVEALED ANSWER REPLACES, IT DOES NOT STACK
+------------------------------------------------
+A revealed answer plus its Reveal row is about 110px on a 447px card. Four cards
+that fit perfectly overflow the moment the answer appears, and the overflow
+paints over the card's own title rather than scrolling. Make the answer take the
+room the question was using:
+
+  .stage-step:has(.ans.shown) .stage-note{display:none}   /* the timer is over */
+  .stage-step:has(.ans.shown) .vopts{display:none}        /* they have voted */
+  .stage-step:has(.ans.shown) svg.fig{max-height:9vh}     /* figures shrink, stay */
+
+Measure every card twice, closed and revealed. The snippet is in
+`references/gotchas.md`.

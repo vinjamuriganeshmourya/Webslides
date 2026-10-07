@@ -21,7 +21,7 @@ one is a separate, shorter cut and does not replace it.
 
 ---
 
-## 1. Layout: every content slide follows content rule 22
+## 1. Layout: every content slide follows content rule 32
 
 - **Header:** kicker (the concept) and title only. No lead in the header.
 - **Space-1** (x 64..1159): the lead as the first block, then the body, centred
@@ -125,13 +125,13 @@ C = content slide number (the 20). Kicker = the concept name.
 ## 5. Verification
 
 `typecheck`, `build:html`, then `video-safe`, `qa` and `align-check` in
-parallel, `preview.mjs`, and a screenshot of every slide checked against rule 22
+parallel, `preview.mjs`, and a screenshot of every slide checked against rule 32
 (header holds kicker and title only; body centred on y=434 or inside Space-1).
 
 ## 6. Decisions for sign-off
 
 **A. Zoned layout.** Build the 20 content slides on a session-owned `ZonedSlide`
-so they follow rule 22. **Recommended: yes** (the kit types would put the lead
+so they follow rule 32. **Recommended: yes** (the kit types would put the lead
 back in the header).
 
 **B. Real-world Applications.** The source's section 5 (Amazon, Instagram,

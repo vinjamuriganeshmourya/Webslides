@@ -1,6 +1,18 @@
 # Pseudocode explanation lab
 
-**AWAITING A DECISION.** Candidate designs for explaining an algorithm written as
+**APPROVED 2026-09-02.** The user approved every lab in the kit. All candidate
+designs in this lab are kept, and all of them are promoted: the family lives in
+`slide-kit/slide-template/src/ui/`, is listed in `slide-kit/slide-types/README.md`
+with what each variant is WORST at, and is imported BY PATH rather than from the
+`@/ui` barrel. That is deliberate and is the whole point of keeping every variant:
+a family offers a CHOICE between designs for one contract, so choosing should be a
+visible act at the import line rather than a name plucked off a barrel.
+
+Nothing here was discarded. The losing-variant tables below are still the record
+of what each design is bad at, which is the part a future reader needs when they
+have to pick one or change it.
+
+Originally: **AWAITING A DECISION.** Candidate designs for explaining an algorithm written as
 pseudocode. The user picks what is worth keeping and those get promoted into
 `slide-kit/slide-template`; the rest stay here as the record of what lost.
 

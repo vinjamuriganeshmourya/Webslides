@@ -1,6 +1,6 @@
 ---
 name: slide-content-rules
-description: Hard content, wording, animation and chrome rules for NxtWave/NIAT session slide decks. Use whenever writing, editing, or reviewing slide copy, deck source under a session project (src/decks/*.tsx), slide plans in <course>/session_plans/<session>/plan.md, slide components in src/ui or src/slides, or terminal/command/table/illustration content on a slide. Covers banned punctuation, banned words, terminal rendering, problem sequencing, one-idea-per-slide, parallel text-and-visual reveal, deck chrome colour, illustration honesty, technology logos, the central asset library, and registering approved slide types.
+description: Hard content, wording, animation and chrome rules for NxtWave/NIAT session slide decks. Use whenever writing, editing, or reviewing slide copy, deck source under a session project (src/decks/*.tsx), slide plans in <course>/session_plans/<session>/plan.md, slide components in src/ui or src/slides, or terminal/command/table/illustration content on a slide. Covers banned punctuation, banned words, plain literal English for a second-language audience, terminal rendering, the four narrative frameworks and how a concept picks one, prerequisite order and the term ledger, breaking an artefact down one element per slide, problem sequencing, one-idea-per-slide, parallel text-and-visual reveal, deck chrome colour, illustration honesty, technology logos, the central asset library, and registering approved slide types.
 ---
 
 # Slide content rules
@@ -50,6 +50,57 @@ Use: **others**, *anyone else*, *someone else*, *another person*.
 |---|---|
 | `Can a stranger's browser reach it?` | `Can others open it?` |
 | `Send it to a stranger` | `Send it to someone else` |
+
+## 2b. Never name another session on a slide
+
+**Banned in every rendered string:** `last session`, `last session's`,
+`previous session`, `next session`, `Session 1`/`2`/`3`, `last week`, `today we
+will`, and any phrase that positions the content by WHEN it was taught.
+
+Given as review feedback on session 3 (comment `2nv8tp`, "do not use last
+session's and session 1 2 3 4 5 wording anywhere in the session"), applied to
+that deck, and **never written down** until 2026-09-02, by which point session 4
+had shipped fourteen of them. That is the exact failure this file's own preamble
+describes: a correction that is fixed once and not recorded is a correction that
+gets made again.
+
+Three reasons it is a hard rule, not a preference:
+
+- **A deck is watched out of order and out of time.** Recordings are viewed
+  months later, sessions get re-cut and renumbered, and a learner who joins at
+  session 4 has no "last session". `Last Session's Locked Door` is a title that
+  means nothing to most of the people who will read it.
+- **It dates the deck.** A re-order that moves one session invalidates every
+  cross-reference in the deck after it, silently, and no harness can see it.
+- **It is almost always covering for a missing definition.** `Last session's
+  warning, now with teeth` exists because the warning is not restated. Say the
+  thing: `node_modules must never enter the image`. The point survives on its
+  own, which is what §3c of `TEXT_GUIDELINES.md` demands anyway.
+
+| Don't | Do |
+|---|---|
+| `Last session's Node Dockerfile with two upgrades` | `The Node Dockerfile, with two upgrades` |
+| `Last session's docker-demo folder stays where it is` | `The docker-demo practice folder stays where it is` |
+| `This is how the last session ended` | `A container stays unreachable until a port is published` |
+| `Last session's iron rule` | `The rule from the container networking section` |
+
+**Speaker notes and JSX comments are exempt**, and are the right home for it: the
+instructor is in the room and can say "you saw this last week" out loud. `notes:`
+may say it freely.
+
+**The one permitted exception** is the closing teaser, which
+`PEDAGOGY_GUIDELINES.md` §1 requires: the final slide names the NEXT session by
+its title, under a `Next Session` kicker. That names a session by name, not by
+number, and it is the only slide allowed to.
+
+**Check:**
+
+```bash
+grep -nE "[Ll]ast [Ss]ession|[Pp]revious [Ss]ession|[Ss]ession [0-9]" src/decks/*.tsx \
+  | grep -vE "^\s*[0-9]+: *(\*|//|/\*)" | grep -v "notes:"
+```
+
+Every surviving hit is a defect.
 
 ## 3. Terminals: one panel per terminal, with the folder path
 
@@ -101,7 +152,7 @@ two on one slide and three on the next.
 Shape that works: kicker `Attempt 3 of 5`, a 2–3 word title, the claim as the
 lead in quotes, 2 bullets of what it is, and one `Callout` titled `Why it fails`.
 
-This beats the 2–4 content slides per concept guideline. Pacing and one-idea-per
+This beats the five-content-slides-per-concept floor. Pacing and one-idea-per
 -slide outrank the slide count.
 
 ## 6. Text and its supporting visual reveal in parallel
@@ -234,6 +285,76 @@ diagram with three named boxes and no marks makes them read all three.
 
 The logo supports the label; it does not replace it. A mark with no name beside
 it is a guessing game for anyone who does not already know the technology.
+
+## 12b. Slide copy is professional, never casual
+
+**Banned on a slide:** an evaluative aside about how a thing feels. "This is
+annoying", "the fun part", "don't worry", "a bit of a pain", "sadly", "luckily",
+"unfortunately". Also banned: addressing the room's mood rather than the
+subject.
+
+A slide states what is true and what it costs. The instructor supplies warmth,
+emphasis and reassurance out loud, where it belongs and where it can read the
+room. A slide that editorialises takes that job away from them and fixes one
+reading of it into the deck, where it will be read by someone the tone does not
+suit.
+
+Rewrite by naming the mechanism instead of the feeling:
+
+| Casual | Professional |
+|---|---|
+| "A changing address is annoying" | "A changing address costs nothing until it is written into a file" |
+| "Now for the fun part" | (delete it, and let the divider do the work) |
+| "Don't worry if this fails" | "If this fails, the cause is almost always the security group" |
+| "Sadly the free tier only gives 750 hours" | "The free tier is 750 instance hours a month" |
+
+### Never print a session number on a slide
+
+**User, 2026-09-16:** *"No Session number should be mentioned."*
+
+A deck refers to itself and to the course by NAME, never by number. Not in the
+footer, not in a recap, not in a takeaway. "Session 8", "sessions 8 and 9",
+"in session 4" are all banned in rendered copy.
+
+| Banned | Write instead |
+|---|---|
+| "Jenkins built this in session 8" | "Jenkins built this for you" |
+| "Session 9 launched the instance" | "You launched the instance last session" |
+| "as we saw in session 4" | "as you saw when you wrote the compose file" |
+
+Numbers date a deck and break the moment a session is inserted, split or
+re-ordered, and a learner watching a recording has no idea which number they
+are on. **"Last session" is fine. A number is not.** Where the reference needs
+to be specific, name the thing rather than the slot: "when you wrote the
+Jenkinsfile", "when you pushed your first image".
+
+Instructor `notes` may still use numbers, because the instructor is the only
+reader and they know the running order.
+
+### Professional does not mean long words
+
+Said in the same breath, **user, 2026-09-16:** *"also use very simple english
+dont use high vocabulary."* These two pull in the same direction, and it is easy
+to get one by breaking the other: dropping "annoying" and reaching for
+"acquires a cost" trades a casual word for a hard one, which is worse. The room
+reads English as a second language.
+
+So: short, ordinary words, in short sentences. A term the course has taught is
+fine, because it was taught. A long word chosen for tone is not.
+
+| Reaching for tone | Plain |
+|---|---|
+| "it acquires a cost" | "it starts costing something" |
+| "this is subsequently deployed" | "this is deployed after that" |
+| "leverage the pipeline" | "use the pipeline" |
+| "a myriad of services" | "over 240 services" |
+| "ensure that the rule is present" | "check the rule is there" |
+
+This is the second tone correction from the same user. Session 9 removed
+classroom-management voice, "Everyone confirms", "All must". The three rules
+share one root: **a slide carries the fact, the instructor carries the
+delivery.** Hard rule 26 already asked for plain literal English; this says it
+again because it was missed.
 
 ## 13. Every asset lives in the central library first
 
@@ -479,7 +600,449 @@ the body: no course chip, no subtitle, no presenter, no meta, no mascot, and no
 body logo, because the footer already carries the one mark. The full-bodied
 variant still exists on the props type; no shipping deck uses it.
 
-## 22. The slide is laid out in zones: header, Space-1, Space-2, Space-3
+---
+
+## 22. Rendered copy never names a slide's position
+
+No lead, bullet, callout, caption or table cell says **"the next slide"**, "the
+next two slides", "the previous slide", "the slide before" or "as we saw two
+slides ago".
+
+Two reasons, and the second is the one that keeps costing.
+
+**Slide order changes.** Every review pass in this repo has inserted, removed or
+re-sequenced slides, and copy that names a neighbour is silently wrong the moment
+one moves. Nothing fails: the deck builds, every harness passes, and the slide
+now points at whatever happens to be beside it. Session 5 shipped
+*"The next two slides are the fix"* and a caption reading *"Not on PATH, and the
+next slides fix it"*, and both became wrong within the hour, when the success and
+error cases were split onto separate frames.
+
+**It is stage direction, not content.** A slide telling the room where to look
+next is doing the instructor's job on the instructor's behalf, badly. The room
+does not navigate the deck; the presenter does.
+
+**Say what is coming, not where it is.** "Two steps fix it: find where it
+installed, then add that folder" survives any re-ordering and tells the room more
+than a pointer does.
+
+| Write | Not |
+|---|---|
+| `Two steps fix it: find where it installed, then add that folder` | `The next two slides are the fix` |
+| `Where the container's data lives comes later in this session` | `Slide 52 answers this` |
+| `Same file, with your database and your secrets added` | `The same file as the previous slide` |
+
+**Speaker notes are exempt, and deliberately so.** `notes:` is the instructor's
+own script, never rendered to the room, and "do not answer it, the next slide is
+the answer" is exactly the direction a presenter needs. The rule is about what is
+on the screen.
+
+**Naming a later SESSION is also fine** — "later in this course", "next session"
+— because a session is a stable unit and content rule 4 already governs how much
+of it may be opened. It is slide-level pointers that rot.
+
+---
+
+## 23. Every concept opens on a need and closes on proof, and the deck is one chain
+
+Full text, with all four frameworks and their tests:
+[`slide-kit/workflow/PEDAGOGY_GUIDELINES.md`](../../../slide-kit/workflow/PEDAGOGY_GUIDELINES.md)
+section 2.
+
+**The invariant, which never varies.** Every concept **opens** on a felt need
+(the routine the learner has, then the point it breaks) and **closes** on
+something observable (run, seen, chosen with a reason, or done by the learner).
+The opening and the close are fixed so a reviewer can check them in seconds.
+
+**The middle varies by what kind of concept it is.** One framework per concept,
+named in the plan, never two blended:
+
+| The concept is | Use | Slides | The one-line check |
+|---|---|---|---|
+| a mechanism, file, command, config | **STAR** *(default)* | 5+ | two Situation slides, and a Result that was run |
+| a definition, nothing to run yet | **4MAT** | 4+ | a *Why* slide before the *What* slide |
+| a choice between options | **SCQA** | 4+ | the question on its own frame, then a verdict with its reason |
+| a skill the learner performs | **Merrill** | 5+ | an *Application* slide where the learner does it |
+
+**When in doubt, STAR.** A concept that seems to need one of the other three
+usually needs STAR and a clearer break in its Situation.
+
+**The set is open, and admission has a price.** A fifth framework may be added
+when a concept is genuinely explained better by one. It must satisfy the
+invariant, make an argument none of the four makes, ship its own one-line review
+check, and be **registered before it is used** — a row in
+`PEDAGOGY_GUIDELINES.md` section 2, a row in `RULES.md`, added with the user's
+confirmation. **Chosen at plan time and named in the plan, never during
+generation:** a framework named while slides are being written is almost always
+a label applied after the fact to a concept that already broke this rule. A new
+framework replaces the middle and never touches the opening or the close.
+
+STAR's movements: **S** Situation, **two slides** (the routine running, then the
+break) · **T** Task, the capability in plain words with **no syntax** ·
+**A** Action, the instruction · **R** Result, the run with its `→ expected` line.
+
+**Four or five slides is the floor for a concept.** Fewer means it is not a
+concept; it is a line on an existing slide.
+
+**The one check that catches most violations: count the opening slides.**
+There are two, in every framework. The cost beat is the one that vanishes, and a
+single opening slide is a preamble followed by a mechanism introduced cold. That
+is the exact defect this rule exists to stop.
+
+**A framework is not an escape hatch.** Picking 4MAT because a concept has no
+Result does not excuse a cold opening: 4MAT's *Why* is the same two slides as
+STAR's Situation.
+
+**Task holds no syntax.** A Task slide carrying a command is an Action slide
+mislabelled, and the learner never got told what problem the command solves.
+
+**The close is mandatory, and each framework has its own.** STAR closes on a
+Result the room watched happen (a command run, a page rendered, a log line, a
+status code); 4MAT on *What if*, a named consequence in the learner's own work;
+SCQA on a verdict with its reason; Merrill on the learner doing it. Rule 11
+governs how a capture is cropped; content rule 6 governs how it reveals.
+
+**Then chain them.** Concept N's close is concept N+1's opening, and the
+divider inherits it. Four concepts that each pass their own framework alone still read as four
+unrelated topics; the join is what makes a 60-slide deck one build. Bounded by
+rule 4: a cost named inside a concept is resolved inside that concept, so
+chaining forward is a handoff, never an opened problem left hanging.
+
+**Why this rule exists.** Session 4 (`Running the Real App with Docker`) shipped
+`ENV PYTHONUNBUFFERED=1`, `.dockerignore`, published ports and the database move
+as bare instructions on slides 14, 26, 31, 44 and 57. All five review comments
+said the same thing: *give the problem first, then provide this as the solution.*
+Each re-cut cost two slides the original plan should have carried. The rule was
+written as four unnamed beats after that session and still got skipped, because
+an unnamed rule is not a rule anyone can check. These are checkable: count the
+opening slides, look for syntax in the Task, look for the close.
+
+---
+
+## 24. Nothing appears before it is introduced, and an introduction says why here
+
+Full text, with the term ledger and the placement test:
+[`PEDAGOGY_GUIDELINES.md`](../../../slide-kit/workflow/PEDAGOGY_GUIDELINES.md)
+section 2b.
+
+**Every session here is taught to absolute beginners**, assuming a learner who
+does not grasp quickly. That assumption buys **order**, not repetition.
+
+1. **No term, tool, file or concept appears on a slide before the slide that
+   introduces it** — leads, bullets, callouts, terminal comments, table cells
+   and figure labels all included.
+2. **An introduction says why it is arriving here.** STAR's Situation and Task
+   are that "why"; a term with no felt need in front of it gets memorised, not
+   understood.
+3. **A later use names where the term came from, in content terms**, never by
+   position: "the image we built in concept 2", never "the image from slide 19"
+   (rule 22).
+4. **Explained once, used often.** A second explanation is a defect. A second
+   *use*, in new surroundings, is the design — that is how a beginner deck is
+   both slow and non-repetitive at the same time.
+
+**The placement test.** *A concept's Situation must be writable using only terms
+already introduced.* If it cannot be, the concept sits in the wrong place: move
+it after its prerequisite, or introduce that one prerequisite inside this
+concept's Situation. "The instructor will say it out loud" is not a third
+option — a deck that only works when narrated is not the deck the next
+instructor receives.
+
+**Register, all four hard:**
+
+- **One new named term per slide.** Two is one-idea-per-slide broken in
+  vocabulary instead of in content.
+- **The plain-words gloss comes before the formal name.** "A packaged copy of
+  your app, ready to run anywhere. That package is called an **image**." Never
+  "An image is an immutable filesystem snapshot".
+- **No word in a gloss may itself need a gloss.**
+- **No unexpanded acronym, ever** — CI/CD, WSGI, ORM, DNS.
+
+**Why this rule exists.** Session 5 shipped a section titled `Makefile in CI/CD`
+having never said what either letter stands for. The review comment was *"CI/CD
+is new for students so we need to update flow and explanation"*, and the fix
+cost six new slides. Every pacing re-cut in this repo has run the same way: the
+mechanism arrived before the vocabulary needed to state its problem, so the
+problem went unstated, so the mechanism arrived cold.
+
+---
+
+## 25. Nothing arrives assembled: one new element per slide
+
+Full text: [`PEDAGOGY_GUIDELINES.md`](../../../slide-kit/workflow/PEDAGOGY_GUIDELINES.md)
+section 3.
+
+**An artefact with more than one part is never shown complete on its first
+appearance.** It is built one element per slide, then shown whole with its
+payoff line.
+
+This is where STAR's **Action** expands: Action is one slide only when the
+instruction is one line. A Dockerfile, a command chain, a compose file, a
+pipeline or a diagram makes Action a build sequence, and the concept grows past
+five slides. That growth is correct.
+
+| Artefact | One element is |
+|---|---|
+| a file | one line, or one directive |
+| a command chain | one command |
+| a diagram | one node, one arrow, or one label |
+| a table | one row |
+| a config | one key |
+
+**The test:** a learner pausing on any slide of the sequence can say what
+changed since the previous one, in one sentence. If they cannot, two things
+landed at once.
+
+Previously shown content stays visible, unchanged, in the same position; elide
+earlier blocks with `...` once the sequence runs long, never re-flow them. One
+new line gets **one** new annotation, in the fixed format: `token` on one line,
+`→ what it does` on the next.
+
+---
+
+## 26. Plain English: write literally, never figuratively
+
+Full text, with the substitution tables and the measurements:
+[`TEXT_GUIDELINES.md`](../../../slide-kit/workflow/TEXT_GUIDELINES.md) section 3d.
+
+These decks reach **lakhs of students**, and for many of them English is a
+second or third language. There is no instructor in the recording to rescue a
+line they stall on.
+
+**The first test on every rendered string: does every word mean what it says?**
+
+A second-language reader can look up a long word. **They cannot look up an
+idiom.** This outranks §3a's "short Anglo-Saxon over long Latinate" advice,
+which is not wrong but is insufficient here: `under the hood` is short,
+Anglo-Saxon, and banned.
+
+**Banned: figurative verbs and idioms.** `under the hood` · `wired up` ·
+`bake into` · `spin up` · `roll back` · `kick off` · `hit the endpoint` ·
+`out of the box` · `figure out` · `run into` · `end up with` · `take care of` ·
+`on the fly` · `up and running` · `ship` (as a verb) · `hand off`, plus every
+cultural or sporting metaphor.
+
+The generative rule for anything not listed: **a two-word verb whose meaning is
+not the sum of its words is banned.** `set up` and `log in` stay, because they
+are the learner's own words and the tools themselves use them.
+
+**Banned: Latin abbreviations.** `e.g.` → *for example* · `i.e.` → *that is* ·
+`etc.` → name the rest · `via` → *through*, *using* · `vs.` → *compared with* ·
+`per` → *for each* · `N/A` → *not needed*.
+
+**Hard limits**, measured against 2,416 shipped strings whose median is 4 words:
+
+- **20 words maximum** in any rendered string. Past that it is a paragraph, and
+  paragraphs are two slides (rule 24, and `PEDAGOGY_GUIDELINES.md` section 2b).
+- **Two commas maximum.**
+- One line is one sentence (`TEXT_GUIDELINES.md` §4b, already a rule).
+
+**Four more, all hard:** write active not passive · never stack more than two
+nouns (`container image build context` → `the build context for the image`) ·
+never negate twice (`not uncommon`) · no conditional pile-up (`If you had not
+set this, the build would have failed` → `Without this line, the build fails`).
+
+**Why this rule exists.** Asked for directly: *"here we are catering lakhs of
+students, not all would be able to understand difficult vocabulary, we must use
+very simple and understandable English."* The audit that followed found
+`under the hood` nine times in shipped decks, `wired up` four, `bake` six,
+`e.g.` eleven, `via` five, and a Jenkins slide reading *"an automation server is
+simply a program"*, which also broke §3b's existing ban on `simply`. Nothing had
+ever flagged them, because there was no line to check them against.
+
+**Delivered decks are frozen.** Those counts are evidence for the rule, not a
+list of slides to go and fix. See the freeze clause at the top of `RULES.md`.
+
+## 27. An illustration is researched before it is drawn
+
+**Hard rule.** Before a concept gets a figure, find out how that KIND of idea is
+conventionally drawn. Then either use the convention, or write down what you are
+doing instead and why. Reaching for the nearest component that fits the data is
+not a choice of representation, it is a choice of whatever came to mind first.
+
+Asked for on 2026-09-09: *"whenever you're preparing an illustration for any
+concept, research on what is the best way of representation, and add this in
+rules or guidelines to follow every time."*
+
+### Why, in three decks' worth of evidence
+
+- **Session 7's CI/CD reach.** The signed-off plan guessed `NestedSpans`, three
+  brackets above a chain, "because the actual relationship between the three
+  terms is containment, and no other candidate draws that". The user overruled
+  it: the convention is **stacked rows**, and the thing that had to be drawn was
+  the **human approval marker** between delivery and deployment. A lab then built
+  four candidates and `ThreeLanes` won, on the ground that Atlassian, Red Hat,
+  AWS, CircleCI, IBM and Bitrise all publish that same picture, so a learner
+  meets it again in the first article they read. **Local cleverness lost to a
+  published convention**, and no amount of reasoning from the data would have
+  found it.
+- **Session 5's analogy rows.** `AnalogyMap` drew two bordered boxes and an arrow
+  glyph per row. The review rejected the rendered slide outright, and the
+  diagnosis that won was that the fault was the GRAMMAR, not the styling: two
+  boxes and a glyph are three objects, so the eye counts three things and then
+  has to be told they are one. `SwapRows` replaced it with one object cut in two.
+- **Session 4's SVG figures.** Two shipped with `<text>` labels overlapping and
+  all three harnesses passed them, because an `<svg>` is one rectangle to a
+  harness (rule 17).
+
+### What counts as research
+
+One of these, and say which in the slide's own source:
+
+1. **How the field draws it.** Vendor docs, the tools' own dashboards, the
+   articles a learner will read next. A picture the room meets again elsewhere is
+   worth more than a better picture they never see twice.
+2. **A named representation for that shape of claim.** Containment, sequence,
+   one-to-many, queue-and-servers, before-and-after, part-and-whole each have
+   conventional forms. Name the shape of the claim first, and the form follows.
+3. **The registry.** `slide-kit/slide-types/README.md` says what each figure is
+   FOR and what it must not be used for. A figure whose contract does not match
+   the claim is the wrong figure even when the data fits its props.
+
+### The check
+
+**The slide's source says why THIS representation and not the obvious
+alternative.** One sentence is enough, and the absence of that sentence is the
+defect: it is the difference between a chosen figure and a found one. Where the
+answer is "no existing figure makes this argument", rule 14 takes over and it
+becomes a lab with candidates.
+
+**This is not a licence to build a component per slide.** Most concepts are
+served by a figure already in the registry, and the research usually ENDS at the
+registry. What the rule forbids is skipping the question.
+
+## 28. The quiz frame says "Quiz Time!" and nothing else
+
+**Hard rule.** The quiz announcement slide carries its two words and no subtitle,
+no lead, no bullet, no list of what the quiz covers.
+
+Asked for on 2026-09-09: *"remove any kind of sentences in the Quiz Time slide.
+The only sentence present should be the two words Quiz Time, no other should be
+used on that."*
+
+`QuizTimeSlideProps` still declares an optional `subtitle`, because removing a
+prop from the kit changes the type every delivered session compiles against. Do
+not pass it. A session that does is the defect, not the type.
+
+Two reasons, and the second is the one that matters:
+
+- **The questions are not on the slide.** A quiz is delivered by an external
+  component (`QuizSlide` is retired for this reason, see
+  `slide-kit/slide-template/CLAUDE.md` section 2), so the frame's whole job is to
+  say "stop, we are checking". A subtitle listing the topics **previews the
+  questions and answers some of them**: session 7's mid-deck frame read "five
+  stages, two rules, and the difference between delivery and deployment", which
+  is three of the answers.
+- **It is the one frame in the deck with nothing to read.** That is deliberate.
+  The room's attention has to move off the screen and onto the tool, and every
+  extra line on the slide holds it where it no longer belongs.
+
+**Check:** `grep -n "QuizTimeSlide" -A 3 src/decks/*.tsx` shows `lesson` and
+nothing else.
+<!--
+  Rules 29 to 31 were written on 2026-09-11 on a branch cut from main, while
+  rules 22 to 28 existed only as uncommitted work in the author's tree. The
+  numbers assume those land first. If they land differently, renumber these.
+-->
+
+## 29. No company-presentation voice: a title is the topic, a line is the fact
+
+**Hard rule.** The full text is `TEXT_GUIDELINES.md` §3c (state the fact, do
+not allude to it), §3d (literal, never figurative) and §4 (titles are two or
+three words, topic-bare). This rule exists because all three were already
+written when Deployment session 8 shipped 58 slides that broke them, and the
+user's description of the result is the test to apply:
+
+> "Our aim is to provide clear simple understandable content across lakhs of
+> students, not fancy phrases... Your sentence phrasing is like for company
+> presentations."
+
+**The audience is absolute beginners**, many reading English as a second or
+third language, with no instructor in the recording to rescue a line.
+
+Two shapes of the failure, both from that deck, so they are recognisable:
+
+| Shipped | Why it fails | Plain |
+|---|---|---|
+| `The Job That Cannot Do the Job` | Clever to someone who knows the point. Says nothing to someone who does not | `docker: not found` |
+| `A Green Build That Only Echoes` | Names no build, no echo, no problem | `Where We Left Off` |
+| `What a Machine Just Did That You Used to Do` | Ten words, and a riddle | `Before and After` |
+| Lead: `Add one docker command to the job, and it stops dead` | Fact, comma, remark about the fact. The remark is the instructor's, spoken | `Add a docker command to the hello-jenkins job. It fails with this error` |
+
+The second shape has a name now: **fact-comma-remark**. About 25 leads on that
+deck were built this way (`...and neither of them is private`, `...and none of
+them were yours`, `...and it is a habit`). The remark goes to `notes`. The line
+keeps the fact.
+
+**Three tests before a string is kept:**
+
+- Is the title the topic, in two or three words? Not a phrase about the topic.
+- Does the lead state the fact, or comment on it?
+- Would a reader who has never met this subject learn the thing from this line
+  alone?
+
+## 30. Every process is shown with a real screenshot
+
+**Hard rule.** A slide that walks the learner through a UI (a sign-up, a
+dashboard, a settings page, a form, a token page) carries a real capture of that
+screen, cropped per rule 11. A table of field names or a list of steps does not
+stand in for it.
+
+Deployment session 8 shipped the ngrok sign-up, the authtoken step, the GitHub
+webhook form and the AWS sign-up as steps and tables, and recorded each as a
+"plan deviation". The user's correction: *"for every process you must add
+screenshots, for ngrok setup or getting the auth code you haven't added any
+screenshot, same for AWS as well."* A beginner following a table cannot find
+the button. A beginner following a picture can.
+
+**Privacy is handled by choosing the screen state, never by skipping the
+capture and never by retouching it (rule 11).** A token page is captured with a
+real token that is then revoked. A sign-up form is captured before personal
+fields are filled. A payment screen is not captured at all, and the slide says
+where the learner is and what they will see.
+
+## 31. Every code panel says where the code lives or runs
+
+**Hard rule.** A `Terminal` already carries its `PS C:\path>` prompt (rule 3).
+This extends the same obligation to every other panel that shows code or text
+the learner will see. What "where" means depends on the course:
+
+- **A project course** (deployment, Django, anything the learner builds on
+  disk): a `CodeBlock` names the **file path** (`backend/Dockerfile`) or the
+  **UI location** (`Jenkins → nxttrendz-build-test → Configure → Pipeline →
+  Script`). Never a bare label like `Pipeline script`.
+- **A playground course** (a first programming course, where the learner types
+  into a code playground and never creates a file): the panel names the
+  **language**, and nothing else: `Python`, `Java`, `JavaScript`, `SQL`. Never an
+  invented file name (`mistake.py`, `main.py`, `riya.py`), and never the file
+  name and the language together. Pass the language as `filename` and leave the
+  chip empty, or the reverse, so the word appears **once**. A pseudocode panel
+  is titled `Pseudocode`.
+- **The exception in a playground course** is a slide whose lesson IS the
+  file: a `Dockerfile`, a `docker-compose.yml`, a `settings.py` the learner has
+  to find on disk. There the file name is the content, and it stays.
+- **An output panel** is titled by what it shows (`Output`, `Input`,
+  `Expected output`), never by a file.
+- **Program output the learner reads in a browser is never rendered as a
+  shell.** Deployment session 8 put Jenkins Console Output inside a VS Code
+  `Terminal` with a `PS C:\nxttrendz>` prompt on three slides. That tells the
+  learner they typed those lines in PowerShell. They read them in the browser,
+  on the build page. It is a `Shot` of the console (rule 30), or a `CodeBlock`
+  labelled with where it is on screen.
+
+The reasons, both kept because they are the same rule seen from two courses:
+
+- Deployment. The user's words: *"whenever a code is presented the path or
+  place must be mentioned clearly."* "Wrong folder" and "wrong window" are the
+  first two errors a beginner hits, and a panel with no location invites both.
+- Playground. The user reviewed PF 14 "For Loop" (2026-09-29), where every code
+  box carried an invented file name (`mistake.py`, `while_loop.py`, `riya.py`,
+  `seats.py`). The learner never creates those files; they type into a
+  playground, so the language IS where the code runs. A name that changes from
+  slide to slide reads as seven different programs, and it tells the room
+  nothing the language would not.
+
+## 32. The slide is laid out in zones: header, Space-1, Space-2, Space-3
 
 Every content slide on the 1280x720 canvas is divided into fixed zones, and each
 has one job:
@@ -517,7 +1080,7 @@ slide to slide, so the body started at a different height on every slide and
 content was pushed down or packed top-left by whatever the header happened to
 be. Fixed zones give every slide the same body area.
 
-## 23. The header: no tick before the kicker, and a pair of short gradient bars
+## 33. The header: no tick before the kicker, and a pair of short gradient bars
 
 1. **No accent line before the kicker.** The kicker is the uppercase label on
    its own: no 3px x 24px tick in front of it, and no gap left where it was.
@@ -540,7 +1103,7 @@ tick before the kicker was a second accent competing with them.
 next time `sync-kit.mjs --apply` is run on it; until then it still draws the
 tick and the single rail.
 
-## 24. Typefaces: Inter for the kicker and content, Poppins for headings
+## 34. Typefaces: Inter for the kicker and content, Poppins for headings
 
 | Role | Typeface |
 |---|---|
@@ -563,7 +1126,7 @@ Libre Franklin / Work Sans) and chose set 1 for every deck.
 `fit-check.mjs` on a session after syncing it: a title that fitted in Sora can
 wrap in Poppins.
 
-## 25. A heading never wraps: shorten the words
+## 35. A heading never wraps: shorten the words
 
 Every heading sits on one line: the slide title, and every card, step or panel
 title set in `font-heading`. When a heading wraps onto a second line, **rewrite
@@ -579,27 +1142,377 @@ Check it on the rendered slide, not in the source. Poppins sets wider than
 Sora, so a heading's length in characters no longer tells you whether it fits.
 
 The user set this on 2026-09-25, when Poppins replaced Sora for headings (rule
-24). Poppins is wider, so headings that fitted in Sora can now wrap, in older
+34). Poppins is wider, so headings that fitted in Sora can now wrap, in older
 decks after `sync-kit.mjs --apply` and in every new deck.
 
-## 26. A code box names its language, never a file
+## 36. No full stop at the end of a line of slide copy
 
-The title bar of every code box carries the **language** the code is written
-in, and nothing else: `Python`, `Java`, `JavaScript`, `SQL`. Never a file name
-(`mistake.py`, `main.py`, `pattern.py`), and never the file name and the
-language together.
+No line of rendered slide copy ends in a full stop: a narration line, a
+caption, a callout, a bullet, a lead, a hint, a card's sentence. Questions keep
+their question mark, because that mark is part of what the line asks.
 
-- `CodeBlock`: pass the language as `filename` and leave the chip empty, or
-  the reverse, so the word appears **once**. A pseudocode panel is titled
-  `Pseudocode`.
-- An output panel is titled by what it shows (`Output`, `Input`,
-  `Expected output`), never by a file either.
-- The only exception is a slide whose lesson IS the file: a `Dockerfile`, a
-  `docker-compose.yml`, a `settings.py` the learner has to find on disk. There
-  the file name is the content, and it stays.
+When one line holds two sentences, **split it onto two lines**, each without a
+full stop. Do not delete the mid-line full stop and leave the sentences joined:
+that is a run-on, and it reads as a changed sentence.
 
-The reason: the user reviewed PF 14 "For Loop" (2026-09-29), where every code
-box carried an invented file name (`mistake.py`, `while_loop.py`, `riya.py`,
-`seats.py`). The learner never creates those files; they type into a
-playground. A name that changes from slide to slide reads as seven different
-programs, and it tells the room nothing the language would not.
+```
+WRONG   Seven characters, seven boxes. The numbering starts at 0.
+RIGHT   Seven characters, seven boxes
+        The numbering starts at 0
+```
+
+This is a layout change, not a wording change: not a word is added, removed
+or reordered. It sits beside the index rule "one line on a slide is one
+sentence" (`TEXT_GUIDELINES.md` section 4b), which says how to join clauses;
+this rule says how the line ends.
+
+Code, output and quoted program text are not slide copy: `print("Valid.")`
+keeps whatever the program really holds (course rule R3 in the Python course).
+
+Why: the user had already asked for this and it was never written down, so
+Python session 15 (`Outputs/python/15_string_methods`) shipped slide 7 with a
+full stop on every narration line. Raised in review on 2026-10-01.
+
+## 37. Template colours only: never a colour from the reference deck
+
+**Hard rule.** Every colour on a slide comes from `src/design/tokens.ts` (or
+the Tailwind tokens that mirror it). A deck built from a reference (a PPT, a
+pedagogy-team lesson-plan HTML, a Figma board) takes the reference's
+**content, beats and controls**, never its **palette**: no hex copied from
+its CSS, no tint chosen "to match it", and no kit component left in a tone
+that happens to echo it.
+
+Three places this bites:
+
+- **The recap header.** The kit's `RecapSlide` paints its kicker and the two
+  gradient bars beside it in the success tone. On a deck whose every other
+  header is brand blue that reads as a stray colour, so the recap header takes
+  the **brand tone** like every other content slide. Until a kit PR gives
+  `RecapSlide` a `tone` prop, a session does this with the `RecapBrand`
+  override that sessions 16 and 17 of the Python course carry.
+- **Pills, chips and category bars** (takeaways, legends, option letters) are
+  tokens: `brand`, `brandDark`, `success`, `warning`, `danger`, `muted`,
+  `accent`, `teal`. Never the reference's purple, pink or grey.
+- **Drawn product screens.** The object's OWN colours are allowed inside the
+  object (a phone's shell, a chat app's green bar, a reel's ground) with a
+  comment saying so; the slide around the object stays on tokens.
+
+**Check:** `grep -nE "#[0-9A-Fa-f]{3,6}\b" src/decks/*.tsx src/decks/figures/*.tsx`
+and every hit is a comment, a token-derived constant, or an object's own colour
+with the comment that says so.
+
+Why: user, 2026-10-05, on Python session 17 (`Outputs/python/17_loop_control_statements`):
+*"one of the recap slides refers to the colours of the reference ppt for the
+gradient bars beside the kicker … change it to our template colours, from now
+on all ppts must follow this."* Sessions 15 and 16 had each fixed the same
+green recap bar in review (session 16, review 3) without a rule being written,
+which is how it reached a third deck.
+
+## 38. One alignment per slide
+
+**Hard rule.** Within a slide, every content block (the lead, the text, the
+code boxes, their captions, the figure) shares one horizontal alignment. A
+left-aligned lead over a centred code box is the defect.
+
+Pick the alignment from the content, once per slide:
+
+- **Left** for anything text-heavy, a list, or a code explanation: the lead at
+  x 64 and every block under it starting at x 64. This is the kit's default:
+  `ZonedFrame` draws the lead on the left edge, so a figure under it starts
+  there too.
+- **Centre** for a diagram, a single statement, or a visual-first frame: then
+  the first line is centred as well (`CenteredLead` in the Python sessions'
+  `common.tsx`, or the kit's centred slide types), never left.
+
+Never fix it per slide. A figure that centres itself with `mx-auto` or
+`justify-center` under the kit's left lead is the component's fault, so the
+fix goes in the component, and a component that is centred by design is used
+only with a centred lead.
+
+**Check, on every deck before it is delivered:** `node mixed-align-check.mjs`
+walks every slide's body box and reports any slide that holds both a block on
+the left edge and a block centred in the box. It is the half of
+`align-check.mjs` that was missing: that harness measures blocks against the
+header's edge and tolerates anything that merely sits inside the frame.
+
+Why: user, 2026-10-05, on Python session 17 (`Outputs/python/17_loop_control_statements`),
+slides 9, 10, 21, 24 to 27: *"the first line of content is left-aligned in the
+content area, but the code boxes and everything below the first line are
+centre-aligned."* One session-local component (`Syntax.tsx`) centred its
+figure under the kit's left lead on nine slides, and all three harnesses
+passed them.
+
+## 39. The agenda mark says Agenda, large, over the session name, small
+
+**Hard rule.** On the agenda slide the large word in the mark is `Agenda`,
+always. The small line above it is the session's name. A long session name
+shrinks to fit the mark; it is never clipped, never wrapped out of the mark,
+and never truncated. In the deck file:
+
+```tsx
+<AgendaSlide kicker={SESSION} title="Agenda" lesson={SESSION} items={AGENDA} />
+```
+
+and nothing else as the title. "What We Will Cover", "Today's Agenda" and
+"Agenda for Today's Session" are the three ways it shipped wrong.
+
+The fitting is the component's job, not the deck's. The kit's `AgendaSlide`
+(kit branch `kit/agenda-session-name`; `title` defaults to `Agenda` and
+`kicker` to `lesson`) steps the name down from 16px towards 11px until it sits
+in two lines inside the mark, and a session that is not yet synced carries the
+same file as `src/decks/figures/Agenda.tsx` (Python 17 and 18). Never shorten
+the session name to make it fit, and never pass it as the title.
+
+**The points, too, are the component's job**, and the rule is the same for
+every count (user, 2026-10-05, first on Python 18, then 17, then for every
+deck): the points sit on the arc, their number badges on the curve, and the
+GROUP is centred on the mark's centre line, y 366, the midpoint of the orbit
+ring (y 197 to 535). The gap between neighbours is the ring's height over the
+count and never under 96px, so a short list spreads evenly across the band
+with no empty stretch and a long one extends past the band equally above and
+below; past the canvas margins the gaps shrink evenly, so nothing runs off the
+slide. No point enters the speaker box (x 913 to 1280, y 0 to 220): a point
+within 100px below the box has its text capped short of x 913, every point is
+capped at the frame's right edge, and a long title or sub wraps inside that
+width. Never a straight vertical list, never a fixed first and last y, never
+a title shortened to fit.
+
+**Check, on the built file:** `node agenda-check.mjs` at the session root
+(Python 17 and 18 carry it; copy it forward): the large word is `Agenda`, the
+small line is `deck.config.json`'s title, both sit inside the mark, the name in
+at most two lines with no sideways overflow; the group of points centred on
+y 366 with equal gaps, every badge within 2px of the arc, no point reaching
+the speaker box or leaving the frame; then it stresses the fit with 64- and
+71-character names and an unbreakable word.
+
+Why: user, 2026-10-05, on Python sessions 17 and 18, as a rule for every deck
+from then on: *"The larger, primary text must read 'Agenda'. The smaller,
+secondary text must be the session name. If the session name is too long,
+reduce its font size to fit. It must never overflow, wrap outside its
+container, or be truncated."* Sixteen decks across the three courses had the
+mark the other way round, with the word Agenda as the small kicker over a
+title that changed from deck to deck. The points: the same day, on Python 18's
+agenda, with two black lines drawn at the ring's top and bottom: *"The points
+are not positioned relative to the band. Point 1 sits near the top line, and
+point 2 falls below the bottom line."* The kit had spread them from a fixed
+y 268 to a fixed y 612 whatever their number.
+
+## 40. Code never shows a ligature: `==` and `>=` are two characters
+
+**Hard rule.** In code, `==`, `===`, `>=`, `<=` and `!=` are drawn as the
+separate characters the learner types, never as one joined glyph. JetBrains
+Mono, the kit's code face, ships ligatures that join exactly these, so every
+code surface has them switched off:
+
+```css
+.font-mono, pre, code, kbd, samp {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+```
+
+That block lives in the kit's `src/index.css` (kit branch
+`kit/code-ligatures`; Python 17 and 18 carry it), so a deck gets it without
+doing anything: the fix is the template's, never a slide's. A session figure
+that draws code with an inline `fontFamily` instead of the `font-mono` class
+must set the same two properties beside it. The advance widths do not change,
+so nothing on the slide moves.
+
+**Check, on the built file:** `node ligature-check.mjs` at the session root
+(Python 17 and 18 carry it; copy it forward) walks every slide, finds every
+text node carrying one of the five operators, and fails if the element drawing
+it in the monospace face still has ligatures on. It prints the slides and the
+operators it found.
+
+Why: user, 2026-10-05, on Python sessions 17 and 18: *"In code, == and >=
+render as one joined glyph. Each must appear as separate, clearly readable
+characters … In every deck, the operators ==, ===, >=, <=, and != must never
+render as merged glyphs in code. Build this into the template."* Nine slides
+of 17 and five of 18 showed a joined `==` or `>=`; the whole course had been
+teaching comparison with a glyph no keyboard has.
+
+## 41. Every deck closes with Python session 18's feedback slide, copied exactly
+
+**Hard rule.** Every session created from now on ends with the feedback slide
+of Python session 18, copied exactly, with only session-specific text
+changed. It is never recreated, redesigned, re-laid out or restyled. The
+**source of truth is the built file**:
+
+```
+Outputs/python/18_comparing_strings_naming_variables/dist-single/python-session-18-comparing-strings-naming-variables.html
+```
+
+What that slide is: the night stage, the kicker `Feedback`, the title `We’d
+love your feedback` and the line `Your thoughts help us improve this course`;
+under them one white box holding the supplied QR code with `Scan to open the
+feedback form`, the form's link (`forms.gle/5d1Ru8geTKdC4Bcr7`, opening in a
+new tab) and `Scan the code, click the link, or fill out the form right
+here`, a hairline separator, then the Google Form itself in a frame. The
+kit's plain `FeedbackSlide` is never used.
+
+**Where it sits.** It is the deck's closing content slide, with id
+`feedback`, followed only by the Thank you slide, as in the source deck.
+
+**How it is copied**, until the kit carries it. The built file was made from
+these two files, so a deck copies them and nothing else:
+
+- `Outputs/python/18_comparing_strings_naming_variables/src/decks/figures/FeedbackForm.tsx`
+  to the deck's `src/decks/figures/FeedbackForm.tsx`, unchanged, used as
+  `<FeedbackEmbedSlide lesson={SESSION} />` on the slide with id `feedback`.
+  The only edit allowed is session-specific text, if the slide ever carries
+  any (today it carries none), and the file's header comment.
+- `slide-kit/assets/brand/feedback-qr.png` (byte for byte the source deck's
+  `public/assets/feedback-qr.png`) to the deck's `public/assets/feedback-qr.png`
+  (rule 13). The QR encodes the link above. Never regenerate it, recolour it
+  or retype it.
+
+The frame needs the network, and it is the only thing in a deck that does.
+The QR code and the link reach the same form when the frame cannot load.
+
+**Check, on the built file, before a deck is delivered:** `node
+feedback-check.mjs` (Python 19 carries it; copy it to the session root). It
+opens the deck and the source file, finds the slide with id `feedback` in
+each, and compares the rendered slide markup character for character. It
+also checks that the QR image loads, the link text, the form frame's `src`,
+and that only Thank you follows. A redrawn or restyled slide fails it, and
+so does the kit's `FeedbackSlide`. The frame never lets the network go
+quiet, so `video-safe`, `qa`, `align-check` and `mixed-align-check`, which
+wait for that, may time out on this slide; run them with outside requests
+blocked rather than changing the slide.
+
+Why: user, 2026-10-06, on Python sessions 17 and 18: *"Use Session 18's
+feedback slide (the form slide) as the standard feedback slide. Add it to the
+project rules so every session and project created from now on includes this
+same feedback slide."* Session 18 built two versions, a framed Google Form and
+a native styled form, and the user chose the framed form. Earlier decks carried
+the kit's `FeedbackSlide`, a heading with no way to reach the form. Delivered
+decks are frozen (`RULES.md`): this applies from session 17 onwards, where the
+user applied it first. On the same day, Python session 19 shipped the kit's plain
+`FeedbackSlide`, and the user repeated it: *"The feedback slide in the
+current deck does not match Session 18's … every session created from now on
+must end with the feedback slide copied exactly from the source file, with
+only session-specific text changed. Do not recreate or redesign it."* That
+is why the built file is named as the source of truth and the check compares
+markup rather than trusting a description.
+
+## 42. An arrow or connector never overlaps a box, at any step
+
+**Hard rule.** An arrow, a cursor, a pointer or a connector line starts at the
+edge of one box and ends at the edge of another, or sits in a lane of its own
+beside the boxes it points at. It never crosses into a box, at any build step
+and in any state: before the first press, mid-run and fully revealed. Its two
+ends stay attached to the right boxes.
+
+Two places this bites:
+
+- **A cursor that drops onto a row.** The arrow lands in a lane above the
+  boxes and stops short of their top edge. A cursor that carries a label
+  (`item`, `i`) needs a taller lane, and that lane is reserved on every step,
+  so the row does not jump when the label first appears.
+- **An arrow drawn between two boxes that move.** Route it from the edge of
+  one to the edge of the other after the move, never between their old
+  positions, and re-check it on the step after the move.
+
+Fix the component that draws the arrow, never one slide's coordinates, so
+every slide that uses it is fixed at once.
+
+**Check, on the built file, before a deck is delivered:** `node
+overlap-check.mjs` (Python 19 carries it; copy it to the session root) steps
+every slide through every build and reports any small arrow-like `<svg>`
+that overlaps a bordered box other than its own container. It must print no
+findings. The other harnesses cannot see this: an arrow and a box are both
+inside the frame and inside their zone.
+
+Why: user, 2026-10-06, on Python session 19 (`Outputs/python/19_lists`),
+slide 12: *"After the Next step, the arrow overlaps the boxes."* The cursor
+and its `item` label dropped 16px into the box it pointed at on every pass of
+the loop, and `video-safe`, `qa`, `align-check` and `mixed-align-check` all
+passed the slide.
+
+## 43. A highlight matches the bounds of the element it highlights
+
+**Hard rule.** A glow, a ring, a tint or an outline that marks one element
+takes that element's exact width and height. It never takes the width of the
+column, the row or the container the element sits in. An output box 300px
+wide in a 670px column glows as a 300px box.
+
+The usual cause is a wrapper that draws the highlight around a child with a
+fixed width: the wrapper stretches to its parent while the child does not.
+Put the width on the wrapper (or let the wrapper shrink to the child), never
+on the child alone, and do it in the component, so every call site is fixed.
+
+**Check:** `node overlap-check.mjs` (rule 42) also measures every glow
+wrapper on every step against the one element it wraps and reports any that
+is more than 2px wider or taller.
+
+Why: user, 2026-10-06, on Python session 19 (`Outputs/python/19_lists`),
+slides 17 and 18: *"The green highlight currently covers the full width of
+the output area instead of only the output box."* The output panel's glow
+wrapper filled its column, so the same defect sat on slides 11, 16, 22 and 23
+as well; one change to the shared output panel fixed all six.
+
+## 44. The agenda is static: no step-through, no selected point, no buttons
+
+**Hard rule.** The agenda slide shows every point at once, in its normal
+style, exactly as Python session 19's agenda does
+(`Outputs/python/19_lists`, `<AgendaSlide kicker={SESSION} title="Agenda"
+lesson={SESSION} items={AGENDA} />` and nothing around it). On an agenda
+slide there is:
+
+- **no step-through**: no build steps, no point that appears or lights on a
+  press, whatever a source spec says ("stop n lights up per press" is not
+  carried);
+- **no active or selected state**: no highlight box, band, panel or tint
+  behind a point, no ring, fill or circle on its badge;
+- **no Next or Replay buttons**: the slide advances with the deck's own
+  navigation only.
+
+The points' text, spacing and arc are the kit's (content rule 39). Never
+wrap the agenda in a figure that adds any of the above.
+
+**Check:** the agenda slide's build-step count is 0 (`revealSteps.ts`), it
+holds no button, and its screenshot matches session 19's agenda in point
+styling and controls. `agenda-check.mjs` passes.
+
+Why: user, 2026-10-06, on Python session 20 (`Outputs/python/20_working_with_lists`),
+slide 6, twice. First: *"Remove the blue highlight box behind the agenda
+points. Match the Session 19 agenda slide."* Then, when a lit badge and the
+step behaviour remained: *"Remove this behaviour completely: no active or
+selected state, no highlight box, no highlight circle, and no step
+animation … Remove the Next and Replay buttons."* The deck had wrapped the
+kit agenda in `AgendaStops.tsx` to carry the spec's per-press agenda.
+
+## 45. Arrow heads stay small and proportionate to the line
+
+**Hard rule.** An arrow head is about three to four times its line's width:
+a 9px head on a 2.5 to 3px connector. Never larger, on any slide. Size a
+head in absolute units (`markerUnits="userSpaceOnUse"` on an SVG `<marker>`),
+because the SVG default (`strokeWidth`) multiplies the marker by the line
+width and silently draws heads several times too big. Fix it in the
+component that draws the arrows, so every slide is fixed at once.
+
+**Check:** on the screenshots, at a zoom, every arrow head on every slide.
+
+Why: user, 2026-10-06, on Python session 20 (`Outputs/python/20_working_with_lists`),
+every slide with an arrow: *"The arrow heads are too big. Reduce their size
+across the whole deck."* The deck's one arrow engine (`figures/memory.tsx`)
+used a 7-unit marker in stroke units on a 2.75px line, about 19px long.
+
+## 46. A connector line meets its arrow head on the head's own axis
+
+**Hard rule.** The last stretch of a connector, at least the length of its
+head plus a few pixels, is straight and runs along the head's centre line,
+so the line enters the head at its tip's axis. A curve that is still bending
+under the head enters it off-centre. Keep the head where it is (its tip on
+the box edge it points at, rule 42) and straighten the line's end, never
+the other way round. Build it into the path every arrow uses (in PF 20,
+`M · C · L`: the curve, then a straight `L` into the tip), not slide by slide.
+
+**Check:** zoom into every arrow at every build step: converging arrows, a
+re-pointed arrow after it moves, and arrows that come in at an angle.
+
+Why: user, 2026-10-06, on Python session 20 (`Outputs/python/20_working_with_lists`),
+slide 22: *"The arrow head is already centred on the box. The problem is
+that the orange connecting line is not centred on the arrow head."* Two
+arrows converging on one row landed 12px apart, and with only 26px of run
+the curve was still turning under the head.

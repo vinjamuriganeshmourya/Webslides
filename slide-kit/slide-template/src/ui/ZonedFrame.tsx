@@ -5,7 +5,7 @@ import { SlideHeader } from './SlideHeader'
 import type { Tone } from '@/design/tokens'
 
 /**
- * THE ZONES OF A CONTENT SLIDE (content rule 22), built once.
+ * THE ZONES OF A CONTENT SLIDE (content rule 32), built once.
  *
  * Every light content slide type renders through this instead of stacking a
  * `SlideHeader` on top of a flex well. The zones are the user's annotated

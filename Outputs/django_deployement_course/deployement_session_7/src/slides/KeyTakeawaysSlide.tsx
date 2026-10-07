@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { SlideBase, SlideHeader, BulletList, Illustration } from '@/ui'
+import { SlideLead } from '@/ui/SlideLead'
 import type { KeyTakeawaysSlideProps } from './types'
 
 /**
@@ -18,7 +19,18 @@ export function KeyTakeawaysSlide({
       <div className="grid h-full grid-cols-[1.3fr_1fr] items-center gap-12">
         {/* left — the takeaways; header pinned top-left, list centered below */}
         <div className="flex h-full flex-col">
-          <SlideHeader kicker={kicker} title={title} lead={lead} tone="nw" />
+          <SlideHeader kicker={kicker} title={title} tone="nw" />
+          {/*
+            The point opens the left column's well, above the takeaways. The heading
+            and the recap both live in this column and the mascot has the other, so
+            this is the whole of the slide's text well.
+
+            It sits OUTSIDE the centred block, directly under the heading, for the
+            same reason as on `ContentSlide`: centred along with the takeaways it
+            drifted down the canvas and read as the first takeaway rather than as
+            the line introducing them.
+          */}
+          {lead && <SlideLead tone="nw">{lead}</SlideLead>}
           <div className="flex min-h-0 flex-1 flex-col justify-center">
             <BulletList items={points} marker="star" tone="nw" />
           </div>

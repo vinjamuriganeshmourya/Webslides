@@ -12,7 +12,7 @@ No slide is generated until this plan is approved. Section 7 is the gate.
 | `TR_DOC` | `/home/nxtwave/docker_jenkins_aws/04_running_django_app_with_docker.md` (845 lines) |
 | Project | `deployement_session_4/` — to be scaffolded from `slide-kit/slide-template` |
 | Deck file | `src/decks/runningRealAppDeck.tsx` |
-| Slide count | **80** (planned 76; see §8.1 and §8.6 for every change) |
+| Slide count | **85** (planned 76, generated 80, then 84; see §8 and §9 for every change) |
 | `devPort` | `5215`. Note: the kit and **all three** existing sessions are on `5211` — the scaffold never changed it, so two decks cannot run at once today. 5215 keeps session 4 out of that collision; renumbering the others is a separate call |
 | `NEXT_UP` | `Automate Deployment using Makefile` (the next session's confirmed name) |
 | Build rules | to be created at `workflow/skills/session-4-deck/SKILL.md` on sign-off |
@@ -96,7 +96,7 @@ Legend for **Assets**: `kit` = already in `src/ui`, `new` = built for this deck,
 | 2 | `welcome` | Running the Real App with Docker | `WelcomeSlide minimal` | kicker `WELCOME TO TODAY'S SESSION` | Bare hero | fade | kit |
 | 3 | `recap-compose` | Where we Left Off | `ContentSlide` + `CodeBlock` | Last session's finished `docker-compose.yml`, the two-service version with `db_data` | Their own file, so the session opens on what they wrote | code panel + bullets in parallel | kit |
 | 4 | `recap-what-it-bought` | Where we Left Off | `RecapSlide` | `up` builds and networks and starts · `down` removes, volumes survive, `down -v` deletes · after an edit, `--build`, because images are frozen · **service names are hostnames** | Same title as 3, a build sequence | stagger | kit |
-| 5 | `excuse-used-up` | The Toy Apps Were on Purpose | `ContentNoteSlide` + `TwoRuntimes` | Both demo apps were a few printed lines, so every idea learnt was about Docker and nothing else. Callout carries the turn: today the real `nxttrendz` project moves into containers | `TwoRuntimes` already draws exactly this pair with their marks | figure and text together | kit + png `react`, `django` |
+| 5 | `excuse-used-up` | The Small Demo Apps Were on Purpose | `ContentNoteSlide` + `TwoRuntimes` | Both demo apps were a few printed lines, so every idea learnt was about Docker and nothing else. Callout carries the turn: today the real `nxttrendz` project moves into containers | `TwoRuntimes` already draws exactly this pair with their marks | figure and text together | kit + png `react`, `django` |
 | 6 | `agenda` | Today's Agenda | `AgendaSlide` | The four concepts from §1, one gloss line each | Agenda fixture | curve draws, items cue off it | kit |
 | 7 | `setup` | Initial Setup | `ContentSlide` + `Terminal` + `FileTree` | Open `C:\nxttrendz` in VS Code · Docker Desktop running · `docker --version` · `docker-demo\` stays where it is, untouched | The check command and the tree it expects | parallel | kit, TR |
 
@@ -122,7 +122,7 @@ Legend for **Assets**: `kit` = already in `src/ui`, `new` = built for this deck,
 | 18 | `c2-the-question` | Same Django Next Month? | `ContentSlide` | The question only: if `pip install -r requirements.txt` runs today, and on a teammate's machine next month, does it install the same Django? No answer on this slide | The pause beat; the room answers out loud | question fades in, nothing else | kit |
 | 19 | `c2-pip-freeze` | Your venv Already Knows | `ContentSlide` + `Terminal` | `pip freeze` and the abridged output with real versions | One panel, path in the prompt | transcript on entry | TR |
 | 20 | `c2-pinned` | Pinned | `ContentNoteSlide` + `CodeBlock` | The five lines with `==`. Note: `pip freeze` also lists dependencies of your dependencies (`asgiref`, `sqlparse`, `PyJWT`); pinning the five you chose is enough, pip resolves the rest | The same file as slide 17 with the versions arrived: a before/after the room can see | versions type in per line | kit |
-| 21 | `c2-base-image` | The Tag Is a Decision | `ContentNoteSlide` + `DataTable` | For two lines of `print`, any Python works. Django 5.2 supports Python 3.10 to 3.13, so the tag is the newest Python this Django was tested against: `python:3.13-slim` | A short support-matrix table makes "decision, not habit" concrete | rows stagger, chosen row lights last | kit + png `python`, `django` |
+| 21 | `c2-base-image` | Choosing the Python Version | `ContentNoteSlide` + `DataTable` | For two lines of `print`, any Python works. Django 5.2 supports Python 3.10 to 3.13, so the tag is the newest Python this Django was tested against: `python:3.13-slim` | A short support-matrix table makes "decision, not habit" concrete | rows stagger, chosen row lights last | kit + png `python`, `django` |
 | 22 | `c2-backend-dockerfile` | The Backend Dockerfile | `ContentSlide` + `CodeBlock` | All seven lines of `backend\Dockerfile` | The whole artifact at once; the room has written five of these lines before | panel on entry | kit |
 | 23 | `c2-five-of-seven` | Five Lines You Have Written Before | `ContentSlide` + `CodeBlock` annotated | The same panel with the five familiar lines dimmed and the two new ones lit: base image, workdir, dependency file first (the cache rule), install, code, start | Dimming is the cheapest possible way to say "look here" | dim settles, two lines pulse once | kit |
 | 24 | `c2-env-instruction` | ENV, a New Instruction | `ContentSlide` + `CodeBlock` | `ENV PYTHONUNBUFFERED=1` sets a variable **inside the image**, permanently — the same mechanism as Compose's `environment:`, baked in at build time | One line, its own slide, because `ENV` is the sixth instruction they now know | line highlights | kit |
@@ -134,7 +134,7 @@ Legend for **Assets**: `kit` = already in `src/ui`, `new` = built for this deck,
 | 30 | `c2-dockerignore-earns` | One Line Earns Its Keep | `ContentNoteSlide` + `DataTable` | `db.sqlite3` now excludes your laptop's **real dev database**, months of test data. Three new entries table: `data/` (the folder it is about to move into) · `.env` (secrets, guards a stray copy) · `.vscode/` | Table for the three new entries; the callout carries the database point | callout, then rows | kit + png `sqlite` |
 | 31 | `c2-which-node` | The Project Already Answered | `ContentNoteSlide` + `CodeBlock` | `frontend\.nvmrc` says `v20.9.0`, so the tag is `node:20-alpine`. Success callout: **the project's own files decide the base image** — `pip freeze` chose the Python, `.nvmrc` chooses the Node | Same lesson twice in one session; the callout names it as a rule | file panel, then callout | kit + png `nodejs` |
 | 32 | `c2-frontend-dockerfile` | The Frontend Dockerfile | `ContentSlide` + `CodeBlock` | The seven lines of `frontend\Dockerfile` | Whole artifact; it is last session's Node file with two upgrades | panel on entry | kit |
-| 33 | `c2-lockfile` | Why the Lockfile Comes Too | `ContentNoteSlide` + `CodeBlock` | `package.json` says `"axios": "^1.19.0"` — a range, npm's unpinned requirement. `package-lock.json` records the **exact** version of every package, sub-dependencies included. The Node twin of pinning | The `^` is the whole argument; light that character | range highlights, lockfile line follows | kit + png `npm` |
+| 33 | `c2-lockfile` | Why the Lockfile Is Copied Too | `ContentNoteSlide` + `CodeBlock` | `package.json` says `"axios": "^1.19.0"` — a range, npm's unpinned requirement. `package-lock.json` records the **exact** version of every package, including the packages those packages need. The Node twin of pinning | The `^` is the whole argument; light that character | range highlights, lockfile line follows | kit + png `npm` |
 | 34 | `c2-npm-ci-note` | A Note on npm ci | `ContentNoteSlide` | Automation servers use `npm ci`: installs exactly the lockfile, fails loudly if `package.json` disagrees. It returns when this course reaches CI/CD | Aside, typographic | fade | kit |
 | 35 | `c2-vite-binding` | The Same Rule, Already Solved | `ContentNoteSlide` + `CodeBlock` | `frontend\vite.config.js` has carried `host: '0.0.0.0'` all course. Django needed it on the command line; Vite carries it in config. Same rule, two homes | Their own config file with the line lit: *now you know what that was for* | line highlights | kit + png `vitejs` |
 | 36 | `c2-frontend-dockerignore` | Its .dockerignore | `ContentNoteSlide` + `CodeBlock` | The six lines. Warning callout: last session `node_modules/` was an empty folder excluded on principle; today it is hundreds of megabytes with binaries compiled **for your OS**, which would overwrite the Linux packages `npm install` just built | The warning from last session, now with teeth | panel, warning as its own step | kit |
@@ -157,7 +157,7 @@ Legend for **Assets**: `kit` = already in `src/ui`, `new` = built for this deck,
 | 48 | `c3-env-step2` | Step 2 — settings.py Reads It | `ContentSlide` + `CodeBlock` | `import os` and `SECRET_KEY = os.environ.get('SECRET_KEY')` — edits 1 and 2 of the promised three lines | The diff is two lines; show only those | lines type in | kit |
 | 49 | `c3-env-step3` | Step 3 — env_file | `CodeBuildSlide` | The `env_file: - .env` key hands every variable in the file to the backend container | The file grows; second of the two new keys | key inserts | kit |
 | 50 | `c3-two-injectors` | environment: vs env_file: | `ContentNoteSlide` + `DataTable` | `environment:` carries values safe to publish (addresses, modes) and lives in a file that travels. `env_file:` carries secrets and points at a file that travels **nowhere** | Two rows, because the split **is** the lesson | rows stagger | kit |
-| 51 | `c3-gitignore-warning` | The .env Must Never Travel | `ContentNoteSlide` | Warning callout: add `.env` to `C:\nxttrendz\.gitignore`, creating the file if the root has none. The frontend's own `.gitignore` guards only `frontend\.env`. Committing it exposes the secret to anyone who can see the repo — one of the most common real-world leaks | Warning-led, no code; this is a habit, not a snippet | callout alone | kit |
+| 51 | `c3-gitignore-warning` | The .env Must Never Go Into Git | `ContentNoteSlide` | Warning callout: add `.env` to `C:\nxttrendz\.gitignore`, creating the file if the root has none. The frontend's own `.gitignore` guards only `frontend\.env`. Committing it exposes the secret to anyone who can see the repo — one of the most common real-world leaks | Warning-led, no code; this is a habit, not a snippet | callout alone | kit |
 | 52 | `c3-database-moves` | The Database Moves Into the Volume | `ContentSlide` + `CodeBlock` + `CodeBuildSlide` | Third settings line: `'NAME': BASE_DIR / 'data' / 'db.sqlite3'`. And the service mounts `db_data:/app/data` — last session's line, doing real work | The promise from last session, kept. Two small panels: the setting and the mount | setting, then mount | kit + png `sqlite` |
 | 53 | `c3-why-not-app` | Why /app/data and Not /app | `ContentNoteSlide` + **`VolumeShadow`** | A volume mounted at a folder **takes that folder over**. Mounted at `/app`, it would capture the code on its first run and serve that stale copy forever — every rebuild silently shadowed, `--build` apparently doing nothing. Note: the container's database starts **empty** | **New figure.** The trap needs to be seen: the volume swallowing `/app`, the rebuilt image bouncing off | the mount lands, the code greys out | **new** |
 | 54 | `c3-complete-file` | The Complete File | `ContentNoteSlide` + `CodeBlock` + `FileTree` | The whole `docker-compose.yml`, read as a sentence. Then: six files created, two edited, one `.gitignore` line, **not a single line of application code touched** | The finished artifact plus the tree of what changed, with `created`/`edited` states | file panel, then tree | kit |
@@ -365,3 +365,177 @@ because if the room cannot say why the frontend is told `localhost:8000` rather
 than `backend:8000`, the most important idea of the session did not land.
 
 Deck is 80 slides.
+
+
+---
+
+## 9. Revision, 2026-09-03: the first review pass
+
+31 comments came back through the review app
+(`workflow/reviews/deployement_session_4.review.md`, all now marked done) and
+all 31 are applied. The deck is **85 slides**.
+
+**The slide-by-slide table in §4 is now the older of the two records.** It was
+already behind before this pass — it still names `c2-the-question`, Django 5.2
+and a 78-slide shape — and this revision moved five concepts. Read
+`src/decks/runningRealAppDeck.tsx` for what the deck currently is; read §4 for
+what was signed off and why. Where they disagree, the deck is right and this
+section says how it got there.
+
+### 9.1 Four slides removed, as asked
+
+| id | Why the review cut it |
+|---|---|
+| `excuse-used-up` | "Remove this slide" |
+| `c1-nothing-changes` | "Remove this slide" |
+| `c2-pip-freeze` | "Remove this slide". Its answer line survived; see 9.2 |
+| `c3-gitignore-warning` | "remove this slide" |
+
+### 9.2 Six slides added, all of them beat 2 or beat 3
+
+Five of the 31 comments were not asking for different words. They were asking
+for the same thing in five different places: **the problem before the
+mechanism.** Those five are now a written rule,
+`PEDAGOGY_GUIDELINES.md` section 2, "the four beats of a new concept".
+
+| New id | The beat it supplies | The comment that asked for it |
+|---|---|---|
+| `c2-unpinned-cost` | 2 and 3, for pinning | the cut `c2-pip-freeze` carried the answer to the question two slides earlier |
+| `c2-env-problem` | 2, for `ENV` | *"Instead of directly adding new instruction... give problem"* |
+| `c2-env-question` | 3, for `ENV` | *"our application is having .env and how we can specify in docker?"* |
+| `c2-dockerignore-question` | 2 and 3, for the new ignore entries | *"then what about our database? and .env?"* |
+| `c3-database-problem` | 2, for the volume | *"no connection or flow... in middle of nowhere this is introduced"* |
+| `c3-database-settings` | 4a, the application half of the move | the third `settings.py` line the plan promised twice and never showed |
+
+`c3-database-settings` is worth calling out separately. `c3-env-step2` says "the
+third settings line is the database" and `c3-whats-changed` lists settings.py as
+"three lines changed", and only two were ever on a slide. A learner following
+along had changed two lines and was being told they had changed three.
+
+### 9.3 The ports sequence was re-ordered, not rewritten
+
+`ports` used to be announced on `c1-two-new-keys` (slide 14) and again on
+`c3-locked-door` before the Compose skeleton existed. The review said
+*"Introduce ports here"* on the slide where the file actually gets the key. So:
+
+```
+before:  locked-door → skeleton → ports-anatomy → both-publish
+after:   skeleton → locked-door → both-publish → ports-anatomy
+         (works)    (fails)       (the key)      (the two numbers)
+```
+
+`c1-two-new-keys` no longer names either new key. It is now
+`You Already Know Enough to Start`, which names the shortfall without opening it
+(content rule 4).
+
+### 9.4 Two figures went to the kit, and one was deleted
+
+- **`ExecAnatomy` is gone.** The review's verdict was "design is not nyc", and
+  the fix was not a redesign: this figure has been hand-rolled four times in
+  this course and the generalised version has been in the kit as
+  `SyntaxBreakdown` throughout. Slide `c4-exec-anatomy` composes the kit
+  component. It is also the only correct version — `ExecAnatomy` positioned its
+  labels by multiplying a character count by an assumed 10.2px per glyph, and
+  all three harnesses would have passed a collision (content rule 17, S9).
+- **`FileTree` was redesigned in the kit**, taking a new optional `open` prop:
+  one folder expanded at a time, its children drawn inside a recessed well that
+  belongs to it. `open` is optional and omitting it keeps the old behaviour, so
+  sessions 2 and 3 render unchanged.
+- **`PortPublish`, `BrowserOutsideDocker` and `VolumeShadow` were lit** rather
+  than replaced. §5.1's read still stands: the first two are general to any
+  containerised web app and the last is close to a one-off.
+
+### 9.5 The agenda was rewritten twice, and that is now a rule
+
+First pass: four figurative titles, rejected item by item — *"Moves In? Each
+Part? Specify what?"* Second pass: four plain sentences, rejected for the
+scaffolding they brought — *"remove a the helping words from the agenda"*. What
+shipped is content words only:
+
+```
+Real Project Setup
+Dockerfile for Backend and Frontend
+Writing Compose File
+Running Application with Docker Compose
+```
+
+Now `TEXT_GUIDELINES.md` section 4a. The dividers, the sections and the recap
+all read from the `AGENDA` array rather than repeating the strings, so the four
+wordings cannot drift from each other again (content rule 20).
+
+### 9.6 One factual point to confirm against the TR
+
+`c2-base-image` now says **Django 6.1 supports Python 3.13 and 3.14**, and its
+table reads 3.14 / 3.13 / "3.12, or older". The plan and the first cut both said
+3.12 to 3.14. The change is the review's — *"3.12 will support Django 6.1?
+Mention only 3.14, 3.13, 3.12 or older in the table"* — and it is applied as
+asked, but the support range is a fact the TR should settle rather than the
+review.
+
+### 9.7 Rules this pass produced
+
+| Rule | Where it lives now |
+|---|---|
+| Every new concept carries four beats, in order | `PEDAGOGY_GUIDELINES.md` §2 |
+| Every surface in a figure is lit from the top-left | `STYLE_GUIDE.md` §9 |
+| Agenda items carry no articles and no helping words | `TEXT_GUIDELINES.md` §4a |
+
+All three are indexed in `RULES.md`.
+
+---
+
+## 10. Revision, 2026-09-03: the sign-off pass
+
+Four changes, after which the review said *"Once changes are done we can go with
+that as a final version."* The deck is **78 slides**.
+
+**Note on §9 and the slide table.** Between §9 and this section the deck was also
+edited directly outside this workflow: `BACKEND_DOCKERFILE_INITIAL` was added and
+the `ENV` slide re-cut into a two-stage Dockerfile build, `recap` and `quiz-time`
+were removed, and `next-session` became `next-up`. Those edits are the deck's own
+record; §4 and §9 predate them.
+
+That hand edit also left two defects, both fixed here: a duplicate `id` (two
+slides both called `c2-five-of-seven`, the second an `ENV` slide carrying the
+first's id, label and notes, now `c2-env-line`), and `slideCount` reading 85
+against a 77-slide deck, which made `qa.mjs` measure the Thank-you frame eight
+extra times and report 10 issues instead of 2.
+
+### 10.1 The four changes
+
+| Slide | Asked | Done |
+|---|---|---|
+| 29 `c2-which-node` | Say what each file tells whom | Two bullets: `.nvmrc` tells developers and their tools, `Dockerfile` tells Docker |
+| 30 `c2-frontend-dockerfile` | Rows 4 and 9 are highlighted and both are empty | They were. Derived from the text now, so the highlight follows its own line |
+| 41 `c2-two-questions` | Two near-identical statements, make it one | The rule is the callout title; the body carries the reason instead of restating it |
+| after 54 | A new slide with the wrong and right volume mounts | `c3-volume-rule`, a `StatusPointsSlide` with `FAILS` / `WORKS` verdicts |
+
+### 10.2 The line-number bug, twice
+
+Slide 30's `highlight={[4, 9]}` lit two blank lines, and slide 24's
+`highlight={[3, 11]}` lit one, earlier in the same review cycle. Both were
+hand-counted; both are now `hl()` calls that derive the numbers from the panel's
+own text.
+
+`hl()` has existed in this deck since it was generated and S10 documented it from
+the start. The slides simply did not use it. **S10a now states the rule as a
+prohibition**: if you are counting rows in a code panel, you are writing the bug.
+
+### 10.3 Why the new slide is a `StatusPointsSlide`
+
+The review's content was a ❌ / ✅ pair. The kit's answer to that is
+`StatusList`, whose own header records why: `Callout` is one box that must not be
+missed, and two stacked callouts read as two things that must not be missed,
+which is neither of them. `StatusPointsSlide` prints the cross and check from the
+house icon set with `FAILS` and `WORKS` verdict chips, so the slide needs no
+emoji of its own.
+
+Both mount strings carry `code: true`. They differ by five characters, and the
+whole slide is that difference.
+
+### 10.4 Verified
+
+`tsc` clean · `build:html` 2.95 MB · `video-safe.mjs` **CLEAN** ·
+`align-check.mjs` **0 of 78** · `qa.mjs` **2**, the expected baseline
+(1 Welcome, 78 Thank you, both `NO LOGO`). Slides 29, 30 and 55 screenshotted and
+inspected, per content rule 10.

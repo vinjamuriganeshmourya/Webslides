@@ -28,7 +28,7 @@ propagated by `sync-kit.mjs`; nothing is duplicated here, so nothing can drift.
 | `ProceduralStepsSlide` | an ordered procedure the learner will repeat |
 | `FlowChartSlide` | a process with branches |
 | `ScenarioSlide` | a situation posed before its resolution |
-| `QuestionSlide` | the pause beat: one question, hero scale, centred, nothing else |
+| `QuestionSlide` | the pause beat: one question, hero scale, centred, nothing else. `choices` adds the two or three answers the room picks between, drawn identically so the slide never hints |
 | `QuestionPointsSlide` | a question, then the points that answer it, as build steps |
 | `CodeSyntaxSlide` | the SHAPE of a language construct, slot by slot |
 | `CommandSyntaxSlide` | the SHAPE of a command, slot by slot. Runs nothing |
@@ -79,6 +79,84 @@ has answered. The rule governs what is on screen while the question is open, and
 unrevealed step is not on screen. `QuestionSlide` stays the default: use it whenever
 the answer wants its own slide.
 
+### `ContentSlide`'s two-column mode now has a width and an alignment
+
+Pass BOTH `points` and children and `ContentSlide` puts the bullets and the figure
+side by side. Two props govern that mode and nothing else:
+
+| Prop | Values | What it is for |
+|---|---|---|
+| `split` | `text-wide` (default) · `even` · `figure-wide` | which column gets the extra width: 649/463, 556/556, or 463/649 |
+| `columnAlign` | `center` (default) · `top` | whether each column centres itself independently, or the two lock to a shared top edge |
+
+`split="even"` exists because **463px is not enough for a figure with lines in
+it.** `Terminal` carries `break-words`, so at 463px it does not shear a long line,
+it breaks an IMAGE NAME MID-TOKEN: session 6 shipped `ravi123/nxttrendz-` on one
+line and `backend:v1` on the next, and a learner retyping a broken image name is a
+worse outcome than a slide with one bullet fewer. 556px is the width three figure
+labs independently settled on as the floor for 16px type in a side column.
+`figure-wide` is for the slide whose figure IS the teaching and whose bullets are
+captions on it.
+
+**Worst at:** `even` and `figure-wide` both buy the figure width with the prose,
+and the prose is where the wrapping cost lands — a bullet past about nine words
+wraps a line earlier at 556px than at 649px, and `figure-wide`'s 463px text column
+wraps nearly every bullet. If the slide has five long points, the answer is fewer
+points, not a wider figure column. And **there is no fourth width, deliberately**:
+session 6 hand-rolled five figure widths by hand and no two of its figure-bearing
+slides lined up with each other.
+
+`columnAlign="top"` fixes a defect rather than adding a style. Under `center` each
+column centres in the row INDEPENDENTLY, so the figure's top edge sits wherever the
+difference in the two columns' heights puts it — labs measured 87px, 100px and
+139px of drift on real fixtures, and two figures of different heights on
+consecutive slides of one concept land at two different y values. **Worst at:** a
+short block, where the shared top edge gathers all the slack under the figure
+instead of splitting it above and below, so the figure can read as unfinished
+rather than as centred. Centre the block, never the columns.
+
+**Both defaults reproduce the pre-existing rendering exactly, and that was
+mandatory.** `sync-kit.mjs --apply` pushes this file into sessions that are already
+signed off and frozen, so a deck that passes neither prop has to render
+pixel-identical to what it rendered before the props existed. Verified by
+measurement, not by reading: the gallery's default fixture measures
+`648.656px 463.328px` with `align-items: center`, the bullets at x=64 y=368 and the
+figure column at x=753 y=351, both before and after. The two gallery slides are
+`content-split-default` and `content-split-even`, adjacent on purpose.
+
+The same change also closed a live bug in that file: the well centred its body with
+`justify-content: center`, which distributes NEGATIVE free space symmetrically, so
+a block taller than the well spilled past the START edge and ignored the video
+guard's padding — a 703px block in the 439px well put its top at y=85, inside the
+instructor-video reserve. The well now centres with `my-auto`, which resolves to
+zero on negative free space: it centres while the block fits and pins to the well's
+top edge when it does not, overflowing downward only. The same block now measures
+y=217. A block that FITS does not move, which is what made this safe to sync.
+
+### The lead is content, so it is drawn in the content well
+
+Every content type above takes a `lead`, the sentence that says what the slide is
+for. It used to be rendered inside `SlideHeader`, under the title. It is now the
+FIRST thing in the content well, through `SlideLead`, because the kicker and title
+NAME the slide and the lead makes its argument: in the header it read as a subtitle
+of the heading, above the body it belongs to.
+
+Nothing changes for a deck. `lead` is still a prop of the slide, still authored the
+same way, and `src/motion/continuity.ts` still compares it so an unchanged lead
+does not replay its entrance. What changed is where it is drawn, plus two
+consequences worth knowing before writing a new type:
+
+- **`SlideHeader` does not accept a `lead` any more.** Passing one is a compile
+  error, on purpose. A prop still declared but ignored would be passed by the next
+  type somebody writes and the sentence would vanish with no error.
+- **The header floor is one number now, `min-h-[120px]`**, not 168px with a lead
+  and 120px without. The lead-less guards in the layouts (`pt-[52px]` on a side
+  visual) still test `lead`, because a lead still fills that same band of the
+  well; it is just drawn below the header rather than inside it.
+
+Ported into the kit from `deployement_session_3`, which cut its whole deck this way
+first.
+
 `QuizSlide` was **retired**: quizzes are delivered by an external component, so
 a deck's only quiz frame is the announcement one. `sync-kit.mjs` deletes it
 from any session that still has it.
@@ -88,23 +166,83 @@ from any session that still has it.
 `slide-kit/slide-template/src/ui/`, on the `@/ui` barrel.
 
 `AnalogyMap` · `BoundaryBridge` · `ChatThread` · `CircuitMap` · `ComposeNetwork` ·
-`ContainerJourney` · `FanOut` · `GateFlow` · `LaneFlow` · `SpineFlow` ·
+`ContainerJourney` · `FanOut` · `GateFlow` · `LaneFlow` · `SpineFlow` · `ThreeLanes` · `TillRow` ·
 `StepLedger` · `TrackSwitch` ·
 `DataTable` · `FileTree` · `FlowChart` · `HandRitual` · `JourneyRoadmap` ·
-`LayerStack` · `MachineBoundary` · `Nova` · `OneProcessRule` · `Orchestra` ·
+`LayerStack` · `LoneHost` · `MachineBoundary` · `NestedBoundary` · `Nova` · `OneProcessRule` · `Orchestra` ·
 `SocketBridge` · `TunnelPath` ·
-`ScenarioCard` · `StackUp` · `StatusList` · `StepList` · `SyntaxBreakdown` ·
-`Terminal` · `Shot` · `TwoRuntimes` · `VolumeSurvival` · `YamlNesting`
+`CountBadge` · `ScenarioCard` · `SlideLead` · `StackUp` · `StatusList` · `StepList` · `SyntaxBreakdown` ·
+`SwapRows` · `Terminal` · `Shot` · `TwoRuntimes` · `VolumeSurvival` · `YamlNesting` ·
+`CodeOutput` · `LogoWall` · `RadialSpread` · `PromptCard` · `ValueTypeMap` ·
+`VariableTrace` · `EvalSteps`
+
+### The three Python-course figures
+
+Promoted from `python/1_programming_with_python` on 2026-09-22. All three are DOM,
+never `<svg>` text (content rule 17), and run at the explanatory tier.
+
+| Figure | Reach for it when | Worst at |
+|---|---|---|
+| `CodeOutput` | a snippet and EXACTLY what it printed, side by side, or two such pairs compared. Every code panel names where it runs via `location` (rule 31), and `output` is never composed: run it, paste it | a command typed at a shell (that is `Terminal`), the SHAPE of a construct (`SyntaxBreakdown`), or a file that grows across slides (`CodeBuildSlide`) |
+| `LogoWall` | the claim is scale or familiarity and the marks ARE the argument: "around 700 languages", "the companies you know run on this". Every mark carries its name (rule 12) | decoration. If the marks are not the claim it is pictures filling space, and it cannot say anything about the relationship between them |
+| `PromptCard` | text the learner pastes into an AI tool; `location` says where, `[slots]` render dashed | anything that is a file, a shell command or an aside |
+| `ValueTypeMap` | two or three values paired with their types, when the pairing is the claim | four or more rows (`DataTable`) |
+| `VariableTrace` | a program run one line per click, variables as boxes, output appended | a program with more than three variables, or more than six lines |
+| `EvalSteps` | one expression rewritten down to its value, one operation per line | anything that is not the same expression getting shorter |
+| `RadialSpread` | one thing reaching into many places: one language, five fields. Draws one spoke after another on entry so the reach is watched, not shown. `STYLE_GUIDE.md` §8's form for "reach" | a sequence (`StepList`), alternatives the room chooses between, or fewer than four spokes, which is a comparison drawn oddly |
+
+`NestedBoundary` draws containment as boxes inside boxes, the innermost solid:
+Docker-inside-Docker is its default. It is the PAIR of `SocketBridge`, which draws
+the same two things side by side with a socket between; the two share a dashed
+boundary style so a deck can show the wrong arrangement then the right one.
+Reach for it when the claim is "this is stuck inside that". Not for a stack of
+peers, which is `LayerStack`.
 
 `SyntaxBreakdown` builds its specimen line FROM its `parts` array, so the diagram
 and the legend under it cannot drift apart. The first draft took a separate
 `command` string and they disagreed within one session.
+
+`FileTree` takes an optional `open`, naming the folder that STARTS open. It is an
+accordion: every folder row with children is a real `<button>`, clicking one
+shuts whatever was open, and there is no all-shut state, so the figure can never
+collapse to bare rows in front of the room. The well reserves the tallest
+folder's height, so nothing on the slide moves when the open folder changes.
+The open folder's children are drawn inside a recessed well that belongs to it,
+and every other folder collapses to a row with a shut chevron and a count. **Omitting
+`open` keeps the old flat-with-`depth` rendering**, which is what sessions 2 and
+3 ship, so the prop is additive and no signed-off deck moves. Reach for `open`
+whenever the tree is longer than about six rows: session 4's workspace slide was
+nine flat rows of monospace and the review read it as one list rather than as
+three folders.
+
+`Terminal` takes **two chromes**. `vscode` (the default) draws the integrated
+panel with its tab strip, which is right for the commands this course runs from
+inside the editor. `chrome="powershell"` draws a STANDALONE Windows PowerShell
+window with a title bar, for the few slides that tell the room to open one: a
+slide saying "Administrator PowerShell" while drawing VS Code's panel is telling
+the room two different things, and the one it draws is the one that wins. It also
+takes an `err` line kind, in red, because a console error is red and rendering it
+in the same grey as ordinary output loses the one cue a learner scans for.
+
+Every surface in every figure here is lit from the top-left, per
+`STYLE_GUIDE.md` section 9. A DOM figure gets it from `background` and
+`boxShadow`; an SVG figure gets it from `SurfaceDefs` and `surface(tone)` in
+`svgDepth.tsx`, because an SVG `<rect>` can express none of it as a property.
+**A new figure that ships flat is a bug, not a style choice** — session 4 shipped
+three flat SVG figures and the review's one-line verdict was "the container depth
+is missing, all are very flat".
 
 | Figure | Reach for it when | Worst at |
 |---|---|---|
 | `ObjectState` | ONE named thing and the values it is holding RIGHT NOW: a build and its settings, a request and its headers, an object and its attributes. `ObjectStateRow` puts two or three side by side on one stagger, which is how a deck says "same class, separate values". `changed` marks the row that moved and belongs on an AFTER card only | Being a table. The owner's name IS the teaching, so anything with no owner is a `DataTable`. It also holds no prose: a row is a name and a literal, never a claim or a definition |
 | `StateChange` | The same thing before and after ONE named operation, with the moved rows marked. Which rows moved is COMPUTED from the two sides, so the mark can never contradict the values printed under it | Two different things, or more than one operation. Confusable with `SpineFlow`, which also draws a labelled edge between two nodes: that one is for STEPS, this one for one thing at two times |
 | `CodeOutput` | This text, run, produces that text. The pair a language lesson is made of, and the gap between `CodeBlock` (a file) and `Terminal` (a shell with a folder path), neither of which can say it | A command the learner types (that is `Terminal`), a construct's SHAPE (`CodeSyntaxSlide`), or a file that grows across slides (`CodeBuildSlide`). `layout="stack"` is about 30px taller than the content well allows at five lines over five, so measure before using it |
+| `SwapRows` | A comparison where one side STANDS IN FOR the other: a phone's speed dial and a Makefile's targets, a Python function and a Makefile, a manual ritual and an automated one. Each pairing is one object divided internally, familiar side recessed and new side raised, so it reads as "this stands in for that" with no arrow. `code` sets a pairing in monospace. Chosen in `slide-kit/comparison-lab` over three other candidates; that lab's `CLAUDE.md` says what each was worse at | TWO PEERS. The recessed-to-raised inversion asserts a direction, so two alternatives being weighed against each other are misrepresented by it (rule 8) — use `DataTable` with identical row labels. Also more than four pairings, because each row is a drawn object rather than a line of text. It carries no emphasis flag by design |
+| `CountBadge` | A RUN OF LINES IN TERMINAL OUTPUT that belong together, where the claim is about the GROUP: "count the lines between the first and the last". Draws a box around the run INSIDE the panel with the derived count on its edge, so nothing hangs off the figure and its bounding box stays the panel on both axes. The count comes from the run's members and cannot be passed in, so it cannot go stale when real output gains a line. A line marked `role: 'exception'` sits outside the box and outside the count. Chosen in `slide-kit/annotated-output-lab` over four others; that lab records that a numbered gutter and margin leader lines both annotate "from the end" and shove the panel off centre by their own furniture | SAYING WHY an excepted line is out. Nothing sits on it, so a learner who notices the gap must be told out loud. Use it where the NEXT slide explains the exception, and reach for the lab's `TwoEnclosures` when the exception has to be named on the same frame. Also: it needs the panel at FULL WIDTH — inside `ContentSlide`'s `points` + `children` two-column mode the figure gets 463px and `Terminal` breaks an image name mid-token |
+| `LoneHost` | ONE machine holds a thing and the others CANNOT GET IT. Four identical frames with a slot in the same place, and the only difference is that one slot has something in it: no dimming, no crossing out, no connectors. A severed connector still draws a relationship where an empty slot draws none. Chosen in `slide-kit/isolation-lab` over three others; that lab's `CLAUDE.md` says what each was worse at, and records that `BlockedFan` proved inverting `FanOut`'s connectors does NOT invert its composition — three curves leaving one box still read as distribution | MORE THAN THREE recipients: a fourth leaves the frames too short for a machine name at the 16px text floor. Also PEERS — three equal frames claim a teammate's laptop, an automation server and a production host are the same kind of thing at the same stakes, and they are not. Its height is a constant, so a narrower `width` does not buy vertical room. Do NOT reach for `FanOut` here: it argues "one thing becomes many", which is the opposite claim (content rule 8) |
+| `SlideLead` | ALWAYS, in a slide type that takes a `lead`. It draws that sentence as the first thing in the content well, one tone-coloured arrow and the deck's body-lg type, and owns both the gap below it and the width cap that keeps the line clear of the instructor-video rectangle. `SlideHeader` no longer accepts a `lead`, so a new type that forgets this one is a TypeScript error rather than a silently missing sentence | Anything that INTERRUPTS. It is deliberately the lighter register: no ground, no label line, no border. The warning, the gotcha and the aside are `Callout`, and a lead dressed as one competes with the real callout on the same slide |
+| `ThreeLanes` | THREE NAMED PRACTICES that differ only in HOW FAR each reaches along one shared chain, where the relationship between them is CONTAINMENT. Built for CI, Continuous Delivery and Continuous Deployment; the contract names none of them. The chain is drawn once per term, each lane going dashed after its own stop point, so every lane states its own outcome for every stage IN PLACE and the viewer never carries a bracket's end back up to a stage above it. `reaches` is the 1-based stage the automation covers THROUGH, inclusive, and every span, dim boundary and marker derives from that one number, so no two parts of the figure can disagree about where a term stops. `approval` draws the human decision at a term's own boundary, which is the only thing separating the two CDs in every published definition. `terms` is INNERMOST FIRST and that order IS the containment claim. Tones are ROLES, not hexes, so a caller cannot reach a verdict hue, and the ramp doubles as luminance so the three survive a greyscale projector. Reveals one lane per click, which is what lets it replace four definition slides without breaking content rule 25. Chosen in `slide-kit/cicd-reach-lab` over `StopPoints`, `NestedSpans` and `ReachBands` because it is the shape Atlassian, Red Hat, AWS, CircleCI, IBM and Bitrise all publish, so the room meets it again in the first article they read | TERMS THAT DO NOT CONTAIN EACH OTHER. Three peer options, or three alternatives, are not this figure and drawing them here claims a nesting that is not there (content rule 8). Also A SLIDE WITH `points`: it is 394px tall against the 425px ceiling where a composite's top edge starts centring into the video reserve, so it needs the full well and a one-line lead. Four terms do not fit. `ReachBands` in the lab is the same convention in 276px if the height is needed back |
+| `TillRow` | ONE WAITING LINE and a FIXED NUMBER OF WORKER SLOTS that take from the front of it. Built for a Jenkins job, its build queue and its two executors; the contract names none of them, so any claim of the form "one trigger creates work, the work waits in order, and a counted set of workers consumes it one at a time" fits. The line is a column with the FRONT AT THE BOTTOM, nearest the desks, and `queue` is FRONT OF THE LINE FIRST, so the array order IS the queue discipline. Capacity is the `executors` array length and nothing else, and a slot with no `running` is drawn as an EMPTY FRAME the same size as a busy one rather than a dimmed copy, which is the `LoneHost` lesson: opacity reads as present but unimportant and only a hole in the picture reads as nothing here, so free slots can be counted at a glance. THE FAN IS THE FIGURE: one connector leaves the front of the line, runs along a rail under the desks and rises into EVERY desk with its own arrowhead, so "the next ticket goes to whichever slot frees up first" is geometry rather than a caption, and a single arrow into one desk would teach a wrong discipline. Reveals in five beats, six with `done`, and busy and free arrive as ONE beat because a contrast cannot be revealed in halves. Keeps Jenkins' own panel titles, so the room meets the same picture on the real dashboard (content rule 27). Chosen in `slide-kit/queue-lab` over `QueueBelt` and `DashboardPanels` because it is the only candidate that draws the MECHANISM rather than the parts | A SEQUENCE. A queue and a worker are not two steps in a row, and a chain hides the only fact that matters, that the line exists because there are two slots and not four; reach for `SpineFlow` or `FlowChart` when the claim really is a sequence. Also ANYTHING THAT HAS TO MOVE: it draws one instant, and the run stepping out of the line into a freed slot is the instructor saying so, not the drawing. MORE THAN FOUR WAITING TICKETS, since height is a function of queue length and five puts the rail past the well. And A LONG NOTE ON A BUSY SLOT: the column spends 268px of width, so a slot's note gets one short line and anything longer wraps and eats the run card. `QueueBelt` in the lab is the same claim read left to right, and `DashboardPanels` is Jenkins' two panels without the flow between them |
 | `FanOut` | ONE artefact is the origin of SEVERAL live things and does not change or divide when they are made: one image and many containers, one build and many environments, one template and many generated files. The source is drawn quiet on purpose, dashed and tinted with no live dot, because the mistake the figure prevents is reading the source as one of the running things. `live` is per copy, so "three containers, one of them stopped" is sayable | ANY relationship between the copies. They are peers with no connectors between them, so balanced traffic, a shared volume, or copy 2 made from copy 1 are claims the presenter is making and the figure is not. It also has no room for a second source |
 
 **`output` on `CodeOutput` is what running it actually printed.** The one exception
@@ -379,7 +517,7 @@ presented and keep local state. All on the `@/ui` barrel; gallery section
 | `RangeCall` `RangeCells` `CrossList` `OptionList` `Row` | small static figures and the side-by-side row | |
 
 Kit extensions made with them: `CodeBlock` `chip` / `lines` / `loop` / `labels`
-/ `rows` (content rule 26, and one code box height per run of slides);
+/ `rows` (content rule 31, and one code box height per run of slides);
 `OutputPanel` exported, with `kind="input"`, `title`, `height`, `lineHeight`,
 `after`; `QuizTimeSlide` `kicker` / `steps` (with steps it uses the pinned
 header, rules 19 and 25); `RecapSlide` `immediate`; icon `dot`; `StoryArt`, the

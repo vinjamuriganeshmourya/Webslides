@@ -1,0 +1,532 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import type { DeckProps } from './types'
+import { DeckContext } from './DeckContext'
+import { SlideStage } from './SlideStage'
+import { ProgressBar } from './ProgressBar'
+import { DeckControls } from './DeckControls'
+import {
+  initialArrowMode,
+  rememberArrowMode,
+  useKeyboardNav,
+  type ArrowMode,
+} from './useKeyboardNav'
+import { SlidePicker } from './SlidePicker'
+import { useAnnotate } from './annotate/useAnnotate'
+import { AnnotationLayer } from './annotate/AnnotationLayer'
+import { AnnotationToolbar } from './annotate/AnnotationToolbar'
+import { useFullscreen } from './useFullscreen'
+import { slideVariants, slideTransition, type SlideTransition } from '@/motion/presets'
+import { Stepper } from '@/motion/Stepper'
+import { InstantContext } from '@/motion/instant'
+import { ContinuityContext, computeContinuity, NO_CONTINUITY } from '@/motion/continuity'
+
+function hashIndex(total: number): number {
+  if (typeof window === 'undefined') return 0
+  const m = window.location.hash.match(/#\/(\d+)/)
+  if (!m) return 0
+  const n = Number(m[1]) - 1
+  return Math.min(Math.max(n, 0), total - 1)
+}
+
+/**
+ * A full-page deck: the slide fills the viewport edge-to-edge (no padding or
+ * letterbox chrome). Kept on top: the progress bar, the slide counter, the ◀ ▶
+ * arrows, a jump-to-slide button, the arrow-key mode pill, and a fullscreen
+ * toggle.
+ *
+ * NAVIGATION
+ *
+ *   →  /  ←        whole slide as a cut, or one build step: whichever the mode
+ *                  pill says. `S` swaps the pair, and the choice is remembered
+ *                  per browser.
+ *   Ctrl+→ / ←     the other one of the pair
+ *   PageDown / Up  the same as the plain arrows, because that is what a clicker
+ *                  sends and a clicker cannot send Ctrl
+ *   G              jump to a slide, by name or number
+ *   R              replay this slide from the top of its build
+ *   M              the marker: draw on the slide (see `annotate/`)
+ *
+ * Speaker notes and click-to-advance are still intentionally omitted.
+ */
+export function Deck({ slides, transition = 'slide' }: DeckProps) {
+  const total = slides.length
+  const rootRef = useRef<HTMLDivElement>(null)
+  const [index, setIndex] = useState(() => hashIndex(total))
+  const [direction, setDirection] = useState(1)
+  const [step, setStepState] = useState(0) // current fragment within the slide
+  const [maxStep, setMaxStep] = useState(0) // total fragments in the slide
+  /*
+    `cut` skips the slide-to-slide transition and nothing else.
+
+    It replaced a flag called `instant` that did two jobs at once: skip the
+    transition AND mount the slide with every animation already finished. Now
+    that the plain arrows cut, that second job would have switched off every
+    entrance in the deck. Arriving with the build already revealed is handled
+    separately, by `pendingFull` below.
+  */
+  const [cut, setCut] = useState(false)
+  /*
+    REPLAY: A COUNTER, BECAUSE THE THING BEING ASKED FOR IS A REMOUNT.
+
+    "Play this slide again" is not a navigation, so none of the machinery above
+    expresses it: `index` does not change, and every animation in the deck is a
+    Framer `animate` that has already reached its target. Nothing replays an
+    animation that is already finished; the only thing that does is mounting the
+    subtree afresh.
+
+    So the counter is folded into the `key` of the slide's motion element. React
+    then tears the old slide down and builds a new one, every `Reveal` and `Step`
+    starts from `hidden` again, and the build plays exactly as it did on arrival.
+
+    A boolean would not work: the second press has to be distinguishable from the
+    first, and a flag that has to be set and then cleared in an effect is a
+    remount that fires twice.
+  */
+  const [replay, setReplay] = useState(0)
+  const { isFullscreen, toggle: toggleFullscreen } = useFullscreen(rootRef)
+
+  /*
+    WHAT THE PLAIN ARROWS DO, AND WHERE THE PICKER LIVES.
+
+    The mode is initialised from the URL, then the harness flag, then this
+    browser's last choice, then the default: see `initialArrowMode`. It is
+    remembered on change rather than in an effect, so a render can never write it.
+  */
+  const [arrowMode, setArrowMode] = useState<ArrowMode>(initialArrowMode)
+  const [pickerOpen, setPickerOpen] = useState(false)
+
+  const toggleArrowMode = useCallback(() => {
+    setArrowMode((m) => {
+      const nextMode: ArrowMode = m === 'slides' ? 'steps' : 'slides'
+      rememberArrowMode(nextMode)
+      return nextMode
+    })
+  }, [])
+
+  const openPicker = useCallback(() => setPickerOpen(true), [])
+  const closePicker = useCallback(() => setPickerOpen(false), [])
+
+  // Refs mirror state so nav callbacks read the latest values without stale closures.
+  const stepRef = useRef(0)
+  const maxRef = useRef(0)
+  const indexRef = useRef(index)
+  const pendingFull = useRef(false) // when entering a slide fully-built, reveal all
+  indexRef.current = index
+
+  const setStep = useCallback((n: number) => {
+    stepRef.current = n
+    setStepState(n)
+  }, [])
+
+  // Reported by <Stepper> once the active slide has registered its fragments.
+  const onMax = useCallback(
+    (m: number) => {
+      maxRef.current = m
+      setMaxStep(m)
+      if (pendingFull.current) {
+        pendingFull.current = false
+        setStep(m)
+      }
+    },
+    [setStep],
+  )
+
+  const gotoSlide = useCallback(
+    (i: number, dir: number, opts: { cut?: boolean } = {}) => {
+      const clamped = Math.min(Math.max(i, 0), total - 1)
+      setDirection(dir)
+      setCut(opts.cut ?? false)
+      setIndex(clamped)
+      maxRef.current = 0
+      setMaxStep(0)
+      setStep(0)
+    },
+    [total, setStep],
+  )
+
+  // "Next" (Ctrl+→): reveal the next fragment, or advance to the next slide with
+  // the deck's transition.
+  const next = useCallback(() => {
+    if (stepRef.current < maxRef.current) setStep(stepRef.current + 1)
+    else if (indexRef.current < total - 1) gotoSlide(indexRef.current + 1, 1)
+  }, [total, gotoSlide, setStep])
+
+  // "Prev" (Ctrl+←): hide the last fragment, or go back a slide with the
+  // transition, landing revealed.
+  const prev = useCallback(() => {
+    if (stepRef.current > 0) setStep(stepRef.current - 1)
+    else if (indexRef.current > 0) {
+      pendingFull.current = true
+      gotoSlide(indexRef.current - 1, -1)
+    }
+  }, [gotoSlide, setStep])
+
+  // "Prev slide" (←): one slide back as a cut, landing with the build already
+  // revealed. This is the key that gets tapped while presenting.
+  const prevSlide = useCallback(() => {
+    if (indexRef.current > 0) {
+      pendingFull.current = true
+      gotoSlide(indexRef.current - 1, -1, { cut: true })
+    }
+  }, [gotoSlide])
+
+  /*
+    "Next slide" (→): one slide FORWARD as a cut, landing at step 0.
+
+    It used to land revealed, mirroring prevSlide. That was right when a slide's
+    build was a few bullets; it is wrong now that half this deck's frames are
+    figures whose whole teaching is the build. Landing revealed opened every one
+    of them on its last step: the string walk showed "Done" already printed, the
+    trace showed its final total, and Play and One step arrived disabled, so the
+    room got the answer before the question.
+
+    BACKWARD still lands revealed (prevSlide, below). Going back is going to a
+    frame the room has already been taught, and arriving on a two-thirds-empty
+    slide you have just finished explaining is the trap the original note names.
+    Forward is the teaching direction; backward is the reference direction.
+
+    SESSION-LOCAL. `src/deck/` is kit-owned, so sync-kit will put this back. It
+    wants to be a deck.config flag in the kit, which is a PR.
+  */
+  const nextSlide = useCallback(() => {
+    if (indexRef.current < total - 1) {
+      gotoSlide(indexRef.current + 1, 1, { cut: true })
+    }
+  }, [total, gotoSlide])
+
+  /*
+    REPLAY THE CURRENT SLIDE, AS A CUT, FROM STEP ZERO.
+
+    Three things have to happen together, and leaving any one of them out gives a
+    replay that is visibly not a replay:
+
+      `setCut(true)`   no slide-to-slide transition. The slide is not arriving from
+                       anywhere, so pushing it in from the right would be a lie
+                       about what just happened, and it would play the transition
+                       while the build underneath restarts.
+      step back to 0   the build is the animation. Remounting at the step the
+                       presenter had reached would replay the entrance and then
+                       snap every fragment straight back on.
+      bump `replay`    the remount itself. See the counter's comment above.
+
+    `maxRef` is cleared too, because the new subtree re-registers its fragments and
+    a stale maximum would let `next` fall through to the following slide on the
+    first press after a replay.
+  */
+  const replaySlide = useCallback(() => {
+    setCut(true)
+    maxRef.current = 0
+    setMaxStep(0)
+    setStep(0)
+    setReplay((n) => n + 1)
+  }, [setStep])
+
+  const goTo = useCallback(
+    (i: number) => gotoSlide(i, i >= indexRef.current ? 1 : -1),
+    [gotoSlide],
+  )
+
+  // React to browser back/forward (hash changes).
+  useEffect(() => {
+    const onHash = () => {
+      const target = hashIndex(total)
+      gotoSlide(target, target >= indexRef.current ? 1 : -1)
+    }
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [total, gotoSlide])
+
+  // Reflect current slide in the URL hash.
+  useEffect(() => {
+    const id = slides[index]?.id ?? String(index + 1)
+    window.history.replaceState(null, '', `#/${index + 1}${id ? `-${id}` : ''}`)
+  }, [index, slides])
+
+  /*
+    THE DECK'S OWN TABLE OF CONTENTS, PUBLISHED ON `window`.
+
+    Read by the review app (`review.mjs`), which frames this deck and needs to
+    know what it is looking at: the slide ids in order, so a comment can be filed
+    against `why-layers` rather than against "slide 14" and survive a slide being
+    inserted above it.
+
+    It is published from HERE, at runtime, rather than derived by a tool reading
+    `src/decks/<session>Deck.tsx`, because the deck file is a TypeScript module
+    whose slide list is assembled by hand and sometimes conditionally. The only
+    thing that knows the real order is the running deck. A regex over the source
+    would be wrong the first time somebody wrote `...moreSlides` into the array.
+
+    Harmless in a shipped deck — an object on `window` that nothing reads — so it
+    is not gated behind a flag. Keeping it ungated is the point: a review build and
+    the deck an instructor opens stay the same code path.
+  */
+  useEffect(() => {
+    ;(window as unknown as Record<string, unknown>).__DECK__ = {
+      total,
+      current: index + 1,
+      slides: slides.map((s, i) => ({
+        n: i + 1,
+        id: s.id,
+        label: s.label ?? null,
+        section: s.section ?? null,
+      })),
+    }
+  }, [slides, total, index])
+
+  /*
+    THE MARKER, KEYED BY SLIDE.
+
+    Ink belongs to the slide it was drawn on, so the store is per slide and the key
+    is the slide's own id: an instructor who circles a term, jumps to slide 30 to
+    answer a question and comes back finds the circle still round the term. That is
+    the behaviour a whiteboard has and it is the one presenters expect; ink that
+    evaporates on navigation is the single commonest complaint about the annotation
+    tools in the video-call products.
+
+    It falls back to the index for a deck whose slides have no ids, which only the
+    labs have, so the feature still works there rather than putting every slide's
+    ink in one bucket.
+  */
+  const slideKey = slides[index]?.id ?? String(index)
+  const ann = useAnnotate(slideKey, step)
+
+  /*
+    THE PICKER OWNS THE ARROW KEYS WHILE IT IS OPEN.
+
+    Both this and the picker listen on `window`, so without the flag an arrow press
+    would move the picker's cursor AND change the slide behind it, and the deck
+    would be somewhere else by the time the presenter pressed Enter.
+  */
+  useKeyboardNav({
+    next,
+    prev,
+    prevSlide,
+    nextSlide,
+    arrowMode,
+    toggleArrowMode,
+    openPicker,
+    replay: replaySlide,
+    ann,
+    enabled: !pickerOpen,
+  })
+
+  /*
+    A JUMP FROM THE PICKER LANDS FULLY REVEALED, like the plain-arrow cut does.
+
+    Anything else would be a trap: the presenter jumps to slide 12 to answer a
+    question and gets its first build step, so the slide they wanted to show is
+    two thirds absent and they have to guess how many presses it takes to restore
+    it in front of the room.
+  */
+  const pickSlide = useCallback(
+    (i: number) => {
+      setPickerOpen(false)
+      if (i === indexRef.current) return
+      pendingFull.current = true
+      gotoSlide(i, i >= indexRef.current ? 1 : -1, { cut: true })
+    },
+    [gotoSlide],
+  )
+
+  const ctx = useMemo(
+    () => ({
+      index,
+      total,
+      direction,
+      goTo,
+      next,
+      prev,
+      isFirst: index === 0,
+      isLast: index === total - 1,
+    }),
+    [index, total, direction, goTo, next, prev],
+  )
+
+  const current = slides[index]
+
+  /*
+    WHAT CARRIED OVER FROM THE OUTGOING SLIDE.
+
+    Recomputed ONLY when `index` changes, and cached in a ref for the rest of the
+    slide's life. That is load-bearing, not an optimisation.
+
+    The first version derived this every render from a `prevIndexRef` updated in an
+    effect. It looked right and was subtly broken: `Stepper` reports its step count
+    on mount, which calls `setMaxStep`, which re-renders — and by then the effect
+    had already moved the ref forward, so continuity collapsed to nothing, the
+    header swapped its held parts back to animated ones, and React remounted them.
+    A remounted `Reveal` starts from `hidden`, so the kicker animated in anyway,
+    roughly 100ms late. The whole feature silently did nothing.
+
+    Comparing against the cached index instead makes the pair (outgoing, incoming)
+    a function of the navigation itself rather than of render timing, so it is also
+    correct for hash jumps and the overview grid, not just the arrow keys.
+  */
+  const contRef = useRef({ index, replay, carry: NO_CONTINUITY, held: false })
+  if (contRef.current.index !== index) {
+    contRef.current = {
+      index,
+      replay,
+      ...computeContinuity(slides[contRef.current.index], current),
+    }
+  } else if (contRef.current.replay !== replay) {
+    /*
+      A REPLAY CARRIES NOTHING OVER, EVEN INSIDE A HELD PAIR.
+
+      Continuity exists so that the second content slide of one concept does not
+      restage a header the room is already reading. A replay is the opposite
+      request: the presenter has asked to see the slide built again, and the header
+      is part of what gets built. Left at the carried value the kicker and title
+      would sit still while the body rebuilt underneath them, which reads as a
+      glitch rather than as a replay.
+    */
+    contRef.current = { index, replay, carry: NO_CONTINUITY, held: false }
+  }
+  const { carry, held } = contRef.current
+
+  /*
+    Plain arrows jump a whole slide as a cut; Ctrl+arrows step the build and play
+    the deck's transition when they cross a slide boundary.
+
+    `held` also forces the cut. Two content slides in one concept are one idea
+    being developed, so pushing the second one in from the right restages
+    something the room is already looking at — and it would slide the static
+    header across the screen, which is the opposite of holding it still.
+  */
+  const kind: SlideTransition = cut || held ? 'none' : (current?.transition ?? transition)
+
+  return (
+    <DeckContext.Provider value={ctx}>
+      <div ref={rootRef} className="relative h-full w-full overflow-hidden bg-[#060c1c]">
+        <ProgressBar index={index} total={total} onDot={goTo} />
+
+        <SlideStage>
+          <AnimatePresence initial={false} custom={direction} mode="popLayout">
+            <motion.div
+              /* `replay` IS PART OF THE KEY. That is the whole mechanism: a new key
+                 is a new subtree, and a new subtree animates in. */
+              key={`${current?.id ?? index}#${replay}`}
+              custom={direction}
+              variants={slideVariants(kind)}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={cut ? { duration: 0 } : slideTransition}
+              className="absolute inset-0"
+              style={{ transformStyle: 'preserve-3d' }}
+            >
+              {/*
+                NOT `landFull`. Landing a slide fully revealed means "do not wait
+                for clicks", not "do not animate": the plain arrows are now the
+                normal way through the deck, so feeding that flag into
+                InstantContext switched every entrance animation in the deck off.
+                Fragments still arrive built, because `pendingFull` sets the step
+                to the slide's maximum; what plays is each slide's own entrance.
+              */}
+              <InstantContext.Provider value={false}>
+                <ContinuityContext.Provider value={carry}>
+                  <Stepper
+                    step={step}
+                    onMax={onMax}
+                    max={maxStep}
+                    setStep={setStep}
+                    replay={replaySlide}
+                  >
+                    {current?.element}
+                  </Stepper>
+                </ContinuityContext.Provider>
+              </InstantContext.Provider>
+            </motion.div>
+          </AnimatePresence>
+
+          {/*
+            THE INK LIVES INSIDE THE STAGE AND OUTSIDE THE SLIDE.
+
+            Inside the stage, because the stage is the 1280x720 box that gets
+            scaled to the screen: an overlay in here shares the slide's coordinate
+            system, so a circle drawn round a word in a window is still round that
+            word on the projector and after a fullscreen toggle.
+
+            Outside the slide's own motion element, because that element is keyed
+            and gets replaced on every navigation AND on every replay. Ink mounted
+            in there would be destroyed by the very key that replays the build, so
+            pressing R would silently wipe the annotation the presenter had just
+            drawn to explain the slide.
+
+            MOUNTED WHILE THE MARKER IS OPEN *OR* THE SLIDE HAS INK, WHICH IS NOT
+            THE SAME CONDITION AND THE DIFFERENCE IS THE FEATURE.
+
+            An instructor draws on a build, puts the pen down, and advances the
+            build. Gating the layer on `active` alone erases the drawing from the
+            screen the moment they close the marker, so the annotation they made to
+            explain the slide vanishes exactly when they start talking about it.
+            Gating it on `hasInk` as well keeps the ink on the slide and lets the
+            pen go away, which is what a whiteboard does.
+
+            It is still ABSENT from the DOM in the case that matters for the
+            harnesses: a deck nobody has drawn on. An inert full-stage overlay would
+            be reported by `qa.mjs` as content that scrolls and by `video-safe.mjs`
+            as covering the instructor video, on every slide of every deck, and
+            `qa.mjs` never draws. The layer itself also drops `pointer-events` when
+            the marker is closed, so ink on screen never eats a click.
+          */}
+          {(ann.active || ann.hasInk) && <AnnotationLayer ann={ann} />}
+        </SlideStage>
+
+        <DeckControls
+          index={index}
+          total={total}
+          step={step}
+          maxStep={maxStep}
+          isFirst={index === 0}
+          isLast={index === total - 1}
+          isFullscreen={isFullscreen}
+          next={next}
+          prev={prev}
+          toggleFullscreen={toggleFullscreen}
+          arrowMode={arrowMode}
+          toggleArrowMode={toggleArrowMode}
+          openPicker={openPicker}
+          replay={replaySlide}
+          markerActive={ann.active}
+          toggleMarker={ann.toggle}
+          hasInk={ann.hasInk}
+        />
+
+        {/*
+          THE RAIL IS PRESENT WHILE THE MARKER IS OPEN *OR* THERE IS INK ANYWHERE IN
+          THE SESSION.
+
+          Not just while the marker is open, and not just while THIS slide has ink.
+          Once anything has been drawn, the presenter owns a drawing they need to be
+          able to reach: hide it, undo it, erase it, or pick the pen back up. A
+          control that disappears the moment the pen goes down leaves that drawing
+          on screen with no visible way to act on it, and "press M again" is not a
+          thing anybody remembers halfway through a session.
+
+          It is a sibling of the control bar rather than of the slide, so it is
+          drawn in screen pixels and stays legible at any window size instead of
+          being scaled with the canvas. And it is still absent from the DOM for a
+          deck nobody has drawn on, which is every harness run.
+        */}
+        {(ann.active || ann.hasAnyInk) && <AnnotationToolbar ann={ann} />}
+
+        {/* NEVER IN THE DOM UNLESS OPEN. It covers the whole stage, so parked at
+            `opacity: 0` it would be reported by `qa.mjs` as content that scrolls
+            and by `video-safe.mjs` as covering the instructor video, on every
+            slide of every deck. */}
+        <AnimatePresence>
+          {pickerOpen && (
+            <SlidePicker
+              slides={slides}
+              index={index}
+              onPick={pickSlide}
+              onClose={closePicker}
+            />
+          )}
+        </AnimatePresence>
+      </div>
+    </DeckContext.Provider>
+  )
+}

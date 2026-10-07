@@ -102,7 +102,7 @@ src/slides/   slide TYPES              — one component per layout archetype
 src/decks/    deck CONTENT             — the actual session, data only
 ```
 
-**`src/ui/`** — `SlideBase`, `SlideHeader`, `Callout`, `DataTable`, `CodeBlock`,
+**`src/ui/`** — `SlideBase`, `SlideHeader`, `SlideLead`, `Callout`, `DataTable`, `CodeBlock`,
 `Terminal`, `Shot`, `LayerStack`, `MachineBoundary`, `ContainerJourney`,
 `SyntaxBreakdown`, `StatusList`, `ChatThread`, `primitives.tsx` (Kicker, Chip,
 NumberBadge), `content.tsx` (BulletList, Card, CardGrid, StatTile), `flow.tsx`
@@ -335,8 +335,12 @@ the section dividers look like two different decks.
    an instructor video composited in later. It is never drawn — slides simply do
    not place content there. `pointer-events-none` decorative background is the
    one exception the checker allows.
-2. **Header floor.** `SlideHeader` carries `min-h-[168px]` so body content never
-   starts above y≈216.
+2. **Header floor.** `SlideHeader` carries `min-h-[120px]`, so the content well
+   opens at y=168. That is ABOVE the video rectangle's floor, and deliberately:
+   the header is the heading alone now, and the 48px a lead used to reserve goes
+   back to the body. Two things keep the rectangle clear instead — `SlideLead`'s
+   `max-w-3xl`, and the `pt-[52px]` lead-less guard each layout puts on a side
+   visual. `node video-safe.mjs` is the check.
 
 **Navigating a deck** goes through `src/deck/`, and two of its bindings are now
 the presenter's choice rather than the kit's:

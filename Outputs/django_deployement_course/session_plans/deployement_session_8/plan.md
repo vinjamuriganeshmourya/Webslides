@@ -1,7 +1,30 @@
 <!-- cSpell:ignore nxttrendz deployement NxtWave colour behaviour dockerignore Makefile Vite ravi Jenkinsfile freestyle SCM ngrok emandate NPCI UPI OTP -->
 # Deployment · Session 8: "Setting Up Jenkins for Docker Builds"
 
-**STATUS: BUILT 2026-09-10.** Signed off and generated. 58 slides at
+**STATUS: REVISED rev2, 2026-09-11, on direct instruction. Re-cut in progress.**
+The 2026-09-10 build (58 slides, PR #5, merged) is superseded by this revision.
+
+### rev2, what changed and why
+
+| Change | Instruction, 2026-09-11 | Effect |
+|---|---|---|
+| **Scope: the whole Jenkins flow** | "On session 8 we must complete whole setup for Jenkins, from next we would be required to start AWS" | TR 9 §2, §3, §5, §6 pulled in: Jenkinsfile, environment block, `BUILD_NUMBER`, Checkout → Test → Build → Push, the failure demo, the complete flow. Sessions after this one start AWS. The AWS account errand stays in the closing block because activation takes 24 to 72 hours |
+| **No quiz frames** | "Keep no Quiz Time slides as this is long, override the rule and remove all Quiz Slides" | Hard rule 18 overridden for this deck only. Both `QuizTimeSlide` frames removed. Recorded in the session `CLAUDE.md`, not as a repo rule |
+| **Plain English throughout** | "The sentences or titles are fancy... your phrasing is like company presentations" | Every title 2 to 3 words, topic-bare. Every lead states the fact. Now hard rule 29 |
+| **A screenshot for every process** | "For every process you must add screenshots, for ngrok setup or getting the auth code you haven't added any, same for AWS" | Every UI walk-through slide is a `Shot`. 19 captures listed in §5, each marked `CAPTURE`. Now hard rule 30 |
+| **Every code panel names its place** | "Whenever a code is presented the path or place must be mentioned clearly" | `CodeBlock` carries a file path or UI location. Jenkins Console Output is never rendered as a shell; three slides had done that. Now hard rule 31 |
+| **ngrok explained, not just used** | "This level explanation should be present in the slides" | Four new slides in concept 3: where Jenkins runs, how the tunnel works, what a learner does, what it costs |
+
+**Slide count: 87.** Long, and said so at the time of the instruction.
+
+**Concept names, plain and article-free (§4a):** `Docker Access` · `Storing
+Secrets` · `Connecting to GitHub` · `Full Pipeline`. Four items, so rule 20's
+agenda cap holds. Concept 4 is 35 slides, which is the cost of the whole flow
+in one session with one idea per slide.
+
+---
+
+**Previous status, kept for the record.** **STATUS: BUILT 2026-09-10.** Signed off and generated. 58 slides at
 `django_deployement_course/deployement_session_8/`, branch
 `deck/setting-up-jenkins-for-docker-builds`.
 
@@ -12,7 +35,18 @@
 | `video-safe.mjs` | 1 of 58, and it is a kit defect rather than content. See "Known defect" below |
 | `build:html` | clean, `dist-single/deployment-session-8.html`, 3.63 MB |
 
-### Known defect, not fixed here
+### Known defects, not fixed here
+
+**Two, both kit layout, both content independent.** Slide 12 is below. Slide 63,
+The Complete Jenkinsfile, intrudes 287px: `CodeBlock` places its language chip
+at the top right of the panel, and any code panel that sits high on a slide puts
+that chip inside the instructor rectangle. Dropping `language` is not a fix, it
+falls back to the default and labels Groovy as Python, which the first cut
+shipped for one run. Slide 44 has the same chip and passes only because its
+longer lead pushes the panel lower. The chip belongs left of the filename or
+below the rectangle's floor; that is a kit change.
+
+**Slide 12, SyntaxBreakdown.**
 
 Slide 12's `CommandSyntaxSlide` intrudes 177px into the instructor rectangle.
 `SyntaxBreakdown.tsx` sizes its panel `mx-auto w-full max-w-[900px]`, a fixed
@@ -60,10 +94,10 @@ also differ from main, across sessions 5, 6 and 7.
 | Also read | `09_...jenkins.md` §4 (the webhook) and `10_deploying_docker_on_aws_ec2.md` §2 (AWS), because this session now borrows from both |
 | Project | `django_deployement_course/deployement_session_8/` (to scaffold from `slide-kit/slide-template`) |
 | Deck file | `src/decks/jenkinsDockerDeck.tsx` |
-| Slide count | **58**, signed off |
+| Slide count | **87**, rev2 |
 | `devPort` | `5219` (5211 to 5218 and 5220 to 5234 are taken) |
 | `htmlName` | `deployment-session-8` |
-| `NEXT_UP` | `Automating Docker Builds and Deployments with Jenkins` |
+| `NEXT_UP` | `Deploying Docker on AWS EC2` (the Jenkins flow is complete after this session) |
 
 ---
 
@@ -202,6 +236,25 @@ on a slide as a table so nobody is hunting mid-signup.
 AWS. Say so before it happens, or somebody will think they have been billed for
 the course.
 
+### 4.2b The Free Tier changed. Checked 2026-09-15, and the slides follow this
+
+The draft below and its table of "four protections" assumed the old Free Tier:
+twelve months, 750 hours a month of one small instance. **That tier no longer
+exists for new accounts.** Read off `aws.amazon.com/free` and its FAQ, and off
+the sign-up page itself while capturing slide 83:
+
+| New Free plan | Consequence for this course |
+|---|---|
+| USD 100 in credits on sign-up, up to 200 by completing activities | More than the course needs |
+| **No charge unless you upgrade to a Paid plan** | "Keep it at zero" is one rule: never click Upgrade |
+| A payment method is still required, for identity | The eight-item list stands |
+| EC2 is available on the Free plan | The deploying sessions work without upgrading |
+| **The account closes itself at 6 months**, data kept 90 days | The AWS sessions must finish inside six months of sign-up |
+
+Slides 81, 85 and 86 were rewritten to this on 2026-09-15. Slide 85, cancelling
+the e-mandate, is kept on instruction and reframed as an extra lock rather than
+the thing that keeps the account free.
+
 ### 4.3 Auto pay, and cancelling it after activation
 
 What you asked for, with the mechanism named correctly. In India, automatic
@@ -254,117 +307,146 @@ mandate and relax", and it is also true.
 
 ---
 
-## 5. Slide-wise plan
+## 5. Slide-wise plan, rev2
 
-**58 slides.** Front frame 5, four concepts 42, closing block 11.
+**87 slides.** Front 5, concept 1 has 11, concept 2 has 9, concept 3 has 17,
+concept 4 has 35, closing 10. No quiz frames.
 
-Two corrections to the draft's arithmetic, both applied here:
-- Option A adds one slide to concept 3, which was 10 and is now 11.
-- The draft counted 56 while admitting the thank-you frame made it 57. It is its own slide and is numbered as one below.
+Every title below is the title that ships, so it is checked here against rule
+29 before a slide is written. `CAPTURE` marks a `Shot` that does not exist yet
+and needs a running Jenkins, a live tunnel, an ngrok account or an AWS sign-up.
+`Location:` gives the path or UI place a code panel names, per rule 31.
 
-### Front frame, 5
+### Front, 5
 
-| # | Slide | Type |
+| # | Title | Type | Notes |
+|---|---|---|---|
+| 1 | Welcome | `BrandSlide` | |
+| 2 | Setting Up Jenkins for Docker Builds | `WelcomeSlide` | |
+| 3 | Where We Left Off | `ContentSlide` + `StatusList` | Green build that prints one line, and the four things it cannot do |
+| 4 | Agenda | `AgendaSlide` | The four concept constants |
+| 5 | What Jenkins Needs | `DataTable` | The four gaps from TR 8 §1.2 |
+
+### Concept 1, Docker Access, 11
+
+| # | Title | Type | Notes |
+|---|---|---|---|
+| 6 | Docker Access | `SectionBreakerSlide` | |
+| 7 | docker: not found | `Shot` **CAPTURE** | Console Output in the browser. Was a terminal with a shell prompt; rule 31 |
+| 8 | Docker Inside Docker? | `ContentNoteSlide` | The obvious fix and why it is heavy |
+| 9 | Client and Daemon | `SocketBridge` | |
+| 10 | Only the Client | `StatusList` | Not a second engine. The client plus the host socket |
+| 11 | Restart Jenkins | `Terminal` | Location: `PS C:\nxttrendz>`. Stop, remove, run with the socket mount |
+| 12 | The Socket Mount | `CommandSyntaxSlide` | Kit defect: fixed 900px panel intrudes 177px, recorded, not fixed here |
+| 13 | Install the Client | `Terminal` | `docker exec -u root jenkins ... apt-get install docker.io` |
+| 14 | Docker Pipeline Plugin | `Shot` **CAPTURE** | Manage Jenkins → Plugins → Available |
+| 15 | Prove It | `Terminal` | `docker exec jenkins docker ps` lists Jenkins itself |
+| 16 | Socket Access Is Root | `ContentNoteSlide` | One callout, D4 |
+
+### Concept 2, Storing Secrets, 9
+
+| # | Title | Type | Notes |
+|---|---|---|---|
+| 17 | Storing Secrets | `SectionBreakerSlide` | |
+| 18 | The Wrong Way | `CodeBlock` | Location: `Jenkins → hello-jenkins → Configure → Build Steps → Execute shell`. Was a terminal; rule 31 |
+| 19 | Where the Password Ends Up | `ContentNoteSlide` | Job config, every Console Output, soon a public Jenkinsfile |
+| 20 | The Credentials Store | `Shot` **CAPTURE** | Manage Jenkins → Credentials |
+| 21 | A Docker Hub Token | `Shot` **CAPTURE** | hub.docker.com → Account Settings → Security → New Access Token. Token revoked after capture |
+| 22 | Add the Docker Hub Credential | `Shot` **CAPTURE** + `DataTable` | Kind, username, password, ID `dockerhub-credentials` |
+| 23 | Add the SECRET_KEY Credential | `Shot` **CAPTURE** + `DataTable` | Kind Secret text, ID `django-secret-key` |
+| 24 | Masked in the Log | `Shot` **CAPTURE** | Console Output showing `****`. Was a terminal; rule 31 |
+| 25 | Kinds of Credential | `DataTable` | |
+
+### Concept 3, Connecting to GitHub, 17
+
+| # | Title | Type | Notes |
+|---|---|---|---|
+| 26 | Connecting to GitHub | `SectionBreakerSlide` | |
+| 27 | Public Repository | `ContentNoteSlide` | Nothing to add, a URL is enough |
+| 28 | Private Repository | `DataTable` | Same pattern, `github-credentials`. Three services, one pattern |
+| 29 | Point the Job at the Repo | `Shot` **CAPTURE** | Job → Configure → Source Code Management |
+| 30 | The Repository Contract | `FileTree` | Two Dockerfiles, none at the root, `.env` absent |
+| 31 | What Starts a Build | `DataTable` | Build Now, Poll SCM, webhook |
+| 32 | GitHub Cannot Reach Your Laptop | `MachineBoundary` | Relabelled: Jenkins on 8080, GitHub outside |
+| 33 | Where Jenkins Runs | `ContentNoteSlide` | On your laptop, in a container. ngrok never runs Jenkins and never sees its data. **New** |
+| 34 | How a Tunnel Works | `TunnelPath` | Laptop dials out, webhook rides back |
+| 35 | Create an ngrok Account | `Shot` **CAPTURE** | ngrok.com sign-up. **New** |
+| 36 | Copy Your Authtoken | `Shot` **CAPTURE** | Dashboard → Your Authtoken. A real token, revoked after capture. **New** |
+| 37 | Install ngrok | `Terminal` + `DataTable` | Added 2026-09-15 on instruction: `winget install ngrok -s msstore`, with `brew install ngrok` and `snap install ngrok` alongside. Read off ngrok.com/download. Every slide after this one is numbered one higher than below; `slideCount` is 89 |
+| 38 | Start the Tunnel | `Terminal` | `ngrok config add-authtoken`, then `ngrok http 8080`, read the Forwarding line |
+| 38 | What ngrok Costs | `DataTable` | Free plan: one stable dev domain, 20k requests, 1GB, 3 endpoints. **New** |
+| 39 | The Payload URL | `CommandSyntaxSlide` | scheme, dev domain, `/github-webhook/` |
+| 40 | Add the Webhook | `Shot` **CAPTURE** | Repo → Settings → Webhooks → Add webhook |
+| 41 | Tell Jenkins to Listen | `Shot` **CAPTURE** | Job → Configure → Build Triggers → GitHub hook trigger. **New**, was only in notes |
+| 42 | Push Once | `Shot` **CAPTURE** | GitHub Recent Deliveries green tick, Jenkins "Started by GitHub push" |
+
+### Concept 4, Full Pipeline, 35
+
+| # | Title | Type | Notes |
+|---|---|---|---|
+| 43 | Full Pipeline | `SectionBreakerSlide` | |
+| 44 | Two Stages | `CodeBlock` | Location: `Jenkins → nxttrendz-build-test → Configure → Pipeline → Script`. Fetch and Build |
+| 45 | Build Now | `Shot` **CAPTURE** | Stage View, two green boxes |
+| 46 | Console Output | `Shot` **CAPTURE** | Clone, build, `Finished: SUCCESS`. Was a terminal; rule 31 |
+| 47 | The Image on Your Machine | `Terminal` | `docker images` shows `nxttrendz-backend` |
+| 48 | Before and After | `DataTable` | `SwapRows` when `kit/lit-surfaces` merges |
+| 49 | Pipeline as Code | `DataTable` | Dockerfile, compose file, Makefile, Jenkinsfile: knowledge moved into versioned files |
+| 50 | The Jenkinsfile | `CodeBlock` | Location: `nxttrendz/Jenkinsfile`, repository root. The skeleton |
+| 51 | Six Keywords | `DataTable` | pipeline, agent, stages, stage, steps, sh |
+| 52 | BUILD_NUMBER | `ContentNoteSlide` | The tag that makes itself |
+| 53 | The environment Block | `CodeBlock` | Location: `nxttrendz/Jenkinsfile`. `DOCKER_ID`, `BACKEND`, `FRONTEND`, `SECRET_KEY = credentials(...)` |
+| 54 | Stage 1: Checkout | `CodeBlock` | Location: `nxttrendz/Jenkinsfile` |
+| 55 | Stage 2: Test | `CodeBlock` | Build a test image, run `manage.py test` in it |
+| 56 | Tests Run Inside the Image | `ContentNoteSlide` | Same environment that ships, `--rm`, the CMD override |
+| 57 | Why the Test Needs SECRET_KEY | `ContentNoteSlide` | The image has no `.env`. `-e SECRET_KEY=$SECRET_KEY` from the store |
+| 58 | Exit Codes Are the Gate | `ContentNoteSlide` | 0 passes, non-zero stops the pipeline |
+| 59 | Stage 3: Build | `CodeBlock` | Both images, `:$BUILD_NUMBER`, the cache makes the backend near instant |
+| 60 | Only the Backend Has Tests | `ContentNoteSlide` | The gate still protects the frontend |
+| 61 | Stage 4: Push | `CodeBlock` | `withCredentials`, `--password-stdin` |
+| 62 | Single Quotes Only | `ContentNoteSlide` | Shell expands, Groovy does not leak the secret |
+| 63 | The Complete Jenkinsfile | `CodeBlock` | Location: `nxttrendz/Jenkinsfile`. All four stages |
+| 64 | Commit the Jenkinsfile | `Terminal` | `git add Jenkinsfile`, commit, push |
+| 65 | Pipeline Script from SCM | `Shot` **CAPTURE** | Job → Configure → Pipeline → Definition |
+| 66 | Four Green Stages | `Shot` **CAPTURE** | Stage View, Checkout Test Build Push |
+| 67 | Two Images on Docker Hub | `Shot` **CAPTURE** | hub.docker.com, both repos, tag `:BUILD_NUMBER` |
+| 68 | Break a Test on Purpose | `CodeBlock` | Location: `backend/products/views.py` |
+| 69 | The Gate Closes | `Shot` **CAPTURE** | Stage View: Checkout green, Test red, Build and Push never ran |
+| 70 | Read the Failure | `Shot` **CAPTURE** | Console Output: `****`, `FAILED (failures=1)`, exit code 1 |
+| 71 | What Did Not Happen | `StatusList` | No image built, nothing pushed, `:42` untouched |
+| 72 | Read From the Bottom Up | `ContentNoteSlide` | The habit for every red build |
+| 73 | Error: docker not found | `StatusPointsSlide` | |
+| 74 | Error: Permission Denied | `StatusPointsSlide` | |
+| 75 | Error: Repository Not Found | `StatusPointsSlide` | |
+| 76 | Errors: Daemon and Context | `StatusPointsSlide` | |
+| 77 | The Diagnostic Ladder | `ProceduralStepsSlide` | |
+| 78 | The Whole Flow | `GateFlow` | push → GitHub → Jenkins (Checkout, Test, Build, Push) → Docker Hub. Reuses session 7's kit figure |
+
+### Closing, 10
+
+| # | Title | Type | Notes |
+|---|---|---|---|
+| 79 | Key Takeaways | `KeyTakeawaysSlide` | The four constants, verbatim |
+| 80 | Before We Meet Again | `SectionBreakerSlide` | Own kicker, not a concept |
+| 81 | Create Your AWS Account Today | `ContentNoteSlide` | Activation takes 24 to 72 hours |
+| 82 | Have These Ready | `DataTable` | The eight sign-up items |
+| 83 | The Sign Up | `Shot` **CAPTURE** | Screens before personal fields, D3 |
+| 84 | Choose Basic Support | `Shot` **CAPTURE** | The plan chooser |
+| 85 | Auto Pay, and Cancelling It | `ProceduralStepsSlide` | |
+| 86 | Keep It at Zero | `DataTable` | |
+| 87 | What Comes Next | `ContentNoteSlide` | The images are on Docker Hub. The next thing is a server to run them on |
+| 88 | Thank You | `ThankYouSlide` | |
+
+Count is 88 with the thank-you frame; `slideCount` is **88**.
+
+### The 19 captures, in one list
+
+| Where | Slides | Needs |
 |---|---|---|
-| 1 | Brand | `BrandSlide` |
-| 2 | Session name | `WelcomeSlide` |
-| 3 | Where we left off: a green build that only echoes | `ContentNoteSlide`, recap of session 7's `hello-jenkins` |
-| 4 | Agenda, four items | `AgendaSlide` |
-| 5 | Initial setup: Jenkins up, repo pushed, images built | `ContentSlide` + `Terminal` |
-
-### Concept 1, Giving Jenkins the Docker Command, 11
-
-Opens on the gap, per PEDAGOGY §2: the build they ran cannot build an image.
-
-| # | Slide | Type |
-|---|---|---|
-| 6 | Divider | `SectionBreakerSlide` |
-| 7 | The job that cannot do the job | `ContentSlide` + `Terminal` showing `docker: not found` |
-| 8 | Why: the container has no Docker client | `ContentSlide` |
-| 9 | How a docker command actually works, client and daemon | new figure, see §6 |
-| 10 | The daemon is on your machine, not in the container | `LoneHost` |
-| 11 | Share the socket, what that means | `ContentSlide` |
-| 12 | The new `docker run`, flag by flag | `CommandSyntaxSlide` |
-| 13 | Install the client inside the container | `ContentSlide` + `Terminal` |
-| 14 | Install the Docker plugin | `ContentSlide` + `Shot` |
-| 15 | Prove it: `docker version` from a Jenkins job | `ContentSlide` + `Shot` of the console |
-| 16 | What we just handed over, and the risk | `ContentNoteSlide`, the socket is root access |
-
-### Concept 2, Secrets Jenkins Can Use Safely, 9
-
-| # | Slide | Type |
-|---|---|---|
-| 17 | Divider | `SectionBreakerSlide` |
-| 18 | The wrong way first: the password in the shell step | `ContentSlide` + `Terminal`, and the console printing it |
-| 19 | Why that is worse than it looks | `ContentNoteSlide` |
-| 20 | The credentials store | `ContentSlide` + `Shot` |
-| 21 | Add the Docker Hub credential | `ContentSlide` + `Shot` |
-| 22 | Add the `SECRET_KEY` credential | `ContentSlide` + `Shot` |
-| 23 | How a job uses one without printing it | `ContentSlide` + `Terminal` showing `****` |
-| 24 | Kinds of credential, and which to pick | `DataTable` |
-| 25 | Quiz Time! | `QuizTimeSlide`, no subtitle (content rule 28) |
-
-### Concept 3, Pointing Jenkins at Your Code, 11
-
-| # | Slide | Type |
-|---|---|---|
-| 26 | Divider | `SectionBreakerSlide` |
-| 27 | Public repository, nothing to do | `ContentSlide` |
-| 28 | Private repository, the same pattern as Docker Hub | `ContentSlide` + `Shot` |
-| 29 | Point the job at the repository | `ContentSlide` + `Shot` |
-| 30 | The repository contract: what Jenkins expects to find | `FileTree` |
-| 31 | What starts a run, revisited | `DataTable`, the session 7 table with the webhook row lit |
-| 32 | Why GitHub cannot reach `localhost:8080` | `ContentSlide` + `LoneHost` |
-| 33 | A tunnel, and the account each of you needs | `ContentSlide` + `Terminal`, `ngrok http 8080` |
-| 34 | The Payload URL, field by field | `CommandSyntaxSlide` |
-| 35 | Add the webhook on GitHub | `ContentSlide` + `Shot` |
-| 36 | It fired. Read GitHub's own delivery record | `ContentSlide` + `Shot` of a **successful** delivery |
-
-Slides 32 to 36 are option **A** from §3, signed off 2026-09-10.
-
-**Slide 32 is not optional under A.** The reachability problem is the reason the
-tunnel exists, and deleting it turns ngrok into a magic incantation. The order
-is: the problem, then the tunnel that solves it, then the delivery that proves
-it. Session 7 already told the room `localhost` is not reachable from outside,
-so this is a callback, not a new lesson.
-
-**Slide 33 is the slowest beat in the deck.** Every learner signs up, installs,
-pastes an authtoken and reads their own dev domain off the terminal. Plan for it
-taking longer than any other slide in the session.
-
-### Concept 4, The First Build from Jenkins, 11
-
-| # | Slide | Type |
-|---|---|---|
-| 37 | Divider | `SectionBreakerSlide` |
-| 38 | The build step, three lines | `ContentSlide` + `CodeBlock` |
-| 39 | Build Now, and what to watch | `ContentSlide` + `Shot` |
-| 40 | Reading the console, top to bottom | `ContentSlide` + `Shot`, browser chrome |
-| 41 | The image exists, and the host can see it | `ContentSlide` + `Terminal`, `docker images` |
-| 42 | What a machine just did that you used to do | `SwapRows` |
-| 43 | Error 1, `docker: not found` | `StatusPointsSlide` |
-| 44 | Error 2, permission denied on the socket | `StatusPointsSlide` |
-| 45 | Error 3, repository not found | `StatusPointsSlide` |
-| 46 | Errors 4 and 5, daemon and build context | `StatusPointsSlide` |
-| 47 | The diagnostic ladder | `ProceduralStepsSlide` |
-
-### Closing block, 11
-
-| # | Slide | Type |
-|---|---|---|
-| 48 | Quiz Time! | `QuizTimeSlide` |
-| 49 | Key takeaways, the four agenda strings verbatim | `KeyTakeawaysSlide` |
-| 50 | Before we meet again | `SectionBreakerSlide`, own kicker, not a concept divider |
-| 51 | Why now: activation takes up to a day | `ContentNoteSlide` |
-| 52 | Have these eight things ready | `DataTable`, §4.2 |
-| 53 | The sign-up, screen by screen | `ContentSlide` + `Shot`, browser chrome |
-| 54 | Choose Basic support, and what the paid ones are | `ContentSlide` + `Shot` |
-| 55 | Auto pay, and cancelling it | `ProceduralStepsSlide`, §4.3 steps 1 to 4 |
-| 56 | Four things that keep it at zero | `DataTable`, §4.3 |
-| 57 | Next session | `SectionBreakerSlide` |
-| 58 | Thank you | `ThankYouSlide` |
-
-`slideCount` in `deck.config.json` is therefore **58**.
+| Jenkins UI | 7, 14, 20, 22, 23, 24, 29, 41, 45, 46, 65, 66, 69, 70 | The `jenkins/jenkins:lts` container running on the author's machine |
+| Docker Hub | 21, 67 | An account; the token on 21 is revoked after capture |
+| ngrok | 35, 36 | An account; the authtoken on 36 is revoked after capture |
+| GitHub | 40, 42 | The `nxttrendz` repository and a live tunnel |
+| AWS | 83, 84 | A sign-up run on the author's own device, captured before personal fields |
 
 ---
 
@@ -432,3 +514,37 @@ chrome, which session 7 added and which slides 35, 36, 40, 53 and 54 all want.
 - **The AWS Free Tier clock starts in session 8, not session 10.** Twelve months
   from account creation, so two sessions of the twelve are spent before the first
   instance launches. It costs nothing and is worth knowing.
+
+## Revision, 2026-09-15: no Test stage, job created earlier
+
+On instruction ("remove test stage we dont have any tests"). The project has no
+test suite, so the pipeline is Checkout, Build, Push. Removed from the deck:
+Add the SECRET_KEY Credential, Stage 2: Test, Tests Run Inside the Image, Why
+the Test Needs SECRET_KEY, Only the Backend Has Tests. The `environment` block
+has no `credentials()` line. Exit Codes now follows Stage 2: Build. The failure
+demo pushes a Dockerfile typo (`requirement.txt`) so Build goes red and Push
+never runs; the whole-flow figure's decision is "Both images build?".
+
+Also on instruction ("slide 29 this is not yet created at this place ryt?"):
+the job was referenced from concept 2 onwards but only created on Two Stages.
+The Repository URL slide is now Create the Job (New Item → nxttrendz-build-test
+→ Pipeline), Two Stages opens that job's Configure, and the masked-log example
+belongs to hello-jenkins, the only job that exists in concept 2.
+
+Deck is 84 slides. Section 5 above is the rev2 list and is one to five slides
+off from here on; the deck file is the reference for numbering.
+
+## Captures completed, 2026-09-15 afternoon
+
+Every `PendingShot` is gone; the deck has no placeholder frames. The Jenkins
+flow was run for real on the user's machine and captured as it happened:
+build 3 (two-stage script, started by the webhook), build 4 (Jenkinsfile from
+the repository, Checkout, Build, Push all green, tag 4 on Docker Hub), build 5
+(Dockerfile typo `requirement.txt`, Build red, Push skipped), then the typo
+reverted. Jenkins pages were captured through the Chrome extension with the
+page zoomed to 1.45x to 2x so the crops are sharp; originals sit in
+`workflow/captures/session-8/`. The Docker Hub token page original is NOT kept
+because it showed a live token; only the crop above the token line is used.
+Deck constants: `DOCKER_ID = 'jeevansravanth'`, `DEV_DOMAIN =
+'decaf-reword-clarify.ngrok-free.dev'`, repository
+`github.com/jeevan170902/nxttrendz`.

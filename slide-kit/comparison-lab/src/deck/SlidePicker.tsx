@@ -200,7 +200,13 @@ export function SlidePicker({
                     className={`rounded-card border px-3.5 py-3 text-left transition-colors ${
                       on
                         ? 'border-white/60 bg-white/15'
-                        : 'border-white/12 bg-white/[0.055] hover:bg-white/10'
+                        /* `/[0.12]` and NOT `/12`: 12 is off Tailwind's opacity
+                           scale, so `border-white/12` emitted no rule at all and the
+                           unselected card fell back to `currentColor` for its
+                           border. Silent, and pre-dates the marker work. The sibling
+                           `bg-white/[0.055]` was already written the correct way,
+                           which is what made the inconsistency easy to miss. */
+                        : 'border-white/[0.12] bg-white/[0.055] hover:bg-white/10'
                     }`}
                   >
                     <span className="flex items-baseline gap-2">

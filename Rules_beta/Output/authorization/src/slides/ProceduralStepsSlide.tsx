@@ -18,7 +18,7 @@ export function ProceduralStepsSlide({
 
   return (
     <SlideBase variant="light" lesson={lesson} padded={false}>
-      {/* ZONED (content rule 22). This used to centre the HEADER with the steps,
+      {/* ZONED (content rule 32). This used to centre the HEADER with the steps,
           so the kicker and title sat at a different height from every other
           content slide. The header now stays in its zone and only the steps
           centre. */}

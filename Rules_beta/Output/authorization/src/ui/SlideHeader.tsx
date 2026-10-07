@@ -80,7 +80,7 @@ export function SlideHeader({
   /**
    * The min-height floor above. `ZonedFrame` turns it off: there the body box
    * starts at a fixed y=221 whatever the header measures, so the floor only
-   * padded the header past its own zone (y 0..148, content rule 22).
+   * padded the header past its own zone (y 0..148, content rule 32).
    */
   floor?: boolean
   className?: string
@@ -100,7 +100,7 @@ export function SlideHeader({
     >
       {!centered && (
         /*
-          TWO BARS, SHORTER, PULLED IN TOWARDS THE TEXT (content rule 23). This
+          TWO BARS, SHORTER, PULLED IN TOWARDS THE TEXT (content rule 33). This
           replaced ONE full-height rail, `-left-16 top-1 h-full w-[6px]`.
 
           The geometry is measured off `Rules_beta/graphics.png` rather than

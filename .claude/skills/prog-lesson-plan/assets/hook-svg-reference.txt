@@ -1,0 +1,64 @@
+<svg class="fig gmorph" viewBox="0 0 1000 480" xmlns="http://www.w3.org/2000/svg" role="img"
+ aria-label="A phone showing a payment that failed with Incorrect PIN, beside the two checks the app runs — the PIN check containing the balance check — which collapse into two indented lines of Python">
+
+  <!-- the phone the question is actually about -->
+  <g class="gphone">
+    <rect x="40" y="40" width="220" height="400" rx="26" fill="#fff" stroke="var(--dk-blue)" stroke-width="3"/>
+    <rect x="125" y="54" width="50" height="8" rx="4" fill="#C9D3DA"/>
+    <rect x="56" y="78" width="188" height="346" rx="14" fill="#F7FAFC"/>
+    <text x="76" y="140" style="font:600 13px var(--sans)" fill="#8A98A3">PAYING</text>
+    <text x="76" y="170" style="font:600 19px var(--sans)" fill="var(--dk-text)">Ramesh K.</text>
+    <text x="76" y="238" style="font:700 46px var(--sans)" fill="var(--dk-text)">&#8377;450</text>
+    <rect x="76" y="276" width="148" height="48" rx="10" fill="var(--dk-blue)"/>
+    <text x="150" y="307" text-anchor="middle" style="font:600 20px var(--sans)" fill="#fff">Pay</text>
+  </g>
+  <g class="gshut">
+    <rect x="56" y="344" width="188" height="56" rx="10" fill="var(--dk-red)"/>
+    <text x="150" y="379" text-anchor="middle" style="font:700 19px var(--sans)" fill="#fff">Incorrect PIN</text>
+  </g>
+
+  <!-- the two checks, nested. Only the rects live in .ggroup, so only they collapse. -->
+  <g class="ggroup" fill="none" stroke-width="3">
+    <rect x="320" y="90" width="640" height="290" rx="16" stroke="var(--dk-blue)"/>
+    <g class="ginner">
+      <rect x="400" y="168" width="520" height="152" rx="13" stroke="var(--dk-cyan)" stroke-dasharray="11 8"/>
+      <rect x="480" y="245" width="430" height="60" rx="10" stroke="var(--dk-cyan)" fill="#EAF6FC"/>
+    </g>
+  </g>
+
+  <g class="gouter">
+    <g fill="none" stroke="var(--dk-blue)" stroke-width="2.6">
+      <rect x="344" y="119" width="27" height="20" rx="3"/>
+      <path d="M350 119 v-6 a7.5 7.5 0 0 1 15 0 v6"/>
+    </g>
+    <text x="386" y="137" style="font:600 23px var(--sans)" fill="var(--dk-blue)">Is the PIN correct?</text>
+    <g class="ginner">
+      <circle cx="434" cy="199" r="14" fill="none" stroke="var(--dk-cyan)" stroke-width="2.6"/>
+      <text x="434" y="207" text-anchor="middle" style="font:600 17px var(--sans)" fill="var(--dk-cyan)">&#8377;</text>
+      <text x="460" y="207" style="font:600 22px var(--sans)" fill="var(--dk-blue)">Is the balance enough?</text>
+      <text x="695" y="284" text-anchor="middle" style="font:600 22px var(--sans)" fill="var(--dk-text)">&#8377;450 moves</text>
+    </g>
+    <rect x="320" y="400" width="640" height="52" rx="12" fill="#F2F2F0" stroke="#D9D9D6" stroke-width="2"/>
+    <text x="640" y="433" text-anchor="middle" style="font:400 21px var(--sans)" fill="var(--dk-text)">back to the home screen</text>
+  </g>
+
+  <g class="gnote">
+    <g stroke="var(--dk-red)" stroke-width="4" stroke-linecap="round">
+      <path d="M912 120 l26 26"/><path d="M938 120 l-26 26"/>
+    </g>
+    <text x="742" y="207" style="font:700 22px var(--sans)" fill="var(--dk-red)">never checked</text>
+  </g>
+
+  <g class="gcode">
+    <text x="322" y="152" style="font:26px var(--mono)" fill="var(--dk-red)">if <tspan fill="var(--dk-text)">pin_ok</tspan>:</text>
+    <text x="362" y="192" style="font:26px var(--mono)" fill="var(--dk-red)">if <tspan fill="var(--dk-text)">balance_ok</tspan>:</text>
+    <text x="402" y="262" style="font:26px var(--mono)" fill="var(--dk-blue)">transfer<tspan fill="var(--dk-text)">(450)</tspan></text>
+    <text x="322" y="342" style="font:26px var(--mono)" fill="var(--dk-blue)">home_screen<tspan fill="var(--dk-text)">()</tspan></text>
+  </g>
+
+  <g class="gcap">
+    <text x="690" y="158" style="font:600 21px var(--sans)" fill="var(--dk-line)">column zero</text>
+    <text x="690" y="198" style="font:600 21px var(--sans)" fill="var(--dk-line)">one indent in</text>
+    <text x="690" y="348" style="font:600 21px var(--sans)" fill="var(--dk-line)">outside both</text>
+  </g>
+</svg>

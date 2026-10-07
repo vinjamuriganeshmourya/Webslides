@@ -16,8 +16,12 @@ base template rendered as broken images for anyone starting a new deck.
 tech/           technology logos — PNG, with the older SVGs kept alongside
 companies/      company brand marks — PNG, single-colour brand glyphs
 quiz/           quiz-slide decorations (brain, bulb, bubble, mark)
-brand/          logo-nxtwave.png
+brand/          logo-nxtwave.png · feedback-qr.png (the feedback form's QR code,
+                as supplied; content rule 41 puts it on every deck's feedback slide)
 illustrations/  third-party scene illustrations for section dividers — SVG
+illustrations/<course>/<n>_<session>/
+                stock illustrations lifted out of a course's source PPTX, named by
+                what they draw; `common/` for the ones every deck of that course shares
 spot/           3D modelled object icons — PNG cutouts
 cast/           3D people, cut out — PNG cutouts
 ```
@@ -39,9 +43,15 @@ languages" logo wall, fetched from devicon and rendered to PNG at 512px.
 PNG for all of them; `.svg` also present for the nine that predate the PNG
 convention.
 
+`chatgpt`, `claude`, `gemini` and `meta-ai` were added for Python session 2's AI
+tools slide. `claude` and `gemini` are 512px renders of the simple-icons marks;
+`chatgpt` and `meta-ai` are crops out of the source PPTX at 91 and 122px and
+should be replaced with proper renders when a source is found.
+
 `companies/`: `amazon` · `dropbox` · `google` · `instagram` · `meta` ·
 `microsoft` · `mozilla` · `netflix` · `nvidia` · `oracle` · `paypal` · `quora` ·
-`reddit` · `spotify` · `uber`.
+`reddit` · `spotify` · `uber` · `flipkart` (a 65px crop from the Python source
+PPTX, to be replaced with a proper mark).
 
 A company is not a technology, so its mark does not belong in `tech/`. These are
 single-colour brand glyphs, which is deliberate: a wall of fifteen marks reads as

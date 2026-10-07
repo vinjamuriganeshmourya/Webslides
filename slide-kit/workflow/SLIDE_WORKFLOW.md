@@ -35,9 +35,16 @@ Fixed frame, in order:
 1. **Brand slide** — NxtWave branding only (logo hero + course). No footer logo (would duplicate).
 2. **Welcome** — kicker `WELCOME TO TODAY'S SESSION` + the session name. Nothing else in the body — no logo (the footer already carries it once).
 3. **Today's Agenda** — the ≤4 concepts (never titled "Concepts in focus").
-4. **Per concept** — divider (with a *topic-specific* illustration) → 2–4 content slides. One idea per slide; a quiz checkpoint mid/late deck.
+4. **Per concept** — divider (with a *topic-specific* illustration) → **one named framework**, four or five content slides minimum. Every concept opens on a felt need (the routine running, then the point it breaks) and closes on something observable. The middle is chosen by kind: **STAR** for a mechanism (the default), **4MAT** for a definition with nothing to run, **SCQA** for a choice, **Merrill** for a skill the learner performs. See `PEDAGOGY_GUIDELINES.md` section 2. **The plan names the framework per concept**, and a plan with one opening slide per concept is rejected at the gate. A framework outside those four is allowed but must be registered first (`PEDAGOGY_GUIDELINES.md` section 2, "The set is open"); naming one at generation time is not. One idea per slide; a quiz checkpoint mid/late deck.
 5. **Key Takeaways** — the *same* agenda concepts restated as outcomes, in a *different UI* than the agenda.
 6. **Practice** → **Feedback** → **Thank You** (next-up teaser).
+
+**The plan also carries a term ledger** (`PEDAGOGY_GUIDELINES.md` section 2b):
+every term, tool and file the deck names, the slide that introduces it, and the
+plain-words gloss given there. Terms carried in from an earlier session get a
+row naming that session. The gate checks it: any term appearing above its own
+introduction is a rejection, and so is a concept whose Situation cannot be
+written from terms already in the ledger.
 
 Each planned slide records: purpose · component/layout · exact content ·
 **visual + why it fits the content** · animation/transition · assets

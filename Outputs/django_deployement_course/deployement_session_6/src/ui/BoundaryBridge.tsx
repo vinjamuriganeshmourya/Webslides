@@ -204,6 +204,8 @@ const F = {
 const LOGO_SRC: Record<StationLogo, string> = {
   docker: '/assets/tech/docker.png',
   git: '/assets/tech/git.png',
+  github: '/assets/tech/github.png',
+  jenkins: '/assets/tech/jenkins.png',
   python: '/assets/tech/python.png',
   nodejs: '/assets/tech/nodejs.png',
   makefile: '/assets/tech/makefile.png',
@@ -594,7 +596,28 @@ function Machine({
 /* The figure                                                          */
 /* ------------------------------------------------------------------ */
 
-export function BoundaryBridge({ stations, legs, caption, className = '' }: FlowFigureProps) {
+export function BoundaryBridge({
+  stations,
+  legs,
+  caption,
+  className = '',
+  hubBadge = 'On neither machine',
+}: FlowFigureProps & {
+  /*
+    THE PILL ABOVE THE BRIDGE DECK.
+
+    Defaults to "On neither machine", which is what this figure said for its
+    first five sessions: the argument the picture makes is that the payload
+    sits outside both boundaries. That wording is abstract, and session 6's
+    review found it landing badly on a slide whose middle station is Docker
+    Hub, where a beginner reads "neither machine" as "nowhere". A deck that
+    can name the place should name it, so this is now the caller's word.
+
+    Keep it two or three words: it is a pill, and it overprints past about 20
+    characters.
+  */
+  hubBadge?: string
+}) {
   const instant = useInstant()
   const reduce = !!useReducedMotion()
   const t = instant ? 0 : 1
@@ -744,7 +767,7 @@ export function BoundaryBridge({ stations, legs, caption, className = '' }: Flow
               className="absolute -top-[11px] left-1/2 -translate-x-1/2 whitespace-nowrap rounded-pill px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-white"
               style={{ background: hubColor }}
             >
-              On neither machine
+              {hubBadge}
             </span>
             <div className="flex h-full flex-col items-center justify-center gap-1 text-center">
               <StationMark station={hub} size={34} />

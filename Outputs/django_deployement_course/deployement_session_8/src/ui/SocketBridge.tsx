@@ -61,11 +61,36 @@ export function SocketBridge({
   hostLabel = 'Your machine, the host',
   wireLabel = 'over the mounted socket',
   footnote = "The container never runs a daemon of its own. It borrows the host's.",
+  /**
+   * Draw a third boundary AROUND both of the others, and label it.
+   *
+   * Without it the figure reads as two machines side by side, and a beginner
+   * takes "Jenkins container" to be somewhere other than the host. It is not:
+   * the container and the engine are both on the same machine, and the wall
+   * between them is a container wall, not a network. Session 8 hit this on the
+   * slide after `NestedBoundary` had just drawn the host as the box everything
+   * sits inside; this slide then drew the host as a sibling. Set this to the
+   * same host label the previous slide used and the two figures agree.
+   */
+  outerLabel,
+  /**
+   * One mono line under the socket box: the mount that put the file on both
+   * sides, `-v /var/run/docker.sock:/var/run/docker.sock`. The socket box already
+   * straddles the wall, which is the picture of one file visible from both
+   * sides; this names the flag that made it so. Fits at up to ~46 characters
+   * before it reaches the daemon box.
+   */
+  socketNote,
+  /** The daemon box's second line. Say what it does for THIS slide's argument. */
+  daemonSub = 'already running here',
 }: {
   containerLabel?: string
   hostLabel?: string
   wireLabel?: string
   footnote?: string
+  outerLabel?: string
+  socketNote?: string
+  daemonSub?: string
 }) {
   return (
     <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img"
@@ -76,11 +101,12 @@ export function SocketBridge({
         </marker>
       </defs>
 
+      {outerLabel && <Boundary x={2} y={30} w={1096} h={308} label={outerLabel} tone={colors.ink} />}
       <Boundary x={40} y={70} w={470} h={250} label={containerLabel} tone={colors.brand} />
-      <Boundary x={560} y={70} w={500} h={250} label={hostLabel} tone={colors.ink} />
+      <Boundary x={560} y={70} w={500} h={250} label={hostLabel} tone={outerLabel ? colors.teal : colors.ink} />
 
       <Box x={90} y={160} w={200} title="docker CLI" sub="installed inside" tone={colors.brand} />
-      <Box x={790} y={160} w={220} title="Docker daemon" sub="already running here" tone={colors.brandDark} />
+      <Box x={790} y={160} w={220} title="Docker daemon" sub={daemonSub} tone={colors.brandDark} />
 
       <line x1={290} y1={197} x2={790} y2={197} stroke={colors.brand} strokeWidth={2.5} markerEnd="url(#sb-arrow)" />
       {/* Placed left of the socket box, never at the arrow midpoint. See the header. */}
@@ -89,6 +115,9 @@ export function SocketBridge({
       <rect x={496} y={140} width={128} height={112} rx={10} fill={colors.white} stroke={colors.accent} strokeWidth={2.5} />
       <text x={560} y={126} textAnchor="middle" fill={colors.accent} fontSize={16} fontWeight={700}>socket</text>
       <text x={560} y={205} textAnchor="middle" fill={colors.ink} fontSize={14}>docker.sock</text>
+      {socketNote && (
+        <text x={560} y={280} textAnchor="middle" fill={colors.accent} fontSize={14} fontFamily="JetBrains Mono, ui-monospace, monospace" fontWeight={600}>{socketNote}</text>
+      )}
 
       <text x={40} y={360} fill={colors.body} fontSize={17}>{footnote}</text>
     </svg>

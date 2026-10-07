@@ -563,3 +563,163 @@ takes it under the floor".
   need. Concept 1 ends on "that is what a Makefile does" and the divider is
   written as the question the concept answers, so the motivation is carried
   across the boundary rather than restated.
+
+---
+
+## 10. Revision, 2026-09-03: the first review pass
+
+The deck is **58 slides**, up from 51. The slide-by-slide table in §4 is now the
+older of the two records: read `src/decks/makefileDeck.tsx` for what the deck is,
+and §4 for what was signed off. Where they disagree, the deck is right and this
+section says how it got there.
+
+### 10.1 Three slides removed
+
+| id | Why |
+|---|---|
+| `setup` | *"Remove (not able to understand why that slide is needed)"* |
+| `c1-beyond-shortcuts` | *"Can be removed"* |
+| `c1-the-shortcut` | *"lets tease the commands only after the anology"* — it showed `make up` two slides before the analogy that motivates it |
+
+Cutting `setup` took the `make --version` check with it. Asked whether to fold
+that check in elsewhere and add the missing quiz frame, the answer was **neither**
+— see this session's `CLAUDE.md`, which records the gap so nobody reads it as an
+oversight.
+
+### 10.2 Ten slides added
+
+| New id | What it does |
+|---|---|
+| `c1-winget-anatomy` | Explains `winget install GnuWin32.Make`, which the install table gave as a bare cell |
+| `c1-speed-dial-map` | The mapping half of the analogy, split from the story half |
+| `c4-push-and-then` | Beat 2 for CI: you pushed, and nothing checks it |
+| `c4-ci-what`, `c4-ci-flow` | What CI is, and the five-step pipeline |
+| `c4-cd-what`, `c4-cd-flow` | What CD is, and its pipeline |
+| `c4-ci-vs-cd` | The summary table, with the Makefile as the third row |
+| `c4-why-interface`, `c4-interface-map` | The Python-function analogy, and the mapping onto the Makefile |
+
+### 10.3 The four concepts were renamed
+
+The review replaced all four: *"Update Agenda with meaningful concept names."*
+`C1..C4` are now the user's own wording, and the dividers, kickers, `section`
+fields and takeaways all read from those four constants, so they cannot drift.
+
+```
+Why Use a Makefile?              Understanding the problem of repeatedly typing commands
+Defining Makefile Targets        How targets organize commands into simple tasks
+Building a Complete Makefile     Putting project commands together in one place
+Makefile in CI/CD                How automation servers use predefined commands
+```
+
+These are longer than `TEXT_GUIDELINES.md` §4a's article-free form. §4a yields:
+an explicit instruction outranks a guideline.
+
+### 10.4 CI/CD is taught now, and R7 changed
+
+R7 used to say level 3 of the ladder names no tool, on the grounds that a tool
+name means nothing to someone who has not felt the problem. The ladder still
+names nothing. But the section is called `Makefile in CI/CD` and the deck had
+never said what either letter stands for, which the review called out: *"CI/CD is
+new for students."* Six slides now teach it, in the four beats, and rule 4 is
+still intact because nothing there opens the NEXT session.
+
+### 10.5 Copy rules this pass produced
+
+Four corrections in this deck became repo-wide rules, all indexed in `RULES.md`:
+
+| Rule | Where |
+|---|---|
+| One line is one sentence, clauses joined with a comma | `TEXT_GUIDELINES.md` §4b |
+| No slide copy opens on `The` | `TEXT_GUIDELINES.md` §4a-bis |
+| Use the word the learner would use (`two words`, not `keystrokes`) | `TEXT_GUIDELINES.md` §3b |
+| Agenda items carry no articles or helping words | `TEXT_GUIDELINES.md` §4a |
+
+**§4a-bis has a failure mode worth knowing.** Stripping the article mechanically
+produced "Whole first target is two lines", which the next round rejected as
+unclear. Eleven lines were then rewritten rather than merely trimmed. The rule is
+"drop the article", not "delete the first word".
+
+### 10.6 A third session-owned figure
+
+`src/ui/SpeedDial.tsx`, an iPhone dial pad with keys 1, 2 and 3 assigned to
+contacts. Built over three review rounds — a named character, then iPhone UI,
+then the real keypad instead of abstract number badges — and the payoff sentence
+ended up as its own highlight panel on the right after *"the right is full
+empty"*. A one-off for this analogy, not a promotion candidate.
+
+`TargetAnatomy` gained numbered badges pairing each part of a target to its
+explanation card, after *"Connect explanation with respective command part"*.
+
+### 10.7 Verified
+
+`tsc` clean · `build:html` 3.20 MB · `video-safe.mjs` **CLEAN** ·
+`align-check.mjs` **0 of 58** · `qa.mjs` **2**, the expected baseline.
+All three figures screenshotted and inspected, per content rule 17.
+
+---
+
+## 11. Revision, 2026-09-03, phase two: concept 4 removed
+
+The deck is **47 slides**. §10 above describes it at 58; this section is what
+changed after that, and where the two disagree this one is current.
+
+### 11.1 "Makefile in CI/CD" was cut whole
+
+All fourteen slides of concept 4, `c4-divider` through `c4-the-interface`, on
+*"Remove Makefile in CI/CD Section in whole from the Session 5"*. That includes
+the six added earlier the same day, which §10.2 lists.
+
+So the deck now carries **three concepts**. `C4` is gone as a constant, the
+agenda and the takeaways carry three items, and because both read from the same
+array they cannot drift (content rule 20).
+
+**R7 in the deck header was rewritten to hold the line.** It used to say the
+ladder names no tool because the room has not felt the problem yet. It now says
+the whole subject is out of this session, and that nothing may reintroduce it.
+
+### 11.2 Three slides came back
+
+On the follow-up *"you can include the interface"*: `c3-why-interface`,
+`c3-interface-map` and `c3-the-interface`. They are the close of concept 3 rather
+than a fourth section, for two reasons — the agenda and takeaways carry three
+items now, and adding a divider for three slides would promise a section the deck
+does not have.
+
+Their copy changed with the move. The first cut argued the point through CI and
+CD, because the section around them had just taught both. Every reference to an
+automation server is now "anything that runs the project", which is true of a
+teammate, a script and a server alike, and opens nothing.
+
+### 11.3 `AnalogyMap` was replaced, via a new lab
+
+`c3-interface-map` rendered as an `AnalogyMap` and the review rejected it:
+*"Change the UI of this Slide ... Build a New Lab for Comparison."*
+
+`slide-kit/comparison-lab` was built for it — four candidates on the same
+fixture, the pattern `flow-lab` established. **`SwapRows` won** and is now in the
+kit, in the gallery and in the registry. Session 5 renders it on
+`c1-speed-dial-map` and `c3-interface-map`.
+
+Its argument is that `AnalogyMap`'s fault was grammar rather than styling: two
+boxes and an arrow are three objects, and the eye counts three before being told
+they are one. A pairing is one object now, familiar side recessed and new side
+raised.
+
+**No pairing is emphasised**, on *"dont highlight any of the part"*. The winning
+candidate carried a flag for that; it was removed from the contract rather than
+left declared and ignored, which is `SlideHeader`'s lesson applied a second time.
+
+The lab's `CLAUDE.md` records the three runners-up and what each was worse at,
+which is what a future reader needs before changing the winner.
+
+### 11.4 Left behind deliberately
+
+`src/ui/AutomationLadder.tsx` is unreferenced — it was concept 4's figure. The
+file stays, because it is the kit-promotion candidate this session's `CLAUDE.md`
+records. `tsc` flags an unused import, not an unused file, so nothing breaks.
+
+### 11.5 Verified
+
+`tsc` clean · `build:html` 2.94 MB · `video-safe.mjs` **CLEAN** ·
+`align-check.mjs` **0 of 47** · `qa.mjs` **2**, the expected baseline
+(1 Welcome, 47 Thank you, both `NO LOGO`).

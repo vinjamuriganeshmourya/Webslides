@@ -52,8 +52,18 @@ import { T } from '@/ui/figureTiming'
  * HONESTY
  *
  * `output` is what the program actually printed. Every string passed to it in
- * this course was produced by running the snippet on CPython 3.12; a composed
- * output is the one thing this component makes easy and must never carry.
+ * the Python course was produced by running the snippet on CPython 3.12; a
+ * composed output is the one thing this component makes easy and must never
+ * carry.
+ *
+ * WHERE THE CODE LIVES
+ *
+ * Hard rule 31: every code panel says where the code lives or runs. `location`
+ * is the code panel's title bar text, and a deck should always pass it. In a
+ * playground course that is the language (`Python`), never an invented file
+ * name; in a project course it is the file path (`backend/app.py`). It is
+ * optional only so a two-pane compare can name its panes with `label` instead
+ * of repeating the location twice.
  *
  * LAYOUT
  *
@@ -75,6 +85,8 @@ export interface CodeOutputPane {
   label?: ReactNode
   /** A logo beside the label. `/assets/tech/java.png`. */
   logo?: string
+  /** Where the code lives or runs. Rendered in the code panel's title bar (rule 31). */
+  location?: string
   code: string
   /** Exactly what the program printed. Never composed. */
   output: string
@@ -248,6 +260,7 @@ export function CodeOutput({
             <PaneLabel label={p.label} logo={p.logo} />
             <CodeBlock
               code={p.code}
+              filename={p.location}
               language={p.language ?? 'python'}
               showLineNumbers={p.showLineNumbers ?? false}
               fontSize={16}
@@ -275,6 +288,7 @@ export function CodeOutput({
           <PaneLabel label={p.label} logo={p.logo} />
           <CodeBlock
             code={p.code}
+            filename={p.location}
             language={p.language ?? 'python'}
             showLineNumbers={p.showLineNumbers ?? false}
           />
@@ -299,6 +313,7 @@ export function CodeOutput({
         <PaneLabel label={p.label} logo={p.logo} />
         <CodeBlock
           code={p.code}
+          filename={p.location}
           language={p.language ?? 'python'}
           showLineNumbers={p.showLineNumbers ?? false}
         />

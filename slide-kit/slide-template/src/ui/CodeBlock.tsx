@@ -44,7 +44,14 @@ const COLORS = {
 }
 
 // One tokenizer regex: comment | string | number | identifier | other.
-const TOKEN = /(#[^\n]*|\/\/[^\n]*)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)|([^A-Za-z0-9_$#"'`]+|.)/g
+//
+// Two details keep `//` comments working. The "other" class excludes `/`, or a
+// run of spaces before `//` swallows the slashes as one plain token and the
+// comment branch is never tried: the words inside the comment then tokenize as
+// keywords, which is how a Groovy line's `// replace with ...` printed `with`
+// in keyword blue. And `//` only opens a comment after whitespace or at line
+// start, so `http://` in a bash line stays plain text.
+const TOKEN = /(#[^\n]*|(?<=^|\s)\/\/[^\n]*)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)|([^A-Za-z0-9_$#"'`/]+|.)/g
 
 function highlightLine(line: string) {
   const out: React.ReactNode[] = []
@@ -165,14 +172,14 @@ export function CodeBlock({
 }: {
   code: string
   /**
-   * The word in the title bar. Content rule 26: the LANGUAGE ("Python"), never
+   * The word in the title bar. Content rule 31: the LANGUAGE ("Python"), never
    * an invented file name, unless the file itself is the lesson (a Dockerfile).
    */
   filename?: string
   language?: string
   /**
    * The language pill on the right of the title bar. Turn it off when
-   * `filename` already names the language, so the word appears once (rule 26).
+   * `filename` already names the language, so the word appears once (rule 31).
    */
   chip?: boolean
   /** 1-based line numbers to emphasize */

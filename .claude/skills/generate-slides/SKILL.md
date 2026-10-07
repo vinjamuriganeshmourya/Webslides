@@ -31,6 +31,21 @@ The plan is at, and only at:
   slides exist means rebuilding screenshots, animations and step counts, then
   do as they ask. Their call, not yours.
 
+**Three things to check in the plan before generating**, all hard rules that are
+cheapest to catch here (`PEDAGOGY_GUIDELINES.md` sections 2, 2b and 3):
+
+1. **Two opening slides per concept, and a named framework.** The plan says
+   which of STAR, 4MAT, SCQA or Merrill each concept runs, and the pick matches
+   the kind of concept. One opening slide means the cost beat is missing and the
+   mechanism will arrive cold. This is the single most common defect. **Never
+   name a new framework at this stage** — the set grows at plan time, with the
+   user's confirmation, or not at all.
+2. **A term ledger, and no term used above its own introduction.**
+3. **No artefact shown assembled on its first appearance.**
+
+If the plan fails one of these, say which and fix the plan before generating —
+re-cutting a generated deck costs screenshots, animations and step counts.
+
 Re-read the plan in full at the start of every generation run, even one you
 wrote yourself earlier in the session. Generate what the plan says, not what
 you remember of it.
@@ -43,9 +58,9 @@ Read these, in this order, and treat them as binding:
 
 | File | Governs |
 |---|---|
-| `.claude/skills/slide-content-rules/SKILL.md` | **hard rules.** Banned punctuation and words, terminals, problem sequencing, one idea per slide, parallel reveal, chrome colour, illustration honesty |
+| `.claude/skills/slide-content-rules/SKILL.md` | **hard rules.** Banned punctuation and words, terminals, the STAR shape of a concept, prerequisite order, one element per slide, problem sequencing, one idea per slide, parallel reveal, chrome colour, illustration honesty |
 | `slide-kit/workflow/TEXT_GUIDELINES.md` | titles, kickers, how a line should read |
-| `slide-kit/workflow/PEDAGOGY_GUIDELINES.md` | how a concept is taught across consecutive slides |
+| `slide-kit/workflow/PEDAGOGY_GUIDELINES.md` | **narrative flow.** Sections 2, 2b and 3 are hard rules: one named framework per concept opening on a need and closing on proof, nothing used before it is introduced, nothing shown assembled |
 | `slide-kit/workflow/STYLE_GUIDE.md` | colour, type, which slide type suits which content |
 | the session's own `CLAUDE.md`, and any skill in `<course>/workflow/skills/` | decisions already made for this specific deck |
 
@@ -110,6 +125,36 @@ Anything under `src/design/`, `src/ui/`, `src/slides/`, `src/motion/` or
 `src/deck/` is **kit-owned and gets overwritten by `sync-kit.mjs`**. Your deck
 is `src/decks/<session>Deck.tsx` and nothing else. See
 `slide-kit/slide-template/KIT.md`.
+
+**Three things every deck carries, whatever the plan says** (user, 2026-10-05
+and 2026-10-06, for every deck from then on; none is a choice the plan makes):
+
+- **The agenda mark reads `Agenda`, large, over the session's name, small.**
+  `<AgendaSlide kicker={SESSION} title="Agenda" lesson={SESSION} items={AGENDA} />`,
+  and nothing else as the title. The name fits itself inside the mark; never
+  shorten it. The points lay themselves out too: on the arc, the group centred
+  on the mark's centre line with equal gaps, clear of the speaker box. Pass the
+  items and nothing about position. Content rule 39 has the full text and the
+  check; until the kit PR lands, the session copy is Python 18's
+  `src/decks/figures/Agenda.tsx`.
+- **Navigation three ways: keyboard, two-finger trackpad swipe, touch swipe.**
+  One gesture, one slide, never over an on-slide control. The kit's
+  `src/deck/useGestureNav.ts` (branch `kit/deck-gestures`) does it once that
+  branch has merged and the session is synced. Until then the deck file
+  installs the session copy: `src/decks/figures/gestures.ts` from Python 17
+  or 18, copied unchanged, with `installGestures()` at module scope. It
+  stands down by itself when the kit hook is present, so leaving it in place
+  after a sync costs nothing. Section 7 says how both are checked on the
+  built file.
+- **The standard feedback slide** (content rule 41): Python session 18's
+  `src/decks/figures/FeedbackForm.tsx`, copied unchanged, as
+  `<FeedbackEmbedSlide lesson={SESSION} />`, with
+  `slide-kit/assets/brand/feedback-qr.png` copied to
+  `public/assets/feedback-qr.png`. It has the QR code, the form link and the
+  Google Form in a frame, and is followed only by Thank you. Never the kit's
+  plain `FeedbackSlide`, and never redrawn: the source of truth is session
+  18's built file, and `feedback-check.mjs` (from Python 19's root) must
+  report an exact copy on the built deck.
 
 ---
 
@@ -303,6 +348,116 @@ then copied into the session. The same holds for anything else a session needs
 that is not session-specific: an icon, a tech logo, a figure, a slide type. The
 central copy is the real one.
 
+## 6b. Render the reference before you write a line of the deck
+
+**If the session has a pedagogy-team lesson plan, it is a working deck, not a
+spec.** `prog_foundations_LP/<session>/*_student_view_new_design.html` opens in
+a browser and holds one finished frame per card its presenter walks. Screenshot
+every one of them, at every state, and keep them beside you.
+
+**Enumerate the presenter's own card list, never one card class.** The
+presenter walks `document.querySelectorAll('.slide, .pcard')`: `.pcard` is an
+activity panel, `.slide` is one of the original deck's own frames (a divider,
+a syntax frame, a worked example) carried into the lesson plan between the
+panels. **Check your count against the reference's own counter** (`n / 32` in
+its control bar) before writing a line of the plan; if they differ, the
+enumeration is wrong, not the reference. Python session 17 was built from the
+`.pcard`s alone and shipped 20 of 32 cards; the user found the 12 missing
+frames (user, 2026-10-05: *"don't miss any content or slide from the
+reference"*). The cards are only visible in presenter mode: activate one by
+clicking its `.p-cell` in the grid, then step its stage.
+
+```bash
+# ~40 seconds, once, at the start
+node - <<'JS'
+import { chromium } from 'playwright-core'
+const b = await chromium.launch({ executablePath: process.env.CHROME_PATH })
+const p = await b.newPage({ viewport: { width: 1280, height: 900 } })
+await p.goto('file:///abs/path/to/..._student_view_new_design.html', { waitUntil: 'networkidle' })
+await p.waitForTimeout(1500)
+const cards = await p.$$('.slide, .pcard')          // the presenter's own list, both kinds
+for (const [i, c] of cards.entries()) {
+  await p.evaluate((k) => document.querySelectorAll('.p-cell')[k].click(), i)   // presenter mode shows one card
+  await p.waitForTimeout(500)
+  await c.screenshot({ path: `/tmp/ref-${String(i + 1).padStart(2, '0')}.png` })
+}
+await b.close()
+JS
+```
+
+**Why this is a numbered step and not a tip.** Session 14 was built by reading
+that file's HTML and CSS as text -- extracting its SVG paths, its chip hexes,
+its `data-anim-labels` -- and rebuilding each slide from the markup, without
+ever rendering it. The result cost the user six to seven hours of sending
+screenshots back: the tilted quiz card, the takeaways map, the three-column
+trace, the day strip, the IO panel sizes. Every one of those was already
+rendered in a file the model had open.
+
+Reading a reference's markup tells you its DOM. It does not tell you what it
+looks like, and what it looks like is the brief.
+
+---
+
+## 6c. Iterate on one slide. Sweep the deck once.
+
+The three harnesses in section 7 settle **2600ms on every slide**. On a
+44-slide deck that is two to four minutes per run, and it reports the same known
+baseline nearly every time. Running it after each edit is the single largest
+waste of wall clock in this repo.
+
+- **While working on a frame:** screenshot that frame alone and look at it.
+  Navigate by hash (`http://localhost:<devPort>/#/31`), not a query parameter.
+- **Before committing a block of work:** run the full sweep once.
+
+Look at every build at **step 0, mid-run and fully revealed.** Most of session
+14's layout defects existed at exactly one of the three: variable boxes that
+appeared mid-run and pushed the controls under the player bar, a caption row
+that was empty until the first press and shifted the column into the lead, a
+week strip whose running totals vanished on the last step.
+
+**And know what the harnesses cannot see.** They catch collisions with the
+instructor-video rectangle and the player bar. They do not catch a recap that
+renders empty, an OUTPUT panel tinted the danger colour, a frozen animation, or
+a figure that is simply ugly. On session 14 the user caught all four. Looking at
+the PNG is the review; the harnesses are the gate.
+
+---
+
+## 6d. Fix the class, not the instance
+
+A correction on one slide is almost always a correction on every slide of that
+shape. Before replying, grep for the construct and fix all of it, then say which
+slides were swept so the user does not have to check.
+
+| What was asked | What it actually was |
+|---|---|
+| "slide 16 centre the code box" | every code-plus-panel frame: 16, 35, 38, 40 |
+| "slides 35 and 38 are too small" | one component, two call sites |
+| an OUTPUT header reading as an error | `IoPanels` `TONE.out = colors.danger`, every IO frame in the deck |
+
+Three separate user rounds were spent on the first row alone.
+
+---
+
+## 6e. One deck, one worker
+
+**Do not split a single deck across parallel agents by slide range.** Slides
+look independent and are not: they share figures, the kit, the step engine and
+the visual system, so two agents given "18 to 30" and "31 to 44" both edit
+`VariableTrace`, `DayStrip` and `dailyChallenge.tsx`.
+
+Session 14 was split three ways. One agent's entire slide-31 rebuild was
+superseded and never merged, because the same slide had been rebuilt
+independently an hour later; another's `DayStrip` change conflicted and had to
+be hand-merged, and contradicted an explicit user instruction. The coordination
+cost lands on the merge, which is the most expensive place for it to land.
+
+Agents are for genuinely separate artefacts: another session, a lab, a research
+pass, a skill write-up. If the user asks for parallel progress on one deck, say
+plainly why the ranges are not separable and offer the alternative.
+
+---
+
 ## 7. Verify by rendering. Never by reading.
 
 Hard rule 10, and the one most often skipped. Reading your own JSX is not
@@ -335,9 +490,34 @@ every sweep. Screenshot each slide carrying a custom figure and inspect the
 image, or read the contact sheet `build-preview-page.mjs` writes. Content rule
 17 has the detail and the two collisions that prompted it.
 
+**Then check that no slide mixes alignments** (content rule 38):
+
+```bash
+node mixed-align-check.mjs    # 0 of N slides mix left and centred blocks
+```
+
+It walks every slide's body box and names any slide that holds a block on the
+left edge AND a block centred in the box, which the three harnesses above all
+accept. Python session 17 shipped nine such slides past them: a session figure
+centred itself under the kit's left lead. Fix the component, not the slide.
+
+**Then check every arrow and every highlight, at every step** (content rules
+42 and 43):
+
+```bash
+node overlap-check.mjs        # no arrow over a box, every highlight on its own bounds
+```
+
+It drives the built file through every build step of every slide and names
+any arrow, cursor or connector that overlaps a box, and any glow wrapper wider
+or taller than the element it highlights. None of the harnesses above can see
+either: both sit inside the frame and inside their zone. Python session 19
+shipped a cursor inside its boxes on slide 12 and a column-wide glow on six
+slides past all four of them. Copy the script from Python 19's root.
+
 **Then check every heading is on one line.** On the screenshots, look at each
 slide title and each card, step or panel title. Any heading that wraps gets
-its words shortened, per content rule 25. Do not shrink the font or widen the
+its words shortened, per content rule 35. Do not shrink the font or widen the
 box.
 
 **All four, every time. `align-check.mjs` is not optional.** `qa.mjs` only
@@ -365,9 +545,9 @@ wastes a sweep:
 
 | Symptom | Lever |
 |---|---|
-| Content sits too high, into the video rectangle | move it into Space-1, centred on y=434, per content rule 22. **Not** a `lead` in the header: under rule 22 the header holds the kicker and title only, and the lead is the first block in Space-1 |
+| Content sits too high, into the video rectangle | move it into Space-1, centred on y=434, per content rule 32. **Not** a `lead` in the header: under rule 32 the header holds the kicker and title only, and the lead is the first block in Space-1 |
 | A panel is genuinely too long | `fontSize` on `CodeBlock` or `Terminal`. **Not `maxHeight`**: that only adds an inner scroll, and the harnesses measure the un-clipped rect, so the number does not move |
-| Content is narrow by nature but drawn full width | cap the width and centre it inside Space-1 (x 64..1159), per content rule 22. The video rectangle is above y=220, so content in Space-1 never meets it |
+| Content is narrow by nature but drawn full width | cap the width and centre it inside Space-1 (x 64..1159), per content rule 32. The video rectangle is above y=220, so content in Space-1 never meets it |
 
 Before running any of it, **update `slideCount` in `deck.config.json`** if the
 count changed. Every harness reads it, and a stale count makes the sweep stop
@@ -376,6 +556,19 @@ early and report success on slides it never looked at.
 Then look at the output. `qa.mjs` flagging something is not noise to wave past.
 If a captured slide looks mid-animation, the settle time is the suspect —
 `KIT.md` explains why the harnesses wait 2600ms.
+
+**Then check the three ways the deck moves, on the BUILT file.** Every deck
+navigates by keyboard, by a two-finger horizontal swipe on a trackpad, and by
+a touch swipe (user, 2026-10-05, for every deck from now on; the kit's
+`src/deck/useGestureNav.ts`). Drive `dist-single/<htmlName>.html` from
+`file://` with playwright and confirm: an arrow key moves one slide; a
+trackpad burst with an inertia tail moves exactly one slide, in both
+directions; a vertical wheel moves nothing; a touch swipe left is next and
+right is previous; a tap and a vertical scroll move nothing; a swipe that
+starts on a button, a slider or an option does not change slide.
+`gesture-check.mjs` at Python 18's root does all of this against the built
+file; copy it to the session and run it. Run `agenda-check.mjs` beside it
+(content rule 39: the mark says `Agenda` over the session name, fitted).
 
 Report honestly: what passed, what failed, what you did not run.
 

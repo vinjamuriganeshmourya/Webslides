@@ -1,6 +1,7 @@
 import { Callout, CodeBlock } from '@/ui'
 import { SlideBase } from '@/ui/SlideBase'
 import { SlideHeader } from '@/ui/SlideHeader'
+import { SlideLead } from '@/ui/SlideLead'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
 import type { CodeBuildSlideProps } from './types'
 
@@ -36,7 +37,14 @@ export function CodeBuildSlide({
 }: CodeBuildSlideProps) {
   return (
     <SlideBase variant="light" lesson={lesson}>
-      <SlideHeader kicker={kicker} title={title} lead={lead} />
+      <SlideHeader kicker={kicker} title={title} />
+      {/*
+        The point opens the well, above the code-and-annotation row rather than
+        inside either half of it. Put in the left half it would read as a caption
+        on the file; put in the right it would read as part of the annotation.
+        Both halves are one idea here and the lead introduces the pair.
+      */}
+      {lead && <SlideLead>{lead}</SlideLead>}
       <RevealGroup stagger={0.08} className="mt-1 flex items-start gap-6">
         <Reveal dir="up" className="w-[600px] shrink-0">
           <CodeBlock

@@ -65,7 +65,7 @@ function MediaFrame({
  * So `left` / `right` / `top` / `bottom` now name where the media sits relative
  * to the POINTS, never relative to the header.
  *
- * ZONED (content rule 22), in `fill` mode. The media is sized as a percentage
+ * ZONED (content rule 32), in `fill` mode. The media is sized as a percentage
  * of the well, so the well needs a definite height: it is exactly C.png's band,
  * y 221..647, less the lead. That band starts at the instructor-video
  * rectangle's floor, which retired the 52px lead-less guard this used to carry

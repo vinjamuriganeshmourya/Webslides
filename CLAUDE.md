@@ -34,18 +34,30 @@ slide-kit/                  course-independent. Shared by every deck.
   WebSlides_/ pptx_template/
                             reference material (both ignored by git, ~540 MB)
 
-django_deployement_course/  ONE COURSE. Add a sibling folder for another.
-  session_plans/            EVERY slide-wise plan. One folder per session.
-    deployement_session_3/    plan.md ← the signed-off plan
-  deployement_session_1_v1/   a session = one standalone Vite app
-  deployement_session_1_v2/
-  deployement_session_2/
-  deployement_session_3/
-  workflow/
-    reviews/                sign-off state
-    skills/                 skills scoped to this course
-    captures/               real screenshots used on slides
-  versions/                 source-only zip snapshots (ignored by git)
+Outputs/                    EVERY COURSE lives here. A course is one folder.
+  django_deployement_course/  ONE COURSE. Add a sibling folder for another.
+    session_plans/            EVERY slide-wise plan. One folder per session.
+      deployement_session_3/    plan.md ← the signed-off plan
+    deployement_session_1_v1/   a session = one standalone Vite app
+    deployement_session_2/
+    deployement_session_3/
+    workflow/
+      reviews/                sign-off state
+      skills/                 skills scoped to this course
+      captures/               real screenshots used on slides
+    versions/                 source-only zip snapshots (ignored by git)
+  python/                     the Python course, sessions numbered 1_, 2_, … 14_
+  oops_theory/                the OOPs course
+
+Rules_beta/                 rule and layout sandboxes (zones, header, typography)
+
+review-app/                 the deck review app. One server for the whole repo,
+                            slide-wise and component-wise. Its README is the
+                            manual; the section below is the command.
+
+studio/                     Deck Studio: the whole pipeline in a browser, with
+                            headless Claude Code behind it shown as a conversation.
+                            Python server, React UI. Its README is the manual.
 
 testing/
   review_app/               a Streamlit plan-review UI. NOT IN USE. See below.
@@ -60,10 +72,46 @@ skills-lock.json             the pin file for the above
 .claude/
   skills/slide-content-rules/SKILL.md    hard content rules — see next section
   skills/generate-slides/SKILL.md        the whole slide-generation procedure
+  skills/prog-lesson-plan/               VENDORED, verbatim. The pedagogy team's
+                                         own lesson-plan system: 10 references,
+                                         9 scripts, and the reference
+                                         implementations of the panels. Never
+                                         edit in place — see below
   skills/<vendored>                      SYMLINKS into .agents/skills, so Claude
                                          Code loads them by description
   settings.json                          shared plugin list (committed)
 ```
+
+**Several people work in this repo.** Before the first edit of anything, read
+[`.claude/skills/branch-from-main/SKILL.md`](.claude/skills/branch-from-main/SKILL.md):
+pull main, branch from it, work there. A branch cut from a stale main looks fine
+for hours and then produces a merge nobody can review. Anything under
+`slide-kit/slide-template/` is a PR, never a direct merge, because
+`sync-kit.mjs --apply` pushes it into every session including signed-off ones.
+
+### `.claude/skills/prog-lesson-plan` is VENDORED, and it is the reference
+
+The pedagogy team's own system, copied in **verbatim** from the Programming
+Foundations lesson-plan workspace, because its component building is what this
+course is being held to. **Never edit a file inside it.** Corrections go in this
+repo's own skills, naming what they override.
+
+It builds three self-contained HTML files from Python; this repo builds a React
+deck. What transfers is not its pipeline but its *contracts*:
+
+| Read it for | File |
+|---|---|
+| the predict-then-run panel: Run locked until a vote, answers derived by a checker | `assets/predict-machine-reference.py` |
+| the one-operation-per-press walker | `assets/execution-walker-reference.txt` |
+| the hook's SVG craft | `assets/hook-svg-reference.txt` |
+| panel chrome | `assets/panel-chrome-reference.txt` |
+| the fixed spine and the four recap formats | `assets/standard_slides.py` |
+| the theme the lesson-plan HTML was skinned with | `assets/ndt_theme.py` |
+| browser assertions we have no equivalent for | `scripts/verify_plan.py` |
+| the 23 activities, and the research behind them | `references/activity-library.md`, `references/evidence-base.md` |
+
+Where it and this repo disagree, the vendored file is the evidence and ours is
+the adaptation.
 
 **Every standing rule in this repo is indexed in [`RULES.md`](RULES.md)**, one
 line each, pointing at the file that holds the full text. Read it when you are
@@ -109,17 +157,18 @@ In this order. They are short, and they exist because a deck shipped wrong.
 
 ## Where a slide-wise plan goes — mandatory
 
-Every slide-wise plan lives under its own course, one folder per session:
+Every slide-wise plan lives under its own course, one folder per session.
+Every `<course>` path in this file is under `Outputs/`:
 
 ```
-<course>/session_plans/<session_name>/plan.md
+Outputs/<course>/session_plans/<session_name>/plan.md
 ```
 
 For example:
 
 ```
-django_deployement_course/session_plans/deployement_session_3/plan.md
-another_course/session_plans/intro-to-testing/plan.md
+Outputs/django_deployement_course/session_plans/deployement_session_3/plan.md
+Outputs/another_course/session_plans/intro-to-testing/plan.md
 ```
 
 **This path is not a suggestion. Follow it exactly.** No plan in a session's
@@ -177,8 +226,8 @@ per session, not something that propagates on its own.
 
 ```bash
 cd slide-kit/slide-template
-node sync-kit.mjs --check ../../django_deployement_course/deployement_session_2   # read-only, exits 1 if behind
-node sync-kit.mjs --apply ../../django_deployement_course/deployement_session_2
+node sync-kit.mjs --check ../../Outputs/django_deployement_course/deployement_session_2   # read-only, exits 1 if behind
+node sync-kit.mjs --apply ../../Outputs/django_deployement_course/deployement_session_2
 ```
 
 Paths are relative to wherever you run it, so a session in any course works.
@@ -189,7 +238,7 @@ Run `--apply` on a clean tree: it backs nothing up, because git is the backup.
 ## Working on a session
 
 ```bash
-cd django_deployement_course/deployement_session_3
+cd Outputs/django_deployement_course/deployement_session_3
 npm install
 npm run dev            # the deck, on the port in deck.config.json
 npm run typecheck
@@ -213,11 +262,52 @@ it before editing that session.
 
 ---
 
+## Reviewing a deck
+
+```bash
+node review-app/server.mjs      # port 5199, any session in any course
+```
+
+Pick a course, a session and a version, then comment on a slide or on a named
+component inside it. Every comment lands in
+
+```
+<course>/workflow/reviews/<session>.review.md
+```
+
+which is the path you then point Claude Code at. It exists so that feedback on a
+deck is a file in the repo rather than a screenshot in a chat: a comment that
+names `CodeBlock` at `src/ui/CodeBlock.tsx:84` is actionable months later, and
+"the grey box on slide 12 is wrong" is not. `review-app/README.md` covers the
+flow, the file format, and what a session needs before it can be reviewed.
+
+---
+
+## The studio
+
+```bash
+cd studio && uv sync && (cd ui && npm install && npm run build)   # once
+uv run python -m server.main                                     # http://127.0.0.1:8600
+```
+
+TR doc → plan → plan sign-off → generate → review → deck sign-off → export, one
+pane each, with Claude Code running headless on your own login and shown as
+messages, tool calls, approval cards and questions.
+The UI owns the files and both sign-offs: the `STATUS` line in `plan.md` (the gate
+`generate-slides` reads) and the review file (the review app's grammar). The model
+steps are one prompt each, `/studio plan|generate|review <course>/<session>`,
+which the studio sends for you. Every session pins a Claude Code
+session id in `session_plans/<session>/studio.json` and resumes it, so a change
+request lands in the conversation that already knows the deck. `studio/README.md`
+is the manual.
+
+---
+
 ## Starting a new course
 
-1. `mkdir -p <course-name>/{session_plans,workflow/{reviews,captures}}` at the
-   repo root.
-2. Copy `slide-kit/slide-template` to `<course-name>/<session-name>`, minus
+1. `mkdir -p Outputs/<course-name>/{session_plans,workflow/{reviews,captures}}`
+   from the repo root.
+2. Copy `slide-kit/slide-template` to `Outputs/<course-name>/<session-name>`, minus
    `node_modules`, `dist`, `dist-single` and `workflow/preview`.
 3. Edit `deck.config.json`: `name`, `title`, `htmlName`, and a `devPort` no
    other session uses.

@@ -49,7 +49,7 @@ import type { CodeSyntaxSlideProps, CommandSyntaxSlideProps } from './types'
  *
  * NO LEAD-LESS GUARD. The specimen panel is full width, and a header with no
  * lead used to let it rise into the instructor-video rectangle (x 913..1280,
- * y 0..220), so it carried a 52px guard. The zoned body box (content rule 22)
+ * y 0..220), so it carried a 52px guard. The zoned body box (content rule 32)
  * starts at y=221 on every slide, which retired the guard.
  */
 function SyntaxSlide({

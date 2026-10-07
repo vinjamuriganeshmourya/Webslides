@@ -20,6 +20,30 @@ export interface TerminalLine {
 
 const TABS = ['PROBLEMS', 'OUTPUT', 'TERMINAL']
 
+/**
+ * THE BUILD CONTEXT, PICKED OUT OF THE COMMAND.
+ *
+ * `docker build -t nxttrendz-frontend .` ends in a bare dot, and that dot is the
+ * whole teaching point of the slide: it is the folder Docker is being handed, not
+ * punctuation at the end of a sentence. Rendered in the same grey as the rest of
+ * the command it is one pixel wide and the room reads straight past it, which is
+ * exactly what was reported on the frontend-build slide.
+ *
+ * So a trailing standalone `.` argument is emphasised automatically, with no prop
+ * from the deck: any command written with the build context in the usual place
+ * gets it, and a command that does not end in one is untouched. Only a dot that
+ * stands ALONE as the last argument matches — `server.js` or `requirements.txt`
+ * have a dot inside a word and are left as they are.
+ *
+ * Colour and weight only, deliberately: a box or a highlight fill around a single
+ * character reads as an error marker on a dark terminal, and every command in the
+ * deck would then be wearing one.
+ */
+const CONTEXT_DOT = /^(.*\s)(\.)$/
+/* Warm amber. It has to separate from the prompt's blue and the success green
+   already on this panel, and from the #F2F2F2 of the command itself. */
+const CONTEXT_DOT_COLOR = '#FFC15E'
+
 export function Terminal({
   /** The folder the prompt sits in, e.g. `C:\ecommerce\backend`. */
   path,
@@ -65,10 +89,14 @@ export function Terminal({
           {lines.map((l, i) => {
             const kind = l.kind ?? 'out'
             if (kind === 'cmd') {
+              const dot = CONTEXT_DOT.exec(l.text)
               return (
                 <div key={i} className="whitespace-pre-wrap break-words">
                   <span style={{ color: '#5A9BD5' }}>{`PS ${path}> `}</span>
-                  <span style={{ color: '#F2F2F2' }}>{l.text}</span>
+                  <span style={{ color: '#F2F2F2' }}>{dot ? dot[1] : l.text}</span>
+                  {dot && (
+                    <span style={{ color: CONTEXT_DOT_COLOR, fontWeight: 700 }}>{dot[2]}</span>
+                  )}
                 </div>
               )
             }

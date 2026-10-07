@@ -19,6 +19,13 @@ import type { QuestionSlideProps } from './types'
  * This type inverts that. There is no header block and no body well: the
  * question IS the slide, set at hero scale.
  *
+ * `choices` is the one thing allowed on the card besides the question and its
+ * qualifier: the two or three answers the room is picking between, drawn as
+ * identical boxes. It replaces the stage direction decks kept printing as a
+ * bullet ("say yes or no before the next slide"), which told the room how to
+ * behave instead of showing it what it was choosing. The boxes never mark which
+ * one is right; the answer is still the next slide.
+ *
  * WHY A CARD RATHER THAN BARE TEXT
  *
  * The first version of this type was a centred sentence on an empty canvas. The
@@ -66,6 +73,7 @@ export function QuestionSlide({
   kicker = 'A question first',
   question,
   qualifier,
+  choices,
   tone = 'brand',
   lesson,
 }: QuestionSlideProps) {
@@ -103,6 +111,32 @@ export function QuestionSlide({
                     {qualifier}
                   </p>
                 </>
+              )}
+              {choices && choices.length > 0 && (
+                /*
+                  THE BOXES ARE DRAWN IDENTICALLY, AND THAT IS THE FEATURE.
+
+                  Every box takes the same border, the same tint and the same
+                  flex basis, so nothing in the rendering ranks them. The moment
+                  one is tinted differently, or drawn larger, or listed first for
+                  a reason, the slide has answered its own question and the room
+                  reads the answer instead of committing to one.
+
+                  `flex-1` with a floor rather than a fixed width: two boxes and
+                  three boxes both fill the card, so a deck does not get a
+                  ragged right edge for having asked a three-way question.
+                */
+                <div className="mt-9 flex gap-4">
+                  {choices.map((c, i) => (
+                    <div
+                      key={i}
+                      className="flex min-w-[140px] flex-1 items-center justify-center rounded-card border-2 px-6 py-4 font-heading text-slide-title font-bold"
+                      style={{ borderColor: accent, color: accent, background: `${accent}0F` }}
+                    >
+                      {c}
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </Reveal>

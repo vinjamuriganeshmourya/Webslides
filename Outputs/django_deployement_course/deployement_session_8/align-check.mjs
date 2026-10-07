@@ -108,6 +108,18 @@ const TOL = 10
  * straight over them. A constant that encodes another constant's old value breaks
  * silently, which this repo has now paid for three times.
  *
+ * AND IT GREW AGAIN, FROM 335 TO 409, when the bar took a REPLAY button and a
+ * MARKER button. Measured on the built deck at 1280x720:
+ * `{left: 20, top: 664, right: 407, bottom: 704}`, plus the usual 2px of slack.
+ * The marker button's "this slide has ink" dot is absolutely positioned inside the
+ * button precisely so that it cannot move this number.
+ *
+ * The MARKER PALETTE is deliberately not in this table. It is only in the DOM while
+ * the marker is open, which is never during a harness run, and a zone that is
+ * usually absent is a zone that would fail slides for a collision the room never
+ * sees. It is parked one row higher than the control bar for the same reason it is
+ * not listed: see `annotate/AnnotationToolbar.tsx`.
+ *
  * MEASURE IT AGAIN IF THE BAR CHANGES: open the deck, and read
  * `document.querySelector('div.absolute.bottom-4.left-5').getBoundingClientRect()`.
  * The bar is fixed-width by construction, so one reading is the whole answer: the
@@ -115,7 +127,7 @@ const TOL = 10
  * precisely so this number cannot depend on which slide is up.
  */
 const CHROME = [
-  { name: 'controls', x1: 18, y1: 660, x2: 335, y2: 706 },
+  { name: 'controls', x1: 18, y1: 660, x2: 409, y2: 706 },
   { name: 'footer mark', x1: 1172, y1: 660, x2: 1248, y2: 706 },
 ]
 
@@ -271,7 +283,54 @@ for (let i = 1; i <= TOTAL; i++) {
       const oneToken = cs.fontFamily.includes('Mono') || t.includes('\u00b7')
       if (!oneToken) return
       const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.4
-      const rows = Math.round(el.getBoundingClientRect().height / lh)
+      /*
+        PADDING IS NOT A SECOND LINE.
+
+        This divided the element's full border-box height by its line height,
+        so any padded monospace leaf reported two rows while rendering on one:
+        a `py-2.5` chip at 17px line height measures 40px, and 40/17 rounds to
+        2. Session 3 shipped four such false positives (`starts.txt`,
+        `docker-demo_default` twice, and a `backend:8000 resolves` pill), all
+        confirmed single-line in the rendered screenshots, and a harness whose
+        warnings are known-noisy is a harness people stop reading.
+
+        Measuring the CONTENT box is what the check meant all along: subtract
+        the vertical padding before dividing. A genuine wrap still grows the
+        content box by a full line, so nothing real is masked.
+      */
+      /*
+        NOR IS A STRETCHED GRID ROW A SECOND LINE.
+
+        Subtracting the padding fixed the chip case above and still reported a
+        false positive on session 7's `c1-same-two-steps`, for a different
+        reason: `SwapRows` puts both halves of a pairing in one grid row, and the
+        right half carries a command AND a gloss under it. The left half holds
+        one line, and the grid stretches it to match, so its CONTENT box is two
+        lines tall while its text renders on one. `docker tag ravi123/...` was
+        reported wrapped and was confirmed single-line on the screenshot.
+
+        A box is the wrong thing to measure. Ask the TEXT how many line boxes it
+        occupies: a Range over the text node returns one rect per line, which no
+        amount of padding, stretch or alignment can inflate. The box arithmetic
+        stays as the fallback for the case the Range cannot answer.
+      */
+      let rows = 0
+      const node = el.firstChild
+      if (node && node.nodeType === 3) {
+        const range = document.createRange()
+        range.selectNodeContents(el)
+        const lineTops = new Set()
+        for (const r of range.getClientRects()) {
+          if (r.width === 0 && r.height === 0) continue
+          lineTops.add(Math.round(r.top))
+        }
+        rows = lineTops.size
+        range.detach?.()
+      }
+      if (!rows) {
+        const padY = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0)
+        rows = Math.round((el.getBoundingClientRect().height - padY) / lh)
+      }
       if (rows >= 2) wrapped.push({ rows, txt: t.slice(0, 56) })
     })
 

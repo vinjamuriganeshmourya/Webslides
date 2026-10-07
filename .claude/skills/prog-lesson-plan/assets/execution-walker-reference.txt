@@ -1,0 +1,275 @@
+EXECUTION WALKER — worked reference
+===================================
+
+Lifted verbatim from session 11 ("Follow the Dot"), the plan that works. Adapt the RUNGS /
+POS tables and the flowchart geometry to your topic; leave the state machine alone.
+
+Read references/animated-explainer.md first — it has the three tests this must pass before
+you build it, and the reasons behind the rules below.
+
+Four things not to change:
+  1. .dead persists after the run ends. It is the finding, not a transition state.
+  2. plan() computes the steps from the live input. A hard-coded step list makes the
+     second walk a lie.
+  3. One moving element (the dot). Two desynchronise and the room watches the wrong one.
+  4. The @media (prefers-reduced-motion) block, and the fact that print shows the END state
+     with dead paths still grey.
+
+The output box starts empty on purpose: `.wout:empty::before` carries the placeholder, so
+the room predicts before anything prints.
+
+
+------------------------------------------------------------------------------
+1. CSS  (goes in the template's style block, after the panel styles)
+------------------------------------------------------------------------------
+
+/* ============ execution walker ============
+   The dot is Python. It walks one route; everything it never touches greys out
+   and stays grey — which is the whole session's idea, and the one thing a
+   static diagram cannot show. Deck palette throughout so the panel still
+   reads as a slide. */
+.walker{display:flex;flex:1;min-height:0;margin:0}
+.wcode{flex:0 0 46%;min-width:0;display:flex;flex-direction:column;padding-right:20px}
+.wviz{flex:1;min-width:0;display:flex;flex-direction:column}
+.wcode pre{margin:0;padding:12px 14px;background:var(--dk-card);border-radius:8px;
+ font:13.5px/1.62 var(--mono);color:var(--dk-text);white-space:pre;overflow-x:auto}
+.wline{display:block;padding:0 6px;margin:0 -6px;border-radius:4px;
+ transition:background-color 200ms var(--ease-out),opacity 320ms var(--ease-out)}
+.wline b{color:var(--dk-red);font-weight:400}
+.wline i{color:var(--dk-blue);font-style:normal}
+.wline em{color:#22863A;font-style:normal}
+.wline.ran{background:#DCEEF9}
+.wline.now{background:#B9DCF2}
+.wline.dead{opacity:.26}
+
+.wctl{display:flex;align-items:center;margin:12px 0 0;flex-wrap:wrap}
+.wctl button{background:var(--dk-blue);color:#fff;border:0;border-radius:8px;padding:8px 15px;
+ font:inherit;font-size:13.5px;font-weight:650;cursor:pointer;margin-right:8px;
+ transition:transform var(--dur-fast) var(--ease-out)}
+.wctl button.ghost{background:none;color:var(--dk-blue);border:1px solid #BFD9EA}
+.wctl button:active{transform:scale(.97)}
+.wslide{display:flex;align-items:center;margin:12px 0 0}
+.wslide label{flex:0 0 auto;margin-right:10px;font:600 13.5px var(--sans);color:var(--dk-text);
+ font-variant-numeric:tabular-nums}
+.wslide input{flex:1;min-width:0;accent-color:var(--dk-blue)}
+.wout{flex:none;margin:12px 0 0;padding:9px 13px;min-height:2.6em;background:#000;border-radius:4px;
+ font:14px/1.5 var(--mono);color:#fff;white-space:pre-wrap}
+.wout:empty::before{content:'Press play. Whatever the program prints appears here.';color:#7C7C7C}
+
+.wchart{display:block;width:100%;height:auto;flex:1;min-height:0;margin:0}
+.wchart .wnode rect,.wchart .wnode polygon{fill:#fff;stroke:#C3D4DF;stroke-width:2;
+ transition:stroke 220ms var(--ease-out),fill 220ms var(--ease-out),opacity 320ms var(--ease-out)}
+.wchart .wnode text{font:600 14px var(--sans);fill:var(--dk-text);
+ transition:fill 220ms var(--ease-out),opacity 320ms var(--ease-out)}
+.wchart .wedge{stroke:#C3D4DF;stroke-width:2;fill:none;
+ transition:stroke 220ms var(--ease-out),opacity 320ms var(--ease-out)}
+.wchart .wlbl{font:600 12px var(--sans);fill:var(--dk-line)}
+.wchart .visited rect,.wchart .visited polygon{stroke:var(--dk-blue);fill:#EAF6FC}
+.wchart .visited text{fill:var(--dk-blue)}
+.wchart .wedge.visited{stroke:var(--dk-blue)}
+.wchart .no rect,.wchart .no polygon{stroke:var(--dk-red)}
+.wchart .dead,.wchart .wedge.dead{opacity:.2}
+.wdot circle{fill:var(--dk-red)}
+.wdot{transform:translate(210px,34px);transition:transform 420ms var(--ease-out)}
+.wdot.off{opacity:0}
+
+body.present .wcode pre{font-size:clamp(12px,1.2vw,19px)}
+body.present .wcode{padding-right:clamp(14px,2vw,34px)}
+body.present .wout{font-size:clamp(13px,1.35vw,21px)}
+body.present .wctl button,body.present .wslide label{font-size:clamp(12px,1.25vw,18px)}
+body.present .wchart .wnode text{font:600 clamp(11px,1.05vw,16px) var(--sans)}
+@media (prefers-reduced-motion:reduce){
+  .wdot,.wline,.wchart *{transition:none !important}
+}
+
+------------------------------------------------------------------------------
+2. MARKUP  (inside a .stage on a .pcard wearing the deck header)
+------------------------------------------------------------------------------
+
+The panel wrapper, for context — the .sl-head is what makes it read as a slide:
+
+  <div class="stage" id="stage-walk">
+    <div class="sl-head">
+      <span class="sl-bar" aria-hidden="true"></span>
+      <div>
+        <p class="sl-eyebrow">Multiple Elif Statements</p>
+        <h3 class="sl-title">Follow the Dot</h3>
+      </div>
+    </div>
+    <p class="stage-q">The dot is Python. Drag the marks, then press play.
+       <b>Watch what it never touches.</b></p>
+    ... walker, below ...
+  </div>
+
+Every code line needs id="wl<N>" matching its line number, every flowchart node
+data-node="<key>" and every edge data-edge="<key>". The step engine addresses them by
+those attributes and nothing else.
+
+<div class="walker" id="walker"><div class="wcode"><pre><span class="wline" id="wl1">marks <b>=</b> <i>72</i></span><span class="wline" id="wl2"></span><span class="wline" id="wl3"><b>if</b> marks <b>&gt;=</b> <i>91</i>:</span><span class="wline" id="wl4">    <i>print</i>(<em>"A"</em>)</span><span class="wline" id="wl5"><b>elif</b> marks <b>&gt;=</b> <i>81</i>:</span><span class="wline" id="wl6">    <i>print</i>(<em>"B"</em>)</span><span class="wline" id="wl7"><b>elif</b> marks <b>&gt;=</b> <i>71</i>:</span><span class="wline" id="wl8">    <i>print</i>(<em>"C"</em>)</span><span class="wline" id="wl9"><b>elif</b> marks <b>&gt;=</b> <i>61</i>:</span><span class="wline" id="wl10">    <i>print</i>(<em>"D"</em>)</span><span class="wline" id="wl11"><b>else</b>:</span><span class="wline" id="wl12">    <i>print</i>(<em>"F"</em>)</span></pre><div class="wslide"><label>marks = 72</label><input type="range" min="0" max="100" value="72" step="1" aria-label="marks"></div><div class="wctl"><button type="button" data-w="play">Play</button><button type="button" class="ghost" data-w="step">One step</button><button type="button" class="ghost" data-w="reset">Reset</button></div><div class="wout" aria-live="polite"></div></div><div class="wviz"><svg class="wchart" viewBox="0 0 560 580" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flowchart of the grade ladder: four conditions in sequence, each with a True exit">
+<g class="wnode" data-node="a"><rect x="110" y="10" width="200" height="48" rx="10"/><text x="210" y="40" text-anchor="middle" id="wassign">marks = 72</text></g>
+<path class="wedge" data-edge="d0in" d="M210 41 L210 67"/>
+<g class="wnode wdia" data-node="d0"><polygon points="210,67 305,105 210,143 115,105"/><text x="210" y="111" text-anchor="middle">marks &gt;= 91 ?</text></g>
+<path class="wedge" data-edge="t0" d="M305 105 L360 105"/>
+<text class="wlbl" x="322" y="96">True</text>
+<g class="wnode" data-node="p0"><rect x="360" y="81" width="180" height="48" rx="10"/><text x="450" y="111" text-anchor="middle">print("A")</text></g>
+<text class="wlbl" x="220" y="163">False</text>
+<path class="wedge" data-edge="d1in" d="M210 141 L210 167"/>
+<g class="wnode wdia" data-node="d1"><polygon points="210,167 305,205 210,243 115,205"/><text x="210" y="211" text-anchor="middle">marks &gt;= 81 ?</text></g>
+<path class="wedge" data-edge="t1" d="M305 205 L360 205"/>
+<text class="wlbl" x="322" y="196">True</text>
+<g class="wnode" data-node="p1"><rect x="360" y="181" width="180" height="48" rx="10"/><text x="450" y="211" text-anchor="middle">print("B")</text></g>
+<text class="wlbl" x="220" y="263">False</text>
+<path class="wedge" data-edge="d2in" d="M210 241 L210 267"/>
+<g class="wnode wdia" data-node="d2"><polygon points="210,267 305,305 210,343 115,305"/><text x="210" y="311" text-anchor="middle">marks &gt;= 71 ?</text></g>
+<path class="wedge" data-edge="t2" d="M305 305 L360 305"/>
+<text class="wlbl" x="322" y="296">True</text>
+<g class="wnode" data-node="p2"><rect x="360" y="281" width="180" height="48" rx="10"/><text x="450" y="311" text-anchor="middle">print("C")</text></g>
+<text class="wlbl" x="220" y="363">False</text>
+<path class="wedge" data-edge="d3in" d="M210 341 L210 367"/>
+<g class="wnode wdia" data-node="d3"><polygon points="210,367 305,405 210,443 115,405"/><text x="210" y="411" text-anchor="middle">marks &gt;= 61 ?</text></g>
+<path class="wedge" data-edge="t3" d="M305 405 L360 405"/>
+<text class="wlbl" x="322" y="396">True</text>
+<g class="wnode" data-node="p3"><rect x="360" y="381" width="180" height="48" rx="10"/><text x="450" y="411" text-anchor="middle">print("D")</text></g>
+<path class="wedge" data-edge="d4in" d="M210 443 L210 481"/>
+<text class="wlbl" x="220" y="463">False</text>
+<g class="wnode" data-node="e"><rect x="110" y="481" width="200" height="48" rx="10"/><text x="210" y="511" text-anchor="middle">else</text></g>
+<path class="wedge" data-edge="tf" d="M310 505 L360 505"/>
+<g class="wnode" data-node="pf"><rect x="360" y="481" width="180" height="48" rx="10"/><text x="450" y="511" text-anchor="middle">print("F")</text></g>
+<g class="wdot" aria-hidden="true"><circle r="8"/></g>
+</svg>
+
+(the flowchart continues with one decision diamond + one print box per rung, then the
+else node; and last, the dot itself:)
+
+  <g class="wdot"><circle r="7"/></g>
+
+
+------------------------------------------------------------------------------
+3. STEP ENGINE  (inside the template's main IIFE)
+------------------------------------------------------------------------------
+
+/* ================= execution walker =================
+     Steps are computed from the slider, so the room can change the input and
+     walk it again. Only executed lines highlight; at the end everything the
+     interpreter never touched greys out and stays grey. */
+  (function(){
+    var W=document.getElementById('walker');
+    if(!W) return;
+    var RUNGS=[[91,'A'],[81,'B'],[71,'C'],[61,'D']];
+    var POS={a:[210,34],d0:[210,105],p0:[450,105],d1:[210,205],p1:[450,205],
+             d2:[210,305],p2:[450,305],d3:[210,405],p3:[450,405],e:[210,505],pf:[450,505]};
+    var dot=W.querySelector('.wdot'),
+        out=W.querySelector('.wout'),
+        slider=W.querySelector('input[type=range]'),
+        label=W.querySelector('.wslide label'),
+        playBtn=W.querySelector('[data-w=play]'),
+        stepBtn=W.querySelector('[data-w=step]'),
+        resetBtn=W.querySelector('[data-w=reset]');
+    var steps=[], at=0, timer=null;
+
+    function plan(m){
+      // one step per thing Python actually does, in order
+      var s=[{node:'a', line:1, say:'marks = '+m}];
+      for(var i=0;i<RUNGS.length;i++){
+        var hit = m >= RUNGS[i][0];
+        s.push({node:'d'+i, line:3+i*2, test:hit, edge:'d'+i+'in'});
+        if(hit){
+          s.push({node:'p'+i, line:4+i*2, edge:'t'+i, print:RUNGS[i][1]});
+          return s;
+        }
+      }
+      s.push({node:'e', line:11, edge:'d4in'});
+      s.push({node:'pf', line:12, edge:'tf', print:'F'});
+      return s;
+    }
+
+    function clear(){
+      W.querySelectorAll('.wline').forEach(function(l){ l.className='wline'; });
+      W.querySelectorAll('[data-node],[data-edge]').forEach(function(n){
+        n.classList.remove('visited','dead','no'); });
+      dot.classList.remove('off');
+      dot.style.transform='translate(210px,34px)';
+      out.textContent='';
+    }
+
+    function render(){
+      var s=steps[at-1];
+      if(!s) return;
+      W.querySelectorAll('.wline.now').forEach(function(l){ l.classList.remove('now'); });
+      var line=W.querySelector('#wl'+s.line);
+      if(line){ line.classList.add('ran','now'); }
+      var node=W.querySelector('[data-node="'+s.node+'"]');
+      if(node){ node.classList.add('visited'); if(s.test===false) node.classList.add('no'); }
+      if(s.edge){
+        var e=W.querySelector('[data-edge="'+s.edge+'"]');
+        if(e) e.classList.add('visited');
+      }
+      var p=POS[s.node];
+      dot.style.transform='translate('+p[0]+'px,'+p[1]+'px)';
+      if(s.print) out.textContent=s.print;
+      if(at===steps.length) finish();
+    }
+
+    function finish(){
+      // grey out every line and node the dot never reached, and leave it grey
+      W.querySelectorAll('.wline').forEach(function(l){
+        if(!l.classList.contains('ran') && l.textContent.trim()) l.classList.add('dead');
+      });
+      W.querySelectorAll('[data-node],[data-edge]').forEach(function(n){
+        if(!n.classList.contains('visited')) n.classList.add('dead');
+      });
+      W.querySelectorAll('.wline.now').forEach(function(l){ l.classList.remove('now'); });
+    }
+
+    function step(){
+      if(at>=steps.length) return false;
+      at++; render(); return at<steps.length;
+    }
+    function stop(){ if(timer){ clearInterval(timer); timer=null; }
+      playBtn.textContent='Play'; }
+    function play(){
+      if(timer){ stop(); return; }
+      if(at>=steps.length) reset();
+      playBtn.textContent='Pause';
+      timer=setInterval(function(){ if(!step()) stop(); }, 780);
+    }
+    function reset(){ stop(); at=0; steps=plan(+slider.value); clear(); }
+
+    slider.addEventListener('input', function(){
+      label.textContent='marks = '+slider.value;
+      var l=W.querySelector('#wl1');
+      if(l) l.innerHTML='marks <b>=</b> <i>'+slider.value+'</i>';
+      var a=W.querySelector('#wassign');          // the flowchart's first node tracks it too
+      if(a) a.textContent='marks = '+slider.value;
+      reset();
+    });
+    playBtn.addEventListener('click', play);
+    stepBtn.addEventListener('click', function(){ stop(); if(at>=steps.length) reset(); step(); });
+    resetBtn.addEventListener('click', reset);
+    reset();
+
+    // r replays the walker when its card is live, same key as the hook
+    W.replayWalker = reset;
+  })();
+
+
+------------------------------------------------------------------------------
+4. ADAPTING IT
+------------------------------------------------------------------------------
+
+For a while loop, the shape changes but nothing else does:
+
+  - RUNGS becomes the loop's passes, computed from the slider, not listed.
+  - plan() emits, per pass: condition-test node, then each body line, then the update —
+    and re-emits the condition test. That re-emission IS the lesson: the room sees the
+    condition asked again between passes.
+  - The dot returns UP the back edge. That edge must be a real <path data-edge="back">
+    so it can light up; an arrow drawn in the background image cannot.
+  - The final condition test is the one that goes .no and ends the walk, and the body
+    lines below it never go .dead — they ran. What goes dead is print("End") on an
+    infinite-loop variant, which is the version worth walking second.
+
+For a for loop, POS tracks the item cursor over the sequence cells rather than a route
+down a page; the greying-out applies to cells not yet consumed.
+
+Whatever the topic: one dot, steps computed from a live input, dead state persists.
