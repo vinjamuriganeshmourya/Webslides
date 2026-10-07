@@ -1,0 +1,30 @@
+{
+  "name": "nxtwave-characters-lab",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Two rigged characters, Arjun and Riya, with a library of actions for reels and slides.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "typecheck": "tsc -b --noEmit",
+    "test": "vitest run",
+    "shoot": "node shoot.mjs",
+    "record": "node record.mjs"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.1",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "ffmpeg-static": "5.3.0",
+    "playwright": "1.62.1",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7",
+    "vitest": "5.0.3"
+  }
+}
