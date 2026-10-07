@@ -56,7 +56,7 @@ export const SETTLE_MAX_MS = 7000
 /** Reading time: a base, plus per weighted character, clamped. */
 export const READ_BASE_MS = 500
 export const READ_PER_CHAR_MS = 13
-export const READ_MIN_MS = 1100
+export const READ_MIN_MS = 1220
 export const READ_MAX_MS = 3200
 
 export function readingTime(weightedChars: number) {
