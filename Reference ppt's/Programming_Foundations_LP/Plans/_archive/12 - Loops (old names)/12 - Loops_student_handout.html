@@ -1,0 +1,96 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Loops &mdash; worksheet</title><style>
+:root{
+  --ink:#101318; --mid:#39404B; --soft:#6B7280; --rule:#D8DDE4; --fill:#F4F6F8;
+  --accent:#0B5FA5; --accent-soft:#E7F1FA;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#EEF1F4;color:var(--ink);font:16px/1.6 var(--sans)}
+.ws{max-width:880px;margin:0 auto;padding:0 20px 90px;background:#fff;
+  min-height:100vh;box-shadow:0 0 0 1px var(--rule)}
+.ws-band{background:var(--ink);color:#fff;margin:0 -20px 22px;padding:20px 24px}
+.ws-band h1{margin:0;font-size:22px;letter-spacing:-.01em}
+.ws-band p{margin:4px 0 0;font-size:13px;opacity:.75}
+.ws-who{display:flex;flex-wrap:wrap;margin:0 0 24px}
+.ws-who label{flex:1 1 220px;margin-right:16px;font-size:13px;color:var(--soft)}
+.ws-who input{display:block;width:100%;margin-top:4px;padding:8px 10px;
+  border:1px solid var(--rule);border-radius:7px;font:15px var(--sans)}
+.task{border-left:3px solid var(--accent);padding:0 0 0 16px;margin:0 0 34px}
+.task-hd{display:flex;align-items:baseline;margin:0 0 8px}
+.badge{flex:none;width:24px;height:24px;border-radius:50%;background:var(--accent);
+  color:#fff;font:700 13px/24px var(--sans);text-align:center;margin-right:10px}
+.task-hd .h{font:700 18px var(--sans);letter-spacing:-.01em}
+.task-instr{margin:0 0 12px;font-size:15px;color:var(--mid)}
+.task-instr b{color:var(--ink)}
+.given{background:var(--accent-soft);border-radius:8px;padding:12px 14px;margin:0 0 14px;
+  font-size:15px}
+pre{margin:0 0 14px;padding:12px 14px;background:var(--fill);border:1px solid var(--rule);
+  border-radius:8px;font:14px/1.7 var(--mono);white-space:pre;overflow-x:auto}
+.fld{display:block;margin:0 0 14px}
+.fld span{display:block;font-size:13px;font-weight:650;color:var(--soft);margin-bottom:5px}
+.fld input,.fld textarea{width:100%;padding:10px 12px;border:1px solid var(--rule);
+  border-radius:8px;font:15px/1.6 var(--mono);background:#fff;color:var(--ink);resize:vertical}
+.fld input:focus,.fld textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.fld.ans input{font-weight:650;background:#FFFDF3;border-color:#E3D2A0}
+table.grid{width:100%;border-collapse:collapse;margin:0 0 14px}
+table.grid th,table.grid td{border:1px solid var(--rule);padding:7px 9px;
+  font-size:14px;text-align:left;vertical-align:top}
+table.grid th{background:var(--fill);font-weight:650;font-size:13px}
+table.grid td.c{font:14px var(--mono);white-space:pre;background:var(--fill)}
+table.grid input{width:100%;border:0;padding:3px 2px;font:14px var(--mono);background:transparent}
+table.grid input:focus{outline:2px solid var(--accent)}
+.ws-foot{margin:34px 0 0;padding-top:14px;border-top:1px solid var(--rule);
+  font-size:13px;color:var(--soft)}
+.ws-save{position:fixed;right:16px;bottom:16px;padding:7px 13px;border-radius:999px;
+  background:var(--ink);color:#fff;font-size:12px;opacity:0;transition:opacity 220ms}
+.ws-save.on{opacity:.85}
+@media (max-width:600px){ .ws{padding:0 14px 80px} .ws-band{margin:0 -14px 18px} }
+</style></head><body><div class="ws"><div class="ws-band"><h1>Loops</h1><p>Programming Foundations &middot; Session 12</p></div><div class="ws-who"><label>Name<input type="text" autocomplete="off"></label><label>Roll no.<input type="text" autocomplete="off"></label></div><section class="task"><div class="task-hd"><span class="badge">1</span><span class="h">Ten numbers, the long way</span></div><p class="task-instr">This program prints the next <b>three</b> consecutive numbers of the input. The question has changed: it now asks for the next <b>ten</b>. Type the lines you would add in the box, then fill in the two counts. Playground closed for this one.</p><pre>a = int(input())
+a = a + 1
+print(a)
+a = a + 1
+print(a)
+a = a + 1
+print(a)</pre><label class="fld"><span>The lines you would add &mdash; write as many as it takes</span><textarea rows="7" spellcheck="false"></textarea></label><table class="grid"><tr><th>How long is the program?</th><th>lines</th></tr><tr><td>My program for TEN numbers is</td><td><input type="text" autocomplete="off"></td></tr><tr><td>and for ONE HUNDRED numbers it would be</td><td><input type="text" autocomplete="off"></td></tr></table></section><section class="task"><div class="task-hd"><span class="badge">2</span><span class="h">Name the three parts</span></div><p class="task-instr">One program you have not seen. Type the <b>line number</b> against each part, then answer the question underneath.</p><pre>1   marks = int(input())
+2   counter = 1
+3   while counter &lt;= 5:
+4       print(marks)
+5       marks = marks - 2
+6       counter = counter + 1
+7   print("Done")</pre><label class="fld"><span>Initialization &mdash; line number</span><input type="text" autocomplete="off" spellcheck="false"></label><label class="fld"><span>Termination condition &mdash; line number</span><input type="text" autocomplete="off" spellcheck="false"></label><label class="fld"><span>Updation &mdash; line number</span><input type="text" autocomplete="off" spellcheck="false"></label><label class="fld"><span>How many times does line 4 run?</span><input type="text" autocomplete="off" spellcheck="false"></label></section><section class="task"><div class="task-hd"><span class="badge">3</span><span class="h">Find the mistake</span></div><p class="task-instr">All three are meant to print the next <b>three</b> consecutive numbers of the input. Every one of them is broken, and each one is broken in a <b>different</b> part. For each, say which line is wrong &mdash; or, if something is simply <b>not there</b>, say what is missing and where it should go. <b>Do not run them.</b></p><p class="task-instr"><b>Programme 1</b> &nbsp;&middot;&nbsp; input is 5</p><pre>1   a = int(input())
+2   while counter &lt; 3:
+3       a = a + 1
+4       print(a)
+5       counter = counter + 1
+6   print("End")</pre><p class="task-instr"><b>Programme 2</b> &nbsp;&middot;&nbsp; input is 10</p><pre>1   a = int(input())
+2   counter = 0
+3   condition = (counter &lt; 3)
+4   while condition:
+5       a = a + 1
+6       print(a)
+7       counter = counter + 1</pre><p class="task-instr"><b>Programme 3</b> &nbsp;&middot;&nbsp; input is 1</p><pre>1   a = int(input())
+2   counter = 1
+3   while counter &lt; 3:
+4       a = a + 1
+5       print(a)
+6       counter = counter + 1
+7   print("End")</pre><table class="grid"><tr><th></th><th>Which line is wrong, or what is missing?</th><th>Which part?</th><th>What happens when you run it?</th></tr><tr><td>Programme 1</td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td></tr><tr><td>Programme 2</td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td></tr><tr><td>Programme 3</td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td></tr></table></section><p class="ws-foot">Nothing here is collected. Keep the file.</p></div><div class="ws-save">saved</div><script>
+(function(){
+  var KEY='ws:'+(document.title||'worksheet');
+  function fields(){ return [].slice.call(document.querySelectorAll('input[type=text],textarea')); }
+  var tag=document.querySelector('.ws-save'), t=null;
+  function flash(){ if(!tag) return; tag.classList.add('on');
+    clearTimeout(t); t=setTimeout(function(){ tag.classList.remove('on'); },1100); }
+  try{
+    var saved=JSON.parse(localStorage.getItem(KEY)||'{}');
+    fields().forEach(function(f,i){ if(saved[i]!=null) f.value=saved[i]; });
+  }catch(e){}
+  document.addEventListener('input',function(){
+    try{
+      var v={}; fields().forEach(function(f,i){ if(f.value) v[i]=f.value; });
+      localStorage.setItem(KEY,JSON.stringify(v)); flash();
+    }catch(e){}
+  });
+})();
+</script></body></html>

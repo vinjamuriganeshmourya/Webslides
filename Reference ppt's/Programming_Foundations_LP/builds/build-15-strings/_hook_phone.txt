@@ -1,0 +1,356 @@
+# ====================================================================== the phone
+# The room knows this screen better than it knows any diagram, so a near miss
+# reads as a fake and the story stops landing. Everything below is WhatsApp's
+# real furniture: the doodle wallpaper, the tail on the first bubble of a run,
+# the time and the two blue ticks inside the bubble, the video and voice call
+# icons in the header, the emoji, clip and camera glyphs in the composer, and
+# the home indicator under it all.
+
+SCR_X, SCR_Y, SCR_W, SCR_H = 40, 20, 280, 480     # the glass
+BAR_H = 44                                        # the status bar
+HEAD_H = 54                                       # the chat header
+COMP_H = 56                                       # the composer
+CHAT_Y = SCR_Y + BAR_H + HEAD_H
+CHAT_H = SCR_H - BAR_H - HEAD_H - COMP_H
+
+WA_META = "#667781"        # the time inside a bubble
+WA_PANEL = "#F7F5F3"       # a chip on the wallpaper
+
+
+def defs():
+    """The doodle wallpaper and the one-pixel bubble shadow. WhatsApp's
+    background is the single most recognisable thing on the screen and a flat
+    beige rectangle is what makes a mock look drawn rather than photographed."""
+    d = "#D7CDBF"
+    doodles = (
+        # a smile
+        '<g transform="translate(10 14)"><circle r="7" cx="7" cy="7"/>'
+        '<circle r="1" cx="4.6" cy="5.4" fill="' + d + '" stroke="none"/>'
+        '<circle r="1" cx="9.4" cy="5.4" fill="' + d + '" stroke="none"/>'
+        '<path d="M3.6 8.6 a4 4 0 0 0 6.8 0"/></g>'
+        # a heart
+        '<g transform="translate(58 10)">'
+        '<path d="M8 13 C1 8.6 1 4 4.2 3 C6 2.4 7.4 3.6 8 4.8 '
+        'C8.6 3.6 10 2.4 11.8 3 C15 4 15 8.6 8 13 Z"/></g>'
+        # a paper plane
+        '<g transform="translate(92 48)">'
+        '<path d="M0 6 L15 0 L9.6 14 L7 8.6 Z"/><path d="M7 8.6 L15 0"/></g>'
+        # a cup
+        '<g transform="translate(14 56)"><rect x="0" y="4" width="12" '
+        'height="10" rx="2"/><path d="M12 6.4 a3.4 3.4 0 0 1 0 5.4"/>'
+        '<path d="M3 1 v-2 M6.6 1 v-3 M10 1 v-2"/></g>'
+        # a music note
+        '<g transform="translate(56 58)"><path d="M4 13 V2 L12 0 v11"/>'
+        '<ellipse cx="2" cy="13.4" rx="2.4" ry="1.9"/>'
+        '<ellipse cx="10" cy="11.4" rx="2.4" ry="1.9"/></g>'
+        # a camera
+        '<g transform="translate(90 92)"><rect x="0" y="3" width="16" '
+        'height="11" rx="2.6"/><circle cx="8" cy="8.6" r="3.2"/>'
+        '<path d="M4.6 3 L6 0.8 h4 L11.4 3"/></g>'
+        # a star
+        '<g transform="translate(16 96)">'
+        '<path d="M7 0 L8.9 4.6 L14 5 L10.1 8.2 L11.3 13 L7 10.4 '
+        'L2.7 13 L3.9 8.2 L0 5 L5.1 4.6 Z"/></g>'
+        # a balloon
+        '<g transform="translate(54 94)"><ellipse cx="6" cy="6" rx="5.2" '
+        'ry="6.2"/><path d="M6 12.2 q2 3 -1 6"/></g>'
+    )
+    return (
+        '<defs>'
+        f'<pattern id="waDoodle" width="120" height="120" '
+        f'patternUnits="userSpaceOnUse">'
+        f'<g fill="none" stroke="{d}" stroke-width="1.5" '
+        'stroke-linecap="round" stroke-linejoin="round" opacity=".62">'
+        f'{doodles}</g></pattern>'
+        '<filter id="waBub" x="-30%" y="-30%" width="170%" height="180%">'
+        '<feDropShadow dx="0" dy="1" stdDeviation="0.7" '
+        'flood-color="#0B141A" flood-opacity="0.16"/></filter>'
+        f'<clipPath id="waGlass"><rect x="{SCR_X}" y="{SCR_Y}" '
+        f'width="{SCR_W}" height="{SCR_H}" rx="30"/></clipPath>'
+        f'<clipPath id="waChat"><rect x="{SCR_X}" y="{CHAT_Y}" '
+        f'width="{SCR_W}" height="{CHAT_H}"/></clipPath>'
+        '<linearGradient id="waAv" x1="0" y1="0" x2="0" y2="1">'
+        '<stop offset="0" stop-color="#8FA9BF"/>'
+        '<stop offset="1" stop-color="#6B889F"/></linearGradient>'
+        '</defs>')
+
+
+def _status():
+    """9:41, four bars, wifi, battery. All white, on the header's green."""
+    x0 = SCR_X + 208
+    bars = "".join(
+        f'<rect x="{x0 + i * 5.5:.1f}" y="{SCR_Y + 26 - i * 2.6:.1f}" '
+        f'width="3.4" height="{7 + i * 2.6:.1f}" rx="1.2" fill="#FFFFFF"/>'
+        for i in range(4))
+    wx = x0 + 27
+    bx = x0 + 45
+    return (
+        '<g class="hkstatus">'
+        f'<text x="{SCR_X + 18}" y="{SCR_Y + 28}" '
+        'style="font:700 14px var(--sans)" fill="#FFFFFF">9:41</text>'
+        + bars +
+        f'<path d="M{wx} {SCR_Y + 22} a9 9 0 0 1 12 0" stroke="#FFFFFF" '
+        'stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".55"/>'
+        f'<path d="M{wx + 2.6} {SCR_Y + 25.4} a6 6 0 0 1 6.8 0" '
+        'stroke="#FFFFFF" stroke-width="2.2" fill="none" '
+        'stroke-linecap="round" opacity=".8"/>'
+        f'<circle cx="{wx + 6}" cy="{SCR_Y + 29.6}" r="1.5" fill="#FFFFFF"/>'
+        f'<rect x="{bx}" y="{SCR_Y + 18}" width="21" height="11" rx="3.2" '
+        'fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity=".65"/>'
+        f'<rect x="{bx + 1.8}" y="{SCR_Y + 19.8}" width="13" height="7.4" '
+        'rx="1.8" fill="#FFFFFF"/>'
+        f'<path d="M{bx + 22.6} {SCR_Y + 21.4} v4.2" stroke="#FFFFFF" '
+        'stroke-width="1.8" stroke-linecap="round" opacity=".65"/>'
+        '</g>')
+
+
+def _avatar(cx_, cy_, r=15):
+    """A photo, not a pictogram. A flat silhouette on grey is the thing that
+    makes a phone mock look drawn."""
+    return (
+        f'<g><circle cx="{cx_}" cy="{cy_}" r="{r}" fill="url(#waAv)"/>'
+        f'<circle cx="{cx_}" cy="{cy_ - r * 0.22:.1f}" '
+        f'r="{r * 0.36:.1f}" fill="#F0E2D6"/>'
+        f'<path d="M{cx_ - r * 0.62:.1f},{cy_ + r * 0.92:.1f} '
+        f'a{r * 0.62:.1f},{r * 0.56:.1f} 0 0 1 {r * 1.24:.1f},0 z" '
+        'fill="#F0E2D6"/>'
+        f'<path d="M{cx_ - r * 0.4:.1f},{cy_ - r * 0.3:.1f} '
+        f'a{r * 0.4:.1f},{r * 0.34:.1f} 0 0 1 {r * 0.8:.1f},0 '
+        f'l0,{-r * 0.12:.1f} a{r * 0.4:.1f},{r * 0.4:.1f} 0 0 0 '
+        f'{-r * 0.8:.1f},0 z" fill="#3E2C24"/></g>')
+
+
+def _header(cls, name="Sanjay", sub="online"):
+    """Back, avatar, name, and WhatsApp's two call buttons. Search lives in
+    the kebab menu on a real chat, not beside the name."""
+    y = SCR_Y + BAR_H
+    mid = y + HEAD_H / 2
+    return (
+        f'<g class="{cls}">'
+        f'<rect x="{SCR_X}" y="{y}" width="{SCR_W}" height="{HEAD_H}" '
+        f'fill="{WA_GREEN}"/>'
+        f'<path d="M{SCR_X + 20} {mid} l9 -8 M{SCR_X + 20} {mid} l9 8" '
+        'stroke="#FFFFFF" stroke-width="2.4" fill="none" '
+        'stroke-linecap="round" stroke-linejoin="round"/>'
+        + _avatar(SCR_X + 50, mid)
+        + f'<text x="{SCR_X + 74}" y="{mid - 2}" '
+          'style="font:600 14.5px var(--sans)" fill="#FFFFFF">'
+          f'{name}</text>'
+        + f'<text x="{SCR_X + 74}" y="{mid + 13}" '
+          'style="font:400 11px var(--sans)" fill="#CFE9DF">'
+          f'{sub}</text>'
+        # video call
+        + f'<rect x="{SCR_X + 196}" y="{mid - 7}" width="15" height="14" '
+          'rx="3.4" fill="none" stroke="#FFFFFF" stroke-width="1.8"/>'
+        + f'<path d="M{SCR_X + 213} {mid - 3} l6 -4 v14 l-6 -4 z" '
+          'fill="#FFFFFF"/>'
+        # voice call
+        + f'<path d="M{SCR_X + 231} {mid - 8} l4 -1 2 5 -3 2 '
+          'a11 11 0 0 0 6 6 l2 -3 5 2 -1 4 a3 3 0 0 1 -3 2 '
+          'a17 17 0 0 1 -14 -14 a3 3 0 0 1 2 -3 z" fill="#FFFFFF"/>'
+        # kebab
+        + "".join(
+            f'<circle cx="{SCR_X + 262}" cy="{mid - 7 + k * 7}" r="1.9" '
+            'fill="#FFFFFF"/>' for k in range(3))
+        + '</g>')
+
+
+def _wallpaper():
+    return (f'<rect x="{SCR_X}" y="{CHAT_Y}" width="{SCR_W}" '
+            f'height="{CHAT_H}" fill="{WA_BG}"/>'
+            f'<rect x="{SCR_X}" y="{CHAT_Y}" width="{SCR_W}" '
+            f'height="{CHAT_H}" fill="url(#waDoodle)"/>')
+
+
+def _chip(cx_, y, text, w=None):
+    """The date divider. A pale pill floating on the wallpaper."""
+    w = w or 22 + 7.2 * len(text)
+    return (f'<g><rect x="{cx_ - w / 2:.0f}" y="{y}" width="{w:.0f}" '
+            f'height="22" rx="7" fill="{WA_PANEL}" opacity=".94"/>'
+            f'<text x="{cx_}" y="{y + 15}" text-anchor="middle" '
+            'style="font:400 11px var(--sans)" fill="#5A6B74">'
+            f'{text}</text></g>')
+
+
+def _ticks(x, y, blue=True):
+    """The two check marks. Blue when he has read it."""
+    c = WA_TICK if blue else "#8696A0"
+    return (f'<path d="M{x} {y - 1} l2.6 2.8 l5.6 -6.4 '
+            f'M{x + 4.6} {y - 1} l2.6 2.8 l5.6 -6.4" stroke="{c}" '
+            'stroke-width="1.5" fill="none" stroke-linecap="round" '
+            'stroke-linejoin="round"/>')
+
+
+def _msg(side, x, y, w, h, body, time="9:38", read=True, tail=True):
+    """One bubble, with WhatsApp's tail on the first of a run and the time
+    tucked into the bottom right corner inside the bubble."""
+    out = side == "out"
+    fill = WA_OUT if out else "#FFFFFF"
+    r = x + w
+    nub = ""
+    if tail:
+        nub = (f'<path d="M{r},{y} L{r + 7},{y} Q{r + 7},{y + 8} {r},{y + 9} Z"'
+               f' fill="{fill}"/>' if out else
+               f'<path d="M{x},{y} L{x - 7},{y} Q{x - 7},{y + 8} {x},{y + 9} Z"'
+               f' fill="{fill}"/>')
+    meta = (f'<text x="{r - (26 if out else 12)}" y="{y + h - 8}" '
+            'text-anchor="end" style="font:400 10.5px var(--sans)" '
+            f'fill="{WA_META}">{time}</text>')
+    if out:
+        meta += _ticks(r - 22, y + h - 11, read)
+    return (f'<g filter="url(#waBub)">{nub}'
+            f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="9" '
+            f'fill="{fill}"/></g>{body}{meta}')
+
+
+def _txt(x, y, s, size=13, weight=400, fill="#111B21", mono=False):
+    fam = "var(--mono)" if mono else "var(--sans)"
+    return (f'<text x="{x}" y="{y}" style="font:{weight} {size}px {fam}" '
+            f'fill="{fill}">{s}</text>')
+
+
+def _screen_fight():
+    """Press 1. The argument, as it actually reads. Not one message in here
+    contains the word, because her own search would have found it."""
+    return (
+        '<g class="hkscr hkscr1" clip-path="url(#waChat)">'
+        + _wallpaper()
+        + _chip(SCR_X + SCR_W / 2, CHAT_Y + 118, "TODAY", 56)
+        + _msg("out", 122, CHAT_Y + 156, 178, 40,
+               _txt(134, CHAT_Y + 178, "You forgot our 2 weeks"),
+               time="9:36")
+        + _msg("out", 96, CHAT_Y + 202, 204, 40,
+               _txt(108, CHAT_Y + 224, "and you never apologised"),
+               time="9:37", tail=False)
+        + _msg("in", 52, CHAT_Y + 248, 164, 40,
+               _txt(64, CHAT_Y + 270, "I DID. Check Tuesday"), time="9:38")
+        + '</g>')
+
+
+def _screen_search():
+    """Press 2. Her search, and the phone taking her side."""
+    y = SCR_Y + BAR_H
+    mid = y + HEAD_H / 2
+    caret = SCR_X + 66 + 8.4 * len(WORD)
+    return (
+        '<g class="hkscr hkscr2" clip-path="url(#waGlass)">'
+        f'<rect x="{SCR_X}" y="{y}" width="{SCR_W}" height="{HEAD_H}" '
+        f'fill="{WA_GREEN}"/>'
+        f'<path d="M{SCR_X + 20} {mid} l9 -8 M{SCR_X + 20} {mid} l9 8" '
+        'stroke="#FFFFFF" stroke-width="2.4" fill="none" '
+        'stroke-linecap="round" stroke-linejoin="round"/>'
+        f'<rect x="{SCR_X + 40}" y="{mid - 15}" width="222" height="30" '
+        'rx="15" fill="#FFFFFF"/>'
+        f'<path d="M{SCR_X + 54} {mid - 3} a6.5 6.5 0 1 0 0.01 0 '
+        f'M{SCR_X + 59} {mid + 6} l5 5" stroke="#667781" stroke-width="1.9" '
+        'fill="none" stroke-linecap="round"/>'
+        + _txt(SCR_X + 68, mid + 5, WORD.lower(), 14, 500, "#111B21", True)
+        + f'<rect class="hkcaret" x="{caret:.0f}" y="{mid - 8}" width="2" '
+          f'height="16" fill="{WA_GREEN}"/>'
+        + _wallpaper()
+        # WhatsApp's empty state, centred on the wallpaper
+        + f'<g transform="translate({SCR_X + SCR_W / 2} {CHAT_Y + 108})">'
+          '<circle r="30" fill="#FFFFFF" opacity=".72"/>'
+          '<path d="M-6 -6 a11 11 0 1 0 0.01 0 M2 3 l9 9" stroke="#9AA7AE" '
+          'stroke-width="3.4" fill="none" stroke-linecap="round"/></g>'
+        + f'<text x="{SCR_X + SCR_W / 2}" y="{CHAT_Y + 168}" '
+          'text-anchor="middle" style="font:600 14px var(--sans)" '
+          'fill="#B0433C">No results found</text>'
+        + f'<text x="{SCR_X + SCR_W / 2}" y="{CHAT_Y + 190}" '
+          'text-anchor="middle" style="font:400 12px var(--sans)" '
+          'fill="#667781">No messages match this search</text>'
+        + '</g>')
+
+
+def _screen_found():
+    """Press 3. Tuesday, scrolled back. It was there the whole time, with
+    WhatsApp's own yellow highlight sitting on the match."""
+    msg = html.escape(MSG)
+    hw = 13.2 * len(MSG) + 14
+    return (
+        '<g class="hkscr hkscr3" clip-path="url(#waChat)">'
+        + _wallpaper()
+        + _chip(SCR_X + SCR_W / 2, CHAT_Y + 10, "TUESDAY", 68)
+        + _msg("in", 52, CHAT_Y + 44, 150, 40,
+               _txt(64, CHAT_Y + 66, "ok listen na"), time="7:11")
+        + _msg("in", 52, CHAT_Y + 96, hw + 24, 58,
+               f'<rect x="60" y="{CHAT_Y + 108}" width="{hw:.0f}" '
+               f'height="27" rx="5" fill="{WA_HIT}"/>'
+               + _txt(67, CHAT_Y + 128, msg, 19, 700, "#111B21", True),
+               time="7:12", tail=False)
+        + _msg("in", 52, CHAT_Y + 164, 186, 40,
+               _txt(64, CHAT_Y + 186, "I mean it ya"), time="7:12", tail=False)
+        + '</g>')
+
+
+def _composer():
+    y = SCR_Y + SCR_H - COMP_H
+    mid = y + 26
+    fx = SCR_X + 8
+    fw = SCR_W - 60
+    return (
+        f'<g><rect x="{SCR_X}" y="{y}" width="{SCR_W}" height="{COMP_H}" '
+        f'fill="{WA_BG}"/>'
+        f'<rect x="{fx}" y="{mid - 17}" width="{fw}" height="34" rx="17" '
+        'fill="#FFFFFF"/>'
+        # emoji
+        f'<g fill="none" stroke="#54656F" stroke-width="1.6">'
+        f'<circle cx="{fx + 20}" cy="{mid}" r="8"/>'
+        f'<path d="M{fx + 16.5} {mid + 2.6} a4.6 4.6 0 0 0 7 0"/></g>'
+        f'<circle cx="{fx + 17}" cy="{mid - 2.6}" r="1.1" fill="#54656F"/>'
+        f'<circle cx="{fx + 23}" cy="{mid - 2.6}" r="1.1" fill="#54656F"/>'
+        + _txt(fx + 36, mid + 5, "Message", 13.5, 400, "#8696A0")
+        # paperclip
+        + f'<path d="M{fx + fw - 48} {mid - 1} l6 -6 a3.4 3.4 0 0 1 4.8 4.8 '
+          f'l-8 8 a5.2 5.2 0 0 1 -7.4 -7.4 l6.6 -6.6" stroke="#54656F" '
+          'stroke-width="1.7" fill="none" stroke-linecap="round" '
+          'stroke-linejoin="round"/>'
+        # camera
+        + f'<g fill="none" stroke="#54656F" stroke-width="1.7">'
+          f'<rect x="{fx + fw - 30}" y="{mid - 7}" width="17" height="13" '
+          'rx="3"/>'
+          f'<circle cx="{fx + fw - 21.5}" cy="{mid - 0.5}" r="3.4"/>'
+          f'<path d="M{fx + fw - 26} {mid - 7} l1.6 -2.6 h4.6 l1.6 2.6"/></g>'
+        # the mic button
+        + f'<circle cx="{SCR_X + SCR_W - 26}" cy="{mid}" r="17" '
+          f'fill="{WA_GREEN}"/>'
+        + f'<rect x="{SCR_X + SCR_W - 29.5}" y="{mid - 9}" width="7" '
+          'height="12" rx="3.5" fill="#FFFFFF"/>'
+        + f'<path d="M{SCR_X + SCR_W - 33} {mid + 1} a7 7 0 0 0 14 0" '
+          'stroke="#FFFFFF" stroke-width="1.8" fill="none" '
+          'stroke-linecap="round"/>'
+        + f'<path d="M{SCR_X + SCR_W - 26} {mid + 8} v3.5" stroke="#FFFFFF" '
+          'stroke-width="1.8" stroke-linecap="round"/>'
+        + '</g>')
+
+
+def phone():
+    return (
+        '<g class="hkphone">'
+        # the body, its rim, and the glass
+        '<rect x="30" y="10" width="300" height="500" rx="40" '
+        'fill="#0B0F12"/>'
+        '<rect x="33.5" y="13.5" width="293" height="493" rx="37" '
+        'fill="none" stroke="#2C3439" stroke-width="1.4"/>'
+        f'<rect x="{SCR_X}" y="{SCR_Y}" width="{SCR_W}" height="{SCR_H}" '
+        f'rx="30" fill="{WA_BG}"/>'
+        # the status bar and the header sit on the same green
+        f'<rect x="{SCR_X}" y="{SCR_Y}" width="{SCR_W}" height="{BAR_H + 4}" '
+        f'rx="30" fill="{WA_GREEN}"/>'
+        f'<rect x="{SCR_X}" y="{SCR_Y + 24}" width="{SCR_W}" height="24" '
+        f'fill="{WA_GREEN}"/>'
+        + _status()
+        + _screen_fight() + _screen_search() + _screen_found()
+        + _header("hkh1 hkscr hkscr1") + _header("hkh3 hkscr hkscr3")
+        + _composer()
+        # the home indicator
+        + f'<rect x="{SCR_X + SCR_W / 2 - 46}" y="{SCR_Y + SCR_H - 9}" '
+          'width="92" height="4" rx="2" fill="#0B141A" opacity=".28"/>'
+        # the dynamic island, over everything
+        + f'<rect x="{SCR_X + SCR_W / 2 - 43}" y="{SCR_Y + 7}" width="86" '
+          'height="25" rx="12.5" fill="#0B0F12"/>'
+        + f'<circle cx="{SCR_X + SCR_W / 2 + 27}" cy="{SCR_Y + 19.5}" '
+          'r="4.6" fill="#161C20"/>'
+        + '</g>')
+
+

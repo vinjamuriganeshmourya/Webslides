@@ -1,0 +1,78 @@
+/* =================== the hook: a code with a hash between every character ===
+   One moving group, `.hkcomb`. Scaling it by two about the first mark sends
+   the marks from cells 1, 2, 3, 4 to cells 1, 3, 5, 7, so the jump getting
+   longer IS the argument and the characters never move. The origin is written
+   into the transform, because transform-origin on an SVG group is not
+   honoured everywhere. */
+.hkwrap{display:flex;flex:1;min-height:0;align-items:center;justify-content:center}
+.hkfig{display:block;width:100%;height:auto;max-height:100%}
+
+/* the slots are there from press 1, drawn empty. A half blank card while the
+   instructor is still talking reads as a card that did not finish loading. */
+.hkcell .hkhit{fill:#FFFFFF}
+.hkcell .hkbox{fill:#FBFCFD;stroke:#E2E9EF;stroke-width:2;stroke-dasharray:6 5;
+  transition:fill 260ms var(--ease-out),stroke 260ms var(--ease-out)}
+.an-2 .hkcell .hkbox,.an-3 .hkcell .hkbox,.an-4 .hkcell .hkbox{
+  fill:#F4F7FA;stroke:#CFE0EC;stroke-dasharray:none}
+.hkch,.hkix{opacity:0;transition:opacity 320ms var(--ease-out),
+  fill 260ms var(--ease-out)}
+.an-2 .hkch,.an-3 .hkch,.an-4 .hkch,
+.an-2 .hkix,.an-3 .hkix,.an-4 .hkix{opacity:1}
+.hkch{font:700 38px var(--mono);fill:#2B3138}
+.hkix{font:600 20px var(--mono);fill:#8B98A5}
+.hkghp{fill:none;stroke:#DDE5EC;stroke-width:2.5;stroke-dasharray:8 7;
+  transition:opacity 260ms var(--ease-out)}
+.an-3 .hkghp,.an-4 .hkghp{opacity:0}
+/* the digits light up as the marks LAND on them, not while they are still
+   travelling. Slowed down, the early highlight reads as the answer arriving
+   before the argument does. */
+.an-4 .hkcell.hkd .hkbox{fill:#DCF0FB;stroke:var(--dk-blue);stroke-width:3;
+  transition-delay:640ms}
+.an-4 .hkcell.hkd .hkch{fill:var(--dk-blue);transition-delay:640ms}
+
+.hkcomb{opacity:0;transform-box:view-box;transform-origin:0 0;
+  transition:opacity 260ms var(--ease-out),
+             transform 900ms var(--ease-in-out)}
+.an-3 .hkcomb,.an-4 .hkcomb{opacity:1}
+.an-4 .hkcomb{transform:translate(__SHIFT__px,0) scale(2,1)}
+.hkmark{fill:var(--dk-blue)}
+.hkarc{fill:none;stroke:var(--dk-blue);stroke-width:3;stroke-dasharray:7 6}
+.hklbl{font:700 22px var(--sans);fill:var(--dk-blue);opacity:0;
+  transition:opacity 260ms var(--ease-out)}
+.an-3 .hklbl1{opacity:1}
+.an-4 .hklbl2{opacity:1}
+
+.hkres{opacity:0;transition:opacity 300ms var(--ease-out)}
+.an-3 .hkres1{opacity:1}
+.an-4 .hkres2{opacity:1}
+.hkres>rect{fill:#FFFFFF;stroke:#CFE0EC;stroke-width:2.5}
+.hkres2>rect{fill:#EAF6FC;stroke:var(--dk-blue);stroke-width:3}
+.hkyou{font:600 22px var(--sans);fill:#6B7784}
+.hkpt{font:700 34px var(--mono);fill:#2B3138}
+.hkres2 .hkpt{fill:var(--dk-blue)}
+.hkpn{font:600 17px var(--sans);fill:#8B98A5}
+
+.hkcap{opacity:0;transition:opacity 260ms var(--ease-out)}
+.hkcaps text{font:600 24px var(--sans);fill:var(--dk-text)}
+.an-1 .hkcap1,.an-2 .hkcap2,.an-3 .hkcap3,.an-4 .hkcap4{opacity:1}
+@media (prefers-reduced-motion:reduce){
+  /* the colour changes stay, the travel goes. The finding lives in the end
+     state, so the end state must still be reachable. */
+  .hkcomb{transition-duration:1ms}
+}
+@media print{
+  .hkch,.hkix,.hkcomb,.hklbl2,.hkres2,.hkcap4{opacity:1}
+  .hkcomb{transform:translate(__SHIFT__px,0) scale(2,1)}
+}
+
+/* a numbered run of instructions on a panel. It used to carry an inline
+   16px, which no projector rule can beat, so it stayed at reading size. */
+.steplist{margin:0 0 12px;padding-left:22px;font:16px/1.7 var(--sans);
+  color:var(--dk-text)}
+.steplist li{margin:0 0 8px}
+.steplist b{color:var(--dk-blue)}
+.steplist code{font:.95em var(--mono);color:var(--dk-blue)}
+body.present .steplist{font-size:clamp(14px,1.5vw,24px);
+  padding-left:clamp(20px,1.8vw,34px)}
+body.present .steplist li{margin-bottom:clamp(6px,1vh,14px)}
+

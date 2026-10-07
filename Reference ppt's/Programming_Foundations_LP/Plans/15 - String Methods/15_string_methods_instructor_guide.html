@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Instructor Guide - String Methods</title>
+<style>
+:root{
+  --ink:#181B21; --mid:#3A3F4B; --muted:#63697A; --page:#FFFFFF;
+  --rule:#D9DDE5; --rule2:#EEF0F4; --soft:#F6F7F9;
+  --accent:#4F46E5; --hook:#0B7285;
+  --activity:#B4531A; --activity-soft:#FDF2E6; --quiz:#7C3AED;
+  --exit:#0F766E;
+  --sidebar:272px;
+  --sans:ui-sans-serif,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"DejaVu Sans Mono",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#EDEFF3;color:var(--ink);font:16px/1.62 var(--sans);
+  -webkit-font-smoothing:antialiased}
+
+/* ---------------- sidebar ---------------- */
+.side{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar);background:var(--page);
+  border-right:1px solid var(--rule);padding:22px 16px 30px;overflow-y:auto;z-index:20}
+.side-h{font-size:15px;font-weight:740;letter-spacing:-.01em;margin:0 0 2px}
+.side-sub{font-size:12px;color:var(--muted);margin:0 0 16px;line-height:1.5}
+.nav-item{display:flex;gap:9px;align-items:baseline;width:100%;text-align:left;
+  text-decoration:none;color:var(--ink);background:none;border:0;
+  border-left:3px solid var(--rule);border-radius:0 7px 7px 0;
+  padding:7px 10px;margin:0 0 3px;font:600 13px/1.35 var(--sans);cursor:pointer;
+  transition:background-color 140ms ease}
+.nav-item:hover{background:var(--rule2)}
+.nav-item.current{background:var(--rule2)}
+.nav-n{flex:0 0 auto;color:var(--muted);font-weight:700;font-size:11.5px;padding-top:1px}
+.nav-l{flex:1 1 auto}
+.nav-t{flex:0 0 auto;color:var(--muted);font-weight:600;font-size:11px;white-space:nowrap}
+.nav-item.k-hook{border-left-color:var(--hook)}
+.nav-item.k-activity{border-left-color:var(--activity)}
+.nav-item.k-hands{border-left-color:var(--exit)}
+.nav-item.k-quiz{border-left-color:var(--quiz)}
+.nav-item.current.k-concept{border-left-color:var(--accent)}
+.cp{display:flex;align-items:center;margin:14px 0 9px}
+.cp span{flex:0 0 auto;background:var(--ink);color:#fff;border-radius:5px;
+  font:700 10.5px/1 var(--sans);letter-spacing:.04em;text-transform:uppercase;padding:5px 8px}
+.cp::after{content:'';flex:1;height:1px;margin-left:8px;background:var(--rule)}
+.cp.floor span{background:var(--activity)}
+
+/* ---------------- sheet ---------------- */
+.sheet{max-width:820px;margin:28px auto;margin-left:calc(var(--sidebar) + 40px);
+  background:var(--page);padding:52px 60px 68px;
+  box-shadow:0 1px 2px rgba(20,20,40,.05),0 10px 30px rgba(20,20,40,.08)}
+h1{font-size:30px;line-height:1.2;font-weight:760;letter-spacing:-.02em;margin:0 0 4px}
+.kicker{font:700 12px var(--sans);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 8px}
+.meta{font-size:14.5px;color:var(--mid);margin:0 0 6px}
+.meta b{color:var(--ink);font-weight:680}
+h2{font-size:21px;font-weight:730;letter-spacing:-.015em;margin:0 0 4px;scroll-margin-top:20px}
+h2 .num{color:var(--muted);font-weight:700;margin-right:8px}
+h2 .clock{font-weight:600;color:var(--muted);font-size:15px;letter-spacing:0}
+h3{font-size:16.5px;font-weight:700;margin:22px 0 6px}
+section{border-top:1px solid var(--rule);margin-top:32px;padding-top:24px;scroll-margin-top:16px}
+section.tight{margin-top:24px;padding-top:20px}
+p{margin:0 0 12px}
+ul,ol{margin:0 0 12px;padding-left:22px}
+li{margin:0 0 7px}
+code{font:14px var(--mono);background:var(--rule2);border-radius:4px;padding:1px 5px}
+pre{font:13.5px/1.6 var(--mono);background:var(--soft);border:1px solid var(--rule);
+  border-radius:10px;padding:14px 16px;overflow-x:auto;margin:0 0 14px}
+.say{border-left:4px solid var(--accent);background:#F7F7FE;border-radius:0 10px 10px 0;
+  padding:12px 16px;margin:0 0 14px;font-style:italic;color:var(--mid)}
+.say b{font-style:normal;color:var(--ink)}
+.box{border:1px solid var(--rule);border-radius:12px;padding:18px 20px;margin:0 0 16px;background:var(--soft)}
+.box h3{margin-top:0}
+.safe{border-left:4px solid var(--exit);background:#EFF7F5;border-radius:0 10px 10px 0;
+  padding:12px 16px;margin:0 0 14px}
+.safe b{color:var(--exit)}
+.act{border-left:4px solid var(--activity);background:var(--activity-soft);border-radius:0 10px 10px 0;
+  padding:12px 16px;margin:0 0 14px}
+.act b{color:var(--activity)}
+.hookline{color:var(--hook);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:12px;margin:0 0 6px}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);border:1px solid var(--rule);
+  border-radius:99px;padding:2px 10px;margin:0 0 10px}
+table{border-collapse:collapse;width:100%;margin:0 0 14px;font-size:15px}
+th,td{border:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--soft);font-weight:680}
+.small{font-size:14.5px;color:var(--mid)}
+.cpnote{display:flex;align-items:center;gap:10px;margin:22px 0 0;
+  font:700 11.5px var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.cpnote span{background:var(--ink);color:#fff;border-radius:5px;padding:5px 9px;letter-spacing:.04em}
+.cpnote.floor span{background:var(--activity)}
+
+@media print{
+  body{background:#fff;font-size:13px;line-height:1.48}
+  .side{display:none}
+  .sheet{box-shadow:none;margin:0;max-width:none;padding:0 0 10px}
+  h1{font-size:24px}
+  h2{font-size:18px;break-after:avoid}
+  h2 .clock{font-size:13.5px}
+  h3{font-size:14.5px;margin:14px 0 5px}
+  .meta,.small{font-size:12.5px}
+  section{margin-top:16px;padding-top:12px}
+  section.tight{margin-top:15px;padding-top:12px}
+  p{margin-bottom:7px}
+  li{margin-bottom:4px}
+  .box{padding:11px 13px;margin-bottom:10px}
+  .say,.safe,.act{padding:8px 12px;margin-bottom:10px}
+  pre{font-size:12px;padding:10px 12px;margin-bottom:10px}
+  table{font-size:13px;margin-bottom:10px}
+  th,td{padding:5px 8px}
+  .cpnote{margin-top:16px;font-size:10.5px}
+  .box,.say,.safe,.act,pre,table{break-inside:avoid}
+  @page{margin:14mm 13mm}
+}
+@media (max-width:1180px){
+  .side{position:static;width:auto;height:auto;border-right:0;border-bottom:1px solid var(--rule)}
+  .sheet{margin:20px auto;padding:30px 22px 44px}
+}
+</style>
+</head>
+<body>
+
+<nav class="side">
+<p class="side-h">Instructor guide</p>
+<p class="side-sub">Session 15 &middot; String Methods &middot; 75 min</p>
+<a class="nav-item k-concept" href="#s1"><span class="nav-n">1</span><span class="nav-l">How to run this session</span></a>
+<a class="nav-item k-quiz" href="#s2"><span class="nav-n">2</span><span class="nav-l">Opening and recap</span><span class="nav-t">0 to 5</span></a>
+<a class="nav-item k-hook" href="#s3"><span class="nav-n">3</span><span class="nav-l">Hook, the search</span><span class="nav-t">5 to 9</span></a>
+<a class="nav-item k-concept" href="#s4"><span class="nav-n">4</span><span class="nav-l">Name it, the plan</span><span class="nav-t">9 to 11</span></a>
+<p class="cp"><span>Checkpoint 1 &middot; 11 min</span></p>
+<a class="nav-item k-concept" href="#s5"><span class="nav-n">5</span><span class="nav-l">One character to four</span><span class="nav-t">11 to 14</span></a>
+<a class="nav-item k-concept" href="#s6"><span class="nav-n">6</span><span class="nav-l">The step</span><span class="nav-t">14 to 20</span></a>
+<a class="nav-item k-hands" href="#s7"><span class="nav-n">7</span><span class="nav-l">Task 1, slice machine</span><span class="nav-t">20 to 25</span></a>
+<a class="nav-item k-hands" href="#s8"><span class="nav-n">8</span><span class="nav-l">Task 2, change the step</span><span class="nav-t">25 to 29</span></a>
+<p class="cp"><span>Checkpoint 2 &middot; 29 min</span></p>
+<a class="nav-item k-quiz" href="#s9"><span class="nav-n">9</span><span class="nav-l">Classroom quiz</span><span class="nav-t">29 to 34</span></a>
+<a class="nav-item k-concept" href="#s10"><span class="nav-n">10</span><span class="nav-l">Why a method at all</span><span class="nav-t">34 to 39</span></a>
+<a class="nav-item k-concept" href="#s11"><span class="nav-n">11</span><span class="nav-l">isdigit</span><span class="nav-t">39 to 42</span></a>
+<p class="cp"><span>Checkpoint 3 &middot; 42 min</span></p>
+<a class="nav-item k-hook" href="#s12"><span class="nav-n">12</span><span class="nav-l">strip</span><span class="nav-t">42 to 51</span></a>
+<a class="nav-item k-hands" href="#s13"><span class="nav-n">13</span><span class="nav-l">Task 3, trace it</span><span class="nav-t">51 to 55</span></a>
+<p class="cp"><span>Checkpoint 4 &middot; 55 min</span></p>
+<a class="nav-item k-concept" href="#s14"><span class="nav-n">14</span><span class="nav-l">replace</span><span class="nav-t">55 to 58</span></a>
+<a class="nav-item k-hands" href="#s15"><span class="nav-n">15</span><span class="nav-l">startswith, endswith</span><span class="nav-t">58 to 63</span></a>
+<a class="nav-item k-concept" href="#s16"><span class="nav-n">16</span><span class="nav-l">upper and lower</span><span class="nav-t">63 to 66</span></a>
+<p class="cp floor"><span>Hard floor &middot; 66 min</span></p>
+<a class="nav-item k-exit" href="#s17"><span class="nav-n">17</span><span class="nav-l">Exit question</span><span class="nav-t">66 to 70</span></a>
+<a class="nav-item k-concept" href="#s18"><span class="nav-n">18</span><span class="nav-l">Takeaways and close</span><span class="nav-t">70 to 75</span></a>
+<a class="nav-item k-concept" href="#s19"><span class="nav-n">19</span><span class="nav-l">If you are running late</span></a>
+</nav>
+
+<div class="sheet">
+
+<h1>Instructor Guide - String Methods</h1>
+<p class="meta"><b>Duration</b> 75 minutes</p>
+
+<section class="tight" id="s1">
+<h2><span class="num">1.</span>How to run this session</h2>
+<p>This guide gives you the shape of each beat and the few lines that are worth saying close to as written. Everything else is yours. The session is in two halves with the quiz as the join. Everything before it is slicing, everything after it is methods, and one rule runs through both: a slice stops before its last number, and strip works from the ends inwards.</p>
+<div class="box">
+<h3>Five habits that carry the whole session</h3>
+<ul>
+<li><b>Ask before you tell.</b> Every card puts a line on screen with an empty output box. Ask what it prints, take two answers, and only then run it.</li>
+<li><b>Write first, run second.</b> Every task today is written down before anything is typed. A prediction after the run is not a prediction.</li>
+<li><b>Count every option.</b> On every vote, count hands for A, then B, then C, then D before anything is revealed, then explain every option, not only the right one.</li>
+<li><b>Nudge while they work.</b> Walk the rows and keep talking: are you done with row two? One minute left. Do not skip a row.</li>
+<li><b>Take the word from the room.</b> If a student names the method before you do, use their words for the rest of the session.</li>
+</ul>
+</div>
+<p class="small">The worksheet is digital and holds all four tasks. It opens at task 1 and stays beside the playground for the rest of the session. Laptops are shut until then.</p>
+<p class="small">Four safe points are marked through the guide. Each one is a short check that tells you whether to move on or to go back. If a safe point fails, the beat after it will not land, so fix it there.</p>
+</section>
+
+<section id="s2">
+<h2><span class="num">2.</span>Opening and recap <span class="clock">0 to 5 min</span></h2>
+<p>Let the room settle. One line on today: we already know how to take a piece out of a string, today we get much better at it and Python does most of the work. Say laptops shut once and it holds until task 1.</p>
+<p>The recap is a sorting card on last session's range. Five numbers along the top, two bins under them. Read the five out loud, then take them one at a time: does this one come out, yes or no? Count the hands for yes, count them for no, then drop it.</p>
+<p>The two to slow down on are the last number in and the number that is written but never reached. Read the reason out loud on both, then say the whole sequence once: the start is in, the stop is not.</p>
+<div class="say"><b>Hand off with this:</b> "Hold on to that. Everything we do today stops one place early, in exactly the same way."</div>
+<p class="small">The hands on the stop value are the read you want. If a third of the room says yes, slow down, because the same mistake costs them the exit question.</p>
+</section>
+
+<section id="s3">
+<h2><span class="num">3.</span>Hook, the message the search cannot find <span class="clock">5 to 9 min</span></h2>
+<p class="hookline">Laptops shut. Nobody types here.</p>
+<p>Start from something every one of them has done: somebody in your group types with a space between every letter. Show the chat and ask what the message says. The room reads it in about a second.</p>
+<p>Then open the search bar with that same word typed in it, and the chat says no messages found. Wait. Let them see that the letters are right there on the screen.</p>
+<div class="say"><b>Ask, then take two or three answers without correcting anyone:</b> "The letters are right there. So why can it not find it?"</div>
+<p>The boxes on the right are the answer: nine boxes, not five, and four of them are spaces. A space is a character like any other. Ask which boxes the letters are in and wait for the even numbers.</p>
+<p>Then show the run of five boxes side by side, which is the only shape they have ever asked for, and it drags the spaces along. Ask what would have to change, take two answers, and only then stretch the marks out so they land on every second box and the word appears.</p>
+<div class="safe"><b>Safe point 1, a space is a character.</b> Ask why the search failed. You want because the spaces are characters in the middle of the word, not because the phone is slow or the spelling is wrong. If you hear anything else, step the boxes again before you go on.</div>
+<p class="small">Do not use the words slice or step here. The room names the topic on the next card.</p>
+</section>
+
+<section id="s4">
+<h2><span class="num">4.</span>Name it, then the plan <span class="clock">9 to 11 min</span></h2>
+<p>Now the card names it: string methods. Tie it back, the jump they just saw has a name and so does every other job we will do to a string today.</p>
+<p>Then the plan, one stop per press with one sentence each. Slicing, taking a part of a string. Methods, jobs Python already knows. Where it stops, a slice stops before its last number, which is the same rule as the recap. Say plainly that the third one is the one that costs marks.</p>
+<p class="cpnote"><span>Checkpoint 1</span> you should be at 11 minutes here</p>
+</section>
+
+<section id="s5">
+<h2><span class="num">5.</span>From one character to four <span class="clock">11 to 14 min</span></h2>
+<p>Open from the hook: we counted boxes a minute ago, same boxes here, and now we ask for what is in them. Read the index numbers out loud with the room and do not go on until they have.</p>
+<p>Ask what a single index gives before you show it, then ask for one more of the same shape without pressing anything. Then the real question, which is this card: I want that name out of the string, how do I do it? Take answers. Somebody will offer four numbers, somebody will guess the colon.</p>
+<p>Frame the four boxes, ask the room for their numbers, and only then write the slice under the string. Read it left to right, then say the rule out loud: the second number is written down and never touched. Same rule as the recap.</p>
+<p>Last press copies the characters out. Say what the picture is doing: copied, not moved. The original string still holds everything it held before.</p>
+</section>
+
+<section id="s6">
+<h2><span class="num">6.</span>The one it cannot cut, and the step <span class="clock">14 to 20 min</span></h2>
+<p>Show the string where the letters are not next to each other and say it is the same problem as the hook, with hyphens instead of spaces. Ask whether they can get the name out with what they have. Somebody will try a plain slice, so take it and say what it would give: every character in between, hyphens and all.</p>
+<p>Then name the three numbers, once, here, and nowhere else: start, end and step. Give the step one sentence, how far it jumps each time, and work the sums out loud with the room.</p>
+<p>The walk card is not a reveal, it is a walk. The line is on screen from the start and the room says the sum before every press. Add the step to the last landing, not to the stop. On the last landing say the stop out loud, the next jump would go past it, so it ends there. The last press dashes every box it never landed on: it never looked at the hyphens at all.</p>
+<p class="small">The mistake to listen for is adding the step to the stop. If you hear it, go back one press and do the sum again.</p>
+</section>
+
+<section id="s7">
+<h2><span class="num">7.</span>Worksheet task 1, then the slice machine <span class="clock">20 to 25 min</span></h2>
+<p class="tag">Worksheet task 1</p>
+<p>This is the first time the laptops open today. Worksheet tab open, playground shut. Read the three slices off the machine out loud and give them ninety seconds to write all three answers down before anything runs.</p>
+<p>Then run the machine one level at a time. Count hands for each option, tap the one the room chose, and run it. The run stays locked until something is picked, and that lock is the activity. Read the verdict out loud every time, including on a level the room got right, and say what each wrong option would have meant.</p>
+<div class="act"><b>The level to stop on:</b> the one where the start is after the stop. Ask what comes out before you run it and let the silence sit for three seconds. Nothing comes out at all.</div>
+<div class="safe"><b>Safe point 2, empty is not an error.</b> Ask what Python did on that level. You want an empty string and a blank line, not an error. If the room expects an error, that belief comes back in the exit question, so fix it here.</div>
+</section>
+
+<section id="s8">
+<h2><span class="num">8.</span>Worksheet task 2, type it and change the step <span class="clock">25 to 29 min</span></h2>
+<p class="tag">Worksheet task 2</p>
+<p>Worksheet tab and the playground only. Three steps, and you start the timer.</p>
+<ol>
+<li>Type the two lines and run them. Ninety seconds.</li>
+<li>Frame it as a want, not a test: I want the letters, not the digits. One number changes. They write what it will print first, then run.</li>
+<li>Frame it as your own idea: I thought a negative step would read it backwards. Try it and tell me what happens. Do not warn them.</li>
+</ol>
+<p>Let them react to step 3 before you say anything. No error, nothing printed, a blank line. Then the line that makes it stick: Python did exactly what you asked, starting there and going backwards it never reaches the stop, so it lands nowhere.</p>
+<p class="cpnote"><span>Checkpoint 2</span> you should be at 29 minutes here</p>
+</section>
+
+<section id="s9">
+<h2><span class="num">9.</span>Classroom quiz on the portal <span class="clock">29 to 34 min</span></h2>
+<p>Open the portal, five minutes, own answer. Walk the room while they work and do not answer questions about the quiz itself. Anyone who finishes early goes back to task 2 and tries a different step on the same string.</p>
+<p>Say one line about the weakest question and move on. Do not teach from the spread here. The read you want is the slicing question, because nothing after this card has been taught yet. If slicing looked weak, cut the replace beat later, never the strip work.</p>
+</section>
+
+<section id="s10">
+<h2><span class="num">10.</span>Why a string method at all <span class="clock">34 to 39 min</span></h2>
+<p>This card is the reason the second half exists, so do not hurry it. Every card after this one is cheap because this one was not.</p>
+<p>Open it as something they have all done: you set a PIN on your phone, four digits, and before the app saves it, it has to be sure of two things. The length is easy, so ask how they would check that every character is a digit. Take answers and write nothing down.</p>
+<p>Then show the refusal, one letter among the digits, red box, under a second. Ask what it actually did. Somebody will say check each one, which is exactly right, and then show the long way.</p>
+<div class="act"><b>Read the long line out loud and stop halfway.</b> The room will laugh, and that laugh is the card working. Then show the count, forty comparisons for four characters and nine lines of program, and ask whether every app on their phone wrote this.</div>
+<p>Only then the two line version, and only then the name: a string method is a job Python already knows how to do on a string. You write the string, a dot, and the name of the job. There are five of them today, and that was the first.</p>
+</section>
+
+<section id="s11">
+<h2><span class="num">11.</span>isdigit, the first method <span class="clock">39 to 42 min</span></h2>
+<p>Open straight off the card before it. The line is on screen with an empty output box. Ask what it prints, wait, and take two answers before you run it. Somebody will say a number, somebody will say True.</p>
+<p>Run it, and every character is ticked in turn. Say it looked at every single one, not most of them. Then the shape and the sentence, and have somebody in the room say it back in their own words. This is the only place the definition appears in the session.</p>
+<p>Last, the same line with a letter in the string, and ask what it prints before you show it.</p>
+<p class="small">Listen for a student saying it checks if it is a number. Ask about a space, or a minus sign. Neither is a digit.</p>
+<p class="cpnote"><span>Checkpoint 3</span> you should be at 42 minutes here</p>
+</section>
+
+<section id="s12">
+<h2><span class="num">12.</span>strip, and where it stops <span class="clock">42 to 51 min</span></h2>
+<p>Start from something they have all hit: you paste your phone number into a form and it says it does not match. Read both lines slowly, one with spaces at the ends and one without, then ask whether the two are the same. Count hands for same, then for not the same. Most rooms say same, and that wrong answer is the whole card.</p>
+<p>Then the output, False, and one sentence tying it to the hook: a space is a character, so twelve characters is not ten characters.</p>
+<p>Now the method. Ask how many characters come out before you press, take a number from the room, then run it and count together. Then say the thing that matters: it did not change the original string, it handed back a new one.</p>
+<div class="say"><b>Say this, and say it this way:</b> "It works in from each end." Never "it removes spaces." The next beat turns on that difference.</div>
+<p>Then the explainer, one step at a time, never play. Stop on both green stop marks and say it out loud both times: it stopped, it is not going to look any further in. Then the character in the middle goes dashed and says never. That mark is the finding of the second half.</p>
+<p>Close the run of cards with the two short ones: the full stop in the middle that stays, and the brackets that hold a set of characters rather than a word. Ask whether that is one thing to remove or three, and whether the order inside the brackets matters. It does not.</p>
+<div class="safe"><b>Safe point 3, the ends, always the ends.</b> Ask what would happen to a space in the middle of the string. You want it stays, because strip never reaches it. A room that says strip removes every space will get the exit question wrong.</div>
+</section>
+
+<section id="s13">
+<h2><span class="num">13.</span>Worksheet task 3, trace it before you run it <span class="clock">51 to 55 min</span></h2>
+<p class="tag">Worksheet task 3</p>
+<p>Open from the walk: you just watched it stop twice, now do one yourself. Worksheet tab open, playground shut. Read the program aloud once, line by line, without saying what any line does. Say the rule for the table: one row per line, and fill a row only if that line actually runs.</p>
+<p>Four minutes on the timer, and walk the rows.</p>
+<div class="act"><b>Check in while they work:</b> "Line 2 first, what comes off? Do not skip a row. One minute left." Hands off keyboards, wait for it, and only then say the check: exactly two of your seven rows should be empty.</div>
+<p>Then walk the answer one operation per press, about five seconds each, and slow down on the line where the right end meets a character that is not in the set and stops. A student who filled all seven rows traced what they thought the program meant, not what it did.</p>
+<p class="cpnote"><span>Checkpoint 4</span> you should be at 55 minutes here</p>
+</section>
+
+<section id="s14">
+<h2><span class="num">14.</span>replace, one of them or both <span class="clock">55 to 58 min</span></h2>
+<p>One line of setup and move: the same typo, forty times, in something you have already written, and nobody is fixing that by hand. Take one answer to what they would want to say to Python, then show the method.</p>
+<p>The whole card is one question. The word appears twice in the sentence, so does it fix one of them or both? Take a show of hands on each and do not say which is right, then run it. Both of them, and it goes all the way to the end of the line.</p>
+<p>Point at the words that did not move, which is the half of the claim nobody states, and say every one of them rather than all of them. Then the shape, with two things in the brackets now, the one to look for and the one to put there.</p>
+<p class="small">If a student thinks the original line changed, ask what printing it on the next line would show. It would show the original.</p>
+</section>
+
+<section id="s15">
+<h2><span class="num">15.</span>startswith, and you write endswith <span class="clock">58 to 63 min</span></h2>
+<p class="tag">Worksheet task 4</p>
+<p>Open from something on their screen right now: look at the browser, there is a padlock or there is a warning, and something checked that address. Put the line up with an empty output box and ask them to look at what it prints, not at the address. Is it a string, or is it a yes and no?</p>
+<p>Run it: the front of the address lights up and it prints True. It read the first few characters and stopped, it never looked at the rest. Then make the pair out loud, because the exit question needs it: strip and replace hand you a string, isdigit and this one answer a question.</p>
+<p>Then task 4, which is theirs. The card behind checked the front, this one checks the back. An email id is a Gmail id when it ends with the right thing. Ninety seconds, they write the three lines, type them and run them.</p>
+<div class="act"><b>While they work:</b> do not answer is this right, say run it. Then ask which one word they changed before you show the answer.</div>
+<div class="safe"><b>Safe point 4, two kinds of method.</b> Ask the room which of today's methods answer a question and which hand back a new string. If the sorting is shaky, say the pair again against the five lines before the exit.</div>
+</section>
+
+<section id="s16">
+<h2><span class="num">16.</span>upper and lower <span class="clock">63 to 66 min</span></h2>
+<p>The easiest beat today, take it fast. Line on screen, ask what it prints, then run it: every letter turns into its capital and the original string still holds what it held. Then ask what the mirror line prints before you press, and take the name from the room.</p>
+<p>That is all five methods. One question left, and then we are done.</p>
+<p class="cpnote floor"><span>Hard floor</span> 66 minutes. The exit question runs whatever else is unfinished</p>
+</section>
+
+<section id="s17">
+<h2><span class="num">17.</span>Exit question, which one prints nothing <span class="clock">66 to 70 min</span></h2>
+<p>Read the program out loud by line number and do not explain it. Say the question exactly as written: for which one of these does the screen show nothing at all? Two and a half minutes on the timer, in silence.</p>
+<p>Count the hands for A, then B, then C, then D, every option out loud, before anything is revealed. Then reveal and explain every option, not only the right one. The three that print all strip down to the same digits. The answer is the one where a character in the middle was never reached.</p>
+<div class="say"><b>Close with the sentence of the day:</b> "strip works on the ends. Always the ends."</div>
+<p class="small">A big vote for the last option means the room thinks strip takes one character off each end and stops. That is the misconception to open the next session with.</p>
+</section>
+
+<section id="s18">
+<h2><span class="num">18.</span>Takeaways and close <span class="clock">70 to 75 min</span></h2>
+<p>Two takeaway cards, and they are the ones students photograph, so say that out loud and give them five seconds at the end of each.</p>
+<p>The first is one string with four slices under it, all four of them lines the room has already run today. Ask why the third one stopped rather than reading it, and take the answer from the room. The last press is the two rules that are the whole first half: the stop number is never reached, and your own string never changes.</p>
+<p>The second is the five methods, one line each with the output it really gives. Do not explain any of them again, they have each had a card. The last press is the split that no single cell says: two of them answer a question, three hand back a new string, and not one of them changes the string you started with.</p>
+<p>Then feedback, one minute, and the thank you card with one line about practising the slicing questions on the portal.</p>
+</section>
+
+<section id="s19">
+<h2><span class="num">19.</span>If you are running late</h2>
+<p>Cut in this order. Each of these can go without breaking what comes after it.</p>
+<ol>
+<li><b>The slice machine</b> drops to three levels, keeping the one where nothing comes out.</li>
+<li><b>Worksheet task 2</b> drops its middle step. Typing it once and the negative step are the parts they cannot skip.</li>
+<li><b>The explainer</b> runs one set of characters instead of three, and keeps the one it opens on.</li>
+<li><b>The method takeaways</b> drop to the last press, the split between the two kinds.</li>
+</ol>
+<p>Never cut the PIN card, the two short strip cards, or the exit question. The PIN card is the reason the second half exists, the strip rule is what the exit turns on, and the exit is the hard floor.</p>
+<div class="box">
+<h3>If they ask</h3>
+<ul>
+<li><b>Does strip remove every space?</b> No. It works in from each end and stops at the first character that is not in the set.</li>
+<li><b>Is what is in the brackets a word?</b> No, it is a set of characters, and the order inside does not matter.</li>
+<li><b>Does a method change my string?</b> No. Every one of them hands back something new.</li>
+<li><b>Is a slice that lands nowhere an error?</b> No. It is an empty string, and printing it shows a blank line.</li>
+</ul>
+</div>
+</section>
+
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav-item'));
+  var map = {};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+  var seen = [];
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      var id = e.target.id;
+      if (e.isIntersecting) { if (seen.indexOf(id) < 0) seen.push(id); }
+      else { var i = seen.indexOf(id); if (i >= 0) seen.splice(i,1); }
+    });
+    if (!seen.length) return;
+    var order = links.map(function(a){ return a.getAttribute('href').slice(1); });
+    seen.sort(function(a,b){ return order.indexOf(a) - order.indexOf(b); });
+    links.forEach(function(a){ a.classList.remove('current'); });
+    var cur = map[seen[0]];
+    if (cur) cur.classList.add('current');
+  }, { rootMargin: '-10% 0px -70% 0px', threshold: 0 });
+  document.querySelectorAll('section[id]').forEach(function(s){ io.observe(s); });
+})();
+</script>
+
+</body>
+</html>

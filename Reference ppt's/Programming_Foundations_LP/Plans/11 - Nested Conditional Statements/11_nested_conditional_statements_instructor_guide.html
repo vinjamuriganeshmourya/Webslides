@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Instructor Guide - Nested Conditional Statements</title>
+<style>
+:root{
+  --ink:#181B21; --mid:#3A3F4B; --muted:#63697A; --page:#FFFFFF;
+  --rule:#D9DDE5; --rule2:#EEF0F4; --soft:#F6F7F9;
+  --accent:#4F46E5; --hook:#0B7285;
+  --activity:#B4531A; --activity-soft:#FDF2E6; --quiz:#7C3AED;
+  --exit:#0F766E;
+  --sidebar:272px;
+  --sans:ui-sans-serif,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"DejaVu Sans Mono",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#EDEFF3;color:var(--ink);font:16px/1.62 var(--sans);
+  -webkit-font-smoothing:antialiased}
+
+/* ---------------- sidebar ---------------- */
+.side{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar);background:var(--page);
+  border-right:1px solid var(--rule);padding:22px 16px 30px;overflow-y:auto;z-index:20}
+.side-h{font-size:15px;font-weight:740;letter-spacing:-.01em;margin:0 0 2px}
+.side-sub{font-size:12px;color:var(--muted);margin:0 0 16px;line-height:1.5}
+.nav-item{display:flex;gap:9px;align-items:baseline;width:100%;text-align:left;
+  text-decoration:none;color:var(--ink);background:none;border:0;
+  border-left:3px solid var(--rule);border-radius:0 7px 7px 0;
+  padding:7px 10px;margin:0 0 3px;font:600 13px/1.35 var(--sans);cursor:pointer;
+  transition:background-color 140ms ease}
+.nav-item:hover{background:var(--rule2)}
+.nav-item.current{background:var(--rule2)}
+.nav-n{flex:0 0 auto;color:var(--muted);font-weight:700;font-size:11.5px;padding-top:1px}
+.nav-l{flex:1 1 auto}
+.nav-t{flex:0 0 auto;color:var(--muted);font-weight:600;font-size:11px;white-space:nowrap}
+.nav-item.k-hook{border-left-color:var(--hook)}
+.nav-item.k-activity{border-left-color:var(--activity)}
+.nav-item.k-hands{border-left-color:var(--exit)}
+.nav-item.k-quiz{border-left-color:var(--quiz)}
+.nav-item.current.k-concept{border-left-color:var(--accent)}
+.cp{display:flex;align-items:center;margin:14px 0 9px}
+.cp span{flex:0 0 auto;background:var(--ink);color:#fff;border-radius:5px;
+  font:700 10.5px/1 var(--sans);letter-spacing:.04em;text-transform:uppercase;padding:5px 8px}
+.cp::after{content:'';flex:1;height:1px;margin-left:8px;background:var(--rule)}
+.cp.floor span{background:var(--activity)}
+
+/* ---------------- sheet ---------------- */
+.sheet{max-width:820px;margin:28px auto;margin-left:calc(var(--sidebar) + 40px);
+  background:var(--page);padding:52px 60px 68px;
+  box-shadow:0 1px 2px rgba(20,20,40,.05),0 10px 30px rgba(20,20,40,.08)}
+h1{font-size:30px;line-height:1.2;font-weight:760;letter-spacing:-.02em;margin:0 0 4px}
+.kicker{font:700 12px var(--sans);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 8px}
+.meta{font-size:14.5px;color:var(--mid);margin:0 0 6px}
+.meta b{color:var(--ink);font-weight:680}
+h2{font-size:21px;font-weight:730;letter-spacing:-.015em;margin:0 0 4px;scroll-margin-top:20px}
+h2 .num{color:var(--muted);font-weight:700;margin-right:8px}
+h2 .clock{font-weight:600;color:var(--muted);font-size:15px;letter-spacing:0}
+h3{font-size:16.5px;font-weight:700;margin:22px 0 6px}
+section{border-top:1px solid var(--rule);margin-top:32px;padding-top:24px;scroll-margin-top:16px}
+section.tight{margin-top:24px;padding-top:20px}
+p{margin:0 0 12px}
+ul,ol{margin:0 0 12px;padding-left:22px}
+li{margin:0 0 7px}
+code{font:14px var(--mono);background:var(--rule2);border-radius:4px;padding:1px 5px}
+pre{font:13.5px/1.6 var(--mono);background:var(--soft);border:1px solid var(--rule);
+  border-radius:10px;padding:14px 16px;overflow-x:auto;margin:0 0 14px}
+.say{border-left:4px solid var(--accent);background:#F7F7FE;border-radius:0 10px 10px 0;
+  padding:12px 16px;margin:0 0 14px;font-style:italic;color:var(--mid)}
+.say b{font-style:normal;color:var(--ink)}
+.box{border:1px solid var(--rule);border-radius:12px;padding:18px 20px;margin:0 0 16px;background:var(--soft)}
+.box h3{margin-top:0}
+.safe{border-left:4px solid var(--exit);background:#EFF7F5;border-radius:0 10px 10px 0;
+  padding:12px 16px;margin:0 0 14px}
+.safe b{color:var(--exit)}
+.act{border-left:4px solid var(--activity);background:var(--activity-soft);border-radius:0 10px 10px 0;
+  padding:12px 16px;margin:0 0 14px}
+.act b{color:var(--activity)}
+.hookline{color:var(--hook);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:12px;margin:0 0 6px}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);border:1px solid var(--rule);
+  border-radius:99px;padding:2px 10px;margin:0 0 10px}
+table{border-collapse:collapse;width:100%;margin:0 0 14px;font-size:15px}
+th,td{border:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--soft);font-weight:680}
+.small{font-size:14.5px;color:var(--mid)}
+.cpnote{display:flex;align-items:center;gap:10px;margin:22px 0 0;
+  font:700 11.5px var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.cpnote span{background:var(--ink);color:#fff;border-radius:5px;padding:5px 9px;letter-spacing:.04em}
+.cpnote.floor span{background:var(--activity)}
+
+@media print{
+  body{background:#fff;font-size:13px;line-height:1.48}
+  .side{display:none}
+  .sheet{box-shadow:none;margin:0;max-width:none;padding:0 0 10px}
+  h1{font-size:24px}
+  h2{font-size:18px;break-after:avoid}
+  h2 .clock{font-size:13.5px}
+  h3{font-size:14.5px;margin:14px 0 5px}
+  .meta,.small{font-size:12.5px}
+  section{margin-top:16px;padding-top:12px}
+  section.tight{margin-top:15px;padding-top:12px}
+  p{margin-bottom:7px}
+  li{margin-bottom:4px}
+  .box{padding:11px 13px;margin-bottom:10px}
+  .say,.safe,.act{padding:8px 12px;margin-bottom:10px}
+  pre{font-size:12px;padding:10px 12px;margin-bottom:10px}
+  table{font-size:13px;margin-bottom:10px}
+  th,td{padding:5px 8px}
+  .cpnote{margin-top:16px;font-size:10.5px}
+  .box,.say,.safe,.act,pre,table{break-inside:avoid}
+  @page{margin:14mm 13mm}
+}
+@media (max-width:1180px){
+  .side{position:static;width:auto;height:auto;border-right:0;border-bottom:1px solid var(--rule)}
+  .sheet{margin:20px auto;padding:30px 22px 44px}
+}
+</style>
+</head>
+<body>
+
+<nav class="side">
+<p class="side-h">Instructor guide</p>
+<p class="side-sub">Session 11 &middot; Nested Conditional Statements &middot; 75 min</p>
+
+<a class="nav-item k-concept" href="#s1"><span class="nav-n">1</span><span class="nav-l">How to run this session</span></a>
+<a class="nav-item k-quiz" href="#s2"><span class="nav-n">2</span><span class="nav-l">Opening and warm up poll</span><span class="nav-t">0 to 4</span></a>
+<a class="nav-item k-hook" href="#s3"><span class="nav-n">3</span><span class="nav-l">Hook, the payment</span><span class="nav-t">4 to 10</span></a>
+<a class="nav-item k-concept" href="#s4"><span class="nav-n">4</span><span class="nav-l">The nested shape</span><span class="nav-t">10 to 14</span></a>
+<a class="nav-item k-hands" href="#s5"><span class="nav-n">5</span><span class="nav-l">Hands on 1, trace it</span><span class="nav-t">14 to 21</span></a>
+<p class="cp"><span>Checkpoint 1 &middot; 21 min</span></p>
+<a class="nav-item k-hands" href="#s6"><span class="nav-n">6</span><span class="nav-l">Nesting inside else</span><span class="nav-t">21 to 26</span></a>
+<a class="nav-item k-activity" href="#s7"><span class="nav-n">7</span><span class="nav-l">Activity, program tracing</span><span class="nav-t">26 to 34</span></a>
+<p class="cp"><span>Checkpoint 2 &middot; 34 min</span></p>
+<a class="nav-item k-concept" href="#s8"><span class="nav-n">8</span><span class="nav-l">Break it live, then quiz</span><span class="nav-t">34 to 37</span></a>
+<a class="nav-item k-activity" href="#s9"><span class="nav-n">9</span><span class="nav-l">You are the program</span><span class="nav-t">37 to 39</span></a>
+<a class="nav-item k-activity" href="#s10"><span class="nav-n">10</span><span class="nav-l">Discover, four ways to grade</span><span class="nav-t">39 to 44</span></a>
+<a class="nav-item k-concept" href="#s11"><span class="nav-n">11</span><span class="nav-l">elif, and the dot</span><span class="nav-t">44 to 50</span></a>
+<a class="nav-item k-hands" href="#s12"><span class="nav-n">12</span><span class="nav-l">Hands on, add grade E</span><span class="nav-t">50 to 55</span></a>
+<p class="cp"><span>Checkpoint 3 &middot; 55 min</span></p>
+<a class="nav-item k-concept" href="#s13"><span class="nav-n">13</span><span class="nav-l">Why that failed</span><span class="nav-t">55 to 57</span></a>
+<a class="nav-item k-hands" href="#s14"><span class="nav-n">14</span><span class="nav-l">Solve it yourself</span><span class="nav-t">57 to 65</span></a>
+<p class="cp floor"><span>Hard floor &middot; 65 min</span></p>
+<a class="nav-item k-hands" href="#s15"><span class="nav-n">15</span><span class="nav-l">Order matters</span><span class="nav-t">65 to 68</span></a>
+<a class="nav-item k-exit" href="#s16"><span class="nav-n">16</span><span class="nav-l">Exit poll and close</span><span class="nav-t">68 to 75</span></a>
+<a class="nav-item k-concept" href="#s17"><span class="nav-n">17</span><span class="nav-l">If you are running late</span></a>
+</nav>
+
+<div class="sheet">
+
+<h1>Instructor Guide - Nested Conditional Statements</h1>
+<p class="meta"><b>Duration</b> 75 minutes</p>
+
+<section class="tight" id="s1">
+<h2><span class="num">1.</span>How to run this session</h2>
+<p>This guide gives you the shape of each beat and the few lines that are worth saying close to as written. Everything else is yours. If you have a better example than the one here, use yours. If the room is faster than the clock, spend the time on the discover beat, not on more talking.</p>
+<div class="box">
+<h3>Five habits that carry the whole session</h3>
+<ul>
+<li><b>Ask before you tell.</b> Every new idea today has a question that reaches it. Ask that question first, take two or three answers, then say the thing.</li>
+<li><b>Read the room out loud.</b> On every poll and every hands up moment, go option by option and say roughly what you see. Silence is not agreement.</li>
+<li><b>Keep asking.</b> Aim for a question every two minutes, even small ones. Who has a different answer? What will line 3 print? Why did that one get skipped?</li>
+<li><b>Nudge while they work.</b> Walk the room during every task and keep talking: are you done? One minute to go. Let us see who finishes first. Hands up if you have an output on your screen.</li>
+<li><b>Offer doubts often.</b> Any doubts here takes four seconds and saves ten minutes later.</li>
+</ul>
+</div>
+<p class="small">The worksheet is digital. Students type into it on their own screens, it saves as they go, and it is submitted at the end. There is nothing to hand out and nothing to collect.</p>
+<p class="small">Four safe points are marked through the guide. Each one is a short check that tells you whether to move on or to go back. If a safe point fails, the beat after it will not land, so fix it there.</p>
+</section>
+
+<section id="s2">
+<h2><span class="num">2.</span>Opening and warm up poll <span class="clock">0 to 4 min</span></h2>
+<p>Attendance on the welcome card. Name the topic on the title card and make one promise: the worksheet opens part way through, and everything they type in it is submitted at the end. Do not define nested yet, the hook does it better in two minutes.</p>
+<p>Then the recap. This is a recap of the previous session, if and else. Three MCQs are presented on the slides and the timer on each one starts by itself. Ask students to be ready with their answer before the timer runs out. Then go option by option: how many of you think option A is the answer, raise your hands. Then B, then C, then D. Do not count the hands, just take a rough idea of where the room is. Then reveal the answer.</p>
+<table>
+<tr><th>Question</th><th>Answer</th><th>What it is really testing</th></tr>
+<tr><td><code>if 2 &gt; 3:</code> with a print inside and a print outside</td><td>End only</td><td>A failed check skips the indented block, not the line after it</td></tr>
+<tr><td>An extra indented print after <code>print("If Block")</code></td><td>IndentationError, nothing prints</td><td>Indentation is not decoration</td></tr>
+<tr><td>A statement sitting between <code>if</code> and <code>else</code></td><td>SyntaxError, nothing prints</td><td>The if else shape cannot be broken apart</td></tr>
+</table>
+<p>Question three is the one to slow down on. The same failure comes back at grade E near the end of the session, and you will want to point back to this moment.</p>
+</section>
+
+<section id="s3">
+<h2><span class="num">3.</span>Hook, behind the scenes on a payment <span class="clock">4 to 10 min</span></h2>
+<p class="hookline">Laptops shut. Nobody types here.</p>
+<p>Run the payment animation. A user pays 450 rupees and the app runs two checks in order: is the PIN correct, and only then, is the balance enough. Step it and narrate. The one thing the picture must land is that the second question was asked only because the first one passed, so a wrong PIN means the balance is never even looked at.</p>
+<div class="say"><b>Say this near the end:</b> "The app never asked about the balance. Not because the balance was fine, but because it never got that far."</div>
+<p>Then the your turn card. One sentence each, out loud, from three or four students: it checked ______, and only then did it check ______. If the room is quiet, give one from your own week and ask for the next.</p>
+<p>Close the hook with the movie ticket version. Same two checks, different app: are seats left, and only then, did the payment clear. Now name it. Two checks, one inside the other, is a nested condition.</p>
+<div class="safe"><b>Safe point 1, does the idea exist yet.</b> Ask the room, not one student: "If the PIN is wrong, what does the app know about the balance?" You want nothing, it never checked. If you hear guesses about the balance, replay the animation once. Do not move to code until this is clean.</div>
+</section>
+
+<section id="s4">
+<h2><span class="num">4.</span>The nested shape <span class="clock">10 to 14 min</span></h2>
+<p>Agenda card, five seconds, then the shape slide. Three things to get on the board, in your own words:</p>
+<ul>
+<li>An <code>if</code> can sit inside another <code>if</code>.</li>
+<li>Indentation says which block a line belongs to. Column zero, one indent in, two indents in.</li>
+<li>The inner check runs only when the outer one is True.</li>
+</ul>
+<p>Point at the payment code from the hook while you say it, so the shape stays attached to something they already saw.</p>
+</section>
+
+<section id="s5">
+<h2><span class="num">5.</span>Hands on 1, trace it then run it <span class="clock">14 to 21 min</span></h2>
+<p class="tag">Worksheet task 1</p>
+<p>Laptops open, worksheet open. The program has two flags and four prints. They fill all four combinations of <code>condition_a</code> and <code>condition_b</code> in the worksheet <b>before</b> running anything. Say that twice. The tracing is the learning, the running is the check.</p>
+<p>Three minutes to fill the four rows, then they type the program in the playground and run all four, changing line 1 and line 2 only. Anything that did not match, they correct in the worksheet and keep going.</p>
+<div class="act"><b>While they work:</b> walk and nudge. "Are you done with row two? One minute for the last row. Hands up if all four matched." Ask two students whose rows did not match to say out loud which one they missed. The wrong rows are more useful than the right ones.</div>
+<div class="safe"><b>Safe point 2, hand signal check.</b> "Thumbs up if you can tell me why Block 3 printed even when condition_b was False." Address every thumbs down before moving on. Block 3 sits at one indent, so it belongs to the outer if.</div>
+<p class="cpnote"><span>Checkpoint 1</span> you should be at 21 minutes here</p>
+</section>
+
+<section id="s6">
+<h2><span class="num">6.</span>Nesting inside else <span class="clock">21 to 26 min</span></h2>
+<p>Show the second program and ask for hands before anyone types: what is different from the one you just ran? You are looking for the <code>if</code> having moved inside the <code>else</code>. Take two or three answers, then let them type it and run it.</p>
+<p>The point to land: nesting is not only about the True path. An <code>else</code> block can hold a whole question of its own.</p>
+</section>
+
+<section id="s7">
+<h2><span class="num">7.</span>Activity, program tracing <span class="clock">26 to 34 min</span></h2>
+<p class="tag">Worksheet task 2</p>
+<p>Frame it as a claim to test, not as an exercise: this program says it prints the greatest of three numbers, trace it and tell me whether it really does. They fill one row per line that runs, for <code>a = 1</code>, <code>b = 2</code>, <code>c = 9</code>, with the values after that line and anything it printed.</p>
+<p>Trace the first two lines with them, saying what the machine does before what the line means, then hand it over. Five minutes of quiet work.</p>
+<div class="act"><b>Nudge, then check:</b> "Are you guys done? Any doubts on the task, ask now. Fill a row only if that line actually runs." When time is up, hands off keyboards, and only then give the check: exactly two of the twelve rows should be empty. Does yours match?</div>
+<p>Take the verdict from the room: yes, it prints 9, the program does what it claims. Hold that answer, the next beat breaks it in front of them.</p>
+</section>
+
+<section id="s8">
+<h2><span class="num">8.</span>Break it live, then the classroom quiz <span class="clock">34 to 37 min</span></h2>
+<p>Show the correct program on the slide first: same program as their worksheet, every branch properly indented. Then break it live and say what you are doing. Nothing changes except where four lines sit. Pull the lines from <code>if is_b_greatest:</code> down to <code>print(c)</code> out to column zero.</p>
+<p>Ask them to type that broken version and run two inputs: 1 2 9, then 5 2 1. The first prints 9 cleanly. The second prints 5 and then dies with a <code>NameError</code>.</p>
+<div class="say"><b>Ask, do not tell:</b> "Same program, right for one input and dead for the other. Why did 5 2 1 die and 1 2 9 not?" Wait for them. The answer: <code>is_b_greatest</code> is created inside the <code>else</code>, so when the if branch runs, that name never exists.</div>
+<p>They built it themselves, so nobody can call it a trick. Then the classroom quiz on the portal, five to six questions from the bank. Read the results as they come in. If the room is weak on an indentation question, spend the buffer at the end on that, not on new content.</p>
+<p class="cpnote"><span>Checkpoint 2</span> 34 minutes was the mark going into this beat</p>
+</section>
+
+<section id="s9">
+<h2><span class="num">9.</span>Engagement activity, you are the program <span class="clock">37 to 39 min</span></h2>
+<p class="tag">Nobody types. Everybody stands.</p>
+<p>The room runs a nested if with their own bodies. Read it top to bottom, one line at a time, slowly:</p>
+<pre>if your first name starts with A to M:
+    stand up
+    if your roll number ends in an even digit:
+        raise one hand
+everybody sit down</pre>
+<p>Run it once at full speed and let it go wrong. Then run it line by line. The moment worth catching is a student with a name starting with S raising a hand. Stop there and ask the room: should that hand be up? Why not? Because the inner line was never reached for them.</p>
+<div class="say"><b>Debrief in one line:</b> "Half of you never even heard the second question. That is nesting."</div>
+<p class="small">If your room will not stand up, run it with hands only: hand on the table for the outer check, hand raised for the inner one. Same idea, less furniture.</p>
+</section>
+
+<section id="s10">
+<h2><span class="num">10.</span>Discover it first, four ways to grade <span class="clock">39 to 44 min</span></h2>
+<p>This is the pivot of the session. Do not shorten it, and do not give the answer.</p>
+<p>Put the problem up: marks out of 100, print a grade. 91 and above A, 81 to 90 B, 71 to 80 C, 61 to 70 D. Three minutes, on their own screens. Say clearly that there is no new keyword yet and they already have everything they need.</p>
+<div class="act"><b>Nudge while they write:</b> "Anyone got an output for 85 yet? One minute left. Two of you have something different, good, keep it." Collect two or three screens to show later.</div>
+<p>Then walk the four approaches, two at a time, and let the room judge each one before you do.</p>
+<table>
+<tr><th>Approach</th><th>Verdict to reach, by asking</th></tr>
+<tr><td>One <code>if</code> per grade</td><td>Wrong. 95 prints A, B, C and D. Every question is still asked after a match.</td></tr>
+<tr><td>Both ends of every band, with <code>and</code></td><td>Correct, but every boundary is written twice and all four checks run every time.</td></tr>
+<tr><td>An <code>if</code> inside an <code>if</code> inside an <code>if</code></td><td>Correct and asks nothing extra, but four levels deep. One more grade means one more level.</td></tr>
+<tr><td>Keep the answer in a name</td><td>Correct and flat, but the answer is overwritten up to three times, and 20 comes out as D.</td></tr>
+</table>
+<p>Land it as a want, not as a rule: we want the nested version's behaviour with the flat version's shape. Then ask for the keyword. Somebody usually knows the word <code>elif</code>. Let them say it.</p>
+</section>
+
+<section id="s11">
+<h2><span class="num">11.</span>elif, and following the dot <span class="clock">44 to 50 min</span></h2>
+<p>Two slides, the skeleton and the grade ladder. Keep them short, the animation right after does the teaching. Run follow the dot with <code>marks = 72</code>, one press at a time, and narrate what the dot touches. Then ask the question that matters, before you reveal the rest.</p>
+<div class="say"><b>Ask:</b> "It printed C. What did it never even look at?" The two checks below. They were never asked, because a check runs only when everything above it was False.</div>
+<p>Drag the marks to a different value and run it again, this time with a student narrating instead of you.</p>
+<div class="safe"><b>Safe point 3, the one sentence.</b> Ask one student to finish this out loud: "A check in the ladder is asked only when ______." You want every check above it was False. If you get a vague answer, run the dot once more at a different value.</div>
+</section>
+
+<section id="s12">
+<h2><span class="num">12.</span>Hands on, add grade E <span class="clock">50 to 55 min</span></h2>
+<p class="tag">Then worksheet task 3</p>
+<p>They type the ladder and run 95, 85, 72, 65 and 40 to see A, B, C, D, F. Then tell them you forgot grade E for 51 to 60, and ask them to add it at the bottom, after the <code>else</code>. Let them do exactly that and let it fail.</p>
+<p>Ask what they got before you explain anything. The error connects straight back to the third warm up poll question, so point at it: the same shape rule from the first four minutes of class. Then fix it together, E goes above the <code>else</code>, and run all six.</p>
+<p>Close this beat with the last worksheet task. Two programs, one word different on line four, <code>if</code> in one and <code>elif</code> in the other. For every condition they mark whether Python tested it, yes or no, not True or False. Say that distinction out loud, because it is the whole point of the task.</p>
+<p class="cpnote"><span>Checkpoint 3</span> you should be at 55 minutes here</p>
+</section>
+
+<section id="s13">
+<h2><span class="num">13.</span>Why that failed <span class="clock">55 to 57 min</span></h2>
+<p>One slide on the common mistake, <code>elif</code> after <code>else</code>. Keep it to two minutes. They have already lived it, so this is naming what happened, not teaching something new.</p>
+<p>Worth one extra line here: name the two kinds of failure side by side. The greatest of three program ran and then died. This one never started at all. Tell those two apart and you can debug.</p>
+</section>
+
+<section id="s14">
+<h2><span class="num">14.</span>Solve it yourself <span class="clock">57 to 65 min</span></h2>
+<p>The longest independent stretch of the session. Print whether a number is divisible by 10, or by 5, or by neither. Show the question slide and the output format, then get out of the way. Five minutes on their own screens, and walk the room the whole time. Do not answer a question with the answer, answer it with a question: what does your program print for 30 right now, and what should it print?</p>
+<div class="act"><b>Nudges that work here:</b> "Hands up if 25 is printing correctly. Now try 30. Anyone whose 30 is wrong, keep it on screen, I want it." A wrong 30 is exactly the case the next beat needs.</div>
+<p>Then reveal the answer slide and walk it once. Do not skip the walk even if most of the room solved it.</p>
+<p class="cpnote floor"><span>Hard floor</span> 65 minutes. Everything after this is short and must still fit</p>
+</section>
+
+<section id="s15">
+<h2><span class="num">15.</span>Order matters <span class="clock">65 to 68 min</span></h2>
+<p>Take their working program and swap the two checks, changing nothing else. Ask for predictions for 25, 30, 10 and 9 before you show anything, and get hands on each one. Then show what it prints. 30 and 10 now say divisible by 5, because that check is asked first and a match stops the ladder. This is the last idea of the session and the best one, so give it the full three minutes.</p>
+<div class="safe"><b>Safe point 4, quiet bench check.</b> Walk to the least talkative part of the room and ask low stakes: "Why did 30 change its answer when nothing about 30 changed?" You want because the ladder stops at the first True, and the order of the checks changed which one is first.</div>
+</section>
+
+<section id="s16">
+<h2><span class="num">16.</span>Exit poll, takeaways and close <span class="clock">68 to 75 min</span></h2>
+<p>Run the exit poll cold. A seven line booking program, and Kiran saw nothing at all on the screen. Which values was it running with? The answer is seats 3 and tatkal False: the outer check passed, so the <code>elif</code> and the <code>else</code> were never asked, and the inner <code>if</code> failed with no else of its own. Let them vote before you explain. If a big share picks the wrong option, walk the seven lines once, that is the best use of the buffer.</p>
+<p>Then the takeaways card, revealed one at a time, and the closing cards. Anything left after the thank you card is buffer. If the room is on time, end early. Do not start new content in the buffer.</p>
+</section>
+
+<section id="s17">
+<h2><span class="num">17.</span>If you are running late</h2>
+<p>Cut in this order. Each of these can go without breaking what comes after it.</p>
+<ol>
+<li><b>Order matters</b> can become a thirty second prediction with no run, or move to next session's warm up.</li>
+<li><b>The two programs task</b> can be left for students to finish in the worksheet after class.</li>
+<li><b>Nesting inside else</b> can be shown and discussed without anyone typing it.</li>
+</ol>
+<p>Do not cut the discover beat or the exit poll. The discover beat is the only place <code>elif</code> earns itself, and the exit poll is the only read you get on whether the session landed.</p>
+</section>
+
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav-item'));
+  var map = {};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+  var seen = [];
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      var id = e.target.id;
+      if (e.isIntersecting) { if (seen.indexOf(id) < 0) seen.push(id); }
+      else { var i = seen.indexOf(id); if (i >= 0) seen.splice(i,1); }
+    });
+    if (!seen.length) return;
+    var order = links.map(function(a){ return a.getAttribute('href').slice(1); });
+    seen.sort(function(a,b){ return order.indexOf(a) - order.indexOf(b); });
+    links.forEach(function(a){ a.classList.remove('current'); });
+    var cur = map[seen[0]];
+    if (cur) cur.classList.add('current');
+  }, { rootMargin: '-10% 0px -70% 0px', threshold: 0 });
+  document.querySelectorAll('section[id]').forEach(function(s){ io.observe(s); });
+})();
+</script>
+
+</body>
+</html>

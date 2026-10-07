@@ -8,7 +8,7 @@ it has been replaced by this file. The kit's rules still apply, and they live at
 
 | | |
 |---|---|
-| Slides | **59** |
+| Slides | **62** |
 | `devPort` | 5218 |
 | `htmlName` | `deployment-session-7` |
 | Deck file | `src/decks/jenkinsCicdDeck.tsx`, plus `src/decks/deckShared.tsx` |
@@ -32,6 +32,11 @@ overwrites it. This session owns:
 - `src/decks/activeDeck.ts`
 - `deck.config.json`, this file, `README.md`
 - `public/assets/` (a working copy of `slide-kit/assets/`, byte identical)
+- `public/shots/` — five REAL captures of Jenkins 2.568.3, taken from a running
+  `jenkins/jenkins:lts` container at 2x device scale and cropped to the region
+  each slide is about. Every `Shot` highlight box in this deck was measured from
+  the target element's own bounding rect, not eyeballed. If a capture is wrong,
+  re-run and re-capture; never retouch one (hard rule 11)
 
 **Four kit files were changed while building this deck** and are NOT session
 copies to edit here: `src/ui/flowFigure.ts`, `src/ui/BoundaryBridge.tsx`,
@@ -64,6 +69,6 @@ through to Vite's own 5173 and upwards, while every harness hardcodes 5218. Star
 the server with `npx vite --port 5218 --strictPort` or the harnesses fail with
 `ERR_CONNECTION_REFUSED`. This is a kit-wide problem, not a session one.
 
-Expected clean state: `video-safe` CLEAN, `align-check` 0 of 59, and `qa` flagging
-exactly slides 1 and 59, both `NO LOGO`, both carrying the mark on stage instead
+Expected clean state: `video-safe` CLEAN, `align-check` 0 of 62, and `qa` flagging
+exactly slides 1 and 62, both `NO LOGO`, both carrying the mark on stage instead
 of in the footer.

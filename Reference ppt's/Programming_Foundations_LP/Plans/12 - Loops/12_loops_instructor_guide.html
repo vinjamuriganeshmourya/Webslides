@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Instructor Guide - Loops</title>
+<style>
+:root{
+  --ink:#181B21; --mid:#3A3F4B; --muted:#63697A; --page:#FFFFFF;
+  --rule:#D9DDE5; --rule2:#EEF0F4; --soft:#F6F7F9;
+  --accent:#4F46E5; --hook:#0B7285;
+  --activity:#B4531A; --activity-soft:#FDF2E6; --quiz:#7C3AED;
+  --exit:#0F766E;
+  --sidebar:272px;
+  --sans:ui-sans-serif,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"DejaVu Sans Mono",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#EDEFF3;color:var(--ink);font:16px/1.62 var(--sans);
+  -webkit-font-smoothing:antialiased}
+
+/* ---------------- sidebar ---------------- */
+.side{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar);background:var(--page);
+  border-right:1px solid var(--rule);padding:22px 16px 30px;overflow-y:auto;z-index:20}
+.side-h{font-size:15px;font-weight:740;letter-spacing:-.01em;margin:0 0 2px}
+.side-sub{font-size:12px;color:var(--muted);margin:0 0 16px;line-height:1.5}
+.nav-item{display:flex;gap:9px;align-items:baseline;width:100%;text-align:left;
+  text-decoration:none;color:var(--ink);background:none;border:0;
+  border-left:3px solid var(--rule);border-radius:0 7px 7px 0;
+  padding:7px 10px;margin:0 0 3px;font:600 13px/1.35 var(--sans);cursor:pointer;
+  transition:background-color 140ms ease}
+.nav-item:hover{background:var(--rule2)}
+.nav-item.current{background:var(--rule2)}
+.nav-n{flex:0 0 auto;color:var(--muted);font-weight:700;font-size:11.5px;padding-top:1px}
+.nav-l{flex:1 1 auto}
+.nav-t{flex:0 0 auto;color:var(--muted);font-weight:600;font-size:11px;white-space:nowrap}
+.nav-item.k-hook{border-left-color:var(--hook)}
+.nav-item.k-activity{border-left-color:var(--activity)}
+.nav-item.k-hands{border-left-color:var(--exit)}
+.nav-item.k-quiz{border-left-color:var(--quiz)}
+.nav-item.current.k-concept{border-left-color:var(--accent)}
+.cp{display:flex;align-items:center;margin:14px 0 9px}
+.cp span{flex:0 0 auto;background:var(--ink);color:#fff;border-radius:5px;
+  font:700 10.5px/1 var(--sans);letter-spacing:.04em;text-transform:uppercase;padding:5px 8px}
+.cp::after{content:'';flex:1;height:1px;margin-left:8px;background:var(--rule)}
+.cp.floor span{background:var(--activity)}
+
+/* ---------------- sheet ---------------- */
+.sheet{max-width:820px;margin:28px auto;margin-left:calc(var(--sidebar) + 40px);
+  background:var(--page);padding:52px 60px 68px;
+  box-shadow:0 1px 2px rgba(20,20,40,.05),0 10px 30px rgba(20,20,40,.08)}
+h1{font-size:30px;line-height:1.2;font-weight:760;letter-spacing:-.02em;margin:0 0 4px}
+.kicker{font:700 12px var(--sans);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 8px}
+.meta{font-size:14.5px;color:var(--mid);margin:0 0 6px}
+.meta b{color:var(--ink);font-weight:680}
+h2{font-size:21px;font-weight:730;letter-spacing:-.015em;margin:0 0 4px;scroll-margin-top:20px}
+h2 .num{color:var(--muted);font-weight:700;margin-right:8px}
+h2 .clock{font-weight:600;color:var(--muted);font-size:15px;letter-spacing:0}
+h3{font-size:16.5px;font-weight:700;margin:22px 0 6px}
+section{border-top:1px solid var(--rule);margin-top:32px;padding-top:24px;scroll-margin-top:16px}
+section.tight{margin-top:24px;padding-top:20px}
+p{margin:0 0 12px}
+ul,ol{margin:0 0 12px;padding-left:22px}
+li{margin:0 0 7px}
+code{font:14px var(--mono);background:var(--rule2);border-radius:4px;padding:1px 5px}
+pre{font:13.5px/1.6 var(--mono);background:var(--soft);border:1px solid var(--rule);
+  border-radius:10px;padding:14px 16px;overflow-x:auto;margin:0 0 14px}
+.say{border-left:4px solid var(--accent);background:#F7F7FE;border-radius:0 10px 10px 0;
+  padding:12px 16px;margin:0 0 14px;font-style:italic;color:var(--mid)}
+.say b{font-style:normal;color:var(--ink)}
+.box{border:1px solid var(--rule);border-radius:12px;padding:18px 20px;margin:0 0 16px;background:var(--soft)}
+.box h3{margin-top:0}
+.safe{border-left:4px solid var(--exit);background:#EFF7F5;border-radius:0 10px 10px 0;
+  padding:12px 16px;margin:0 0 14px}
+.safe b{color:var(--exit)}
+.act{border-left:4px solid var(--activity);background:var(--activity-soft);border-radius:0 10px 10px 0;
+  padding:12px 16px;margin:0 0 14px}
+.act b{color:var(--activity)}
+.hookline{color:var(--hook);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:12px;margin:0 0 6px}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);border:1px solid var(--rule);
+  border-radius:99px;padding:2px 10px;margin:0 0 10px}
+table{border-collapse:collapse;width:100%;margin:0 0 14px;font-size:15px}
+th,td{border:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--soft);font-weight:680}
+.small{font-size:14.5px;color:var(--mid)}
+.cpnote{display:flex;align-items:center;gap:10px;margin:22px 0 0;
+  font:700 11.5px var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.cpnote span{background:var(--ink);color:#fff;border-radius:5px;padding:5px 9px;letter-spacing:.04em}
+.cpnote.floor span{background:var(--activity)}
+
+@media print{
+  body{background:#fff;font-size:13px;line-height:1.48}
+  .side{display:none}
+  .sheet{box-shadow:none;margin:0;max-width:none;padding:0 0 10px}
+  h1{font-size:24px}
+  h2{font-size:18px;break-after:avoid}
+  h2 .clock{font-size:13.5px}
+  h3{font-size:14.5px;margin:14px 0 5px}
+  .meta,.small{font-size:12.5px}
+  section{margin-top:16px;padding-top:12px}
+  section.tight{margin-top:15px;padding-top:12px}
+  p{margin-bottom:7px}
+  li{margin-bottom:4px}
+  .box{padding:11px 13px;margin-bottom:10px}
+  .say,.safe,.act{padding:8px 12px;margin-bottom:10px}
+  pre{font-size:12px;padding:10px 12px;margin-bottom:10px}
+  table{font-size:13px;margin-bottom:10px}
+  th,td{padding:5px 8px}
+  .cpnote{margin-top:16px;font-size:10.5px}
+  .box,.say,.safe,.act,pre,table{break-inside:avoid}
+  @page{margin:14mm 13mm}
+}
+@media (max-width:1180px){
+  .side{position:static;width:auto;height:auto;border-right:0;border-bottom:1px solid var(--rule)}
+  .sheet{margin:20px auto;padding:30px 22px 44px}
+}
+</style>
+</head>
+<body>
+
+<nav class="side">
+<p class="side-h">Instructor guide</p>
+<p class="side-sub">Session 12 &middot; Loops &middot; 75 min</p>
+<a class="nav-item k-concept" href="#s1"><span class="nav-n">1</span><span class="nav-l">How to run this session</span></a>
+<a class="nav-item k-quiz" href="#s2"><span class="nav-n">2</span><span class="nav-l">Opening and recap</span><span class="nav-t">0 to 5</span></a>
+<a class="nav-item k-hook" href="#s3"><span class="nav-n">3</span><span class="nav-l">Hook, forty copies</span><span class="nav-t">5 to 11</span></a>
+<p class="cp"><span>Checkpoint 1 &middot; 11 min</span></p>
+<a class="nav-item k-concept" href="#s4"><span class="nav-n">4</span><span class="nav-l">Name it, agenda</span><span class="nav-t">11 to 13</span></a>
+<a class="nav-item k-concept" href="#s5"><span class="nav-n">5</span><span class="nav-l">Every line runs once</span><span class="nav-t">13 to 16</span></a>
+<a class="nav-item k-hands" href="#s6"><span class="nav-n">6</span><span class="nav-l">Task 1, the long way</span><span class="nav-t">16 to 19</span></a>
+<a class="nav-item k-concept" href="#s7"><span class="nav-n">7</span><span class="nav-l">A loop, two kinds</span><span class="nav-t">19 to 23</span></a>
+<p class="cp"><span>Checkpoint 2 &middot; 23 min</span></p>
+<a class="nav-item k-concept" href="#s8"><span class="nav-n">8</span><span class="nav-l">Build the while loop</span><span class="nav-t">23 to 31</span></a>
+<p class="cp"><span>Checkpoint 3 &middot; 31 min</span></p>
+<a class="nav-item k-hands" href="#s9"><span class="nav-n">9</span><span class="nav-l">Task 2, name the part</span><span class="nav-t">31 to 35</span></a>
+<a class="nav-item k-hook" href="#s10"><span class="nav-n">10</span><span class="nav-l">Follow the dot</span><span class="nav-t">35 to 38</span></a>
+<a class="nav-item k-quiz" href="#s11"><span class="nav-n">11</span><span class="nav-l">Classroom quiz</span><span class="nav-t">38 to 44</span></a>
+<a class="nav-item k-hands" href="#s12"><span class="nav-n">12</span><span class="nav-l">Type it, break it</span><span class="nav-t">44 to 50</span></a>
+<a class="nav-item k-hands" href="#s13"><span class="nav-n">13</span><span class="nav-l">Task 3, find the mistake</span><span class="nav-t">50 to 54</span></a>
+<a class="nav-item k-activity" href="#s14"><span class="nav-n">14</span><span class="nav-l">The four reveals</span><span class="nav-t">54 to 58</span></a>
+<p class="cp"><span>Checkpoint 4 &middot; 58 min</span></p>
+<a class="nav-item k-hands" href="#s15"><span class="nav-n">15</span><span class="nav-l">Square pattern</span><span class="nav-t">58 to 66</span></a>
+<p class="cp floor"><span>Hard floor &middot; 66 min</span></p>
+<a class="nav-item k-exit" href="#s16"><span class="nav-n">16</span><span class="nav-l">Exit question</span><span class="nav-t">66 to 70</span></a>
+<a class="nav-item k-concept" href="#s17"><span class="nav-n">17</span><span class="nav-l">Takeaways and close</span><span class="nav-t">70 to 75</span></a>
+<a class="nav-item k-concept" href="#s18"><span class="nav-n">18</span><span class="nav-l">If you are running late</span></a>
+</nav>
+
+<div class="sheet">
+
+<h1>Instructor Guide - Loops</h1>
+<p class="meta"><b>Duration</b> 75 minutes</p>
+
+<section class="tight" id="s1">
+<h2><span class="num">1.</span>How to run this session</h2>
+<p>This guide gives you the shape of each beat and the few lines that are worth saying close to as written. Everything else is yours. If you have a better machine than the xerox shop, use yours. The centre of this session is the build card where the room gives you the three parts of a while loop, so protect that time above everything else.</p>
+<div class="box">
+<h3>Five habits that carry the whole session</h3>
+<ul>
+<li><b>Ask before you tell.</b> Every new idea today has a question that reaches it. Ask that question first, take two or three answers, then say the thing.</li>
+<li><b>Read the room out loud.</b> On every vote, go option by option and say roughly what you see. Silence is not agreement.</li>
+<li><b>Keep asking.</b> Aim for a question every two minutes, even small ones. Which part is that line? How many times does it run? What changes next?</li>
+<li><b>Nudge while they work.</b> Walk the rows during every task and keep talking: are you done? One minute to go. Let us see who finishes first. Show me your three parts.</li>
+<li><b>Offer doubts often.</b> Any doubts here takes four seconds and saves ten minutes later.</li>
+</ul>
+</div>
+<p>Three words go on the board today and stay there: <b>initialization</b>, <b>termination condition</b>, <b>updation</b>. Write each one as the room gives it to you, and point at them for the rest of the session.</p>
+<p class="small">The worksheet is digital. Students open it on their own laptops at the agenda card, type into it, and it is submitted at the end. All three tasks are in that one file, so nothing is given out later.</p>
+<p class="small">Four safe points are marked through the guide. Each one is a short check that tells you whether to move on or to go back. If a safe point fails, the beat after it will not land, so fix it there.</p>
+</section>
+
+<section id="s2">
+<h2><span class="num">2.</span>Opening and recap <span class="clock">0 to 5 min</span></h2>
+<p>Welcome card while they settle. Laptops shut, and say so: you will tell them when to open them. Do not name the topic, they guess it after the hook.</p>
+<p>Then the recap of session 11, nested conditions. One card says the word Recap, then the real retrieval: a program that should print nothing and prints Pass. Read it out by line number, say what it was meant to do, then give the task and stop talking. One line is to blame, decide which one.</p>
+<p>Take the vote on fingers, all together on three, then go number by number and say roughly what you see. Do not count exactly. Then step the reveal: the wrong output, the guilty line, what it should have printed.</p>
+<div class="say"><b>Close on the idea today needs:</b> "The indent decides which block a line belongs to. Line 5 is at the left edge, so it is outside both ifs."</div>
+<p>Do not reteach nesting here. Three presses, three minutes, move.</p>
+</section>
+
+<section id="s3">
+<h2><span class="num">3.</span>Hook, forty copies at the xerox shop <span class="clock">5 to 11 min</span></h2>
+<p class="hookline">Laptops shut. Nobody types here.</p>
+<p>Start from something all of them have done: the xerox shop outside the gate, one form handed over, forty copies asked for. Say what they already know so nobody has to correct you. He does not press the button forty times. He types 40, presses start once, and goes back to his phone.</p>
+<div class="say"><b>Then the question that is actually interesting:</b> "But the machine only knows how to make one copy. So what is happening inside it, forty times over?" Take two or three answers, wrong ones included. Correct nobody.</div>
+<p>Now step the picture. The column of forty jobs appears inside the machine. Let them look at it. One job, forty times over. Then ask what four hundred would have looked like, and wait for the groan.</p>
+<p>Next the question changes: where else have you seen this? Nudge with anything on this campus that has a button on it, then take three or four answers. Make each one say both halves. ATM is half an answer. The ATM counts one note, again and again, until it reaches the amount, is the answer. Show one of ours only after theirs, and tie each to whichever student said something close.</p>
+<p>Last press collapses the column onto one line. Say nothing while it moves, then: one instruction, written once, and forty copies still come out. Point at it and say plainly what it is without naming it. What it is called, and how to write one, is today.</p>
+<div class="safe"><b>Safe point 1, does the idea exist yet.</b> Ask the room for one machine that repeats one job after a single press, and make them say both halves, the machine and the job. If you only get machine names, take the examples down to two and say the job for each yourself before you move on.</div>
+<p class="cpnote"><span>Checkpoint 1</span> you should be at 11 minutes here</p>
+</section>
+
+<section id="s4">
+<h2><span class="num">4.</span>Name it, then the agenda <span class="clock">11 to 13 min</span></h2>
+<p>The title card says one word, and it is the word half the room has already said. One line ties it to yesterday: yesterday we decided whether a line runs, today we decide how many times it runs.</p>
+<p>Then the agenda, one press per stop, and the promise worth saying out loud: by the end you will have written one of these yourself. Send the worksheet link now and get it open on every laptop. Every task today is in that one file.</p>
+</section>
+
+<section id="s5">
+<h2><span class="num">5.</span>Every line runs once, and you can watch it <span class="clock">13 to 16 min</span></h2>
+<p>Ask it before you press anything: so far, when Python reaches a line, how many times does it run that line? Wait for once.</p>
+<p>Then walk the little program one press per line, saying the line number and what it did, nothing more. On the repeat, point at the box and say the sentence the next task will charge them for: same two lines as before, written out again.</p>
+<p>The last press puts up the question. Read it once, slowly, and do not answer it.</p>
+<div class="say"><b>Hand over with this:</b> "Before I answer that, I want you to feel why we need it."</div>
+</section>
+
+<section id="s6">
+<h2><span class="num">6.</span>Worksheet task 1, ten numbers the long way <span class="clock">16 to 19 min</span></h2>
+<p class="tag">Worksheet task 1</p>
+<p>Worksheet open, playground shut. Task 1 already has the three number program in it. Read the change once: same question, but now it asks for the next ten. They type the lines they would add, then the two numbers in the small table.</p>
+<p>Press play on the timer, it does not start by itself. Two and a half minutes.</p>
+<div class="act"><b>While they work:</b> walk the rows and keep talking. "Are you guys done? Come on, let us see who finishes first. One minute left, just the line count now."</div>
+<p>Hands off keyboards, then take the line count by show of hands: fewer than fifteen, more than twenty. Then ask what a hundred numbers would cost. Twenty one lines is right, and two hundred and one for a hundred. Both are worth saying out loud. Do not show a solution, the next cards are the answer.</p>
+</section>
+
+<section id="s7">
+<h2><span class="num">7.</span>A loop, and the two kinds <span class="clock">19 to 23 min</span></h2>
+<p>Open from their own sheets: twenty one lines, and you all wrote the same two of them ten times. Now name it, pointing at the block that repeats. A loop lets us run one block of code several times.</p>
+<p>Check with a question rather than a statement: how many different lines are in that block, and how many runs? If the room goes quiet, narrow it to point at the block that repeats.</p>
+<p>Then ask how we write one in Python, and only then put up the two kinds. Today is while, start to finish. The for loop comes in a later session. Both do the same job, they are written differently.</p>
+<p>Finish on the while shape. Read it in order: the word while, the condition, the colon, the indented block. Connect it to yesterday, same colon and same indent as an if, and then give the difference that matters: an if asks its condition once, this one asks it again every time round.</p>
+<p class="cpnote"><span>Checkpoint 2</span> you should be at 23 minutes here</p>
+</section>
+
+<section id="s8">
+<h2><span class="num">8.</span>Build it, name it, count it <span class="clock">23 to 31 min</span></h2>
+<p>This is the centre of the session. Seven presses, and the room supplies most of it. The skeleton goes up first: the input line, the two lines from their own sheet, and a while line with a gap where the condition should be.</p>
+<ul>
+<li><b>Initialization.</b> Ask before you press: if I want this to happen exactly three times, what do I need first? Take a count from the room, then press. Push it: does that line run once even if the loop goes round a hundred times? Yes. Write the word on the board.</li>
+<li><b>Updation.</b> Ask first: the counter is sitting at zero, who is going to change it? Then ask the question that matters, is that line inside the loop or outside, and how can you tell. Wait for the indent. Write the word.</li>
+<li><b>The question.</b> A red dashed box and nothing else. Read it out, then stop talking for ten seconds. Take answers from three different parts of the room before you say whether any of them is right.</li>
+<li><b>Termination condition.</b> The answer lands in the gap. Check it against their answers, not against the screen. Then ask how many times the question gets asked. Most of the room says three.</li>
+</ul>
+<div class="say"><b>Let them be wrong, then count it together on the board:</b> 0 less than 3 yes, 1 less than 3 yes, 2 less than 3 yes, 3 less than 3 no. Four. "Three yeses and one no. The no is how it stops."</div>
+<p>Last two presses run the block three times and then run the whole thing. Input 5 gives 6, 7, 8, End. Close on it: four parts, three of them you write yourself, and the fourth is the work you actually wanted done.</p>
+<p>Then strip the example away and show the shape with the names on it. This is the diagram they will redraw in an exam.</p>
+<div class="safe"><b>Safe point 2, which one is outside.</b> Ask: of the four parts, which one sits outside the loop? You want initialization. Anyone pointing at updation has confused the indent, and it has to be fixed here, not later.</div>
+<p class="cpnote"><span>Checkpoint 3</span> you should be at 31 minutes here</p>
+</section>
+
+<section id="s9">
+<h2><span class="num">9.</span>Worksheet task 2, which part is this line <span class="clock">31 to 35 min</span></h2>
+<p class="tag">Worksheet task 2</p>
+<p>Two programs they have not seen. Six lines, and against each one they type I, T or U. Say the words in full, not the letters only. Do the first line of program A together so nobody is guessing at the task, then press play. Two and a half minutes.</p>
+<div class="act"><b>Nudge, then check:</b> "Any doubts about the task? Ask now. One minute, and the question underneath." Hands off keyboards first, and only then give the check: every loop has exactly one of each, so if you have typed the same letter three times, look again.</div>
+<p>Take the reveal line by line. Ask for hands on I, T and U, then drop the line into the bin the room voted for, not into the right one. A bin that bounces is the point of the panel. Program B is where it gets interesting: both of its wrong answers are real beliefs, that initialization always sets zero and that updation always adds one.</p>
+<p>The answers, for you: I, T, U on lines 2, 3 and 6 of program A, and I, T, U on lines 2, 3 and 5 of program B. Line 4 of program A runs five times, because the counter starts at 1 and the test is less than or equal to 5.</p>
+</section>
+
+<section id="s10">
+<h2><span class="num">10.</span>Follow the dot <span class="clock">35 to 38 min</span></h2>
+<p>Open from the lines they just named: you found the three lines, now watch what Python does with them. The dot is Python.</p>
+<div class="say"><b>Say this, it is not on the card:</b> "I am going to set the number, and before I press play I want you to tell the person next to you what this prints. All of it."</div>
+<p>Ten seconds of talking, then quiet, then play. Narrate one step per sentence and ask rather than tell: is 0 less than 2? Yes, so we go inside. Put your hand on the back edge when it jumps: look where it goes next, back up to the same question.</p>
+<p>On the pass that fails, slow right down. Counter is 2, is 2 less than 2, no, so we come out at the bottom and print End. Then tie it to the build: count the times the dot touched that diamond. Three yeses and a no, four, the same number as before.</p>
+<div class="safe"><b>Safe point 3, the count.</b> Drag the number to 0 and ask what prints before you play it. Most of the room will say 6. Let them be wrong out loud, then play it and watch the body stay grey. If the room cannot say why nothing ran, run it once more at 2 before the quiz.</div>
+</section>
+
+<section id="s11">
+<h2><span class="num">11.</span>Classroom quiz on the portal <span class="clock">38 to 44 min</span></h2>
+<p>Announce it plainly: open the learning portal, today's classroom quiz is live. Say the two things they need, how long they have and that it is individual. Do not read any question out and do not put one on the board.</p>
+<p>Walk the room while they attempt it, and look at screens rather than at the clock. When it closes, take the two questions most of the room got wrong and give the correct reasoning for each in one sentence. Nothing longer.</p>
+<p>Use the result to steer the second half. If the three parts have not landed, take the square pattern down to five minutes and spend the time on the reveals instead.</p>
+</section>
+
+<section id="s12">
+<h2><span class="num">12.</span>Type it, then break it <span class="clock">44 to 50 min</span></h2>
+<p>Laptops open. Type this exactly, do not copy mine. Run it with 5, then 1, then 100. Three minutes. Walk the rows. Most errors will be the indent or the colon, so say that out loud once and nobody feels singled out.</p>
+<p>Then break it, and frame it as your own mistake: I think I have left a line out by accident, delete the updation line and run it again with 5. Do not warn them. Let them react, somebody will shout, and only then ask what it is waiting for. The counter is still zero, so the answer to the question never changes. Show them the stop button once.</p>
+<p>Second change on the same card: put the line back, then move it above the print. Take the difference from the room. Same three numbers, so what changed? Order inside the body changes what prints, not how many passes.</p>
+</section>
+
+<section id="s13">
+<h2><span class="num">13.</span>Worksheet task 3, find the mistake <span class="clock">50 to 54 min</span></h2>
+<p class="tag">Worksheet task 3</p>
+<p>Open from what they just did: you broke updation on purpose, here are three programs somebody broke by accident. Three programs, one thing wrong in each. They type which line is wrong, or what is missing and where it should go, then which part it is, then what happens when you run it.</p>
+<p>Press play. Three minutes, worksheet tab only, and say why: running them answers the question for free, and program 2 will freeze a tab.</p>
+<div class="act"><b>While they work:</b> "Which part is that? Say the word. Program 3 is the sneaky one, count the yeses."</div>
+<p>Hands off keyboards at the end, and do not take answers here. The next four reveals are the answers, one at a time. For you: program 1 has no initialization, program 2 stores the answer of the condition in a box, and program 3 starts the counter at 1 so it runs twice instead of three times.</p>
+</section>
+
+<section id="s14">
+<h2><span class="num">14.</span>The four reveals <span class="clock">54 to 58 min</span></h2>
+<p>One reveal per mistake, and hands before every one of them.</p>
+<table>
+<tr><th>Reveal</th><th>How to take it</th></tr>
+<tr><td>Missing initialization</td><td>Ask who typed that a line is missing, then read the error text out exactly. Give them the rule they can use in an exam: if you see that error under a while loop, look above the loop, not inside it. Worth twenty seconds: it did not loop forever, it did not loop at all.</td></tr>
+<tr><td>A condition stored in a box</td><td>The hard one. Read the line very slowly, then ask one question and stop talking: what gets stored, the question or the answer? Then name it, infinite loop, and connect it back to the deleted update line. Same ending, different cause.</td></tr>
+<tr><td>Off by one</td><td>Ask the honest question first: how many of you marked this one correct? It will be most of the room. Walk the counter out loud, 1 yes, 2 yes, 3 no, two passes. Give both repairs and ask which they prefer. This is the one that costs marks in an exam, say so.</td></tr>
+<tr><td>No updation</td><td>They already met it on their own laptops, so ask who made this happen twenty minutes ago. Close the set: you have now broken all three parts and seen what each costs, an error before it starts, the wrong number of passes, and a loop that never stops.</td></tr>
+</table>
+<div class="safe"><b>Safe point 4, three failures, not one.</b> Ask which line was wrong in the stored condition program and which line was wrong in the no updation program. If the room says they are the same mistake, walk both lines again before you move on.</div>
+<p class="cpnote"><span>Checkpoint 4</span> you should be at 58 minutes here</p>
+</section>
+
+<section id="s15">
+<h2><span class="num">15.</span>The square pattern, they write it <span class="clock">58 to 66 min</span></h2>
+<p>Read the question off the card, stars in N rows and N columns, and point at the output to say the thing that costs marks: there is a space after every star. Say that twice.</p>
+<p>Give them the shortcut they already own by asking for it: which string operation gives you a star and a space, n times? Then ask which part repeats, the row or the star, and hold the answer. They decide it at the keyboard. Do not code this on screen.</p>
+<p>Before anybody types, take one answer out loud: n is 3, how many times does the print line have to run? Three. That is their termination condition and now they know it. Press play, four and a half minutes.</p>
+<div class="act"><b>Walk the rows continuously:</b> "Are you guys done? Show me your three parts. Run it with 5." For anyone stuck, ask the three words instead of giving code: where is your initialization? In the last ninety seconds everybody runs it with 3, then 5, then 1.</div>
+<p>The solution goes up only after the timer has run out. Read it against their three words, then ask for hands: who got the same three parts, even with different names? The common bug is a hard coded 3 instead of n, which passes the first test and fails the second.</p>
+<p class="cpnote floor"><span>Hard floor</span> 66 minutes. The exit runs whatever else is dropped</p>
+</section>
+
+<section id="s16">
+<h2><span class="num">16.</span>Exit question <span class="clock">66 to 70 min</span></h2>
+<p>Frame it as a real thing: a name board app prints one letter per line, and somebody types a single letter. Read the code once by line number, then stop talking and press play. Two and a half minutes, silent.</p>
+<p>Vote by hands, option by option, and say roughly what you see for each. Then reveal and walk it: the length is 1, so the question is 0 less than 0, which is False the first time, and the body never runs.</p>
+<p>Name each wrong option out loud, because each one is a belief: a loop must run at least once, I saw an index and expected an index error, I saw a while and expected forever. Then tie it to the morning: the first thing today was a program that should print nothing, this is the same idea with a harder question.</p>
+<p class="small">A big vote for the first option is the finding worth carrying into the next session. They still believe a loop body always runs once.</p>
+</section>
+
+<section id="s17">
+<h2><span class="num">17.</span>Takeaways and close <span class="clock">70 to 75 min</span></h2>
+<p>Do not read the map out, ask for it. The word loops, then how many kinds, then the block diagram one band at a time: what goes above the loop, what goes on the while line, what goes at the bottom of the body. Point at the arrow back up and say that is the bit that surprised you, it asks again.</p>
+<p>The last press is three different endings, not one. Take them one at a time. Leave out the initialization and it stops with an error. Get the condition wrong and you get the wrong count. Leave out the updation and it never stops.</p>
+<p>Then the feedback card while they pack, and ask for one specific thing rather than a rating: tell me the one minute of today that was too fast. Last card, one sentence about the for loop in a later session, and let them go.</p>
+</section>
+
+<section id="s18">
+<h2><span class="num">18.</span>If you are running late</h2>
+<p>Cut in this order. Each of these can go without breaking what comes after it.</p>
+<ol>
+<li><b>The square pattern</b> can drop to five minutes with one run at 3 only.</li>
+<li><b>The fourth reveal</b> can be said in one sentence without putting the card up. They already broke that one themselves.</li>
+<li><b>Follow the dot</b> can run once at 2 and once at 0 with no narration in between.</li>
+<li><b>Worksheet task 3</b> can go to two minutes with a word from you that program 3 is the one to look at twice.</li>
+</ol>
+<p>Do not cut the build card or the exit question. The build is where the three parts come from the room instead of from you, and the exit is the hard floor, the one beat that runs whatever else is dropped.</p>
+</section>
+
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav-item'));
+  var map = {};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+  var seen = [];
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      var id = e.target.id;
+      if (e.isIntersecting) { if (seen.indexOf(id) < 0) seen.push(id); }
+      else { var i = seen.indexOf(id); if (i >= 0) seen.splice(i,1); }
+    });
+    if (!seen.length) return;
+    var order = links.map(function(a){ return a.getAttribute('href').slice(1); });
+    seen.sort(function(a,b){ return order.indexOf(a) - order.indexOf(b); });
+    links.forEach(function(a){ a.classList.remove('current'); });
+    var cur = map[seen[0]];
+    if (cur) cur.classList.add('current');
+  }, { rootMargin: '-10% 0px -70% 0px', threshold: 0 });
+  document.querySelectorAll('section[id]').forEach(function(s){ io.observe(s); });
+})();
+</script>
+
+</body>
+</html>

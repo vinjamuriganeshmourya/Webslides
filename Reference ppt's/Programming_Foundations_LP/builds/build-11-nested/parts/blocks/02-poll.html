@@ -1,0 +1,25 @@
+<section class="block block-quiz" id="poll"><div class="block-head"><span class="block-icon" aria-hidden="true">&#9889;</span><h2>Warm-Up Poll &mdash; retrieval on session 10</h2></div><div class="pcard" data-label="Recap"><div class="slide-head"><span class="slide-title">Recap &mdash; before the poll</span></div><div class="stage stage-bare" id="stage-recapcard">
+<svg class="fig titlecard" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Title card reading Recap">
+<defs>
+<clipPath id="tc-clip"><rect x="0" y="0" width="1600" height="900" rx="16"/></clipPath>
+<linearGradient id="tc-rule" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#0B5FA5"/><stop offset="1" stop-color="#5CC6EA"/>
+</linearGradient>
+</defs>
+<g clip-path="url(#tc-clip)">
+<rect x="0" y="0" width="1600" height="900" fill="#FFFFFF"/>
+<text x="800" y="510" text-anchor="middle" style="font:700 210px var(--sans);letter-spacing:-4px" fill="#0B7CB5">Recap</text>
+<image href="ASSET:nxtwave-logo.webp" x="1396" y="754" width="150" height="90"/>
+<rect x="0" y="884" width="1600" height="16" fill="url(#tc-rule)"/>
+</g>
+</svg>
+</div>
+</div><div class="pcard" data-label="Warm-Up Poll &mdash; three from last session"><div class="slide-head"><span class="slide-title">Warm-Up Poll &mdash; three from last session</span></div><div class="stage" id="stage-poll"><div class="sl-head"><span class="sl-bar" aria-hidden="true"></span><div><p class="sl-eyebrow">Recap &middot; Last Session</p><h3 class="sl-title">Quick Check</h3></div></div><div class="stage-step on" data-label="Q1"><div class="pollcols"><div><p class="stage-q">What does this print?</p><pre class="slabcode">if 2 &gt; 3:
+    <i>print</i>("Conditional Block")
+<i>print</i>("End")</pre><ul class="vopts"><li data-k="1">Conditional Block</li><li data-k="2" class="right">End</li><li data-k="3">both lines</li><li data-k="4">nothing</li></ul></div><div><p class="ans"><b>2 &mdash; End.</b> The condition fails, so the indented line is skipped. The last line is outside the if.<span class="mtrace" aria-hidden="true"><span class="wline ran">if 2 &gt; 3:      tested, False</span><span class="wline dead">    print("Conditional Block")</span><span class="wline ran">print("End")    runs</span></span><span class="mtrace-key"><b>Blue</b> = Python ran it. <b>Faded</b> = never even read. Same colours as the dot later.</span></p><div class="stage-ctl"><button type="button" data-reveal="Reveal answer">Reveal answer</button><span class="tmr" data-auto data-secs="25"></span></div></div></div></div><div class="stage-step" data-label="Q2"><div class="pollcols"><div><p class="stage-q">And this one?</p><pre class="slabcode">if <b>True</b>:
+    <i>print</i>("If Block")
+        <i>print</i>("Inside If")</pre><ul class="vopts"><li data-k="1">both lines</li><li data-k="2">If Block only</li><li data-k="3" class="right">an IndentationError</li><li data-k="4">a NameError</li></ul></div><div><p class="ans"><b>3 &mdash; IndentationError: unexpected indent.</b> Nothing prints. Python will not guess what you meant.<span class="mtrace" aria-hidden="true"><span class="wline dead">if True:</span><span class="wline dead">    print("If Block")</span><span class="wline dead">        print("Inside If")</span></span></p><div class="stage-ctl"><button type="button" data-reveal="Reveal answer">Reveal answer</button><span class="tmr" data-auto data-secs="25"></span></div></div></div></div><div class="stage-step" data-label="Q3"><div class="pollcols"><div><p class="stage-q">And this?</p><pre class="slabcode">if <b>False</b>:
+    <i>print</i>("If Block")
+<i>print</i>("After If")
+<b>else</b>:
+    <i>print</i>("Else Block")</pre><ul class="vopts"><li data-k="1">After If, then Else Block</li><li data-k="2">After If only</li><li data-k="3" class="right">a SyntaxError, nothing prints</li><li data-k="4">an IndentationError</li></ul></div><div><p class="ans"><b>3 &mdash; SyntaxError, and nothing prints at all.</b> A statement between the if and the else breaks the shape.<span class="mtrace" aria-hidden="true"><span class="wline dead">if False:</span><span class="wline dead">    print("If Block")</span><span class="wline dead">print("After If")</span><span class="wline dead">else:</span><span class="wline dead">    print("Else Block")</span></span><span class="mtrace-key">Same failure you meet again at grade E.</span></p><div class="stage-ctl"><button type="button" data-reveal="Reveal answer">Reveal answer</button><span class="tmr" data-auto data-secs="25"></span></div></div></div></div><div class="stage-ctl"><button type="button" data-stage-prev>Back</button><button type="button" data-stage-next>Next</button><span class="ctl-count"></span></div><div class="stage-rule" aria-hidden="true"></div></div></div></section>

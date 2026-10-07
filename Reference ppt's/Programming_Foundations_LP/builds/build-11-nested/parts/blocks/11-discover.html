@@ -1,0 +1,83 @@
+<section class="block block-activity" id="discover"><div class="block-head"><span class="block-icon" aria-hidden="true">&#9889;</span><h2>Discover it first &mdash; how would you grade this?</h2></div><div class="pcard" data-label="Discover it first &mdash; how would you grade this?"><div class="slide-head"><span class="slide-title">Discover it first &mdash; how would you grade this?</span></div><div class="stage" id="stage-disc"><div class="sl-head"><span class="sl-bar" aria-hidden="true"></span><div><p class="sl-eyebrow">Conditional Statements</p><h3 class="sl-title">Your Turn</h3></div></div>
+
+<div class="stage-step on" data-label="the problem">
+<p class="stage-q">I have a student's marks out of 100 and I need to print their grade.</p>
+<pre class="slabcode">91 to 100   -&gt;   A
+ 81 to 90   -&gt;   B
+ 71 to 80   -&gt;   C
+ 61 to 70   -&gt;   D</pre>
+<p class="stage-q">How would you write that with what you know so far? <b>Three minutes, on your own screen.</b></p>
+<p class="stage-note">You already have everything you need. There is no new keyword yet.</p>
+<span class="tmr" data-secs="180"></span>
+</div>
+
+<div class="stage-step" data-label="ways 1 and 2">
+<p class="stage-q">Four ways to write it with today's keywords, two at a time. <b>Here are the first two.</b></p>
+<div class="cmp2">
+<div>
+<h4>1 &middot; One if per grade</h4>
+<pre>if marks &gt;= <i>91</i>:
+    <i>print</i>(<em>"A"</em>)
+if marks &gt;= <i>81</i>:
+    <i>print</i>(<em>"B"</em>)
+if marks &gt;= <i>71</i>:
+    <i>print</i>(<em>"C"</em>)
+if marks &gt;= <i>61</i>:
+    <i>print</i>(<em>"D"</em>)</pre>
+<p class="verdict"><b>Wrong.</b> 95 prints A, B, C <em>and</em> D &mdash; every question is still asked after a match.</p>
+</div>
+<div>
+<h4>2 &middot; Both ends of every band</h4>
+<pre>if marks &gt;= <i>91</i>:
+    <i>print</i>(<em>"A"</em>)
+if marks &gt;= <i>81</i> <b>and</b> marks &lt;= <i>90</i>:
+    <i>print</i>(<em>"B"</em>)
+if marks &gt;= <i>71</i> <b>and</b> marks &lt;= <i>80</i>:
+    <i>print</i>(<em>"C"</em>)
+if marks &gt;= <i>61</i> <b>and</b> marks &lt;= <i>70</i>:
+    <i>print</i>(<em>"D"</em>)</pre>
+<p class="verdict">Correct &mdash; but every boundary is written <b>twice</b>, and all four questions are asked every time.</p>
+</div>
+</div>
+</div>
+
+<div class="stage-step" data-label="ways 3 and 4">
+<p class="stage-q">And the other two. <b>Three of the four are correct.</b> Every one costs you something.</p>
+<div class="cmp2">
+<div>
+<h4>3 &middot; An if inside an if inside an if</h4>
+<pre>if marks &gt;= <i>91</i>:
+    <i>print</i>(<em>"A"</em>)
+<b>else</b>:
+    if marks &gt;= <i>81</i>:
+        <i>print</i>(<em>"B"</em>)
+    <b>else</b>:
+        if marks &gt;= <i>71</i>:
+            <i>print</i>(<em>"C"</em>)
+        <b>else</b>:
+            if marks &gt;= <i>61</i>:
+                <i>print</i>(<em>"D"</em>)</pre>
+<p class="verdict">Correct, and asks nothing extra &mdash; but <b>four levels deep</b>. One more grade, one more level.</p>
+</div>
+<div>
+<h4>4 &middot; Keep the answer in a name</h4>
+<pre>grade = <em>"D"</em>
+if marks &gt;= <i>71</i>:
+    grade = <em>"C"</em>
+if marks &gt;= <i>81</i>:
+    grade = <em>"B"</em>
+if marks &gt;= <i>91</i>:
+    grade = <em>"A"</em>
+<i>print</i>(grade)</pre>
+<p class="verdict">Correct and flat &mdash; but the answer is overwritten up to three times, and <b>20 comes out as D</b>.</p>
+</div>
+</div>
+</div>
+
+<div class="stage-step" data-label="so what now">
+<p class="bigask">So, what should we do now?</p>
+<p class="stage-q">All these approaches have downsides.</p>
+</div>
+
+<div class="stage-ctl"><button type="button" data-stage-prev>Back</button><button type="button" data-stage-next>Next</button><span class="ctl-count"></span></div><div class="stage-rule" aria-hidden="true"></div></div>
+</div></section>

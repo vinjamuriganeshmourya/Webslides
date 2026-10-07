@@ -1,0 +1,1462 @@
+1
+00:00:00,000 --> 00:00:13,480
+Hello everyone, welcome to today's session, in today's session we will learn about for
+
+2
+00:00:13,480 --> 00:00:19,719
+loop okay, so we will quickly see what we have seen so far, so we learn that loops is
+
+3
+00:00:19,719 --> 00:00:26,360
+used to execute a particular block of code multiple times right, so let's here we have
+
+4
+00:00:26,360 --> 00:00:32,680
+a loop part of code that block of code we want to execute it multiple times, for loops
+
+5
+00:00:32,680 --> 00:00:38,639
+there are 2 primary ways, one is while loop and another one is for loop, in that in the
+
+6
+00:00:38,639 --> 00:00:44,080
+previous session we have seen about while loop, so in while loop if we want a particular
+
+7
+00:00:44,080 --> 00:00:50,439
+block of code to be executed several times this is the syntax right, we will write while
+
+8
+00:00:50,439 --> 00:00:58,320
+space condition colon and the block of code with appropriate indentation okay, so this
+
+9
+00:00:58,320 --> 00:01:04,320
+block of code will be repeated several times until the condition is true, if the condition
+
+10
+00:01:04,320 --> 00:01:09,279
+is false the block of code will not be executed okay.
+
+11
+00:01:09,279 --> 00:01:14,800
+In the while we have seen there are 3 major things, one is initialization, termination
+
+12
+00:01:14,800 --> 00:01:21,040
+condition and updation right, so we applied this thing to an example and we have seen
+
+13
+00:01:21,040 --> 00:01:27,680
+right, so the example was we wanted to print 3 consecutive numbers, so for that what did
+
+14
+00:01:27,680 --> 00:01:28,680
+we do?
+
+15
+00:01:28,680 --> 00:01:36,320
+We want this A equal to A plus 1 print A, this block of code to get executed 3 times,
+
+16
+00:01:36,320 --> 00:01:43,720
+so to count how many times is block of code got executed we maintain the count available,
+
+17
+00:01:43,720 --> 00:01:49,519
+we maintain the count in this count available, so first is initialization we wrote counter
+
+18
+00:01:49,519 --> 00:01:56,160
+equal to 0 and then we have written the updation counter is equal to counter plus 1 and it
+
+19
+00:01:56,160 --> 00:02:01,879
+has to be executed 3 times to check that we have this counter less than 3, this is the
+
+20
+00:02:01,879 --> 00:02:07,639
+termination condition right, if the counter less than 3 this condition is false then A
+
+21
+00:02:07,639 --> 00:02:13,639
+equal to A plus 1 print A this block of code will not be executed, so we have initialization
+
+22
+00:02:14,559 --> 00:02:20,000
+condition, termination condition and updation, this is how we write looping in using value
+
+23
+00:02:20,000 --> 00:02:21,000
+okay.
+
+24
+00:02:21,000 --> 00:02:27,800
+Now then we have given a small challenge right, where you had to identify the mistake, so
+
+25
+00:02:27,800 --> 00:02:33,679
+this was the code, so many of you all actually identify the mistake in an appropriate way,
+
+26
+00:02:33,679 --> 00:02:38,279
+we will see the solution for this, there are multiple possible solutions, I am talking
+
+27
+00:02:38,279 --> 00:02:45,119
+about few possible solutions, so in this question there is an input python and we want
+
+28
+00:02:45,119 --> 00:02:52,720
+to print each of this character in a new line, see this P, Y, T, H, O, N, this is the expected
+
+29
+00:02:52,720 --> 00:03:00,119
+output, but this block of code is not giving this expected output, so we had to identify
+
+30
+00:03:00,119 --> 00:03:07,080
+the mistake, so for that one reason here is the length of A, the reason here is the length
+
+31
+00:03:07,119 --> 00:03:12,800
+of A here we have written minus 1 right, can you see this is the code okay, we have written
+
+32
+00:03:12,800 --> 00:03:21,880
+counter less than length of A minus 1 okay, so what happens the block of code print A
+
+33
+00:03:21,880 --> 00:03:29,479
+of counter this is repeated, it has to repeat for each character in python okay, for P,
+
+34
+00:03:29,479 --> 00:03:38,279
+Y, T, H, O and N, but since the termination condition is counter less than length of A
+
+35
+00:03:38,279 --> 00:03:47,800
+minus 1, this for last N character this print of A of counter is not getting executed, okay,
+
+36
+00:03:47,800 --> 00:03:55,240
+so this piece of code was only giving us P, Y, T, H, O, not N, N is missing, because we
+
+37
+00:03:55,240 --> 00:04:02,960
+have written length of A minus 1 in the termination condition, we need not have minus 1 right,
+
+38
+00:04:02,960 --> 00:04:08,080
+because this print A of counter this repeated piece of code which has to be repeated has
+
+39
+00:04:08,080 --> 00:04:14,000
+to get executed for each character that is length of A times, right, so then what should
+
+40
+00:04:14,000 --> 00:04:20,679
+the termination condition be, counter less than length of A, there shouldn't be any minus
+
+41
+00:04:20,679 --> 00:04:27,519
+1, okay, this is one way of writing it, okay, or you can also write as counter less than
+
+42
+00:04:27,519 --> 00:04:36,559
+or equal to length of A minus 1, even then the print A of counter that line will be executed
+
+43
+00:04:36,559 --> 00:04:44,160
+length of A times, okay, so this is the solution for the question, okay, there is one more
+
+44
+00:04:44,160 --> 00:04:49,880
+possible solution, where you start the counter with say minus 1, and you write it like this
+
+45
+00:04:50,079 --> 00:04:55,640
+where your print A of counter plus 1, then you need not change the termination condition,
+
+46
+00:04:55,640 --> 00:05:00,559
+you have just changed the initialization and the repeated piece of code, okay, there are
+
+47
+00:05:00,559 --> 00:05:06,359
+multiple possible solutions for the same thing, but generally this is the one which we, this
+
+48
+00:05:06,359 --> 00:05:11,440
+is in accordance to the one which we have discussed, right, we have an initialization
+
+49
+00:05:11,440 --> 00:05:16,880
+which is count, since we are maintaining the count, so counter should be 0, because since
+
+50
+00:05:16,880 --> 00:05:21,399
+we are starting right from the first scatter, we haven't printed this print A of counter
+
+51
+00:05:21,399 --> 00:05:28,959
+even once, so the counter is equal to 0, okay, and then in the termination condition we have
+
+52
+00:05:28,959 --> 00:05:36,640
+to check whether this block of code has executed length of A times, okay, so in this way we
+
+53
+00:05:36,640 --> 00:05:42,000
+can check, okay, all of these solutions are accepted, this or this, any of the solutions
+
+54
+00:05:42,000 --> 00:05:47,640
+are accepted, any of thing is correct, this is one way, okay, clear, so if we write like
+
+55
+00:05:47,640 --> 00:05:54,359
+this we got the expected output, see we got python, clear, so we have done with solving
+
+56
+00:05:54,359 --> 00:06:00,200
+this challenge, it's really exciting that so many people gave correct answers and they
+
+57
+00:06:00,200 --> 00:06:04,119
+could solve this and are really excited with this, okay.
+
+58
+00:06:04,119 --> 00:06:09,399
+Now what we'll do is we'll see in today's session what we are going to cover, the agenda
+
+59
+00:06:09,399 --> 00:06:15,119
+for the today's session is furlough, first we'll see about the syntax for the furlough
+
+60
+00:06:15,119 --> 00:06:20,040
+and about sequence, what is sequence and what is the syntax for the furlough, then we will
+
+61
+00:06:20,040 --> 00:06:26,519
+see about range, range, through range we can get the sequence of numbers, we'll see about
+
+62
+00:06:26,519 --> 00:06:31,279
+that, then we'll apply these concepts and solve some questions, okay, we'll have a code
+
+63
+00:06:31,279 --> 00:06:38,359
+walk through and we'll also look into some possible mistakes, okay, so we'll start furlough,
+
+64
+00:06:38,359 --> 00:06:44,279
+so to understand this furlough first we have to understand about sequence, so we have learned
+
+65
+00:06:44,279 --> 00:06:50,679
+that a string is a sequence of characters, right, so we have python, python is a sequence
+
+66
+00:06:50,679 --> 00:06:59,119
+of characters, P is a character, Y, T, H, O, N, each of this is a character, right,
+
+67
+00:06:59,119 --> 00:07:03,880
+so a string is a sequence of characters.
+
+68
+00:07:03,880 --> 00:07:10,000
+Now for what in our previous question where in the challenge question I'm talking about
+
+69
+00:07:10,000 --> 00:07:15,480
+identifying the mistake where we are given an input say python and we have to print an
+
+70
+00:07:15,480 --> 00:07:21,160
+output where each of this letter is printed in the output like P and then Y and then in
+
+71
+00:07:21,160 --> 00:07:27,839
+a new line we are printing each of the character that is present in the string, okay, we'll
+
+72
+00:07:27,839 --> 00:07:32,519
+solve this question using furlough, okay, so in that what do we want?
+
+73
+00:07:32,519 --> 00:07:38,920
+We want the line print A of counter to be executed for each of this character, okay,
+
+74
+00:07:38,920 --> 00:07:45,160
+for P, for Y, for T like this for each of the character we want that block of code to
+
+75
+00:07:45,160 --> 00:07:51,640
+be executed, right, so now we'll see that solution, see we have written this, right,
+
+76
+00:07:51,640 --> 00:07:57,000
+we first maintained a counter, okay, that is the initialization counter equal to 0,
+
+77
+00:07:57,160 --> 00:08:03,239
+then the termination condition was counter less than length of A, so we had to maintain
+
+78
+00:08:03,239 --> 00:08:07,399
+the length of the string, see initially we have maintained the length of the string,
+
+79
+00:08:07,399 --> 00:08:12,160
+okay, and then we have to write print A of counter and then the counter updation, so
+
+80
+00:08:12,160 --> 00:08:17,640
+we have an initialization, we have a termination condition and we have an updation also, so
+
+81
+00:08:17,640 --> 00:08:21,320
+we have 3 things, right, can we simplify this?
+
+82
+00:08:21,320 --> 00:08:25,640
+So in case of while loop what we have to write for each of these things we have to write
+
+83
+00:08:25,679 --> 00:08:31,239
+a separate lines of code and also we have to maintain the length of the string, right,
+
+84
+00:08:31,239 --> 00:08:32,960
+can we simplify this?
+
+85
+00:08:32,960 --> 00:08:39,679
+Yes, we can simplify this with for loop, okay, for that we'll use for loop, so we use this
+
+86
+00:08:39,679 --> 00:08:46,000
+first statement, for loop or the first statement to iterate over each item in the sequence,
+
+87
+00:08:46,000 --> 00:08:52,280
+especially we'll use for loop for iterating over each item in a sequence, see our string
+
+88
+00:08:52,280 --> 00:08:59,320
+is a sequence of characters, right, to iterate over each item of a sequence we use the first
+
+89
+00:08:59,320 --> 00:09:04,799
+statement, okay, that sequence could be a sequence of characters that is string or sequence
+
+90
+00:09:04,799 --> 00:09:10,440
+of numbers, like this we can give a sequence and the for loop will iterate over each item
+
+91
+00:09:10,440 --> 00:09:16,200
+in the sequence and will execute the block of code, okay, you can see the syntax there,
+
+92
+00:09:16,200 --> 00:09:23,159
+you will write for space and the variable, okay, here we have each item, space, in, space
+
+93
+00:09:23,159 --> 00:09:28,919
+and you'll give the sequence, okay, over which the first statement has to iterate, and then
+
+94
+00:09:28,919 --> 00:09:34,559
+we'll write colon and then the block of code with indentation which is 4 spaces as a standard,
+
+95
+00:09:34,559 --> 00:09:37,159
+okay, we'll write the block of code.
+
+96
+00:09:37,159 --> 00:09:43,559
+Now what we'll do is we'll use this for loop to solve this question, okay, so this is the
+
+97
+00:09:43,559 --> 00:09:49,000
+syntax, right, there is a for each item in sequence and the repeating block of code,
+
+98
+00:09:49,000 --> 00:09:51,799
+so in our case what is the sequence?
+
+99
+00:09:51,799 --> 00:09:57,320
+The sequence is a string which is python, so we have word equal to python, now the sequence
+
+100
+00:09:57,320 --> 00:10:00,359
+is present in the word, now what we have to do?
+
+101
+00:10:00,359 --> 00:10:04,479
+We have to iterate over each character in the word, so what did we write?
+
+102
+00:10:04,479 --> 00:10:11,599
+We have written for each underscore char that variable in word colon print each char, what
+
+103
+00:10:11,640 --> 00:10:12,640
+happened here?
+
+104
+00:10:12,640 --> 00:10:17,640
+There are characters in the string which is present in word, right, over each character
+
+105
+00:10:17,640 --> 00:10:23,599
+that is P, okay, while like this over each character the first statement iterates and
+
+106
+00:10:23,599 --> 00:10:28,440
+we'll do the, we'll execute the repeating block of code, so we are printing the each
+
+107
+00:10:28,440 --> 00:10:33,239
+character here in this question, right, so we have written print each char, like this
+
+108
+00:10:33,239 --> 00:10:36,000
+we are getting our output, right.
+
+109
+00:10:36,000 --> 00:10:37,799
+So now what did you observe here?
+
+110
+00:10:37,799 --> 00:10:43,119
+There is no initialization, there is no termination condition, and there is no updation also,
+
+111
+00:10:43,119 --> 00:10:48,960
+so all of these lines of code have reduced, right, see just in 3 lines of code we were
+
+112
+00:10:48,960 --> 00:10:54,400
+able to do the same thing, whereas in that we had to write so many lines of code, right,
+
+113
+00:10:54,400 --> 00:11:00,919
+so especially when you want to iterate over a sequence and execute a particular block
+
+114
+00:11:00,919 --> 00:11:07,880
+of code for each item in the sequence we will use the for loop, okay, clear.
+
+115
+00:11:07,880 --> 00:11:13,359
+Now we'll solve the same, we'll do the question and see what exactly happens in this first
+
+116
+00:11:13,359 --> 00:11:17,719
+statement in a step by step manner, okay, initially what did we do?
+
+117
+00:11:17,719 --> 00:11:23,520
+We have word equal to python, okay, so the string python got stored into the variable
+
+118
+00:11:23,520 --> 00:11:25,200
+word.
+
+119
+00:11:25,200 --> 00:11:26,200
+Next what did we write?
+
+120
+00:11:26,479 --> 00:11:34,039
+We have written for each char in word colon, right, so in this what happens is a variable
+
+121
+00:11:34,039 --> 00:11:40,599
+of name each char will get defined and the first item in the sequence will get assigned
+
+122
+00:11:40,599 --> 00:11:48,159
+to this variable, so see there you can see and each variable got defined and the first
+
+123
+00:11:48,159 --> 00:11:53,479
+item which is P in the sequence, P is the first item, right, it got stored into each
+
+124
+00:11:53,479 --> 00:11:55,359
+char, okay.
+
+125
+00:11:55,520 --> 00:11:56,520
+Then what did we do?
+
+126
+00:11:56,520 --> 00:12:00,599
+We have written print each char, so we got an output P.
+
+127
+00:12:00,599 --> 00:12:06,919
+Next what happens again we'll go to the for loop, then we will go to the next item in
+
+128
+00:12:06,919 --> 00:12:12,880
+the sequence which is Y, now Y will get stored in each char.
+
+129
+00:12:12,880 --> 00:12:13,880
+Next what did we write?
+
+130
+00:12:13,880 --> 00:12:20,239
+We have written print each char, so we got PY, see we got Y in the output, again we'll
+
+131
+00:12:20,239 --> 00:12:25,159
+again go back to the for loop, we'll go to the next item in the sequence which is T,
+
+132
+00:12:25,960 --> 00:12:30,239
+it gets stored in the each char and we got the output as T, okay, like this again we'll
+
+133
+00:12:30,239 --> 00:12:36,719
+go back now H, it gets stored in the each char and we got H, like this again O, we got
+
+134
+00:12:36,719 --> 00:12:42,200
+the output O, right, again we'll go to N, okay, the N that's the next item, right, it
+
+135
+00:12:42,200 --> 00:12:48,159
+gets stored in the each char and then when we print the each char we got M, so see we
+
+136
+00:12:48,159 --> 00:12:53,320
+got our expected output, right, so just with three lines of code we were able to do the
+
+137
+00:12:53,479 --> 00:12:58,760
+same thing which we have done with Y, right, so especially when you want to iterate over
+
+138
+00:12:58,760 --> 00:13:03,119
+a sequence we use the for loop, okay.
+
+139
+00:13:03,119 --> 00:13:09,320
+So we got this output, right, for input Python we got this output in the code playground,
+
+140
+00:13:09,320 --> 00:13:14,320
+first what we have to do we have a word which is Python, right, we have the string Python
+
+141
+00:13:14,320 --> 00:13:17,000
+in this word, next what we have to do?
+
+142
+00:13:17,000 --> 00:13:23,479
+We have to iterate over each character present in the word and print that character, right,
+
+143
+00:13:23,479 --> 00:13:24,479
+so for that what do we use?
+
+144
+00:13:24,479 --> 00:13:31,000
+We use the for loop, right, so we'll write for space and then each char is a variable,
+
+145
+00:13:31,000 --> 00:13:38,280
+okay, in word, right, so the sequence is word here, so each character present in the sequence,
+
+146
+00:13:38,280 --> 00:13:41,760
+here the sequence is word, in word then what we have to do?
+
+147
+00:13:41,760 --> 00:13:47,559
+We have to print the each character, right, so we'll write print each char, okay, now
+
+148
+00:13:47,559 --> 00:13:51,500
+we'll run the code and see.
+
+149
+00:13:51,500 --> 00:13:52,500
+So what we should get?
+
+150
+00:13:52,500 --> 00:13:57,760
+We should get each of this character present in the string in a separate line, see we have
+
+151
+00:13:57,760 --> 00:14:04,840
+P, Y, T, H, O, N, so we got the expected output, right, so in this way using the for it became
+
+152
+00:14:04,840 --> 00:14:09,960
+so simple for us, okay, now we'll go back to the slides.
+
+153
+00:14:09,960 --> 00:14:14,280
+Now this is clear, right, so how we have to do it with the for loop, what did we do?
+
+154
+00:14:14,280 --> 00:14:20,239
+We iterated over each character present in the string and we have executed a block of
+
+155
+00:14:20,239 --> 00:14:27,320
+code over each character in the string, right, now we have seen about the sequence of characters,
+
+156
+00:14:27,320 --> 00:14:34,080
+we can also have sequence of numbers, we can iterate over numbers, so for that we have
+
+157
+00:14:34,080 --> 00:14:37,799
+to know how can we generate a sequence of numbers.
+
+158
+00:14:37,799 --> 00:14:42,719
+In string as string is already a sequence of characters we could directly do it, but
+
+159
+00:14:42,719 --> 00:14:49,320
+how do we generate a sequence of numbers, right, so for that what we do is we use range,
+
+160
+00:14:49,320 --> 00:14:56,880
+okay, so here you can see an example range of N, can you see that?
+
+161
+00:14:56,880 --> 00:15:03,159
+So what does this do is it will generate a sequence of integers starting from 0, okay,
+
+162
+00:15:03,559 --> 00:15:09,159
+it will generate a sequence of integers starting from 0, okay, so what will it do?
+
+163
+00:15:09,159 --> 00:15:17,520
+Right from 0 till N that is N is not included till N-1, it will generate a sequence of integers,
+
+164
+00:15:17,520 --> 00:15:25,320
+okay, clear, the range of N will generate a sequence of numbers starting from 0 till
+
+165
+00:15:25,320 --> 00:15:28,760
+N-1 that is N will not be included, okay.
+
+166
+00:15:28,760 --> 00:15:34,719
+Now we'll see an example, see here there is range of 5, so what did it do?
+
+167
+00:15:34,719 --> 00:15:43,559
+It has given you a sequence of integers, see 0, 1, 2, 3, 4, okay, after 4 did we get 5?
+
+168
+00:15:43,559 --> 00:15:49,000
+No, because the N is not included, so 5 is not included, so it has given us a sequence
+
+169
+00:15:49,000 --> 00:15:55,640
+of integers starting from 0 till 4, okay, now we'll see the code for this, okay, we'll
+
+170
+00:15:55,640 --> 00:15:57,640
+iterate and print the numbers.
+
+171
+00:15:57,640 --> 00:16:07,200
+So here you can see we have for number in range of 3, colon, okay, so what did we do?
+
+172
+00:16:07,200 --> 00:16:13,640
+Range of 3 will give you a sequence of numbers that is 0, 1, 2, 3 will not come, 0, 1, 2,
+
+173
+00:16:13,640 --> 00:16:14,640
+now what are we doing?
+
+174
+00:16:14,640 --> 00:16:20,760
+We are iterating over 0, 1, 2 that sequence and printing that number, so first the number
+
+175
+00:16:20,760 --> 00:16:26,080
+it will get, 1, 0 will get stored in number, so we have done print number, we got 0, and
+
+176
+00:16:26,080 --> 00:16:34,200
+then again 1, again 2, like this we got 0, 1, 2, we'll try it out in our code playground.
+
+177
+00:16:34,200 --> 00:16:40,719
+So in the code playground what we have to do is we have to write the sequence of numbers,
+
+178
+00:16:40,719 --> 00:16:46,239
+we want to first take a range and then iterate over it and print the numbers, right, so for
+
+179
+00:16:46,239 --> 00:16:47,239
+that what did we write?
+
+180
+00:16:47,239 --> 00:16:56,640
+We'll write for number in, to get the sequence of numbers we use range, right, so range of,
+
+181
+00:16:56,640 --> 00:17:02,479
+so let's say I want 0, 1, 2, I want only 3 numbers, so I will write 3 here, 0, 1, 2,
+
+182
+00:17:02,479 --> 00:17:11,719
+I want those, so it's 3, I'll write print number, now we'll run the code and see.
+
+183
+00:17:11,719 --> 00:17:13,959
+See we got 0, 1, and 2.
+
+
+
+184
+00:17:14,176 --> 00:17:20,076
+right, now let's say I'll give here 5, okay, I'll run the code and see, now what I should
+
+185
+00:17:20,076 --> 00:17:28,436
+get 0, 1, 2, 3, 4, right, so see you can try out different values like this, okay.
+
+186
+00:17:28,436 --> 00:17:36,856
+For 2 we'll get 0, 1, okay, clear, so range gives us a sequence of numbers starting from
+
+187
+00:17:36,856 --> 00:17:43,176
+0 till n where n is not included, okay, now we'll go back to the slides.
+
+188
+00:17:43,176 --> 00:17:49,256
+Now let's apply these concepts and solve a question, okay, so the question here is write
+
+189
+00:17:49,256 --> 00:17:56,516
+a program to print right angle triangular pattern where integer n is given as input,
+
+190
+00:17:56,516 --> 00:18:03,576
+so basically here n is given as input, here it is 4, okay, 4 is given as input.
+
+191
+00:18:03,576 --> 00:18:08,615
+Now what we have to do is we have to print a right angle triangular pattern that is you
+
+192
+00:18:08,615 --> 00:18:14,056
+can see it there, okay, you'll have a first one star there, then 2, then 3, like this
+
+193
+00:18:14,056 --> 00:18:21,216
+then 4, like this we have to print 4 rows, okay, clear there, we have 4 rows, right,
+
+194
+00:18:21,216 --> 00:18:25,375
+like this we have to build a right angle triangular, right angle triangular is nothing but like
+
+195
+00:18:25,375 --> 00:18:30,415
+this, right, you can see the shape there, so we have to print a pattern like this.
+
+196
+00:18:30,415 --> 00:18:36,496
+So for this the input format is the first line will contain a positive integer, right,
+
+197
+00:18:36,496 --> 00:18:41,976
+so like this here we have 3, here we have 4, this is will contain a positive integer,
+
+198
+00:18:41,976 --> 00:18:46,176
+see here for 3 what did we have 3, we have 3 rows and there is a triangle there, see
+
+199
+00:18:46,176 --> 00:18:51,336
+1 star and then 2 stars and 3 stars and 4 stars like this, it will keep building till
+
+200
+00:18:51,336 --> 00:18:56,976
+the number of rows mentioned in the input, okay, then the output format is we have to
+
+201
+00:18:56,976 --> 00:19:02,976
+print this pattern, here you need to observe that after every star there is a space, okay,
+
+202
+00:19:03,455 --> 00:19:06,656
+there is a space after every star, okay, clear.
+
+203
+00:19:06,656 --> 00:19:13,336
+Now what we'll do is we'll solve the same question in the code playground, so here in
+
+204
+00:19:13,336 --> 00:19:18,415
+the code playground what I'll do is first step is always reading the input, so I have
+
+205
+00:19:18,415 --> 00:19:25,616
+to read the input, N equal to int of input, okay, so what I do?
+
+206
+00:19:25,616 --> 00:19:32,496
+I have taken the input from the user, so the next step is I have to print the right angle
+
+207
+00:19:33,015 --> 00:19:35,015
+pattern, right, so generally what did we observe?
+
+208
+00:19:35,015 --> 00:19:41,095
+We have a star space, then there is a star, star, star, star, star, star, star like this,
+
+209
+00:19:41,095 --> 00:19:46,416
+we have 1 star, then we have 2 stars and we have 3 stars like this, right, so let's try
+
+210
+00:19:46,416 --> 00:19:52,575
+to write this thing, let's try to understand this in a more simpler way, okay, what we'll
+
+211
+00:19:52,575 --> 00:19:59,735
+do is we'll first write let's say print star space, okay, then what will come?
+
+212
+00:19:59,735 --> 00:20:05,616
+Then we have to print star space, okay, this time how many times it has to be printed?
+
+213
+00:20:05,616 --> 00:20:11,375
+Twice, right, we'll use the string repetition, okay, twice, next what should come?
+
+214
+00:20:11,375 --> 00:20:20,056
+We should have 3 stars, right, so we'll have star space into 3, so like this what we have
+
+215
+00:20:20,056 --> 00:20:21,056
+to do?
+
+216
+00:20:21,056 --> 00:20:27,735
+Based on the input that we have taken it has to go till there, right, so like this 1, 2,
+
+217
+00:20:27,735 --> 00:20:33,176
+so this is basically nothing but you can take this 1, right, so we have 1, 2, 3 like
+
+218
+00:20:33,176 --> 00:20:39,735
+that we have to have these print statements till N, right, so we have to go on till we
+
+219
+00:20:39,735 --> 00:20:46,855
+get N, right, there are at the last row should have N stars, right, so here N can be 2, it
+
+220
+00:20:46,855 --> 00:20:51,176
+can be 3, it can be 5, it can be 10, so what we have to do?
+
+221
+00:20:51,176 --> 00:20:56,455
+We have a particular block of code which has to be executed multiple times, can you observe
+
+222
+00:20:56,455 --> 00:20:57,455
+that?
+
+223
+00:20:57,455 --> 00:21:04,095
+See, there is a, this part is same, here this value is getting incremented for each row,
+
+224
+00:21:04,095 --> 00:21:09,136
+right, from 1 it's going to 2, then it's going to 3, then it's going to go for 4, like that
+
+225
+00:21:09,136 --> 00:21:13,015
+it's incrementing, so what we can do?
+
+226
+00:21:13,015 --> 00:21:18,735
+For each row this value is incrementing, what we can do here?
+
+227
+00:21:18,735 --> 00:21:24,136
+Think, we can use a counter, right, so we have seen a counter, right, what we can do?
+
+228
+00:21:24,815 --> 00:21:28,455
+We can, there is a sequence, right, there is a 1, there is a 2, there is a 3, there
+
+229
+00:21:28,455 --> 00:21:34,855
+is a sequence here, so we have a sequence, we have to just iterate over that sequence
+
+230
+00:21:34,855 --> 00:21:41,575
+and print this, right, so we'll try to use this for loop and solve the same question,
+
+231
+00:21:41,575 --> 00:21:45,575
+because we have a sequence here, you have to observe the sequence, see 1, we have 2
+
+232
+00:21:45,575 --> 00:21:50,216
+here, we have 3 and then again we'll have 4 like this, we have a sequence there which
+
+233
+00:21:50,295 --> 00:21:56,415
+will go till N, right, so we have to go, this print statement should be repeated till N,
+
+234
+00:21:56,415 --> 00:22:02,376
+so for that we will use the for loop, okay, we have for, let's say counter because we
+
+235
+00:22:02,376 --> 00:22:09,656
+are maintaining some count of each row in, now we want a sequence of numbers, so for
+
+236
+00:22:09,656 --> 00:22:12,295
+the sequence of numbers what do we use?
+
+237
+00:22:12,295 --> 00:22:18,056
+We use range, right, so we write range of and then what should we give?
+
+238
+00:22:18,096 --> 00:22:24,015
+We should give N, right, because we wanted to go till N, N times, we want how many rows
+
+239
+00:22:24,015 --> 00:22:25,015
+will be there?
+
+240
+00:22:25,015 --> 00:22:31,855
+There will be N rows, right, so we'll write N, okay and then we have to write print, okay,
+
+241
+00:22:31,855 --> 00:22:36,855
+this is the repeating part, right, star space into, now what we have to write?
+
+242
+00:22:36,855 --> 00:22:44,735
+Okay, so counter is the one where we are maintaining the count, but what is range of N give us?
+
+243
+00:22:44,735 --> 00:22:54,695
+The range of N will give us a sequence of numbers starting from 0 till N-1, okay, but
+
+244
+00:22:54,695 --> 00:22:58,376
+in our first row how many stars should be present?
+
+245
+00:22:58,376 --> 00:23:04,216
+There should be 1 star, if I multiply this with into counter then what will happen?
+
+246
+00:23:04,216 --> 00:23:10,816
+Counter initially will be 0, so in the first row we'll have 0 stars, but how many stars
+
+247
+00:23:10,816 --> 00:23:11,816
+we should have?
+
+248
+00:23:11,896 --> 00:23:14,455
+1 star, right, so what we can do?
+
+249
+00:23:14,455 --> 00:23:20,656
+We can increment this counter, okay, we can add plus 1 to it, okay, see we have plus 1
+
+250
+00:23:20,656 --> 00:23:22,776
+to it, now what will happen?
+
+251
+00:23:22,776 --> 00:23:30,295
+See what is the range of N will give 0 to N-1, right, so when we have counter plus 1,
+
+252
+00:23:30,295 --> 00:23:32,336
+how many stars will we get in the first row?
+
+253
+00:23:32,336 --> 00:23:37,255
+We'll have 1 star, then we'll have 2, then we'll have 3, like this till where will we
+
+254
+00:23:37,255 --> 00:23:38,255
+go?
+
+255
+00:23:38,255 --> 00:23:43,776
+From 0 to N, right, so that is what we want, so we got it here, okay, now I'll just remove
+
+256
+00:23:43,776 --> 00:23:49,616
+this piece of code, okay, now we'll run the code and see, okay, let me give an input say
+
+257
+00:23:49,616 --> 00:23:53,735
+4, okay, so for that what output did we get?
+
+258
+00:23:53,735 --> 00:23:59,496
+See, you can see here, see initially we have 1 star, then 2, then 3, then 4, right, we
+
+259
+00:23:59,496 --> 00:24:06,415
+got the right angle triangular pattern, right, clear, so in this way we should first identify
+
+260
+00:24:06,575 --> 00:24:10,776
+whether there is a sequence or not, see we have seen, we have identified that there is
+
+261
+00:24:10,776 --> 00:24:17,936
+a sequence here, right, so this value is incrementing when it's iterating over a sequence, so in
+
+262
+00:24:17,936 --> 00:24:23,575
+that way we have to identify the sequence and based on that we should use the furlough,
+
+263
+00:24:23,575 --> 00:24:28,455
+okay, clear, now we'll go back to the slides.
+
+264
+00:24:28,455 --> 00:24:33,056
+So we have solved this question, right, so we have written the code like this, right,
+
+265
+00:24:33,056 --> 00:24:39,295
+so we have written N equal to int of input, then for counter in range of N, then we have
+
+266
+00:24:39,295 --> 00:24:46,735
+an indentation and then print star space into counter plus 1, right, now what we'll see
+
+267
+00:24:46,735 --> 00:24:55,455
+is we will see instead of starting the counter from 0, if we start with 1, then in the repeating
+
+268
+00:24:55,455 --> 00:25:00,896
+part of code we need not add plus 1, right, so can we do that, can we like specify it
+
+269
+00:25:00,896 --> 00:25:08,075
+should start from 1 and go, okay, yes, we can specify, in range we can give a start
+
+270
+00:25:08,075 --> 00:25:13,496
+and then we can give an end, okay, so when you write range of in the start value, comma
+
+271
+00:25:13,496 --> 00:25:22,616
+and end value this range will return, will give you a sequence of numbers, integers which
+
+272
+00:25:22,616 --> 00:25:28,496
+start from start, okay, and will end, with the end whichever you have specified, the
+
+273
+00:25:28,496 --> 00:25:33,535
+number that you have specified at the end, where the end is not included, okay, so it
+
+274
+00:25:33,535 --> 00:25:38,975
+will start from the value that you have given at the start and it will stop before the end,
+
+275
+00:25:38,975 --> 00:25:47,775
+okay, we'll see an example here, see we have range of 5, 10, right, so what did it do?
+
+276
+00:25:47,775 --> 00:25:56,775
+It has given a sequence of integers, see 5, 6, 7, 8, 9, 10 is not included, it started
+
+277
+00:25:56,775 --> 00:26:03,376
+from 5 which is mentioned here in the start and it has ended just before 10, right, so
+
+278
+00:26:03,376 --> 00:26:09,775
+the 10 is not included, so this is how the range will give us the sequence of integers.
+
+279
+00:26:09,775 --> 00:26:10,775
+Now what we can do?
+
+280
+00:26:10,775 --> 00:26:16,295
+We can simplify our code, okay, we'll see, we'll once see an example for this and then
+
+281
+00:26:16,295 --> 00:26:24,775
+simplify our code, okay, see here you can see for number in range 5, 8, okay, see here
+
+282
+00:26:24,775 --> 00:26:25,775
+now what happened?
+
+283
+00:26:25,775 --> 00:26:33,095
+When you have written print number it started from 5, okay, 6 and 7, we got an output 5,
+
+284
+00:26:33,095 --> 00:26:41,215
+6 and 7 since 8 is not included, okay, so in this way we will use range of 5, 8 like
+
+285
+00:26:41,215 --> 00:26:46,456
+this, you will have a start and an end to specify where the sequence of numbers should
+
+286
+00:26:46,456 --> 00:26:52,456
+start and where it should end, if you don't specify a start, if you just write range of
+
+287
+00:26:52,456 --> 00:26:58,456
+8 then it will start from 0 and will go till 7, okay, 8 will not be included, but if you
+
+288
+00:26:58,456 --> 00:27:03,735
+mention the start and end it will start from the one you have mentioned here, see like
+
+289
+00:27:03,735 --> 00:27:10,295
+this here 5, it will go till you have mentioned the 8, right, so it will go till 7, clear.
+
+290
+00:27:10,295 --> 00:27:16,936
+So now what we'll do is applying this concept we will little bit simplify our question,
+
+291
+00:27:16,936 --> 00:27:18,655
+okay, we'll try it out.
+
+292
+00:27:18,655 --> 00:27:24,855
+Now we'll come to the code playground, so here this is the question, right, so wait
+
+293
+00:27:24,855 --> 00:27:31,016
+maybe I'll do, once we'll try this out and then we'll solve this question, okay, let's
+
+294
+00:27:31,016 --> 00:27:40,816
+say 5, 8, okay, and print number, okay, I'll just show you an output so that you'll understand
+
+295
+00:27:40,816 --> 00:27:49,415
+this thing, okay, see we got 5, 6, 7, right, so let's say this is some 10, okay, see we
+
+296
+00:27:49,415 --> 00:27:53,176
+got 5, 6, 7, 8, 9, so in this way the range will work.
+
+297
+00:27:53,176 --> 00:27:57,616
+Now what we'll do is this is the code, right, where we wanted this right angle pattern,
+
+298
+00:27:57,616 --> 00:28:03,056
+right, so we got already this pattern, so here what we are doing we have written range
+
+299
+00:28:03,056 --> 00:28:08,376
+of n and then here we have written the counter plus 1, because actually the counter should
+
+300
+00:28:08,376 --> 00:28:15,335
+start from 1 and till n, it has to include the n also, but here that is not happening
+
+301
+00:28:15,335 --> 00:28:22,335
+in case of range of n because the sequence starts from 0, right, so what we can do is
+
+302
+00:28:22,335 --> 00:28:27,136
+by the things that we have learnt so far what we can do, we can mention the start, the start
+
+303
+00:28:27,136 --> 00:28:33,056
+is 1 and it has to go till n, right, so n should also be included, so when we write
+
+304
+00:28:33,056 --> 00:28:39,696
+here we have to write n plus 1, okay, clear, this is important because if you just write
+
+305
+00:28:39,696 --> 00:28:44,975
+n what will happen, the last row where you want n stars will not be printed, we want
+
+306
+00:28:44,975 --> 00:28:50,936
+this block of code to be executed n times, right, so it should be n plus 1, okay, so
+
+307
+00:28:50,936 --> 00:28:54,735
+here we can just directly write counter, right.
+
+308
+00:28:54,735 --> 00:28:59,616
+So now we'll run the code and see, still you can see the same output, right, so in this
+
+309
+00:28:59,616 --> 00:29:05,855
+way we can use the start and end in range and also simplify things, okay, now we'll
+
+310
+00:29:05,855 --> 00:29:10,936
+go back to the slides, so we are done with this and then we solved the question like
+
+311
+00:29:10,936 --> 00:29:16,895
+this, right, so we have simplified it, we use range of 1, n plus 1, so there is no need
+
+312
+00:29:16,895 --> 00:29:21,415
+of doing counter plus 1 every time, right, clear.
+
+313
+00:29:21,415 --> 00:29:27,335
+So one possible mistake here is writing n, right, so if you write n what will happen,
+
+314
+00:29:27,335 --> 00:29:35,136
+the star space will be printed only n minus 1 times because when you do range of 1, n
+
+315
+00:29:35,136 --> 00:29:41,056
+it will start from 1 and go till n minus 1, n is not included, right, so this is one possible
+
+316
+00:29:41,056 --> 00:29:44,816
+mistake, we'll see the output for that in the code playground.
+
+317
+00:29:44,816 --> 00:29:50,895
+So in the code playground see here we have n plus 1, right, so if I just write n what
+
+318
+00:29:50,895 --> 00:29:57,215
+will happen is for 4 we got only 3 rows, see we have only 3 rows, we didn't get the 4th
+
+319
+00:29:57,295 --> 00:30:02,616
+row, so what should be present it should be n plus 1, so we should be very careful when
+
+320
+00:30:02,616 --> 00:30:08,415
+it comes to writing these ranges, right, right when you are mentioning the start and end
+
+321
+00:30:08,415 --> 00:30:13,816
+it is very important, be careful at how many times the loop has to be executed, this is
+
+322
+00:30:13,816 --> 00:30:20,576
+very one possible very common mistake, okay, clear, we'll go back to the slides.
+
+323
+00:30:20,576 --> 00:30:22,335
+So what did we learn today?
+
+324
+00:30:22,335 --> 00:30:27,696
+We have learnt about what is sequence, right, so what is sequence?
+
+325
+00:30:27,696 --> 00:30:32,735
+Sequence can be a sequence of characters and sequence of integers, right, in that we have
+
+326
+00:30:32,735 --> 00:30:38,936
+seen that we use for loop when we want to iterate over a sequence, like you have a sequence
+
+327
+00:30:38,936 --> 00:30:45,415
+and you want to run a particular block of code for each item in the sequence, then we
+
+328
+00:30:45,415 --> 00:30:50,295
+will use the for loop, okay, we have seen for python as an example where we want to
+
+329
+00:30:50,295 --> 00:30:56,056
+iterate over each character in the string, right, so for that we have used the for loop
+
+330
+00:30:56,056 --> 00:31:01,655
+and when compared to while loop the code of the for loop is very simple and easy and with
+
+331
+00:31:01,655 --> 00:31:06,335
+very less mistake, the possibility of mistake is very less, right, so especially when you
+
+332
+00:31:06,335 --> 00:31:12,735
+have a sequence you use the for loop, okay, and then we have seen how to generate a sequence
+
+333
+00:31:12,735 --> 00:31:18,975
+of numbers or the integers using range, right, so there is you can write range of n, so if
+
+334
+00:31:18,975 --> 00:31:24,816
+you write range of n then it will give you a sequence of numbers starting from 0 going
+
+335
+00:31:24,816 --> 00:31:32,535
+till n, where n is not included just before the n, okay, in the range you can also mention
+
+336
+00:31:32,535 --> 00:31:39,655
+start and end, so you can start from the number that you have mentioned at the start and go
+
+337
+00:31:39,655 --> 00:31:45,095
+just before the end, right, so till end is not included just before that, like that you
+
+338
+00:31:45,095 --> 00:31:49,376
+can mention the start and the end of the sequence also when you are generating the
+
+339
+00:31:49,376 --> 00:31:54,816
+sequence of numbers, okay, then we have applied all of these concepts and solve the question
+
+340
+00:31:54,816 --> 00:31:59,895
+and we also have seen a possible mistakes, right, especially when you write the start
+
+341
+00:31:59,895 --> 00:32:06,256
+and end and the values in the range, it's very important that you check what value are
+
+342
+00:32:06,256 --> 00:32:11,735
+giving, how many times that particular block of code should be executed, okay, be careful
+
+343
+00:32:11,735 --> 00:32:18,816
+about this, so to practice all of these concepts that have been covered you have a lot of coding
+
+344
+00:32:18,816 --> 00:32:24,936
+questions available, so whenever you find some free time it's always suggested that
+
+345
+00:32:24,936 --> 00:32:31,056
+go practice in the coding questions which are available for you, okay, especially in
+
+346
+00:32:31,056 --> 00:32:37,136
+case of coding it's very important that you practice a lot, so when you practice a lot
+
+347
+00:32:37,136 --> 00:32:41,775
+then only you will be able to understand these concepts in more depth and you will
+
+348
+00:32:41,775 --> 00:32:46,576
+be able to apply these concepts for multiple coding questions, okay.
+
+349
+00:32:46,576 --> 00:32:53,215
+And coming to feedback, so as I always mention your every feedback is very, very valuable
+
+350
+00:32:53,215 --> 00:32:59,616
+for us, okay, do provide us with feedback based on whether if it is already part of
+
+351
+00:32:59,616 --> 00:33:05,016
+our program, we will introduce them in the upcoming sessions, in case it is not then
+
+352
+00:33:05,095 --> 00:33:09,895
+we will include them in the sessions, okay, so there is an entire team who looks into
+
+353
+00:33:09,895 --> 00:33:15,936
+the every feedback that you provide us, okay, do look into this and submit the feedback,
+
+354
+00:33:15,936 --> 00:33:21,535
+okay, we will be always looking at your feedback and improving the sessions so that we can
+
+355
+00:33:21,535 --> 00:33:26,775
+give you the best experience, to submit the feedback there is a submit feedback just below
+
+356
+00:33:26,775 --> 00:33:31,816
+this video, click on it and give your views and inputs, okay.
+
+357
+00:33:31,816 --> 00:33:37,016
+Now coming to the daily challenge, right, so many of you all like the daily challenge,
+
+358
+00:33:37,016 --> 00:33:42,735
+so today's daily challenge is here there is a piece of code, there is a small mistake
+
+359
+00:33:42,735 --> 00:33:49,975
+in this, you need to identify the mistake, so the input here is python and the expected
+
+360
+00:33:49,975 --> 00:33:55,136
+output is you have P and then each of the letter in between we have hyphens, you can
+
+361
+00:33:55,136 --> 00:34:01,136
+see there are P hyphen, Y hyphen, T hyphen, H hyphen, O hyphen, N, right, this is the
+
+362
+00:34:01,136 --> 00:34:06,895
+expected output but with this piece of code we are not getting that expected output, so
+
+363
+00:34:06,895 --> 00:34:13,016
+you need to identify the mistake in this piece of code so that we can get this expected output,
+
+364
+00:34:13,016 --> 00:34:18,535
+so we will discuss about the solution of this in the next session, so the next session is
+
+365
+00:34:18,535 --> 00:34:22,696
+related to string methods, thank you and all the best.
+

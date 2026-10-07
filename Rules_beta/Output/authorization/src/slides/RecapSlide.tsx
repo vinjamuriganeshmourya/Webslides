@@ -20,7 +20,7 @@ export function RecapSlide({
   return (
     <SlideBase variant="light" lesson={lesson} padded={false}>
         {/*
-          left: the recap checklist, ZONED (content rule 22). The header sits in
+          left: the recap checklist, ZONED (content rule 32). The header sits in
           the header zone like every other content slide, so the heading does not
           jump between slides, and the list is centred in the body box. The box is
           narrowed to the old left column (1.3fr of 1152 less the 40px gap) so the

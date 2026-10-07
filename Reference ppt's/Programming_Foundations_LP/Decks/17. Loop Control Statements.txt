@@ -1,0 +1,3031 @@
+1
+00:00:00,000 --> 00:00:10,040
+Hello everyone, welcome to today's session.
+
+2
+00:00:10,040 --> 00:00:14,600
+In today's session we will discuss about loop control statements.
+
+3
+00:00:14,600 --> 00:00:18,959
+Before that let's quickly recap what we have seen in the previous session.
+
+4
+00:00:18,959 --> 00:00:23,180
+So in the previous session we have seen about nested loops.
+
+5
+00:00:23,180 --> 00:00:27,840
+So in nested loops you will have an outer loop and then in the repeated block of the
+
+6
+00:00:27,840 --> 00:00:33,180
+outer loop you will have inner loop okay and then inner loop will have another repeating
+
+7
+00:00:33,180 --> 00:00:34,180
+block.
+
+8
+00:00:34,180 --> 00:00:35,320
+So that is nested loop.
+
+9
+00:00:35,320 --> 00:00:39,980
+So what we are doing here we are having an outer loop and the outer loop will have an
+
+10
+00:00:39,980 --> 00:00:42,340
+inner loop in its repeating block right.
+
+11
+00:00:42,340 --> 00:00:45,459
+So this is nothing but we are nesting the loops.
+
+12
+00:00:45,459 --> 00:00:47,540
+Then we have seen a code right.
+
+13
+00:00:47,540 --> 00:00:50,439
+So how actually the loops work.
+
+14
+00:00:50,439 --> 00:00:56,500
+So for each item present in the sequence of the outer loop the inner loop will be executed
+
+15
+00:00:56,500 --> 00:00:57,500
+okay.
+
+16
+00:00:57,959 --> 00:01:00,040
+So we have seen the example here.
+
+17
+00:01:00,040 --> 00:01:04,339
+Similarly here what we have seen we have seen outer loop is a for loop and the inner loop
+
+18
+00:01:04,339 --> 00:01:05,860
+is also for loop.
+
+19
+00:01:05,860 --> 00:01:11,639
+Like this we can also have the outer loop as for loop and the inner loop as while loop.
+
+20
+00:01:11,639 --> 00:01:15,639
+So we can use different combinations of for and while.
+
+21
+00:01:15,639 --> 00:01:19,940
+Similarly the outer loop can be while and the inner loop can be for okay.
+
+22
+00:01:19,940 --> 00:01:22,339
+Then both inner and outer loop can be while.
+
+23
+00:01:22,339 --> 00:01:24,739
+Like this you can use any combinations right.
+
+24
+00:01:24,739 --> 00:01:31,040
+So the outer loop can be for or while and the inner loop can also be for or while okay.
+
+25
+00:01:31,040 --> 00:01:32,040
+So clear.
+
+26
+00:01:32,040 --> 00:01:35,680
+So like this we can have nested loops.
+
+27
+00:01:35,680 --> 00:01:39,519
+Then we have seen the identify the mistake right.
+
+28
+00:01:39,519 --> 00:01:43,080
+So you had to identify the mistake in this code.
+
+29
+00:01:43,080 --> 00:01:49,440
+So for an input 3 this code should give an output of say there you can see what is the
+
+30
+00:01:49,440 --> 00:01:50,779
+expected output.
+
+31
+00:01:50,779 --> 00:01:54,260
+We need an output like 3 2 1 2 1 1.
+
+32
+00:01:54,279 --> 00:02:00,239
+So this is the expected output that we want but actually this piece of code is not giving
+
+33
+00:02:00,239 --> 00:02:01,239
+this output.
+
+34
+00:02:01,239 --> 00:02:04,080
+We will see what is the output that we are getting.
+
+35
+00:02:04,080 --> 00:02:06,800
+So actually the output of the code is this.
+
+36
+00:02:06,800 --> 00:02:10,320
+So initially in the first line of the output there is empty right.
+
+37
+00:02:10,320 --> 00:02:16,080
+There is no number and then we have 1 and then 2 1 and then 3 2 1.
+
+38
+00:02:16,080 --> 00:02:19,059
+So what we have to do we have to fix the issue here.
+
+39
+00:02:19,059 --> 00:02:21,399
+So basically here there are two problems.
+
+40
+00:02:21,399 --> 00:02:23,520
+We will fix it one by one.
+
+41
+00:02:23,779 --> 00:02:28,339
+Firstly what do we want we want 3 2 1 2 1 and 1.
+
+42
+00:02:28,339 --> 00:02:32,740
+Here the output that we are getting is exactly opposite to it.
+
+43
+00:02:32,740 --> 00:02:33,740
+Why?
+
+44
+00:02:33,740 --> 00:02:36,660
+Because there you see observe the code.
+
+45
+00:02:36,660 --> 00:02:42,419
+So in the for loop right in the outer loop there we started the sequence number with
+
+46
+00:02:42,419 --> 00:02:46,020
+row number right there you can see equal to row number.
+
+47
+00:02:46,020 --> 00:02:47,020
+Then what will happen?
+
+48
+00:02:47,020 --> 00:02:52,699
+Every time where will the sequence start right the row number is starting from 0 to n plus
+
+49
+00:02:52,880 --> 00:02:53,880
+1 right.
+
+50
+00:02:53,880 --> 00:02:58,639
+So then the sequence number will start from 0 and then 1 then 2 then 3.
+
+51
+00:02:58,639 --> 00:03:00,139
+So what happened here?
+
+52
+00:03:00,139 --> 00:03:06,559
+So that's why it started with 1 and then you will have 2 1 then you will have 3 2 1.
+
+53
+00:03:06,559 --> 00:03:12,240
+So the issue here is starting the sequence number with row number.
+
+54
+00:03:12,240 --> 00:03:13,740
+Where should it start?
+
+55
+00:03:13,740 --> 00:03:16,080
+It should start with n right.
+
+56
+00:03:16,080 --> 00:03:20,559
+First the sequence in the first iteration of the outer loop the sequence number should
+
+57
+00:03:20,559 --> 00:03:26,619
+start with n and then in the second iteration it should start with n minus 1 right.
+
+58
+00:03:26,619 --> 00:03:30,380
+In the third iteration it should be n minus 2 like this.
+
+59
+00:03:30,380 --> 00:03:31,380
+What you need?
+
+60
+00:03:31,380 --> 00:03:35,380
+You need it on the basis of the row number right.
+
+61
+00:03:35,380 --> 00:03:40,500
+It should start with n right and then n minus 1 then n minus 2 like this.
+
+62
+00:03:40,500 --> 00:03:41,500
+Okay.
+
+63
+00:03:41,500 --> 00:03:42,619
+So what we should write?
+
+64
+00:03:42,619 --> 00:03:45,860
+What should the initialization of sequence number be?
+
+65
+00:03:45,860 --> 00:03:48,979
+See in the first iteration it should be n.
+
+66
+00:03:49,119 --> 00:03:52,600
+For the second iteration it should be n minus 1.
+
+67
+00:03:52,600 --> 00:03:54,919
+So in the first iteration what is the row number?
+
+68
+00:03:54,919 --> 00:03:55,919
+0.
+
+69
+00:03:55,919 --> 00:03:58,279
+In the second iteration what is the row number?
+
+70
+00:03:58,279 --> 00:03:59,279
+1.
+
+71
+00:03:59,279 --> 00:04:01,600
+So when it is 0 we want n.
+
+72
+00:04:01,600 --> 00:04:04,679
+When it is 1 we want n minus 1 right.
+
+73
+00:04:04,679 --> 00:04:08,839
+So when it's the second iteration then the row number will be 2.
+
+74
+00:04:08,839 --> 00:04:14,839
+In the third iteration the row number will be 2 and we wanted n minus 2 right.
+
+75
+00:04:14,899 --> 00:04:20,820
+So basically the sequence number should be initialized with n minus row number right.
+
+76
+00:04:20,820 --> 00:04:23,619
+So when the row number is 1 we want n minus 1.
+
+77
+00:04:23,619 --> 00:04:27,779
+The sequence number should be initialized with n minus 1 like this right.
+
+78
+00:04:27,779 --> 00:04:34,600
+So basically the sequence number should be initialized with n minus row number okay.
+
+79
+00:04:34,600 --> 00:04:36,700
+So if you write like this what we'll get?
+
+80
+00:04:36,700 --> 00:04:39,899
+We'll get 3 2 1 2 1 n 1 right.
+
+81
+00:04:39,899 --> 00:04:40,899
+You can observe.
+
+82
+00:04:40,899 --> 00:04:46,000
+When we write n minus row number in the first iteration what was the sequence number?
+
+83
+00:04:46,000 --> 00:04:50,000
+It is initialized with n that is input which is 3 right.
+
+84
+00:04:50,000 --> 00:04:55,519
+So when you write the output say there then you'll have 3 and then you'll have 3 minus
+
+85
+00:04:55,519 --> 00:04:57,679
+1 in the inner loop iteration right.
+
+86
+00:04:57,679 --> 00:05:03,799
+Then 2 3 2 1 like this the inner loop will execute and you'll get 3 2 1.
+
+87
+00:05:03,799 --> 00:05:09,040
+And then in the next iteration of the outer loop the sequence number will be initialized
+
+88
+00:05:09,040 --> 00:05:12,459
+with 3 minus 1 right.
+
+89
+00:05:12,459 --> 00:05:14,179
+So that is nothing but 2.
+
+90
+00:05:14,179 --> 00:05:19,859
+So what we'll get the output in the inner loop will iterate and we'll get 2 1 right.
+
+91
+00:05:19,859 --> 00:05:23,940
+So in this way we'll get 3 2 1 2 1 n 1.
+
+92
+00:05:23,940 --> 00:05:25,299
+Still there is an issue.
+
+93
+00:05:25,299 --> 00:05:27,579
+See there is an extra space in the bottom.
+
+94
+00:05:27,579 --> 00:05:28,739
+Can you see?
+
+95
+00:05:28,739 --> 00:05:29,739
+Why is that happening?
+
+96
+00:05:29,739 --> 00:05:31,640
+We'll understand.
+
+97
+00:05:31,640 --> 00:05:39,000
+So basically if you give an input 3 we want 3 2 1 2 1 1 which is 3 lines in the output.
+
+98
+00:05:39,959 --> 00:05:44,100
+Actually the outer loop is getting executed 4 times.
+
+99
+00:05:44,100 --> 00:05:46,980
+That is why we have an extra space at the end okay.
+
+100
+00:05:46,980 --> 00:05:48,500
+There is a new line right.
+
+101
+00:05:48,500 --> 00:05:50,540
+There is a new line at the end.
+
+102
+00:05:50,540 --> 00:05:51,540
+Not the space.
+
+103
+00:05:51,540 --> 00:05:53,100
+It's a new line at the end.
+
+104
+00:05:53,100 --> 00:05:54,820
+Why is it happening?
+
+105
+00:05:54,820 --> 00:06:00,299
+Because the outer loop is executing n plus 1 times okay.
+
+106
+00:06:00,299 --> 00:06:05,579
+So the issue there is near the range where it is 0 comma n plus 1.
+
+107
+00:06:05,579 --> 00:06:06,579
+What it should be?
+
+108
+00:06:06,579 --> 00:06:12,079
+It should be 0 comma n because we want the repeating block of code of the outer loop
+
+109
+00:06:12,079 --> 00:06:15,200
+to be executed n times right.
+
+110
+00:06:15,200 --> 00:06:18,279
+So it should be 0 comma n okay.
+
+111
+00:06:18,279 --> 00:06:22,600
+So if you correct these 2 mistakes then we'll get the expected output.
+
+112
+00:06:22,600 --> 00:06:25,959
+See we got 3 2 1 2 1 1 like this okay.
+
+113
+00:06:25,959 --> 00:06:27,600
+You understand the mistakes right.
+
+114
+00:06:27,600 --> 00:06:30,459
+You can just try this out and see okay.
+
+115
+00:06:30,459 --> 00:06:33,359
+So now we'll proceed to the today's agenda.
+
+116
+00:06:33,359 --> 00:06:38,239
+So in today's agenda we'll discuss about the loop control statements.
+
+117
+00:06:38,239 --> 00:06:40,660
+In that we'll talk about break and continue.
+
+118
+00:06:40,660 --> 00:06:45,140
+We'll understand when do we use break, when do we use continue and then we'll learn about
+
+119
+00:06:45,140 --> 00:06:47,540
+the pass statement okay.
+
+120
+00:06:47,540 --> 00:06:51,579
+Today's session will be a little bit extended since it's a conceptual thing.
+
+121
+00:06:51,579 --> 00:06:53,540
+We'll understand it in detail.
+
+122
+00:06:53,540 --> 00:06:55,299
+So let's get started.
+
+123
+00:06:55,299 --> 00:06:57,660
+Firstly when do we use loops?
+
+124
+00:06:57,660 --> 00:07:03,480
+So loops basically allows us to execute a particular block of code several times right.
+
+125
+00:07:03,480 --> 00:07:08,799
+If you want a particular block of code to get executed multiple times then we'll use
+
+126
+00:07:08,799 --> 00:07:11,440
+loops right.
+
+127
+00:07:11,440 --> 00:07:13,399
+So basically what are we doing?
+
+128
+00:07:13,399 --> 00:07:17,519
+We are altering the sequential execution of a program right.
+
+129
+00:07:17,519 --> 00:07:19,359
+Generally what does Python do?
+
+130
+00:07:19,359 --> 00:07:25,739
+It will execute the instructions in a step by step manner right in a sequential manner.
+
+131
+00:07:25,820 --> 00:07:30,519
+Now when you want a particular block of code to be executed multiple times what you're
+
+132
+00:07:30,519 --> 00:07:31,519
+doing?
+
+133
+00:07:31,519 --> 00:07:32,519
+You're using loops.
+
+134
+00:07:32,519 --> 00:07:33,519
+So what's happening?
+
+135
+00:07:33,519 --> 00:07:37,359
+You're altering the sequential execution of the program right.
+
+136
+00:07:37,359 --> 00:07:43,200
+So if you alter the sequential execution of a program all such whichever it could be your
+
+137
+00:07:43,200 --> 00:07:49,859
+for loops or your if else all of these are called control statements okay.
+
+138
+00:07:49,859 --> 00:07:52,359
+So what are we doing with this control statements?
+
+139
+00:07:52,359 --> 00:07:56,739
+We are altering the sequential execution of the program right.
+
+140
+00:07:56,739 --> 00:08:01,739
+So in case of loops what we are doing there is a particular block of code right according
+
+141
+00:08:01,739 --> 00:08:07,179
+to the sequential execution it should execute once and then has to move to the next instructions
+
+142
+00:08:07,179 --> 00:08:12,779
+but because of the loop what we are doing we are making that block of code execute multiple
+
+143
+00:08:12,779 --> 00:08:13,779
+times.
+
+144
+00:08:13,779 --> 00:08:17,540
+Similarly we'll take the example of conditional statement.
+
+145
+00:08:17,540 --> 00:08:19,660
+So in conditional statement what do we do?
+
+146
+00:08:19,959 --> 00:08:22,760
+We write if and we'll give the condition right.
+
+147
+00:08:22,760 --> 00:08:27,959
+If the conditions is true only then the statement will be executed right in the conditional
+
+148
+00:08:27,959 --> 00:08:28,959
+block.
+
+149
+00:08:28,959 --> 00:08:32,679
+Otherwise the conditional block will not be executed right.
+
+150
+00:08:32,679 --> 00:08:34,479
+So what exactly is happening?
+
+151
+00:08:34,479 --> 00:08:39,520
+You're based on the conditional statement you're altering the flow of the sequential
+
+152
+00:08:39,520 --> 00:08:43,440
+execution right whether the block should be executed or not.
+
+153
+00:08:43,440 --> 00:08:46,979
+You're controlling that with the help of this conditional statement.
+
+154
+00:08:46,979 --> 00:08:52,960
+So again if else, elif all of these are control statements okay.
+
+155
+00:08:52,960 --> 00:08:58,760
+So we have already seen about this if conditional statement, if, elif, else all of these and
+
+156
+00:08:58,760 --> 00:09:03,400
+then we have seen about the loops where we have seen about the for loop and the while
+
+157
+00:09:03,400 --> 00:09:04,400
+loop right.
+
+158
+00:09:04,400 --> 00:09:09,799
+So then there are other things also break and continue okay.
+
+159
+00:09:09,799 --> 00:09:13,239
+So these are also called as control statements okay.
+
+160
+00:09:13,500 --> 00:09:18,580
+Okay today we will learn about this break and continue okay.
+
+161
+00:09:18,580 --> 00:09:21,179
+So firstly let's start with break okay.
+
+162
+00:09:21,179 --> 00:09:22,179
+What is this break?
+
+163
+00:09:22,179 --> 00:09:23,900
+When do we have to use this break?
+
+164
+00:09:23,900 --> 00:09:26,260
+All of this we'll understand first.
+
+165
+00:09:26,260 --> 00:09:34,859
+So what break does is it will make the program exit a loop early that is in the loop you
+
+166
+00:09:34,859 --> 00:09:40,940
+have a particular block of code which has to be repeated multiple times but with the
+
+167
+00:09:40,940 --> 00:09:48,640
+help of break you can make the loop exit early okay that is instead of iterating let's
+
+168
+00:09:48,640 --> 00:09:54,880
+say it has to iterate some 10, it has to do 10 iterations but you can exit the loop say
+
+169
+00:09:54,880 --> 00:09:58,799
+after 5 iterations with the help of break okay.
+
+170
+00:09:58,799 --> 00:10:06,479
+So what it does is it will make the program exit a loop early okay before completing all
+
+171
+00:10:06,479 --> 00:10:07,960
+the iterations.
+
+172
+00:10:07,979 --> 00:10:13,979
+So what happens is when you write break then whichever statements the whatever code and
+
+173
+00:10:13,979 --> 00:10:19,419
+the statements are present below the break statement all of those okay there is a repeated
+
+174
+00:10:19,419 --> 00:10:24,539
+block inside the repeated block somewhere in between you have written this break statement
+
+175
+00:10:24,539 --> 00:10:31,219
+and if the python reaches this break statement what it will do is whatever remaining statements
+
+176
+00:10:31,219 --> 00:10:36,260
+which are present below the break statement in that repeated block those will not get
+
+177
+00:10:36,260 --> 00:10:37,260
+executed.
+
+178
+00:10:37,559 --> 00:10:40,059
+It will come out of the loop okay.
+
+179
+00:10:40,059 --> 00:10:41,500
+So you understood this.
+
+180
+00:10:41,500 --> 00:10:42,979
+So what will break do?
+
+181
+00:10:42,979 --> 00:10:47,619
+The break will make the program exit the loop early.
+
+182
+00:10:47,619 --> 00:10:54,299
+So in a repeated block of code if the python by executing one after the other if it reaches
+
+183
+00:10:54,299 --> 00:11:00,739
+the break statement then whatever remaining statements that are present below the break
+
+184
+00:11:00,739 --> 00:11:06,140
+those will not get executed and it will come out of that repeating block of code okay.
+
+185
+00:11:06,219 --> 00:11:11,780
+There you can see so there is a in that repeating block the yellow box is a repeating block
+
+186
+00:11:11,780 --> 00:11:12,780
+of code right.
+
+187
+00:11:12,780 --> 00:11:18,179
+So in that you have some piece of code on the top and then you have the break statement
+
+188
+00:11:18,179 --> 00:11:21,020
+and then again there is some more block of code.
+
+189
+00:11:21,020 --> 00:11:26,859
+So what happened here one after the other they got executed once the python has reached
+
+190
+00:11:26,859 --> 00:11:31,380
+the break statement then the code which is below will not get executed.
+
+191
+00:11:31,380 --> 00:11:33,380
+Automatically it will come down right.
+
+192
+00:11:33,380 --> 00:11:34,859
+It will come out of the loop.
+
+193
+00:11:35,179 --> 00:11:39,900
+There you can see the green line which signifies that it will directly come out of the loop
+
+194
+00:11:39,900 --> 00:11:45,500
+and the blue color block of code below the break statement that will not get executed
+
+195
+00:11:45,500 --> 00:11:46,820
+okay.
+
+196
+00:11:46,820 --> 00:11:52,700
+So generally we use this break statement when we want to exit a loop when a particular condition
+
+197
+00:11:52,700 --> 00:11:53,700
+is satisfied.
+
+198
+00:11:53,700 --> 00:11:57,059
+So this is general usage of break statement.
+
+199
+00:11:57,059 --> 00:12:02,840
+So what will do is in the repeated block of code will have a conditional statement okay.
+
+200
+00:12:02,840 --> 00:12:10,080
+If the condition is true then we'll break okay then we'll exit the loop early otherwise
+
+201
+00:12:10,080 --> 00:12:13,479
+the normal execution will continue okay.
+
+202
+00:12:13,479 --> 00:12:16,440
+So general usage of break is like this okay.
+
+203
+00:12:16,440 --> 00:12:21,900
+So what we are doing here we have a conditional statement inside the repeated block.
+
+204
+00:12:21,900 --> 00:12:26,640
+If the condition is true then we are exiting the loop early with the help of the break
+
+205
+00:12:26,640 --> 00:12:32,000
+statement otherwise the normal execution will continue okay.
+
+206
+00:12:32,159 --> 00:12:37,440
+So when we reach the break statement see instead of executing the blue box what happen the
+
+207
+00:12:37,440 --> 00:12:43,400
+blue block of code it directly came out of the loop okay.
+
+208
+00:12:43,400 --> 00:12:45,320
+So this is the break statement okay.
+
+209
+00:12:45,320 --> 00:12:49,140
+We'll understand this with the help of an example.
+
+210
+00:12:49,140 --> 00:12:51,000
+See there is a piece of code here.
+
+211
+00:12:51,000 --> 00:12:57,440
+So firstly we have a for loop where we are iterating from in a range right there is a
+
+212
+00:12:57,440 --> 00:13:02,719
+range and then we have given a sequence right and the sequence starts from 0 it will go
+
+213
+00:13:02,719 --> 00:13:07,440
+up to 10 right that is 9, 0, 1, 2, 3 up to 9 okay.
+
+214
+00:13:07,440 --> 00:13:13,200
+So now what we have written inside the repeating block of code we are checking whether the
+
+215
+00:13:13,200 --> 00:13:15,719
+value of i is 2.
+
+216
+00:13:15,719 --> 00:13:21,919
+If i is equal to 2 then we'll break okay that is we'll exit the loop.
+
+217
+00:13:21,919 --> 00:13:25,359
+Otherwise what we are doing we are printing the value of i.
+
+218
+00:13:25,359 --> 00:13:30,880
+So that is the block of code inside the for loop right then we have written the end statement
+
+219
+00:13:30,880 --> 00:13:33,059
+we are printing the end okay.
+
+220
+00:13:33,059 --> 00:13:36,880
+So we'll see the step by step manner how will it get executed.
+
+221
+00:13:36,880 --> 00:13:42,520
+Firstly when you write range of 10 what will happen we'll have a sequence will get generated
+
+222
+00:13:42,520 --> 00:13:46,760
+with integers from 0, 1, 2, 3 up to 9 right.
+
+223
+00:13:46,760 --> 00:13:52,559
+See there you can see and then when we write for i in range of 10 then the variable i will
+
+224
+00:13:52,559 --> 00:14:00,679
+be initialized with 0 and then the next line is we are checking whether i is equal to 2.
+
+225
+00:14:00,679 --> 00:14:03,239
+The value stored in i is 0.
+
+226
+00:14:03,239 --> 00:14:08,400
+So the condition is false then what will happen directly we'll print the value of i.
+
+227
+00:14:08,400 --> 00:14:10,559
+See there is print i statement right.
+
+228
+00:14:10,559 --> 00:14:14,200
+So what output did we get we got 0 again.
+
+229
+00:14:14,200 --> 00:14:16,760
+Now we'll go back to the beginning of the loop.
+
+230
+00:14:16,760 --> 00:14:21,840
+See now we are iterating over the next item in the sequence which is 1.
+
+231
+00:14:22,119 --> 00:14:24,440
+Now the value stored in i is 1.
+
+232
+00:14:24,440 --> 00:14:29,479
+So now we are checking whether 1 is equal to 2 okay which is false.
+
+233
+00:14:29,479 --> 00:14:32,039
+So what will happen we'll just print 1.
+
+234
+00:14:32,039 --> 00:14:33,880
+So we got the output as 1.
+
+235
+00:14:33,880 --> 00:14:38,359
+Now again the next item in the sequence which is 2 right.
+
+236
+00:14:38,359 --> 00:14:41,599
+So now the value stored in i is 2.
+
+237
+00:14:41,599 --> 00:14:46,159
+So now we are checking whether the i is equal to 2.
+
+238
+00:14:46,159 --> 00:14:49,400
+The value stored in i is whether it's equal to 2.
+
+239
+00:14:49,400 --> 00:14:50,400
+It's true right.
+
+240
+00:14:50,400 --> 00:14:52,320
+The value stored in i is 2.
+
+241
+00:14:52,320 --> 00:14:54,520
+Now the condition is true here.
+
+242
+00:14:54,520 --> 00:14:54,799
+Then what will happen.
+
+
+
+243
+00:14:54,800 --> 00:15:00,560
+will happen? This break statement will get executed right? So what will break statement
+
+244
+00:15:00,560 --> 00:15:08,320
+do? It will exit the loop right? So now whatever statements that are below the break those
+
+245
+00:15:08,320 --> 00:15:14,439
+will not get executed and directly will come out of the loop. So where will we go? Will
+
+246
+00:15:14,439 --> 00:15:19,560
+the print I get executed? No right? Because it's below the break so directly will go to
+
+247
+00:15:19,560 --> 00:15:26,720
+print n. So we got the n right? So you understood here print I didn't get executed. The 2 isn't
+
+248
+00:15:26,720 --> 00:15:33,120
+printed because the break statement will not execute like once we, the python will not
+
+249
+00:15:33,120 --> 00:15:39,280
+execute any other statements below the break statement okay because of that the print statement
+
+250
+00:15:39,280 --> 00:15:46,120
+didn't get executed and we directly got n okay. Clear? You understood this part right?
+
+251
+00:15:46,120 --> 00:15:50,640
+Now see there is an another block of code here. We'll understand this. So what will
+
+252
+00:15:50,640 --> 00:15:55,640
+happen? The same piece of code we have written with the help of while loop. So what we have
+
+253
+00:15:55,640 --> 00:16:01,560
+done? So initially I equal to 0 then while I less than 10. So here what happen when you
+
+254
+00:16:01,560 --> 00:16:07,200
+write I 0 so you'll start with 0 less than 10 the condition is false. So we'll go inside
+
+255
+00:16:07,200 --> 00:16:12,800
+the loop. Sorry the condition is true so we'll go inside the loop. So if I equal to equal
+
+256
+00:16:12,800 --> 00:16:18,759
+to 2 which is false. So what will happen? Print I will be executed. The break statement
+
+257
+00:16:18,759 --> 00:16:24,719
+will not be executed right? And then we'll print I which is 0 and then we have incremented
+
+258
+00:16:24,719 --> 00:16:31,359
+the I. Now the value stored in I is 1. Again we'll check whether I is less than 10. 1 is
+
+259
+00:16:31,359 --> 00:16:37,800
+less than 10. True. Then we'll come into the repeating block of code. So now 1 is, is it
+
+260
+00:16:37,800 --> 00:16:43,160
+equal to 2? No. So directly what we'll do? We'll print 1 and then we'll again increment
+
+261
+00:16:43,160 --> 00:16:49,160
+I which is 2 right? Now the way a value present in I is 2. Now we'll again go back and check
+
+262
+00:16:49,160 --> 00:16:54,759
+the condition. Is 2 less than 10? It is true right? We'll come here and then the next line
+
+263
+00:16:54,759 --> 00:17:00,560
+of code where we'll have I equal to equal to 2 which is true. Then what will happen?
+
+264
+00:17:00,560 --> 00:17:06,079
+Then the break statement will get executed. So what will Python do when it comes to the
+
+265
+00:17:06,079 --> 00:17:10,760
+break statement? Whichever statements that are present below it, the print I, I equal
+
+266
+00:17:10,760 --> 00:17:16,199
+to I plus 1, these will not get executed right? Directly what will happen? We'll go to the
+
+267
+00:17:16,199 --> 00:17:22,680
+print end statement. So we'll get an output 0, 1 and end. Okay? It's the same code that
+
+268
+00:17:22,680 --> 00:17:27,400
+we have seen previously. There we have written with the help of for loop. Here we have written
+
+269
+00:17:27,400 --> 00:17:32,960
+with while loop. Okay? So you understood this part right? How break works. So what will
+
+270
+00:17:32,960 --> 00:17:38,839
+Python break do? Once the Python executes the break statement then it will not execute
+
+271
+00:17:38,839 --> 00:17:44,680
+any other statements that are present below the break statement. Okay? So all other lines
+
+272
+00:17:44,680 --> 00:17:51,199
+of code, all that block of code will not be executed. Directly will come out of the loop.
+
+273
+00:17:51,199 --> 00:17:58,559
+Okay? So you understood this part right? Now let's take an example here. So let's understand
+
+274
+00:17:58,559 --> 00:18:03,639
+what will the output of this code be? You can guess. What will the output be? Let's
+
+275
+00:18:03,639 --> 00:18:08,600
+try it out. So what happened here? Initially we have written I equal to 0. So the value
+
+276
+00:18:08,600 --> 00:18:16,160
+stored in I is 0. Is 0 less than 10? The condition is true. So now the repeated block of code
+
+277
+00:18:16,160 --> 00:18:23,719
+will be executed. So what is the first statement? Break. So what will happen? So since it's
+
+278
+00:18:23,719 --> 00:18:29,120
+break then whatever code is present below that in that repeated block that is print
+
+279
+00:18:29,120 --> 00:18:34,559
+I, I equal to I plus 1. These things will not be executed. Right? So directly what will
+
+280
+00:18:34,559 --> 00:18:39,359
+happen? Will come out of that loop. Right? That is will come out of that repeating block
+
+281
+00:18:39,359 --> 00:18:45,279
+of code. So what will get printed? End. Right? So what will be the output? End. See this
+
+282
+00:18:45,279 --> 00:18:51,320
+is the output. Okay? So you understood this part. Right? Now let's see another block of
+
+283
+00:18:51,320 --> 00:18:57,120
+code. So here you can see. What is present here? So firstly we have written for I in
+
+284
+00:18:57,120 --> 00:19:02,600
+range of 10 and then we have written print I. So what will happen? Will directly get
+
+285
+00:19:02,600 --> 00:19:10,600
+0, 1, 2, 3 all of this. Then what we have? We have break and then print end. So where
+
+286
+00:19:10,600 --> 00:19:15,759
+we have written the break? Outside the loop. Right? That is it's not present in the repeating
+
+287
+00:19:15,759 --> 00:19:22,720
+block. So can we write like this? So far what we have seen? We have always written
+
+288
+00:19:22,720 --> 00:19:27,759
+this break statement inside the loop. Right? Even in this code what we have done? We have
+
+289
+00:19:27,759 --> 00:19:34,039
+written it in the repeating block of code of that loop. Right? So here what we have
+
+290
+00:19:34,039 --> 00:19:40,400
+done? We haven't written in the repeating block. So can we write like this? No. We cannot
+
+291
+00:19:40,520 --> 00:19:46,560
+write like this. Here the break statement always should be inside the repeating block
+
+292
+00:19:46,560 --> 00:19:52,180
+of code. Okay? So for a loop it should be present inside the repeating block. The break
+
+293
+00:19:52,180 --> 00:19:57,599
+statement should be present inside the repeating block. It's very important. Okay? So that
+
+294
+00:19:57,599 --> 00:20:03,520
+is really important. Okay? So that's why we will get a syntax error like this. So always
+
+295
+00:20:03,520 --> 00:20:10,240
+the break statement you have to write it inside the repeating block of the loop. Okay? So
+
+296
+00:20:10,240 --> 00:20:15,280
+you understood this part. So we have seen how the break statement will get executed
+
+297
+00:20:15,280 --> 00:20:21,440
+and we have to write this break statement inside the repeating block of a loop. Okay?
+
+298
+00:20:21,440 --> 00:20:27,199
+So now what we'll do is we'll see about how to use break in the nested loops. That is
+
+299
+00:20:27,199 --> 00:20:33,079
+if we write break in the inner loop what will happen? So if you write if the python executes
+
+300
+00:20:33,079 --> 00:20:38,960
+the break statement in the inner loop then the execution of the inner loop will stop.
+
+301
+00:20:39,280 --> 00:20:44,840
+Okay? The outer loop execution will still continue. The inner loop execution will stop.
+
+302
+00:20:44,840 --> 00:20:50,359
+Okay? In case of nested loops if you write a break statement inside the inner loop there
+
+303
+00:20:50,359 --> 00:20:54,759
+you can see. Okay? If you write the break statement inside the inner loop then the inner
+
+304
+00:20:54,759 --> 00:20:59,879
+loop execution will stop. Okay? There you can see there is a sequence A that is the
+
+305
+00:20:59,879 --> 00:21:05,000
+outer loop. Right? For item in sequence A. And then we have an another inner loop. Right?
+
+306
+00:21:05,000 --> 00:21:10,479
+And then there is some other item in sequence B. And then what we have written there break.
+
+307
+00:21:10,479 --> 00:21:15,859
+So when the python executes this break statement then the block of code. Right? The repeating
+
+308
+00:21:15,859 --> 00:21:21,879
+block of code will not be executed. Right? The below one. And then we'll go to the outer
+
+309
+00:21:21,879 --> 00:21:26,879
+loop. Right? The repeating block of the outer loop. And then that will get executed and
+
+310
+00:21:26,879 --> 00:21:33,440
+then we'll go back to the outer loop. Okay? So like this the break will work in the inner
+
+311
+00:21:33,440 --> 00:21:38,800
+loop. Okay? We'll understand this with the help of an example. See here. Here what we
+
+312
+00:21:38,800 --> 00:21:45,079
+have? We have an outer loop which is for A in range of 2. And then we are printing outer
+
+313
+00:21:45,079 --> 00:21:51,800
+and the value. And then we have for B in range of 4 that is the inner loop. In that we have
+
+314
+00:21:51,800 --> 00:21:57,520
+we have a condition. Right? If B equal to equal to 1 then we are we have the break statement.
+
+315
+00:21:57,520 --> 00:22:01,599
+Okay? If the condition is true then we have the break statement. So where is the break
+
+316
+00:22:01,599 --> 00:22:06,759
+statement present? Inside the inner loop. Right? In the repeating block of the inner
+
+317
+00:22:06,759 --> 00:22:12,840
+loop. Okay? And then if the otherwise what we are doing we are printing the inner. Right?
+
+318
+00:22:12,840 --> 00:22:17,840
+So what we are doing then we have the print statement of inner. Now let's see the execution
+
+319
+00:22:17,840 --> 00:22:23,960
+of this. Firstly when we write for A in range of 2 then basically we'll have a sequence
+
+320
+00:22:23,960 --> 00:22:30,440
+of 0, 1. And then the A will be initialized with 0. So when we have this print statement
+
+321
+00:22:30,440 --> 00:22:36,879
+we'll get outer colon 0. Then we have the inner loop. Okay? In the inner loop there
+
+322
+00:22:36,879 --> 00:22:44,000
+is range 4. So you'll get a sequence of 0, 1, 2 and 3. Okay? Now the B will be initialized
+
+323
+00:22:44,000 --> 00:22:51,319
+with 0. And then we are checking this condition. So is B equal to equal to 1? No. The B is
+
+324
+00:22:51,319 --> 00:22:57,199
+not equal to 1. Right? So what will happen? Directly we'll go to the print inner. Right?
+
+325
+00:22:57,199 --> 00:23:03,240
+This line. So what we have? We have inner colon 0. Now what will happen next? We have
+
+326
+00:23:03,240 --> 00:23:08,919
+to execute the next item in the inner loop sequence. Right? So for that B will be initialized
+
+327
+00:23:08,919 --> 00:23:15,759
+with 1. Okay? So now the value present in B is 1. Now if you write if you check if B
+
+328
+00:23:15,759 --> 00:23:21,879
+equal to equal to 1 the condition is true. Then what will happen? The break statement
+
+329
+00:23:21,879 --> 00:23:28,359
+will get executed. Then once the break statement get executed then the inner that statement
+
+330
+00:23:28,359 --> 00:23:32,839
+will not be executed. Right? Because the next part will not be executed. Directly what will
+
+331
+00:23:32,839 --> 00:23:39,039
+happen? We'll go to the outer loop. Okay? The inner loop execution will stop. So it
+
+332
+00:23:39,039 --> 00:23:44,320
+has stopped there. So we didn't go to the next values of B. Right? Where when we had
+
+333
+00:23:44,320 --> 00:23:51,719
+written range of 4 there is actually 0, 1, 2, 3 and 4. 1, 2, 3 till there. But we have
+
+334
+00:23:52,560 --> 00:23:58,279
+stopped the iteration at 1 itself. Because we have the break statement there. Okay? We'll
+
+335
+00:23:58,279 --> 00:24:04,919
+see. What is the next item in the sequence A? 1. Right? So now when we have written we
+
+336
+00:24:04,919 --> 00:24:10,640
+have written outer colon 1. We got outer colon 1. Then we'll go to the inner loop. In the
+
+337
+00:24:10,640 --> 00:24:17,440
+inner loop now again we'll have sequence of 0, 1, 2, 3. Now again B will be initialized
+
+338
+00:24:17,440 --> 00:24:24,640
+with 0. Then the condition is false. So directly we'll have inner colon 0. Now it will go back
+
+339
+00:24:24,640 --> 00:24:31,399
+to the next item in the sequence which is 1. Now the value present in B is 1. Is the
+
+340
+00:24:31,399 --> 00:24:37,599
+condition true? It is true. Right? B is equal to 1. So now what will get executed? The break
+
+341
+00:24:37,599 --> 00:24:43,159
+statement will get executed. So once the break statement will execute it then the next statement
+
+342
+00:24:43,159 --> 00:24:48,000
+of inner will not be executed. Right? Then what will happen? We'll directly go back to
+
+343
+00:24:48,000 --> 00:24:52,919
+the outer loop. Here there is a remaining items in the sequence. See there is 2, there
+
+344
+00:24:52,919 --> 00:24:59,080
+is 3. Right? In range of 4 in that sequence of inner loop there are some more items present.
+
+345
+00:24:59,080 --> 00:25:03,959
+But we won't do that. Because there is a break statement. Right? The break statement got
+
+346
+00:25:03,959 --> 00:25:09,279
+executed. So the inner loop iterations will stop. So directly we'll again go back to the
+
+347
+00:25:09,279 --> 00:25:14,440
+outer loop. There the sequence is done. So what will happen? The program is done here.
+
+348
+00:25:14,440 --> 00:25:20,560
+So what output do we have? We have outer colon 0, inner colon 0, then outer colon 1 and inner
+
+349
+00:25:20,560 --> 00:25:27,320
+colon 0. Okay? You understood this part? So if there is a break statement inside the inner
+
+350
+00:25:27,320 --> 00:25:33,159
+loop then the inner loop execution will stop. Okay? Once the break statement gets executed
+
+351
+00:25:33,159 --> 00:25:39,240
+then the inner loop execution will stop. Okay? We understood this part. Now what we'll
+
+352
+00:25:39,240 --> 00:25:47,599
+do is we'll apply this concept of break and solve a question. So the question here is
+
+353
+00:25:47,599 --> 00:25:53,519
+we will be given a sentence. Okay? What we have to do is we have to print a new sentence
+
+354
+00:25:53,519 --> 00:26:00,359
+where the first word of the given sentence is in uppercase. There you can see. You have
+
+355
+00:26:00,359 --> 00:26:06,359
+an input. Python is a programming language. Now you see the output. Right? It's a new
+
+356
+00:26:06,359 --> 00:26:12,680
+string where the first word, see, Python is a first word, right, in the input. So the
+
+357
+00:26:12,680 --> 00:26:19,320
+first word, what is it present? It's in uppercase here. All the letters are in uppercase. This
+
+358
+00:26:19,320 --> 00:26:26,120
+is what we want to achieve. Okay? So here what we have to do? Firstly, we have to get
+
+359
+00:26:26,120 --> 00:26:32,320
+the first word. How do we get the first word? How do we decide which is the first word?
+
+360
+00:26:32,320 --> 00:26:38,959
+Nothing but in English, if you have sentences, each word is separated by spaces. So if you
+
+361
+00:26:38,959 --> 00:26:44,399
+want the first word, what you have to do? You have to search for the first space. Okay?
+
+362
+00:26:44,399 --> 00:26:50,479
+When you get, when you encounter the first space then all the characters present before
+
+363
+00:26:50,479 --> 00:26:56,359
+that first space is nothing but the first word. Right? Like here, after Python, after
+
+364
+00:26:56,359 --> 00:27:01,560
+n, the character n, we have the first space. Right? So all the characters before that,
+
+365
+00:27:01,560 --> 00:27:07,919
+that is p, y, t, h, o, n, the entire, all the set of characters is nothing but our first
+
+366
+00:27:07,919 --> 00:27:13,599
+word. Okay? So now we'll see the input format. So in the input format, in the first line
+
+367
+00:27:13,599 --> 00:27:19,320
+we'll get the string. Okay? That is the sentence. The output format is nothing but we have to
+
+368
+00:27:19,320 --> 00:27:25,800
+print the new string where the first word is in uppercase. Okay? We'll solve this in
+
+369
+00:27:25,800 --> 00:27:32,000
+the code playground and do it. Okay? What is the first step? Is to take the input. Right?
+
+370
+00:27:32,000 --> 00:27:38,800
+So I'll take sentence as the input. Right? So I'll take it as the input. Now let me give
+
+371
+00:27:38,800 --> 00:27:48,719
+some input. Right? Python is a programming language. Okay. So now I'll print the input
+
+372
+00:27:48,719 --> 00:27:56,159
+and check the, whether I have taken the input properly or not. So I got the output. Right?
+
+373
+00:27:56,159 --> 00:28:03,800
+See, now this is done. Next, what is the next step? The next step is I have to get the first
+
+374
+00:28:03,800 --> 00:28:08,719
+word in the string. Right? In the sentence, I have to get the first word. How do I get
+
+375
+00:28:08,719 --> 00:28:16,039
+it? So to get a part of a string, what do we do? We use string slicing. Right? So here
+
+376
+00:28:16,039 --> 00:28:21,279
+I want to get Python which is the first word. Right? So this is the first space. So just
+
+377
+00:28:21,279 --> 00:28:27,279
+before that we have this entire, all of these characters. Right? This whole Python. So this
+
+378
+00:28:27,279 --> 00:28:34,599
+is the first word for us. So what I'll do is, firstly, let's just try for this input.
+
+379
+00:28:34,599 --> 00:28:41,000
+So I want a particular part of the string right from the beginning to the first space.
+
+380
+00:28:41,000 --> 00:28:49,440
+What is the index of the first space? Let's see. This is 0, 1, 2, 3, 4, 5, 6. So 6 is
+
+381
+00:28:49,440 --> 00:28:54,599
+the index of the first space. So just before that, whatever characters are present, we
+
+382
+00:28:54,599 --> 00:29:00,680
+want that. Okay? Let me call it first word. Right? I have maintained. Let me print it
+
+383
+00:29:00,680 --> 00:29:07,959
+and see. Okay? So now I'll run the code. I should get Python. Right? See, I got the output
+
+384
+00:29:07,959 --> 00:29:14,479
+as Python. Okay? So now this will work for this particular input. Right? This code will
+
+385
+00:29:14,479 --> 00:29:19,479
+work for this particular input. But let's say we'll give some other input. Then what
+
+386
+00:29:19,479 --> 00:29:25,359
+will happen? The 6, we have written here 6. We have hardcoded a value. So then it will
+
+387
+00:29:25,359 --> 00:29:32,719
+not work. So what we have to do? We have to find the index of the first space. Right?
+
+388
+00:29:32,719 --> 00:29:38,359
+So here it is 6. But let's say there is another input. Then the value will be say 5 or 4 or
+
+389
+00:29:38,359 --> 00:29:44,599
+some 10. Like this. Right? So what we have to write? We have to find out the first space
+
+390
+00:29:44,599 --> 00:30:02,359
+index. So for that, let me just maintain a variable.
+
+
+
+391
+00:29:49,600 --> 00:29:56,880
+right, first space index where I will keep tracking about the first space like I need
+
+392
+00:29:56,880 --> 00:30:03,280
+the first space, let me first initialize with 0, will iterate over each character and find
+
+393
+00:30:03,280 --> 00:30:08,080
+the first space, so let's start with 0, then what we have to do?
+
+394
+00:30:08,080 --> 00:30:12,920
+We have to iterate over each character in the sentence, how do we do it?
+
+395
+00:30:12,920 --> 00:30:18,200
+With the for loop, right, so I'll write for, okay, so each character I have to iterate
+
+396
+00:30:18,200 --> 00:30:24,840
+in the sentence, right, now when I'm iterating over the sentence what I have to do?
+
+397
+00:30:24,840 --> 00:30:31,640
+I have to check whether that character is a space, so if the character, right, if the
+
+398
+00:30:31,640 --> 00:30:36,680
+current character in this iteration if it is space then it means that we have found
+
+399
+00:30:36,680 --> 00:30:39,640
+our space, right, the first space, then what we can do?
+
+400
+00:30:39,640 --> 00:30:44,080
+We can directly exit the loop, there is no need to iterate, right, there is no need of
+
+401
+00:30:44,080 --> 00:30:47,719
+iterating again, so for that what we have to do?
+
+402
+00:30:47,719 --> 00:30:53,239
+First we have to check whether the character in the current iteration is a space, so for
+
+403
+00:30:53,239 --> 00:30:58,799
+that I'll write if, right, we have to check there is a condition, so I'll write char is
+
+404
+00:30:58,799 --> 00:31:05,920
+equal to space, so if the character is space, right, the character in the current iteration
+
+405
+00:31:05,920 --> 00:31:09,080
+if it is space then what we have to do?
+
+406
+00:31:09,080 --> 00:31:13,720
+We can just stop iterating, right, so for that what do we have to do?
+
+407
+00:31:14,360 --> 00:31:17,920
+We have learned, right, the break statement, so if you write break then what will happen?
+
+408
+00:31:17,920 --> 00:31:24,080
+We will exit the loop, right, the iterations will stop and we will exit the loop, so here
+
+409
+00:31:24,080 --> 00:31:28,839
+we have written char if it is equal to space then we can directly exit the loop, otherwise
+
+410
+00:31:28,839 --> 00:31:33,400
+what we have to do, right, tell me, otherwise what we have to do?
+
+411
+00:31:33,400 --> 00:31:38,920
+We have to maintain the first space index, right, we need to know the first space index,
+
+412
+00:31:38,920 --> 00:31:43,839
+so once we are iterating, okay, we started with the first character, okay, and we have
+
+413
+00:31:43,839 --> 00:31:49,360
+seen that the first character is P and it is not space, right, so this is false, then
+
+414
+00:31:49,360 --> 00:31:50,879
+what we have to do?
+
+415
+00:31:50,879 --> 00:31:58,239
+So the first space is not, the first character is not space, so we have to change this, right,
+
+416
+00:31:58,239 --> 00:32:03,480
+so we have to check for the next character, so the 0 is not true, what we have to do?
+
+417
+00:32:03,760 --> 00:32:07,799
+We have to just increment the index, okay, so what I'll do?
+
+418
+00:32:07,799 --> 00:32:13,960
+I'll just maintain the index here, okay, so first space index plus 1, so now what we are
+
+419
+00:32:13,960 --> 00:32:14,960
+doing?
+
+420
+00:32:14,960 --> 00:32:18,519
+We are checking in the next iteration, we are checking for the second character, right,
+
+421
+00:32:18,519 --> 00:32:19,719
+so that's why what we are doing?
+
+422
+00:32:19,719 --> 00:32:22,840
+We are incrementing the index here, now what we will do?
+
+423
+00:32:22,840 --> 00:32:27,420
+We will check for the second character which is Y, right, so we are checking whether Y
+
+424
+00:32:27,420 --> 00:32:33,439
+it is equal to space or not, it is not space, right, so the second character is also not
+
+425
+00:32:34,400 --> 00:32:35,760
+space, so what we have to do?
+
+426
+00:32:35,760 --> 00:32:41,400
+We have to again increment the index because the index 1 is not correct for the first space,
+
+427
+00:32:41,400 --> 00:32:46,960
+like this we'll keep iterating, once we reach this space what will happen?
+
+428
+00:32:46,960 --> 00:32:52,639
+This condition will become true, right, so then we'll exit the loop, there is no need
+
+429
+00:32:52,639 --> 00:32:57,239
+of iterating more, right, we can just exit the loop, so we'll exit the loop.
+
+430
+00:32:57,239 --> 00:32:58,239
+Now what will happen?
+
+431
+00:32:58,239 --> 00:33:01,519
+The first space index what will it have?
+
+432
+00:33:01,519 --> 00:33:07,320
+It will have the index of the first space and what we have to give here?
+
+433
+00:33:07,320 --> 00:33:11,120
+We have to give the index of the first space, right, so what we have to write here?
+
+434
+00:33:11,120 --> 00:33:14,999
+First space index, now we'll run the code and see.
+
+435
+00:33:14,999 --> 00:33:21,239
+So what we should get the output Python, right, see we got Python, similarly let's say I'll
+
+436
+00:33:21,239 --> 00:33:28,279
+write loop control statements, right, and we'll run the code then what we should get?
+
+437
+00:33:28,279 --> 00:33:33,999
+We should get loop, right, so like this, this started working, okay, so we are done with
+
+438
+00:33:33,999 --> 00:33:36,120
+this part, so what did we do?
+
+439
+00:33:36,120 --> 00:33:41,359
+We got the first word, so we are done getting the first word, what is the next step?
+
+440
+00:33:41,359 --> 00:33:43,480
+In the question what we have to do?
+
+441
+00:33:43,480 --> 00:33:51,200
+We have to convert the first word into uppercase, right, the new sentence should have the first
+
+442
+00:33:52,159 --> 00:33:57,719
+word as uppercase, so the next step is converting the string into uppercase.
+
+443
+00:33:57,719 --> 00:34:04,999
+So what I'll do is, so directly to convert a string, a particular string to uppercase
+
+444
+00:34:04,999 --> 00:34:09,399
+we have learnt a string method, right, which is upper, okay.
+
+445
+00:34:09,399 --> 00:34:26,040
+So I'll just write uppercase first word equal to first word.upper, right, so what are we
+
+446
+00:34:26,040 --> 00:34:27,040
+doing?
+
+447
+00:34:27,040 --> 00:34:32,719
+We are converting the characters present in the first word to uppercase, okay, we'll just
+
+448
+00:34:32,719 --> 00:34:37,100
+print and see the output, right.
+
+449
+00:34:37,100 --> 00:34:48,260
+So here I'll give input as python is a programming language, now let's run the code, so what
+
+450
+00:34:48,260 --> 00:34:49,260
+we should get?
+
+451
+00:34:49,260 --> 00:34:55,260
+We should get python all in uppercase, see each character is in uppercase, right, so
+
+452
+00:34:55,260 --> 00:35:01,980
+we are done converting the first string into uppercase, so we are done with two steps,
+
+453
+00:35:01,980 --> 00:35:06,679
+firstly we got the first word and then we converted it into uppercase.
+
+454
+00:35:07,260 --> 00:35:08,520
+So what is the last thing left?
+
+455
+00:35:08,520 --> 00:35:14,240
+That is we want a new sentence where we will have the first word in capitals, right, in
+
+456
+00:35:14,240 --> 00:35:18,640
+uppercase then the remaining part of the sequence will come, remaining part of the sentence
+
+457
+00:35:18,640 --> 00:35:20,279
+will come, okay.
+
+458
+00:35:20,279 --> 00:35:22,080
+So what we have to do here?
+
+459
+00:35:22,080 --> 00:35:32,040
+We want a new sentence, okay, equal to, so firstly we need the uppercase word and then
+
+460
+00:35:32,040 --> 00:35:33,040
+what do we need?
+
+461
+00:35:33,040 --> 00:35:37,839
+We want the remaining part of the sentence, right, the remaining part of the sentence,
+
+462
+00:35:37,839 --> 00:35:44,879
+so from a particular index we want the entire string, leftover string, right, so what is
+
+463
+00:35:44,879 --> 00:35:47,679
+the index of that?
+
+464
+00:35:47,679 --> 00:35:51,640
+Nothing but the first space index, right, right from the space we want the remaining
+
+465
+00:35:51,640 --> 00:35:58,040
+part of the string that is we converted this into capitals and that we have added here,
+
+466
+00:35:58,040 --> 00:35:59,040
+then what we are doing?
+
+467
+00:35:59,040 --> 00:36:02,879
+We are concatenating the remaining part of the string, okay.
+
+468
+00:36:03,719 --> 00:36:04,719
+So for that what we have to do?
+
+469
+00:36:04,719 --> 00:36:10,559
+We have to first start from the first space index and the entire remaining part, right,
+
+470
+00:36:10,559 --> 00:36:13,279
+till the end, so for that directly what we can do?
+
+471
+00:36:13,279 --> 00:36:18,320
+We can just write colon, we need not specify the end index, right, if you don't specify
+
+472
+00:36:18,320 --> 00:36:20,399
+the end index then what will happen?
+
+473
+00:36:20,399 --> 00:36:22,740
+It will go till the end, okay.
+
+474
+00:36:22,740 --> 00:36:28,760
+Now let's just print this and see, okay, now let's run the code then what we should get?
+
+475
+00:36:28,760 --> 00:36:33,760
+We should get python as a programming language where the first word is in capital, see we
+
+476
+00:36:33,760 --> 00:36:44,600
+got it, right, let's try with some other input, okay, let's say loop control statements, let's
+
+477
+00:36:44,600 --> 00:36:47,040
+run the code, so what we should get?
+
+478
+00:36:47,040 --> 00:36:52,439
+The loop should be in capitals and the remaining part should be as it is, see we got it, right,
+
+479
+00:36:52,439 --> 00:36:57,360
+so we are done with doing this question, so you understood where we have to use this break,
+
+480
+00:36:57,360 --> 00:36:59,559
+right, so all of this is clear.
+
+481
+00:36:59,559 --> 00:37:00,559
+So what did we do?
+
+482
+00:37:00,559 --> 00:37:05,360
+We are iterating over each character in the sentence and we are checking whether it's
+
+483
+00:37:05,360 --> 00:37:11,480
+a space, if we find the first space then we are exiting the loop, otherwise what we are
+
+484
+00:37:11,480 --> 00:37:12,480
+doing?
+
+485
+00:37:12,480 --> 00:37:16,399
+We are maintaining the index, right, so this is done.
+
+486
+00:37:16,399 --> 00:37:19,179
+Now we will go back to the slides.
+
+487
+00:37:19,179 --> 00:37:24,439
+So we are done with this question, right, now what we'll do is we'll solve another like
+
+488
+00:37:24,520 --> 00:37:31,119
+we'll understand an another concept which is continue, so this continue what it does
+
+489
+00:37:31,119 --> 00:37:37,320
+is it will make the program skip the remaining statements in the current iteration and it
+
+490
+00:37:37,320 --> 00:37:42,600
+will begin the next iteration that is see there is a repeating block of code, there's
+
+491
+00:37:42,600 --> 00:37:47,600
+a while loop and then there's a repeating block of code, in this repeating block of
+
+492
+00:37:47,600 --> 00:37:54,719
+code in between we have some continue, okay, then when the python executes this continue
+
+493
+00:37:54,719 --> 00:38:00,159
+then what will happen is it will skip all the remaining part of code that is below the
+
+494
+00:38:00,159 --> 00:38:05,800
+continue statement there will be some lines of code, right, that will all get skip directly
+
+495
+00:38:05,800 --> 00:38:12,320
+from continue, right, again it will go back to the loop statement that is to the while
+
+496
+00:38:12,320 --> 00:38:17,339
+loop, okay, so and then it will start the next iteration of the loop.
+
+497
+00:38:18,080 --> 00:38:23,860
+So below continue whatever lines of code is present that will not get executed, okay,
+
+498
+00:38:23,860 --> 00:38:30,740
+this is the continue, so what will it do firstly below the continue statement whatever remaining
+
+499
+00:38:30,740 --> 00:38:37,500
+lines of code is present that will not get executed and will go back to the loop, okay,
+
+500
+00:38:37,500 --> 00:38:42,180
+so here in case of while loop what will happen, the repeating block of code it will check
+
+501
+00:38:42,180 --> 00:38:47,300
+for the condition A and then the repeating block of code will get executed, whereas in
+
+502
+00:38:47,300 --> 00:38:52,380
+case of for loop will go to the next item in the sequence and then the repeating block
+
+503
+00:38:52,380 --> 00:38:55,860
+of code will get executed, right, so clear.
+
+504
+00:38:55,860 --> 00:39:00,980
+Now generally we use this continue when we want to skip the remaining statements when
+
+505
+00:39:00,980 --> 00:39:06,699
+a particular condition is satisfied that is in case of current iteration will check for
+
+506
+00:39:06,699 --> 00:39:12,779
+some condition, if the condition is true then what we'll do is we'll skip the remaining
+
+507
+00:39:12,779 --> 00:39:18,459
+statements, okay, in such scenarios we generally use continue, okay, we'll understand this
+
+508
+00:39:18,459 --> 00:39:20,139
+with an example.
+
+509
+00:39:20,139 --> 00:39:24,699
+See here what we have written there, there is a loop which is a for loop, there we have
+
+510
+00:39:24,699 --> 00:39:31,779
+written for A in range of 3 and then inside the repeating block we are checking if A is
+
+511
+00:39:31,779 --> 00:39:38,500
+1, okay, if A is equal to 1, right, then we are writing the continue statement, right,
+
+512
+00:39:38,500 --> 00:39:42,540
+otherwise what we are doing we are printing A, we'll understand this in a step by step
+
+513
+00:39:42,540 --> 00:39:50,459
+manner, firstly range 3 will give you a sequence of integers which is 0, 1, 2, A will be initialized
+
+514
+00:39:50,459 --> 00:39:55,899
+with 0, then we'll have the repeating block of code, right, they will go there, then what
+
+515
+00:39:55,899 --> 00:40:00,980
+we'll do we'll check whether the value present in A is 1, which is false, then what will
+
+516
+00:40:01,180 --> 00:40:06,459
+happen directly we'll go to printing, so what will be the output, 0, right, then again we'll
+
+517
+00:40:06,459 --> 00:40:12,740
+go back to the loop, right, next item in the sequence which is 1, okay, now what we'll
+
+518
+00:40:12,740 --> 00:40:19,980
+do we'll check whether the value present in A is equal to 1, which is true, so what will
+
+519
+00:40:19,980 --> 00:40:25,819
+happen the conditional block will be executed, what is present there continue, so what will
+
+520
+00:40:25,819 --> 00:40:32,100
+Python do, right, so whatever lines of code are present below the continue they will get
+
+521
+00:40:32,100 --> 00:40:38,339
+skipped and we'll go back to the next item in the sequence, that is when you write continue
+
+522
+00:40:38,339 --> 00:40:44,779
+what will happen, we'll go back to the next item in the sequence, that is you won't print
+
+523
+00:40:44,779 --> 00:40:51,100
+here 1, see directly where did we go, we went back to the loop and the A got initialized
+
+524
+00:40:51,100 --> 00:40:55,899
+with the next item in the sequence which is 2, and then we are checking if A is equal
+
+525
+00:40:55,899 --> 00:41:03,819
+to 1, which is false and directly 2, we have the 2, see after 0 there is no 1, directly
+
+526
+00:41:03,819 --> 00:41:08,100
+what do we have, we have 2, right, why is that so?
+
+527
+00:41:08,100 --> 00:41:13,860
+Because when continue, when the Python executes the continue statement it will skip the remaining
+
+528
+00:41:13,860 --> 00:41:19,779
+lines whatever are present below in that current iteration will get skipped, so because of
+
+529
+00:41:19,779 --> 00:41:25,259
+that the print A statement got skipped in that iteration, so that's where what happened
+
+530
+00:41:25,259 --> 00:41:31,860
+we don't have 1 in the output, okay, so clear, so here we have print and then the sequence
+
+531
+00:41:31,860 --> 00:41:36,500
+is done, so we'll come out of the loop and then we'll have the end, okay, see the output
+
+532
+00:41:36,500 --> 00:41:43,139
+is 0 to end, clear, you understood how the continue works, right, so now we'll see another
+
+533
+00:41:43,139 --> 00:41:44,380
+block of code.
+
+534
+00:41:44,380 --> 00:41:49,459
+So here, now guess what is the output, so what is it present?
+
+535
+00:41:49,459 --> 00:41:55,779
+We have a sequence, right, range 3 that is 0, 1, 2, now A will iterate over 0, it will
+
+536
+00:41:55,779 --> 00:42:01,100
+come into the repeating block, okay, and then we have continue, so what will continue do?
+
+537
+00:42:01,100 --> 00:42:06,380
+When Python executes this continue statement the block of code present below that continue
+
+538
+00:42:06,380 --> 00:42:12,100
+statement will not get executed and directly it will go to the next item in the sequence,
+
+539
+00:42:12,100 --> 00:42:16,940
+so here print A will not be executed, right, that is we won't have print 0 that is not
+
+540
+00:42:16,940 --> 00:42:21,459
+get executed, and then we'll again go back to the next item in the sequence, again we'll
+
+541
+00:42:21,459 --> 00:42:26,699
+go to continue, again back in the next item like this what will happen?
+
+542
+00:42:26,699 --> 00:42:32,860
+The print of A line will never get executed, so directly once the sequence is done we'll
+
+543
+00:42:32,860 --> 00:42:38,620
+directly have the end, so the output is end, you understood this part, right, so if you
+
+544
+00:42:38,620 --> 00:42:40,540
+write continue like this what will happen?
+
+545
+00:42:40,540 --> 00:42:44,860
+The lines that are present below it will not get executed, okay.
+
+546
+00:42:44,860 --> 00:42:49,459
+So now we'll see an another block of code, here you see, so what we have written we have
+
+547
+00:42:49,459 --> 00:42:56,060
+a for loop and then there is print A, and then the continue is present outside the loop
+
+548
+00:42:56,060 --> 00:43:01,579
+that is it's not present in the repeated block of code, so what do you think what will happen?
+
+549
+00:43:01,579 --> 00:43:07,740
+In case of break when we have written it outside the loop then we have an error, right, it
+
+550
+00:43:07,860 --> 00:43:13,740
+was a syntax error that is you cannot write break outside the repeating block, right,
+
+551
+00:43:13,740 --> 00:43:19,540
+outside the loop you cannot write break statement, similarly you cannot write the continue statement
+
+552
+00:43:19,540 --> 00:43:25,899
+also outside the loop, okay, so you'll get a syntax error, so the continue statement
+
+553
+00:43:25,899 --> 00:43:32,500
+should also be present inside the loop just like the break, so both break and continue
+
+554
+00:43:32,500 --> 00:43:38,380
+should be present only inside the loops, okay, that is only inside the repeating block
+
+555
+00:43:38,380 --> 00:43:43,100
+of code, okay, of the loop, so you understood this part, right.
+
+556
+00:43:43,100 --> 00:43:49,940
+Now so we have understood what is continue and how we can apply this concept, right,
+
+557
+00:43:49,940 --> 00:43:55,339
+how is it happening and how it works, so we understood this part, so now what we'll do
+
+558
+00:43:55,339 --> 00:44:00,779
+is we'll learn an another concept which is pass, okay, we'll understand this concept
+
+559
+00:44:00,779 --> 00:44:01,779
+now.
+
+560
+00:44:01,779 --> 00:44:07,459
+So, so far we have seen about break and continue, right, so in break what will happen?
+
+561
+00:44:07,459 --> 00:44:12,980
+The loop will get exited early that is when the python executes this break automatically
+
+562
+00:44:12,980 --> 00:44:19,899
+the loop will get executed, exited, okay, and then we have seen about continue, and
+
+563
+00:44:19,899 --> 00:44:25,100
+then when the python executes continue then the block of code which is present below the
+
+564
+00:44:25,100 --> 00:44:30,459
+continue will not get executed in the current iteration, it will go back to the next item
+
+565
+00:44:31,139 --> 00:44:33,980
+in the sequence or to the top of the loop, okay.
+
+566
+00:44:33,980 --> 00:44:41,339
+So now we'll see about what is this pass, so basically pass statement is used as a syntactic
+
+567
+00:44:41,339 --> 00:44:44,420
+placeholder, let's understand what do we mean by this.
+
+
+
+568
+00:44:44,400 --> 00:44:49,480
+that, see there's a block of code that so we have if condition A and then we have a
+
+569
+00:44:49,480 --> 00:44:55,320
+block 1 and then we have another LIF and then we have another condition B and then we have
+
+570
+00:44:55,320 --> 00:45:01,359
+we need to write a block 2 here and then there's else and we have to write some block 3 code.
+
+571
+00:45:01,359 --> 00:45:06,279
+Here, block 1 and block 3 what we have to write in block 1 code and what we have to
+
+572
+00:45:06,279 --> 00:45:11,880
+write in block 3 code is finalized but we haven't still decided what to write in block
+
+573
+00:45:11,880 --> 00:45:18,159
+2, okay, but that condition is required, before that what you want to do is let's say you
+
+574
+00:45:18,159 --> 00:45:24,480
+want to test the code, in case of python you cannot leave the code empty, okay, you need
+
+575
+00:45:24,480 --> 00:45:29,720
+to write something there, there should be some block 2, but you haven't decided what
+
+576
+00:45:29,720 --> 00:45:36,880
+to write, right, in such cases you can use pass, okay, so basically the pass is nothing
+
+577
+00:45:36,880 --> 00:45:43,280
+but a syntactic placeholder that is as per syntax you cannot keep them empty, but you
+
+578
+00:45:43,280 --> 00:45:49,359
+want it right now, so for that you can use this as a placeholder, okay, so when this
+
+579
+00:45:49,359 --> 00:45:54,840
+pass will get executed like when python executes this pass statement then nothing will happen,
+
+580
+00:45:54,840 --> 00:45:58,679
+there won't be any change in the logic or there won't be any change in the variables
+
+581
+00:45:58,679 --> 00:46:06,520
+or anything like that, it will not do anything to the code, okay, we just use it as a placeholder,
+
+582
+00:46:07,160 --> 00:46:11,720
+basically this pass statement is used when we have to test the code, right, before you
+
+583
+00:46:11,720 --> 00:46:16,200
+have written the entire code, before that itself let's say you want to test what you
+
+584
+00:46:16,200 --> 00:46:22,800
+have written then you can use this pass statement, okay, so for that what we'll do is we'll understand
+
+585
+00:46:22,800 --> 00:46:29,639
+this in a step by step manner with a simple example, let's say you want to write a code
+
+586
+00:46:29,639 --> 00:46:35,200
+which prints the growth stage of a person, that is based on his age you have to print
+
+587
+00:46:35,200 --> 00:46:39,599
+whether he is an adult or whether he is a child or whether he is a teenager, like this
+
+588
+00:46:39,599 --> 00:46:44,359
+what you have to do is you have to print the growth stage of the person and you want to
+
+589
+00:46:44,359 --> 00:46:49,760
+have a specific output that is you want to print say, so you are of this age, so you
+
+590
+00:46:49,760 --> 00:46:56,879
+are a teenager like this you want some output, okay, what you know is initially that if it
+
+591
+00:46:56,879 --> 00:47:01,239
+is greater than 20 then the person is called adult, if the age is greater than 12 that
+
+592
+00:47:01,239 --> 00:47:07,599
+is if your age is between 12 and 20 then the person is called a teenager otherwise
+
+593
+00:47:07,599 --> 00:47:13,239
+it's a child, okay, you know this, you know the conditions first, later you want to write
+
+594
+00:47:13,239 --> 00:47:18,140
+all this output and all of these things, then what you have to do, you'll write something
+
+595
+00:47:18,140 --> 00:47:23,120
+like this, right, you know the condition there, firstly you have to take an age as input and
+
+596
+00:47:23,120 --> 00:47:29,120
+then you have to have some output and then you need some conditions, already with the
+
+597
+00:47:29,120 --> 00:47:34,120
+question you understood what are the conditions that is if age is greater or equal to 20 then
+
+598
+00:47:34,120 --> 00:47:41,760
+it's a adult, you know this, and other condition is if age is not greater than 20 then if it
+
+599
+00:47:41,760 --> 00:47:48,959
+is below 20, then if it is below 20 then if it is 12 to 20 in this range then it's a teenager,
+
+600
+00:47:48,959 --> 00:47:54,120
+right, otherwise it's a child, you know these conditions, so you have written like this,
+
+601
+00:47:54,120 --> 00:48:00,039
+right, according to python this is syntactically wrong because you haven't written any conditional
+
+602
+00:48:00,039 --> 00:48:05,039
+block here, see after if there is no conditional block, so what will python do?
+
+603
+00:48:05,039 --> 00:48:12,280
+It will throw an error, okay, we'll see this, okay, coming to the code playground, so we'll
+
+604
+00:48:12,280 --> 00:48:18,679
+write, we'll just remove the space of code, what we'll do is we'll just write this code
+
+605
+00:48:18,679 --> 00:48:26,720
+and we'll see, okay, firstly we need to take the input age, okay, int of input, so after
+
+606
+00:48:26,720 --> 00:48:28,599
+that what you have to do?
+
+607
+00:48:28,599 --> 00:48:34,939
+You have some output, so let me just initialize it with an empty string, now you have to check
+
+608
+00:48:34,939 --> 00:48:42,480
+for some conditions, right, if age is greater than or equal to 20 then it's an adult, okay,
+
+609
+00:48:42,480 --> 00:48:48,640
+so you have something that you want to print them, otherwise if the age, if it is not 20,
+
+610
+00:48:49,599 --> 00:48:54,360
+if it's not greater than or equal to 20 then if the age is 12 then what do it mean?
+
+611
+00:48:54,360 --> 00:49:00,280
+It means it's a teenager, right, otherwise you have to print a child, okay, this is what
+
+612
+00:49:00,280 --> 00:49:04,919
+we have, so there is some output format with which you want to print all of this and you
+
+613
+00:49:04,919 --> 00:49:08,840
+want to store it in the output variable, so what you'll write you'll just finally print
+
+614
+00:49:08,840 --> 00:49:09,959
+the output.
+
+615
+00:49:09,959 --> 00:49:15,120
+Now what you want to do is in a step by step manner you want to write each of this block
+
+616
+00:49:15,120 --> 00:49:19,560
+of code, you don't want to write all of this thing before itself, you want to first write
+
+617
+00:49:19,560 --> 00:49:24,160
+a part, check if it's proper and then you want to write the next part and test whether
+
+618
+00:49:24,160 --> 00:49:28,400
+it's proper, like this you want to do in a step by step manner, but you already know
+
+619
+00:49:28,400 --> 00:49:31,560
+the conditions so you have written the conditions there.
+
+620
+00:49:31,560 --> 00:49:39,280
+Now if you run the code like this what will happen, let's give an input say 15 and let's
+
+621
+00:49:39,280 --> 00:49:46,100
+run the code then what will happen will get an error like this, okay, there is an error,
+
+622
+00:49:46,100 --> 00:49:47,479
+why is this happening?
+
+623
+00:49:47,479 --> 00:49:53,120
+Because we haven't written the conditional block of code, but we don't want to write
+
+624
+00:49:53,120 --> 00:49:57,759
+the entire piece of code before itself, then what we have to do?
+
+625
+00:49:57,759 --> 00:50:05,239
+We have to use pass, okay, so here we'll write pass, like this in each if you write pass
+
+626
+00:50:05,239 --> 00:50:14,799
+then there won't be any error, okay, we'll run the code and see, see there is no error,
+
+627
+00:50:14,799 --> 00:50:17,280
+right, so our issue is resolved.
+
+628
+00:50:17,280 --> 00:50:23,160
+Now so what we have to do is the next step is to do this in a step by step manner, okay,
+
+629
+00:50:23,160 --> 00:50:28,720
+now what I want to do is I want to first write the output for H greater not equal to 20,
+
+630
+00:50:28,720 --> 00:50:34,959
+so firstly I'll remove the pass, then I want some output where I want to write you are
+
+631
+00:50:34,959 --> 00:50:41,199
+of age say 20, so whichever age they are, right, if the input is 15 then I want to write
+
+632
+00:50:41,199 --> 00:50:47,040
+you are so and so age, so you are an adult now, like this I want to write, okay, so for
+
+633
+00:50:47,040 --> 00:50:55,840
+that what I have to do firstly you are of age and I want to write the number here, so
+
+634
+00:50:55,840 --> 00:50:56,840
+what I'll do?
+
+635
+00:50:56,840 --> 00:51:01,759
+I have the age stored in this variable, right, so for that what I have to write?
+
+636
+00:51:01,759 --> 00:51:07,120
+I have to write age here, but here it's a integer, right, so when you are concatenating
+
+637
+00:51:07,120 --> 00:51:12,639
+it should be a string, so I'm just converting it into a string and then so what I have to
+
+638
+00:51:12,639 --> 00:51:21,799
+write if you are of this age, I have to write you are an adult now, okay, like this, okay,
+
+639
+00:51:21,799 --> 00:51:26,320
+now we'll give an input say 25, so what should the output be?
+
+640
+00:51:26,320 --> 00:51:32,639
+You are of age 25, you are an adult now, so you want an output like this, see we'll get
+
+641
+00:51:32,639 --> 00:51:38,320
+that output, see we got this output, so we have tested this block of code, right, whichever
+
+642
+00:51:38,320 --> 00:51:43,759
+we have written now, that block of code is tested, so now what I want to do is next I
+
+643
+00:51:43,759 --> 00:51:50,040
+want to proceed to the next part of the code, so here in case of age greater than 12 and
+
+644
+00:51:50,280 --> 00:51:56,479
+less than or equal to 20, I want to attempt this now, so I'll write again output, right,
+
+645
+00:51:56,479 --> 00:52:14,519
+equal to you are plus STR of age, so if they are of this age it means that you are an teenager,
+
+646
+00:52:14,519 --> 00:52:22,000
+okay, so I've written this, see I need not write all the piece of code at once and then
+
+647
+00:52:22,000 --> 00:52:26,040
+test it, right, so I've just written pass here, previously I've written pass here and
+
+648
+00:52:26,040 --> 00:52:31,560
+based on that I've tested only the block of code that I want to write right now, so in
+
+649
+00:52:31,560 --> 00:52:35,639
+a step by step manner I've written the code, I've tested it and then I'll written the next
+
+650
+00:52:35,639 --> 00:52:40,199
+part of code and I'll test it, right, so in this way we have to write it in a step by
+
+651
+00:52:40,199 --> 00:52:45,040
+step manner, generally it's always a good practice to like that, so for that we'll use
+
+652
+00:52:45,040 --> 00:52:53,560
+this pass statement, okay, so now we'll run the code, so let's say I'm giving 15, okay,
+
+653
+00:52:53,560 --> 00:52:58,479
+so when I've given 15, see I got you are of age 15, you are a teenager, right, let's say
+
+654
+00:52:58,479 --> 00:53:03,919
+if I give some 30, right, what will happen, you'll get a you are of age so and so and
+
+655
+00:53:03,919 --> 00:53:09,019
+you are an adult now, right, so like this we got the expected output.
+
+656
+00:53:09,840 --> 00:53:14,100
+Now what we'd have to do is in case the age is less than 12, right, less than or equal
+
+657
+00:53:14,100 --> 00:53:16,420
+to 12, then what we have to print?
+
+658
+00:53:16,420 --> 00:53:21,459
+We have to print that they are a child, so what I'll do now, I'll write this part that
+
+659
+00:53:21,459 --> 00:53:33,579
+is this entire thing and here instead of teenager I have to write you are a child, okay, let's
+
+660
+00:53:33,579 --> 00:53:39,499
+say now and here also we'll add now, now let me run the code, so if the child let's
+
+661
+00:53:39,499 --> 00:53:46,139
+say is of 10 years I'll run the code, so what I should get you are of age 10 and you are
+
+662
+00:53:46,139 --> 00:53:53,780
+a child now, okay, you are a child now, you are a teenager, okay, see we got the necessary
+
+663
+00:53:53,780 --> 00:54:00,059
+output, right, so let's say I give 16 then it should come as teenager, right, so he,
+
+664
+00:54:00,059 --> 00:54:05,019
+you have a, you are a teenager now, let's say some 45 then what we should get?
+
+665
+00:54:05,019 --> 00:54:09,660
+We should get adult, right, so we got adult, like this what did we do?
+
+666
+00:54:09,660 --> 00:54:14,540
+We have written a block of code in a step by step manner and then we have tested that
+
+667
+00:54:14,540 --> 00:54:18,660
+and then we have written the next block of code and then we have tested it, so as we
+
+668
+00:54:18,660 --> 00:54:23,819
+already know the conditions first we have written the conditions, we have given the
+
+669
+00:54:23,819 --> 00:54:28,499
+pass statement instead of giving empty blocks and then we have step by step replace the
+
+670
+00:54:28,499 --> 00:54:34,379
+pass statement with the necessary code, right, like this in case of huge codes and when we
+
+671
+00:54:34,379 --> 00:54:41,740
+write so we use this pass statements to avoid writing empty blocks and syntax errors, okay.
+
+672
+00:54:41,740 --> 00:54:46,499
+Now we'll go back to the slides, so we have seen this, right, you cannot leave the empty
+
+673
+00:54:46,499 --> 00:54:49,459
+blocks will get error, then what did we write?
+
+674
+00:54:49,459 --> 00:54:54,459
+We have written pass, right, for each of this conditional block then step by step what did
+
+675
+00:54:54,459 --> 00:54:55,459
+we do?
+
+676
+00:54:55,459 --> 00:55:00,819
+We have updated it with the necessary output, right, so we got an output like this, similarly
+
+677
+00:55:00,819 --> 00:55:05,499
+for teenager then we have written for it and then for child we have written for the child,
+
+678
+00:55:05,499 --> 00:55:11,180
+so we got an output like this, so it's done, right, like this we'll use the pass statement
+
+679
+00:55:11,180 --> 00:55:17,420
+to do all of these things, similarly we can use the pass statements in the loops also,
+
+680
+00:55:17,420 --> 00:55:21,860
+in the loops also we can add pass statements like this, okay.
+
+681
+00:55:21,860 --> 00:55:26,420
+So here we'll see an another piece of code, so here what happened?
+
+682
+00:55:26,420 --> 00:55:28,499
+So what are we writing here?
+
+683
+00:55:28,499 --> 00:55:34,660
+Here we have taken an input and then we are iterating over that input and if I is equal
+
+684
+00:55:34,660 --> 00:55:40,740
+to 3 then we are writing pass, okay, so we haven't decided what to write when the condition
+
+685
+00:55:40,740 --> 00:55:42,740
+is true, so what did we do?
+
+686
+00:55:42,740 --> 00:55:45,660
+We have written pass, then what will get executed?
+
+687
+00:55:45,660 --> 00:55:51,300
+See, so each iteration will go there, we'll have I, the range of N that is range of 5
+
+688
+00:55:51,740 --> 00:55:58,540
+which is 0, 1, 2, 3, 4, so for 0 the condition is false then it will print 0, and then 1,
+
+689
+00:55:58,540 --> 00:56:04,300
+then 2, and when it's 3, okay, when 3 is equal to equal to 3 then the condition is true,
+
+690
+00:56:04,300 --> 00:56:08,860
+so the pass statement will get executed, so pass does nothing, right, so directly what
+
+691
+00:56:08,860 --> 00:56:09,860
+will happen?
+
+692
+00:56:09,860 --> 00:56:15,499
+We'll have print 3 and the 3 will get printed, similarly 4, okay, so you understood the output,
+
+693
+00:56:15,499 --> 00:56:18,660
+right, in this way we use the pass statement.
+
+694
+00:56:19,019 --> 00:56:24,139
+Now let's quickly summarize what we have seen so far, so in today's session we have learnt
+
+695
+00:56:24,139 --> 00:56:29,699
+about the loop control statements, in that we have seen about the break and continue,
+
+696
+00:56:29,699 --> 00:56:33,600
+okay, so why do we use break and why do we use continue?
+
+697
+00:56:33,600 --> 00:56:39,300
+So when we want to exit a loop early then we'll use the break statement, the remaining
+
+698
+00:56:39,300 --> 00:56:44,619
+block of code which is present below the break statement will not get executed, that is in
+
+699
+00:56:44,619 --> 00:56:49,259
+the repeating block, if there is any block of code below the break statement that will
+
+700
+00:56:49,259 --> 00:56:54,619
+not get exited and the loop the entire, it will exit the entire loop.
+
+701
+00:56:54,619 --> 00:57:00,499
+Now another thing is continue, so when the continue, when the python executes the continue
+
+702
+00:57:00,499 --> 00:57:06,780
+statement then what will happen is the remaining block of code which is present below the continue
+
+703
+00:57:06,780 --> 00:57:11,340
+statement that is in the repeating block, if there is some block of code present below
+
+704
+00:57:11,340 --> 00:57:16,780
+the continue that will not get executed and then we'll again go back to the loop, right,
+
+705
+00:57:16,780 --> 00:57:21,660
+again to the loop statement and then the loop statement will get executed, that is in case
+
+706
+00:57:21,660 --> 00:57:26,939
+of while loop the condition will get checked and then the block of code will get executed,
+
+707
+00:57:26,939 --> 00:57:30,420
+otherwise in case of for what will happen?
+
+708
+00:57:30,420 --> 00:57:35,340
+Then the next item of the sequence, it will go to the next item of the sequence and then
+
+709
+00:57:35,340 --> 00:57:40,019
+the block of code will get executed, okay, so we understood about the break and continue
+
+710
+00:57:40,100 --> 00:57:45,100
+which are the loop control statements and we have to use this break and continue only
+
+711
+00:57:45,100 --> 00:57:52,100
+in loops, okay, so and then we have seen about the pass, right, and why do we use pass in
+
+712
+00:57:52,100 --> 00:57:58,920
+case, it does nothing, we just use that as a placeholder, right, as a syntactical placeholder,
+
+713
+00:57:58,920 --> 00:58:03,540
+so we understood this and we have seen in conditions also we can write pass, right,
+
+714
+00:58:03,540 --> 00:58:09,499
+in elif we have written pass, right, similarly in loops also we can write pass, okay, so
+
+715
+00:58:09,499 --> 00:58:14,939
+clear, right, in regarding the next session, so the next session is regarding how to round
+
+716
+00:58:14,939 --> 00:58:20,100
+the numbers, how do we have to name the variables, how to compare strings like this, there are
+
+717
+00:58:20,100 --> 00:58:25,619
+lot of interesting things, so we'll learn about that in the next session.
+
+718
+00:58:25,619 --> 00:58:32,059
+So regarding practice to apply all of these concepts there are lot of coding questions
+
+719
+00:58:32,059 --> 00:58:37,860
+available, in programming practice is very very important, so whenever you get time you
+
+720
+00:58:37,939 --> 00:58:41,540
+can practice all of these questions.
+
+721
+00:58:41,540 --> 00:58:46,819
+And coming to the daily challenge, right, today's daily challenge, so this is a block
+
+722
+00:58:46,819 --> 00:58:52,220
+of code, what this block of code it has to do is it has to check if the given number
+
+723
+00:58:52,220 --> 00:58:57,579
+is a prime number, okay, so you have to check whether the given number is a prime number
+
+724
+00:58:57,579 --> 00:59:03,579
+or not, but this block of code there is a small error in this, because of that we are
+
+725
+00:59:03,579 --> 00:59:10,259
+not getting the expected output, okay, so what you have to do is you have to check what
+
+726
+00:59:10,259 --> 00:59:15,860
+is the mistake in this question, okay, so we'll discuss about this in the next session,
+
+727
+00:59:15,860 --> 00:59:19,019
+till then thank you and all the best.
+
+728
+00:59:33,579 --> 00:59:34,579
+729
+
+730
+00:59:34,579 --> 00:59:35,579
+731
+
+732
+00:59:35,579 --> 00:59:36,579
+733
+
+734
+00:59:36,579 --> 00:59:37,579
+735
+
+736
+00:59:37,579 --> 00:59:38,579
+737
+
+738
+00:59:38,579 --> 00:59:39,579
+739
+
+740
+00:59:39,579 --> 00:59:40,579
+741
+
+742
+00:59:40,579 --> 00:59:41,579
+743
+
+744
+00:59:41,579 --> 00:59:42,579
+745
+
+746
+00:59:42,579 --> 00:59:43,579
+747
+
+748
+00:59:43,579 --> 00:59:44,579
+749
+
+750
+00:59:44,579 --> 00:59:45,579
+751
+
+752
+00:59:45,579 --> 00:59:46,579
+753
+
+754
+00:59:46,579 --> 00:59:47,579
+755
+
+756
+00:59:47,579 --> 00:59:48,579
+757
+
+758
+00:59:48,579 --> 00:59:49,579
+759
+
+760
+00:59:49,579 --> 00:59:50,579
+761
+
+762
+00:59:50,579 --> 00:59:51,579
+763
+
+764
+00:59:51,579 --> 00:59:52,579
+765
+
+766
+00:59:52,579 --> 00:59:53,579
+767
+
+768
+00:59:53,579 --> 00:59:54,579
+769
+
+770
+00:59:54,579 --> 00:59:55,579
+771
+
+772
+00:59:55,579 --> 00:59:56,579
+773
+
+774
+00:59:56,579 --> 00:59:57,579
+775
+
+776
+00:59:57,579 --> 00:59:58,579
+777
+
+778
+00:59:58,579 --> 00:59:59,579
+779
+
+780
+00:59:59,579 --> 01:00:00,579
+781
+
+782
+01:00:00,579 --> 01:00:01,579
+783
+
+784
+01:00:01,579 --> 01:00:02,579
+785
+
+

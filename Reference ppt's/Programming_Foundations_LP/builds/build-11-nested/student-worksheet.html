@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nested Conditional Statements — student worksheet</title>
+<style>
+:root{
+  --blue:#0B5FA5; --blue-d:#084b83; --cyan:#00A3D9; --red:#C7444E;
+  --ink:#1B2733; --text:#3A4754; --muted:#6B7A88;
+  --line:#DDE5EB; --card:#F4F7F9; --bg:#EEF2F5; --white:#fff;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+  font:15px/1.55 var(--sans);-webkit-text-size-adjust:100%}
+.wrap{max-width:960px;margin:0 auto;padding:26px 20px 130px}
+
+/* ---------------- header ---------------- */
+.top{background:var(--white);border:1px solid var(--line);border-radius:14px;
+  padding:20px 22px;margin:0 0 18px}
+.eyebrow{margin:0 0 3px;font:600 12px var(--sans);letter-spacing:.09em;
+  text-transform:uppercase;color:var(--muted)}
+h1{margin:0 0 4px;font-size:25px;line-height:1.2;letter-spacing:-.02em;color:var(--ink)}
+.sub{margin:0 0 16px;color:var(--muted);font-size:14px}
+.who{display:flex;gap:14px;flex-wrap:wrap}
+.who label{flex:1 1 220px;min-width:0;font:600 12px var(--sans);
+  letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.who input{display:block;width:100%;margin-top:5px;padding:9px 11px;
+  border:1px solid var(--line);border-radius:9px;background:var(--white);
+  font:15px var(--sans);color:var(--ink)}
+.who input:focus{outline:2px solid var(--cyan);outline-offset:1px;border-color:var(--cyan)}
+
+.howto{margin:16px 0 0;padding:11px 14px;border-left:3px solid var(--cyan);
+  background:#F1F8FC;border-radius:0 9px 9px 0;font-size:14px;color:var(--text)}
+.howto b{color:var(--blue)}
+
+/* ---------------- task cards ---------------- */
+.task{background:var(--white);border:1px solid var(--line);border-radius:14px;
+  padding:20px 22px 22px;margin:0 0 18px}
+.task-hd{display:flex;align-items:center;gap:11px;margin:0 0 10px}
+.badge{flex:none;width:28px;height:28px;border-radius:50%;background:var(--blue);
+  color:#fff;font:700 14px/28px var(--sans);text-align:center}
+.task-hd h2{margin:0;font-size:18px;line-height:1.25;letter-spacing:-.01em;color:var(--ink)}
+.cue{margin:0 0 14px;font-size:14px;color:var(--text)}
+.cue b{color:var(--ink)}
+
+pre{margin:0 0 14px;padding:14px 16px;background:var(--card);border-radius:10px;
+  font:13px/1.75 var(--mono);color:var(--ink);overflow-x:auto;white-space:pre}
+
+table{width:100%;border-collapse:collapse;margin:0 0 6px;font-size:14px}
+th,td{border:1px solid var(--line);padding:0;text-align:left;vertical-align:middle}
+th{background:var(--card);font-weight:700;font-size:12.5px;color:var(--ink);
+  padding:9px 11px;letter-spacing:.01em}
+td.fixed{padding:9px 11px;font:13px var(--mono);color:var(--ink);
+  background:#FBFCFD;white-space:pre}
+td.n{padding:9px 11px;font:600 13px var(--mono);color:var(--muted);
+  background:#FBFCFD;text-align:center;width:52px}
+td input{display:block;width:100%;border:0;background:transparent;padding:10px 11px;
+  font:14px var(--mono);color:var(--blue-d)}
+td input:focus{outline:2px solid var(--cyan);outline-offset:-2px;background:#F1F8FC}
+td input::placeholder{color:#C3CDD6}
+.tablewrap{overflow-x:auto;margin:0 0 6px}
+.hint{margin:0;font-size:13px;color:var(--muted)}
+.sec{margin:18px 0 8px;font:700 13px var(--sans);letter-spacing:.05em;
+  text-transform:uppercase;color:var(--blue)}
+
+/* ---------------- step-through tracer ----------------
+   The student executes the program by clicking the line they think runs next.
+   No feedback of any kind: the click IS the answer, and a tool that says
+   "wrong" turns tracing into trial and error. */
+.given{margin:0 0 12px;font-size:14px;color:var(--text)}
+.given code{background:var(--card);border-radius:5px;padding:2px 7px;
+  font:13px var(--mono);color:var(--ink);margin-right:5px}
+.tracer{display:flex;gap:18px;align-items:flex-start}
+.tracer>.prog{flex:1 1 55%;min-width:0}
+.tracer>.side{flex:1 1 45%;min-width:0}
+
+.pline{display:flex;gap:10px;align-items:baseline;width:100%;text-align:left;
+  border:0;border-radius:7px;background:transparent;cursor:pointer;
+  padding:4px 9px;margin:0 0 1px;font:13.5px/1.7 var(--mono);color:#9AA7B4}
+.pline:hover{background:var(--card);color:var(--ink)}
+.pline .ln{flex:none;width:22px;text-align:right;font-weight:600;color:#B6C1CB}
+.pline .cd{white-space:pre;min-width:0}
+.pline.ran{color:var(--ink);background:#EAF4FB}
+.pline.ran .ln{color:var(--blue)}
+.pline.cursor{outline:2px solid var(--cyan);outline-offset:-2px}
+.pline:focus{outline:2px solid var(--cyan);outline-offset:-2px}
+
+.vals{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 12px;
+  background:#FBFCFD}
+.vals h3{margin:0 0 7px;font:700 11px var(--sans);letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted)}
+.vals .row{display:flex;gap:8px;font:13px/1.9 var(--mono)}
+.vals .nm{color:var(--muted);min-width:0;flex:1 1 auto}
+.vals .vl{color:var(--blue-d);font-weight:600;flex:none}
+.vals .vl.none{color:#C3CDD6;font-weight:400}
+
+.steps{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:0 0 10px}
+.steps .empty{padding:14px 13px;font-size:13.5px;color:var(--muted)}
+.step{display:flex;gap:9px;align-items:center;padding:6px 11px;
+  border-top:1px solid var(--line);font:13px var(--mono)}
+.step:first-child{border-top:0}
+.step .sn{flex:none;width:20px;text-align:right;color:var(--muted);font-weight:600}
+.step .sc{flex:1 1 auto;min-width:0;color:var(--ink);white-space:pre;overflow:hidden;
+  text-overflow:ellipsis}
+.step .sv{flex:none;display:flex;align-items:center;gap:5px;color:var(--muted);font-size:12px}
+.step input{width:78px;border:1px solid var(--line);border-radius:6px;padding:4px 7px;
+  font:13px var(--mono);color:var(--blue-d);background:#fff}
+.step input:focus{outline:2px solid var(--cyan);outline-offset:-1px}
+.step input.blank{border-color:#E8B45E;background:#FFFBF2}
+.tctl{display:flex;gap:9px;margin:0 0 8px}
+.tctl button{padding:8px 14px;font-size:13.5px}
+
+@media (max-width:860px){ .tracer{flex-direction:column} .tracer>.prog,.tracer>.side{flex:1 1 auto;width:100%} }
+
+/* ---------------- bottom bar ---------------- */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;
+  background:rgba(255,255,255,.96);border-top:1px solid var(--line);
+  padding:11px 20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.bar .inner{max-width:960px;margin:0 auto;width:100%;display:flex;gap:12px;
+  align-items:center;flex-wrap:wrap}
+.count{font-size:13.5px;color:var(--muted);margin-right:auto}
+.count b{color:var(--ink)}
+button{border:0;border-radius:9px;padding:10px 17px;cursor:pointer;
+  font:600 14px var(--sans);margin-right:0}
+.primary{background:var(--blue);color:#fff}
+.primary:hover{background:var(--blue-d)}
+.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.ghost:hover{border-color:var(--muted)}
+.said{font-size:13.5px;color:#1E7A45;font-weight:600}
+
+@media (max-width:640px){
+  .wrap{padding:18px 14px 150px}
+  .task{padding:16px 14px 18px}
+  h1{font-size:21px}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<div class="top">
+  <p class="eyebrow">CCBP 4.0 &middot; Session 11</p>
+  <h1>Nested Conditional Statements</h1>
+  <p class="sub">Student worksheet &mdash; type your answers straight into the boxes.</p>
+  <div class="who">
+    <label>Your name
+      <input type="text" id="who-name" autocomplete="off" placeholder="Full name">
+    </label>
+    <label>Roll number
+      <input type="text" id="who-roll" autocomplete="off" placeholder="Roll no.">
+    </label>
+  </div>
+  <p class="howto"><b>Fill each table in before you type the program into the playground.</b>
+  The point is to work out what the program does in your head first &mdash; running it afterwards
+  is how you check whether you were right. Your answers are saved in this browser as you type.</p>
+</div>
+
+<!-- ================= TASK 1 ================= -->
+<section class="task">
+  <div class="task-hd"><span class="badge">1</span>
+    <h2>Trace all four combinations &mdash; then run them</h2></div>
+  <p class="cue">The program is on the screen. <b>Work out all four rows here first.</b>
+  You type it into the playground afterwards, to check whether you were right.</p>
+
+  <div class="tablewrap">
+  <table>
+    <tr><th style="width:19%">condition_a</th><th style="width:19%">condition_b</th><th>What it prints</th></tr>
+    <tr><td class="fixed">True</td><td class="fixed">True</td>
+        <td><input type="text" data-k="t1r1" autocomplete="off" placeholder="…"></td></tr>
+    <tr><td class="fixed">True</td><td class="fixed">False</td>
+        <td><input type="text" data-k="t1r2" autocomplete="off" placeholder="…"></td></tr>
+    <tr><td class="fixed">False</td><td class="fixed">True</td>
+        <td><input type="text" data-k="t1r3" autocomplete="off" placeholder="…"></td></tr>
+    <tr><td class="fixed">False</td><td class="fixed">False</td>
+        <td><input type="text" data-k="t1r4" autocomplete="off" placeholder="…"></td></tr>
+  </table>
+  </div>
+</section>
+
+<!-- ================= TASK 2 ================= -->
+<section class="task">
+  <div class="task-hd"><span class="badge">2</span>
+    <h2>Program tracing &mdash; does it do what it claims?</h2></div>
+  <p class="cue">This program is meant to print the <b>greatest of three numbers</b>. Find out
+  whether it actually does &mdash; by running it yourself, one line at a time.</p>
+  <p class="cue"><b>Click the line you think Python executes next.</b> Type a value only when a
+  line creates one; everything else carries forward on its own. Lines you never click stay
+  faded &mdash; that is part of your answer.</p>
+
+  <p class="given">Given: <code>a = 1</code> <code>b = 2</code> <code>c = 9</code></p>
+
+  <div class="tracer">
+    <div class="prog" id="prog"></div>
+    <div class="side">
+      <div class="vals" id="vals"></div>
+      <div class="steps" id="steps"></div>
+      <div class="tctl">
+        <button type="button" class="ghost" id="t-back">Step back</button>
+        <button type="button" class="ghost" id="t-reset">Start over</button>
+      </div>
+      <p class="hint" id="t-hint">Click the first line to begin. Arrow keys move, Enter runs.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TASK 3 ================= -->
+<section class="task">
+  <div class="task-hd"><span class="badge">3</span>
+    <h2>Two programs, one word of difference</h2></div>
+  <p class="cue">Work down each table, one row per line. In the middle column write whether Python
+  <b>tested</b> that condition &mdash; <b>yes</b> or <b>no</b>. Not true or false.</p>
+
+  <p class="sec">Program P</p>
+  <div class="tablewrap">
+  <table>
+    <tr><th style="width:38%">Program P</th><th style="width:32%">Condition tested? yes / no</th><th>Printed</th></tr>
+    <tr><td class="fixed">1  a = 5</td><td><input type="text" data-k="p1t" autocomplete="off"></td><td><input type="text" data-k="p1p" autocomplete="off"></td></tr>
+    <tr><td class="fixed">2  if a &gt; 3:</td><td><input type="text" data-k="p2t" autocomplete="off"></td><td><input type="text" data-k="p2p" autocomplete="off"></td></tr>
+    <tr><td class="fixed">3      print("X")</td><td><input type="text" data-k="p3t" autocomplete="off"></td><td><input type="text" data-k="p3p" autocomplete="off"></td></tr>
+    <tr><td class="fixed">4  if a &gt; 1:</td><td><input type="text" data-k="p4t" autocomplete="off"></td><td><input type="text" data-k="p4p" autocomplete="off"></td></tr>
+    <tr><td class="fixed">5      print("Y")</td><td><input type="text" data-k="p5t" autocomplete="off"></td><td><input type="text" data-k="p5p" autocomplete="off"></td></tr>
+  </table>
+  </div>
+
+  <p class="sec">Program Q &mdash; line 4 differs</p>
+  <div class="tablewrap">
+  <table>
+    <tr><th style="width:38%">Program Q</th><th style="width:32%">Condition tested? yes / no</th><th>Printed</th></tr>
+    <tr><td class="fixed">1  a = 5</td><td><input type="text" data-k="q1t" autocomplete="off"></td><td><input type="text" data-k="q1p" autocomplete="off"></td></tr>
+    <tr><td class="fixed">2  if a &gt; 3:</td><td><input type="text" data-k="q2t" autocomplete="off"></td><td><input type="text" data-k="q2p" autocomplete="off"></td></tr>
+    <tr><td class="fixed">3      print("X")</td><td><input type="text" data-k="q3t" autocomplete="off"></td><td><input type="text" data-k="q3p" autocomplete="off"></td></tr>
+    <tr><td class="fixed">4  elif a &gt; 1:</td><td><input type="text" data-k="q4t" autocomplete="off"></td><td><input type="text" data-k="q4p" autocomplete="off"></td></tr>
+    <tr><td class="fixed">5      print("Y")</td><td><input type="text" data-k="q5t" autocomplete="off"></td><td><input type="text" data-k="q5p" autocomplete="off"></td></tr>
+  </table>
+  </div>
+</section>
+
+</div>
+
+<div class="bar">
+  <div class="inner">
+    <span class="count" id="count">0 boxes filled</span>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = 'nxtwave-s11-worksheet-v2';
+
+  /* ============================ the program ============================
+     Structure only, never truth. This says line 4 assigns is_a_greatest;
+     it does not say what the value is. So the answer is not in this file. */
+  var CFG = {
+    track: ['a','b','c','is_a_greatest','is_b_greatest'],
+    lines: [
+      { n:1,  code:'a = int(input())',                    sets:'a' },
+      { n:2,  code:'b = int(input())',                    sets:'b' },
+      { n:3,  code:'c = int(input())',                    sets:'c' },
+      { n:4,  code:'is_a_greatest = (a > b) and (a > c)', sets:'is_a_greatest' },
+      { n:5,  code:'if is_a_greatest:',                   branch:true },
+      { n:6,  code:'    print(a)',                        prints:true },
+      { n:7,  code:'else:',                               branch:true },
+      { n:8,  code:'    is_b_greatest = (b > c)',         sets:'is_b_greatest' },
+      { n:9,  code:'    if is_b_greatest:',               branch:true },
+      { n:10, code:'        print(b)',                    prints:true },
+      { n:11, code:'    else:',                           branch:true },
+      { n:12, code:'        print(c)',                    prints:true }
+    ]
+  };
+  function lineOf(n){ for(var i=0;i<CFG.lines.length;i++) if(CFG.lines[i].n===n) return CFG.lines[i]; }
+
+  var trace = { path: [], backups: 0 };   /* path: [{n, v}] */
+  var cursor = 0;
+
+  var fields  = [].slice.call(document.querySelectorAll('input[data-k], #who-name, #who-roll'));
+  var progEl  = document.getElementById('prog'),
+      valsEl  = document.getElementById('vals'),
+      stepsEl = document.getElementById('steps'),
+      hintEl  = document.getElementById('t-hint'),
+      countEl = document.getElementById('count');
+  function key(el){ return el.dataset.k || el.id; }
+
+  /* ============================ storage ============================ */
+  function save(){
+    var f = {};
+    fields.forEach(function(el){ if(el.value) f[key(el)] = el.value; });
+    try { localStorage.setItem(KEY, JSON.stringify({ f:f, t:trace })); } catch(e){}
+  }
+  function load(){
+    var raw; try { raw = localStorage.getItem(KEY); } catch(e){ return; }
+    if(!raw) return;
+    var d; try { d = JSON.parse(raw); } catch(e){ return; }
+    if(d.f) fields.forEach(function(el){
+      if(typeof d.f[key(el)] === 'string') el.value = d.f[key(el)];
+    });
+    if(d.t && Object.prototype.toString.call(d.t.path) === '[object Array]'){
+      trace = { path: d.t.path, backups: d.t.backups || 0 };
+    }
+  }
+
+  /* ============================ tracer ============================ */
+  function valuesNow(){
+    var v = {};
+    CFG.track.forEach(function(k){ v[k] = null; });
+    trace.path.forEach(function(st){
+      var L = lineOf(st.n);
+      if(L && L.sets) v[L.sets] = st.v || null;
+    });
+    return v;
+  }
+  function printed(){
+    var out = [];
+    trace.path.forEach(function(st){
+      var L = lineOf(st.n);
+      if(L && L.prints && st.v) out.push(st.v);
+    });
+    return out;
+  }
+
+  function drawProgram(){
+    var ran = {}; trace.path.forEach(function(st){ ran[st.n] = 1; });
+    progEl.innerHTML = '';
+    CFG.lines.forEach(function(L, i){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pline' + (ran[L.n] ? ' ran' : '') + (i === cursor ? ' cursor' : '');
+      b.innerHTML = '<span class="ln"></span><span class="cd"></span>';
+      b.querySelector('.ln').textContent = L.n;
+      b.querySelector('.cd').textContent = L.code;
+      b.addEventListener('click', function(){ cursor = i; run(L.n); });
+      progEl.appendChild(b);
+    });
+  }
+  function drawValues(){
+    var v = valuesNow();
+    valsEl.innerHTML = '';
+    var h = document.createElement('h3');
+    h.textContent = 'Values now';
+    valsEl.appendChild(h);
+    CFG.track.forEach(function(k){
+      var row = document.createElement('div');
+      row.className = 'row';
+      var nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = k;
+      var vl = document.createElement('span');
+      vl.className = 'vl' + (v[k] ? '' : ' none');
+      vl.textContent = v[k] || '—';
+      row.appendChild(nm); row.appendChild(vl);
+      valsEl.appendChild(row);
+    });
+  }
+  function drawSteps(){
+    stepsEl.innerHTML = '';
+    if(!trace.path.length){
+      var p = document.createElement('p');
+      p.className = 'empty';
+      p.textContent = 'No lines run yet.';
+      stepsEl.appendChild(p);
+      return;
+    }
+    trace.path.forEach(function(st){
+      var L = lineOf(st.n), row = document.createElement('div');
+      row.className = 'step';
+      var sn = document.createElement('span'); sn.className = 'sn'; sn.textContent = st.n;
+      var sc = document.createElement('span'); sc.className = 'sc'; sc.textContent = L.code.trim();
+      row.appendChild(sn); row.appendChild(sc);
+      if(L.sets || L.prints){
+        var wrap = document.createElement('span');
+        wrap.className = 'sv';
+        wrap.appendChild(document.createTextNode(L.sets ? L.sets + ' =' : 'prints'));
+        var inp = document.createElement('input');
+        inp.type = 'text'; inp.value = st.v || ''; inp.autocomplete = 'off';
+        inp.setAttribute('aria-label', (L.sets ? L.sets : 'printed') + ' after line ' + st.n);
+        if(!st.v) inp.className = 'blank';
+        inp.addEventListener('input', function(){
+          st.v = inp.value;
+          inp.className = inp.value ? '' : 'blank';
+          drawValues(); tally(); save();   /* not drawSteps -- it would steal focus */
+        });
+        wrap.appendChild(inp);
+        row.appendChild(wrap);
+      }
+      stepsEl.appendChild(row);
+    });
+  }
+  function drawHint(){
+    var n = trace.path.length;
+    hintEl.textContent = n
+      ? n + ' line' + (n === 1 ? '' : 's') + ' run so far. Click the next one.'
+      : 'Click the first line to begin. Arrow keys move, Enter runs.';
+  }
+  function drawAll(){ drawProgram(); drawValues(); drawSteps(); drawHint(); tally(); }
+
+  function run(n){
+    trace.path.push({ n:n, v:'' });
+    drawAll(); save();
+    var last = stepsEl.querySelector('.step:last-child input');
+    if(last) last.focus();
+  }
+
+  document.getElementById('t-back').addEventListener('click', function(){
+    if(!trace.path.length) return;
+    trace.path.pop(); trace.backups++;
+    drawAll(); save();
+  });
+  document.getElementById('t-reset').addEventListener('click', function(){
+    if(!trace.path.length) return;
+    if(!confirm('Clear the whole trace and start again?')) return;
+    trace = { path: [], backups: 0 };
+    drawAll(); save();
+  });
+
+  progEl.addEventListener('keydown', function(e){
+    if(e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    cursor = Math.max(0, Math.min(CFG.lines.length - 1, cursor + (e.key === 'ArrowDown' ? 1 : -1)));
+    drawProgram();
+    var el = progEl.children[cursor];
+    if(el) el.focus();
+  });
+
+  /* ============================ progress ============================ */
+  function filled(sel){
+    var all = document.querySelectorAll(sel), f = 0;
+    all.forEach(function(el){ if(el.value.trim()) f++; });
+    return f + ' of ' + all.length;
+  }
+  function tally(){
+    countEl.innerHTML =
+      'Task 1 <b>' + filled('input[data-k^="t1"]') + '</b>' +
+      ' &nbsp;&middot;&nbsp; Trace <b>' + trace.path.length + ' lines</b>' +
+      ' &nbsp;&middot;&nbsp; Task 3 <b>' +
+      filled('input[data-k^="p"], input[data-k^="q"]') + '</b>';
+  }
+
+  fields.forEach(function(el){
+    el.addEventListener('input', function(){ save(); tally(); });
+  });
+
+  load(); drawAll();
+})();
+</script>
+
+</body>
+</html>

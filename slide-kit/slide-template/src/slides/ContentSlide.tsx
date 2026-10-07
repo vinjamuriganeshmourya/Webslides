@@ -21,7 +21,7 @@ export function ContentSlide({
 }: ContentSlideProps) {
 
   /*
-    ZONED (content rule 22). The header zone carries the kicker and title; the
+    ZONED (content rule 32). The header zone carries the kicker and title; the
     lead is the first block of the body box, which starts at y=221 on every
     slide. That is also the instructor-video rectangle's floor, so the side
     visual no longer needs the 52px lead-less guard it used to carry here.

@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{SESSION_TITLE}} lesson plan</title>
+<!-- =====================================================================
+     LESSON PLAN SHELL — do not hand-edit the finished plan.
+     Fill build.py and regenerate. This file is the CSS + JS contract that
+     build.py writes into; the only placeholders are the four below.
+     ===================================================================== -->
+<style>
+:root{
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+  --dur-fast:140ms; --dur-base:320ms; --dur-morph:900ms;
+  --page:#F3F4F7; --surface:#FFFFFF; --ink:#181B21; --muted:#63697A;
+  --rule:#E2E5EB; --rule2:#EEF0F4; --accent:#4F46E5;
+  --hook:#0B7285; --hook-soft:#E0F2F5;
+  --activity:#B4531A; --activity-soft:#FDF2E6; --quiz:#7C3AED; --exit:#0F766E;
+  --buffer:#9AA1B0; --buffer-soft:#F4F5F7;
+  --warn:#B42318;
+  --code-bg:#101216; --code-ink:#EDEFF3;
+  /* the deck's own palette, for anything the room sees */
+  --dk-blue:#006DAF; --dk-cyan:#3FB5E5; --dk-line:#6A6A6A; --dk-text:#434343;
+  --dk-card:#F2F2F0; --dk-red:#C7454E; --dk-white:#FFFFFF;
+  --shadow:0 1px 2px rgba(20,20,40,.04),0 8px 24px rgba(20,20,40,.06);
+  --sidebar:266px;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  /* the worksheet is printed in black and white, so it is typeset that way:
+     a grotesque for anything scanned, a serif for anything read, a real
+     monospace for code, and a five-step grey scale instead of colour */
+  --sh-head:ui-sans-serif,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --sh-body:Georgia,"Iowan Old Style","Times New Roman",serif;
+  --sh-mono:ui-monospace,"SF Mono",Menlo,Consolas,"DejaVu Sans Mono","Liberation Mono",monospace;
+  --pr-ink:#000000; --pr-mid:#333333; --pr-soft:#6B6B6B; --pr-rule:#B4B4B4; --pr-fill:#ECECEC;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--page);color:var(--ink);
+ font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+ font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------------- sidebar ---------------- */
+.sidepanel{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar);background:var(--surface);
+ border-right:1px solid var(--rule);padding:24px 18px;overflow-y:auto;z-index:20}
+.sp-title{font-size:14px;font-weight:700;letter-spacing:-.01em;margin:0 0 3px}
+.sp-sub{font-size:12px;color:var(--muted);margin:0 0 18px;line-height:1.5}
+.sp-nav{display:flex;flex-direction:column;margin-bottom:4px}
+
+/* the only clock in the running view: a checkpoint band */
+.sp-cp{display:flex;align-items:center;margin:18px 0 7px;padding:0}
+.sp-cp:first-child{margin-top:2px}
+.sp-cp span{flex:0 0 auto;background:var(--ink);color:var(--surface);border-radius:5px;
+ padding:4px 8px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+ white-space:nowrap;font-variant-numeric:tabular-nums}
+.sp-cp::after{content:'';flex:1;height:1px;margin-left:8px;background:var(--rule)}
+
+.sp-item{display:block;width:100%;text-align:left;color:inherit;background:none;
+ border:0;border-left:3px solid var(--rule);border-radius:0 7px 7px 0;
+ padding:8px 10px 8px 11px;margin:0 0 2px;font:inherit;cursor:pointer;
+ transition:background-color var(--dur-fast) ease,border-color var(--dur-fast) ease}
+.sp-item .sp-label{display:block;font-size:13px;font-weight:600;line-height:1.35}
+.sp-item:hover{background:var(--rule2)}
+.sp-item.current{background:var(--rule2)}
+.sp-item.k-hook{border-left-color:var(--hook)}
+.sp-item.k-activity{border-left-color:var(--activity)}
+.sp-item.k-hands{border-left-color:var(--exit)}
+.sp-item.k-quiz{border-left-color:var(--quiz)}
+.sp-item.k-exit{border-left-color:var(--dk-red)}
+.sp-item.k-concept{border-left-color:var(--rule)}
+.sp-item.k-buffer{border-left-color:var(--buffer)}
+.sp-item.current.k-concept{border-left-color:var(--accent)}
+
+.sp-btn{margin-top:9px;width:100%;border-radius:9px;padding:10px;font:inherit;font-size:12.5px;
+ font-weight:650;cursor:pointer;transition:transform var(--dur-fast) var(--ease-out)}
+.sp-btn:active{transform:scale(.97)}
+.sp-present{margin-top:14px;background:var(--ink);color:var(--surface);border:0}
+.env-warn{margin-top:12px;padding:10px 12px;border:1px solid #E0A96D;background:#FDF2E6;
+ border-radius:9px;font-size:11.5px;line-height:1.5;color:var(--ink)}
+.env-warn b{display:block;margin-bottom:3px}
+.env-warn button{margin-top:8px;width:100%;padding:8px;border:1px solid var(--ink);
+ border-radius:7px;background:var(--ink);color:var(--surface);font:inherit;font-size:12px;
+ font-weight:650;cursor:pointer;transition:transform var(--dur-fast) var(--ease-out)}
+.env-warn button:active{transform:scale(.97)}
+@media print{.env-warn{display:none}}
+.sp-legend{margin:12px 0 0;display:flex;flex-wrap:wrap;font-size:10.5px;color:var(--muted)}
+.sp-legend span{margin:0 11px 3px 0;white-space:nowrap}
+.sp-legend i{display:inline-block;width:3px;height:10px;border-radius:2px;
+ margin-right:5px;vertical-align:-1px}
+.sp-foot{margin-top:12px;padding-top:14px;border-top:1px solid var(--rule2);
+ font-size:11.5px;color:var(--muted);line-height:1.5}
+
+/* ---------------- layout ---------------- */
+.wrap{margin-left:var(--sidebar);max-width:1000px;padding:44px 36px 110px}
+.hero h1{font-size:clamp(24px,3.4vw,33px);letter-spacing:-.02em;font-weight:750;margin:0 0 8px}
+.hero .meta{color:var(--muted);font-size:14px;margin:0}
+.hero .idea{margin:14px 0 0;padding:14px 17px;background:var(--surface);border:1px solid var(--rule);
+ border-left:4px solid var(--accent);border-radius:0 12px 12px 0;font-size:15px}
+.hero .idea b{display:block;font-size:12px;font-weight:700;letter-spacing:.05em;
+ text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+
+.block{background:var(--surface);border:1px solid var(--rule);border-radius:16px;
+ box-shadow:var(--shadow);margin:20px 0 0;padding:24px 26px 26px}
+.block-head{display:flex;align-items:baseline;margin-bottom:16px}
+.block-head>*{margin-right:10px}
+.block-head>*:last-child{margin-right:0}
+.block-icon{font-size:19px}
+.block h2{font-size:18.5px;font-weight:700;margin:0;letter-spacing:-.01em;scroll-margin-top:24px}
+.block-mins{margin-left:auto;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;
+ white-space:nowrap}
+.block-hook{border-left:4px solid var(--hook)}
+.block-activity{border-left:4px solid var(--activity)}
+.block-hands{border-left:4px solid var(--exit)}
+.block-exit{border-left:4px solid var(--exit)}
+.block-quiz{border-left:4px solid var(--quiz)}
+.block-buffer{border-style:dashed}
+.block p.f{margin:0 0 15px}
+.block p.f>b:first-child{display:block;font-size:13.5px;font-weight:680;margin-bottom:4px}
+.block p.say{margin:0 0 9px;padding:11px 15px;background:var(--rule2);
+ border-left:3px solid var(--hook);border-radius:0 10px 10px 0}
+.note{margin:16px 0 0;padding:11px 15px;background:var(--buffer-soft);
+ border:1px solid var(--rule2);border-radius:10px;font-size:13.5px;color:var(--muted)}
+.note b{color:var(--ink);font-weight:660}
+
+/* ---------------- deck slides ---------------- */
+.slide{margin:0 0 22px;padding-top:18px;border-top:1px solid var(--rule)}
+.slide:first-child{padding-top:0;border-top:0}
+.slide-head{display:flex;align-items:baseline;margin-bottom:8px;flex-wrap:wrap}
+.slide-head>*{margin-right:9px}
+.slide-head>*:last-child{margin-right:0}
+.slide-no{font-size:11.5px;font-weight:700;color:var(--hook);background:var(--hook-soft);
+ border-radius:5px;padding:2px 7px;white-space:nowrap}
+.slide-src{font:11px var(--mono);color:var(--muted);white-space:nowrap}
+.slide-title{font-size:14.5px;font-weight:680}
+.slide-time{font-size:12px;color:var(--muted);margin-left:auto;white-space:nowrap}
+.slide-img{min-width:0;max-width:780px}
+.slide img{display:block;width:100%;height:auto;border:1px solid var(--rule);
+ border-radius:10px;background:#fff}
+.doline{margin:11px 0 0;font-size:13px;color:var(--muted);padding-top:10px;
+ border-top:1px solid var(--rule2)}
+.doline b{color:var(--ink);font-weight:660}
+.doline+.doline{border-top:0;padding-top:2px}
+.flag{margin:11px 0 0;padding:10px 14px;border-radius:10px;background:var(--activity-soft);
+ border:1px solid #F3D9BE;font-size:13px;color:var(--ink)}
+.flag b{font-weight:680}
+pre.code{margin:11px 0 0;padding:12px 15px;border-radius:10px;background:var(--code-bg);
+ color:var(--code-ink);font:13px/1.6 var(--mono);white-space:pre-wrap;overflow-x:auto}
+pre.code b{color:#8FD3E8;font-weight:400}
+.lbl{margin:12px 0 3px;font-size:12px;font-weight:700;letter-spacing:.04em;
+ text-transform:uppercase;color:var(--muted)}
+
+/* ---------------- student-facing stage ---------------- */
+/* Every student-facing panel wears the deck's own header: the cyan-to-blue
+   accent bar, a grey eyebrow, a blue title, and the blue rule along the
+   bottom. White ground, the deck's grey body text. A panel and a slide
+   should be indistinguishable to the room. */
+.stage{background:#fff;color:var(--dk-text)}
+.sl-head{display:flex;margin:0 0 14px;flex:none}
+.sl-bar{flex:none;width:9px;align-self:stretch;min-height:46px;border-radius:2px;
+ margin-right:15px;background:linear-gradient(180deg,#3DC2FB 0%,#006DAF 100%)}
+.sl-eyebrow{margin:0 0 3px;font-size:15px;line-height:1.2;color:var(--dk-line)}
+.sl-title{margin:0;font-size:27px;font-weight:400;line-height:1.14;letter-spacing:-.01em;
+ color:var(--dk-blue)}
+.stage-rule{flex:none;height:5px;margin-top:14px;border-radius:2px;
+ background:linear-gradient(90deg,#3FB5E5 0%,#006DAF 100%)}
+body.present .sl-eyebrow{font-size:clamp(13px,1.45vw,20px)}
+body.present .sl-title{font-size:clamp(23px,3.1vw,43px)}
+body.present .sl-bar{width:clamp(7px,.7vw,11px);margin-right:clamp(11px,1.2vw,20px)}
+body.present .stage-rule{margin-top:auto}
+
+.stage{border:1px solid var(--rule);border-radius:14px;padding:20px 22px 22px;
+ margin:0 0 16px;background:var(--surface)}
+.stage-tag{display:none}
+.stage-q{font-size:19px;font-weight:400;line-height:1.5;margin:0 0 14px;color:var(--dk-text)}
+.stage svg.fig{display:block;width:100%;max-width:min(100%,820px);height:auto;margin:2px auto 10px}
+.stage-note{font-size:14px;color:var(--dk-line);margin:12px 0 0}
+.stage-step{display:none}
+.stage-step.on{display:block}
+.stage-ctl{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.stage-ctl button{background:var(--ink);color:var(--surface);border:0;border-radius:9px;
+ padding:9px 16px;font:inherit;font-size:14px;font-weight:650;cursor:pointer;
+ transition:transform var(--dur-fast) var(--ease-out)}
+.stage-ctl button.ghost{background:none;color:var(--ink);border:1px solid var(--rule)}
+.stage-ctl button:active{transform:scale(.97)}
+.stage-ctl button[disabled]{opacity:.38;cursor:default}
+.stage-ctl .ctl-count{margin-left:auto;font-size:13px;color:var(--muted);
+ font-variant-numeric:tabular-nums}
+.vopts{list-style:none;margin:0 0 14px;padding:0;font-size:17px}
+.vopts li{margin:0 0 6px;padding-left:30px;position:relative}
+.vopts li::before{content:attr(data-k);position:absolute;left:0;font:700 14px var(--mono);
+ color:var(--muted)}
+pre.slabcode{margin:0 0 12px;padding:14px 18px;background:var(--dk-card);border-radius:10px;
+ font:clamp(14px,1.5vw,19px)/1.65 var(--mono);color:var(--dk-text);white-space:pre;overflow-x:auto}
+pre.slabcode b{color:var(--dk-red);font-weight:400}
+pre.slabcode i{color:var(--dk-blue);font-style:normal}
+pre.slabcode em{color:#22863A;font-style:normal}
+.ans{margin:14px 0 0;padding:12px 16px;border-radius:10px;background:#EAF6FC;
+ font-size:15px;font-weight:600;opacity:0;transition:opacity 260ms var(--ease-out)}
+.ans.shown{opacity:1}
+/* the reveal marks sit on .ans, and the confetti canvas is created by the
+   script at run time — without this rule it lands at the end of <body> at
+   its natural size and nothing is ever seen */
+.ans{position:relative}
+#confetti{position:fixed;inset:0;top:0;right:0;bottom:0;left:0;z-index:9999;
+ pointer-events:none;display:block}
+
+@media (prefers-reduced-motion:reduce){
+  .ans{transition:none !important}
+}
+@media print{
+  .stage-ctl{display:none}
+}
+
+
+/* instructor notes: one line each, and the one that matters marked */
+
+/* two shapes side by side, so the room compares them rather than reading prose */
+.cmp2{display:flex;flex:1;min-height:0;margin:0 0 6px}
+.cmp2>div{flex:1 1 50%;min-width:0;display:flex;flex-direction:column;padding-right:18px}
+.cmp2>div:last-child{padding-right:0}
+.cmp2 h4{margin:0 0 7px;font:600 15px/1.3 var(--sans);color:var(--dk-blue)}
+.cmp2 pre{flex:0 0 auto;margin:0 0 8px;padding:11px 13px;background:var(--dk-card);border-radius:8px;
+ font:12.5px/1.62 var(--mono);color:var(--dk-text);white-space:pre;overflow-x:auto}
+.cmp2 pre b{color:var(--dk-red);font-weight:400}
+.cmp2 pre i{color:var(--dk-blue);font-style:normal}
+.cmp2 pre em{color:#22863A;font-style:normal}
+.cmp2 .verdict{margin:0;font:14px/1.45 var(--sans);color:var(--dk-text)}
+.cmp2 .verdict b{color:var(--dk-red);font-weight:700}
+body.present .cmp2 h4{font-size:clamp(14px,1.5vw,21px);margin-bottom:clamp(6px,1vh,12px)}
+body.present .cmp2 pre{font-size:clamp(11px,1.15vw,18px);padding:clamp(9px,1.3vh,18px) clamp(11px,1.2vw,20px)}
+body.present .cmp2 .verdict{font-size:clamp(12px,1.3vw,19px)}
+body.present .cmp2>div{padding-right:clamp(12px,1.8vw,34px)}
+
+/* ---------------- collapsed instructor notes ---------------- */
+.prep{border:1px solid var(--rule2);border-radius:10px;margin:0 0 9px;background:var(--buffer-soft)}
+.prep>summary{cursor:pointer;padding:10px 14px;font-size:13px;font-weight:660;
+ color:var(--muted);list-style:none;display:flex;gap:8px;align-items:baseline}
+.prep>summary::-webkit-details-marker{display:none}
+.prep>summary::before{content:'\25B8';font-size:11px;transition:transform var(--dur-fast) ease}
+.prep[open]>summary::before{transform:rotate(90deg)}
+.prep>summary:hover{color:var(--ink)}
+.prep-body{padding:2px 14px 12px}
+.prep-body>*:last-child{margin-bottom:0}
+
+/* ================= PRESENTER: the window is the deck =================
+   A true 16:9 box fitted to the space and centred, so a deck screenshot and
+   an activity panel are the same shape on screen. */
+.pbar{display:none}
+body.present{overflow:hidden;--slide-h:100vh;
+ --slide-w:min(100vw,calc(var(--slide-h)*16/9))}
+body.present .sidepanel,body.present .hero,body.present .note{display:none}
+body.present .wrap{margin:0;max-width:none;padding:0}
+body.present .block{margin:0;border:0;border-radius:0;box-shadow:none;padding:0;background:transparent}
+body.present .block-head{display:none}
+/* No speaker notes ever reach the room. A projected deck slide is its image
+   and nothing else, so this whitelists rather than blacklists — anything
+   added to a slide later stays off the projector by default. */
+body.present .slide > *:not(.slide-img):not(.slide-head){display:none}
+body.present .prep,body.present .stage-tag,body.present .stage-ctl .ctl-count,
+body.present .doline,body.present .flag,body.present .lbl,
+body.present pre.code,body.present p.say,body.present .note{display:none}
+body.present .ans:not(.shown){display:none}
+
+body.present .slide,body.present .pcard{display:none;position:fixed;inset:0;
+ top:0;right:0;bottom:0;left:0;
+ margin:0;background:var(--page);border-radius:0;box-shadow:none;padding:0;overflow:auto}
+body.present .slide.active,body.present .pcard.active{display:flex;flex-direction:column;
+ align-items:center;justify-content:center}
+body.present .slide .slide-img{min-width:0;max-width:none;width:100%;height:100%;
+ display:flex;align-items:center;justify-content:center}
+body.present .slide img{width:100%;height:100%;object-fit:contain;
+ border:0;border-radius:0;background:transparent}
+/* The spine's four pictures and its two title cards live in a .pcard, not a
+   .slide, so none of the rules above reached them and they projected at their
+   natural size in the middle of the screen with white all round. A spine card
+   carries nothing but its artwork, so it takes the whole stage. */
+body.present .pcard > .slide-img,body.present .pcard > .spine-pic,
+body.present .pcard > .tc-wrap{min-width:0;max-width:none;width:100%;height:100%;
+ margin:0;display:flex;align-items:center;justify-content:center}
+body.present .pcard > .slide-img img,body.present .pcard > .spine-pic img{
+ width:100%;height:100%;object-fit:contain;border:0;border-radius:0;
+ background:transparent}
+body.present .pcard > .tc-wrap > .titlecard{width:100%;height:100%;max-height:100%;
+ object-fit:contain;border-radius:0;box-shadow:none}
+/* An activity panel is a slide: the same 16:9 box in the deck's own white.
+   The box is sized with min(), so the fallback below it — full width, natural
+   height — is what an engine without min() support gets. Both are usable;
+   only the first is pixel-identical to a deck slide. */
+body.present .stage{flex:none;margin:0;width:100%;height:auto;border:0;border-radius:0;
+ background:var(--dk-white);display:flex;flex-direction:column;
+ padding:clamp(14px,2.2vh,30px) clamp(20px,2.4vw,44px) clamp(18px,2.6vh,34px) clamp(28px,3vw,54px)}
+@supports (width:min(10px,20px)){
+  body.present .stage{width:var(--slide-w);height:min(var(--slide-h),calc(100vw*9/16));
+   overflow:hidden}
+}
+/* the panel is a 16:9 box and most bodies are shorter than it, so the body
+   centres in the space it has instead of hugging the header and leaving a
+   hole at the bottom, and the type scales with the box */
+body.present .stage-step.on{flex:1;min-height:0;display:flex;flex-direction:column;
+ justify-content:center}
+body.present .stage-q{font-size:clamp(17px,1.85vw,27px);margin:0 0 13px;flex:none;color:var(--dk-text)}
+/* height:auto keeps the drawing visible everywhere; max-height caps it into the
+   space the question and controls leave, so the question is never pushed off */
+body.present .stage svg.fig{flex:1 1 auto;min-height:0;width:100%;height:auto;
+ max-height:100%;max-width:none;margin:0}
+body.present .stage pre.slabcode{flex:0 0 auto;font-size:clamp(15px,1.75vw,27px);line-height:1.72;
+ padding:clamp(12px,1.7vh,26px) clamp(16px,1.9vw,32px)}
+body.present .vopts{font-size:clamp(17px,1.95vw,27px);margin-bottom:0}
+body.present .vopts li{margin-bottom:clamp(4px,1vh,13px);padding-left:clamp(26px,2.4vw,42px)}
+body.present .vopts li::before{font-size:clamp(13px,1.4vw,20px)}
+body.present .stage-note{flex:none;margin-top:auto;font-size:clamp(13px,1.35vw,19px)}
+body.present .ans{font-size:clamp(15px,1.6vw,23px)}
+body.present .stage-ctl{flex:none;margin-top:12px}
+body.present .slide-title{font-size:17px}
+
+/* the control bar: not shown. The student view is slides only (2026-09-25),
+   so the bar is hidden and its buttons stay in the DOM for the keys to click:
+   arrows step, End reveals all, a is the grid, f is full screen. */
+body.present .pbar{display:none;position:fixed;top:0;left:0;right:0;height:48px;
+ align-items:center;gap:12px;padding:0 18px;background:var(--surface);
+ border-bottom:1px solid var(--rule);z-index:30}
+.pbar .ptitle{font-size:13px;font-weight:650}
+.pbar .pcount{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.pbar .pspacer{margin-left:auto}
+.pbar button{background:var(--rule2);color:var(--ink);border:1px solid var(--rule);
+ border-radius:8px;padding:6px 13px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;
+ transition:transform var(--dur-fast) var(--ease-out)}
+.pbar button:active{transform:scale(.97)}
+.pbar .popt{background:none;color:var(--muted)}
+.pbar .popt[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.pbar .pquit{background:none;color:var(--muted);font-size:11.5px;letter-spacing:.04em}
+@media (hover:hover) and (pointer:fine){
+  .pbar .popt:hover,.pbar .pquit:hover{color:var(--ink)}
+  .pbar .popt[aria-pressed="true"]:hover{color:var(--surface)}
+}
+
+/* Guides: slide numbers, source refs, and the speaker-camera safe zone */
+body.present .slide>.slide-head,body.present .pcard>.slide-head{display:none}
+body.present.guides-on .slide>.slide-head,
+body.present.guides-on .pcard>.slide-head{display:flex;position:absolute;top:8px;left:18px;
+ right:18px;z-index:5;padding:0;opacity:.75}
+.p-safe{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:40;
+ pointer-events:none;place-items:center}
+body.present.guides-on .p-safe{display:grid}
+.p-safe-box{position:relative;width:var(--slide-w);height:min(var(--slide-h),calc(100vw*9/16))}
+.p-safe-box::after{content:'';position:absolute;top:0;right:0;width:35%;height:28%;
+ border:1.5px dashed #E06666;border-radius:4px}
+.p-safe span{position:absolute;top:0;right:9px;margin-top:calc(28% * 9 / 16);
+ transform:translateY(-18px);font-size:11.5px;color:#C05353}
+
+/* All slides: a jump grid over the deck */
+.p-grid{display:none;position:fixed;inset:0;top:0;right:0;bottom:0;left:0;z-index:45;overflow-y:auto;
+ background:var(--page);padding:20px 24px 40px}
+body.present .p-grid:not([hidden]){display:block}
+.p-grid-in{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;
+ max-width:1500px;margin:0 auto}
+.p-cell{text-align:left;background:var(--surface);border:1px solid var(--rule);border-radius:10px;
+ padding:11px 13px 13px;font:inherit;cursor:pointer;color:inherit;
+ transition:transform var(--dur-fast) var(--ease-out),border-color var(--dur-fast) ease}
+.p-cell:active{transform:scale(.98)}
+.p-cell .pc-n{display:block;font-size:11px;font-weight:700;color:var(--muted);
+ font-variant-numeric:tabular-nums;margin-bottom:3px}
+.p-cell .pc-t{display:block;font-size:13.5px;font-weight:650;line-height:1.35;color:var(--accent)}
+.p-cell .pc-s{display:none;font-size:11px;color:var(--muted);margin-top:5px;font-family:var(--mono)}
+body.guides-on .p-cell .pc-s{display:block}
+.p-cell.here{border-color:var(--accent)}
+@media (hover:hover) and (pointer:fine){.p-cell:hover{border-color:var(--accent)}}
+
+/* ================= FULL SCREEN: a slide show ================= */
+body.present.fs{--slide-h:100vh}
+body.present.fs .pbar{display:none}
+body.present.fs .slide,body.present.fs .pcard{inset:0;top:0;right:0;bottom:0;left:0;background:#000}
+body.present.fs .p-safe{top:0}
+body.present.fs .p-grid{inset:0;top:0;right:0;bottom:0;left:0}
+body.present.fs .slide>.slide-head,body.present.fs .pcard>.slide-head{color:#B9BDC4}
+
+
+/* with the bar hidden, the only way out is a key — say so, briefly */
+.fs-hint{display:none;position:fixed;bottom:14px;padding:0 20px;left:0;right:0;text-align:center;z-index:50;
+ font-size:12px;color:#9AA1B0;pointer-events:none;
+ opacity:0;transition:opacity var(--dur-base) var(--ease-out)}
+body.present.fs .fs-hint{display:block;opacity:1;animation:fs-fade 3.4s var(--ease-out) forwards}
+@keyframes fs-fade{0%{opacity:0}12%{opacity:1}75%{opacity:1}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){body.present.fs .fs-hint{animation:none;opacity:1}}
+
+@media (max-width:860px){
+  :root{--sidebar:0px}
+  .sidepanel{position:static;width:auto;border-right:0;border-bottom:1px solid var(--rule)}
+  .wrap{margin-left:0;padding:24px 18px 90px}
+}
+
+@media print{
+  .sidepanel,.pbar,.stage-ctl,.h-actions,.p-safe,.p-grid{display:none !important}
+  body{background:#fff}
+  .wrap{margin:0;max-width:none;padding:0}
+  .block,.g-sec{box-shadow:none;break-inside:avoid}
+  .slide{break-inside:avoid}
+  .prep,.prep-body{display:block !important}
+  .prep>summary{color:var(--ink)}
+  .stage-step{display:block !important}
+}
+
+
+/* ================= session runtime =================
+   Everything below is shared machinery, not per-session content:
+   answer reveals, confetti, the timer, staged animations, the live
+   swap, and the slide-by-slide instructor guide. A builder should
+   need markup only -- never a new engine. ================= */
+
+/* --- the correct option is marked only once the answer is out. Marking it up
+       front IS the answer. Why each option is what it is now lives in the
+       beat's "Say this out loud" key, spoken by the instructor, never on the
+       slide. --- */
+.stage-step.told .vopts li.right{font-weight:700;color:var(--dk-text)}
+.stage-step.told .vopts li.right::before{color:#22863A}
+
+/* --- poll cards: the answer fills the right-hand column instead of pushing
+       the options off the bottom of a 16:9 box --- */
+.pollcols{display:flex;gap:20px;flex:1;min-height:0}
+.pollcols>div{min-width:0;min-height:0;display:flex;flex-direction:column}
+.pollcols>div:first-child{flex:1 1 54%}
+.pollcols>div:last-child{flex:1 1 46%}
+.pollcols .vopts{margin-bottom:0}
+body.present .pollcols .vopts li{margin-bottom:clamp(3px,.7vh,9px)}
+body.present .stage .pollcols pre.slabcode{line-height:1.5;font-size:clamp(14px,1.55vw,24px)}
+body.present .stage .pollcols .vopts{font-size:clamp(15px,1.75vw,25px)}
+.pollcols .ans{margin-top:0}
+
+/* --- mini trace: the same grey-out language as the walker, used every time
+       an answer is explained, so "grey = never even asked" means one thing
+       all session --- */
+.mtrace{display:block;margin:9px 0 0;padding:10px 12px;background:var(--dk-card);border-radius:8px;
+  font:12.5px/1.5 var(--mono);color:var(--dk-text);white-space:pre;overflow-x:auto}
+.mtrace .wline{display:block}
+.mtrace-key{display:block;margin:6px 0 0;font:400 12.5px/1.5 var(--sans);color:var(--dk-line)}
+.mtrace-key b{font-weight:600;color:var(--dk-text)}
+body.present .mtrace{font-size:clamp(10px,1.05vw,16px);line-height:1.5;padding:clamp(8px,1.1vh,15px) clamp(10px,1.1vw,18px)}
+body.present .mtrace-key{font-size:clamp(11px,1.15vw,17px)}
+
+/* --- live swap: the instructor moves the line, the room watches it break --- */
+.swapwrap{display:flex;gap:20px;flex:1;min-height:0;margin:4px 0 0}
+.swapwrap>div{flex:1;min-width:0;display:flex;flex-direction:column}
+.swapcode{margin:0;padding:13px 15px;background:var(--dk-card);border-radius:9px;
+  font:13.5px/1.75 var(--mono);color:var(--dk-text);white-space:pre}
+.swapcode b{color:var(--dk-red);font-weight:400}
+.swapcode i{color:var(--dk-blue);font-style:normal}
+.swapcode em{color:#22863A;font-style:normal}
+.swapcode .rung{border-radius:4px;margin:0 -4px;padding:0 4px;
+  -webkit-box-decoration-break:clone;box-decoration-break:clone;
+  transition:background-color 220ms var(--ease-out)}
+.swapwrap.swapped .swapcode .rung{background:#FDE8E6}
+.swaprun{margin:10px 0 0;border-collapse:collapse;width:100%;font:13px var(--sans)}
+.swaprun th,.swaprun td{border:1px solid #E3E8EB;padding:6px 9px;text-align:left}
+.swaprun th{background:var(--dk-card);font-weight:600}
+.swaprun td.bad{color:var(--dk-red);font-weight:700}
+.swaprun tr td:last-child{opacity:0;transition:opacity 260ms var(--ease-out)}
+.swapwrap.outshown .swaprun tr td:last-child{opacity:1}
+body.present .swapcode{font-size:clamp(12px,1.35vw,21px)}
+body.present .swaprun{font-size:clamp(12px,1.25vw,19px)}
+
+/* --- takeaways as a concept map: each press adds one box and the line that
+       reaches it, so the shape of the session builds up rather than arriving
+       all at once. Reveal order is document order inside .tkmap. --- */
+.tkmap > g{opacity:0;transform:translateY(11px);transform-box:fill-box;transform-origin:50% 50%;
+  transition:opacity 420ms var(--ease-out),transform 420ms var(--ease-out)}
+/* the ghost outlines are plain <rect> siblings, so the steps count groups only */
+.an-1 .tkmap > g:nth-of-type(-n+1),.an-2 .tkmap > g:nth-of-type(-n+2),
+.an-3 .tkmap > g:nth-of-type(-n+3),.an-4 .tkmap > g:nth-of-type(-n+4),
+.an-5 .tkmap > g:nth-of-type(-n+5),.an-6 .tkmap > g:nth-of-type(-n+6),
+.an-7 .tkmap > g:nth-of-type(-n+7){opacity:1;transform:none}
+.tkmap .tkghost{fill:none;stroke:#DCE3EA;stroke-width:2;stroke-dasharray:7 7}
+
+@media (prefers-reduced-motion:reduce){ .tkmap > g{transition-duration:1ms;transform:none} }
+@media print{ .tkmap > g{opacity:1;transform:none} }
+
+/* --- a title card: one word the size of the room, the topic under it. The
+       recap card is this, as step 1 of the poll panel, with the three
+       questions as the steps behind it. The stage header stands down while it
+       is up — #stage-poll[data-at="0"] .sl-head{display:none} — because the
+       card is already the heading. --- */
+.tc-wrap{display:flex;flex:1;min-height:0;align-items:center;justify-content:center}
+.titlecard{width:100%;height:auto;max-height:100%;object-fit:contain;
+  border-radius:14px;display:block;margin:0 auto}
+
+/* --- call for examples. The room answers FIRST, then one worked example per
+       press. Revealing before they speak turns a call for examples into a
+       lecture, so this card carries no timer: the instructor nudges, waits,
+       takes three or four, and only then presses. --- */
+.exgrid{display:flex;flex-wrap:wrap;margin:18px -9px 0}
+.exgrid .ex{flex:1 1 240px;min-width:0;margin:0 9px 18px;padding:16px 18px 18px;
+  border:2px solid #D6E6F0;border-left:6px solid var(--dk-cyan);border-radius:10px;
+  background:#F7FBFD;opacity:0;transform:translateY(10px);
+  transition:opacity 380ms var(--ease-out),transform 380ms var(--ease-out)}
+.exgrid .ex b{display:block;font-size:1.06em;color:var(--dk-blue);margin:0 0 6px}
+.exgrid .ex span{display:block;color:var(--dk-text)}
+.exgrid .ex em{font-style:normal;font-weight:650;color:var(--dk-red)}
+.an-2 .exgrid .ex:nth-child(-n+1),.an-3 .exgrid .ex:nth-child(-n+2),
+.an-4 .exgrid .ex:nth-child(-n+3),.an-5 .exgrid .ex:nth-child(-n+4){opacity:1;transform:none}
+body.present .exgrid{margin-top:34px}
+body.present .exgrid .ex{padding:22px 24px 24px;font-size:clamp(14px,1.2vw,20px)}
+@media (prefers-reduced-motion:reduce){ .exgrid .ex{transition-duration:1ms;transform:none} }
+@media print{ .exgrid .ex{opacity:1;transform:none} }
+
+/* --- parts map: a program on the left, assembled one press at a time, each
+       new part ringed and tied to a card on the right that names it AND says
+       how many times it runs. The count is the half students are never told,
+       and it is the half that shows whether the loop has landed — for
+       `counter = 0; while counter < 3` the condition is asked FOUR times.
+       Staged like .tkmap: direct <g> children of the svg, document order.
+       A press cannot edit what an earlier one drew, so a value that arrives
+       late is a .cover patch with the real text painted on top, and a .qbox
+       question is drawn inside the card that replaces it. --- */
+.partmap{--p1:#F59A23;--p2:#D0342C;--p3:#4EB3EA;--p4:#6AAB4C;
+  --p1t:#C97A10;--p2t:#D0342C;--p3t:#1E7FC2;--p4t:#4C8235}
+.partmap > g{opacity:0;transform:translateY(10px);transform-box:fill-box;transform-origin:50% 50%;
+  transition:opacity 380ms var(--ease-out),transform 380ms var(--ease-out)}
+.an-1 .partmap > g:nth-child(-n+1),.an-2 .partmap > g:nth-child(-n+2),
+.an-3 .partmap > g:nth-child(-n+3),.an-4 .partmap > g:nth-child(-n+4),
+.an-5 .partmap > g:nth-child(-n+5),.an-6 .partmap > g:nth-child(-n+6),
+.an-7 .partmap > g:nth-child(-n+7){opacity:1;transform:none}
+.partmap .prog{font:19px var(--mono);fill:var(--dk-text)}
+.partmap .prog .kw{fill:var(--dk-red)}
+.partmap .prog .num,.partmap .prog .fn{fill:var(--dk-blue)}
+.partmap .prog .st{fill:#22863A}
+.partmap .ln{font:15px var(--mono);fill:#9AA1B0}
+.partmap .hd,.partmap .out{font:600 17px var(--sans);fill:var(--dk-line)}
+.partmap .blank{fill:none;stroke:#B9C4CC;stroke-width:2;stroke-dasharray:6 5}
+.partmap .cover{fill:#fff;stroke:none}
+.partmap .card rect{fill:#fff;stroke:#D6E6F0;stroke-width:2}
+.partmap .card .bar{stroke:none}
+.partmap .card .term{font:650 20px var(--sans)}
+.partmap .card .desc{font:16px var(--sans);fill:var(--dk-text)}
+.partmap .card .cnt{font:650 16px var(--sans)}
+.partmap .ring{fill:none;stroke-width:2.5}
+.partmap .tie{fill:none;stroke-width:2;stroke-dasharray:6 5}
+.partmap .qbox rect{fill:#fff;stroke:var(--p2);stroke-width:2.5;stroke-dasharray:9 6}
+.partmap .qbox text{font:650 21px var(--sans);fill:var(--p2)}
+/* the accent lives on a wrapping <g>, never on the ring itself: these are
+   descendant selectors, and an element cannot be its own ancestor */
+.partmap .a1 .bar{fill:var(--p1)} .partmap .a1 .ring,.partmap .a1 .tie{stroke:var(--p1)}
+.partmap .a1 .term,.partmap .a1 .cnt{fill:var(--p1t)}
+.partmap .a2 .bar{fill:var(--p2)} .partmap .a2 .ring,.partmap .a2 .tie{stroke:var(--p2)}
+.partmap .a2 .term,.partmap .a2 .cnt{fill:var(--p2t)}
+.partmap .a3 .bar{fill:var(--p3)} .partmap .a3 .ring,.partmap .a3 .tie{stroke:var(--p3)}
+.partmap .a3 .term,.partmap .a3 .cnt{fill:var(--p3t)}
+.partmap .a4 .bar{fill:var(--p4)} .partmap .a4 .ring,.partmap .a4 .tie{stroke:var(--p4)}
+.partmap .a4 .term,.partmap .a4 .cnt{fill:var(--p4t)}
+/* no body.present font override on any SVG text above: a px clamp inside an
+   SVG is read as user units and grows the labels out of their boxes */
+@media (prefers-reduced-motion:reduce){ .partmap > g{transition-duration:1ms;transform:none} }
+@media print{ .partmap > g{opacity:1;transform:none} }
+
+/* --- a control that belongs to the thing above it, not to the card. The swap
+       button sits under its own table so an instructor cannot miss it. --- */
+.stage-ctl.here{margin:12px 0 0}
+.stage-ctl button.accent{background:var(--dk-blue);color:#fff;font-weight:700;
+  padding:11px 20px;border-radius:10px;box-shadow:0 2px 0 rgba(11,95,165,.35);
+  animation:ctlnudge 3s var(--ease-out) infinite}
+.stage-ctl button.accent:hover{background:#0B5FA5}
+@keyframes ctlnudge{0%,88%,100%{box-shadow:0 2px 0 rgba(11,95,165,.35)}
+  94%{box-shadow:0 2px 0 rgba(11,95,165,.35),0 0 0 9px rgba(0,186,242,.22)}}
+body.present .stage-ctl.here{margin-top:clamp(8px,1.2vh,18px)}
+body.present .stage-ctl button.accent{font-size:clamp(13px,1.45vw,22px);
+  padding:clamp(9px,1.3vh,17px) clamp(16px,1.6vw,30px)}
+
+/* --- the timer, which is itself a hook: the room watches it, not the clock.
+       Markup is <span class="tmr" data-secs="N"></span> and nothing else --- the
+       dial, the digits and the play/pause control are built by the script. --- */
+.tmr{display:inline-flex;align-items:center;align-self:flex-start;flex:0 0 auto;gap:10px;margin:12px 0 0;
+  padding:6px 16px 6px 6px;border-radius:999px;background:#fff;
+  border:2px solid #DCE6EC;box-shadow:0 1px 2px rgba(16,42,67,.06);vertical-align:middle}
+.tmr-btn{display:inline-flex;align-items:center;justify-content:center;flex:none;
+  width:34px;height:34px;padding:0;border:0;border-radius:50%;cursor:pointer;
+  background:var(--dk-blue);color:#fff;margin-right:0;
+  transition:transform 120ms var(--ease-out),background 160ms var(--ease-out)}
+.tmr-btn svg{flex:none;width:23px;height:23px;fill:currentColor}
+.tmr-btn:active{transform:scale(.93)}
+.tmr-dial{width:30px;height:30px;flex:none;transform:rotate(-90deg)}
+.tmr-trk{fill:none;stroke:#E3EBF0;stroke-width:4}
+.tmr-arc{fill:none;stroke:var(--dk-cyan);stroke-width:4;stroke-linecap:round;
+  stroke-dasharray:94.25;stroke-dashoffset:0;transition:stroke-dashoffset 900ms linear}
+.tmr-read{flex:none;min-width:3.3em;text-align:center;font:700 17px/1 var(--mono);
+  color:var(--dk-text);font-variant-numeric:tabular-nums}
+.tmr .tmr-pause{display:none}
+.tmr.on{border-color:var(--dk-cyan);background:#F3FBFE}
+.tmr.on .tmr-play{display:none}
+.tmr.on .tmr-pause{display:block}
+.tmr.warn .tmr-arc{stroke:#E8A13A}
+.tmr.warn .tmr-read{color:#8A5A12}
+.tmr.done{border-color:var(--dk-red);background:#FDEFEC;animation:tmrring 1.1s var(--ease-out) 2}
+.tmr.done .tmr-arc{stroke:var(--dk-red)}
+.tmr.done .tmr-read{color:var(--dk-red)}
+.tmr.done .tmr-btn{background:var(--dk-red)}
+.tmr.done .tmr-pause{display:none}
+@keyframes tmrring{0%,100%{box-shadow:0 1px 2px rgba(16,42,67,.06)}
+  50%{box-shadow:0 0 0 8px rgba(232,80,58,.16)}}
+body.present .tmr{gap:clamp(8px,1vw,15px);
+  padding:clamp(5px,.7vh,9px) clamp(14px,1.4vw,26px) clamp(5px,.7vh,9px) clamp(5px,.6vw,9px)}
+body.present .tmr-btn{width:clamp(30px,3.1vw,52px);height:clamp(30px,3.1vw,52px)}
+body.present .tmr-btn svg{width:clamp(20px,2.15vw,36px);height:clamp(20px,2.15vw,36px)}
+body.present .tmr-dial{width:clamp(26px,2.8vw,46px);height:clamp(26px,2.8vw,46px)}
+body.present .tmr-read{font-size:clamp(15px,1.8vw,30px)}
+
+@media (prefers-reduced-motion:reduce){
+  .tmr-arc{transition:none}
+  .tmr.done{animation:none}
+  .stage-ctl button.accent{animation:none}
+}
+
+/* print: none of the above belongs on the worksheet */
+@media print{ .tmr,#confetti{display:none} }
+{{EXTRA_CSS}}
+</style>
+</head>
+<body>
+
+<aside class="sidepanel">
+<p class="sp-title">{{SESSION_TITLE}}</p>
+<nav class="sp-nav">{{NAV}}</nav>
+<p class="sp-legend">
+<span><i style="background:var(--hook)"></i>hook</span>
+<span><i style="background:var(--activity)"></i>worksheet</span>
+<span><i style="background:var(--exit)"></i>hands-on</span>
+<span><i style="background:var(--quiz)"></i>quiz</span>
+<span><i style="background:var(--dk-red)"></i>exit</span>
+<span><i style="background:var(--rule)"></i>deck</span></p>
+<div class="env-warn" id="env-warn" hidden>
+<b>True full screen is blocked here.</b> You are viewing this inside a preview pane, which the browser will not let
+go full screen. Open it as its own tab and the slide show works properly.
+<button type="button" id="env-open">Open in a new tab</button>
+</div>
+<button class="sp-btn sp-present" id="present-btn" type="button">Presenter view</button>
+<p class="sp-foot">In presenter view: <b>f</b> full screen &middot; <b>a</b> all slides &middot; <b>g</b> guides
+&middot; <b>r</b> replay. Outside it: <b>p</b> present</p>
+</aside>
+
+<div class="pbar">
+<span class="ptitle" id="p-title"></span>
+<span class="pspacer"></span>
+<span class="pcount" id="p-count"></span>
+<button type="button" id="p-prev">Prev</button>
+<button type="button" id="p-next">Next</button>
+<button type="button" class="popt" id="p-all" aria-pressed="false">All slides</button>
+<button type="button" class="popt" id="p-guides" aria-pressed="false">Guides</button>
+<button type="button" class="popt" id="p-full" aria-pressed="false">Full screen</button>
+<button type="button" class="pquit" id="p-exit" title="Esc">Esc</button>
+</div>
+
+<p class="fs-hint">Esc leaves full screen &middot; f toggles it &middot; a for all slides</p>
+<div class="p-safe"><div class="p-safe-box"><span>camera</span></div></div>
+<div class="p-grid" id="p-grid" hidden><div class="p-grid-in" id="p-grid-in"></div></div>
+
+<div class="wrap">
+<header class="hero">
+<h1>{{SESSION_TITLE}}</h1>
+<p class="idea"><b>The one idea to land</b>{{ONE_IDEA}}</p>
+</header>
+{{BLOCKS}}
+</div>
+
+
+<script>
+(function(){
+  "use strict";
+  var body=document.body;
+
+  /* ================= sidebar nav ================= */
+  var items=[].slice.call(document.querySelectorAll('.sp-item[data-target]'));
+  var secs=items.map(function(b){ return document.getElementById(b.dataset.target); });
+  items.forEach(function(b,i){
+    b.addEventListener('click',function(){
+      if(secs[i]) secs[i].scrollIntoView({block:'start'});
+    });
+  });
+  function mark(){
+    if(body.classList.contains('present')) return;
+    var pos=window.scrollY+140, cur=-1;
+    secs.forEach(function(s,i){ if(s && s.offsetTop<=pos) cur=i; });
+    items.forEach(function(b,i){ b.classList.toggle('current', i===cur); });
+  }
+  var pend=false;
+  window.addEventListener('scroll',function(){ if(pend) return; pend=true;
+    requestAnimationFrame(function(){ mark(); pend=false; }); },{passive:true});
+  mark();
+
+  /* ================= generic stage steppers ================= */
+  function steps(s){ return [].slice.call(s.querySelectorAll('.stage-step')); }
+  function show(s,i){
+    if(!s) return;
+    var a=steps(s); if(!a.length) return;
+    i=Math.max(0,Math.min(i,a.length-1));
+    a.forEach(function(el,k){ el.classList.toggle('on',k===i); });
+    s.dataset.at=i;
+    var c=s.querySelector('.ctl-count');
+    if(c) c.textContent=(i+1)+' / '+a.length+(a[i].dataset.label?' \u00B7 '+a[i].dataset.label:'');
+    var n=s.querySelector('[data-stage-next]'), p=s.querySelector('[data-stage-prev]');
+    if(n) n.disabled=(i===a.length-1);
+    if(p) p.disabled=(i===0);
+  }
+  function step(s,d){ if(s) show(s,(parseInt(s.dataset.at||0,10))+d); }
+  document.querySelectorAll('.stage').forEach(function(s){ show(s,0); });
+
+
+  /* ============ session runtime: see the CSS banner above ============ */
+
+  /* one read of the media query, used by the confetti guard below and by
+     anything else that must stand down when the machine asks for calm */
+  var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var CONF = (function(){
+    var COLORS = ['#1E7FC2','#00BAF2','#5F259F','#E8503A','#F0B95B','#34A853','#EA4335','#FBBC04'];
+    var cv, ctx, bits = [], raf = null, dpr = 1;
+
+    function fit(){
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cv.width = Math.floor(innerWidth * dpr);
+      cv.height = Math.floor(innerHeight * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    function ready(){
+      if(cv) return true;
+      cv = document.createElement('canvas');
+      cv.id = 'confetti';
+      cv.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(cv);
+      ctx = cv.getContext('2d');
+      fit();
+      addEventListener('resize', fit);
+      return true;
+    }
+    function rand(a, b){ return a + Math.random() * (b - a); }
+
+    function piece(x, y, vx, vy, ttl){
+      bits.push({
+        x: x, y: y, vx: vx, vy: vy,
+        w: rand(6, 11), h: rand(8, 14),
+        col: COLORS[(Math.random() * COLORS.length) | 0],
+        rot: rand(0, Math.PI * 2), vrot: rand(-0.20, 0.20),
+        tilt: rand(0, Math.PI * 2), vtilt: rand(0.09, 0.22),
+        sway: rand(0, Math.PI * 2), vsway: rand(0.02, 0.05), amp: rand(0.25, 0.8),
+        life: 0, ttl: ttl
+      });
+    }
+
+    /* a cannon: n pieces from (x,y) thrown along ang, within spread */
+    function cannon(x, y, n, ang, spread, power){
+      for(var i = 0; i < n; i++){
+        var a = ang + rand(-spread, spread), v = power * rand(0.6, 1.3);
+        piece(x, y, Math.cos(a) * v, Math.sin(a) * v, rand(150, 260));
+      }
+    }
+    /* a shower: n pieces entering from above, spread over the whole width */
+    function shower(n){
+      for(var i = 0; i < n; i++){
+        piece(rand(-40, innerWidth + 40), rand(-160, -10),
+              rand(-1.6, 1.6), rand(2, 5.5), rand(190, 300));
+      }
+    }
+
+    function frame(){
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      var alive = 0;
+      for(var i = 0; i < bits.length; i++){
+        var b = bits[i];
+        if(b.life > b.ttl) continue;
+        alive++;
+        b.life++;
+        b.vy += 0.26;                      // gravity
+        b.vx *= 0.992;                     // drag
+        b.vy *= 0.992;
+        b.sway += b.vsway;
+        b.x += b.vx + Math.cos(b.sway) * b.amp;   // confetti does not fall straight
+        b.y += b.vy;
+        b.rot += b.vrot;
+        b.tilt += b.vtilt;
+        if(b.y - 25 > innerHeight){ b.life = b.ttl + 1; continue; }
+
+        var fade = b.life > b.ttl - 50 ? (b.ttl - b.life) / 50 : 1;
+        var face = Math.cos(b.tilt);       // the tumble: edge-on and back again
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, fade);
+        ctx.translate(b.x, b.y);
+        ctx.rotate(b.rot);
+        ctx.fillStyle = b.col;
+        ctx.fillRect(-b.w / 2, -b.h * face / 2, b.w, b.h * face);
+        ctx.restore();
+      }
+      if(alive){ raf = requestAnimationFrame(frame); }
+      else { bits.length = 0; raf = null; ctx.clearRect(0, 0, innerWidth, innerHeight); }
+    }
+
+    return function fire(){
+      if(calm || !ready()) return;
+      var W = innerWidth, H = innerHeight;
+      var reach = Math.max(W, 900) / 42;               // enough to cross the page
+      cannon(-15, H + 10, 60, -Math.PI / 3.4, 0.30, reach);
+      cannon(W + 15, H + 10, 60, -Math.PI + Math.PI / 3.4, 0.30, reach);
+      shower(80);
+      if(!raf) raf = requestAnimationFrame(frame);
+    };
+  })();
+
+  /* ------------------------------------------------------------ answer reveal
+     The explanations and the tick on the correct option both hang off .told,
+     so nothing gives the answer away before the button is pressed. */
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('[data-reveal]');
+    if(!b) return;
+    var box = b.closest('.stage-step') || b.closest('.stage');
+    if(!box) return;
+    var ans = box.querySelector('.ans');
+    /* the handler that actually toggles .shown is registered AFTER this one,
+       so read the state this press is about to PRODUCE, not the one it found.
+       Reading the current state marks the right option and fires the confetti
+       one press late — on hide rather than on reveal. */
+    var willShow = !(ans && ans.classList.contains('shown'));
+    box.classList.toggle('told', willShow);
+    if(willShow) CONF();
+  });
+
+  /* --------------------------------------------------------------- the timer
+     Built from <span class="tmr" data-secs="N"></span>: a dial that drains, the
+     digits, and one control. The instructor presses play -- only a timer marked
+     data-auto starts by itself, and that is the warm-up poll, where the question
+     is on screen for its twenty-five seconds however the room behaves. Leaving
+     the card resets that card's timer to full. */
+  (function(){
+    var LEN = 94.25;                         // 2 * PI * r, and r is 15
+    var ICONS =
+      '<svg viewBox="0 0 24 24" aria-hidden="true">'
+      + '<path class="tmr-play" d="M7.4 4.4 L19.4 12 L7.4 19.6 Z"/>'
+      + '<g class="tmr-pause"><rect x="6.6" y="4.4" width="4.2" height="15.2" rx="1.4"/>'
+      + '<rect x="13.2" y="4.4" width="4.2" height="15.2" rx="1.4"/></g>'
+      + '</svg>';
+
+    function fmt(n){ var m = Math.floor(n / 60), s = n % 60; return m + ':' + (s < 10 ? '0' : '') + s; }
+
+    function paint(t){
+      t.read.textContent = fmt(t.left);
+      t.arc.style.strokeDashoffset = (LEN * (1 - t.left / t.total)).toFixed(2);
+      t.el.classList.toggle('warn', t.left > 0 && t.left <= Math.min(30, Math.round(t.total * 0.25)));
+      t.el.classList.toggle('done', t.left <= 0);
+      t.btn.setAttribute('aria-label',
+        t.left <= 0 ? 'Restart the timer' : (t.timer ? 'Pause the timer' : 'Start the timer'));
+    }
+    function stop(t){ if(t.timer){ clearInterval(t.timer); t.timer = null; } t.el.classList.remove('on'); }
+    function hold(t){ stop(t); t.held = true; paint(t); }
+    function reset(t){ stop(t); t.held = false; t.left = t.total; paint(t); }
+    function run(t){
+      if(t.timer || t.left <= 0) return;
+      t.el.classList.add('on'); paint(t);
+      t.timer = setInterval(function(){
+        t.left--; paint(t);
+        if(t.left <= 0){ stop(t); paint(t); }
+      }, 1000);
+    }
+    /* live = the card is on screen and, in a stepped card, this is the step
+       currently being shown */
+    function live(t){
+      if(!t.el.offsetParent) return false;
+      if(t.step && !t.step.classList.contains('on')) return false;
+      return true;
+    }
+
+    var timers = [].map.call(document.querySelectorAll('.tmr[data-secs]'), function(el){
+      var total = parseInt(el.dataset.secs, 10) || 60;
+      el.innerHTML =
+        '<button type="button" class="tmr-btn">' + ICONS + '</button>'
+        + '<svg class="tmr-dial" viewBox="0 0 36 36" aria-hidden="true">'
+        + '<circle class="tmr-trk" cx="18" cy="18" r="15"></circle>'
+        + '<circle class="tmr-arc" cx="18" cy="18" r="15"></circle></svg>'
+        + '<span class="tmr-read" role="timer"></span>';
+      var t = {
+        el: el,
+        btn: el.querySelector('.tmr-btn'),
+        arc: el.querySelector('.tmr-arc'),
+        read: el.querySelector('.tmr-read'),
+        step: el.closest('.stage-step'),
+        auto: el.hasAttribute('data-auto'),
+        total: total, left: total, timer: null, held: false
+      };
+      paint(t);
+      t.btn.addEventListener('click', function(){
+        if(t.left <= 0){ reset(t); run(t); }
+        else if(t.timer){ hold(t); }
+        else { t.held = false; run(t); }
+      });
+      return t;
+    });
+    if(!timers.length) return;
+
+    setInterval(function(){
+      timers.forEach(function(t){
+        if(live(t)){
+          if(t.auto && !t.timer && !t.held && t.left > 0) run(t);
+        } else if(t.timer || t.left !== t.total){
+          reset(t);
+        }
+      });
+    }, 200);
+  })();
+
+  
+  /* ---------------------------------------------------- staged animations
+     The hook has its own controller in the original script. This is the
+     generic one: any stage carrying data-anim="N" steps through .an-1 .. .an-N
+     on its [data-anim-next] button, so a new animated card needs CSS and
+     markup only, never more JavaScript. */
+  document.querySelectorAll('.stage[data-anim]').forEach(function(stage){
+    var max = parseInt(stage.dataset.anim, 10) || 1, at = 1;
+    var next = stage.querySelector('[data-anim-next]'),
+        replay = stage.querySelector('[data-anim-replay]'),
+        count = stage.querySelector('[data-anim-count]');
+    var labels = (stage.dataset.animLabels || '').split('|');
+    function draw(){
+      for(var k = 1; k <= max; k++) stage.classList.toggle('an-' + k, k === at);
+      if(next) next.disabled = (at === max);
+      if(count) count.textContent = at + ' / ' + max + (labels[at-1] ? ' · ' + labels[at-1] : '');
+    }
+    function go(n){ at = Math.min(max, Math.max(1, n)); stage.dataset.animAt = at; draw(); }
+    if(next) next.addEventListener('click', function(){ go(at + 1); });
+    if(replay) replay.addEventListener('click', function(){ go(1); });
+    stage.animGo = go;                 // the presenter steps it through this
+    go(1);
+  });
+
+  /* ----------------------------------------------------------- the live swap
+     Order matters, shown rather than described: one button moves the two checks
+     on the projector and the outputs that change appear beside them. */
+  document.querySelectorAll('[data-swap]').forEach(function(btn){
+    var wrap = document.getElementById(btn.dataset.swap);
+    if(!wrap) return;
+    var a = wrap.querySelector('[data-rung="a"]'), b = wrap.querySelector('[data-rung="b"]');
+    if(!a || !b) return;
+    var A = a.innerHTML, B = b.innerHTML;
+    btn.addEventListener('click', function(){
+      var on = wrap.classList.toggle('swapped');
+      a.innerHTML = on ? B : A;
+      b.innerHTML = on ? A : B;
+      btn.textContent = on ? 'Put them back' : btn.dataset.label || 'Swap the two checks';
+      /* putting the lines back un-answers the question too */
+      if(!on) wrap.classList.remove('outshown');
+      wrap.querySelectorAll('[data-swapout]').forEach(function(o){
+        o.textContent = o.dataset.label || 'Show what it prints';
+      });
+    });
+  });
+
+{{EXTRA_JS}}
+  /* ================= answer reveals ================= */
+  document.addEventListener('click',function(e){
+    var n=e.target.closest('[data-stage-next]'), p=e.target.closest('[data-stage-prev]'),
+        r=e.target.closest('[data-stage-replay]'), a=e.target.closest('[data-reveal]');
+    if(n) step(n.closest('.stage'),1);
+    if(p) step(p.closest('.stage'),-1);
+    if(r) show(r.closest('.stage'),0);
+    if(a){
+      var box=a.closest('.stage-step')||a.closest('.stage');
+      var ans=box&&box.querySelector('.ans');
+      if(ans){ ans.classList.toggle('shown'); a.textContent=ans.classList.contains('shown')?'Hide':a.dataset.reveal; }
+    }
+  });
+
+  /* ================= presenter ================= */
+  /* The presenter walks the cards in document order. */
+    var cards=[].slice.call(document.querySelectorAll('.slide, .pcard')), idx=0;
+  var grid=document.getElementById('p-grid'), gridIn=document.getElementById('p-grid-in'),
+      bAll=document.getElementById('p-all'), bGuides=document.getElementById('p-guides'),
+      bFull=document.getElementById('p-full');
+
+  function label(c){
+    var t=c.querySelector('.slide-title'), n=c.querySelector('.slide-no');
+    if(t) return (n?n.textContent+' \u00B7 ':'')+t.textContent;
+    return c.dataset.label||'';
+  }
+  function srcOf(c){
+    var s=c.querySelector('.slide-src');
+    if(s) return s.textContent;
+    return (c.dataset.label||'').toLowerCase().indexOf('hands-on')>=0 ? 'code playground' : 'activity panel';
+  }
+  cards.forEach(function(c,i){
+    var cell=document.createElement('button');
+    cell.type='button'; cell.className='p-cell';
+    cell.innerHTML='<span class="pc-n"></span><span class="pc-t"></span><span class="pc-s"></span>';
+    cell.querySelector('.pc-n').textContent=i+1;
+    var t=c.querySelector('.slide-title');
+    cell.querySelector('.pc-t').textContent=t?t.textContent:(c.dataset.label||'');
+    cell.querySelector('.pc-s').textContent=srcOf(c);
+    cell.addEventListener('click',function(){ showGrid(false); idx=i; render(); });
+    gridIn.appendChild(cell);
+  });
+  function render(){
+    cards.forEach(function(c){ c.classList.remove('active'); });
+    idx=Math.max(0,Math.min(idx,cards.length-1));
+    var c=cards[idx]; if(!c) return;
+    c.classList.add('active'); c.scrollTop=0;
+    var s=c.querySelector('.stage');
+    if(s){ if(s.animGo) s.animGo(1); else show(s,0); }
+    document.getElementById('p-count').textContent=(idx+1)+' / '+cards.length;
+    document.getElementById('p-title').textContent=label(c);
+    [].slice.call(gridIn.children).forEach(function(g,i){ g.classList.toggle('here',i===idx); });
+  }
+  function showGrid(on){
+    grid.hidden=!on;
+    bAll.setAttribute('aria-pressed', on?'true':'false');
+    if(on) grid.scrollTop=0;
+  }
+  function present(on){
+    if(on){ body.classList.add('present'); showGrid(false); render(); }
+    else{
+      body.classList.remove('present'); body.classList.remove('guides-on');
+      showGrid(false); setFs(false); realFs(false);
+      cards.forEach(function(c){ c.classList.remove('active'); });
+    }
+  }
+  document.getElementById('present-btn').addEventListener('click',function(){ present(true); });
+  document.getElementById('p-exit').addEventListener('click',function(){ present(false); });
+  document.getElementById('p-prev').addEventListener('click',function(){ advance(-1); });
+  document.getElementById('p-next').addEventListener('click',function(){ advance(1); });
+  bAll.addEventListener('click',function(){ showGrid(grid.hidden); });
+  bGuides.addEventListener('click',function(){
+    var on=!body.classList.contains('guides-on');
+    body.classList.toggle('guides-on',on);
+    bGuides.setAttribute('aria-pressed', on?'true':'false');
+  });
+  /* Full screen. The Fullscreen API rejects silently in a sandboxed frame and
+     is prefixed on older Safari, which is why the button looked dead. So the
+     CSS full-screen state is toggled unconditionally — bar hidden, black
+     surround, slide fitted to the viewport — and the real API is attempted on
+     top of it. If the API works you also lose the browser chrome; if it is
+     refused, the slide show still fills the window. */
+  var fsOn=false;
+  function setFs(on){
+    fsOn=on;
+    body.classList.toggle('fs',on);
+    bFull.setAttribute('aria-pressed', on?'true':'false');
+    bFull.textContent = on ? 'Exit full screen' : 'Full screen';
+  }
+  /* Both requestFullscreen() and window.print() are refused outright inside a
+     sandboxed frame — a preview pane, an embedded viewer — and refused
+     silently, which is why the buttons looked broken rather than blocked.
+     Detect it once, say so, and offer the one fix that works from in here:
+     re-open the same file as its own top-level tab. */
+  var framed=(function(){ try{ return window.self!==window.top; }catch(e){ return true; } })();
+  var apiBlocked = framed || document.fullscreenEnabled===false;
+  var warn=document.getElementById('env-warn');
+  if(apiBlocked && warn){
+    warn.hidden=false;
+    document.getElementById('env-open').addEventListener('click',function(){
+      window.open(window.location.href,'_blank','noopener');
+    });
+  }
+  var hint=document.querySelector('.fs-hint');
+  var HINT_OK='Esc leaves full screen \u00B7 f toggles it \u00B7 a for all slides';
+  var HINT_BLOCKED='Your browser blocked true full screen here \u2014 open this file directly '
+                 + 'in a browser tab for a real slide show. Esc to leave.';
+  function realFs(on){
+    var el=document.documentElement;
+    var req=el.requestFullscreen||el.webkitRequestFullscreen||el.msRequestFullscreen;
+    var ex=document.exitFullscreen||document.webkitExitFullscreen||document.msExitFullscreen;
+    if(!on){
+      try{ if(ex && (document.fullscreenElement||document.webkitFullscreenElement)) ex.call(document); }
+      catch(e){}
+      return;
+    }
+    if(hint) hint.textContent = apiBlocked ? HINT_BLOCKED : HINT_OK;
+    if(apiBlocked || !req) return;
+    function attempt(target){
+      var r=target.requestFullscreen||target.webkitRequestFullscreen||target.msRequestFullscreen;
+      if(!r) return false;
+      try{
+        var p=r.call(target);
+        if(p && p.catch) p.catch(function(){
+          // documentElement refused; body is sometimes allowed where it is not
+          if(target!==document.body) attempt(document.body);
+          else if(hint) hint.textContent=HINT_BLOCKED;
+        });
+        return true;
+      }catch(e){ return false; }
+    }
+    if(!attempt(el)) attempt(document.body);
+  }
+  bFull.addEventListener('click',function(){ var on=!fsOn; setFs(on); realFs(on); });
+  ['fullscreenchange','webkitfullscreenchange'].forEach(function(ev){
+    document.addEventListener(ev,function(){
+      // leaving real full screen by any route (Esc, F11, browser UI) clears the CSS state too
+      var real=!!(document.fullscreenElement||document.webkitFullscreenElement);
+      if(!real && fsOn) setFs(false);
+    });
+  });
+
+  /* Presenter stepping. A card that has its own steps consumes the arrow key
+     first, so one forward key walks the whole deck including every reveal —
+     which is what removing classroom mode requires. */
+  function liveStage(){
+    var c=cards[idx];
+    return c ? c.querySelector('.stage') : null;
+  }
+  function advance(dir){
+    var s=liveStage();
+    if(s){
+      if(s.dataset.anim && s.animGo){
+        /* a staged card (data-anim) consumes the key too, so every card with
+           steps behaves the same under one forward key */
+        var mx=parseInt(s.dataset.anim,10)||1, cur=parseInt(s.dataset.animAt||1,10);
+        if(dir>0 && cur<mx){ s.animGo(cur+1); return; }
+        if(dir<0 && cur>1){ s.animGo(cur-1); return; }
+      }else{
+        var n=steps(s).length, at=parseInt(s.dataset.at||0,10);
+        if(dir>0 && at<n-1){ step(s,1); return; }
+        if(dir<0 && at>0){ step(s,-1); return; }
+      }
+    }
+    idx+=dir; render();
+  }
+  function replay(){
+    var s=liveStage(); if(!s) return;
+    if(s.animGo) s.animGo(1); else show(s,0);
+  }
+
+  /* ================= keyboard ================= */
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    var tag=(e.target.tagName||'').toLowerCase();
+    if(tag==='input'||tag==='textarea') return;
+    var k=e.key.toLowerCase();
+
+    if(body.classList.contains('present')){
+      if(!grid.hidden && e.key==='Escape'){ showGrid(false); e.preventDefault(); return; }
+      if(e.key==='Escape' && fsOn){ setFs(false); realFs(false); e.preventDefault(); return; }
+      if(e.key==='Escape'){ present(false); return; }
+      if(k==='a'){ showGrid(grid.hidden); e.preventDefault(); return; }
+      if(k==='g'){ bGuides.click(); e.preventDefault(); return; }
+      if(k==='f'){ bFull.click(); e.preventDefault(); return; }
+      if(k==='r'){ replay(); e.preventDefault(); return; }
+      if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '||e.key==='PageDown'){
+        advance(1); e.preventDefault(); return; }
+      if(e.key==='ArrowLeft'||e.key==='ArrowUp'||e.key==='PageUp'){
+        advance(-1); e.preventDefault(); return; }
+      return;
+    }
+
+    if(e.key==='Escape'){
+      return;
+    }
+    if(k==='p'){ present(true); e.preventDefault(); }
+  },true);
+})();
+
+</script>
+</body>
+</html>

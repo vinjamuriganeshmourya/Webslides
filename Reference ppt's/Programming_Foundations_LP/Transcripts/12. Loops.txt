@@ -1,0 +1,2460 @@
+1
+00:00:00,000 --> 00:00:12,160
+Hello everyone, welcome to today's session, in today's session we will be talking about
+
+2
+00:00:12,160 --> 00:00:17,760
+the concept called loops, okay, so first let's quickly recap what we have seen in the previous
+
+3
+00:00:17,760 --> 00:00:23,840
+sessions, so in the previous sessions we have seen about the nested conditions that is inside
+
+4
+00:00:23,840 --> 00:00:29,760
+the conditional block of a conditional statement we can write an another conditional statement,
+
+5
+00:00:29,920 --> 00:00:33,599
+that is called the nested conditional statement, and the conditional block
+
+6
+00:00:33,599 --> 00:00:38,000
+of the nested conditional statement is called nested conditional block,
+
+7
+00:00:38,000 --> 00:00:43,680
+okay, so we have seen about the nested conditions, and this nested condition we can either write it
+
+8
+00:00:43,680 --> 00:00:49,360
+in the if conditional block or also in the else conditional block, so either we can write it in
+
+9
+00:00:49,360 --> 00:00:55,119
+the if conditional block or in the else conditional block, so we have seen examples for this, right.
+
+10
+00:00:55,119 --> 00:01:00,799
+Then we have seen about the elif statement, so we have seen how we can write if condition A,
+
+11
+00:01:00,799 --> 00:01:07,199
+elif condition B, else like this we can use this elif statement, we have seen the examples for
+
+12
+00:01:07,199 --> 00:01:13,760
+this, right, we can add as many elif statements as we want, and this else condition is not
+
+13
+00:01:13,760 --> 00:01:19,760
+compulsory, so else is not compulsory, so if you want you can add else, otherwise you can show us
+
+14
+00:01:19,760 --> 00:01:26,160
+to ignore, okay, so this is what we have seen in the previous session, right, in today's session
+
+15
+00:01:26,800 --> 00:01:33,120
+we will see what we are going to learn, okay, the today's agenda is first loops, we'll understand
+
+16
+00:01:33,120 --> 00:01:38,959
+what is this loops and why is it important, and then we'll learn about while loop, okay,
+
+17
+00:01:38,959 --> 00:01:44,639
+so we'll see the syntax and how to write with an example, okay, and then we will apply this
+
+18
+00:01:44,639 --> 00:01:50,160
+while loop and solve a coding question, okay, and also what are the common mistakes that can
+
+19
+00:01:50,160 --> 00:01:56,000
+happen, we'll discuss about them too, since this is a new concept and a very important concept,
+
+20
+00:01:56,000 --> 00:02:02,239
+today's session might take 5 to 10 minutes more, okay, so now we'll start the concept called
+
+21
+00:02:02,239 --> 00:02:09,759
+loops, okay, so to understand the loops, first what did we learn? We learned that Python executes
+
+22
+00:02:09,759 --> 00:02:15,759
+the code in a sequence, right, one after the other, it will execute the instructions in a
+
+23
+00:02:15,759 --> 00:02:22,559
+step by step manner, in that each instruction will be executed once, right, this is what we have seen,
+
+24
+00:02:23,199 --> 00:02:29,119
+so there will be, if you give a sequence of instructions, what will Python do? One instruction
+
+25
+00:02:29,119 --> 00:02:33,520
+after that, another instruction after that, another instruction it will execute in a step
+
+26
+00:02:33,600 --> 00:02:39,759
+by step manner and each instruction is executed once, right, this is what we have seen.
+
+27
+00:02:39,759 --> 00:02:46,880
+Let's say we have a block of code which we want it to be executed multiple times, okay,
+
+28
+00:02:46,880 --> 00:02:52,000
+so we want a block of code to get executed more than once, let's say we want this,
+
+29
+00:02:52,559 --> 00:02:58,639
+then how do we control the flow? So can we do that, we have a block of code we wanted to
+
+30
+00:02:58,639 --> 00:03:08,000
+get executed multiple times, so can we do that in Python? Yes, that is loops, okay, so with the loops
+
+31
+00:03:08,000 --> 00:03:14,479
+what we can do is we can execute a particular block of code several times, see here we have
+
+32
+00:03:14,479 --> 00:03:20,800
+a blue box, right, that is a block of code, so we want this particular block of code to get executed
+
+33
+00:03:20,800 --> 00:03:27,600
+multiple times, so with the help of loops we can execute a particular block of code several times,
+
+34
+00:03:27,600 --> 00:03:34,800
+okay, so in Python we have two primary ways for looping, one is while loop and another is
+
+35
+00:03:34,800 --> 00:03:42,399
+for loop, okay, so we use these two ways to do looping, okay, so first what we'll do is we'll
+
+36
+00:03:42,399 --> 00:03:48,399
+understand while loop, okay, what is the syntax, how to do looping with the help of while loop,
+
+37
+00:03:48,399 --> 00:03:55,119
+okay, so in while loop you can see the syntax there, okay, so you will write while and then
+
+38
+00:03:55,199 --> 00:04:01,839
+give the condition colon and then the block of code which has to be repeated, okay, this while
+
+39
+00:04:01,839 --> 00:04:07,919
+loop is actually used to execute a particular block of code several times till the condition
+
+40
+00:04:07,919 --> 00:04:13,039
+is true, see there is while condition colon and there is a block of code, right, the blue one
+
+41
+00:04:13,039 --> 00:04:20,480
+with proper indentation, okay, so there until the condition is true the block of code will be
+
+42
+00:04:20,480 --> 00:04:27,600
+repeated, once the condition is false then the looping will stop, okay, clear, so we have while
+
+43
+00:04:27,600 --> 00:04:32,480
+condition if the condition is true, till the condition is true the block of code will be
+
+44
+00:04:32,480 --> 00:04:39,920
+executed, once the condition is false then we will stop executing that block of code multiple times
+
+45
+00:04:39,920 --> 00:04:46,399
+and then we'll come out, okay, this is while loop, okay, we'll see an example and understand this
+
+46
+00:04:46,480 --> 00:04:52,079
+while loop, okay, let's say you have a question like this, we what we have to do is we have to
+
+47
+00:04:52,079 --> 00:04:58,079
+write a code to print next three consecutive numbers of the given integer input, so we have
+
+48
+00:04:58,079 --> 00:05:04,079
+given an input say 1, now what we have to do is we have to print the next three consecutive numbers,
+
+49
+00:05:04,720 --> 00:05:11,200
+2, 3 and 4, see we have given input 10, for that what are the next three consecutive numbers,
+
+50
+00:05:11,279 --> 00:05:18,480
+11, 12, 30, like this we have to print the next three consecutive numbers for the given input,
+
+51
+00:05:18,480 --> 00:05:24,640
+okay, so this is the question, so now what we'll do is we'll solve this question with the concepts
+
+52
+00:05:24,640 --> 00:05:29,200
+that we have learnt so far, okay, so shall we do it? We'll do it in our code playground,
+
+53
+00:05:30,559 --> 00:05:35,519
+so in the code playground now what we'll do is we'll write the code, first what we have to do,
+
+54
+00:05:35,519 --> 00:05:40,880
+what is the first step? Reading the input, so we will be given one integer input, so for that
+
+55
+00:05:40,880 --> 00:05:50,799
+what I'll do is I'll take A, it's an integer so int of input, right, so we have taken the input,
+
+56
+00:05:50,799 --> 00:05:55,839
+now what we have to do? We have to print the next three consecutive numbers of A,
+
+57
+00:05:56,399 --> 00:06:02,640
+so what I have to do? I have to first increase the number present in A and then print it,
+
+58
+00:06:02,640 --> 00:06:15,679
+right, so I'll write A equal to A plus 1, okay, and then I will do print A, okay, so now I'll
+
+59
+00:06:15,679 --> 00:06:22,160
+just run the code and see, let's say I'm giving 5, okay, so what should come? I should get 6,
+
+60
+00:06:22,160 --> 00:06:28,720
+see I got 6, now what I'll do is I have to print next 7, right, so 5 is there, the next consecutive
+
+61
+00:06:28,720 --> 00:06:34,160
+number is 6, after that we have to print 7, so for that what I'll do? I'll just increase the
+
+62
+00:06:34,160 --> 00:06:41,119
+number, right, so we already have 6 in A, so I have to just write A equal to A plus 1,
+
+63
+00:06:45,920 --> 00:06:54,000
+A is equal to A plus 1, okay, and then I have to write print A, okay, now what I did? I have again
+
+64
+00:06:54,799 --> 00:07:00,799
+there is 6, so I have added plus 1, okay, and then the 7 gets stored in A and we have written
+
+65
+00:07:00,799 --> 00:07:07,679
+print A, okay, we'll run the code and see, okay, we got 6 and then 7, now what I have to do?
+
+66
+00:07:07,679 --> 00:07:14,079
+I have to print the next consecutive number, so again what will I do? I'll add plus 1 to 7
+
+67
+00:07:14,160 --> 00:07:24,799
+and then just print it, okay, and then write print A, okay, now I'll again run the code,
+
+68
+00:07:24,799 --> 00:07:31,760
+see now we should get 6, 7, 8, so I have taken an input, added plus 1 and I have printed it,
+
+69
+00:07:31,760 --> 00:07:36,239
+again added plus 1 and then printed it, again added plus 1, printed it, like this we got the
+
+70
+00:07:36,239 --> 00:07:42,959
+3 consecutive numbers 6, 7 and 8, okay, clear, so this is how I will write with the concepts I
+
+71
+00:07:42,959 --> 00:07:50,320
+have learnt so far, now you can observe here, right, so this part of code, this is repeating
+
+72
+00:07:50,320 --> 00:07:56,640
+3 times, right, you can see we are writing this multiple times, see we are writing the same piece
+
+73
+00:07:56,640 --> 00:08:02,480
+of code multiple times, see I want here 3 consecutive numbers, so what I had to do?
+
+74
+00:08:02,480 --> 00:08:07,679
+I have to write this piece of code 3 times, let's say I have to print 10 consecutive numbers,
+
+75
+00:08:07,679 --> 00:08:14,000
+then what I have to do? I have to write 10 times, right, is there any better way? Right,
+
+76
+00:08:14,640 --> 00:08:18,959
+we can do it with the loops, okay, we'll see that, now we'll go back to the slides,
+
+77
+00:08:20,000 --> 00:08:25,839
+so we have seen this question and we have a written this code, right, so this part of code
+
+78
+00:08:25,839 --> 00:08:30,959
+that A equal to A plus 1 and then printed, this was what happened we are writing this multiple
+
+79
+00:08:30,959 --> 00:08:38,880
+times, so instead of writing it 3 times what can we do? We can use a while loop, right, so we can
+
+80
+00:08:38,880 --> 00:08:44,640
+use a loop because the same piece of code, the same set of instructions what we have to do?
+
+81
+00:08:44,640 --> 00:08:52,719
+We have to execute them 3 times, right, what do we do with loops? In loops given a block of code
+
+82
+00:08:52,719 --> 00:08:59,679
+we can make python run that block of code multiple times, right, so we'll do the same thing here,
+
+83
+00:08:59,760 --> 00:09:08,239
+so what is the syntax? We'll write while condition colon and then you'll have a proper indentation,
+
+84
+00:09:08,239 --> 00:09:13,840
+the standard is 4 spaces, okay, we'll have 4 spaces and then we'll write the block of code
+
+85
+00:09:13,840 --> 00:09:19,919
+which is repeating, so in our case now first step is we have to take the input, so we have taken
+
+86
+00:09:19,919 --> 00:09:25,679
+that, and what is the repeating block of code? See what is the repeating part of code? A equal
+
+87
+00:09:25,679 --> 00:09:31,919
+to A plus 1 and then print A, so this is the repeating block of code, right, so that is a
+
+88
+00:09:31,919 --> 00:09:37,440
+repeating part of code, A equal to A plus 1 and printing, so what did we do? We have written it
+
+89
+00:09:37,440 --> 00:09:42,880
+in the while, right, so in the while block of code with proper indentation we have written that.
+
+90
+00:09:43,440 --> 00:09:49,200
+Now what we have to do? We have to write the condition, right, so that is still pending.
+
+91
+00:09:49,200 --> 00:09:54,400
+Now we'll do how to do this, how to write this condition, so we have identified what is a
+
+92
+00:09:54,479 --> 00:09:59,760
+repeating block of code and we have written it properly and we have written the while syntax,
+
+93
+00:09:59,760 --> 00:10:07,520
+now the condition is pending, okay, so we'll do that, so what we have to do is we have to execute
+
+94
+00:10:07,520 --> 00:10:15,760
+this A equal to A plus 1 print A, this block of code 3 times, right, so we need to ensure that 3
+
+95
+00:10:15,760 --> 00:10:23,359
+times it's getting executed, so what we can do? We can maintain a counter, right, we will like
+
+96
+00:10:23,359 --> 00:10:28,799
+generally if let's say you want to do a particular thing repeatedly, then what you'll do? You will
+
+97
+00:10:28,799 --> 00:10:34,719
+after you do it once you'll say 1, after again after you do it again you'll count it as 2,
+
+98
+00:10:34,719 --> 00:10:39,840
+again 3, like this generally what do you do? You take a paper or you just count it on your hand
+
+99
+00:10:39,840 --> 00:10:46,960
+like this, you'll write 1, 2, 3 like this, you maintain a count, right, similarly in programming
+
+100
+00:10:46,960 --> 00:10:53,760
+also we can maintain a count, okay, so we can maintain how many times this piece of code got
+
+101
+00:10:53,760 --> 00:10:59,440
+executed, okay, once this block of code got executed once what we can do? Again we can ask
+
+102
+00:10:59,440 --> 00:11:05,679
+it to execute like this in loop, once it's done 3 times what we can do? We can stop it executing,
+
+103
+00:11:05,679 --> 00:11:11,760
+right, so this is what we have to do, so we have to maintain a count, right, so for that what we'll
+
+104
+00:11:11,760 --> 00:11:18,640
+do is we will initialize a counter variable, okay, we'll initialize a counter variable to check if
+
+105
+00:11:18,640 --> 00:11:24,640
+the loop has executed 3 times, just like how we maintain count in the paper, we can initialize
+
+106
+00:11:24,640 --> 00:11:29,599
+a variable say counter and then maintain the count, okay, so we'll do that step.
+
+107
+00:11:30,400 --> 00:11:37,280
+So first what we have to do? We have to have a variable counter equal to and we'll initialize
+
+108
+00:11:37,280 --> 00:11:43,520
+with 0, so far this A equal to A plus 1 print A this block of code hasn't been executed, right,
+
+109
+00:11:43,520 --> 00:11:50,719
+so what is the count? Count is 0, right, so we have to initialize the variable counter with
+
+110
+00:11:50,719 --> 00:11:56,880
+0, okay, this step we call it as initialization because we are initializing the variable,
+
+111
+00:11:56,880 --> 00:12:03,280
+right, so this is called initialization, okay, so now what we did? We stored 0 in the counter
+
+112
+00:12:03,280 --> 00:12:09,520
+variable, right, next what we have to do? Once this block of code A equal to A plus 1 and print
+
+113
+00:12:09,520 --> 00:12:16,239
+A, these two lines are executed, what you have to do? You have to update the counter, right,
+
+114
+00:12:16,239 --> 00:12:22,479
+you have to increase its value with 1, so what we have to do is we have to update the value present
+
+115
+00:12:22,479 --> 00:12:28,080
+in the counter, right, once it's executed we have to add plus 1, again if it is executed again you
+
+116
+00:12:28,080 --> 00:12:33,760
+have to add one more, right, like this you have to update the counter, right, even on the paper
+
+117
+00:12:33,760 --> 00:12:38,640
+what do you do? After it's done you'll do plus 1 and then once it's done you'll do again do plus 1
+
+118
+00:12:38,640 --> 00:12:44,239
+like this, right, you maintain the counter, so you have to update the counter also appropriately.
+
+119
+00:12:44,239 --> 00:12:51,359
+So see there is a update step there, we have written counter equal to counter plus 1, okay,
+
+120
+00:12:52,159 --> 00:12:59,760
+so this is the updation, okay, so what did we do? We have initialized the counter variable with 0
+
+121
+00:12:59,760 --> 00:13:06,239
+and once this block of code got executed we have updated the counter, right, so it's done one time
+
+122
+00:13:06,239 --> 00:13:11,840
+so you have to update the counter. Now coming to condition, we are done with initialization
+
+123
+00:13:11,840 --> 00:13:18,719
+and updation, now what we have to do? We have to ensure that this part of code that A equal to A
+
+124
+00:13:18,719 --> 00:13:20,719
+plus 1 and print A, this block of code
+
+
+
+125
+00:13:20,512 --> 00:13:26,832
+of code should be executed 3 times right, it should only be executed 3 times.
+
+126
+00:13:26,832 --> 00:13:34,032
+So how do we ensure that with the while condition because until the condition is true this block
+
+127
+00:13:34,032 --> 00:13:36,772
+of code will be keep executing right.
+
+128
+00:13:36,772 --> 00:13:42,112
+So when the condition is false then the block of code will stop executing okay.
+
+129
+00:13:42,112 --> 00:13:47,272
+So what we have to do when the counter is 1 it should get executed, when the counter
+
+130
+00:13:47,272 --> 00:13:52,032
+is 0 it should get executed, when the counter is 1 it should get executed, 2 it should get
+
+131
+00:13:52,032 --> 00:13:56,912
+executed but when it comes to 3 it shouldn't get executed because by then we are done with
+
+132
+00:13:56,912 --> 00:13:58,631
+3 times right.
+
+133
+00:13:58,631 --> 00:14:02,032
+So in this way we have to maintain the condition.
+
+134
+00:14:02,032 --> 00:14:05,951
+So to write the condition how do we do it?
+
+135
+00:14:05,951 --> 00:14:07,912
+So what all did we learn?
+
+136
+00:14:07,912 --> 00:14:14,111
+We learned about arithmetic operators but this arithmetic operators will not give true
+
+137
+00:14:14,111 --> 00:14:15,791
+or false right.
+
+138
+00:14:15,791 --> 00:14:18,592
+So we can't use arithmetic operators here.
+
+139
+00:14:18,592 --> 00:14:19,592
+Then what did we learn?
+
+140
+00:14:19,592 --> 00:14:22,971
+We learned about relational operators right.
+
+141
+00:14:22,971 --> 00:14:28,431
+So in relational operators can we use that they give true or false right.
+
+142
+00:14:28,431 --> 00:14:30,192
+Now what we have to do here?
+
+143
+00:14:30,192 --> 00:14:34,351
+We have a counter variable, we have to compare it with the value right.
+
+144
+00:14:34,351 --> 00:14:41,232
+So we have to check whether the count, whether the piece of code got executed 3 times right
+
+145
+00:14:41,232 --> 00:14:44,092
+and where is the count maintained in the counter.
+
+146
+00:14:44,092 --> 00:14:49,372
+So we have to compare the value in the counter with a particular value.
+
+147
+00:14:49,372 --> 00:14:51,211
+So for that what do we use?
+
+148
+00:14:51,211 --> 00:14:54,772
+We use the relational operators okay.
+
+149
+00:14:54,772 --> 00:14:59,732
+So what are the relational operators either less than or greater than right.
+
+150
+00:14:59,732 --> 00:15:03,651
+So these are the relational operators we have seen less than, greater than, equal to like
+
+151
+00:15:03,651 --> 00:15:04,651
+this.
+
+152
+00:15:04,651 --> 00:15:05,651
+So can we use these?
+
+153
+00:15:05,651 --> 00:15:06,651
+Yes right.
+
+154
+00:15:06,651 --> 00:15:11,251
+We can use this greater than, less than symbols.
+
+155
+00:15:11,251 --> 00:15:14,372
+Now we will see how to use okay.
+
+156
+00:15:14,372 --> 00:15:17,931
+So here we should see what should this condition be right.
+
+157
+00:15:17,931 --> 00:15:23,971
+So for that we will compare this counter variable with say first we will try with 0 okay.
+
+158
+00:15:23,971 --> 00:15:28,791
+If the counter, if we compare counter less than 0 then what will happen?
+
+159
+00:15:28,791 --> 00:15:32,551
+This piece of code will not get executed because 0 less than 0 is false.
+
+160
+00:15:32,551 --> 00:15:36,012
+So this piece of code will not be executed okay.
+
+161
+00:15:36,012 --> 00:15:39,472
+Then if you try 1 then what will happen?
+
+162
+00:15:39,691 --> 00:15:44,952
+This piece of code will be executed only once because once you write 0 is less than 1 so
+
+163
+00:15:44,952 --> 00:15:50,291
+it will go into that a equal to a plus 1 print a and then the counter value will get updated.
+
+164
+00:15:50,291 --> 00:15:54,112
+So 0 plus 1 so 1 will get stored into the counter.
+
+165
+00:15:54,112 --> 00:15:58,752
+Now when you check the condition 1 less than 1 then what will happen?
+
+166
+00:15:58,752 --> 00:16:00,051
+It's false right.
+
+167
+00:16:00,051 --> 00:16:02,032
+So in what we want?
+
+168
+00:16:02,032 --> 00:16:08,392
+We want a equal to a plus 1 and print a to be executed 3 times okay.
+
+169
+00:16:08,392 --> 00:16:10,131
+So initially it's 0.
+
+170
+00:16:10,131 --> 00:16:18,472
+So once counter is 0, 0 less than now let's take 3 okay, 0 less than 3 okay, it's true.
+
+171
+00:16:18,472 --> 00:16:22,672
+Now we will get the piece of code will be executed and then we will update the counter
+
+172
+00:16:22,672 --> 00:16:23,672
+okay.
+
+173
+00:16:23,672 --> 00:16:27,991
+We will have 0, we have 0 plus 1 which is 1 and we will store 1 in the counter like
+
+174
+00:16:27,991 --> 00:16:28,991
+this right.
+
+175
+00:16:28,991 --> 00:16:32,832
+Again you will go there, you will check 1 like this if you do step by step.
+
+176
+00:16:32,832 --> 00:16:35,732
+We want this to be executed thrice right.
+
+177
+00:16:35,732 --> 00:16:37,691
+So then what should the value be?
+
+178
+00:16:37,691 --> 00:16:40,291
+Counter less than 3 right.
+
+179
+00:16:40,291 --> 00:16:44,351
+So the value there in the condition should be 3.
+
+180
+00:16:44,351 --> 00:16:48,252
+So once the counter is equal to 3 then what will happen?
+
+181
+00:16:48,252 --> 00:16:50,291
+We have to terminate the condition okay.
+
+182
+00:16:50,291 --> 00:16:52,291
+We have to terminate the loop.
+
+183
+00:16:52,291 --> 00:16:58,131
+So that's why this condition is called the termination condition okay, clear.
+
+184
+00:16:58,131 --> 00:17:04,851
+So in this way what we do is we will step by step check whichever condition is correct
+
+185
+00:17:04,972 --> 00:17:09,092
+and then we will add it as the termination condition okay.
+
+186
+00:17:09,092 --> 00:17:12,252
+So we will see what all we have seen so far.
+
+187
+00:17:12,252 --> 00:17:14,752
+First we have seen about the initialization.
+
+188
+00:17:14,752 --> 00:17:22,092
+We want a particular piece of code to be how many times it has to be repeated thrice right.
+
+189
+00:17:22,092 --> 00:17:24,651
+So we have to maintain a count for it.
+
+190
+00:17:24,651 --> 00:17:29,532
+So to maintain the count we will use the counter variable.
+
+191
+00:17:29,532 --> 00:17:34,571
+Initially we haven't executed that piece of code so it should be initialized with 0 and
+
+192
+00:17:35,291 --> 00:17:36,291
+then what do we do?
+
+193
+00:17:36,291 --> 00:17:38,492
+We have a termination condition.
+
+194
+00:17:38,492 --> 00:17:41,851
+It has to be executed thrice right.
+
+195
+00:17:41,851 --> 00:17:48,012
+So the condition is counter less than 3 okay that is a termination condition.
+
+196
+00:17:48,012 --> 00:17:54,251
+Once this counter less than 3 condition is false then the piece of code will not be executed
+
+197
+00:17:54,251 --> 00:17:58,172
+okay and then we will see a is equal to a plus 1 and print a.
+
+198
+00:17:58,172 --> 00:18:03,291
+This is the piece of code that you wanted to be repeated multiple times okay.
+
+199
+00:18:03,291 --> 00:18:06,691
+Then we have counter equal to counter plus 1.
+
+200
+00:18:06,691 --> 00:18:08,691
+So we have to update the counter.
+
+201
+00:18:08,691 --> 00:18:14,071
+Once the block of code got executed you have to update the count right.
+
+202
+00:18:14,071 --> 00:18:18,131
+So that's where we have written counter is equal to counter plus 1.
+
+203
+00:18:18,131 --> 00:18:19,871
+This is called updation.
+
+204
+00:18:19,871 --> 00:18:25,932
+So we have written initialization, termination condition and updation right clear.
+
+205
+00:18:25,932 --> 00:18:32,052
+So in this way in generally loops we will have all these 3 steps initialization, a termination
+
+206
+00:18:32,091 --> 00:18:39,591
+condition and then the block of code which has to be repeated and then the updation okay.
+
+207
+00:18:39,591 --> 00:18:45,052
+So now what we will do is we will try out the same thing with and see what will happen
+
+208
+00:18:45,052 --> 00:18:49,512
+okay in the same piece of code in a step by step manner we will see what are the different
+
+209
+00:18:49,512 --> 00:18:53,411
+values stored and how does it get executed okay.
+
+210
+00:18:53,411 --> 00:18:54,411
+So first what we will do?
+
+211
+00:18:54,411 --> 00:18:55,911
+We will take the input.
+
+212
+00:18:55,911 --> 00:18:57,811
+So here we have given input 5.
+
+213
+00:18:57,811 --> 00:18:59,291
+So that gets stored in a.
+
+214
+00:18:59,411 --> 00:19:04,332
+So in the variable a we have the value 5 okay and then what we have to do?
+
+215
+00:19:04,332 --> 00:19:06,712
+We have to do the initialization.
+
+216
+00:19:06,712 --> 00:19:08,712
+So we have to maintain the count.
+
+217
+00:19:08,712 --> 00:19:13,052
+So we have this counter variable and then we will initialize it with 0.
+
+218
+00:19:13,052 --> 00:19:17,172
+So the value 0 gets stored in the variable counter okay.
+
+219
+00:19:17,172 --> 00:19:20,732
+Then what we will do is we will go to the condition in the y.
+
+220
+00:19:20,732 --> 00:19:22,452
+Counter less than 3.
+
+221
+00:19:22,452 --> 00:19:25,471
+So the value in the counter is 0, 0 less than 3.
+
+222
+00:19:25,471 --> 00:19:27,232
+This condition is true.
+
+223
+00:19:27,232 --> 00:19:30,272
+So this piece of code will get executed.
+
+224
+00:19:30,272 --> 00:19:32,492
+So a equal to a plus 1.
+
+225
+00:19:32,492 --> 00:19:37,952
+So previously it was 5, a equal to a plus 1 which is 6 and the value 6 got stored in
+
+226
+00:19:37,952 --> 00:19:38,952
+a.
+
+227
+00:19:38,952 --> 00:19:40,811
+Then we will print the value.
+
+228
+00:19:40,811 --> 00:19:42,952
+So we got the output here 6.
+
+229
+00:19:42,952 --> 00:19:43,952
+Then what we have to do?
+
+230
+00:19:43,952 --> 00:19:46,531
+We have to update the counter.
+
+231
+00:19:46,531 --> 00:19:48,452
+So we have updated the counter.
+
+232
+00:19:48,452 --> 00:19:49,552
+Previously it was 0.
+
+233
+00:19:49,552 --> 00:19:51,471
+Now we have done 0 plus 1.
+
+234
+00:19:51,471 --> 00:19:54,272
+So it is 1 okay clear.
+
+235
+00:19:54,272 --> 00:19:56,552
+Now once this is done again what will happen?
+
+236
+00:19:56,552 --> 00:19:58,471
+This is loops right.
+
+237
+00:19:58,471 --> 00:20:01,112
+So again it will go check the condition okay.
+
+238
+00:20:01,112 --> 00:20:02,871
+From there again it will go up.
+
+239
+00:20:02,871 --> 00:20:05,091
+Check whether the condition is true or false.
+
+240
+00:20:05,091 --> 00:20:07,971
+Now what is the value present in the counter 1?
+
+241
+00:20:07,971 --> 00:20:10,591
+Is 1 less than 3 true right?
+
+242
+00:20:10,591 --> 00:20:16,832
+So again it will come and then it will execute a equal to a plus 1 which is 7.
+
+243
+00:20:16,832 --> 00:20:18,712
+So 7 gets stored in a.
+
+244
+00:20:18,712 --> 00:20:19,871
+Then again we will print a.
+
+245
+00:20:19,871 --> 00:20:22,152
+See we got the output as 7.
+
+246
+00:20:22,152 --> 00:20:23,392
+And then again what we should do?
+
+247
+00:20:23,512 --> 00:20:25,512
+We have to update the counter right.
+
+248
+00:20:25,512 --> 00:20:27,871
+So because this piece of code got executed.
+
+249
+00:20:27,871 --> 00:20:30,152
+So now the counter is 2.
+
+250
+00:20:30,152 --> 00:20:34,152
+Again because of the loop it will again go up and check for the condition.
+
+251
+00:20:34,152 --> 00:20:37,152
+Is 2 less than 3 true right?
+
+252
+00:20:37,152 --> 00:20:41,552
+So now again a equal to a plus 1 will be executed.
+
+253
+00:20:41,552 --> 00:20:43,871
+Now a has 8.
+
+254
+00:20:43,871 --> 00:20:48,012
+Then we will print the value 8 and then we will update the counter again.
+
+255
+00:20:48,012 --> 00:20:51,031
+So now we have 2 plus 1 which is 3.
+
+256
+00:20:51,031 --> 00:20:53,672
+So the counter variable has 3.
+
+257
+00:20:53,672 --> 00:20:54,672
+Again it will go up.
+
+258
+00:20:54,672 --> 00:20:55,672
+Okay.
+
+259
+00:20:55,672 --> 00:20:56,672
+It will check.
+
+260
+00:20:56,672 --> 00:20:57,672
+Is 3 less than 3?
+
+261
+00:20:57,672 --> 00:20:58,672
+No.
+
+262
+00:20:58,672 --> 00:20:59,672
+Right.
+
+263
+00:20:59,672 --> 00:21:00,672
+So the condition is false.
+
+264
+00:21:00,672 --> 00:21:07,291
+So the remaining block of code which has to be executed in the y will not get executed.
+
+265
+00:21:07,291 --> 00:21:09,552
+So directly we will go to n.
+
+266
+00:21:09,552 --> 00:21:12,112
+Okay we will write there is a print n right.
+
+267
+00:21:12,112 --> 00:21:14,631
+So then the n will get printed.
+
+268
+00:21:14,631 --> 00:21:19,832
+Okay in this way in a step by step manner this will be executed.
+
+269
+00:21:19,832 --> 00:21:20,832
+Okay clear?
+
+270
+00:21:21,631 --> 00:21:22,631
+I hope you understood this part.
+
+271
+00:21:22,631 --> 00:21:25,232
+Now we will try the same thing in the code playground and see.
+
+272
+00:21:25,232 --> 00:21:26,232
+Okay.
+
+273
+00:21:26,232 --> 00:21:27,791
+Coming to the code playground.
+
+274
+00:21:27,791 --> 00:21:30,911
+So here what I will do is I will start afresh.
+
+275
+00:21:30,911 --> 00:21:31,911
+First what we have to do?
+
+276
+00:21:31,911 --> 00:21:33,952
+We have to take an input.
+
+277
+00:21:33,952 --> 00:21:34,952
+Okay.
+
+278
+00:21:34,952 --> 00:21:35,952
+Cool.
+
+279
+00:21:35,952 --> 00:21:38,272
+Now what we have to do?
+
+280
+00:21:38,272 --> 00:21:41,012
+We have to write loops.
+
+281
+00:21:41,012 --> 00:21:44,432
+So before writing the loop what is very important?
+
+282
+00:21:44,432 --> 00:21:45,432
+Initialization.
+
+283
+00:21:45,432 --> 00:21:47,492
+So we have to maintain a count right.
+
+284
+00:21:47,492 --> 00:21:54,532
+So we have to write counter equal to 0 and then we will write while and then we have
+
+285
+00:21:54,532 --> 00:21:56,332
+to write a condition.
+
+286
+00:21:56,332 --> 00:21:57,332
+Okay.
+
+287
+00:21:57,332 --> 00:21:59,332
+Now assume that condition will think.
+
+288
+00:21:59,332 --> 00:22:00,332
+Okay.
+
+289
+00:22:00,332 --> 00:22:01,332
+Condition.
+
+290
+00:22:01,332 --> 00:22:02,332
+Here what we have to write?
+
+291
+00:22:02,332 --> 00:22:03,772
+We have to say a equal to a plus 1.
+
+292
+00:22:03,772 --> 00:22:06,731
+This is the piece of code that has to be executed right.
+
+293
+00:22:06,731 --> 00:22:10,532
+So a equal to a plus 1 and then we will write print a.
+
+294
+00:22:10,532 --> 00:22:11,532
+Okay.
+
+295
+00:22:11,532 --> 00:22:14,012
+Then we have to update the counter.
+
+296
+00:22:14,012 --> 00:22:18,731
+We have initialized the counter and once this block of code got executed we should
+
+297
+00:22:18,731 --> 00:22:19,731
+update the counter.
+
+298
+00:22:19,731 --> 00:22:20,731
+Right.
+
+299
+00:22:20,731 --> 00:22:26,691
+So for that we will write counter equal to counter plus 1.
+
+300
+00:22:26,691 --> 00:22:27,731
+Clear.
+
+301
+00:22:27,731 --> 00:22:29,972
+So we have updated the counter.
+
+302
+00:22:29,972 --> 00:22:33,452
+Then finally once this entire loop is done what we have to do?
+
+303
+00:22:33,452 --> 00:22:35,452
+We have to write print n.
+
+304
+00:22:35,452 --> 00:22:36,452
+Okay.
+
+305
+00:22:36,452 --> 00:22:40,332
+So now coming to what is the condition here?
+
+306
+00:22:40,332 --> 00:22:43,491
+So we want this block to be executed 3 times.
+
+307
+00:22:43,491 --> 00:22:44,491
+Right.
+
+308
+00:22:44,491 --> 00:22:45,491
+So for that what did we write?
+
+309
+00:22:45,491 --> 00:22:48,272
+We have written counter less than 3.
+
+310
+00:22:48,272 --> 00:22:50,491
+So this is the initialization.
+
+311
+00:22:50,491 --> 00:22:54,452
+This is the termination condition and this is the updation.
+
+312
+00:22:54,452 --> 00:22:55,452
+Okay.
+
+313
+00:22:55,452 --> 00:22:58,731
+So these 3 things are important in case of loops.
+
+314
+00:22:58,731 --> 00:22:59,731
+Okay.
+
+315
+00:22:59,731 --> 00:23:00,731
+Now what we will give?
+
+316
+00:23:00,731 --> 00:23:03,931
+We will give an input say 5 and we will run the code and see.
+
+317
+00:23:03,931 --> 00:23:04,931
+Okay.
+
+318
+00:23:04,931 --> 00:23:05,931
+So what did we get?
+
+319
+00:23:05,931 --> 00:23:08,491
+We got 6, 7, 8 and n.
+
+320
+00:23:08,491 --> 00:23:09,491
+Okay.
+
+321
+00:23:09,652 --> 00:23:13,652
+So in this part of our code we have written all the steps and we got the output appropriately.
+
+322
+00:23:13,652 --> 00:23:14,652
+Right.
+
+323
+00:23:14,652 --> 00:23:16,212
+So now we will go back to the slides.
+
+324
+00:23:16,212 --> 00:23:19,092
+We will see some common mistakes here.
+
+325
+00:23:19,092 --> 00:23:20,092
+Okay.
+
+326
+00:23:20,092 --> 00:23:23,611
+So some common mistakes that can happen when you are writing these loops.
+
+327
+00:23:23,611 --> 00:23:24,611
+Okay.
+
+328
+00:23:24,611 --> 00:23:27,571
+One thing is you might miss initialization.
+
+329
+00:23:27,571 --> 00:23:30,051
+Missing initialization is one common mistake.
+
+330
+00:23:30,051 --> 00:23:33,092
+See in this piece of code we have taken the input.
+
+331
+00:23:33,092 --> 00:23:36,571
+The next step is you have to initialize the counter.
+
+332
+00:23:36,652 --> 00:23:37,652
+Okay.
+
+333
+00:23:37,652 --> 00:23:40,292
+So if you miss this initialization see we got an error there.
+
+334
+00:23:40,292 --> 00:23:45,212
+Name counter is not defined because a variable counter is not defined and we are using that
+
+335
+00:23:45,212 --> 00:23:47,092
+variable in the while condition.
+
+336
+00:23:47,092 --> 00:23:48,092
+Right.
+
+337
+00:23:48,092 --> 00:23:49,811
+So there is a condition counter less than 3.
+
+338
+00:23:49,811 --> 00:23:52,051
+In that we are using this condition variable.
+
+339
+00:23:52,051 --> 00:23:53,051
+Right.
+
+340
+00:23:53,051 --> 00:23:55,071
+So this variable is not defined.
+
+341
+00:23:55,071 --> 00:23:56,452
+So that is what we got.
+
+342
+00:23:56,452 --> 00:23:57,452
+Okay.
+
+343
+00:23:57,452 --> 00:23:58,452
+So you might get this error.
+
+344
+00:23:58,452 --> 00:23:59,452
+Okay.
+
+345
+00:23:59,452 --> 00:24:02,131
+So initialization is also very important.
+
+346
+00:24:02,131 --> 00:24:06,171
+In case you get an error like this you have to check whether you have written the initialization
+
+347
+00:24:06,772 --> 00:24:07,772
+or not.
+
+348
+00:24:07,772 --> 00:24:08,772
+Okay.
+
+349
+00:24:08,772 --> 00:24:13,772
+So another possible mistake is the termination condition whichever is present if there is
+
+350
+00:24:13,772 --> 00:24:16,491
+a chance that you write it in an incorrect way.
+
+351
+00:24:16,491 --> 00:24:18,292
+I'll show you an example here.
+
+352
+00:24:18,292 --> 00:24:19,292
+Okay.
+
+353
+00:24:19,292 --> 00:24:21,412
+So what we have written we have taken the input.
+
+354
+00:24:21,412 --> 00:24:23,691
+We have initialized the counter to 0.
+
+355
+00:24:23,691 --> 00:24:29,731
+Then what we have done is we have written condition equal to counter less than 3 and
+
+356
+00:24:29,731 --> 00:24:33,412
+then we have used this condition variable in while and we have written the remaining
+
+357
+00:24:33,412 --> 00:24:34,912
+part of code.
+
+358
+00:24:35,152 --> 00:24:36,152
+Okay.
+
+359
+00:24:36,152 --> 00:24:37,152
+See what will happen here?
+
+360
+00:24:37,152 --> 00:24:38,152
+We'll understand.
+
+361
+00:24:38,152 --> 00:24:39,712
+See initially counter equal to 0.
+
+362
+00:24:39,712 --> 00:24:42,991
+So in the variable counter what is the value present?
+
+363
+00:24:42,991 --> 00:24:43,991
+0.
+
+364
+00:24:43,991 --> 00:24:49,231
+So when you do counter less than 3, 0 less than 3 the value is true.
+
+365
+00:24:49,231 --> 00:24:50,231
+Right.
+
+366
+00:24:50,231 --> 00:24:53,472
+So the true will get stored in condition.
+
+367
+00:24:53,472 --> 00:24:54,472
+Right.
+
+368
+00:24:54,472 --> 00:24:58,231
+And then Python will go to the next line which is while.
+
+369
+00:24:58,231 --> 00:24:59,231
+While true.
+
+370
+00:24:59,231 --> 00:25:00,231
+The condition is true.
+
+371
+00:25:00,231 --> 00:25:01,231
+Right.
+
+372
+00:25:01,231 --> 00:25:02,231
+The true value is stored in the condition.
+
+373
+00:25:02,231 --> 00:25:03,231
+Okay.
+
+374
+00:25:03,231 --> 00:25:04,231
+While true.
+
+375
+00:25:04,551 --> 00:25:05,551
+And then the block of code.
+
+376
+00:25:05,551 --> 00:25:08,551
+A equal to A plus 1 print A. These will get executed.
+
+377
+00:25:08,551 --> 00:25:09,551
+Okay.
+
+378
+00:25:09,551 --> 00:25:11,431
+And then the counter is again updated.
+
+379
+00:25:11,431 --> 00:25:12,431
+So initially it's 0.
+
+380
+00:25:12,431 --> 00:25:14,231
+So the counter is updated to 1.
+
+381
+00:25:14,231 --> 00:25:15,912
+Again we'll come back.
+
+382
+00:25:15,912 --> 00:25:16,912
+Okay.
+
+383
+00:25:16,912 --> 00:25:17,912
+What is the condition now?
+
+384
+00:25:17,912 --> 00:25:23,671
+It's still true because now we are not comparing 1 with 3 because we already compared in the
+
+385
+00:25:23,671 --> 00:25:24,671
+previous line.
+
+386
+00:25:24,671 --> 00:25:25,952
+In the while what will happen?
+
+387
+00:25:25,952 --> 00:25:29,472
+We'll come back to the while and we'll just check for the condition.
+
+388
+00:25:29,472 --> 00:25:30,472
+Okay.
+
+389
+00:25:30,472 --> 00:25:31,832
+This is a possible mistake.
+
+390
+00:25:31,832 --> 00:25:32,832
+Okay.
+
+391
+00:25:32,832 --> 00:25:33,832
+So here what will happen?
+
+392
+00:25:33,832 --> 00:25:34,832
+While is always true.
+
+393
+00:25:34,832 --> 00:25:35,832
+The condition is always true.
+
+394
+00:25:35,832 --> 00:25:36,832
+It's not getting updated.
+
+395
+00:25:36,832 --> 00:25:37,832
+Right.
+
+396
+00:25:37,832 --> 00:25:38,832
+So what will happen?
+
+397
+00:25:38,832 --> 00:25:39,832
+The loop will run many times.
+
+398
+00:25:39,832 --> 00:25:40,832
+Right.
+
+399
+00:25:40,832 --> 00:25:41,832
+Infinite times.
+
+400
+00:25:41,832 --> 00:25:42,832
+It will run for.
+
+401
+00:25:42,832 --> 00:25:43,832
+It will go on running and running and running.
+
+402
+00:25:43,832 --> 00:25:44,832
+Okay.
+
+403
+00:25:44,832 --> 00:25:45,832
+So we call this as infinite loop.
+
+404
+00:25:45,832 --> 00:25:46,832
+Okay.
+
+405
+00:25:46,832 --> 00:25:47,832
+The while block will keep running.
+
+406
+00:25:47,832 --> 00:25:48,832
+And because the condition is always true.
+
+407
+00:25:48,832 --> 00:25:49,832
+Okay.
+
+408
+00:25:49,832 --> 00:25:50,832
+So what is the mistake here?
+
+409
+00:25:50,832 --> 00:25:51,832
+We shouldn't write the condition like that.
+
+410
+00:25:51,832 --> 00:25:52,832
+Okay.
+
+411
+00:25:52,832 --> 00:25:53,832
+Clear.
+
+412
+00:25:53,832 --> 00:25:54,832
+So this is one possible mistake.
+
+413
+00:25:54,832 --> 00:25:55,832
+Okay.
+
+414
+00:25:55,832 --> 00:25:56,832
+We'll see.
+
+415
+00:25:56,832 --> 00:25:57,832
+For that what.
+
+416
+00:25:57,832 --> 00:25:58,832
+Another mistake here.
+
+417
+00:25:58,832 --> 00:25:59,832
+We should not write the condition like that.
+
+418
+00:25:59,832 --> 00:26:00,832
+Okay.
+
+419
+00:26:00,832 --> 00:26:01,832
+Because the condition is always true.
+
+420
+00:26:01,832 --> 00:26:02,832
+Okay.
+
+421
+00:26:02,832 --> 00:26:03,832
+So what is the mistake here?
+
+422
+00:26:03,832 --> 00:26:04,832
+We should not write the condition like that.
+
+423
+00:26:04,832 --> 00:26:05,832
+Okay.
+
+424
+00:26:05,832 --> 00:26:06,832
+Every time the condition should get executed again.
+
+425
+00:26:06,832 --> 00:26:07,832
+So what is the correct way?
+
+426
+00:26:07,832 --> 00:26:13,592
+To write while counter less than 3 colon and then you have to write the remaining piece
+
+427
+00:26:13,592 --> 00:26:14,592
+of code.
+
+428
+00:26:14,592 --> 00:26:15,592
+Okay.
+
+429
+00:26:15,592 --> 00:26:16,592
+Clear.
+
+430
+00:26:16,592 --> 00:26:17,592
+So this is one possible mistake.
+
+431
+00:26:17,592 --> 00:26:18,592
+Okay.
+
+432
+00:26:18,592 --> 00:26:19,592
+We'll see.
+
+433
+00:26:19,592 --> 00:26:20,592
+For that what.
+
+434
+00:26:20,852 --> 00:26:21,852
+For that what.
+
+435
+00:26:21,852 --> 00:26:22,852
+Another possible mistake.
+
+436
+00:26:22,852 --> 00:26:23,852
+That is.
+
+437
+00:26:23,852 --> 00:26:24,852
+Here what we have done is.
+
+438
+00:26:24,852 --> 00:26:25,852
+We have written counter equal to 1.
+
+439
+00:26:25,852 --> 00:26:26,852
+Okay.
+
+440
+00:26:26,852 --> 00:26:27,852
+And then we have written the remaining things.
+
+441
+00:26:27,852 --> 00:26:28,852
+Okay.
+
+442
+00:26:28,852 --> 00:26:29,852
+See what happened here.
+
+443
+00:26:29,852 --> 00:26:30,852
+When the counter is 1.
+
+444
+00:26:30,852 --> 00:26:31,852
+Okay.
+
+445
+00:26:31,852 --> 00:26:32,852
+1 is less than 3.
+
+446
+00:26:32,852 --> 00:26:33,852
+And then you'll write a equal to a plus 1.
+
+447
+00:26:33,852 --> 00:26:34,852
+So if.
+
+448
+00:26:34,852 --> 00:26:35,852
+If.
+
+449
+00:26:35,852 --> 00:26:36,852
+If.
+
+450
+00:26:36,852 --> 00:26:37,852
+If.
+
+451
+00:26:37,852 --> 00:26:38,852
+If.
+
+452
+00:26:38,852 --> 00:26:39,852
+If.
+
+453
+00:26:39,852 --> 00:26:40,852
+If.
+
+454
+00:26:40,852 --> 00:26:41,852
+If.
+
+455
+00:26:41,852 --> 00:26:42,852
+If.
+
+456
+00:26:42,852 --> 00:26:43,852
+If.
+
+457
+00:26:43,852 --> 00:26:44,852
+If.
+
+458
+00:26:44,852 --> 00:26:45,852
+If.
+
+459
+00:26:45,852 --> 00:26:46,852
+If.
+
+460
+00:26:46,852 --> 00:26:47,852
+If.
+
+461
+00:26:47,852 --> 00:26:48,852
+If.
+
+462
+00:26:48,852 --> 00:26:49,852
+If.
+
+
+
+463
+00:26:41,024 --> 00:26:46,744
+the input is 1, you will get 2, the 2 will get printed, counter is updated to 2, 2 is
+
+464
+00:26:46,744 --> 00:26:50,784
+less than 3, again the condition is true, you will have A equal to A plus 1 which is
+
+465
+00:26:50,784 --> 00:26:55,304
+2 plus 1, 3 and you will get the output 3 and then what will happen, the counter will
+
+466
+00:26:55,304 --> 00:27:01,104
+get updated, okay, so that is nothing but 2 plus 1, 3, is counter less than 3, the condition
+
+467
+00:27:01,104 --> 00:27:06,304
+is false, so what will happen will directly get A, but what was the question?
+
+468
+00:27:06,304 --> 00:27:12,024
+We want the 3 consecutive numbers, so A equal to A plus 1 printing, this block of code should
+
+469
+00:27:12,024 --> 00:27:16,224
+be executed 3 times, right but what happened here?
+
+470
+00:27:16,224 --> 00:27:22,264
+It got executed twice because of 2 reasons, either you have to write counter equal to
+
+471
+00:27:22,264 --> 00:27:28,783
+0, okay and start from 0 and the condition should be counter less than 3 or what you
+
+472
+00:27:28,783 --> 00:27:29,783
+can write?
+
+473
+00:27:29,783 --> 00:27:34,983
+You can write counter less than 4, right, so either you can update the termination condition
+
+474
+00:27:34,983 --> 00:27:41,424
+or you can update the initialization, okay, so either of things is a mistake, okay, clear.
+
+475
+00:27:41,424 --> 00:27:46,344
+So like this you have to check the initialization in case if you are not getting the expected
+
+476
+00:27:46,344 --> 00:27:51,144
+output, you have to check the initialization whether it's proper or not, the termination
+
+477
+00:27:51,144 --> 00:27:56,663
+condition and also the updation, you have to check these 3 things whether they are properly
+
+478
+00:27:56,663 --> 00:28:00,123
+present or not, okay, clear.
+
+479
+00:28:00,123 --> 00:28:05,004
+So another possible mistake is updation, see here in this piece of code what happened?
+
+480
+00:28:05,004 --> 00:28:11,104
+We missed the updation, okay, there is no counter equal to counter plus 1 line, right,
+
+481
+00:28:11,104 --> 00:28:12,564
+so what happened?
+
+482
+00:28:12,564 --> 00:28:16,524
+Because of that the variable counter, the value present in the variable counter is not
+
+483
+00:28:16,524 --> 00:28:21,123
+getting updated, so it's always 0, right, so initially we have initialized with 0, so
+
+484
+00:28:21,123 --> 00:28:23,564
+it's always 0, so what will happen here?
+
+485
+00:28:23,564 --> 00:28:26,043
+While 0 less than 3 and then what will get?
+
+486
+00:28:26,043 --> 00:28:30,204
+We will get A equal to A plus 1, print A will get printed, again you'll go there, still
+
+487
+00:28:30,204 --> 00:28:34,964
+the value is 0, so 0 less than 3 like this, the value is not getting updated so what will
+
+488
+00:28:34,964 --> 00:28:35,964
+happen?
+
+489
+00:28:35,964 --> 00:28:41,803
+The entire loop will be executing so many times, right, so it will become infinite,
+
+490
+00:28:41,803 --> 00:28:47,564
+so it's called an infinite loop, okay, so that's why checking the initialization, termination
+
+491
+00:28:47,564 --> 00:28:54,443
+condition and the updation, all of these things are important in case of loops, okay, clear.
+
+492
+00:28:54,844 --> 00:29:00,244
+Now what we'll do is we'll apply this loops and solve an another question, okay, so we'll
+
+493
+00:29:00,244 --> 00:29:08,044
+together solve this question, so the question is write a program to print stars in N rows
+
+494
+00:29:08,044 --> 00:29:13,884
+and N columns, where integer N is given as input, okay, so what we have to do is there
+
+495
+00:29:13,884 --> 00:29:19,524
+will be given an input say 4, you have to print a square like this, okay, you can see
+
+496
+00:29:19,524 --> 00:29:26,083
+there is a square, there are 4 rows, there is 4 columns and 4 rows, okay, so like this
+
+497
+00:29:26,083 --> 00:29:31,764
+we have to print a square, okay, so now what we'll do is we'll solve the same thing and
+
+498
+00:29:31,764 --> 00:29:37,283
+see, okay, we'll step by step solve, first we'll see the input format, so the first line
+
+499
+00:29:37,283 --> 00:29:42,044
+contains a positive integer, here see you have 3, okay, like this the first line will
+
+500
+00:29:42,044 --> 00:29:47,643
+contain a positive integer, okay, and the output format is we have to print a stars
+
+501
+00:29:47,764 --> 00:29:54,203
+like this, okay, N rows and N columns, here one point is there is a space after every
+
+502
+00:29:54,203 --> 00:29:59,283
+star just observe that, there is a space after every star, we have to be careful about that.
+
+503
+00:29:59,283 --> 00:30:03,764
+Now what we'll do is we'll solve the same question and see, okay, so coming to the code
+
+504
+00:30:03,764 --> 00:30:10,163
+playground, so here I'll just remove this code, so we'll do it in a step by step manner,
+
+505
+00:30:10,163 --> 00:30:12,083
+okay, so what is the first thing?
+
+506
+00:30:12,083 --> 00:30:19,844
+We have to read the input, okay, so what I'll do is I'll do N equal to int of input, okay,
+
+507
+00:30:19,844 --> 00:30:24,044
+now we have taken the input, then what we have to do?
+
+508
+00:30:24,044 --> 00:30:29,884
+We have to print stars, right, in a square pattern, so what we can use?
+
+509
+00:30:29,884 --> 00:30:34,923
+We have learnt some concepts, right, we have learnt string repetition, string concatenation
+
+510
+00:30:34,923 --> 00:30:39,524
+like this we have learnt a lot of concepts with strings, we have seen length of the string,
+
+511
+00:30:39,524 --> 00:30:45,203
+string repetition, string concatenation, right, in our case what concept can we apply?
+
+512
+00:30:45,203 --> 00:30:50,203
+We can apply string repetition, right, we want that star to be repeated multiple times,
+
+513
+00:30:50,203 --> 00:30:55,723
+so we'll use string repetition, so for that initially let's assume that N is 4, then what
+
+514
+00:30:55,723 --> 00:30:56,723
+will I write?
+
+515
+00:30:56,723 --> 00:31:01,444
+Okay, so let's say I want to print the first row, how do I do it?
+
+516
+00:31:01,444 --> 00:31:10,083
+Let's say I'll write it as, first maybe I'll just write row equal to, okay, star and then
+
+517
+00:31:10,083 --> 00:31:15,883
+there is a space after each star, right, so I'll write star space, I want this N times,
+
+518
+00:31:15,883 --> 00:31:23,244
+right, into N, okay, this is the string repetition, right, so I want the star to be repeated N
+
+519
+00:31:23,244 --> 00:31:27,844
+times, the star and space together has to be repeated N times, so this is how I have
+
+520
+00:31:27,844 --> 00:31:28,844
+to write, okay.
+
+521
+00:31:29,244 --> 00:31:37,043
+Now I'll just print the row and see, now what I'll do, let's say the input is 4, I'll run
+
+522
+00:31:37,043 --> 00:31:41,404
+the code, you have to get, see there are 4 stars, right, star, space, star, space, star,
+
+523
+00:31:41,404 --> 00:31:46,483
+space, star, right, we got 4 stars, now we are done printing the row.
+
+524
+00:31:46,483 --> 00:31:47,803
+Now what I have to do?
+
+525
+00:31:47,803 --> 00:31:56,724
+I want this row again 4 times, right, so I want the same row 4 times, so here the input
+
+526
+00:31:56,724 --> 00:32:03,083
+is 4, so I want 4 times, one way of doing is I'll just copy this part and then I'll
+
+527
+00:32:03,083 --> 00:32:09,603
+do it multiple times, okay, maybe I need not do this, this is the same thing, right, so
+
+528
+00:32:09,603 --> 00:32:15,004
+I can just say I have a particular row, the star which is printed 4 times and I can write
+
+529
+00:32:15,004 --> 00:32:18,043
+like this, okay.
+
+530
+00:32:18,043 --> 00:32:25,404
+So now I'll run the code and see, okay, see we got 4 stars and then again rows and properly
+
+531
+00:32:25,404 --> 00:32:32,043
+columns and we got a square pattern, so we got this, but here this works for say input
+
+532
+00:32:32,043 --> 00:32:38,524
+4, but now let me try it for input 5, okay, so for 5 what happened?
+
+533
+00:32:38,524 --> 00:32:44,763
+We have 5 columns but see the rows there are only 4, but what was the question?
+
+534
+00:32:44,763 --> 00:32:53,724
+The question was n rows, n columns, so I have to have 5 columns and 5 rows, okay, so writing
+
+535
+00:32:53,724 --> 00:32:58,643
+like this is not working, okay, so now what we have to do?
+
+536
+00:32:58,643 --> 00:33:05,524
+What we have to do is we have to execute this part of code, okay, there is a row, this piece
+
+537
+00:33:05,524 --> 00:33:10,004
+of code n times, right, so for that what we can apply?
+
+538
+00:33:10,004 --> 00:33:14,883
+We can apply our loops, right, so we have seen about the value, so we can use our loops
+
+539
+00:33:14,883 --> 00:33:16,363
+here, so what I'll do?
+
+540
+00:33:16,363 --> 00:33:21,844
+I'll write while, I need a condition here and this is the block of code that has to
+
+541
+00:33:21,964 --> 00:33:25,684
+be repeated, okay, so first what I have to write?
+
+542
+00:33:25,684 --> 00:33:33,043
+I have to initialize the counter, right, so I'll write counter, okay, equal to 0, so because
+
+543
+00:33:33,043 --> 00:33:41,524
+initially we haven't printed it at all and then next is updation, so I'll write counter
+
+544
+00:33:41,524 --> 00:33:48,404
+equal to counter plus 1, okay, so I'm done with the initialization and I'm done with
+
+545
+00:33:48,404 --> 00:33:50,083
+the updation.
+
+546
+00:33:50,083 --> 00:33:54,124
+Now coming to the condition, so what should the condition be?
+
+547
+00:33:54,124 --> 00:34:01,323
+Now I want this particular block of code to be executed n times, right, so for that what
+
+548
+00:34:01,323 --> 00:34:02,323
+I can do?
+
+549
+00:34:02,323 --> 00:34:07,763
+I have to compare this counter with a particular value so that this particular piece of code
+
+550
+00:34:07,763 --> 00:34:11,844
+should be executed n times, right, so for that what I can do?
+
+551
+00:34:11,844 --> 00:34:20,323
+I'll have counter, right, so should be less than n, right, so see if it is less than 1,
+
+552
+00:34:20,323 --> 00:34:24,164
+less than 2, less than 3 like this if you compare it won't work, right, so we want it
+
+553
+00:34:24,164 --> 00:34:29,923
+to be run n times, so previously we have seen an example, right, so like this we have to
+
+554
+00:34:29,923 --> 00:34:35,363
+check at each step, okay, we want this n times, if we write counter less than 10 will it get
+
+555
+00:34:35,363 --> 00:34:36,883
+executed n times?
+
+556
+00:34:36,923 --> 00:34:43,883
+Yes, right, so it should stop after that, so when counter becomes n this condition will
+
+557
+00:34:43,883 --> 00:34:50,244
+be false, so this piece of code will not be executed, right, so in this way this condition
+
+558
+00:34:50,244 --> 00:34:56,244
+is appropriate here, okay, now what we'll do is we'll run the code and see.
+
+559
+00:34:56,244 --> 00:35:04,363
+See we have 5 columns and also 5 rows, we'll try with some other input say 3, so here also
+
+560
+00:35:04,363 --> 00:35:12,203
+what happened we have 3 columns and 3 rows, right, or some say 4, okay, see we have again
+
+561
+00:35:12,203 --> 00:35:18,003
+4 columns and 4 rows, in this way we should write loops, first we have to think about
+
+562
+00:35:18,003 --> 00:35:23,683
+the initialization, next about the updation and finally we have to see about the termination
+
+563
+00:35:23,683 --> 00:35:28,964
+condition, okay, so in this way we have to identify what is the block of code that has
+
+564
+00:35:28,964 --> 00:35:34,284
+to be repeated and then we have to initialize and then the block of code we have to write
+
+565
+00:35:35,203 --> 00:35:39,524
+it there and then we have to write the updation and appropriately we have to write the condition,
+
+566
+00:35:39,524 --> 00:35:40,524
+okay.
+
+567
+00:35:40,524 --> 00:35:45,524
+So how will the while run, how this looping will work, until the condition is true the
+
+568
+00:35:45,524 --> 00:35:51,243
+block of code will be executed multiple times, once the condition is false it will get stop,
+
+569
+00:35:51,243 --> 00:35:57,883
+it will stop executing, okay, clear, so this is how we have to execute this part of code,
+
+570
+00:35:57,883 --> 00:36:02,924
+okay, clear, so you understood how this all works, right, so there are lot of other questions
+
+571
+00:36:02,924 --> 00:36:05,364
+on loops also you can practice them.
+
+572
+00:36:05,364 --> 00:36:11,284
+Now we will go back to the slides, so we have seen this, we have solved this question, right,
+
+573
+00:36:11,284 --> 00:36:16,643
+now I'll just quickly summarize what we have seen in today's session, okay, so we understood
+
+574
+00:36:16,643 --> 00:36:22,443
+a new concept called loops, right, in this we have seen about while loop, right, so initially
+
+575
+00:36:22,443 --> 00:36:24,003
+why do we use loops?
+
+576
+00:36:24,003 --> 00:36:30,164
+We have a particular block of code which has to be executed multiple times, for that we
+
+577
+00:36:30,164 --> 00:36:36,203
+use loops, okay, so in loops there are basically two primary ways, one is for loop and the
+
+578
+00:36:36,203 --> 00:36:40,404
+other is while loop, we have seen about the while loop today, in the while loop we have
+
+579
+00:36:40,404 --> 00:36:45,724
+seen what is the syntax, okay, we will have while, condition, colon and then the block
+
+580
+00:36:45,724 --> 00:36:52,164
+of code that has to be repeated, right, and then we have seen that in this initialization,
+
+581
+00:36:52,164 --> 00:36:56,524
+termination condition and updation, these are the three important things in case of
+
+582
+00:36:56,524 --> 00:36:57,524
+while loop.
+
+583
+00:36:57,883 --> 00:36:58,883
+So first what we have to do?
+
+584
+00:36:58,883 --> 00:37:02,724
+We have to initialize, let's say it has to be executed three times, then what you have
+
+585
+00:37:02,724 --> 00:37:03,724
+to do?
+
+586
+00:37:03,724 --> 00:37:07,883
+You have to initialize a counter to maintain the count, okay, and then you have to update
+
+587
+00:37:07,883 --> 00:37:12,964
+the counter appropriately, and then based on when it has to be terminated you have to
+
+588
+00:37:12,964 --> 00:37:18,683
+write the termination condition, okay, clear, and then we have seen some of the common mistakes
+
+589
+00:37:18,683 --> 00:37:23,443
+and errors, right, like you might miss writing the initialization condition or the updation
+
+590
+00:37:23,443 --> 00:37:29,724
+condition, initialization or updation or the termination condition could be inappropriate,
+
+591
+00:37:29,724 --> 00:37:35,964
+right, so we have to check all of these things while you are writing this while loop, okay,
+
+592
+00:37:35,964 --> 00:37:40,484
+and we have applied these concepts and solved questions, right, so I hope you understood
+
+593
+00:37:40,484 --> 00:37:46,243
+all of this loops concept very clearly, so to apply this concept there are lot of coding
+
+594
+00:37:46,243 --> 00:37:52,044
+questions available for you, okay, practice them, especially in programming practice is
+
+595
+00:37:52,044 --> 00:37:57,643
+very very important, when you practice these things then you will be able to clearly understand
+
+596
+00:37:57,643 --> 00:38:02,323
+these things and apply this information, right, the knowledge that you got, so practice is
+
+597
+00:38:02,323 --> 00:38:07,003
+important, whenever you get your, whenever you have free time practice the coding questions,
+
+598
+00:38:07,003 --> 00:38:08,003
+okay.
+
+599
+00:38:08,003 --> 00:38:14,484
+Now what we'll do is we'll have a small challenge, okay, so to make it a little bit let's get
+
+600
+00:38:14,484 --> 00:38:19,203
+excited and see a little bit things, okay, there is a small challenge for you, there
+
+601
+00:38:19,203 --> 00:38:25,123
+is a piece of code here, see there is a code there, so this code has some small mistake
+
+602
+00:38:25,123 --> 00:38:31,964
+in it, okay, there is already a code given to you, in this code there is a mistake, okay,
+
+603
+00:38:31,964 --> 00:38:37,604
+you have to identify what is the mistake, so for this when we give an input python the
+
+604
+00:38:37,604 --> 00:38:43,724
+expected output is this, okay, one after the other the characters should be printed, but
+
+605
+00:38:43,724 --> 00:38:49,164
+there is a small mistake in this code, so you have to identify what is the mistake,
+
+606
+00:38:49,164 --> 00:38:55,964
+okay, so this question you can pause the video and also see or this is already available
+
+607
+00:38:55,964 --> 00:39:00,524
+in the, it will be available just below the session, you can look into it, okay, identify
+
+608
+00:39:00,524 --> 00:39:05,044
+the mistake, okay, we'll discuss about it in the next session, okay, there is a just
+
+609
+00:39:05,044 --> 00:39:09,604
+a mistake, you need not write this code from scratch, there is a small mistake in that
+
+610
+00:39:09,604 --> 00:39:13,604
+you need to identify what is the mistake, okay, there is a small challenge for you
+
+611
+00:39:13,604 --> 00:39:17,643
+today, okay, we'll discuss about this tomorrow, okay.
+
+612
+00:39:17,643 --> 00:39:23,503
+And then the next session is for loops, okay, we have seen about the while loop today, right,
+
+613
+00:39:23,503 --> 00:39:28,683
+so in loops to write loops is in another way which is for loops, okay, we'll see about
+
+614
+00:39:28,683 --> 00:39:32,404
+that tomorrow, okay, thank you and all the best everyone.
+

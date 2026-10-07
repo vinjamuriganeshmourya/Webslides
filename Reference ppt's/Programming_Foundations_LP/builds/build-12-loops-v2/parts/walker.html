@@ -1,0 +1,18 @@
+<div class="walker" id="walker"><div class="wcode"><pre><span class="wline" id="wl1">a <b>=</b> <i>5</i></span><span class="wline" id="wl2">counter <b>=</b> <i>0</i></span><span class="wline" id="wl3"><b>while</b> counter <b>&lt;</b> <i>2</i>:</span><span class="wline" id="wl4">    a <b>=</b> a <b>+</b> <i>1</i></span><span class="wline" id="wl5">    <i>print</i>(a)</span><span class="wline" id="wl6">    counter <b>=</b> counter <b>+</b> <i>1</i></span><span class="wline" id="wl7"><i>print</i>(<em>"End"</em>)</span></pre><div class="wslide"><label>counter &lt; 2</label><input type="range" min="0" max="4" value="2" step="1" aria-label="the number the counter is compared against"></div><div class="wctl"><button type="button" data-w="play">Play</button><button type="button" class="ghost" data-w="step">One step</button><button type="button" class="ghost" data-w="reset">Reset</button></div><div class="wout" aria-live="polite"></div></div><div class="wviz"><svg class="wchart" viewBox="0 0 560 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flowchart of a while loop: the condition is tested, the three body lines run, and the back edge returns to the same test before every pass">
+<g class="wnode" data-node="a"><rect x="100" y="10" width="200" height="48" rx="10"/><text x="200" y="40" text-anchor="middle">a = 5, counter = 0</text></g>
+<path class="wedge" data-edge="din" d="M200 58 L200 84"/>
+<g class="wnode" data-node="d"><polygon points="200,84 285,124 200,164 115,124"/><text x="200" y="130" text-anchor="middle" id="wask">0 &lt; 2 ?</text></g>
+<path class="wedge" data-edge="t" d="M285 124 L300 124"/>
+<text class="wlbl" x="256" y="108">True</text>
+<g class="wnode" data-node="b1"><rect x="300" y="100" width="190" height="48" rx="10"/><text x="395" y="130" text-anchor="middle">a = a + 1</text></g>
+<path class="wedge" data-edge="e1" d="M395 148 L395 180"/>
+<g class="wnode" data-node="b2"><rect x="300" y="180" width="190" height="48" rx="10"/><text x="395" y="210" text-anchor="middle">print(a)</text></g>
+<path class="wedge" data-edge="e2" d="M395 228 L395 260"/>
+<g class="wnode" data-node="b3"><rect x="300" y="260" width="190" height="48" rx="10"/><text x="395" y="290" text-anchor="middle">counter = counter + 1</text></g>
+<path class="wedge" data-edge="back" d="M490 284 H530 V72 H200"/>
+<text class="wlbl" x="330" y="334">back to the same test</text>
+<text class="wlbl" x="210" y="196">False</text>
+<path class="wedge" data-edge="f" d="M200 164 L200 356"/>
+<g class="wnode" data-node="e"><rect x="100" y="356" width="200" height="48" rx="10"/><text x="200" y="386" text-anchor="middle">print("End")</text></g>
+<g class="wdot" aria-hidden="true"><circle r="8"/></g>
+</svg></div></div>

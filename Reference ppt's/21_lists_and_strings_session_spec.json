@@ -1,0 +1,2240 @@
+{
+ "meta": {
+  "session": "21 - Lists and Strings",
+  "course": "Programming Foundations",
+  "one_idea": "split() cuts one string into a list of pieces and join() glues a list of strings back into one. A negative index counts from the end, and a negative step walks a list or a string backwards.",
+  "outcomes": [
+   "Predict what split() gives with no separator, with a comma, and with a space, including the empty pieces.",
+   "Glue a list of strings into one string with join(), and say why a list of numbers fails.",
+   "Read any item from the end with a negative index, like list_a[-1].",
+   "Predict a slice with a negative step, and spot one that gives an empty list.",
+   "Reverse a list or a string with [::-1]."
+  ],
+  "previous": "20 - Working with Lists",
+  "slides_dir": "C:\\Lesson Plans New\\builds\\build-21-lists-strings\\work\\slides",
+  "deck_total": 59,
+  "kept": [
+   13,
+   15,
+   16,
+   17,
+   19,
+   21,
+   22,
+   23,
+   25,
+   27,
+   29,
+   30,
+   31,
+   33,
+   34,
+   36,
+   38,
+   40,
+   42,
+   44,
+   47,
+   48,
+   49,
+   53
+  ],
+  "cuts": [
+   [
+    "1-2",
+    "Welcome and title. The fixed spine cards replace them."
+   ],
+   [
+    "3-11",
+    "Session 20's recap, read aloud. Its content becomes the recap S-RECAP, one line 3 at a time."
+   ],
+   [
+    "12",
+    "The deck agenda. The spine agenda S-AGENDA replaces it."
+   ],
+   [
+    "14",
+    "Build-up of slide 15. C2 steps the same program."
+   ],
+   [
+    "18",
+    "Build-up of slide 19. C4 steps it."
+   ],
+   [
+    "20",
+    "The question twin of slide 21. It is the ask press of E1."
+   ],
+   [
+    "24",
+    "split('step'). It becomes round 3 of the game G1."
+   ],
+   [
+    "26",
+    "Build-up of slide 27. C6 steps it."
+   ],
+   [
+    "28",
+    "The question twin of slide 29. It is the ask press of C7."
+   ],
+   [
+    "32",
+    "Build-up of slide 33. C10 steps it."
+   ],
+   [
+    "35",
+    "Build-up of slide 36. C11 steps it."
+   ],
+   [
+    "37",
+    "Out of bounds in a slice. One spoken line in the guide, after C11 (see defects)."
+   ],
+   [
+    "39, 41",
+    "Build-up of slides 40 and 42. E2 walks both."
+   ],
+   [
+    "43, 45, 46",
+    "Build-up and question twins of slides 44 and 47. C12 steps them."
+   ],
+   [
+    "50, 51",
+    "Negative slice and negative step on a string. Same rules as the list. One spoken line in the guide after C14."
+   ],
+   [
+    "52",
+    "The question twin of slide 53. It is the ask press of C14."
+   ],
+   [
+    "54",
+    "Bullet takeaways. Replaced by the example board K1."
+   ],
+   [
+    "55, 56",
+    "Practice picture and the next session's name."
+   ],
+   [
+    "57",
+    "The daily challenge. It goes in the guide's close, for the instructor to set as homework."
+   ],
+   [
+    "58-59",
+    "Thank you and all the best. The fixed spine cards replace them."
+   ]
+  ],
+  "defects": [
+   [
+    "slide 42",
+    "\"Negative step requires the start to be greater than end\" is true for positions from the front only. msgs[-1:1:-1] has start -1, smaller than 1, and still prints ['canteen', 'where?', 'ok'].",
+    "E2 says the start must be to the RIGHT of the stop. The exit X1 tests exactly this case."
+   ],
+   [
+    "slide 37",
+    "\"While slicing, index can go out of bounds\" is right, but a student reads it as true for indexing too. list_a[-6] on a 5 item list stops with IndexError: list index out of range.",
+    "Slide 37 is a spoken line in the guide, and the guide says that indexing out of bounds is an error."
+   ]
+  ],
+  "notes": [
+   "The room is 50 to 60 first-year students on laptops. Laptops stay shut except on T1, T2 and the classroom quiz.",
+   "Votes are taken option by option: the instructor reads each option and asks how many think it is that one. Hands up. Nobody is named.",
+   "One picture for the first half: a string is a row of letter tiles, and split() cuts it where the separator sits. Every piece drops into a list box, an empty piece too, drawn as an empty box with ''. Use it on C2 to C7 and on G1.",
+   "One picture for the second half: a row of boxes with TWO position rows under it, 0 1 2 3 4 and -5 -4 -3 -2 -1. Use it on C9 to C14, E2 and X1. A cursor moves along it.",
+   "Python prints a list of strings in single quotes: ['1', '2']. Copy outputs from the JSON exactly; never turn them into double quotes.",
+   "Nothing before the title card may say the session's name. The hook may show Google Keep's own labels.",
+   "The bar to beat is Plans/DSA/Module 3 - Stacks & Queues/01 - Introduction to Stacks/: a simulation the room drives, a picture that refuses to lie."
+  ],
+  "topics": [
+   "strings",
+   "lists",
+   "string-methods"
+  ]
+ },
+ "build_contract": [
+  "One self-contained HTML file. It opens offline from a USB stick and makes no network request.",
+  "It opens in presenter view. There is no sidebar, top bar or button the instructor has to use.",
+  "Right arrow or the clicker is one press. Left arrow goes back one press. F goes full screen, A shows all the cards, and End shows the whole card at once. The instructor guide tells the instructor these keys, so they must work.",
+  "Every card is its own screen, in the order of this spec. Press 1 is what shows when the card opens.",
+  "Every card's outer element carries data-spec=\"<card id>\" and data-presses=\"<number of presses>\". The review script reads both.",
+  "No link to any other file. The students' handout and the instructor guide are separate files, and a link from this file is how a class finds the answers."
+ ],
+ "rules": [
+  "No autoplay. Nothing moves on a timer. One press, one move, with a caption that says what just happened.",
+  "Commit, then reveal. Where a card asks a question, the answer shows only on the press after the room has answered.",
+  "Wrong answers stay private. No names, no per-student results on screen. Hands are counted out loud, never shown.",
+  "The topic is named once. Nothing before the title card says today's topic, not a heading, not a caption, not a file name on a code card.",
+  "Words are exact. Words in quotation marks, and every line under Exact words, are final. The rest of a press describes what happens, in your own design. If an exact line does not fit, ask for a new one; do not rewrite it.",
+  "Code is exact. Copy code and outputs from the JSON, never retype them. Every output here came from running the program.",
+  "Simple English. Short sentences, everyday words. No em-dashes anywhere, the page title included.",
+  "Every card moves. A card that introduces an idea steps; a static card is a picture of a lecture."
+ ],
+ "beats": [
+  {
+   "name": "Welcome",
+   "kind": "concept",
+   "mins": 1,
+   "start": 0,
+   "cards": [
+    {
+     "id": "S-WELCOME",
+     "title": "Welcome",
+     "source": "spine:welcome",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap",
+   "kind": "concept",
+   "mins": 1,
+   "start": 1,
+   "cards": [
+    {
+     "id": "S-RECAP-CARD",
+     "title": "Recap card",
+     "source": "spine:recap_card",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap rapid: change line 3, what does list_b print?",
+   "kind": "quiz",
+   "mins": 3,
+   "start": 2,
+   "cards": [
+    {
+     "id": "S-RECAP",
+     "title": "Recap: one line 3 at a time",
+     "source": "spine:recap",
+     "purpose": "Pull back session 20: a change through one name shows through both, + moves a name, += grows the same list.",
+     "heading": "What does list_b print?",
+     "show": [
+      "Line 3 changes. What does list_b print?"
+     ],
+     "presses": [
+      {
+       "screen": "The program with line numbers and line 3 as a blank, and three empty dashed output boxes. Caption: <q>Line 3 changes. What does list_b print?</q>",
+       "say": "Three line 3s, one at a time. Say the output out loud before I show it."
+      },
+      {
+       "screen": "Line 3 fills in: <q>list_b[0] = 9</q>.",
+       "say": "What does list_b print? Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Output box 1 shows <q>[9, 2]</q> with the line under it: <q>One list, two names. A change through list_b shows through list_a too.</q>",
+       "say": "Who said that? Good. Next line."
+      },
+      {
+       "screen": "Line 3 fills in: <q>list_a = list_a + [3]</q>.",
+       "say": "What does list_b print? Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Output box 2 shows <q>[1, 2]</q> with the line under it: <q>+ builds a new list and moves only list_a. list_b keeps the old one.</q>",
+       "say": "Who said that? Good. Next line."
+      },
+      {
+       "screen": "Line 3 fills in: <q>list_a += [3]</q>.",
+       "say": "What does list_b print? Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Output box 3 shows <q>[1, 2, 3]</q> with the line under it: <q>+= grows the same list, so list_b sees the 3.</q>",
+       "say": "Who said that? Good. Next line."
+      }
+     ],
+     "code": [
+      {
+       "file": "line3_1.py",
+       "src": "list_a = [1, 2]\nlist_b = list_a\nlist_b[0] = 9\nprint(list_b)",
+       "output": "[9, 2]"
+      },
+      {
+       "file": "line3_2.py",
+       "src": "list_a = [1, 2]\nlist_b = list_a\nlist_a = list_a + [3]\nprint(list_b)",
+       "output": "[1, 2]"
+      },
+      {
+       "file": "line3_3.py",
+       "src": "list_a = [1, 2]\nlist_b = list_a\nlist_a += [3]\nprint(list_b)",
+       "output": "[1, 2, 3]"
+      }
+     ],
+     "interaction": "Format: rapid, one statement at a time. The room says each output out loud before it shows. Nobody is named.",
+     "must": [
+      "All three output boxes are there from press 1, empty, and each keeps its answer once shown."
+     ],
+     "data": {
+      "items": [
+       {
+        "line3": "list_b[0] = 9",
+        "src": "list_a = [1, 2]\nlist_b = list_a\nlist_b[0] = 9\nprint(list_b)",
+        "prints": "[9, 2]",
+        "why": "One list, two names. A change through list_b shows through list_a too."
+       },
+       {
+        "line3": "list_a = list_a + [3]",
+        "src": "list_a = [1, 2]\nlist_b = list_a\nlist_a = list_a + [3]\nprint(list_b)",
+        "prints": "[1, 2]",
+        "why": "+ builds a new list and moves only list_a. list_b keeps the old one."
+       },
+       {
+        "line3": "list_a += [3]",
+        "src": "list_a = [1, 2]\nlist_b = list_a\nlist_a += [3]\nprint(list_b)",
+        "prints": "[1, 2, 3]",
+        "why": "+= grows the same list, so list_b sees the 3."
+       }
+      ]
+     },
+     "play": "How line 3 changes and how each box fills.",
+     "press_count": 7
+    }
+   ]
+  },
+  {
+   "name": "Hook: the packing note becomes a checklist",
+   "kind": "hook",
+   "mins": 5,
+   "start": 5,
+   "cards": [
+    {
+     "id": "H1",
+     "title": "One note, four things",
+     "source": "new",
+     "animated": "hook",
+     "purpose": "Feel, from an app they use, that one long text can be cut into separate items at a mark, and glued back. The last press draws the picture the first half uses: one string, cut into boxes.",
+     "heading": "You are packing for a trip",
+     "show": [
+      "One note. Four lines.",
+      "You want to tick off each one as you pack. How?",
+      "Each line is now its own item.",
+      "Tick one. The rest stay.",
+      "Back to one note.",
+      "One long text. Cut into pieces. Glued back."
+     ],
+     "presses": [
+      {
+       "screen": "A phone with Google Keep open on a note titled <q>Trip packing</q>. The body is four typed lines, in the order in data.items. Caption: <q>One note. Four lines.</q>",
+       "say": "Who keeps a list like this on the phone? Packing, shopping, things to do.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Nothing on the phone changes. Caption: <q>You want to tick off each one as you pack. How?</q>",
+       "say": "Take three or four ideas. Delete the line? A new note for each? Correct nobody.",
+       "room": "Say ideas."
+      },
+      {
+       "screen": "The note's menu opens and <q>Show checkboxes</q> is tapped. Each line becomes its own row with an empty box in front. Caption: <q>Each line is now its own item.</q>",
+       "say": "Where did Keep cut the note?",
+       "room": "Say: at each new line, where you pressed Enter."
+      },
+      {
+       "screen": "The box in front of <q>ID card</q> is ticked. Only that row changes, the way Keep shows a ticked item. Caption: <q>Tick one. The rest stay.</q>",
+       "say": "Four separate things now. You can touch one alone."
+      },
+      {
+       "screen": "The tick is cleared, and <q>Hide checkboxes</q> is tapped. The rows join back into one note body, one line each, same order. Caption: <q>Back to one note.</q>",
+       "say": "And Keep can glue them back into one text."
+      },
+      {
+       "screen": "The turn, one movement: the phone fades and leaves what it stands for. The note body becomes one long row of letter tiles with a small new-line mark between the words. It cuts at each mark into a row of four boxes, then the boxes slide back into one row of tiles. Caption: <q>One long text. Cut into pieces. Glued back.</q>",
+       "say": "Hold this picture. Today's first code does both. Do not name it yet.",
+       "room": "Guess what today is about."
+      }
+     ],
+     "must": [
+      "Every Keep move is real Keep behaviour. Check the menu words and the ticked look on a phone today.",
+      "The item order never changes.",
+      "The last press is one movement: text becoming tiles, tiles cut into boxes, boxes glued back."
+     ],
+     "must_not": [
+      "Say the session name before the title card.",
+      "Show any code on this card.",
+      "Animate by itself. Every change waits for a press."
+     ],
+     "data": {
+      "title": "Trip packing",
+      "items": [
+       "charger",
+       "earphones",
+       "ID card",
+       "toothbrush"
+      ],
+      "ticked": "ID card",
+      "note_text": "charger\nearphones\nID card\ntoothbrush"
+     },
+     "play": "The Keep screens are yours to make real: the yellow or white note, the menu, the boxes, the tick. How the note turns into tiles and boxes is yours.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Today's topic",
+   "kind": "concept",
+   "mins": 1,
+   "start": 10,
+   "cards": [
+    {
+     "id": "S-TITLE",
+     "title": "Title",
+     "source": "spine:title",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Agenda",
+   "kind": "concept",
+   "mins": 1,
+   "start": 11,
+   "cards": [
+    {
+     "id": "S-AGENDA",
+     "title": "Agenda",
+     "source": "spine:agenda",
+     "show": [
+      "Split a string",
+      "cut one text into pieces",
+      "Join a list",
+      "glue the pieces back",
+      "Count from the end",
+      "a negative index",
+      "Walk backwards",
+      "a negative step"
+     ],
+     "presses": [
+      {
+       "screen": "Stop 1 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 2 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 3 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 4 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      }
+     ],
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "split() cuts at whitespace",
+   "kind": "concept",
+   "mins": 4,
+   "start": 12,
+   "cards": [
+    {
+     "id": "C1",
+     "title": "Splitting a String",
+     "source": [
+      13
+     ],
+     "purpose": "Mark the start of a new construct.",
+     "heading": "Splitting a String",
+     "presses": [
+      {
+       "screen": "The deck's one-word divider: <q>Splitting a String</q>.",
+       "say": "Back to the Keep note. Here is how Python cuts a string."
+      }
+     ],
+     "play": "Keep the deck's divider look.",
+     "press_count": 1
+    },
+    {
+     "id": "C2",
+     "title": "split() with nothing in the brackets",
+     "source": [
+      14,
+      15
+     ],
+     "purpose": "str_var.split() cuts a string at its spaces and gives a list of the pieces. Each piece is a string.",
+     "heading": "Cut a string into a list",
+     "show": [
+      "What will it print?",
+      "split() cuts at the spaces. You get a list of strings."
+     ],
+     "code": [
+      {
+       "file": "split.py",
+       "src": "nums = \"1 2 3 4\"\nnum_list = nums.split()\nprint(num_list)",
+       "output": "['1', '2', '3', '4']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "split.py with line numbers. The string <q>\"1 2 3 4\"</q> drawn as letter tiles, spaces as tiles too. An empty output box. Caption: <q>What will it print?</q>",
+       "say": "What does line 3 print? Take two answers.",
+       "room": "Say it."
+      },
+      {
+       "screen": "Line 2 runs: the string cuts at each space tile; the space tiles drop away and four pieces fall into four list boxes. The output shows <q>['1', '2', '3', '4']</q>.",
+       "say": "Quotes round each one. They are strings, not numbers."
+      },
+      {
+       "screen": "The shape, the biggest text on the card: <q>str_var.split()</q>. Caption: <q>split() cuts at the spaces. You get a list of strings.</q>",
+       "say": "With nothing in the brackets, it cuts at whitespace."
+      }
+     ],
+     "answer": "['1', '2', '3', '4']",
+     "must": [
+      "The output shows single quotes, as Python prints it."
+     ],
+     "play": "How the tiles cut and fall into boxes.",
+     "press_count": 3
+    },
+    {
+     "id": "C3",
+     "title": "Extra spaces, new lines and tabs",
+     "source": [
+      16,
+      17
+     ],
+     "purpose": "With nothing in the brackets, a run of spaces is one cut, and a new line or a tab counts as a space too.",
+     "heading": "More spaces. Same list?",
+     "show": [
+      "Three spaces here. What will it print?",
+      "\\n and \\t are whitespace too.",
+      "A run of whitespace is one cut."
+     ],
+     "code": [
+      {
+       "file": "spaces.py",
+       "src": "nums = \"1   2  3 4 \"\nnum_list = nums.split()\nprint(num_list)",
+       "output": "['1', '2', '3', '4']"
+      },
+      {
+       "file": "newline.py",
+       "src": "nums = \"1\\n2\\t3 4\"\nnum_list = nums.split()\nprint(num_list)",
+       "output": "['1', '2', '3', '4']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "spaces.py. The string <q>\"1   2  3 4 \"</q> as tiles. Caption: <q>Three spaces here. What will it print?</q> Options: A <q>['1', '2', '3', '4']</q>, B a list with empty pieces in it.",
+       "say": "Option A, hands up. Option B.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Line 2 runs: each RUN of space tiles is one cut, and the space at the end just drops off. Output <q>['1', '2', '3', '4']</q>.",
+       "say": "Many spaces in a row count as one."
+      },
+      {
+       "screen": "newline.py replaces it. The string <q>\"1\\n2\\t3 4\"</q>, with \\n and \\t each drawn as one tile. Caption: <q>\\n and \\t are whitespace too.</q>",
+       "say": "Remember \\n is a new line and \\t a tab. What will it print?",
+       "room": "Say it."
+      },
+      {
+       "screen": "Line 2 runs: it cuts at \\n, at \\t and at the space. Output <q>['1', '2', '3', '4']</q>. Caption: <q>A run of whitespace is one cut.</q>",
+       "say": "Same four pieces."
+      }
+     ],
+     "answer": "Both print ['1', '2', '3', '4'].",
+     "must": [
+      "\\n and \\t are each one tile, not two characters."
+     ],
+     "play": "How a run of spaces merges into one cut.",
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Explainer: the split machine cuts at every comma",
+   "kind": "hook",
+   "mins": 5,
+   "start": 16,
+   "cards": [
+    {
+     "id": "C4",
+     "title": "split(\",\") cuts at the commas",
+     "source": [
+      18,
+      19
+     ],
+     "purpose": "Put a separator in the brackets and split cuts only there.",
+     "heading": "Cut at a comma",
+     "show": [
+      "Now the numbers sit between commas.",
+      "Put the separator in the brackets."
+     ],
+     "code": [
+      {
+       "file": "comma.py",
+       "src": "nums = \"1,2,3,4\"\nnum_list = nums.split(\",\")\nprint(num_list)",
+       "output": "['1', '2', '3', '4']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The string <q>\"1,2,3,4\"</q> as tiles. Line 2 is not written yet. Caption: <q>Now the numbers sit between commas.</q>",
+       "say": "split() cuts at spaces. There are none. How do we cut at the commas?",
+       "room": "Say ideas."
+      },
+      {
+       "screen": "Line 2 arrives at the top, the biggest text: <q>num_list = nums.split(\",\")</q>. It runs: cuts at each comma, output <q>['1', '2', '3', '4']</q>. Caption: <q>Put the separator in the brackets.</q>",
+       "say": "The comma goes in the brackets, in quotes."
+      }
+     ],
+     "answer": "['1', '2', '3', '4']",
+     "must": [
+      "Line 2 is written only after the room has tried."
+     ],
+     "play": "How the line arrives.",
+     "press_count": 2
+    },
+    {
+     "id": "E1",
+     "title": "The split machine",
+     "source": [
+      20,
+      21,
+      22
+     ],
+     "animated": "explainer",
+     "purpose": "Watch split cut, one separator per press. Between two separators in a row there is nothing, so an empty piece '' drops into the list. split(\" \") does this at every space; split() does not.",
+     "heading": "The split machine",
+     "show": [
+      "Run 1",
+      "Run 2",
+      "How many items will the list have?",
+      "Nothing between two cuts is still a piece: ''.",
+      "split() joins runs of spaces. split(\" \") cuts at every one."
+     ],
+     "code": [
+      {
+       "file": "run1.py",
+       "src": "nums = \"1,2,,3,4,\"\nnum_list = nums.split(\",\")\nprint(num_list)",
+       "output": "['1', '2', '', '3', '4', '']"
+      },
+      {
+       "file": "run2.py",
+       "src": "nums = \"1   2  3 4 \"\nnum_list = nums.split(\" \")\nprint(num_list)",
+       "output": "['1', '', '', '2', '', '3', '4', '']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "<q>Run 1</q>: the program, with the string <q>1,2,,3,4,</q> as tiles and a knife above tile 0. An empty list row. Caption: <q>How many items will the list have?</q>",
+       "say": "Option by option: 4 items? 6 items? Hands up for each.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Run 1, one cut per press, following data.runs[0].steps. The knife moves to the next separator and cuts; the piece since the last cut drops into a new box, an empty box if nothing was there. Caption from the data.",
+       "n": 6,
+       "say": "Read the caption. Count the boxes.",
+       "room": "Count the boxes."
+      },
+      {
+       "screen": "The output shows <q>['1', '2', '', '3', '4', '']</q>. The 2 empty boxes glow. Caption: <q>Nothing between two cuts is still a piece: ''.</q>",
+       "say": "Who said more than four? Where did the empty ones come from?"
+      },
+      {
+       "screen": "<q>Run 2</q>: the program, with the string <q>1   2  3 4 </q> as tiles and a knife above tile 0. An empty list row. Caption: <q>How many items will the list have?</q>",
+       "say": "Option by option: 4 items? 8 items? Hands up for each.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Run 2, one cut per press, following data.runs[1].steps. The knife moves to the next separator and cuts; the piece since the last cut drops into a new box, an empty box if nothing was there. Caption from the data.",
+       "n": 8,
+       "say": "Read the caption. Count the boxes.",
+       "room": "Count the boxes."
+      },
+      {
+       "screen": "The output shows <q>['1', '', '', '2', '', '3', '4', '']</q>. The 4 empty boxes glow. Beside it, the C3 result <q>['1', '2', '3', '4']</q> for the same string. Caption: <q>split() joins runs of spaces. split(\" \") cuts at every one.</q>",
+       "say": "Same string, two different lists. Which brackets made the difference?"
+      }
+     ],
+     "answer": "Run 1: ['1', '2', '', '3', '4', '']. Run 2: ['1', '', '', '2', '', '3', '4', ''].",
+     "must": [
+      "An empty piece is a real item: an empty box with '' in it, never a gap with no box.",
+      "One cut per press, left to right. The cut tile vanishes; it does not go into a box.",
+      "Run 2 ends with both lists side by side: split(\" \") and split() on the same string."
+     ],
+     "must_not": [
+      "Show a free code box or a picker. It runs these two programs only, run 1 then run 2.",
+      "Move by itself."
+     ],
+     "data": {
+      "runs": [
+       {
+        "string": "1,2,,3,4,",
+        "sep": ",",
+        "src": "nums = \"1,2,,3,4,\"\nnum_list = nums.split(\",\")\nprint(num_list)",
+        "output": "['1', '2', '', '3', '4', '']",
+        "steps": [
+         {
+          "cut_at": 1,
+          "piece": "1",
+          "pieces": [
+           "1"
+          ],
+          "caption": "Cut at the comma at position 1. The piece before it is '1'."
+         },
+         {
+          "cut_at": 3,
+          "piece": "2",
+          "pieces": [
+           "1",
+           "2"
+          ],
+          "caption": "Cut at the comma at position 3. The piece before it is '2'."
+         },
+         {
+          "cut_at": 4,
+          "piece": "",
+          "pieces": [
+           "1",
+           "2",
+           ""
+          ],
+          "caption": "Cut at the comma at position 4. Nothing since the last cut: an empty piece ''."
+         },
+         {
+          "cut_at": 6,
+          "piece": "3",
+          "pieces": [
+           "1",
+           "2",
+           "",
+           "3"
+          ],
+          "caption": "Cut at the comma at position 6. The piece before it is '3'."
+         },
+         {
+          "cut_at": 8,
+          "piece": "4",
+          "pieces": [
+           "1",
+           "2",
+           "",
+           "3",
+           "4"
+          ],
+          "caption": "Cut at the comma at position 8. The piece before it is '4'."
+         },
+         {
+          "cut_at": null,
+          "piece": "",
+          "pieces": [
+           "1",
+           "2",
+           "",
+           "3",
+           "4",
+           ""
+          ],
+          "caption": "The end of the string, right after a cut. Nothing is left: an empty piece ''."
+         }
+        ],
+        "empties": 2,
+        "default": "['1,2,,3,4,']"
+       },
+       {
+        "string": "1   2  3 4 ",
+        "sep": " ",
+        "src": "nums = \"1   2  3 4 \"\nnum_list = nums.split(\" \")\nprint(num_list)",
+        "output": "['1', '', '', '2', '', '3', '4', '']",
+        "steps": [
+         {
+          "cut_at": 1,
+          "piece": "1",
+          "pieces": [
+           "1"
+          ],
+          "caption": "Cut at the space at position 1. The piece before it is '1'."
+         },
+         {
+          "cut_at": 2,
+          "piece": "",
+          "pieces": [
+           "1",
+           ""
+          ],
+          "caption": "Cut at the space at position 2. Nothing since the last cut: an empty piece ''."
+         },
+         {
+          "cut_at": 3,
+          "piece": "",
+          "pieces": [
+           "1",
+           "",
+           ""
+          ],
+          "caption": "Cut at the space at position 3. Nothing since the last cut: an empty piece ''."
+         },
+         {
+          "cut_at": 5,
+          "piece": "2",
+          "pieces": [
+           "1",
+           "",
+           "",
+           "2"
+          ],
+          "caption": "Cut at the space at position 5. The piece before it is '2'."
+         },
+         {
+          "cut_at": 6,
+          "piece": "",
+          "pieces": [
+           "1",
+           "",
+           "",
+           "2",
+           ""
+          ],
+          "caption": "Cut at the space at position 6. Nothing since the last cut: an empty piece ''."
+         },
+         {
+          "cut_at": 8,
+          "piece": "3",
+          "pieces": [
+           "1",
+           "",
+           "",
+           "2",
+           "",
+           "3"
+          ],
+          "caption": "Cut at the space at position 8. The piece before it is '3'."
+         },
+         {
+          "cut_at": 10,
+          "piece": "4",
+          "pieces": [
+           "1",
+           "",
+           "",
+           "2",
+           "",
+           "3",
+           "4"
+          ],
+          "caption": "Cut at the space at position 10. The piece before it is '4'."
+         },
+         {
+          "cut_at": null,
+          "piece": "",
+          "pieces": [
+           "1",
+           "",
+           "",
+           "2",
+           "",
+           "3",
+           "4",
+           ""
+          ],
+          "caption": "The end of the string, right after a cut. Nothing is left: an empty piece ''."
+         }
+        ],
+        "empties": 4,
+        "default": "['1', '2', '3', '4']"
+       }
+      ]
+     },
+     "play": "The knife, the tiles, the falling pieces. The deck's dashed boxes are a fine start.",
+     "press_count": 18
+    }
+   ]
+  },
+  {
+   "name": "Task 1: the lunch order message",
+   "kind": "activity",
+   "mins": 6,
+   "start": 21,
+   "cards": [
+    {
+     "id": "T1",
+     "title": "Task 1: the canteen orders",
+     "source": "new",
+     "handout": "Task 1",
+     "activity": 2,
+     "timer": 300,
+     "purpose": "Commit to what split and len give on a real message, then run it. An extra comma adds an empty order, and a space after a comma stays in the piece.",
+     "heading": "Count the canteen orders",
+     "show": [
+      "Worksheet · Task 1",
+      "Anu types the class's lunch orders as one line. There are 3 dishes.",
+      "Type what lines 3 and 4 print. Then run it."
+     ],
+     "code": [
+      {
+       "file": "orders_a.py",
+       "src": "orders = \"dosa,idli,,vada\"\norder_list = orders.split(\",\")\nprint(order_list)\nprint(len(order_list))",
+       "output": "['dosa', 'idli', '', 'vada']\n4"
+      },
+      {
+       "file": "orders_b.py",
+       "src": "orders = \"dosa, idli, vada\"\norder_list = orders.split(\",\")\nprint(order_list)",
+       "output": "['dosa', ' idli', ' vada']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The story line, orders_a.py and orders_b.py with line numbers, the steps and a 5 minute timer.",
+       "say": "Worksheet tab open. Type your predictions first, then run both in the playground.",
+       "room": "Type predictions, then run."
+      },
+      {
+       "screen": "orders_a.py runs: the knife cuts at each comma, as in E1; four boxes fill, one empty. Output <q>['dosa', 'idli', '', 'vada']</q> then <q>4</q>.",
+       "say": "Three dishes, but len says 4. Why?",
+       "room": "Say why."
+      },
+      {
+       "screen": "Line 1 changes to <q>orders = \"dosa,idli,vada\"</q>. len now prints <q>3</q>.",
+       "say": "Who typed this fix? Remove the extra comma."
+      },
+      {
+       "screen": "orders_b.py runs. Output <q>['dosa', ' idli', ' vada']</q>, with the space in front of idli and vada lit up.",
+       "say": "The space after each comma stayed in the piece. Look at your own typing."
+      }
+     ],
+     "answer": "A prints ['dosa', 'idli', '', 'vada'] then 4. Fixed line 1: orders = \"dosa,idli,vada\". B prints ['dosa', ' idli', ' vada'].",
+     "must": [
+      "Nothing about any output shows until the timer has ended.",
+      "An empty piece is a real item: an empty box with '' in it, never a gap with no box."
+     ],
+     "must_not": [
+      "Show the fix before the room has said why len is wrong."
+     ],
+     "play": "The layout of steps, timer and two programs. The orders can sit on a canteen counter.",
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "join() glues a list back into one string",
+   "kind": "concept",
+   "mins": 4,
+   "start": 27,
+   "cards": [
+    {
+     "id": "C5",
+     "title": "Joining Strings",
+     "source": [
+      25
+     ],
+     "purpose": "Mark the start of a new construct.",
+     "heading": "Joining Strings",
+     "presses": [
+      {
+       "screen": "The deck's one-word divider: <q>Joining Strings</q>.",
+       "say": "We can cut. Can we glue back?"
+      }
+     ],
+     "play": "Keep the deck's divider look.",
+     "press_count": 1
+    },
+    {
+     "id": "C6",
+     "title": "Cut at a, glue with a",
+     "source": [
+      23,
+      26,
+      27
+     ],
+     "purpose": "split can cut at any string, like \"a\". sep.join(list) puts sep between every two items and gives one string back.",
+     "heading": "Glue the pieces back",
+     "show": [
+      "We cut at every a. Can we get the sentence back?",
+      "The string goes between every two items."
+     ],
+     "code": [
+      {
+       "file": "cut_a.py",
+       "src": "string_a = \"Python is a programming language\"\nlist_a = string_a.split(\"a\")\nprint(list_a)",
+       "output": "['Python is ', ' progr', 'mming l', 'ngu', 'ge']"
+      },
+      {
+       "file": "glue_a.py",
+       "src": "list_a = ['Python is ', ' progr', 'mming l', 'ngu', 'ge']\nstring_a = \"a\".join(list_a)\nprint(string_a)",
+       "output": "Python is a programming language"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "cut_a.py. The sentence <q>Python is a programming language</q> as tiles; every a lights up. An empty output box.",
+       "say": "We cut at every a. What do the pieces look like?",
+       "room": "Say it."
+      },
+      {
+       "screen": "Line 2 runs: it cuts at each a, the a tiles drop away. Output <q>['Python is ', ' progr', 'mming l', 'ngu', 'ge']</q>. Caption: <q>We cut at every a. Can we get the sentence back?</q>",
+       "say": "Take ideas. No line yet.",
+       "room": "Say ideas."
+      },
+      {
+       "screen": "glue_a.py. Line 2 arrives at the top, the biggest text: <q>string_a = \"a\".join(list_a)</q>.",
+       "say": "The glue goes before the dot. The list goes in the brackets."
+      },
+      {
+       "screen": "It runs: an a tile slides into every gap between two pieces, and none at the ends. Output <q>Python is a programming language</q>. Caption: <q>The string goes between every two items.</q>",
+       "say": "Five pieces, four a's. Glue only goes between."
+      }
+     ],
+     "answer": "Python is a programming language",
+     "must": [
+      "The join line is written only after the room has tried.",
+      "No a slides in before the first piece or after the last."
+     ],
+     "play": "How the glue tiles slide in.",
+     "press_count": 4
+    },
+    {
+     "id": "C7",
+     "title": "join() needs strings",
+     "source": [
+      28,
+      29
+     ],
+     "purpose": "join only glues strings. A list of numbers stops with TypeError.",
+     "heading": "Can join glue numbers?",
+     "show": [
+      "What will it print?",
+      "join needs every item to be a string."
+     ],
+     "code": [
+      {
+       "file": "join_numbers.py",
+       "src": "list_a = list(range(4))\nstring_a = \",\".join(list_a)\nprint(string_a)",
+       "output": "TypeError: sequence item 0: expected str instance, int found"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "join_numbers.py. Caption: <q>What will it print?</q> Options: A <q>0,1,2,3</q>, B an error.",
+       "say": "Option A, hands up. Option B.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "The terminal shows <q>TypeError: sequence item 0: expected str instance, int found</q>. The first item 0 shakes. Caption: <q>join needs every item to be a string.</q>",
+       "say": "Item 0 is the number 0, not the string '0'."
+      }
+     ],
+     "answer": "TypeError: sequence item 0: expected str instance, int found",
+     "must": [
+      "The error is shown exactly as Python prints it."
+     ],
+     "play": "How the number refuses.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Game G1: Make it print this (split and join)",
+   "kind": "activity",
+   "mins": 5,
+   "start": 31,
+   "cards": [
+    {
+     "id": "G1",
+     "title": "Make it print this: cut and glue",
+     "game": "make-it-print",
+     "purpose": "Work backwards from an output to the separator that makes it. Every miss shows its own output.",
+     "heading": "Make it print this",
+     "data": {
+      "setup": {
+       "goal": "Fill the blank so the program prints the target exactly, quotes, commas and spaces included."
+      },
+      "rounds": [
+       {
+        "ask": "Which value goes in the blank?",
+        "template": "trip = \"Goa,Hampi,Ooty\"\nprint(trip.split(____))",
+        "target": "['Goa', 'Hampi', 'Ooty']",
+        "options": [
+         "\" \"",
+         "\",\"",
+         "nothing",
+         "\", \""
+        ],
+        "answer": "\",\"",
+        "because": "With \",\", it prints exactly the target.",
+        "why": {
+         "\" \"": "There is no space in the string, so it never cuts. One long piece.",
+         "nothing": "With nothing, split cuts at whitespace only. There is none, so one long piece.",
+         "\", \"": "There is no comma with a space after it, so it never cuts."
+        },
+        "steps": [
+         {
+          "caption": "With \" \", it prints ['Goa,Hampi,Ooty']. Miss.",
+          "fill": "\" \"",
+          "output": "['Goa,Hampi,Ooty']",
+          "match": false
+         },
+         {
+          "caption": "With \",\", it prints ['Goa', 'Hampi', 'Ooty']. Hit.",
+          "fill": "\",\"",
+          "output": "['Goa', 'Hampi', 'Ooty']",
+          "match": true
+         },
+         {
+          "caption": "With nothing, it prints ['Goa,Hampi,Ooty']. Miss.",
+          "fill": "nothing",
+          "output": "['Goa,Hampi,Ooty']",
+          "match": false
+         },
+         {
+          "caption": "With \", \", it prints ['Goa,Hampi,Ooty']. Miss.",
+          "fill": "\", \"",
+          "output": "['Goa,Hampi,Ooty']",
+          "match": false
+         }
+        ]
+       },
+       {
+        "ask": "Which value goes in the blank?",
+        "template": "names = [\"Ravi\", \"Priya\", \"Kiran\"]\nprint(____.join(names))",
+        "target": "Ravi, Priya, Kiran",
+        "options": [
+         "\",\"",
+         "\" \"",
+         "\", \"",
+         "\"and\""
+        ],
+        "answer": "\", \"",
+        "because": "With \", \", it prints exactly the target.",
+        "why": {
+         "\",\"": "join puts in exactly what you give it. No space comes for free.",
+         "\" \"": "Only a space goes between the names, no comma.",
+         "\"and\"": "join puts and between them, with no spaces."
+        },
+        "steps": [
+         {
+          "caption": "With \",\", it prints Ravi,Priya,Kiran. Miss.",
+          "fill": "\",\"",
+          "output": "Ravi,Priya,Kiran",
+          "match": false
+         },
+         {
+          "caption": "With \" \", it prints Ravi Priya Kiran. Miss.",
+          "fill": "\" \"",
+          "output": "Ravi Priya Kiran",
+          "match": false
+         },
+         {
+          "caption": "With \", \", it prints Ravi, Priya, Kiran. Hit.",
+          "fill": "\", \"",
+          "output": "Ravi, Priya, Kiran",
+          "match": true
+         },
+         {
+          "caption": "With \"and\", it prints RaviandPriyaandKiran. Miss.",
+          "fill": "\"and\"",
+          "output": "RaviandPriyaandKiran",
+          "match": false
+         }
+        ]
+       },
+       {
+        "ask": "Which value goes in the blank?",
+        "template": "plan = \"step-by-step\"\nprint(plan.split(____))",
+        "target": "['', '-by-', '']",
+        "options": [
+         "\"-\"",
+         "\"step\"",
+         "\"by\"",
+         "\"-by-\""
+        ],
+        "answer": "\"step\"",
+        "because": "With \"step\", it prints exactly the target.",
+        "why": {
+         "\"-\"": "It cuts at each dash, so the pieces are step, by and step.",
+         "\"by\"": "It cuts once, in the middle. Two pieces, no empty ones.",
+         "\"-by-\"": "It cuts once, in the middle, and takes the dashes with it. Two pieces."
+        },
+        "steps": [
+         {
+          "caption": "With \"-\", it prints ['step', 'by', 'step']. Miss.",
+          "fill": "\"-\"",
+          "output": "['step', 'by', 'step']",
+          "match": false
+         },
+         {
+          "caption": "With \"step\", it prints ['', '-by-', '']. Hit.",
+          "fill": "\"step\"",
+          "output": "['', '-by-', '']",
+          "match": true
+         },
+         {
+          "caption": "With \"by\", it prints ['step-', '-step']. Miss.",
+          "fill": "\"by\"",
+          "output": "['step-', '-step']",
+          "match": false
+         },
+         {
+          "caption": "With \"-by-\", it prints ['step', 'step']. Miss.",
+          "fill": "\"-by-\"",
+          "output": "['step', 'step']",
+          "match": false
+         }
+        ]
+       }
+      ]
+     },
+     "say": {
+      "ask": "Read each option. How many think option A? Hands up. Then B, C and D.",
+      "step": "Hit or miss?",
+      "verdict": "Why did that one hit?"
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "The options are tried in the order A, B, C, D, the right one included.",
+      "The target and each output are drawn the same way, so a missing space or an extra quote is easy to see.",
+      "The option nothing is shown as empty brackets: split()."
+     ],
+     "play": "How a hit and a miss look. The string can be drawn as tiles, as in E1.",
+     "presses": [
+      {
+       "screen": "Round 1 of 3. The round's setup, as in the data. The question: <q>Which value goes in the blank?</q> Options: A <q>\" \"</q>, B <q>\",\"</q>, C <q>nothing</q>, D <q>\", \"</q>. Nothing runs yet.",
+       "say": "Read each option. How many think option A? Hands up. Then B, C and D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>With \" \", it prints ['Goa,Hampi,Ooty']. Miss.</q> In the data: match = false.",
+       "say": "Hit or miss?"
+      },
+      {
+       "screen": "<q>With \",\", it prints ['Goa', 'Hampi', 'Ooty']. Hit.</q> In the data: match = true.",
+       "say": "Hit or miss?"
+      },
+      {
+       "screen": "<q>With nothing, it prints ['Goa,Hampi,Ooty']. Miss.</q> In the data: match = false.",
+       "say": "Hit or miss?"
+      },
+      {
+       "screen": "<q>With \", \", it prints ['Goa,Hampi,Ooty']. Miss.</q> In the data: match = false.",
+       "say": "Hit or miss?"
+      },
+      {
+       "screen": "The answer: <q>\",\"</q>. <q>With \",\", it prints exactly the target.</q> Then a line for every other option: <q>\" \"</q> <q>There is no space in the string, so it never cuts. One long piece.</q>; <q>nothing</q> <q>With nothing, split cuts at whitespace only. There is none, so one long piece.</q>; <q>\", \"</q> <q>There is no comma with a space after it, so it never cuts.</q>.",
+       "say": "Why did that one hit?"
+      },
+      {
+       "screen": "Round 2 of 3. The round's setup, as in the data. The question: <q>Which value goes in the blank?</q> Options: A <q>\",\"</q>, B <q>\" \"</q>, C <q>\", \"</q>, D <q>\"and\"</q>. Nothing runs yet.",
+       "say": "Read each option. How many think option A? Hands up. Then B, C and D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>With \",\", it prints Ravi,Priya,Kiran. Miss.</q> In the data: match = false.",
+       "say": "Hit or miss?"
+      },
+      {
+       "screen": "<q>With \" \", it prints Ravi Priya Kiran. Miss.</q> In the data: match = false.",
+       "say": "Hit or miss?"
+      },
+      {
+       "screen": "<q>With \", \", it prints Ravi, Priya, Kiran. Hit.</q> In the data: match = true.",
+       "say": "Hit or miss?"
+      },
+      {
+       "screen": "<q>With \"and\", it prints RaviandPriyaandKiran. Miss.</q> In the data: match = false.",
+       "say": "Hit or miss?"
+      },
+      {
+       "screen": "The answer: <q>\", \"</q>. <q>With \", \", it prints exactly the target.</q> Then a line for every other option: <q>\",\"</q> <q>join puts in exactly what you give it. No space comes for free.</q>; <q>\" \"</q> <q>Only a space goes between the names, no comma.</q>; <q>\"and\"</q> <q>join puts and between them, with no spaces.</q>.",
+       "say": "Why did that one hit?"
+      },
+      {
+       "screen": "Round 3 of 3. The round's setup, as in the data. The question: <q>Which value goes in the blank?</q> Options: A <q>\"-\"</q>, B <q>\"step\"</q>, C <q>\"by\"</q>, D <q>\"-by-\"</q>. Nothing runs yet.",
+       "say": "Read each option. How many think option A? Hands up. Then B, C and D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>With \"-\", it prints ['step', 'by', 'step']. Miss.</q> In the data: match = false.",
+       "say": "Hit or miss?"
+      },
+      {
+       "screen": "<q>With \"step\", it prints ['', '-by-', '']. Hit.</q> In the data: match = true.",
+       "say": "Hit or miss?"
+      },
+      {
+       "screen": "<q>With \"by\", it prints ['step-', '-step']. Miss.</q> In the data: match = false.",
+       "say": "Hit or miss?"
+      },
+      {
+       "screen": "<q>With \"-by-\", it prints ['step', 'step']. Miss.</q> In the data: match = false.",
+       "say": "Hit or miss?"
+      },
+      {
+       "screen": "The answer: <q>\"step\"</q>. <q>With \"step\", it prints exactly the target.</q> Then a line for every other option: <q>\"-\"</q> <q>It cuts at each dash, so the pieces are step, by and step.</q>; <q>\"by\"</q> <q>It cuts once, in the middle. Two pieces, no empty ones.</q>; <q>\"-by-\"</q> <q>It cuts once, in the middle, and takes the dashes with it. Two pieces.</q>.",
+       "say": "Why did that one hit?"
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Show which option hits before its press."
+     ],
+     "interaction": "A target output and a program with one blank. The room votes the value for the blank; then each option is tried in turn, and only one hits the target.",
+     "game_def": {
+      "id": "make-it-print",
+      "name": "Make it print this",
+      "one_line": "A target output and a program with one blank. The room votes the value for the blank; then each option is tried in turn, and only one hits the target.",
+      "how": [
+       "The target output, big. The program, with one blank: ____.",
+       "Options are values for the blank.",
+       "Each press tries one option: its output appears next to the target, and it matches or misses.",
+       "The verdict keeps the one that hit."
+      ],
+      "setup": {
+       "goal": "what the room is aiming for, in one line"
+      },
+      "round": {
+       "template": "the code with ____ for the blank, exact",
+       "target": "the output wanted, computed from the answer"
+      },
+      "step": {
+       "fill": "the option tried",
+       "output": "what it prints",
+       "match": "true or false"
+      }
+     },
+     "press_count": 18
+    }
+   ]
+  },
+  {
+   "name": "Classroom quiz",
+   "kind": "quiz",
+   "mins": 6,
+   "start": 36,
+   "cards": [
+    {
+     "id": "S-QUIZ",
+     "title": "Quiz",
+     "source": "spine:quiz",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Hook 2: the latest message in the chat",
+   "kind": "hook",
+   "mins": 4,
+   "start": 42,
+   "cards": [
+    {
+     "id": "H2",
+     "title": "The latest message",
+     "source": "new",
+     "purpose": "Feel why counting from the end is worth having: the latest message is always last, but its position from the top keeps changing. The long way is written out and run before the short way.",
+     "heading": "Which message is the latest?",
+     "show": [
+      "Which message is the latest? What is its position?",
+      "A new message. Now which position?",
+      "The long way: count them all, then take one off.",
+      "WhatsApp never counts from the top. It goes to the end.",
+      "Same answer. No counting."
+     ],
+     "code": [
+      {
+       "file": "latest_long.py",
+       "src": "chat = ['Lunch at 1?', 'ok', 'Canteen or mess?', 'Canteen']\nprint(chat[len(chat) - 1])",
+       "output": "Canteen"
+      },
+      {
+       "file": "latest_long_new.py",
+       "src": "chat = ['Lunch at 1?', 'ok', 'Canteen or mess?', 'Canteen']\nchat += [\"Coming in 5 mins\"]\nprint(chat[len(chat) - 1])",
+       "output": "Coming in 5 mins"
+      },
+      {
+       "file": "latest_short.py",
+       "src": "chat = ['Lunch at 1?', 'ok', 'Canteen or mess?', 'Canteen']\nprint(chat[-1])",
+       "output": "Canteen"
+      },
+      {
+       "file": "latest_short_new.py",
+       "src": "chat = ['Lunch at 1?', 'ok', 'Canteen or mess?', 'Canteen']\nchat += [\"Coming in 5 mins\"]\nprint(chat[-1])",
+       "output": "Coming in 5 mins"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "A phone with WhatsApp open on a group, <q>Lunch gang</q>, with the four messages in data.chat, newest at the bottom. Small grey positions 0 to 3 beside them. Caption: <q>Which message is the latest? What is its position?</q>",
+       "say": "Point at the latest. Its position?",
+       "room": "Say 3."
+      },
+      {
+       "screen": "A new message slides in at the bottom: <q>Coming in 5 mins</q>. Its position shows 4. Caption: <q>A new message. Now which position?</q>",
+       "say": "Every new message moves the latest one down.",
+       "room": "Say 4."
+      },
+      {
+       "screen": "Beside the phone, latest_long.py, line 2 the biggest text: <q>print(chat[len(chat) - 1])</q>. It prints <q>Canteen</q>. Then latest_long_new.py, with the new message added, prints <q>Coming in 5 mins</q>. Caption: <q>The long way: count them all, then take one off.</q>",
+       "say": "len, a minus, a 1, brackets. Every time.",
+       "room": "Read the line out loud."
+      },
+      {
+       "screen": "On the phone, new grey numbers appear from the bottom up: -1 beside the newest, -2 above it, and so on. Caption: <q>WhatsApp never counts from the top. It goes to the end.</q>",
+       "say": "What if Python could count from the end too?",
+       "room": "Say ideas."
+      },
+      {
+       "screen": "latest_short.py and latest_short_new.py: <q>print(chat[-1])</q> prints <q>Canteen</q> and then <q>Coming in 5 mins</q>, the same as the long way. Caption: <q>Same answer. No counting.</q>",
+       "say": "This is a negative index. -1 is always the last one."
+      }
+     ],
+     "answer": "chat[len(chat) - 1] and chat[-1] both print Canteen, then Coming in 5 mins after the new message.",
+     "must": [
+      "The long program is run for real; both programs give the same output in both cases.",
+      "Messages stay in the order in data.chat. The new one only ever joins at the bottom."
+     ],
+     "must_not": [
+      "Say negative index before the last press.",
+      "Animate by itself."
+     ],
+     "data": {
+      "chat": [
+       "Lunch at 1?",
+       "ok",
+       "Canteen or mess?",
+       "Canteen"
+      ],
+      "new": "Coming in 5 mins",
+      "states": {
+       "latest": "Canteen",
+       "latest_pos": 3,
+       "new": "Coming in 5 mins",
+       "new_pos": 4,
+       "count": 4
+      }
+     },
+     "play": "The WhatsApp screen is yours to make real: the green, the ticks, the times, the group name. How the numbers appear is yours.",
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Negative index counts from the end",
+   "kind": "concept",
+   "mins": 4,
+   "start": 46,
+   "cards": [
+    {
+     "id": "C8",
+     "title": "Negative Indexing",
+     "source": [
+      30
+     ],
+     "purpose": "Mark the start of a new construct.",
+     "heading": "Negative Indexing",
+     "presses": [
+      {
+       "screen": "The deck's one-word divider: <q>Negative Indexing</q>.",
+       "say": "Now in Python."
+      }
+     ],
+     "play": "Keep the deck's divider look.",
+     "press_count": 1
+    },
+    {
+     "id": "C9",
+     "title": "Two position rows",
+     "source": [
+      31
+     ],
+     "purpose": "Every item has two positions: from the front 0 1 2 3 4, and from the end -5 -4 -3 -2 -1.",
+     "heading": "Every box has two positions",
+     "show": [
+      "Positions from the front.",
+      "What would the last box be, counting from the end?",
+      "From the end: -1, -2, -3, -4, -5."
+     ],
+     "presses": [
+      {
+       "screen": "The list <q>[5, 4, 3, 2, 1]</q> as five boxes, with the row <q>index</q> 0 to 4 under them. Caption: <q>Positions from the front.</q>",
+       "say": "This we know."
+      },
+      {
+       "screen": "A second empty row appears under it. Caption: <q>What would the last box be, counting from the end?</q>",
+       "say": "Take answers. Not 0, because 0 is taken.",
+       "room": "Say it."
+      },
+      {
+       "screen": "The row <q>negative index</q> fills from the right, -1 under the last box, then -2, -3, -4, -5. Caption: <q>From the end: -1, -2, -3, -4, -5.</q>",
+       "say": "The first box is -5. Five boxes, so -5."
+      }
+     ],
+     "must": [
+      "Both position rows stay under the boxes from press 3 to the end of the card: 0 to 4 on top, -5 to -1 under it."
+     ],
+     "data": {
+      "positions": [
+       {
+        "item": 5,
+        "index": 0,
+        "neg": -5
+       },
+       {
+        "item": 4,
+        "index": 1,
+        "neg": -4
+       },
+       {
+        "item": 3,
+        "index": 2,
+        "neg": -3
+       },
+       {
+        "item": 2,
+        "index": 3,
+        "neg": -2
+       },
+       {
+        "item": 1,
+        "index": 4,
+        "neg": -1
+       }
+      ]
+     },
+     "play": "How the second row fills.",
+     "press_count": 3
+    },
+    {
+     "id": "C10",
+     "title": "list_a[-1] and list_a[-4]",
+     "source": [
+      32,
+      33,
+      34
+     ],
+     "purpose": "list_a[-1] is the last item. list_a[-4] is the fourth from the end.",
+     "heading": "Read from the end",
+     "show": [
+      "What will it print?",
+      "-1 is always the last item."
+     ],
+     "code": [
+      {
+       "file": "last.py",
+       "src": "list_a = [5, 4, 3, 2, 1]\nitem = list_a[-1]\nprint(item)",
+       "output": "1"
+      },
+      {
+       "file": "fourth.py",
+       "src": "list_a = [5, 4, 3, 2, 1]\nitem = list_a[-4]\nprint(item)",
+       "output": "4"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "last.py, with the two-row picture. Caption: <q>What will it print?</q>",
+       "say": "Say it.",
+       "room": "Say it."
+      },
+      {
+       "screen": "A cursor lands on -1. The box 1 lifts out. Output <q>1</q>. Caption: <q>-1 is always the last item.</q>",
+       "say": "Like the chat."
+      },
+      {
+       "screen": "fourth.py replaces it, line 2 <q>item = list_a[-4]</q>. Options: A <q>4</q>, B <q>2</q>.",
+       "say": "Option A, hands up. Option B.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "The cursor lands on -4. Output <q>4</q>.",
+       "say": "Find -4 on the bottom row, then read the box above it."
+      }
+     ],
+     "answer": "1, then 4.",
+     "must": [
+      "Both position rows stay under the boxes the whole card: 0 to 4 on top, -5 to -1 under it."
+     ],
+     "play": "The cursor.",
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Negative indices in a slice",
+   "kind": "concept",
+   "mins": 3,
+   "start": 50,
+   "cards": [
+    {
+     "id": "C11",
+     "title": "list_a[-3:-1]",
+     "source": [
+      35,
+      36
+     ],
+     "purpose": "A slice takes negative positions too. It starts at -3 and stops before -1, as every slice stops before its stop.",
+     "heading": "A slice from the end",
+     "show": [
+      "What will it print?",
+      "Start at -3. Stop before -1."
+     ],
+     "code": [
+      {
+       "file": "slice_end.py",
+       "src": "list_a = [5, 4, 3, 2, 1]\nlist_b = list_a[-3:-1]\nprint(list_b)",
+       "output": "[3, 2]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "slice_end.py with the two-row picture. Caption: <q>What will it print?</q> Options: A <q>[3, 2]</q>, B <q>[3, 2, 1]</q>.",
+       "say": "Option A, hands up. Option B.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "The cursor starts on -3 and takes 3, moves to -2 and takes 2, reaches -1 and stops without taking it. 1 greys. Output <q>[3, 2]</q>. Caption: <q>Start at -3. Stop before -1.</q>",
+       "say": "Who said B? The stop is never taken. Same rule as session 19."
+      }
+     ],
+     "answer": "[3, 2]",
+     "must": [
+      "Both position rows stay under the boxes the whole card: 0 to 4 on top, -5 to -1 under it.",
+      "The stop box is reached and NOT taken; it greys."
+     ],
+     "play": "The cursor and the grey.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Explainer: a negative step walks left",
+   "kind": "hook",
+   "mins": 4,
+   "start": 53,
+   "cards": [
+    {
+     "id": "E2",
+     "title": "Walk left: the negative step",
+     "source": [
+      38,
+      40,
+      42
+     ],
+     "animated": "explainer",
+     "purpose": "Watch a slice with a negative step happen. The cursor starts at start, takes, jumps left by the step, and stops when it reaches the stop. If the stop is not on the left, it takes nothing. Every box it skips greys out and stays grey.",
+     "heading": "Walk left",
+     "show": [
+      "Run 1",
+      "Run 2",
+      "Run 3",
+      "Decide what it gives before the press.",
+      "A negative step walks left. The start must be right of the stop."
+     ],
+     "code": [
+      {
+       "file": "walk1.py",
+       "src": "list_a = [0, 1, 2, 3, 4, 5, 6, 7, 8]\nlist_b = list_a[8:1:-2]\nprint(list_b)",
+       "output": "[8, 6, 4, 2]"
+      },
+      {
+       "file": "walk2.py",
+       "src": "list_a = [5, 4, 3, 2, 1]\nlist_b = list_a[4:2:-1]\nprint(list_b)",
+       "output": "[1, 2]"
+      },
+      {
+       "file": "walk3.py",
+       "src": "list_a = [5, 4, 3, 2, 1]\nlist_b = list_a[2:4:-1]\nprint(list_b)",
+       "output": "[]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "<q>Run 1</q>: the list as boxes with the index row, the expression <q>list_a[8:1:-2]</q> big at the top, an empty result row. Caption: <q>Decide what it gives before the press.</q>",
+       "say": "Say what it gives. Take two answers.",
+       "room": "Say it."
+      },
+      {
+       "screen": "Run 1, one move per press, following data.runs[0].steps: the cursor lands, the box it takes drops into the result row, caption from the data.",
+       "n": 5,
+       "say": "Read the caption.",
+       "room": "Check your answer."
+      },
+      {
+       "screen": "The output <q>[8, 6, 4, 2]</q>. The skipped boxes stay grey (data.runs[0].grey).",
+       "say": "Who said that? Point at the grey."
+      },
+      {
+       "screen": "<q>Run 2</q>: the list as boxes with the index row, the expression <q>list_a[4:2:-1]</q> big at the top, an empty result row. Caption: <q>Decide what it gives before the press.</q>",
+       "say": "Say what it gives. Take two answers.",
+       "room": "Say it."
+      },
+      {
+       "screen": "Run 2, one move per press, following data.runs[1].steps: the cursor lands, the box it takes drops into the result row, caption from the data.",
+       "n": 3,
+       "say": "Read the caption.",
+       "room": "Check your answer."
+      },
+      {
+       "screen": "The output <q>[1, 2]</q>. The skipped boxes stay grey (data.runs[1].grey).",
+       "say": "Who said that? Point at the grey."
+      },
+      {
+       "screen": "<q>Run 3</q>: the list as boxes with the index row, the expression <q>list_a[2:4:-1]</q> big at the top, an empty result row. Caption: <q>Decide what it gives before the press.</q>",
+       "say": "Careful. Start 2, stop 4, step -1. Say it.",
+       "room": "Say it."
+      },
+      {
+       "screen": "Run 3, one move per press, following data.runs[2].steps: the cursor lands, the box it takes drops into the result row, caption from the data.",
+       "n": 1,
+       "say": "Read the caption.",
+       "room": "Check your answer."
+      },
+      {
+       "screen": "The output <q>[]</q>. The skipped boxes stay grey (data.runs[2].grey). Caption: <q>A negative step walks left. The start must be right of the stop.</q>",
+       "say": "Walking left from 2 never reaches 4. Empty list, no error."
+      }
+     ],
+     "answer": "list_a[8:1:-2]: [8, 6, 4, 2]. list_a[4:2:-1]: [1, 2]. list_a[2:4:-1]: [].",
+     "must": [
+      "A box the cursor never takes greys out and stays grey until the run ends.",
+      "One move per press. The cursor never moves right in this card.",
+      "Run 3 shows an empty result row, drawn as [], and no error."
+     ],
+     "must_not": [
+      "Show a free code box or a picker. It runs these three programs only, in order.",
+      "Move by itself."
+     ],
+     "data": {
+      "runs": [
+       {
+        "list": [
+         0,
+         1,
+         2,
+         3,
+         4,
+         5,
+         6,
+         7,
+         8
+        ],
+        "expr": "list_a[8:1:-2]",
+        "src": "list_a = [0, 1, 2, 3, 4, 5, 6, 7, 8]\nlist_b = list_a[8:1:-2]\nprint(list_b)",
+        "output": "[8, 6, 4, 2]",
+        "steps": [
+         {
+          "at": 8,
+          "take": 8,
+          "result": [
+           8
+          ],
+          "caption": "Start at position 8. Take 8."
+         },
+         {
+          "at": 6,
+          "take": 6,
+          "result": [
+           8,
+           6
+          ],
+          "caption": "Step -2: move to position 6. Take 6."
+         },
+         {
+          "at": 4,
+          "take": 4,
+          "result": [
+           8,
+           6,
+           4
+          ],
+          "caption": "Step -2: move to position 4. Take 4."
+         },
+         {
+          "at": 2,
+          "take": 2,
+          "result": [
+           8,
+           6,
+           4,
+           2
+          ],
+          "caption": "Step -2: move to position 2. Take 2."
+         },
+         {
+          "at": 0,
+          "take": null,
+          "result": [
+           8,
+           6,
+           4,
+           2
+          ],
+          "caption": "Step -2: position 0 is past the stop 1. Stop."
+         }
+        ],
+        "grey": [
+         0,
+         1,
+         3,
+         5,
+         7
+        ]
+       },
+       {
+        "list": [
+         5,
+         4,
+         3,
+         2,
+         1
+        ],
+        "expr": "list_a[4:2:-1]",
+        "src": "list_a = [5, 4, 3, 2, 1]\nlist_b = list_a[4:2:-1]\nprint(list_b)",
+        "output": "[1, 2]",
+        "steps": [
+         {
+          "at": 4,
+          "take": 1,
+          "result": [
+           1
+          ],
+          "caption": "Start at position 4. Take 1."
+         },
+         {
+          "at": 3,
+          "take": 2,
+          "result": [
+           1,
+           2
+          ],
+          "caption": "Step -1: move to position 3. Take 2."
+         },
+         {
+          "at": 2,
+          "take": null,
+          "result": [
+           1,
+           2
+          ],
+          "caption": "Step -1: position 2 is the stop. Stop without taking it."
+         }
+        ],
+        "grey": [
+         0,
+         1,
+         2
+        ]
+       },
+       {
+        "list": [
+         5,
+         4,
+         3,
+         2,
+         1
+        ],
+        "expr": "list_a[2:4:-1]",
+        "src": "list_a = [5, 4, 3, 2, 1]\nlist_b = list_a[2:4:-1]\nprint(list_b)",
+        "output": "[]",
+        "steps": [
+         {
+          "at": 2,
+          "take": null,
+          "result": [],
+          "caption": "Start at position 2. The step walks left, but the stop 4 is not on the left. Nothing is taken."
+         }
+        ],
+        "grey": [
+         0,
+         1,
+         2,
+         3,
+         4
+        ]
+       }
+      ]
+     },
+     "play": "The cursor, the jump arrows (the deck's purple arcs are a fine start), the grey. Session 19's slice walker can be reused if it walks left.",
+     "press_count": 15
+    }
+   ]
+  },
+  {
+   "name": "Reverse a list and a string with [::-1]",
+   "kind": "concept",
+   "mins": 3,
+   "start": 57,
+   "cards": [
+    {
+     "id": "C12",
+     "title": "[::] and [::-1]",
+     "source": [
+      43,
+      44,
+      45,
+      46,
+      47
+     ],
+     "purpose": "Leave start and stop out and the slice takes everything. With a step of -1 it takes everything from the end: the list reversed.",
+     "heading": "Leave the start and stop out",
+     "show": [
+      "What will it print?",
+      "No start, no stop: the whole list.",
+      "A step of -1 reverses it."
+     ],
+     "code": [
+      {
+       "file": "all.py",
+       "src": "list_a = [5, 4, 3, 2, 1]\nlist_b = list_a[::]\nprint(list_b)",
+       "output": "[5, 4, 3, 2, 1]"
+      },
+      {
+       "file": "reverse.py",
+       "src": "list_a = [5, 4, 3, 2, 1]\nlist_b = list_a[::-1]\nprint(list_b)",
+       "output": "[1, 2, 3, 4, 5]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "all.py. Caption: <q>What will it print?</q>",
+       "say": "Say it.",
+       "room": "Say it."
+      },
+      {
+       "screen": "Output <q>[5, 4, 3, 2, 1]</q>. Caption: <q>No start, no stop: the whole list.</q>",
+       "say": "Nothing left out."
+      },
+      {
+       "screen": "reverse.py, line 2 <q>list_b = list_a[::-1]</q>. Caption: <q>What will it print?</q>",
+       "say": "The step is -1 now. Say it.",
+       "room": "Say it."
+      },
+      {
+       "screen": "The cursor starts on the last box and walks left, taking every box. Output <q>[1, 2, 3, 4, 5]</q>. Caption: <q>A step of -1 reverses it.</q>",
+       "say": "Like a chat read from the newest message back."
+      }
+     ],
+     "answer": "[5, 4, 3, 2, 1], then [1, 2, 3, 4, 5].",
+     "play": "The walk.",
+     "press_count": 4
+    },
+    {
+     "id": "C13",
+     "title": "Indexing & Slicing Strings",
+     "source": [
+      48
+     ],
+     "purpose": "Mark the start of a new construct.",
+     "heading": "Indexing & Slicing Strings",
+     "presses": [
+      {
+       "screen": "The deck's one-word divider: <q>Indexing & Slicing Strings</q>.",
+       "say": "Does all of this work on a string?"
+      }
+     ],
+     "play": "Keep the deck's divider look.",
+     "press_count": 1
+    },
+    {
+     "id": "C14",
+     "title": "\"Program\"[-1] and [::-1]",
+     "source": [
+      49,
+      52,
+      53
+     ],
+     "purpose": "A string has the same two position rows. [-1] gives its last letter, [::-1] gives it backwards.",
+     "heading": "The same rules on a string",
+     "show": [
+      "What will it print?",
+      "A string counts from the end too."
+     ],
+     "code": [
+      {
+       "file": "last_letter.py",
+       "src": "string_1 = \"Program\"\nstring_2 = string_1[-1]\nprint(string_2)",
+       "output": "m"
+      },
+      {
+       "file": "backwards.py",
+       "src": "string_1 = \"Program\"\nstring_2 = string_1[::-1]\nprint(string_2)",
+       "output": "margorP"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "last_letter.py. <q>Program</q> as seven letter tiles with both rows, 0 to 6 and -7 to -1. Caption: <q>What will it print?</q>",
+       "say": "Say it.",
+       "room": "Say it."
+      },
+      {
+       "screen": "The cursor lands on -1. Output <q>m</q>.",
+       "say": "The last letter."
+      },
+      {
+       "screen": "backwards.py, line 2 <q>string_2 = string_1[::-1]</q>. Caption: <q>What will it print?</q>",
+       "say": "Say it.",
+       "room": "Say it."
+      },
+      {
+       "screen": "One movement: the cursor starts on m and walks left to P, and the tiles drop into the result in that order. Output <q>margorP</q>. Caption: <q>A string counts from the end too.</q>",
+       "say": "Same as the list."
+      }
+     ],
+     "answer": "m, then margorP.",
+     "must": [
+      "Both position rows under the tiles: 0 to 6 and -7 to -1."
+     ],
+     "play": "The tiles and the walk.",
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Task 2: the step counter",
+   "kind": "activity",
+   "mins": 7,
+   "start": 60,
+   "cards": [
+    {
+     "id": "T2",
+     "title": "Task 2: the last three days",
+     "source": "new",
+     "handout": "Task 2",
+     "activity": 19,
+     "timer": 360,
+     "purpose": "Use split, a slice from the end and a loop together to add up the last three days. Then change the slice and find that the stop is never taken.",
+     "heading": "Ravi's last three days",
+     "show": [
+      "Worksheet · Task 2",
+      "Ravi's phone counts his steps each day. He copies the week as one line.",
+      "He wants the total of the last three days.",
+      "Input: 4500,6200,3000,7000,5100"
+     ],
+     "code": [
+      {
+       "file": "steps.py",
+       "src": "steps = input().split(\",\")\ntotal = 0\nfor s in steps[-3:]:\n    total = total + int(s)\nprint(total)",
+       "output": "15100",
+       "input": "4500,6200,3000,7000,5100"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The story, steps.py with line numbers, the input line, the steps of the task and a 6 minute timer.",
+       "say": "Worksheet tab open. Predict first, type it, run it. Then do the two changes.",
+       "room": "Predict, type, run, change."
+      },
+      {
+       "screen": "The five day counts as boxes with both position rows. steps[-3:] lights the last three boxes. Output <q>15100</q>.",
+       "say": "Who got it right first time? -3 to the end."
+      },
+      {
+       "screen": "Change 1: the slice becomes <q>steps[-2:]</q>. Output <q>12100</q>.",
+       "say": "Last two days."
+      },
+      {
+       "screen": "Change 2: the slice becomes <q>steps[-3:-1]</q>. Output <q>10000</q>. The box 5100 greys.",
+       "say": "Which day went missing? The stop is never taken."
+      }
+     ],
+     "answer": "15100. With [-2:]: 12100. With [-3:-1]: 10000, the last day 5100 is missing.",
+     "must": [
+      "Nothing about any output shows until the timer has ended."
+     ],
+     "play": "The layout. The counts can sit on a step counter app screen.",
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Exit: which slice prints nothing",
+   "kind": "exit",
+   "mins": 4,
+   "start": 67,
+   "cards": [
+    {
+     "id": "X1",
+     "title": "Exit: the empty chat slice",
+     "source": "new",
+     "activity": 1,
+     "timer": 150,
+     "purpose": "Check the second half landed: a negative position has to be turned into a real position before you decide if a walk left can reach the stop. Each wrong option is a real misconception.",
+     "heading": "Which one prints []?",
+     "show": [
+      "Anu reads her chat from the newest message back.",
+      "Which line 2 prints an empty list, []?"
+     ],
+     "code": [
+      {
+       "file": "chat.py",
+       "src": "msgs = ['hi', 'lunch?', 'ok', 'where?', 'canteen']\nprint(____)"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The story line, chat.py with line numbers and line 2's brackets as a blank, the five messages as boxes with ONLY the index row 0 to 4, the question, and options: A <q>msgs[1:4]</q>, B <q>msgs[-1:1:-1]</q>, C <q>msgs[1:-1:-1]</q>, D <q>msgs[::-1]</q>. A 2:30 timer.",
+       "say": "Everyone answers alone. Then option A, hands up. B. C. D.",
+       "room": "Hands up per option."
+      },
+      {
+       "screen": "The right option marks, and every option shows what it prints and its why line, as in data.",
+       "say": "Go through every option, not only the right one."
+      }
+     ],
+     "answer": "C, msgs[1:-1:-1]. msgs[1:4]: prints ['lunch?', 'ok', 'where?']. msgs[-1:1:-1]: prints ['canteen', 'where?', 'ok']. msgs[1:-1:-1]: prints []. msgs[::-1]: prints ['canteen', 'where?', 'ok', 'lunch?', 'hi'].",
+     "must": [
+      "Only the index row 0 to 4 is drawn. The room has to work out the negative positions."
+     ],
+     "must_not": [
+      "Show any output before the second press."
+     ],
+     "data": {
+      "options": [
+       {
+        "line2": "print(msgs[1:4])",
+        "prints": "['lunch?', 'ok', 'where?']",
+        "why": "The step is +1 here, so start 1 before stop 4 is right. It walks right and takes three."
+       },
+       {
+        "line2": "print(msgs[-1:1:-1])",
+        "prints": "['canteen', 'where?', 'ok']",
+        "why": "-1 looks smaller than 1, but -1 is position 4. 4 is right of 1, so walking left works."
+       },
+       {
+        "line2": "print(msgs[1:-1:-1])",
+        "prints": "[]",
+        "why": "1 looks bigger than -1, but -1 is position 4. Walking left from 1 never reaches 4. Nothing."
+       },
+       {
+        "line2": "print(msgs[::-1])",
+        "prints": "['canteen', 'where?', 'ok', 'lunch?', 'hi']",
+        "why": "No start and no stop means the whole list, walked from the end. All five, newest first."
+       }
+      ],
+      "right": "C"
+     },
+     "play": "Layout. It can sit in the WhatsApp world of H2.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Key takeaways: the example board",
+   "kind": "buffer",
+   "mins": 2,
+   "start": 71,
+   "cards": [
+    {
+     "id": "K1",
+     "title": "Today in six examples",
+     "source": "new",
+     "purpose": "Six real programs from today, each with what it prints and the rule it shows.",
+     "heading": "Today, in six examples",
+     "show": [
+      "Cut at a comma",
+      "Two commas in a row leave an empty piece.",
+      "Cut at whitespace",
+      "No separator: any run of spaces, tabs or new lines is one cut.",
+      "Glue it back",
+      "join puts the string between the items. Items must be strings.",
+      "Count from the end",
+      "-1 is the last item, -4 the fourth from the end.",
+      "Slice from the end",
+      "Start at -3, stop before -1.",
+      "Walk backwards",
+      "A step of -1 reverses a list or a string."
+     ],
+     "code": [
+      {
+       "file": "Cut at a comma",
+       "src": "print(\"1,2,,3\".split(\",\"))",
+       "output": "['1', '2', '', '3']"
+      },
+      {
+       "file": "Cut at whitespace",
+       "src": "print(\"1   2\\n3\".split())",
+       "output": "['1', '2', '3']"
+      },
+      {
+       "file": "Glue it back",
+       "src": "print(\"-\".join([\"10\", \"06\", \"2007\"]))",
+       "output": "10-06-2007"
+      },
+      {
+       "file": "Count from the end",
+       "src": "nums = [5, 4, 3, 2, 1]\nprint(nums[-1], nums[-4])",
+       "output": "1 4"
+      },
+      {
+       "file": "Slice from the end",
+       "src": "nums = [5, 4, 3, 2, 1]\nprint(nums[-3:-1])",
+       "output": "[3, 2]"
+      },
+      {
+       "file": "Walk backwards",
+       "src": "print(\"Program\"[::-1])",
+       "output": "margorP"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Example 1 fills its slot: heading, code, a small tiles or boxes picture, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 2 fills its slot: heading, code, a small tiles or boxes picture, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 3 fills its slot: heading, code, a small tiles or boxes picture, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 4 fills its slot: heading, code, a small tiles or boxes picture, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 5 fills its slot: heading, code, a small tiles or boxes picture, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 6 fills its slot: heading, code, a small tiles or boxes picture, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      }
+     ],
+     "must": [
+      "All six slots are there from press 1, empty.",
+      "Examples, not a concept map."
+     ],
+     "play": "The grid and each small picture.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Feedback",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 73,
+   "cards": [
+    {
+     "id": "S-FEEDBACK",
+     "title": "Feedback",
+     "source": "spine:feedback",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Thank you",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 74,
+   "cards": [
+    {
+     "id": "S-THANKYOU",
+     "title": "Thankyou",
+     "source": "spine:thankyou",
+     "press_count": 0
+    }
+   ]
+  }
+ ]
+}

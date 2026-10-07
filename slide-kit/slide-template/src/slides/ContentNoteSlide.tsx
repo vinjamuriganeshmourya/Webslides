@@ -39,7 +39,7 @@ export function ContentNoteSlide({
   return (
     <SlideBase variant="light" lesson={lesson} padded={false}>
       {/*
-        ZONED (content rule 22). The header zone carries the kicker and title,
+        ZONED (content rule 32). The header zone carries the kicker and title,
         the lead opens the body box, and the body group (points, children, note)
         is centred in C.png's band on y=434 by `ZonedFrame`. That replaced a
         `pb-20` bias and paired auto margins, which centred the group in whatever

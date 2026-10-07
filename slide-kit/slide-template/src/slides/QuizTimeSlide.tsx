@@ -86,7 +86,7 @@ export function QuizTimeSlide({
           WITH STEPS: the kicker and title go in the standard pinned header
           (content rules 19 and 22), the subtitle is the lead, and the steps are
           the body in Space-1. The 88px announcement title cannot share its half
-          with three instructions without wrapping (rule 25), so this variant does
+          with three instructions without wrapping (rule 35), so this variant does
           not try: it is a content frame that happens to announce a quiz.
           Added for PF 14 "For Loop" (python_programming/for_loop).
         */

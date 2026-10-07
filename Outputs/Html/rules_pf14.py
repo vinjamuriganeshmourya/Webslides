@@ -64,7 +64,7 @@ doc = sub(r"@font-face\{font-family:'Sora';[^}]*\}", '', doc, expect=1)
 doc = doc.replace("'Sora'", "'Poppins'")
 
 # ---------------------------------------------------------------- 2. drawn slides
-# The lead leaves the header (rule 22) and becomes the first block of the body.
+# The lead leaves the header (rule 32) and becomes the first block of the body.
 def rezone(m):
     hd, lead, body = m.group(1), m.group(2) or '', m.group(3)
     return f'{hd}</div><div class="bd zb">{lead}<div class="bdrow">{body}</div></div>'
@@ -85,7 +85,7 @@ doc = sub(r'<div class="ndt-syn"([^>]*)><div class="h">',
 # Agenda: one left edge for the four items, not a hand-set curve.
 doc = sub(r'<li style="margin-left:\d+px">', '<li>', doc, expect=4)
 
-# Feedback: the heading was forced onto two lines with a <br>. Shortened (rule 25).
+# Feedback: the heading was forced onto two lines with a <br>. Shortened (rule 35).
 doc = sub(r'<h2>We’d love your<br>feedback</h2>', '<h2>Share your feedback</h2>', doc, expect=1)
 
 # ---------------------------------------------------------------- 3. stage code

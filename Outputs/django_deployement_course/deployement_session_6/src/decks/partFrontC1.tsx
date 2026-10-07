@@ -4,11 +4,13 @@ import {
   BrandSlide,
   ContentNoteSlide,
   ContentSlide,
-  QuestionSlide,
   SectionBreakerSlide,
   WelcomeSlide,
 } from '@/slides'
-import { BoundaryBridge, CodeBlock, DataTable, LayerStack, Terminal } from '@/ui'
+import { CodeBlock, DataTable, LayerStack, Terminal } from '@/ui'
+/* Promoted from `slide-kit/isolation-lab`. Imported by path, the way the other
+   promoted lab families are, rather than through the kit-owned `@/ui` barrel. */
+import { LoneHost } from '@/ui/isolation/LoneHost'
 import {
   AT_ROOT,
   C1,
@@ -19,13 +21,14 @@ import {
   DOCKER_ID,
   IMAGE,
   MK_TARGETS_ONLY,
-  REPO,
+  S1,
+  S4,
   SESSION,
   Tech,
 } from './deckShared'
 
 /**
- * SESSION 6 · slides 1 to 20: the front frame and Concept 1.
+ * SESSION 6 · slides 1 to 17: the front frame and Concept 1.
  *
  * Generated from rows 1 to 20 of §4 of
  * `django_deployement_course/session_plans/deployement_session_6/plan.md`.
@@ -86,7 +89,7 @@ export const partFrontC1: SlideDef[] = [
     element: (
       <ContentSlide
         kicker="Recap"
-        title="Where we Left Off"
+        title="Where We Left Off"
         lead={
           <>
             {'Every operation this project supports has a one-word name in the '}
@@ -112,9 +115,9 @@ export const partFrontC1: SlideDef[] = [
       <AgendaSlide
         title="Today's Agenda"
         items={[
-          { title: C1, sub: 'Where the image lives, and the registry that frees it' },
-          { title: C2, sub: 'Why the name has three parts' },
-          { title: C3, sub: 'Three commands, and the image leaves the laptop' },
+          { title: C1, sub: 'Where the image lives, and the registry that moves it' },
+          { title: C2, sub: 'Log in first, then why the name has three parts' },
+          { title: C3, sub: 'Two commands, and the image leaves the laptop' },
           { title: C4, sub: 'Unique tags, rollback, and one more target' },
         ]}
         lesson={SESSION}
@@ -125,7 +128,7 @@ export const partFrontC1: SlideDef[] = [
   {
     /*
       The Hub account is on the setup slide on purpose: signup needs an email
-      confirmation, and a room discovering that at slide 30 loses ten minutes.
+      confirmation, and a room discovering that at `c2-login` loses ten minutes.
     */
     id: 'setup',
     section: 'Opening',
@@ -134,32 +137,52 @@ export const partFrontC1: SlideDef[] = [
       <ContentSlide
         kicker="Setup"
         title="Initial Setup"
-        lead="Run these terminal commands step by step :"
+        lead="Run these terminal commands step by step"
         points={[
           { text: <><Code>docker --version</Code>{' prints a version, so the engine is installed'}</> },
           { text: <><Code>make build</Code>{' finishes without an error'}</> },
           { text: <><Code>docker images</Code>{' lists '}<Code>nxttrendz-backend</Code></> },
-          { text: <>{'A free account at '}<Code>hub.docker.com</Code>{', created before this session'}</> },
         ]}
         lesson={SESSION}
       >
+        {/*
+          THE PANEL DREW TWO COMMANDS PRODUCING NOTHING WHILE THE TEXT CLAIMED
+          THEY PRODUCED SOMETHING, AND ITS CAPTION ASSERTED A TRAY.
+
+          Three separate honesty faults, all in one figure:
+
+          1. The caption read "Docker Desktop running, its icon showing in the
+             tray". This is VS Code's integrated panel. There is no tray in it,
+             no icon and no desktop, so the caption asserted evidence the
+             drawing cannot contain (content rule 8).
+          2. `make build` and `docker images` were drawn as `cmd` lines with NO
+             output, directly under bullets claiming `make build` "finishes
+             without an error" and `docker images` "lists nxttrendz-backend".
+             The panel contradicted the text above it.
+          3. Only `docker --version` ever had its output quoted.
+
+          The panel now shows the one command whose output this deck actually
+          has, and the caption says what the drawing shows. The other three
+          bullets stay as bullets, which is what they are: checks the learner
+          performs before the session, not output to read off a screen.
+          `docker images` output belongs to `c1-where-does-it-live`, which is
+          where the room reads it properly.
+        */}
         <Terminal
           path={AT_ROOT}
-          caption="Docker Desktop running, whale steady in the tray"
+          caption="The engine answers, so Docker is installed"
           lines={[
             { text: 'docker --version', kind: 'cmd' },
-            { text: 'Docker version 27.3.1, build ce12230', kind: 'out' },
-            { text: 'make build', kind: 'cmd' },
-            { text: 'docker images', kind: 'cmd' },
+            { text: 'Docker version 27.3.1, build ce12230', kind: 'ok' },
           ]}
         />
       </ContentSlide>
     ),
     notes:
-      'Ask the room to call out if the first command errors, and ask who has not made the Hub account yet. Wait for hands, because the signup confirmation email is the thing that stalls a room at slide 30.',
+      'Ask the room to call out if the first command errors, and ask who has not made the Hub account yet. Wait for hands, because the signup confirmation email is the thing that stalls a room at the login slide.',
   },
 
-  /* ══ CONCEPT 1 · Images Trapped on One Machine (6 to 20) ════════════════ */
+  /* ══ CONCEPT 1 · Image on One Machine (6 to 20) ═════════════════════════ */
 
   {
     id: 'c1-divider',
@@ -169,7 +192,7 @@ export const partFrontC1: SlideDef[] = [
       <SectionBreakerSlide
         index={1}
         title={C1}
-        subtitle="And the registry that frees them"
+        subtitle="And the registry that moves them"
         lesson={SESSION}
       />
     ),
@@ -184,17 +207,18 @@ export const partFrontC1: SlideDef[] = [
       <ContentSlide
         kicker={C1}
         title="Where It Lives"
-        lead="The image exists, so put the promise to the test and ask where it is"
+        lead="This image exists, so ask Docker where it is"
         lesson={SESSION}
       >
         <div className="mx-auto w-full max-w-[980px]">
           <Terminal
             path={AT_ROOT}
-            caption="The local image store on this machine"
+            caption="Local image store on this machine"
             lines={[
               { text: 'docker images', kind: 'cmd' },
               { text: 'REPOSITORY           TAG       IMAGE ID       CREATED       SIZE', kind: 'out' },
               { text: 'nxttrendz-backend    latest    3f2a8b91c04d   2 hours ago   156MB', kind: 'out' },
+              { text: 'nxttrendz-frontend   latest    8c41d7e2b9a3   2 hours ago   48MB', kind: 'out' },
             ]}
             fontSize={13}
           />
@@ -202,9 +226,38 @@ export const partFrontC1: SlideDef[] = [
       </ContentSlide>
     ),
     notes:
-      'Point at the size column and say the number out loud, because slide 9 comes back to it. Say that a frontend row sits under this one on their screen and that the backend is the example we follow.',
+      'Read the repository column: TWO images, because the app is two services. The backend is the example we follow, and the frontend comes back at the end of the push concept. Say that a frontend row sits under this one on their screen and that the backend is the example we follow.',
   },
   {
+    /*
+      THE FIGURE REPLACES THE BULLETS. IT DOES NOT SIT BESIDE THEM.
+
+      This shipped as four full-width bullets with an empty right half, and the
+      fourth was a two-line paragraph reading oddly beside three short ones.
+      The obvious repair was a figure in the right half, and `slide-kit/
+      isolation-lab` built four candidates for it. Judging them showed the
+      repair was wrong: with a points column the slide states the same three
+      machines TWICE, once as prose and once as tiles, and no arrangement of
+      the two fixes that.
+
+      `LoneHost` won on content rule 8. Four identical frames with a slot in
+      the same place, and the only difference is that one slot has something in
+      it: no dimming, no crossing out, no connectors. A severed connector still
+      draws a relationship where an empty slot draws none, and none is the
+      literal truth of a build that has run once on one laptop. `FanOut` was
+      rejected outright, because it argues "one thing becomes many" which is
+      the opposite of this slide, and the lab's `BlockedFan` candidate proved
+      that inverting `FanOut`'s connectors does not invert its composition:
+      three curves leaving one box still read as distribution.
+
+      The fourth line is the concept's punchline, so it is the callout rather
+      than a bullet or a caption. The lab's first pass buried it inside the
+      figure at 7px, which made the most important sentence on the slide the
+      smallest text on it.
+
+      `LoneHost`'s ceiling is THREE recipients: a fourth leaves the frames too
+      short for a machine name at the 16px floor. This slide has three.
+    */
     id: 'c1-and-nowhere-else',
     section: C1,
     label: 'And nowhere else',
@@ -213,312 +266,56 @@ export const partFrontC1: SlideDef[] = [
         kicker={C1}
         title="And Nowhere Else"
         lead="It lives in this machine's local image store, and in no other place"
-        points={[
-          { text: 'A teammate cannot run it' },
-          { text: 'An automation server cannot test it' },
-          { text: 'The AWS server this course ends on cannot deploy it' },
-          {
-            text: (
-              <>
-                {'"Runs identically on any machine" is true only for machines that '}
-                <strong>have</strong>
-                {' the image, and right now that is exactly one'}
-              </>
-            ),
-          },
-        ]}
-        lesson={SESSION}
-      />
-    ),
-    notes:
-      'Read the first three flat, then pause before the last line: it is the promise from session 1 held against reality. Ask who they would send the image to first.',
-  },
-  {
-    id: 'c1-question',
-    section: C1,
-    label: 'The question',
-    element: (
-      <QuestionSlide
-        kicker={C1}
-        question="156MB, and your Python code is a few hundred kilobytes. What is the other 155MB?"
-        qualifier="The same build, every time, on any machine"
-        lesson={SESSION}
-      />
-    ),
-    notes:
-      'Ask it and wait. Take two or three answers out loud and write none of them down. Do not answer it here, the next slide is the answer.',
-  },
-  {
-    /*
-      Layers are listed TOP FIRST, which is the order `LayerStack` renders and
-      the order the figure has to read in: Python at the bottom, the start
-      command at the top. The plan's "bottom up" describes the picture, not the
-      array.
-    */
-    id: 'c1-inside-the-image',
-    section: C1,
-    label: 'Inside the image',
-    element: (
-      <ContentSlide
-        kicker={C1}
-        title="Inside the Image"
-        lead="Read the Dockerfile as a list of ingredients: each instruction adds one layer"
         lesson={SESSION}
       >
-        <div className="mx-auto">
-          <LayerStack
-            title="backend image, 156MB"
-            width={620}
-            caption="A complete Linux environment with the app already installed in it"
-            layers={[
-              { label: 'Working directory, and the start command', note: 'WORKDIR, CMD', state: 'ships' },
-              { label: 'Your Django code', note: 'COPY . .', state: 'ships' },
-              {
-                label: 'Django, DRF, every package from requirements.txt',
-                note: 'RUN pip install',
-                state: 'ships',
-              },
-              {
-                label: <Tech name="python" label="Python 3.13 and the Debian libraries" />,
-                note: 'FROM',
-                state: 'ships',
-              },
-            ]}
-          />
-        </div>
-      </ContentSlide>
-    ),
-    notes:
-      'Build it from the bottom as you talk, and name the instruction that put each layer there. The room wrote all four lines in session 4.',
-  },
-  {
-    id: 'c1-what-it-saves',
-    section: C1,
-    label: 'What it saves',
-    element: (
-      <ContentSlide
-        kicker={C1}
-        title="What It Saves"
-        lead="Every layer answers a question the receiving machine would otherwise answer for itself"
-        lesson={SESSION}
-      >
+        {/*
+          THE CONCLUSION IS A RULED LINE, NOT A CALLOUT, AND THAT IS FORCED.
+
+          `ContentNoteSlide` was the obvious home for it and it does not fit:
+          the figure is 292px and the note's box 99px in a 439px well, and the
+          note lands at the well's FOOT rather than under the figure, so its
+          left half rendered under the deck's own control bar. Dropping the
+          note's `title` does not shrink it either, because `Callout` falls back
+          to the kind's own label (`{title ?? k.label}`), so a titleless
+          callout is not expressible.
+
+          `ContentSlide` has no `caption`, and `SlideLead` is the opening
+          sentence rather than a closing one, so the kit has no affordance for a
+          trailing line under a figure. This is the third gap of the same shape
+          the four labs found, and it is why this is hand-drawn rather than
+          composed. The treatment is `isolation-lab`'s own, copied exactly: a
+          top rule, body type, its own reveal group so it arrives after the
+          figure instead of with it.
+        */}
         <div className="mx-auto w-full max-w-[980px]">
-          <DataTable
-            compact
-            columns={[
-              { label: 'Inside the image', weight: 1 },
-              { label: 'Put there by', weight: 0.9 },
-              { label: 'What the machine no longer does', weight: 1.3 },
-            ]}
-            rows={[
-              ['Linux and the language runtime', <Code>FROM</Code>, 'Install the right Python or Node version'],
-              ['Installed dependencies', <Code>RUN pip install</Code>, 'Run an install that can fail or drift'],
-              ['Your application code', <Code>COPY . .</Code>, 'Fetch the source from anywhere'],
-              [
-                'Working directory, start command',
-                <>
-                  <Code>WORKDIR</Code>
-                  {', '}
-                  <Code>CMD</Code>
-                </>,
-                'Know how to launch the app',
-              ],
+          <LoneHost
+            width={900}
+            /* `IMAGE` ALONE, NOT `${IMAGE}:latest`.
+
+               The lab's fixture wrote `nxttrendz-backend:latest` and copying it
+               verbatim broke content rule 24: the `repository:tag` colon form is
+               not taught until `c2-name-anatomy` and `c2-docker-tag`, fifteen
+               slides later. Slide 7 does show the word `latest`, but as a value
+               in the real `docker images` TAG column, which is not the same
+               thing as the composed name a learner has never seen assembled. */
+            artefact={{ label: 'The image', ref: IMAGE, icon: 'file' }}
+            holder={{ label: 'This machine', note: 'Local image store', icon: 'devices' }}
+            recipients={[
+              { id: 'teammate', label: 'A teammate', cannot: 'run it' },
+              { id: 'ci', label: 'An automation server', cannot: 'test it' },
+              { id: 'prod', label: 'A remote server', cannot: 'deploy it for real users' },
             ]}
           />
-        </div>
-      </ContentSlide>
-    ),
-    notes:
-      'Run your finger down the third column, not across the rows. That column is the whole argument for sending an image instead of source.',
-  },
-  {
-    /*
-      The apparent contradiction is the best evidence in the session, so it gets
-      a slide of its own. The panel is one line because that is the only line of
-      the file the TR quotes.
-    */
-    id: 'c1-the-proof',
-    section: C1,
-    label: 'The proof',
-    element: (
-      <ContentNoteSlide
-        kicker={C1}
-        title="The Proof"
-        lead="Two statements that look like a contradiction, and both are true"
-        points={[
-          { text: <>{"Your machine's "}<Tech name="nodejs" label="node_modules/" />{' was blocked from entering'}</> },
-          { text: <><Code>RUN npm install</Code>{' then created a fresh one inside the image'}</> },
-        ]}
-        note={{
-          kind: 'note',
-          title: 'Remember',
-          /* Two sentences, not three: at three lines the last one sat under the
-             nav controls, which `align-check.mjs` reports as a CHROME hit. */
-          body: 'Your packages are compiled for your OS, the image\'s for its own Linux. The image does not carry a copy of your machine, it carries an environment built correctly for itself.',
-        }}
-        lesson={SESSION}
-      >
-        <div className="mx-auto w-full max-w-[640px]">
-          <CodeBlock
-            code={'node_modules/'}
-            filename="frontend\.dockerignore"
-            language="dockerignore"
-            showLineNumbers={false}
-            fontSize={16}
-          />
-        </div>
-      </ContentNoteSlide>
-    ),
-    notes:
-      'State the contradiction and let it sit for a beat before you resolve it. Ask which of the two node_modules folders is in the image.',
-  },
-  {
-    id: 'c1-not-inside',
-    section: C1,
-    label: 'Deliberately left out',
-    element: (
-      <ContentSlide
-        kicker={C1}
-        title="Deliberately Left Out"
-        lead="This short list is what makes a public push safe"
-        lesson={SESSION}
-      >
-        <div className="mx-auto w-full max-w-[980px]">
-          <DataTable
-            compact
-            columns={[
-              { label: 'Left out', weight: 0.8 },
-              { label: 'Why', weight: 1.7 },
-            ]}
-            rows={[
-              [
-                <>
-                  <Code>.env</Code>
-                  {' and the '}
-                  <Code>SECRET_KEY</Code>
-                </>,
-                'The project-root .env sits outside both build contexts, and .dockerignore guards against a stray copy. A secret must never be frozen into an image bound for a public registry',
-              ],
-              [
-                <>
-                  <Code>db.sqlite3</Code>
-                  {' and '}
-                  <Code>data/</Code>
-                </>,
-                'Months of local test data. The server keeps its own database in its own volume, as session 4 set up',
-              ],
-              [
-                <Code>VITE_API_BASE_URL</Code>,
-                "The backend's address differs per environment, so Compose supplies it at run time",
-              ],
-            ]}
-          />
-        </div>
-      </ContentSlide>
-    ),
-    notes:
-      'Read the same table shape as the last one, inverted. Say the stake out loud: this is why we can push to a public repository in twenty minutes.',
-  },
-  {
-    id: 'c1-defining-property',
-    section: C1,
-    label: 'What an image is',
-    element: (
-      <ContentNoteSlide
-        kicker={C1}
-        title="What an Image Is"
-        noteFirst
-        note={{
-          kind: 'success',
-          title: 'Remember',
-          body: (
-            <>
-              {'The image holds everything needed to '}
-              <strong>run</strong>
-              {' the app, and nothing that ties it to the machine that built it.'}
-            </>
-          ),
-        }}
-        points={[
-          { text: 'Code, runtime and dependencies are baked in' },
-          { text: 'Configuration arrives from outside, at start-up' },
-        ]}
-        lesson={SESSION}
-      />
-    ),
-    notes:
-      'Read the note once, slowly, and let the two lines under it stand as the evidence. This sentence is the thesis of the session, so say it in the same words later.',
-  },
-  {
-    id: 'c1-why-not-the-code',
-    section: C1,
-    label: 'Why not the code',
-    element: (
-      <ContentSlide
-        kicker={C1}
-        title="Why Not the Code"
-        lead="The objection is fair, so compare what a server has to do with each"
-        lesson={SESSION}
-      >
-        <div className="mx-auto w-full max-w-[980px]">
-          <DataTable
-            compact
-            columns={[
-              { label: '', weight: 0.65 },
-              { label: <Tech name="git" label="Ship the source repository" />, weight: 1.5 },
-              { label: 'Ship the image', weight: 1 },
-            ]}
-            rows={[
-              ['Server receives', 'Text files', 'A ready-built environment'],
-              [
-                'Server must then',
-                'Install Python 3.13, create a venv, pip install -r requirements.txt, install Node 20, npm install',
-                <Code>docker run</Code>,
-              ],
-              ['Time', 'Minutes, and it can fail', 'Seconds'],
-              [
-                'Result',
-                'Similar to your setup, never provably identical',
-                <>
-                  <strong>Byte-for-byte</strong>
-                  {' what you built and tested'}
-                </>,
-              ],
-            ]}
-          />
-          {/* The verdict is stated, not left to the reader. Session 5 shipped a
-              comparison with no verdict line and it was logged as a defect. */}
-          <p className="mt-4 font-heading text-body-lg font-bold text-ink">
-            A repository asks every machine to rebuild and hope, an image removes the hoping
+          <p className="mt-6 border-t-2 border-line pt-3 text-body leading-[1.5] text-ink">
+            {'"Runs identically on any machine" is true only for machines that '}
+            <strong>have</strong>
+            {' the image, and right now that is exactly one'}
           </p>
         </div>
       </ContentSlide>
     ),
     notes:
-      'Read the second row aloud in full, because its length is the argument. Then read the verdict line and stop, it is the answer to the objection.',
-  },
-  {
-    id: 'c1-both-travel',
-    section: C1,
-    label: 'Both still travel',
-    element: (
-      <ContentNoteSlide
-        kicker={C1}
-        title="Both Still Travel"
-        note={{
-          kind: 'note',
-          title: 'Note',
-          body: 'Git is not made redundant by any of this. Later in this course the automation server clones the source to build the image, and then pushes the image for the server to run.',
-        }}
-        points={[
-          { text: <Tech name="git" label="Source travels to the builder" /> },
-          { text: <Tech name="docker" label="Images travel to the runners" /> },
-        ]}
-        lesson={SESSION}
-      />
-    ),
-    notes:
-      'Say this before anyone asks whether they should stop pushing to Git. The two sit at different points in the same chain.',
+      'Point at the one filled slot, then at the three empty ones, and let the room say why before you read the callout. Nothing is dimmed or crossed out here: the slot is simply empty, which is the whole claim.',
   },
   {
     /*
@@ -534,7 +331,7 @@ export const partFrontC1: SlideDef[] = [
       <ContentNoteSlide
         kicker={C1}
         title="You Already Pull"
-        lead="Three lines the room has already written, and every one of them came from somewhere"
+        lead="Three lines you have already written, and every one of them came from somewhere"
         note={{
           kind: 'info',
           title: 'Definition',
@@ -546,7 +343,7 @@ export const partFrontC1: SlideDef[] = [
               <Tech name="docker" label="Docker Hub" />
               {' is the default one, and every '}
               <Code>FROM</Code>
-              {' line since session 1 has been pulling from it.'}
+              {` line since ${S1} has been pulling from it.`}
             </>
           ),
         }}
@@ -555,9 +352,9 @@ export const partFrontC1: SlideDef[] = [
         <div className="mx-auto w-full max-w-[760px]">
           <CodeBlock
             code={
-              'FROM python:3.13-slim      # backend\\Dockerfile\n' +
-              'FROM node:20-alpine        # frontend\\Dockerfile\n' +
-              'docker run hello-world     # session 1'
+              'FROM python:3.14-slim      # backend\\Dockerfile\n' +
+              'FROM node:22-alpine        # frontend\\Dockerfile\n' +
+              'docker run hello-world     # Introduction to Docker'
             }
             language="text"
             showLineNumbers={false}
@@ -567,16 +364,16 @@ export const partFrontC1: SlideDef[] = [
       </ContentNoteSlide>
     ),
     notes:
-      'Ask where hello-world came from in session 1 and wait for someone to say "it downloaded". That is the answer, and they have had it since day one.',
+      'Ask where hello-world came from in Introduction to Docker and wait for someone to say "it downloaded". That is the answer, and they have had it since day one.',
   },
   {
     id: 'c1-two-way-street',
     section: C1,
-    label: 'A two-way street',
+    label: 'Both directions',
     element: (
       <ContentNoteSlide
         kicker={C1}
-        title="A Two-Way Street"
+        title="Both Directions"
         noteFirst
         note={{
           kind: 'success',
@@ -584,12 +381,12 @@ export const partFrontC1: SlideDef[] = [
           body: (
             <>
               <Tech name="docker" label="Docker Hub" />
-              {' is a two-way street. Anyone can pull public images down, and with a free account you can push your own images up.'}
+              {' works both ways: anyone can pull public images, and a free account lets you push your own.'}
             </>
           ),
         }}
         points={[
-          { text: 'Pull is every build the room has run so far' },
+          { text: 'Pull is every build you have run so far' },
           { text: 'Push is what today adds' },
         ]}
         lesson={SESSION}
@@ -600,8 +397,201 @@ export const partFrontC1: SlideDef[] = [
   },
   {
     /*
+      Layers are listed TOP FIRST, which is the order `LayerStack` renders and
+      the order the figure has to read in: Python at the bottom, the start
+      command at the top. The plan's "bottom up" describes the picture, not the
+      array.
+    */
+    id: 'c1-inside-the-image',
+    section: C1,
+    label: 'Inside the image',
+    element: (
+      <ContentSlide
+        kicker={C1}
+        title="Inside the Image"
+        lead="Read the Dockerfile as a list of ingredients, where each instruction adds something"
+        lesson={SESSION}
+      >
+        {/*
+          `flex justify-center`, NOT `mx-auto`, AND THE WIDTH IS UP FROM 620.
+
+          `mx-auto` did nothing here. `LayerStack`'s root carries its own
+          `style={{ width }}`, and the wrapper around it was a plain block div,
+          which already fills the well — so auto margins had no free space to
+          share and the 620px stack sat hard against the well's left edge at
+          x=64 with 596px of empty slide to its right. Centring a fixed-width
+          child needs the PARENT to be a flex row that centres it.
+
+          This one escaped the deck's own centring sweep because that sweep
+          matched wrappers with a `max-w-[...]` class and this wrapper has none.
+
+          620 was also small for a figure that is the whole argument of the
+          slide. At 820 the stack reads as the subject rather than as a block
+          parked in a large empty frame.
+
+          THE FOUR LAYERS STAY ONE COLOUR ON PURPOSE. `LayerStack`'s states are
+          verdicts — `ships`, `host`, `breaks`, `shared` — and all four of these
+          genuinely ship, so tinting them differently would assert a distinction
+          that does not exist (content rule 8). Marking the base layer `shared`
+          would be true but would open `c3-mounted-from`'s concept nineteen
+          slides early.
+        */}
+        <div className="flex justify-center">
+          <LayerStack
+            title="backend image"
+            width={820}
+            caption="A complete Linux environment with the app already installed in it"
+            layers={[
+              { label: 'What command runs when the container starts', note: 'CMD', state: 'ships' },
+              { label: 'The folder the application runs in', note: 'WORKDIR', state: 'ships' },
+              { label: 'Your Django project code', note: 'COPY . .', state: 'ships' },
+              {
+                label: 'Django, DRF, and every package from requirements.txt',
+                note: 'RUN pip install',
+                state: 'ships',
+              },
+              {
+                label: <Tech name="python" label="Python 3.14 and the Debian base files" />,
+                note: 'FROM',
+                state: 'ships',
+              },
+            ]}
+          />
+        </div>
+      </ContentSlide>
+    ),
+    notes:
+      'Build it from the bottom as you talk, and name the instruction that put each layer there. The room wrote all four lines in Running the Real App with Docker.',
+  },
+  {
+    id: 'c1-what-it-saves',
+    section: C1,
+    label: 'What it saves',
+    element: (
+      /* THE DEFINITION MOVED HERE WHEN `c1-why-not-the-code` WAS REMOVED.
+
+         That slide carried the session's thesis sentence as a bold line under
+         its table, and the review asked for its wording to be updated one pass
+         before the slide itself was cut. The sentence has no other home: it is
+         what an image IS, and every later concept leans on it. So it becomes
+         this slide's callout, which is also the better place for it — this
+         slide is now the last word on what the image contains.
+
+         What went with `c1-why-not-the-code` and is NOT preserved: its five-row
+         "ship the source code / ship the Docker image" comparison. Recorded
+         here so the loss is visible rather than discovered later. */
+      <ContentSlide
+        kicker={C1}
+        title="What It Saves"
+        lead="Every layer answers a question the machine would otherwise have to solve"
+        lesson={SESSION}
+      >
+        <div className="mx-auto w-full max-w-[980px]">
+          <DataTable
+            compact
+            columns={[
+              { label: 'Inside the image', weight: 1 },
+              { label: 'Put there by', weight: 0.9 },
+              { label: 'What the machine no longer does', weight: 1.3 },
+            ]}
+            rows={[
+              ['Linux, and Python or Node', <Code>FROM</Code>, 'Install the required runtime'],
+              ['Installed dependencies', <Code>RUN pip install</Code>, 'Install the required packages'],
+              ['Your application code', <Code>COPY . .</Code>, 'Get the application source code'],
+              [
+                'Working directory, start command',
+                <>
+                  <Code>WORKDIR</Code>
+                  {', '}
+                  <Code>CMD</Code>
+                </>,
+                'Know how to launch the app',
+              ],
+            ]}
+          />
+          {/* A RULED LINE, NOT A CALLOUT, AND THE HARNESS DECIDED IT.
+
+              As a `success` callout this sentence rendered at y=654, under the
+              deck's own control bar, and `align-check` flagged it: the table is
+              four rows and a callout box needs about a hundred pixels the well
+              does not have. A titleless callout is not expressible either,
+              because `Callout` falls back to the kind's own label.
+
+              This is the treatment the removed `c1-why-not-the-code` used for
+              this same sentence, and the one `c1-and-nowhere-else` uses for its
+              conclusion: a top rule, body type, its own reveal so it arrives
+              after the table rather than with it. */}
+          <p className="mt-4 border-t-2 border-line pt-3 font-heading text-body-lg font-bold text-ink">
+            The image contains everything the app needs to run, and does not depend on the machine that built it
+          </p>
+        </div>
+      </ContentSlide>
+    ),
+    notes:
+      'Run your finger down the third column, not across the rows. That column is the whole argument for sending an image instead of source.',
+  },
+  {
+    /*
+      SIMPLIFIED ON REVIEW, NOT REMOVED.
+
+      The review said "remove it or explain in the easiest way, but I think it
+      is not needed to explain here". Removing it was the tempting half and it
+      takes something with it: `c1-the-account`'s warning says a public
+      repository is visible to everyone AND that this image carries no `.env`,
+      no `SECRET_KEY` and no database. That claim needs this slide to have
+      happened, or it is an assertion with nothing behind it.
+
+      So it stays and gets lighter. It was a two-column table whose second
+      column carried a sentence of reasoning per row — three reasons the room
+      does not need in order to believe the list. Three short lines say the same
+      thing: what is left out, and one clause on why it matters.
+    */
+    id: 'c1-not-inside',
+    section: C1,
+    label: 'Deliberately left out',
+    element: (
+      <ContentSlide
+        kicker={C1}
+        title="Deliberately Left Out"
+        lead="This short list is what makes a public push safe"
+        points={[
+          {
+            text: (
+              <>
+                <Code>.env</Code>
+                {' and the '}
+                <Code>SECRET_KEY</Code>
+                {': never in the image, so no secret reaches a public repository'}
+              </>
+            ),
+          },
+          {
+            text: (
+              <>
+                <Code>db.sqlite3</Code>
+                {': months of local test data, and it stays on your machine'}
+              </>
+            ),
+          },
+          {
+            text: (
+              <>
+                <Code>VITE_API_BASE_URL</Code>
+                {': the address differs per machine, so it arrives at run time'}
+              </>
+            ),
+          },
+        ]}
+        lesson={SESSION}
+      />
+    ),
+    notes:
+      'Read the three names, then the reason for the first one only. The other two follow from it, and the point of the slide is the shortness of the list rather than the detail behind each entry.',
+  },
+  {
+    /*
       The one slide in this concept that asks the room to DO something, and the
-      one place the exclusion list on slide 13 pays off.
+      one place the exclusion list on `c1-not-inside` pays off.
     */
     id: 'c1-the-account',
     section: C1,
@@ -609,24 +599,32 @@ export const partFrontC1: SlideDef[] = [
     element: (
       <ContentNoteSlide
         kicker={C1}
-        title="The Account"
+        /* THE ACCOUNT IS CREATED HERE, NOT ASSUMED.
+
+           The setup slide used to carry "a free account at hub.docker.com,
+           created before this session" as a pre-flight check. It was removed on
+           review because it was not true — nobody had been asked to make one —
+           which left the deck using a Docker ID it had never told anyone to get.
+           So this slide gives the instruction rather than describing the state,
+           and `c2-login` now follows it instead of opening the next concept. */
+        title="Create Your Account"
         lead="Pushing needs a free account, and the username you choose becomes part of every image name"
         points={[
           {
             text: (
               <>
+                {'Open '}
                 <Tech name="docker" label="hub.docker.com" />
-                {', free, with unlimited public repositories'}
+                {' and sign up now, free, with unlimited public repositories'}
               </>
             ),
           },
-          { text: <>{'A '}<strong>Docker ID</strong>{' is chosen at signup, and it is your username there'}</> },
+          { text: <>{'The username you pick at signup is your '}<strong>Docker ID</strong></> },
           {
             text: (
               <>
-                {'This course writes '}
                 <Code>{DOCKER_ID}</Code>
-                {' everywhere, and every learner substitutes their own'}
+                {' is only an example in this course, so replace it with your own Docker ID'}
               </>
             ),
           },
@@ -634,7 +632,7 @@ export const partFrontC1: SlideDef[] = [
         note={{
           kind: 'warning',
           title: 'Public means public',
-          body: 'Anything in a public repository is visible to the whole world. That is safe here only because the image carries no .env, no SECRET_KEY and no database file, for the reasons the last few slides listed.',
+          body: 'A public repository is visible to everyone, and this image carries no .env, no SECRET_KEY and no database.',
         }}
         lesson={SESSION}
       />
@@ -642,41 +640,96 @@ export const partFrontC1: SlideDef[] = [
     notes:
       'Ask everyone to type their own Docker ID into the chat now, so nobody is inventing one at the push. Read the warning as a rule, not as a caution.',
   },
+  /*
+    LOGGING IN MOVED HERE FROM CONCEPT 2, ON REVIEW.
+
+    Both slides used to open concept 2, which meant the deck asked the learner
+    to sign in before it had ever told them to create an account: the setup
+    slide's "a free account, created before this session" check was removed on
+    the same review because it was not true. So the order was account assumed,
+    then account used, then account explained.
+
+    Now concept 1 runs: the account is created, the learner signs in, and only
+    then does concept 2 ask what an image is called. `c2-push-denied` still
+    opens concept 2 on a real attempt, so that concept keeps its try-then-fail
+    shape and loses only the login step it was borrowing.
+  */
   {
-    id: 'c1-target-picture',
+    id: 'c2-login',
     section: C1,
-    label: 'The target picture',
+    label: 'docker login',
     element: (
       <ContentSlide
         kicker={C1}
-        title="The Target Picture"
-        lead="Where the image is going by the end of this session, and what moves it there"
+        title="docker login"
+        lead="Once per machine, not once per push"
+        points={[
+          {
+            text: (
+              <>
+                {'Password is invisible while typing, the same behaviour as '}
+                <Code>createsuperuser</Code>
+                {` in ${S4}`}
+              </>
+            ),
+          },
+          { text: 'Nothing is echoed, so the prompt looks frozen when it is working' },
+        ]}
         lesson={SESSION}
       >
-        {/*
-          `BoundaryBridge`, not `FlowChart`. The old version had to render
-          `docker push` and `docker pull` as pill-shaped NODES, because
-          `FlowChart` cannot label an edge: a command became a box in a row of
-          boxes. This figure draws each machine inside its own boundary and the
-          commands as the spans that cross them, which is this concept's whole
-          argument. `issuedBy` says who typed the command without turning the
-          payload arrow around.
-        */}
-        <BoundaryBridge
-          stations={[
-            { label: IMAGE, caption: 'built on your laptop', logo: 'docker', kind: 'source' },
-            { label: 'Docker Hub', caption: REPO, logo: 'docker', kind: 'hub', tone: 'accent' },
-            { label: 'Any machine', caption: 'runs the same image', icon: 'server', kind: 'target', tone: 'teal' },
+        <Terminal
+          path={AT_ROOT}
+          fontSize={14}
+          lines={[
+            { text: 'docker login', kind: 'cmd' },
+            { text: `Username: ${DOCKER_ID}`, kind: 'out' },
+            { text: 'Password:', kind: 'out' },
+            { text: 'Login Succeeded', kind: 'ok' },
           ]}
-          legs={[
-            { label: 'docker push', sub: 'once per release', issuedBy: 'left' },
-            { label: 'docker pull', sub: 'on every machine', issuedBy: 'right' },
-          ]}
-          caption="The image only moves when a command crosses a machine boundary"
         />
       </ContentSlide>
     ),
     notes:
-      'This picture is the map for the rest of the session and the two after it. Point at the middle box and say the automation server will push there, and the AWS server will pull from there.',
+      'Warn about the invisible password before you type it, or half the room will assume the terminal has hung. Wait for the green line before moving on.',
+  },
+  {
+    id: 'c2-access-token',
+    section: C1,
+    label: 'Use a token',
+    element: (
+      <ContentNoteSlide
+        kicker={C1}
+        title="Use a Token"
+        lead="If the account password is rejected, Docker Hub is asking for a token instead"
+        points={[
+          {
+            text: (
+              <>
+                {'Create one under Account Settings, then Security, on '}
+                <Code>hub.docker.com</Code>
+              </>
+            ),
+          },
+          {
+            text: (
+              <>
+                {'Paste it at the '}
+                <Code>Password:</Code>
+                {' prompt, and nothing else about the login changes'}
+              </>
+            ),
+          },
+          { text: 'Later in this course, the automation server gets a token, never your real password' },
+        ]}
+        note={{
+          kind: 'note',
+          title: 'Note',
+          body: 'A token stands in for your password, and you can cancel it on its own.',
+        }}
+        lesson={SESSION}
+      />
+    ),
+    notes:
+      'This is the most likely thing to fail live in the room, so say it before anyone tries. Ask who has two-factor turned on: those learners need the token, not the password.',
   },
 ]

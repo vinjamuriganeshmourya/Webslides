@@ -1,0 +1,2089 @@
+1
+00:00:00,000 --> 00:00:09,600
+Hello everyone. Welcome to today's session. In today's session, we will be covering about
+
+2
+00:00:09,600 --> 00:00:15,360
+lists. Firstly, let's quickly recap what we have seen in the previous session. So in the
+
+3
+00:00:15,360 --> 00:00:20,840
+previous session, we learned about compound assignment operator, right? So you can either
+
+4
+00:00:20,840 --> 00:00:27,160
+write it as a equal to a plus one or you can also write it as a plus equal to one, right?
+
+5
+00:00:27,160 --> 00:00:32,080
+So here plus equal to is called a compound assignment operator. Just like addition, we
+
+6
+00:00:32,080 --> 00:00:37,799
+can also write minus equal to for subtraction and for multiplication, star equal to modulus
+
+7
+00:00:37,799 --> 00:00:43,480
+operator division. For all of these, we can use a compound assignment operator. Okay?
+
+8
+00:00:43,480 --> 00:00:50,000
+So next we have learned about floor division. So if you want to find the integral part of
+
+9
+00:00:50,000 --> 00:00:55,599
+the quotient, then we use floor division. So when we divide a number with another number,
+
+10
+00:00:55,599 --> 00:01:00,480
+if you want to find the integral part of the result, then we'll use a floor division,
+
+11
+00:01:00,480 --> 00:01:06,559
+right? So for the operator for floor division here is two slashes, right? Two forward slashes.
+
+12
+00:01:06,559 --> 00:01:12,680
+Okay? So we learned about this floor division operator. Then we have seen that the strings
+
+13
+00:01:12,680 --> 00:01:17,919
+can be represented either in single quotes or in double quotes. That is what is a string
+
+14
+00:01:17,919 --> 00:01:23,080
+data type? A stream of characters enclosed within quotes, right? So the quotes can be
+
+15
+00:01:23,080 --> 00:01:27,400
+single quotes or double quotes, right? So we have seen that either we can use single
+
+16
+00:01:27,400 --> 00:01:33,199
+quotes or double quotes and both will be considered as same. Okay? So we learned about this thing
+
+17
+00:01:33,199 --> 00:01:39,680
+and then we spoke about escape characters, right? So these escape characters are interpreted
+
+18
+00:01:39,680 --> 00:01:45,400
+by the computer differently, right? So each escape character will start with the backslash.
+
+19
+00:01:45,400 --> 00:01:52,400
+Okay? There you can see backslash n is interpreted as a new line, whereas backslash t is interpreted
+
+20
+00:01:52,400 --> 00:01:57,720
+as a tab space. Similarly, there are other escape characters. Okay? So we have seen few
+
+21
+00:01:57,720 --> 00:02:03,040
+in the previous session. Then we understood about this particular example, right? Where
+
+22
+00:02:03,040 --> 00:02:08,240
+we had an issue of printing the single quote. So when you write this backslash in single
+
+23
+00:02:08,240 --> 00:02:13,639
+quote, how is it interpreted? We are mentioning you have to consider the single quote as a
+
+24
+00:02:13,639 --> 00:02:19,720
+character rather than the end of the string, right? So when you write backslash, then it
+
+25
+00:02:19,720 --> 00:02:25,160
+will be interpreted in a different manner. We understood this with an example, right?
+
+26
+00:02:25,160 --> 00:02:29,960
+Then we have seen our daily challenge. So coming to the solution of the daily challenge.
+
+27
+00:02:29,960 --> 00:02:35,880
+So this is the code snippet that we have given. So here for input three, the expected output
+
+28
+00:02:35,880 --> 00:02:41,000
+is this. Okay? But actually there is a small mistake in this code because of that we are
+
+29
+00:02:41,000 --> 00:02:47,360
+not getting the expected output. So let's try this out in the code playground. So here
+
+30
+00:02:47,360 --> 00:02:51,600
+this is the piece of code that is given and with an input three, see we are getting this
+
+31
+00:02:51,600 --> 00:02:57,119
+output, right? You can see the output here. So basically what's happening, we want one
+
+32
+00:02:57,119 --> 00:03:02,279
+and then two, one, two, right? But in the output, see we have one, one, two, one, one,
+
+33
+00:03:02,279 --> 00:03:07,960
+two, then three, two, one, one, two, three. So what's happening? There is a part and then
+
+34
+00:03:07,960 --> 00:03:12,679
+one is repeating again. So here it's two, one, and then again it's starting from then
+
+35
+00:03:12,679 --> 00:03:17,119
+the right side. Again, the numbers are starting from one, right? But actually where they have
+
+36
+00:03:17,119 --> 00:03:23,759
+to start from? Two. So that's the issue. So here in the code, if we observe, we have
+
+37
+00:03:23,759 --> 00:03:29,119
+spaces, right? Which are the spaces that they are going to come in the beginning and then
+
+38
+00:03:29,119 --> 00:03:34,160
+we have the left numbers. Okay? So the left numbers will indicate the numbers still here,
+
+39
+00:03:34,160 --> 00:03:39,279
+right? This two, one, this three, two, one, like this. Okay? And then the right numbers
+
+40
+00:03:39,279 --> 00:03:46,639
+which indicate this one, two, one, two, three, this. So basically, if we make the right numbers
+
+41
+00:03:46,639 --> 00:03:51,960
+start from two, it's sufficient, right? Instead of starting from one, if the right numbers
+
+42
+00:03:51,960 --> 00:03:57,559
+start from two, it will be sufficient. So what we have to do? It's very simple. So when
+
+43
+00:03:57,559 --> 00:04:01,679
+what we are doing here at the end, we are concatenating the spaces, the left numbers
+
+44
+00:04:01,679 --> 00:04:05,520
+and the right numbers, right? So the right numbers are starting from one. So what we
+
+45
+00:04:05,520 --> 00:04:12,080
+need? We need to start it from two. So simple. What we can write? We can write it as one
+
+46
+00:04:12,080 --> 00:04:16,799
+colon, right? Instead of the first number, it should start from the second number. So
+
+47
+00:04:16,799 --> 00:04:20,519
+for that, what we can write, we can directly use one colon, right? So starting from the
+
+48
+00:04:20,519 --> 00:04:25,839
+second number till the end, it'll print all of those things. Okay? Now let me run the
+
+49
+00:04:25,839 --> 00:04:32,320
+code and show you. See, we got the expected output, right? So it's so simple. So we need
+
+50
+00:04:32,320 --> 00:04:37,799
+to observe where is the issue and from there we have to debug what we have to do. Okay?
+
+51
+00:04:37,799 --> 00:04:42,480
+So I hope you understood this, right? Now we'll go back to the slides. So we have seen
+
+52
+00:04:42,480 --> 00:04:47,440
+this and we have corrected the mistake, right? Directly just by writing there one colon,
+
+53
+00:04:47,440 --> 00:04:52,079
+it's sufficient. We'll get the expected output. Okay. So we are done with the solution of
+
+54
+00:04:52,079 --> 00:04:57,760
+the daily challenge. So let's look into the agenda. So firstly, we'll understand about
+
+55
+00:04:57,760 --> 00:05:03,920
+what are lists and how we can create this list and how we can access elements in the
+
+56
+00:05:03,920 --> 00:05:10,160
+list. And then we can perform some operations on the lists. Let's understand what are these
+
+57
+00:05:10,160 --> 00:05:16,140
+operations like concatenation, repetition, slicing, extended slicing. These are the different
+
+58
+00:05:16,140 --> 00:05:21,839
+operations that we can perform on the lists. Let's understand these operations. Finally,
+
+59
+00:05:21,839 --> 00:05:27,000
+we'll understand about mutability, right? So we'll understand what do we mean by mutability
+
+60
+00:05:27,239 --> 00:05:35,239
+and how they are applicable in case of lists and strings. Okay? So now let's look into
+
+61
+00:05:35,239 --> 00:05:42,119
+data structures. Okay? So what are data structures? Data structures basically allow us to store
+
+62
+00:05:42,119 --> 00:05:47,119
+and organize the data efficiently. So with the help of these data structures, we can
+
+63
+00:05:47,119 --> 00:05:53,480
+easily access the data and perform multiple operations on the data. So that's why we use
+
+64
+00:05:53,480 --> 00:05:59,399
+these data structures. There are basically four built-in data structures that the Python
+
+65
+00:05:59,399 --> 00:06:06,920
+provides us. Firstly, lists, tuple, set, dictionary. Okay? So these are the four built-in data
+
+66
+00:06:06,920 --> 00:06:13,480
+structures. Okay? So out of these, today we'll look into lists. Basically, list is like the
+
+67
+00:06:13,480 --> 00:06:19,480
+most versatile Python data structure. Okay? It's very easy and then we can perform multiple
+
+68
+00:06:19,480 --> 00:06:26,679
+operations on the list. Okay? So basically in lists, what we do is we hold the sequence
+
+69
+00:06:26,679 --> 00:06:32,720
+of items. Okay? So an ordered sequence of items, we maintain that in the lists. You
+
+70
+00:06:32,720 --> 00:06:38,200
+can see that. So five, then we have in double quote six, there's some two and then 8.2.
+
+71
+00:06:38,200 --> 00:06:44,200
+Like this, there is a sequence of items and we can hold the sequence of items in the list
+
+72
+00:06:44,200 --> 00:06:51,720
+data structure. Okay? So we'll now understand how to create a list. So to create a list,
+
+73
+00:06:51,720 --> 00:06:56,720
+what we have to do is we have to use this square brackets. Okay? So there in the example,
+
+74
+00:06:56,720 --> 00:07:03,279
+you can see. What did we write there? There is list A equal to, that is one list. Okay?
+
+75
+00:07:03,279 --> 00:07:08,160
+And then we have written the square brackets and then we have written the elements of the
+
+76
+00:07:08,160 --> 00:07:13,440
+items of the list. Right? There you see five is one item, six in double quote six, the
+
+77
+00:07:13,440 --> 00:07:18,880
+string six is one item and then there's a variable A and then 8.2. These are the items
+
+78
+00:07:18,880 --> 00:07:23,519
+and the items are separated by comma. Did you observe that? So if you want to write
+
+79
+00:07:23,519 --> 00:07:29,200
+different items, you have to separate them by comma. Okay? So list basically we use the
+
+80
+00:07:29,200 --> 00:07:35,040
+square brackets and then we write the items in the list and the items are separated by
+
+81
+00:07:35,040 --> 00:07:40,600
+comma. There you can see. Okay? So here we'll see the example and see the output for this
+
+82
+00:07:40,600 --> 00:07:44,880
+code. There you can see what we have written first A equal to two and then list A equal
+
+83
+00:07:44,880 --> 00:07:50,160
+to five comma string six in double quote six and then A 8.2 like this we have separated
+
+84
+00:07:50,160 --> 00:07:55,200
+with comma. So basically five is one element of the list. Six is one element. A is one
+
+85
+00:07:55,200 --> 00:08:00,679
+element of the list. 8.2 is another element of the list. Okay? So like this, what did
+
+86
+00:08:00,679 --> 00:08:05,480
+we do? We have created a list and if you print the type of the list there, you can see what
+
+87
+00:08:05,480 --> 00:08:09,760
+did we get? We got class list, right? You can see there's list. So basically what are
+
+88
+00:08:09,760 --> 00:08:13,839
+we saying that it's a list data structure. When you print the type, you can see that.
+
+89
+00:08:13,839 --> 00:08:19,000
+Okay? And when you print the output, see we have the list, right? This is how we create
+
+90
+00:08:19,000 --> 00:08:25,959
+a list. Okay? Let's try this out and see. In the code playground, what we'll do is we'll
+
+91
+00:08:25,959 --> 00:08:32,119
+firstly write a variable A just like the code that we have seen and store a value of two
+
+92
+00:08:32,119 --> 00:08:39,320
+and then we'll write a list. Okay? A, right? And then equal to, and then using the square
+
+93
+00:08:39,320 --> 00:08:44,440
+brackets, we have to create a list. And then let's say we'll give five and then another
+
+94
+00:08:44,440 --> 00:08:50,280
+string say six. And then now let's say I want to give the variable A that is the value present
+
+95
+00:08:50,280 --> 00:08:55,679
+in the variable A, which is two, right? And say another, the float value, which is 8.2
+
+96
+00:08:55,679 --> 00:09:00,599
+like this. What we can do is the items of the list can be of any data type. Okay? It
+
+97
+00:09:00,599 --> 00:09:05,000
+could be integer, it could be string, it could be float like this. It could be of any
+
+98
+00:09:05,000 --> 00:09:13,320
+data type. Okay? Now let me print the type of the list. Okay? And then let me print the
+
+99
+00:09:13,320 --> 00:09:21,760
+list also. Okay? Now let me run the code. I'll just remove this. Okay? So what we should
+
+100
+00:09:21,760 --> 00:09:26,320
+get firstly, the type is list and see we got the list, right? And then when we are printing
+
+101
+00:09:26,320 --> 00:09:31,679
+the list, see in the square brackets, we got each and every element. Okay? So this
+
+102
+00:09:31,679 --> 00:09:37,080
+is how we create the list. See, this is how we create the list. Okay? Now we'll go back
+
+103
+00:09:37,080 --> 00:09:42,200
+to the slides. So what did we understand? We understood about how to create a list.
+
+104
+00:09:42,200 --> 00:09:47,159
+And we also understood that the data type of the item can be of any data type that could
+
+105
+00:09:47,159 --> 00:09:55,260
+be string, integer, float like this. Also the item in the list can be an another list. Right?
+
+106
+00:09:55,260 --> 00:10:00,419
+So let's understand here. So here what happened, firstly we have list A which is one list where
+
+107
+00:10:00,419 --> 00:10:08,140
+we have different items there, 5, string 6, A, and 8.2. Now the list B, observe that.
+
+108
+00:10:08,140 --> 00:10:12,820
+So again what did we do? We created a list which is list B equal to in square brackets
+
+109
+00:10:12,820 --> 00:10:17,940
+we have given 1 which is one item of list B and then comma and then we have written
+
+110
+00:10:17,940 --> 00:10:26,020
+list A. So what are we doing? One item, an item of list B is a list. Right? So basically
+
+111
+00:10:26,020 --> 00:10:30,979
+what we get, see the output there. So when we are printing list B, what do we have? Firstly
+
+112
+00:10:30,979 --> 00:10:38,179
+we have a list with one item as one whereas another item is again a list. Right? So like
+
+113
+00:10:38,179 --> 00:10:45,299
+this, the items can be integers, string data types or it could be some float like this
+
+114
+00:10:45,460 --> 00:10:52,619
+and also an item in the list can be an another list. Okay? Not just list. There are some
+
+115
+00:10:52,619 --> 00:10:57,580
+other data structures. Right? We have seen. We can give those data structures also as
+
+116
+00:10:57,580 --> 00:11:02,739
+the items in the list. You can give a lot of other values also. As we proceed further
+
+117
+00:11:02,739 --> 00:11:09,580
+we'll learn about those and how we can give in the lists. Okay? So let's see another example.
+
+118
+00:11:09,580 --> 00:11:14,419
+So here what we are doing is, the same list A we have taken but what we are doing here?
+
+119
+00:11:14,539 --> 00:11:20,659
+We are printing the length of the list. Right? So in the case of list A we have written 5
+
+120
+00:11:20,659 --> 00:11:26,539
+in double quote 6, A and 8.2. Right? So when we are printing the length, what did we do?
+
+121
+00:11:26,539 --> 00:11:32,859
+Print length of list A. So just like how we use len utility for string, similarly we can
+
+122
+00:11:32,859 --> 00:11:39,380
+use the same utility for list also. So the len will return the number of items present
+
+123
+00:11:39,380 --> 00:11:46,780
+in the list. So how many items are present? 5 and the string 6, A and then 8.2. 4. Right?
+
+124
+00:11:46,780 --> 00:11:53,080
+So when we print the length, we'll get 4. Okay? We'll try this out in the code playground.
+
+125
+00:11:53,080 --> 00:12:01,739
+So here what I'm doing? I'm just printing the length of list A. Okay? I'll just remove
+
+126
+00:12:01,739 --> 00:12:07,219
+this. Okay? So what we should get the output as? 4. Right? Because there are 4 items. 5,
+
+127
+00:12:07,219 --> 00:12:14,659
+6, A and 8.2. Right? So basically there are 4 items and we got the output as 4. Okay?
+
+128
+00:12:14,659 --> 00:12:19,460
+Similarly, what you can do? You can define another list here. Okay? Let me write say
+
+129
+00:12:19,460 --> 00:12:26,380
+another list or maybe just like the previous example we'll have another list B with 1 comma
+
+130
+00:12:26,380 --> 00:12:33,780
+list A. Like this also we can write. Right? So list underscore B. Okay? So we understood.
+
+131
+00:12:33,780 --> 00:12:40,700
+Right? We can also give list as an item in another list. Right? See here we have another
+
+132
+00:12:40,700 --> 00:12:45,659
+item like this. Okay? So we understood these two aspects. Right? Now we'll go back to the
+
+133
+00:12:45,659 --> 00:12:50,340
+slides. So so far what did we understand? We understood about how we have to create
+
+134
+00:12:50,340 --> 00:12:56,739
+a list using the square brackets and then we have learned about how can we find the
+
+135
+00:12:56,739 --> 00:13:02,780
+length of the list with using the len. Right? L-E-N. We have learned about these things.
+
+136
+00:13:02,780 --> 00:13:09,099
+Now let's understand how can we access these list items. Okay? So here what happened we
+
+137
+00:13:09,099 --> 00:13:14,780
+have a list say 5 this list. Right? So in that we want to access each and every item.
+
+138
+00:13:14,780 --> 00:13:20,340
+Let's say. So how can we access an item in this? Okay? Let's say I want to access the
+
+139
+00:13:20,340 --> 00:13:27,460
+string. Okay? The 6th string. So how do I access it? So just like in the strings how
+
+140
+00:13:27,460 --> 00:13:34,299
+did we learn about this accessing a particular character using indexing. Right? So just like
+
+141
+00:13:34,299 --> 00:13:41,460
+that in lists also we can do indexing. Okay? So each item in the list will have an index.
+
+142
+00:13:41,460 --> 00:13:46,140
+Okay? So starting with the first item will have index 0 and then the second item will
+
+143
+00:13:46,140 --> 00:13:51,700
+have index 1, third item will have index 2, the fourth item will have index 3 like this.
+
+144
+00:13:51,700 --> 00:13:57,820
+Okay? So the indexing starts from 0. Okay? Just like in the strings here also the indexing
+
+145
+00:13:57,820 --> 00:14:04,340
+starts from 0. Okay? So we can use this indexes to access the elements in the list. So let's
+
+146
+00:14:04,340 --> 00:14:10,219
+say you want to access the string 6. Okay? So what is the index of string 6 there you
+
+147
+00:14:10,219 --> 00:14:17,020
+can see 1. Right? So what do you have to do? You have to access this string. Right? So
+
+148
+00:14:17,020 --> 00:14:21,059
+which is the index is 1. So what do you do? You write the variable name which is list
+
+149
+00:14:21,419 --> 00:14:26,700
+underscore a and then in the square brackets we'll give it as 1. Right? With the index
+
+150
+00:14:26,700 --> 00:14:31,179
+of that particular element. Okay? Whichever item that you want to access. So when you
+
+151
+00:14:31,179 --> 00:14:34,419
+write list a of 1 then we'll get the output as c.
+
+
+
+152
+00:14:34,915 --> 00:14:40,815
+six right like this what you can do you can access any element in the list okay.
+
+153
+00:14:40,815 --> 00:14:46,315
+Now we'll try this out in the code playground so here in the code playground let me say
+
+154
+00:14:46,315 --> 00:14:54,595
+I want to access the second element of the list so the index is one right so let me print
+
+155
+00:14:54,595 --> 00:14:59,794
+this and see okay what we should get we should get six right see we got six you can give
+
+156
+00:14:59,794 --> 00:15:04,515
+other also so indexing starts from zero right when you say list of zero what we'll get we'll
+
+157
+00:15:04,515 --> 00:15:11,115
+get five right see we got five similarly let's say you want to try three then what we'll
+
+158
+00:15:11,115 --> 00:15:17,714
+get eight point two right see we got eight point two like this you can access the element
+
+159
+00:15:17,714 --> 00:15:22,235
+in in the list okay now we'll go back to the slides.
+
+160
+00:15:22,235 --> 00:15:26,115
+So each item you can access with the help of this indexing.
+
+161
+00:15:26,115 --> 00:15:31,354
+Now coming to how you have to iterate over a list okay so let's say you have a list and
+
+162
+00:15:31,354 --> 00:15:37,115
+you want to iterate over the list and perform some operations right so let's see how to
+
+163
+00:15:37,115 --> 00:15:42,754
+iterate over a list just like in strings how we have for loop and then for and then character
+
+164
+00:15:42,754 --> 00:15:48,315
+in string just like that here also what we can do is we can use the for loop to iterate
+
+165
+00:15:48,315 --> 00:15:56,794
+over the list so for item in list A okay so here item will be initialized with the first
+
+166
+00:15:56,794 --> 00:16:01,754
+element in the list and then we'll start running the repeated block of code okay like
+
+167
+00:16:01,754 --> 00:16:06,275
+this what will happen just like in strings it will iterate and print there you can see
+
+168
+00:16:06,275 --> 00:16:10,834
+so our list A contains all those elements and then what we are doing we are iterating
+
+169
+00:16:10,834 --> 00:16:17,675
+over each element in the list right so for item in list A when we are iterating so what
+
+170
+00:16:17,675 --> 00:16:22,635
+we are doing we are iterating over each element and printing it right so first we first it
+
+171
+00:16:22,635 --> 00:16:27,194
+will be initialized with 5 so what we have we have output as 5 then the next item in
+
+172
+00:16:27,194 --> 00:16:33,434
+the list is 6 right double quote 6 so what did we get we get we got the string 6 similarly
+
+173
+00:16:33,434 --> 00:16:39,075
+A the value present in A and similarly 8.2 okay so like this what we can do we can iterate
+
+174
+00:16:39,075 --> 00:16:45,235
+over the list and print the values okay so this is about iterating over a list.
+
+175
+00:16:45,235 --> 00:16:52,594
+Next understand another operation before that let's just try this out okay so what I've
+
+176
+00:16:52,594 --> 00:17:01,075
+do is let me just iterate over the list okay so for item in list A and then let me print
+
+177
+00:17:01,075 --> 00:17:06,114
+the item okay this is what we were doing so what we should get we should get each of the
+
+178
+00:17:06,114 --> 00:17:13,275
+elements right see we have 5 and then 6 and then 2 and then 8.2 okay so clear so this
+
+179
+00:17:13,275 --> 00:17:18,915
+is how we have to iterate done okay now we'll go back to the slides so we understood about
+
+180
+00:17:18,915 --> 00:17:23,954
+how we have to create the list and how we can access elements and then how to iterate
+
+181
+00:17:23,954 --> 00:17:25,075
+over a list.
+
+182
+00:17:25,075 --> 00:17:31,954
+Now let's understand few operations on the list right so initially let's start with concatenation
+
+183
+00:17:31,954 --> 00:17:37,435
+so let's say you have two lists right so there you can see the list A has 1, 2, 3 as its
+
+184
+00:17:37,435 --> 00:17:44,954
+items whereas the list B has A, B, C as its items right let's say you want to concatenate
+
+185
+00:17:44,954 --> 00:17:51,235
+both the lists so you can concatenate both the lists using the plus symbol right there
+
+186
+00:17:51,235 --> 00:17:56,034
+you can see we have written list A so we want first the list A elements and then we want
+
+187
+00:17:56,034 --> 00:18:00,235
+to concatenate also the list B elements right so what did we do?
+
+188
+00:18:00,235 --> 00:18:05,754
+We have written list A plus list B and then we have stored that in list C and we are printing
+
+189
+00:18:05,754 --> 00:18:12,194
+it see what's the output that we got 1, 2, 3 and then A, B, C okay so just like how in
+
+190
+00:18:12,194 --> 00:18:19,314
+strings how we can just use this plus operator and concatenate strings similarly in the list
+
+191
+00:18:19,314 --> 00:18:25,954
+also we can concatenate the items of the list okay there you can see okay so now let's try
+
+192
+00:18:25,954 --> 00:18:39,194
+this out in the code playground so let's say my list A has 1, 2, 3 okay so in list you
+
+193
+00:18:39,194 --> 00:18:43,875
+have to here what I'm doing I'm creating a list with the items 1, 2 and 3 they are
+
+194
+00:18:43,875 --> 00:18:57,274
+comma separated then the list B let's say it has A and then B and then C okay so now
+
+195
+00:18:57,274 --> 00:19:04,194
+what I want to do is I want a list C in which I'll store by the one that I've concatenated
+
+196
+00:19:04,194 --> 00:19:10,115
+list A and list B okay so firstly I'll have list A and then I'll concatenate it with list
+
+197
+00:19:10,115 --> 00:19:17,474
+B okay and then I'll print the list C okay so let's see the output so what we'll have
+
+198
+00:19:17,474 --> 00:19:23,474
+firstly all the elements of list A and then we'll have the elements of list B so all of
+
+199
+00:19:23,474 --> 00:19:28,355
+these are together in one single list and it's stored in list C right so like this what
+
+200
+00:19:28,355 --> 00:19:33,515
+we can do we can concatenate the list just like in strings how we can concatenate them
+
+201
+00:19:33,835 --> 00:19:39,274
+similarly in lists also we can concatenate okay now we'll go back to the slides so we
+
+202
+00:19:39,274 --> 00:19:44,635
+understood about concatenation right so now what we'll do is let's start adding items
+
+203
+00:19:44,635 --> 00:19:49,314
+to the list here what we are doing initially we are writing a list variable and then in
+
+204
+00:19:49,314 --> 00:19:54,915
+the list we are giving the items let's say you want to iterate and then add some iterate
+
+205
+00:19:54,915 --> 00:20:00,515
+over some sequence and add some items to the list let's understand how to do it so initially
+
+206
+00:20:00,515 --> 00:20:05,395
+we don't have any items in the list so firstly we have to create a list right but there are
+
+207
+00:20:05,395 --> 00:20:11,474
+no items in the list so basically we want an empty list so you can initialize a variable
+
+208
+00:20:11,474 --> 00:20:16,474
+with an empty list so to initialize it with empty list you just need to write the square
+
+209
+00:20:16,474 --> 00:20:20,994
+brackets without any other elements in between there you can see what did we write we have
+
+210
+00:20:20,994 --> 00:20:26,355
+written list A which is a list which we want to iterate and add sequence right so equal
+
+211
+00:20:26,355 --> 00:20:30,795
+to and then we have written to square brackets right open and close so what we are doing
+
+212
+00:20:30,795 --> 00:20:37,915
+here we are initializing it with an empty list okay then what we are doing we are iterating
+
+213
+00:20:37,915 --> 00:20:45,355
+over a sequence right range 1 comma 4 will give you a sequence of 1 2 and 3 we are iterating
+
+214
+00:20:45,355 --> 00:20:51,955
+over the sequence and adding that at into the list right so for that what did we do
+
+215
+00:20:51,955 --> 00:20:58,555
+we have written list A plus equal to and then square brackets of I right so basically
+
+216
+00:20:58,555 --> 00:21:04,594
+plus equal to is a compound assignment operator right so even for list we can use this compound
+
+217
+00:21:04,594 --> 00:21:10,115
+assignment operator so what we are doing we are concatenating the list A with another
+
+218
+00:21:10,115 --> 00:21:15,474
+the list okay so in the another list we have just the value present in the I variable okay
+
+219
+00:21:15,474 --> 00:21:21,034
+so that entire value will get stored in list A again okay so like this when you do this
+
+220
+00:21:21,034 --> 00:21:26,154
+in steps then what will happen will get the entire 1 2 3 we are iterating over the sequence
+
+221
+00:21:26,154 --> 00:21:32,355
+and adding each element to it okay let's try this out step by step and understand okay
+
+222
+00:21:32,355 --> 00:21:37,994
+in the code playground so firstly I'll remove this piece of code then I'll write as there
+
+223
+00:21:37,994 --> 00:21:44,314
+is a list A okay so I want to iterate over a sequence and store those elements in list
+
+224
+00:21:44,314 --> 00:21:50,274
+A I want to add those items in list A so initially we don't want any elements in the list so
+
+225
+00:21:50,274 --> 00:21:54,714
+we have to initialize this variable with an empty list so how do we initialize with
+
+226
+00:21:54,714 --> 00:22:00,115
+the empty list simple two square brackets okay so without any elements in between so
+
+227
+00:22:00,115 --> 00:22:05,154
+we are done with this once let's just try to print it and see okay so I'm just running
+
+228
+00:22:05,154 --> 00:22:09,795
+the code right so what we should get just empty list right see we just have square brackets
+
+229
+00:22:09,795 --> 00:22:15,714
+without any elements in between okay this is done next I want to iterate over a sequence
+
+230
+00:22:15,714 --> 00:22:22,714
+and add elements to the list so firstly I will iterate in say some range okay let me
+
+231
+00:22:22,714 --> 00:22:29,555
+say 1 2 4 okay so I want to iterate over the sequence of 1 2 3 so range 1 comma 4 will
+
+232
+00:22:29,555 --> 00:22:35,835
+give you the sequence of 1 2 3 so I want to iterate over this and add those items to the
+
+233
+00:22:35,835 --> 00:22:42,955
+list right so for that what I'll do firstly list A okay I want to add those elements right
+
+234
+00:22:43,115 --> 00:22:49,314
+so I have a list A and then I will add right list A already we have some elements right
+
+235
+00:22:49,314 --> 00:22:54,395
+for now it's an empty list and then I want to add this I so how do I do it I have to
+
+236
+00:22:54,395 --> 00:23:00,874
+first define a list and then have that element there okay and then let me print it in each
+
+237
+00:23:00,874 --> 00:23:05,434
+iteration and understand what's happening so what will happen initially it's an empty
+
+238
+00:23:05,434 --> 00:23:10,394
+list here it will be an empty list and then plus so the first item in the sequence is
+
+239
+00:23:10,394 --> 00:23:16,074
+1 so it will be plus 1 so we are what we are doing we are just basically this is nothing
+
+240
+00:23:16,074 --> 00:23:23,274
+but equivalent to adding this empty list plus an empty list of 1 so what will it give it
+
+241
+00:23:23,274 --> 00:23:27,675
+will give nothing but 1 like this right so like this what we are doing we are adding
+
+242
+00:23:27,675 --> 00:23:32,315
+the elements to the list okay we can use this concatenation for that.
+
+243
+00:23:32,315 --> 00:23:37,875
+Now let me run the code and show you the output okay so this is the one the initial print
+
+244
+00:23:37,875 --> 00:23:42,514
+statement and then what we are doing in each iteration what we are doing so firstly this
+
+245
+00:23:42,514 --> 00:23:47,594
+is an empty list and then we have the list with element 1 and then we are concatenating
+
+246
+00:23:47,594 --> 00:23:53,875
+and storing in list A so when we are printing it we have this 1 right so next here in the
+
+247
+00:23:53,875 --> 00:23:59,555
+next iteration in list A what we will have we will have 1 right so we will have this
+
+248
+00:23:59,555 --> 00:24:05,435
+in present in list A so what is here it's nothing but the list of 2 right so what we
+
+249
+00:24:05,435 --> 00:24:10,435
+are doing we are combining list of 1 with list of 2 right we are basically doing this
+
+250
+00:24:10,435 --> 00:24:19,274
+okay 1 plus we are doing 2 which is nothing but equal to 1, 2 right so like this so that
+
+251
+00:24:19,274 --> 00:24:24,714
+is what output that we got right similarly 1, 2, 3 right so initially list A will have
+
+252
+00:24:24,714 --> 00:24:30,355
+1, 2 in that iteration and then when we add the list 3 then what will happen the combined
+
+253
+00:24:30,355 --> 00:24:35,154
+will have 1, 2, 3 see that's why we have first 1 and then we have 1, 2 and then we
+
+254
+00:24:35,154 --> 00:24:40,954
+have 1, 2, 3 so in this way what we can do we can add items to the list by iterating
+
+255
+00:24:40,954 --> 00:24:46,154
+over a sequence like this okay you understood this part right so now we'll go back to the
+
+256
+00:24:46,154 --> 00:24:53,435
+slides so we understood how to add items to the list okay so we understood about concatenation
+
+257
+00:24:53,435 --> 00:24:58,714
+and how we can use this concatenation here we can also use a compound assignment operator
+
+258
+00:24:58,714 --> 00:25:03,755
+which is plus equal to okay so directly instead of writing list A equal to list A plus that
+
+259
+00:25:03,755 --> 00:25:10,435
+square brackets I we can directly write as list A plus equal to I okay the list I done
+
+260
+00:25:10,435 --> 00:25:16,954
+so now let's see an another operation which is repetition okay so just like in strings
+
+261
+00:25:16,954 --> 00:25:23,154
+how we use the star operator to repeat the strings right to repeat the characters similarly
+
+262
+00:25:23,154 --> 00:25:28,675
+we can use the star operator here also to repeat the items in the list okay to repeat
+
+263
+00:25:28,675 --> 00:25:34,154
+the lists there you can see an example so we have list A right in that what we have
+
+264
+00:25:34,154 --> 00:25:41,115
+we have 1, 2 so the list 1, 2 and then what do we have we have what did we write we have
+
+265
+00:25:41,115 --> 00:25:49,675
+list A into 3 so basically we want to repeat the elements 1, 2, 3 times okay so that will
+
+266
+00:25:49,675 --> 00:25:54,394
+get stored in list B there you can see the output first we have 1, 2 then you have 1,
+
+267
+00:25:54,394 --> 00:26:01,274
+2 and then 1, 2 so basically we are repeating 1, 2, 3 times okay so like this we can use
+
+268
+00:26:01,274 --> 00:26:07,795
+this repetition and to repeat the lists okay so this is about the repetition we can try
+
+269
+00:26:07,795 --> 00:26:09,834
+this out in the code playground.
+
+270
+00:26:09,834 --> 00:26:19,074
+So let me say I have a list A okay equal to say 1, 2 okay so now let's say I want to repeat
+
+271
+00:26:19,074 --> 00:26:26,235
+it and store it in list B okay so let's say list A into say 3 okay let me print list B
+
+272
+00:26:26,235 --> 00:26:33,074
+then we'll see the output okay so what we should get we should get 1, 2, 1, 2, 1, 2,
+
+273
+00:26:33,074 --> 00:26:38,954
+1, 2 right so 3 times basically 1, 2, 1, 2, 1, 2 like this we it's repeated 3 times right
+
+274
+00:26:38,954 --> 00:26:43,394
+so here what we can do let's say I'll just increase the number then what we have to get
+
+275
+00:26:43,394 --> 00:26:48,474
+we have to have this 1, 2 elements 5 times right see we have 5 times so like this what
+
+276
+00:26:48,474 --> 00:26:53,514
+we have to use we have to use this string repetition okay now we'll go back to the slides
+
+277
+00:26:53,514 --> 00:26:57,555
+just like in string repetition what we are doing here we are doing the list repetition
+
+278
+00:26:57,555 --> 00:27:03,235
+we are repeating the items in the list okay so next we understood about concatenation
+
+279
+00:27:03,235 --> 00:27:10,154
+and repetition right now we'll see about obtaining a part of a list right so here if you want
+
+280
+00:27:10,154 --> 00:27:14,514
+to obtain a part of the list right we have an entire list in that let's say you want
+
+281
+00:27:14,514 --> 00:27:21,315
+to obtain a part of the list so for that we can use list slicing so just like in strings
+
+282
+00:27:21,315 --> 00:27:26,594
+we have the string slicing like this in list we have the list slicing so let's say you
+
+283
+00:27:26,594 --> 00:27:33,394
+have a list like this 5, string 6, 2, 8.2 and you want to obtain a part of the list
+
+284
+00:27:33,394 --> 00:27:40,474
+say 5 and the string 6 okay so for that we can use this slicing okay so what do we want
+
+285
+00:27:40,474 --> 00:27:45,355
+right from the beginning we want the two elements right we want the elements at index
+
+286
+00:27:45,355 --> 00:27:50,154
+0 and 1 so for that what we are writing we are writing it as colon 2 so if you don't
+
+287
+00:27:50,154 --> 00:27:54,115
+mention the start index what will happen it will start from the beginning which is index
+
+288
+00:27:54,115 --> 00:27:59,514
+0 right so colon 2 so it will start from the beginning till the index 2 the index 2 is
+
+289
+00:27:59,514 --> 00:28:04,235
+not included so what will happen the elements present at index 0 and 1 will get stored in
+
+290
+00:28:04,235 --> 00:28:10,435
+list B okay see the output there you can see we have 5 and then 6 right so this is
+
+291
+00:28:10,435 --> 00:28:17,274
+done now we'll just try this out in the code playground so let's say you have a list A
+
+292
+00:28:17,274 --> 00:28:26,594
+so what was the list 5 and then there was 6 right and then we have say A or some 2 let's
+
+293
+00:28:26,594 --> 00:28:32,954
+say just 2 okay let's say 8.2 okay so now what we want is we want a part of this list
+
+294
+00:28:32,954 --> 00:28:37,634
+only this 5 and 6 let's say we want that so what we can do we can use this slicing
+
+295
+00:28:37,634 --> 00:28:45,875
+right so I'll store it in list B list A right from index 0 we want it till index 2 only
+
+296
+00:28:45,875 --> 00:28:53,154
+the 0 1 index 2 is not included so we'll just write colon 2 and let me print the list okay
+
+297
+00:28:53,154 --> 00:28:59,995
+now I'll run the code right see what we have we have 5 and then single code 6 right so
+
+298
+00:29:00,074 --> 00:29:06,074
+what we can do is here you can give out with some other values and also check okay so let
+
+299
+00:29:06,074 --> 00:29:09,834
+me run the code so what did we do we have mentioned 1 colon 4.
+
+
+
+300
+00:29:09,830 --> 00:29:15,830
+So, what is index 1, this 6 right so 1, 2, 3, 1 colon 4 means 1, 2, 3 index will be considered.
+
+301
+00:29:15,830 --> 00:29:20,290
+See the output what did we get, we got a list with the these parts right where with these
+
+302
+00:29:20,290 --> 00:29:21,290
+elements.
+
+303
+00:29:21,290 --> 00:29:27,670
+So, like this what we can do, we can obtain a part of the list using slicing ok, writing
+
+304
+00:29:27,670 --> 00:29:30,070
+like this is nothing but slicing right.
+
+305
+00:29:30,070 --> 00:29:32,469
+So yeah, now we will go back to the slides.
+
+306
+00:29:32,469 --> 00:29:34,469
+So we understood about slicing.
+
+307
+00:29:34,469 --> 00:29:39,969
+In strings we understood an another concept which was extended slicing right.
+
+308
+00:29:39,969 --> 00:29:42,030
+So we will understand about this.
+
+309
+00:29:42,030 --> 00:29:45,589
+So just like in strings how we can have this step right.
+
+310
+00:29:45,589 --> 00:29:50,949
+So you have a start index, end index and also mention the step, similarly we can have extended
+
+311
+00:29:50,949 --> 00:29:54,929
+slicing even in this right, even in lists.
+
+312
+00:29:54,929 --> 00:29:56,350
+So we will understand that.
+
+313
+00:29:56,350 --> 00:30:00,629
+So here let's say you want to extract alternate items like this, what do you do?
+
+314
+00:30:00,629 --> 00:30:02,690
+You can give the step size right.
+
+315
+00:30:02,690 --> 00:30:04,570
+So for that let's take an example.
+
+316
+00:30:04,570 --> 00:30:11,129
+So in the list A what we have, we have R, B, G, O, W, let's say you have this.
+
+317
+00:30:11,129 --> 00:30:17,889
+So here what we are doing, what did we write there, we have written 0 colon 5 colon 3 right.
+
+318
+00:30:17,889 --> 00:30:24,529
+So basically here the start index is 0, the end index is 5 and the step is 3.
+
+319
+00:30:24,529 --> 00:30:31,289
+So we start from 0 which is R, so we got R and then we take 3 steps which is B, G, O
+
+320
+00:30:31,490 --> 00:30:34,310
+and then what is the element present, O right.
+
+321
+00:30:34,310 --> 00:30:35,310
+So that we got.
+
+322
+00:30:35,310 --> 00:30:40,450
+Okay and then again we will try to take 3 steps but then we reach the end index.
+
+323
+00:30:40,450 --> 00:30:42,330
+So we will stop there okay.
+
+324
+00:30:42,330 --> 00:30:45,490
+So that's where what's the output, R, O okay.
+
+325
+00:30:45,490 --> 00:30:46,730
+So there you can see.
+
+326
+00:30:46,730 --> 00:30:50,330
+So in this way what we can do, we can even have extended slicing.
+
+327
+00:30:50,330 --> 00:30:54,550
+We will try this out in the code playground.
+
+328
+00:30:54,550 --> 00:31:10,910
+So let's say we have a list A and the elements present in list A are say R right, B, G, O
+
+329
+00:31:10,910 --> 00:31:13,650
+and then W okay.
+
+330
+00:31:13,650 --> 00:31:18,190
+So now what I will do is I will have a list B in which I will store this okay.
+
+331
+00:31:18,190 --> 00:31:25,790
+So list A of let's say I will start from index 0 right and go till 5 with a step size
+
+332
+00:31:25,790 --> 00:31:26,790
+of 3.
+
+333
+00:31:26,790 --> 00:31:28,589
+Okay let me print that list.
+
+334
+00:31:28,589 --> 00:31:30,070
+Okay and see the output.
+
+335
+00:31:30,070 --> 00:31:35,309
+So what we should get right, you tell me what we should get we just discussed, R and O.
+
+336
+00:31:35,309 --> 00:31:38,449
+Okay let me give some other values and also try.
+
+337
+00:31:38,449 --> 00:31:43,389
+So let's say the step size is 2 then what we will get right from 0, we will take 2 steps
+
+338
+00:31:43,389 --> 00:31:46,749
+then R, G and then 2 steps which is W.
+
+339
+00:31:46,910 --> 00:31:53,469
+So like this what we can do, we can even use extended slicing in case of lists okay.
+
+340
+00:31:53,469 --> 00:31:55,309
+Now we will go back to the slides.
+
+341
+00:31:55,309 --> 00:32:00,710
+So far we understood about the different operations that we can perform on the lists right.
+
+342
+00:32:00,710 --> 00:32:06,690
+So concatenation, repetition and then the slicing and even we can do extended slicing
+
+343
+00:32:06,690 --> 00:32:08,830
+on the lists okay.
+
+344
+00:32:08,830 --> 00:32:13,869
+Now we will understand some more concepts which is how can we convert a sequence to
+
+345
+00:32:13,869 --> 00:32:15,690
+a list okay.
+
+346
+00:32:15,690 --> 00:32:19,330
+So for that we can use list right, the utility list.
+
+347
+00:32:19,330 --> 00:32:23,130
+So you have to just write list of and give the sequence right.
+
+348
+00:32:23,130 --> 00:32:25,410
+So let's take an example of string.
+
+349
+00:32:25,410 --> 00:32:28,650
+String is nothing but a sequence of characters right.
+
+350
+00:32:28,650 --> 00:32:33,529
+So if you give that string for the list right, the list utility what will it do?
+
+351
+00:32:33,529 --> 00:32:36,410
+It will convert it into a list right.
+
+352
+00:32:36,410 --> 00:32:38,130
+There you can see the example.
+
+353
+00:32:38,130 --> 00:32:39,130
+So what did we write?
+
+354
+00:32:39,130 --> 00:32:43,969
+We have written color equal to red and then we have given color for the list utility right.
+
+355
+00:32:43,969 --> 00:32:45,529
+So list of color.
+
+356
+00:32:46,369 --> 00:32:47,369
+So what are we doing?
+
+357
+00:32:47,369 --> 00:32:52,130
+We are converting this string into a list right.
+
+358
+00:32:52,130 --> 00:32:56,449
+So when we are writing this list, we are converting this into list right.
+
+359
+00:32:56,449 --> 00:32:57,889
+So for that what did we do?
+
+360
+00:32:57,889 --> 00:32:59,290
+What is the output there?
+
+361
+00:32:59,290 --> 00:33:04,969
+R and then we have another item in the list is E and another item is D right.
+
+362
+00:33:04,969 --> 00:33:05,969
+So like this what we have?
+
+363
+00:33:05,969 --> 00:33:08,210
+We have a list here right.
+
+364
+00:33:08,210 --> 00:33:09,210
+So you understood this part.
+
+365
+00:33:09,210 --> 00:33:10,529
+So like this what we can do?
+
+366
+00:33:10,529 --> 00:33:14,690
+It could be any sequence you can convert it into a list right.
+
+367
+00:33:14,850 --> 00:33:18,169
+It could be strings or even it could be the range right.
+
+368
+00:33:18,169 --> 00:33:20,729
+So we understood about this range utility right.
+
+369
+00:33:20,729 --> 00:33:23,169
+So when you write range of 4, what will it do?
+
+370
+00:33:23,169 --> 00:33:28,009
+It will give you a sequence of 0, 1, 2, 3 right.
+
+371
+00:33:28,009 --> 00:33:30,030
+So this is the sequence that you will get.
+
+372
+00:33:30,030 --> 00:33:35,729
+So when you write list of range of 4, so that sequence of 0, 1, 2, 3 will get converted
+
+373
+00:33:35,729 --> 00:33:40,569
+into a list and so when you print it, you will get a list ok.
+
+374
+00:33:40,569 --> 00:33:45,250
+So let's try this out in the code playground.
+
+375
+00:33:45,250 --> 00:33:52,090
+So firstly, so let me say that there is a string, let's give it a string ok and then
+
+376
+00:33:52,090 --> 00:34:00,430
+what we'll do is we'll have a list in which we'll convert this string into the list ok.
+
+377
+00:34:00,430 --> 00:34:06,650
+So let me print the list.
+
+378
+00:34:06,650 --> 00:34:07,650
+See what we have?
+
+379
+00:34:07,729 --> 00:34:12,810
+We have R is 1 and then E and then D. Like this what happens is entire each character
+
+380
+00:34:12,810 --> 00:34:18,370
+present in the string has been converted into an item in the list right.
+
+381
+00:34:18,370 --> 00:34:24,050
+So similarly, let's say we will give, just remove this color in this list, instead of
+
+382
+00:34:24,050 --> 00:34:29,210
+color let's give another sequence here range right, range of 4.
+
+383
+00:34:29,210 --> 00:34:30,210
+So what will it give?
+
+384
+00:34:30,210 --> 00:34:34,930
+It will give you a sequence right, range of 4 will give you a sequence of 0, 1, 2, 3.
+
+385
+00:34:34,930 --> 00:34:41,689
+So when you write list of, it will be converted into a list with items as 0, 1, 2 and 3 ok.
+
+386
+00:34:41,689 --> 00:34:42,689
+Let me run the code.
+
+387
+00:34:42,689 --> 00:34:43,689
+So what we should get?
+
+388
+00:34:43,689 --> 00:34:47,090
+We should get a list of 0, 1, 2 and 3 ok.
+
+389
+00:34:47,090 --> 00:34:52,930
+You can give it some different values say 2, 6.
+
+390
+00:34:52,930 --> 00:34:53,930
+So what we should get?
+
+391
+00:34:53,930 --> 00:34:55,889
+We should get 2, 3, 4, 5 right.
+
+392
+00:34:55,889 --> 00:34:57,229
+See we got that output.
+
+393
+00:34:57,229 --> 00:35:03,330
+So like this what list will do is given any sequence, it will convert it into a list ok.
+
+394
+00:35:03,330 --> 00:35:05,490
+Now we will go back to the slides.
+
+395
+00:35:05,490 --> 00:35:07,689
+So we have seen this output right.
+
+396
+00:35:07,689 --> 00:35:14,650
+Now so we understood about how we can convert some sequence into a list right using the
+
+397
+00:35:14,650 --> 00:35:16,090
+list utility.
+
+398
+00:35:16,090 --> 00:35:21,090
+Now so far we understood a lot of operations that we can do and how we can convert sequences
+
+399
+00:35:21,090 --> 00:35:22,609
+to a list.
+
+400
+00:35:22,609 --> 00:35:29,609
+Now let's look into mutability that is, so let's say you have, you are given a list ok
+
+401
+00:35:29,609 --> 00:35:35,930
+say 1, 2, 3, 4, 5 and then let's say you want to convert a particular item right.
+
+402
+00:35:35,930 --> 00:35:39,289
+You want to change the value present in that item ok.
+
+403
+00:35:39,289 --> 00:35:42,210
+So here in our case we have 1, 2, 3, 5.
+
+404
+00:35:42,210 --> 00:35:46,650
+So let's say I want to change the last item which is 5 with 4 ok.
+
+405
+00:35:46,650 --> 00:35:48,930
+I want to modify it ok.
+
+406
+00:35:48,930 --> 00:35:50,770
+So let's for that what I can do?
+
+407
+00:35:50,770 --> 00:35:56,009
+I can directly like list a which is available name of 3 what will be, what we are doing?
+
+408
+00:35:56,169 --> 00:36:01,609
+We are accessing the element at that place right and then we are modifying it with 4.
+
+409
+00:36:01,609 --> 00:36:05,449
+So when you actually print the list you will have 1, 2, 3, 4.
+
+410
+00:36:05,449 --> 00:36:07,090
+So basically what we are doing?
+
+411
+00:36:07,090 --> 00:36:09,409
+We are modifying the lists right.
+
+412
+00:36:09,409 --> 00:36:14,810
+So given at a position right we are modifying the item present at that position ok.
+
+413
+00:36:14,810 --> 00:36:18,949
+We are updating it or we are changing it like this right.
+
+414
+00:36:18,949 --> 00:36:23,090
+So here you can see in this what we will get initially what is the list a?
+
+415
+00:36:23,090 --> 00:36:24,090
+It's 1, 2, 3, 5.
+
+416
+00:36:24,090 --> 00:36:25,849
+There you can see in the output.
+
+417
+00:36:26,689 --> 00:36:31,409
+So when we are writing list a of 3 that is 0, 1, 2, 3.
+
+418
+00:36:31,409 --> 00:36:32,849
+So that is the 5 right.
+
+419
+00:36:32,849 --> 00:36:35,409
+So current value is 5.
+
+420
+00:36:35,409 --> 00:36:36,409
+So what we are doing?
+
+421
+00:36:36,409 --> 00:36:38,689
+We are updating it with 4 right.
+
+422
+00:36:38,689 --> 00:36:40,830
+We are modifying it with 4.
+
+423
+00:36:40,830 --> 00:36:43,169
+So when you print the list see what's the value?
+
+424
+00:36:43,169 --> 00:36:44,169
+What is the list?
+
+425
+00:36:44,169 --> 00:36:46,609
+1, 2, 3, 4 ok.
+
+426
+00:36:46,609 --> 00:36:52,530
+So in this way in list what we can do is we can modify the items present at a particular
+
+427
+00:36:52,530 --> 00:36:54,310
+position ok.
+
+428
+00:36:54,310 --> 00:36:57,470
+So let me try this out in the code playground.
+
+429
+00:36:57,470 --> 00:37:07,629
+So let's say initially in the list a we have 1, 2, 3 and 5 and now let's say I want to
+
+430
+00:37:07,629 --> 00:37:11,250
+modify the value present here ok.
+
+431
+00:37:11,250 --> 00:37:14,669
+So which is index 3 right 0, 1, 2, 3.
+
+432
+00:37:14,669 --> 00:37:17,789
+Firstly let me just print the list ok.
+
+433
+00:37:17,789 --> 00:37:24,449
+So next what I'll do is I will say that in list a of the index is 3 right 0, 1, 2, 3.
+
+434
+00:37:24,449 --> 00:37:25,449
+So I'll write 3.
+
+435
+00:37:25,449 --> 00:37:28,830
+I want to update it with 4 say the value 4 ok.
+
+436
+00:37:28,830 --> 00:37:35,810
+I'll just print list a now again right and let me see the outputs ok.
+
+437
+00:37:35,810 --> 00:37:37,229
+So you know what output we'll get.
+
+438
+00:37:37,229 --> 00:37:41,150
+So initially it will be 1, 2, 3, 5 and then now we have 1, 2, 3, 4.
+
+439
+00:37:41,150 --> 00:37:46,110
+Similarly you can try out with say different values say index 2 you want to update it with
+
+440
+00:37:46,110 --> 00:37:47,110
+4.
+
+441
+00:37:47,429 --> 00:37:54,129
+We'll get 1, 2, 4, 5 see right you understood this part ok.
+
+442
+00:37:54,129 --> 00:37:58,429
+So like this what we can do we can modify the items present at a particular index in
+
+443
+00:37:58,429 --> 00:37:59,749
+case of list.
+
+444
+00:37:59,749 --> 00:38:04,730
+So if once we can modify like this then we call that the lists are mutable.
+
+445
+00:38:04,730 --> 00:38:10,989
+So why are we calling the list as mutable because us we are able to modify the lists
+
+446
+00:38:10,989 --> 00:38:12,230
+right.
+
+447
+00:38:12,230 --> 00:38:17,949
+So here what we are doing we are modifying the items present at a particular index right.
+
+448
+00:38:17,949 --> 00:38:24,129
+So basically we are modifying it because of that we call the lists are mutable ok.
+
+449
+00:38:24,129 --> 00:38:26,470
+So now we'll go back to the slides.
+
+450
+00:38:26,470 --> 00:38:31,429
+So we understood that the lists are mutable because we are able to change the values present
+
+451
+00:38:31,429 --> 00:38:34,830
+at a particular position or index ok.
+
+452
+00:38:34,830 --> 00:38:38,009
+Now let's try the same thing for string right.
+
+453
+00:38:38,009 --> 00:38:42,030
+So we understood about strings also there also we can apply indexing right.
+
+454
+00:38:42,830 --> 00:38:44,069
+So let's try do the same thing.
+
+455
+00:38:44,069 --> 00:38:48,309
+So here what we have we have something like c, u, soon.
+
+456
+00:38:48,309 --> 00:38:51,509
+So here actually there it's written cea right.
+
+457
+00:38:51,509 --> 00:38:53,949
+So instead of a we want e.
+
+458
+00:38:53,949 --> 00:38:56,949
+So what is the index of the character a?
+
+459
+00:38:56,949 --> 00:38:59,189
+So it's 0, 1, 2 so 2.
+
+460
+00:38:59,189 --> 00:39:05,449
+So what did we write here message square bracket 2 equal to e right and then we are printing
+
+461
+00:39:05,449 --> 00:39:07,309
+the message ok.
+
+462
+00:39:07,309 --> 00:39:09,509
+Let's see what output we will get.
+
+463
+00:39:09,509 --> 00:39:12,790
+So when you write like this we'll get an error like this ok.
+
+464
+00:39:12,790 --> 00:39:14,869
+See there you can see there's an error.
+
+465
+00:39:14,869 --> 00:39:20,129
+So basically why is this happening because strings are immutable.
+
+466
+00:39:20,129 --> 00:39:25,389
+So like this with the help of indexing you cannot change the characters present in the
+
+467
+00:39:25,389 --> 00:39:30,989
+string because strings are immutable you cannot modify them like this ok.
+
+468
+00:39:30,989 --> 00:39:33,749
+So that's why we are getting an error like this ok.
+
+469
+00:39:33,749 --> 00:39:37,629
+We can try this out in the code playground.
+
+470
+00:39:37,749 --> 00:39:43,629
+So let's say you have a message ok we'll try the same message right.
+
+471
+00:39:43,629 --> 00:39:48,949
+Now what we want to do is we want to change the character present at the index 2 with
+
+472
+00:39:48,949 --> 00:39:53,910
+say e ok and then we want to print the message ok.
+
+473
+00:39:53,910 --> 00:39:59,270
+So if you try like this we'll get an error right because you cannot change like this
+
+474
+00:39:59,270 --> 00:40:02,270
+as strings are immutable.
+
+475
+00:40:02,270 --> 00:40:03,590
+Lists are mutable.
+
+476
+00:40:03,590 --> 00:40:08,489
+So in lists you can change the items whereas in strings are immutable.
+
+477
+00:40:08,489 --> 00:40:13,030
+So you cannot change the characters present inside a string ok.
+
+478
+00:40:13,030 --> 00:40:15,549
+Now we'll go back to the slides ok.
+
+479
+00:40:15,549 --> 00:40:17,350
+So we understood about this.
+
+480
+00:40:17,350 --> 00:40:21,629
+So so far we have learned a lot of things right how this about mutability about whether
+
+481
+00:40:21,629 --> 00:40:26,549
+lists are lists are mutable and strings are immutable and then we have seen the different
+
+482
+00:40:26,549 --> 00:40:32,030
+operations that we can perform on the strings that could be concatenation, repetition, slicing,
+
+483
+00:40:32,790 --> 00:40:37,350
+extended, slicing and how we can convert a sequence to a list right.
+
+484
+00:40:37,350 --> 00:40:41,330
+Let's quickly summarize what we have seen in today's session.
+
+485
+00:40:41,330 --> 00:40:45,110
+In today's session we first understood about lists.
+
+486
+00:40:45,110 --> 00:40:47,590
+Lists are nothing but data structures.
+
+487
+00:40:47,590 --> 00:40:53,110
+So we use these data structures to store and organize the data in an efficient manner.
+
+488
+00:40:53,110 --> 00:40:58,949
+So we understood about list and then how to create a list right and how we can access
+
+489
+00:40:58,949 --> 00:41:04,389
+the elements in the list using indexing and then if you want to concatenate two lists
+
+490
+00:41:04,389 --> 00:41:06,429
+we can use the list concatenation.
+
+491
+00:41:06,429 --> 00:41:11,629
+By using the plus operator we can concatenate the lists and also if you want to repeat the
+
+492
+00:41:11,629 --> 00:41:18,549
+elements in the list we can use the list repetition and then we have seen about how we can use
+
+493
+00:41:18,549 --> 00:41:24,489
+the slicing and extended slicing just like in strings similarly we can use slicing and
+
+494
+00:41:24,489 --> 00:41:27,770
+extended slicing in case of lists.
+
+495
+00:41:27,770 --> 00:41:33,809
+And also given a sequence we can convert it into a list using the list utility and
+
+496
+00:41:33,809 --> 00:41:40,090
+then lists are mutable that is we can change the items present in the list whereas strings
+
+497
+00:41:40,090 --> 00:41:41,290
+are immutable.
+
+498
+00:41:41,290 --> 00:41:45,369
+So we cannot change the characters present in the strings.
+
+499
+00:41:45,369 --> 00:41:48,730
+Okay this is what we have learned in today's session.
+
+500
+00:41:48,730 --> 00:41:51,889
+So we have learned a lot of new topics in today's session.
+
+501
+00:41:52,049 --> 00:41:58,129
+Okay there are some more aspects about lists which we are going to cover in the next session.
+
+502
+00:41:58,129 --> 00:42:01,170
+Coming to practice do practice a lot.
+
+503
+00:42:01,170 --> 00:42:04,410
+Okay so in programming practice is very very important.
+
+504
+00:42:04,410 --> 00:42:08,090
+So you have a lot of coding questions available for practice.
+
+505
+00:42:08,090 --> 00:42:13,710
+So whenever you get free time do practice and also regarding feedback.
+
+506
+00:42:13,710 --> 00:42:19,069
+So do provide us with your valuable feedback your every point that you mentioned the feedback
+
+507
+00:42:19,069 --> 00:42:21,210
+is very very valuable to us.
+
+508
+00:42:21,530 --> 00:42:25,730
+So there is an entire team who looks into each and every point that you mentioned in
+
+509
+00:42:25,730 --> 00:42:29,730
+the feedback and based on that we customize the sessions.
+
+510
+00:42:29,730 --> 00:42:34,970
+If they are already part of it we will introduce them in case if they are not we will include
+
+511
+00:42:34,970 --> 00:42:39,090
+them and try to include them and give you the best possible experience.
+
+512
+00:42:39,090 --> 00:42:43,610
+So do provide us your valuable feedback that could be anything any inputs that you want
+
+513
+00:42:43,610 --> 00:42:48,410
+to give any suggestions and how you're feeling about these sessions everything you can convey
+
+514
+00:42:48,410 --> 00:42:51,170
+to us with the help of this feedback.
+
+515
+00:42:51,170 --> 00:42:56,489
+Click on the submit feedback button just below this video and give your inputs.
+
+516
+00:42:56,489 --> 00:42:59,170
+So coming to our daily challenge.
+
+517
+00:42:59,170 --> 00:43:02,330
+So in the daily challenge this is the code right.
+
+518
+00:43:02,330 --> 00:43:07,170
+So the expected output is this but actually there is a small mistake in this code.
+
+519
+00:43:07,170 --> 00:43:09,049
+You need to identify the mistake.
+
+520
+00:43:09,049 --> 00:43:11,770
+We'll discuss about this in the next session.
+
+521
+00:43:11,770 --> 00:43:13,929
+So thank you and all the best.
+
+

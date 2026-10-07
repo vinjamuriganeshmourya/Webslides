@@ -1,0 +1,2 @@
+backend  jeevansravanth/nxttrendz-backend:8  Up 24 seconds
+frontend  jeevansravanth/nxttrendz-frontend:8  Up 23 seconds

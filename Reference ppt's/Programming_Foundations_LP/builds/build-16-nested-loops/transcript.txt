@@ -1,0 +1,2365 @@
+1
+00:00:00,000 --> 00:00:11,840
+Hello everyone, welcome to today's session, in today's session we will be talking about
+
+2
+00:00:11,840 --> 00:00:17,879
+nested loops, before that let's look into the daily challenge, right, in the previous
+
+3
+00:00:17,879 --> 00:00:22,760
+session we have seen about this daily challenge, right, where you had to identify the mistake
+
+4
+00:00:22,760 --> 00:00:28,320
+in the code, so let's identify what is the mistake, right, we'll see the solution.
+
+5
+00:00:28,320 --> 00:00:34,720
+So this particular piece of code for this if we give an input 3, then we'll get an output
+
+6
+00:00:34,720 --> 00:00:39,599
+like this, there you can see the output, there are only 2 rows, there is a star and there
+
+7
+00:00:39,599 --> 00:00:46,200
+is a 2 stars, but in the expected output there are actually 3 rows, right, there is a star,
+
+8
+00:00:46,200 --> 00:00:51,320
+then there are 2 stars and then we have 3 stars in the last row, so we have to get this
+
+9
+00:00:51,320 --> 00:00:58,040
+expected output, but with this code we are getting this output, so what is the issue?
+
+10
+00:00:58,040 --> 00:01:04,160
+Let's understand, so instead of getting 3 rows we are getting 2 rows, it means that
+
+11
+00:01:04,160 --> 00:01:10,320
+the block of code which has to be repeated is only repeating twice, instead of thrice,
+
+12
+00:01:10,320 --> 00:01:16,239
+right, it's only repeating 2 times instead of 3 times, right, so what we have to do?
+
+13
+00:01:16,239 --> 00:01:21,639
+We have to correct the range, right, so we have done a mistake in the range, so there
+
+14
+00:01:21,639 --> 00:01:28,000
+what is the present, the mistake is present in the range, there we have range 1, N, there
+
+15
+00:01:28,959 --> 00:01:29,959
+we have N, then what will happen?
+
+16
+00:01:29,959 --> 00:01:30,959
+What is the sequence that we'll get?
+
+17
+00:01:30,959 --> 00:01:39,320
+We'll have 1, 2, 3 like this till N-1, that is for the input 3 we'll get 1 and 2, so this
+
+18
+00:01:39,320 --> 00:01:44,360
+block of code will be executed 2 times, so what we have to do?
+
+19
+00:01:44,360 --> 00:01:51,919
+Instead of writing 1, N we have to write 1, N plus 1, so when we write 1, N plus 1 see
+
+20
+00:01:51,919 --> 00:01:57,980
+the output, we have 3 rows, right, you have a star and there are 2 stars and then 3 stars,
+
+21
+00:01:58,959 --> 00:02:05,940
+so one mistake is present in the range, and there is also another mistake, did you see?
+
+22
+00:02:05,940 --> 00:02:12,300
+Initially there is an extra space in each row, can you see that there is an extra space,
+
+23
+00:02:12,300 --> 00:02:14,179
+so why did this happen?
+
+24
+00:02:14,179 --> 00:02:21,860
+Observe here, so here to print the spaces, right, in the beginning what are we doing?
+
+25
+00:02:21,860 --> 00:02:27,020
+There is a spaces variable in that repeated block of code, right, so when you have input
+
+26
+00:02:27,059 --> 00:02:33,259
+3, in the first line there should be 2 spaces, similarly if there is input 4 then how many
+
+27
+00:02:33,259 --> 00:02:35,500
+spaces should be present in the first line?
+
+28
+00:02:35,500 --> 00:02:41,899
+3 spaces should be present, okay, so basically in the first row what should be there?
+
+29
+00:02:41,899 --> 00:02:48,220
+There should be N-1 spaces, so what should the K be initialized with?
+
+30
+00:02:48,220 --> 00:02:54,580
+It should be initialized with N-1, but it's actually initialized with N, so that's fine,
+
+31
+00:02:54,580 --> 00:03:00,300
+but in the first row in our output we got 3 spaces instead of 2 spaces, so what we have
+
+32
+00:03:00,300 --> 00:03:01,300
+to write?
+
+33
+00:03:01,300 --> 00:03:09,619
+We have to write K equal to N-1, okay, clear, let's try this out and see, okay, in the code
+
+34
+00:03:09,619 --> 00:03:16,860
+playground, so in the code playground we have this same piece of code, see this is the piece
+
+35
+00:03:16,860 --> 00:03:22,899
+of code, right, okay, so what we'll do is we'll start correcting the mistakes, firstly
+
+36
+00:03:23,220 --> 00:03:31,380
+let's give input 3, and we'll run the code, okay, see we have here 2 or we have only 2
+
+37
+00:03:31,380 --> 00:03:35,660
+rows, right, now what is the first thing that we have to correct?
+
+38
+00:03:35,660 --> 00:03:42,660
+This one, right, so it's 1 and N plus 1, okay, when we have written N plus 1, see we'll run
+
+39
+00:03:42,660 --> 00:03:49,660
+the output in C, okay, see we got 3 rows, right, can you see there are 3 rows here,
+
+40
+00:03:49,660 --> 00:03:55,460
+cool, so this part is done, but see we have an extra space here, can you see here there's
+
+41
+00:03:55,460 --> 00:04:01,460
+an extra space in each and every row, so we have to get rid of this extra space, so for
+
+42
+00:04:01,460 --> 00:04:03,339
+that what we have to do?
+
+43
+00:04:03,339 --> 00:04:10,179
+Instead of initializing K with N, we have to initialize it with N-1, because here what
+
+44
+00:04:10,179 --> 00:04:11,179
+we want?
+
+45
+00:04:11,179 --> 00:04:16,380
+We only want 2 spaces, but there are 3 spaces, see there are 3 spaces here, instead of that
+
+46
+00:04:16,380 --> 00:04:24,059
+we want only 2 spaces that is N-1 spaces, so K should be initialized with N-1, okay,
+
+47
+00:04:24,059 --> 00:04:25,059
+clear?
+
+48
+00:04:25,059 --> 00:04:31,859
+Now we'll run the code in C, see we got the output and there is no extra space and we
+
+49
+00:04:31,859 --> 00:04:38,380
+have 3 rows, similarly let's say we'll give 4 and we'll run the code, and see we have
+
+50
+00:04:38,380 --> 00:04:43,619
+properly the pattern, the triangular pattern is here, right, so those are the 2 mistakes,
+
+51
+00:04:43,619 --> 00:04:45,220
+so what are the 2 mistakes?
+
+52
+00:04:45,220 --> 00:04:52,420
+One is K equal to N-1, and another part is here you have to write N plus 1, right, clear?
+
+53
+00:04:52,420 --> 00:04:54,619
+Now we'll go back to the slides.
+
+54
+00:04:54,619 --> 00:04:58,920
+So we have seen the solution for this daily challenge, right?
+
+55
+00:04:58,920 --> 00:05:03,619
+So now we'll see what is the agenda for the today's session, so the agenda for the today's
+
+56
+00:05:03,619 --> 00:05:10,299
+session is related to loops, so we'll see about what are these nested loops, in loops
+
+57
+00:05:10,299 --> 00:05:15,260
+specifically about the nested loops, what are these nested loops, right, how we do,
+
+58
+00:05:15,260 --> 00:05:20,739
+how do they get executed, how do we run those codes, right, and we'll apply this concept
+
+59
+00:05:20,739 --> 00:05:26,299
+and solve a coding question, and we'll also see what are the possible mistakes in this
+
+60
+00:05:26,299 --> 00:05:30,380
+coding question, okay, so shall we start, okay.
+
+61
+00:05:30,380 --> 00:05:35,540
+So what are these nested loops, just like in the conditional statements, we have nested
+
+62
+00:05:35,540 --> 00:05:40,579
+conditional statements, right, like we have an if conditional statement and inside the
+
+63
+00:05:40,579 --> 00:05:47,820
+conditional block of the if conditional statement we have another condition, right, another
+
+64
+00:05:47,820 --> 00:05:54,660
+conditional statement, that was called nested condition, similarly in case of loops we can
+
+65
+00:05:54,660 --> 00:06:00,980
+have nested loops, just like how we have nested conditional statements we will have nested
+
+66
+00:06:00,980 --> 00:06:04,420
+loops, okay, there you can see a piece of code.
+
+67
+00:06:05,299 --> 00:06:10,899
+So this is an example of a nested loop, so there is a loop in the beginning, right, that
+
+68
+00:06:10,899 --> 00:06:17,140
+is called the outer loop, right, so in case of nested loops the one on the top is called
+
+69
+00:06:17,140 --> 00:06:23,380
+the outer loop, okay, and the entire orange box which is highlighted here you can see
+
+70
+00:06:23,380 --> 00:06:30,100
+that is the repeating block of code of the outer loop, so we have an outer loop and the
+
+71
+00:06:30,100 --> 00:06:36,899
+outer loop has a repeating block of code, right, so the entire orange box is the repeating
+
+72
+00:06:36,899 --> 00:06:43,220
+block of code of the outer loop, clear, so there is a repeating block of code, then inside
+
+73
+00:06:43,220 --> 00:06:49,140
+the repeating block of code there is another for loop, right, this for loop we call it
+
+74
+00:06:49,140 --> 00:06:55,019
+as inner loop, okay, so we have an outer loop and the outer loop has a repeated block of
+
+75
+00:06:55,179 --> 00:07:01,100
+code, inside this repeated block of code we have an another loop, this is called the inner
+
+76
+00:07:01,100 --> 00:07:07,459
+loop, and the inner loop will have its own repeated block of code, clear, so this is
+
+77
+00:07:07,459 --> 00:07:12,660
+actually what are we doing, we are nesting the loops, right, so there is an outer loop
+
+78
+00:07:12,660 --> 00:07:17,179
+and then there is a block of code, inside that in that repeating block of code we have
+
+79
+00:07:17,179 --> 00:07:21,779
+another loop which is called the inner loop and appropriately it has a repeating block
+
+80
+00:07:21,779 --> 00:07:27,540
+of code, right, so basically we are nesting the loops, so we will use this nested loops
+
+81
+00:07:27,540 --> 00:07:32,339
+for a lot of questions and actually this is very very important, so this nested loops
+
+82
+00:07:32,339 --> 00:07:37,619
+are very very important in some specific questions, okay, we will see one coding question like
+
+83
+00:07:37,619 --> 00:07:43,339
+that, there are lot of applications of this nested loops, when we go into the advanced
+
+84
+00:07:43,339 --> 00:07:50,019
+concepts we use this nested loops a lot, okay, so we will see an example code for the nested
+
+85
+00:07:50,019 --> 00:07:56,540
+loop and we will understand how exactly the code will get executed in this nested loop,
+
+86
+00:07:56,540 --> 00:08:01,459
+right, we have to understand how it works and when you have to write all of these things,
+
+87
+00:08:01,459 --> 00:08:06,220
+right, so we will see an example code, right, here you can see a code there, so this is
+
+88
+00:08:06,220 --> 00:08:12,459
+an example code and we will see how exactly do we run in this nested loop, how are these
+
+89
+00:08:12,459 --> 00:08:15,540
+lines of code executed, okay.
+
+90
+00:08:15,540 --> 00:08:23,839
+So firstly the one on the top, there is a line of code saying for A in range of 3, right,
+
+91
+00:08:23,839 --> 00:08:30,420
+so that is actually the outer loop, okay, and the rest of the code which you can see
+
+92
+00:08:30,420 --> 00:08:36,859
+the print outer and the for loop and inside that does entire piece of code is the repeating
+
+93
+00:08:36,859 --> 00:08:43,900
+block of code of the outer loop, okay, that is a repeating block of the outer loop, okay,
+
+94
+00:08:44,260 --> 00:08:50,140
+and then there is another line of code in the repeating block for B in range of 7, 9,
+
+95
+00:08:50,140 --> 00:08:56,059
+right, that is the inner loop, okay, so we have an outer loop and we have an inner loop,
+
+96
+00:08:56,059 --> 00:09:02,099
+so basically this is an example of the nested loops, okay, we will see a step by step execution
+
+97
+00:09:02,099 --> 00:09:05,700
+of what happens in case of nested loops, okay.
+
+98
+00:09:05,700 --> 00:09:12,380
+So firstly where do we start, we start with the for, so when you write for A in range
+
+99
+00:09:12,380 --> 00:09:19,619
+of 3 colon, range of 3 will basically give you a sequence, right, 0, 1, 2, if you don't
+
+100
+00:09:19,619 --> 00:09:24,780
+mention the start index it will start from 0 and you have 3 and 3 is not included, so
+
+101
+00:09:24,780 --> 00:09:33,179
+the sequence is 0, 1, 2, right, so we have a range 0, 1, 2, right, so here what will
+
+102
+00:09:33,179 --> 00:09:38,940
+happen when you write for A in range of 3, so A will be initialized with the first item
+
+103
+00:09:38,940 --> 00:09:44,739
+in the sequence which is 0, so the 0 value will be stored in A, the variable A will be
+
+104
+00:09:44,739 --> 00:09:50,739
+defined and the value 0 will be stored in A, okay, so once we have done this now the
+
+105
+00:09:50,739 --> 00:09:56,739
+value stored in A is 0, so when you print like this what will get printed outer colon
+
+106
+00:09:56,739 --> 00:10:00,619
+0, right, then what is the next line of code?
+
+107
+00:10:00,619 --> 00:10:08,299
+The next line of code is for B in range of 7, 9, right, then what will happen, there
+
+108
+00:10:08,659 --> 00:10:15,099
+is a sequence, range of 7, 9 will give you a sequence which is 7, 8 and then in that
+
+109
+00:10:15,099 --> 00:10:21,979
+sequence the B will be initialized with 7, right, so range of 7, 9 will give you a sequence
+
+110
+00:10:21,979 --> 00:10:29,940
+7, 8, in that B will be initialized with 7, right, so we have the value 7 is stored in
+
+111
+00:10:29,940 --> 00:10:36,380
+B, then when you print, when you have this print statement what will come, will get inner
+
+112
+00:10:36,380 --> 00:10:43,380
+colon 7, right, now this line is done, is the sequence done for the inner loop?
+
+113
+00:10:43,380 --> 00:10:48,340
+No, still we have one more item in the sequence, so what will happen again will go back to
+
+114
+00:10:48,340 --> 00:10:55,059
+the inner loop where B will be assigned the value 8 which is the next item in the sequence,
+
+115
+00:10:55,059 --> 00:11:02,659
+so when you print what will happen, will get inner colon 8, right, so we got this output,
+
+116
+00:11:02,659 --> 00:11:06,460
+then what will happen, the sequence is done, right, the 7, 8 sequence, the sequence of
+
+117
+00:11:06,460 --> 00:11:13,099
+the inner loop is done, so now we will go back to the next item in the sequence of outer
+
+118
+00:11:13,099 --> 00:11:19,859
+loop, so the next item in the sequence of outer loop is 1, right, so now 1 value is
+
+119
+00:11:19,979 --> 00:11:26,900
+stored in A, so we have the value stored in A is 1, okay, so now when you print it you
+
+120
+00:11:26,900 --> 00:11:33,979
+will get outer colon 1, okay, and then what will happen, will again go to the next line,
+
+121
+00:11:33,979 --> 00:11:35,940
+okay, so which is the first loop?
+
+122
+00:11:35,940 --> 00:11:41,500
+Now what will happen, again we will have the sequence 7 and 8, right, now B will be initialized
+
+123
+00:11:41,500 --> 00:11:47,859
+with 7, right, so again the loop will start from the beginning, so now the value present
+
+124
+00:11:47,859 --> 00:11:54,299
+in B will be 7, so when you print it you will get inner colon 7, again what happen
+
+125
+00:11:54,299 --> 00:11:59,059
+the next item in the sequence which is 8, right, next item in the sequence of inner
+
+126
+00:11:59,059 --> 00:12:04,539
+loop which is 8, so what will happen when you print it again you will get inner colon
+
+127
+00:12:04,539 --> 00:12:05,260
+8.
+
+
+
+128
+00:12:05,881 --> 00:12:06,881
+Okay?
+
+129
+00:12:06,881 --> 00:12:09,781
+So now the sequence of the inner loop is done.
+
+130
+00:12:09,781 --> 00:12:10,781
+Then what will happen?
+
+131
+00:12:10,781 --> 00:12:16,221
+We'll again go to the outer loop, the next item in the outer loop, which is 2.
+
+132
+00:12:16,221 --> 00:12:18,781
+So the value stored in A will be 2.
+
+133
+00:12:18,781 --> 00:12:20,741
+So when you print it, what do you get?
+
+134
+00:12:20,741 --> 00:12:23,701
+You will get outer colon 2.
+
+135
+00:12:23,701 --> 00:12:27,121
+Now again we'll come back to the per loop, right, to the inner loop.
+
+136
+00:12:27,121 --> 00:12:30,061
+So the sequence here is again 7A.
+
+137
+00:12:30,061 --> 00:12:36,141
+So again freshly, again the value stored in B will be 7, and then when you print that,
+
+138
+00:12:36,141 --> 00:12:38,621
+you will get inner colon 7.
+
+139
+00:12:38,621 --> 00:12:42,541
+Again, the next item in the sequence of inner loop, which is 8.
+
+140
+00:12:42,541 --> 00:12:48,461
+Now B, the value stored in B will be 8, and then you'll get an output, inner colon 8.
+
+141
+00:12:48,461 --> 00:12:49,461
+Okay?
+
+142
+00:12:49,461 --> 00:12:50,461
+Clear?
+
+143
+00:12:50,461 --> 00:12:51,941
+So we are done with the inner loop sequence.
+
+144
+00:12:51,941 --> 00:12:54,741
+We'll again go back to the outer loop sequence.
+
+145
+00:12:54,741 --> 00:12:58,180
+But the outer loop sequence is also done, right?
+
+146
+00:12:58,300 --> 00:13:03,361
+So the entire working of the looping of the nested loops is done.
+
+147
+00:13:03,361 --> 00:13:04,361
+So what will happen?
+
+148
+00:13:04,361 --> 00:13:05,361
+What is the next step?
+
+149
+00:13:05,361 --> 00:13:07,701
+It's nothing but print n.
+
+150
+00:13:07,701 --> 00:13:09,101
+So we got n.
+
+151
+00:13:09,101 --> 00:13:11,741
+So this is how the nested loop works.
+
+152
+00:13:11,741 --> 00:13:12,741
+Okay?
+
+153
+00:13:12,741 --> 00:13:15,741
+The inner loop will be executed multiple times.
+
+154
+00:13:15,741 --> 00:13:16,741
+Okay?
+
+155
+00:13:16,741 --> 00:13:19,741
+So you understood that by, that is a repeating block of code.
+
+156
+00:13:19,741 --> 00:13:27,421
+So that will be executed the number of, multiple number of times for each item in the sequence.
+
+157
+00:13:27,781 --> 00:13:28,781
+Okay?
+
+158
+00:13:28,781 --> 00:13:29,781
+Clear this part?
+
+159
+00:13:29,781 --> 00:13:30,781
+Okay.
+
+160
+00:13:30,781 --> 00:13:32,461
+So what did we do exactly?
+
+161
+00:13:32,461 --> 00:13:36,701
+We have a sequence in the outer loop and we have a sequence in the inner loop.
+
+162
+00:13:36,701 --> 00:13:42,620
+So for each item in the sequence present in the outer loop, we have executed this block
+
+163
+00:13:42,620 --> 00:13:43,620
+of code.
+
+164
+00:13:43,620 --> 00:13:44,620
+Okay?
+
+165
+00:13:44,620 --> 00:13:50,061
+Again, for each item present in the sequence of inner loop, we have executed the block
+
+166
+00:13:50,061 --> 00:13:51,061
+of code.
+
+167
+00:13:51,061 --> 00:13:52,061
+Right?
+
+168
+00:13:52,061 --> 00:13:54,501
+So like this, the nested loops will be executed.
+
+169
+00:13:54,501 --> 00:13:55,501
+Right?
+
+170
+00:13:55,501 --> 00:13:56,501
+You understood this part?
+
+171
+00:13:56,580 --> 00:13:58,580
+These nested loops is very, very important.
+
+172
+00:13:58,580 --> 00:14:02,940
+You need to understand this very clearly, especially when you're applying them to multiple
+
+173
+00:14:02,940 --> 00:14:03,940
+questions.
+
+174
+00:14:03,940 --> 00:14:05,580
+This is very important.
+
+175
+00:14:05,580 --> 00:14:06,580
+Okay.
+
+176
+00:14:06,580 --> 00:14:08,421
+So we understood this part, right?
+
+177
+00:14:08,421 --> 00:14:12,900
+Now what we'll do is, we'll apply this concept and solve a coding question.
+
+178
+00:14:12,900 --> 00:14:16,261
+First, we'll understand what is a coding question.
+
+179
+00:14:16,261 --> 00:14:18,500
+So what is the question written there?
+
+180
+00:14:18,500 --> 00:14:26,101
+Write a program to print a triangular pattern with numbers in n rows where the integer n
+
+181
+00:14:26,701 --> 00:14:27,701
+is given as input.
+
+182
+00:14:27,701 --> 00:14:28,701
+Okay?
+
+183
+00:14:28,701 --> 00:14:31,261
+So we are given an integer n as input.
+
+184
+00:14:31,261 --> 00:14:34,101
+So here, the 4 is actually an input.
+
+185
+00:14:34,101 --> 00:14:40,541
+Now what we have to do is, we have to print a triangular pattern where we have n rows.
+
+186
+00:14:40,541 --> 00:14:41,541
+Okay?
+
+187
+00:14:41,541 --> 00:14:42,940
+See the pattern there?
+
+188
+00:14:42,940 --> 00:14:47,541
+We have, the input is 4 and in the output we have 4 rows.
+
+189
+00:14:47,541 --> 00:14:48,541
+You can see that?
+
+190
+00:14:48,541 --> 00:14:53,621
+Like this, based on the input, if the input is n, you should have n rows.
+
+191
+00:14:53,621 --> 00:14:54,621
+Okay?
+
+192
+00:14:54,621 --> 00:14:56,701
+So what is the triangular pattern here?
+
+193
+00:14:56,701 --> 00:14:58,241
+What pattern we have to print?
+
+194
+00:14:58,241 --> 00:14:59,241
+See there.
+
+195
+00:14:59,241 --> 00:15:03,901
+For the input 4, what we have to print, in the first row we have to print 1.
+
+196
+00:15:03,901 --> 00:15:06,580
+In the second row we have to print 1, 2.
+
+197
+00:15:06,580 --> 00:15:09,500
+In the third row we have to print 1, 2, 3.
+
+198
+00:15:09,500 --> 00:15:13,020
+And in the fourth row we have to print 1, 2, 3, 4.
+
+199
+00:15:13,020 --> 00:15:14,020
+Okay?
+
+200
+00:15:14,020 --> 00:15:16,181
+We have to print the pattern like this.
+
+201
+00:15:16,181 --> 00:15:17,181
+Okay?
+
+202
+00:15:17,181 --> 00:15:19,420
+Clear this part, how you have to print?
+
+203
+00:15:19,420 --> 00:15:23,541
+So in the first row it should be 1, in the second row it should be 1, 2, third row it
+
+204
+00:15:23,541 --> 00:15:27,381
+should be 1, 2, 3, like this we have to print the pattern.
+
+205
+00:15:27,381 --> 00:15:30,140
+So for this, what is the input format?
+
+206
+00:15:30,140 --> 00:15:33,701
+So in the input format, in the first line you will be given a positive integer.
+
+207
+00:15:33,701 --> 00:15:36,541
+There you can see there is input 3, right?
+
+208
+00:15:36,541 --> 00:15:39,381
+We have a single line with the input 3.
+
+209
+00:15:39,381 --> 00:15:40,381
+Okay?
+
+210
+00:15:40,381 --> 00:15:42,381
+Check the output format there.
+
+211
+00:15:42,381 --> 00:15:43,381
+What is written there?
+
+212
+00:15:43,381 --> 00:15:46,381
+1, 1, 2, 1, 2, 3.
+
+213
+00:15:46,381 --> 00:15:47,381
+Right?
+
+214
+00:15:47,381 --> 00:15:48,580
+So this is the triangular pattern.
+
+215
+00:15:48,580 --> 00:15:53,420
+There you can see in the first row we have 1, in the second row we have 1, 2, in the
+
+216
+00:15:53,500 --> 00:15:55,500
+third row we have 1, 2, 3.
+
+217
+00:15:55,500 --> 00:15:56,500
+Right?
+
+218
+00:15:56,500 --> 00:15:58,860
+So like this we have to print a pattern.
+
+219
+00:15:58,860 --> 00:15:59,860
+Okay?
+
+220
+00:15:59,860 --> 00:16:04,780
+The output format is nothing but printing the triangular pattern of the numbers.
+
+221
+00:16:04,780 --> 00:16:07,541
+Here just observe one important point.
+
+222
+00:16:07,541 --> 00:16:11,341
+After every number there is a space.
+
+223
+00:16:11,341 --> 00:16:12,341
+Can you see that?
+
+224
+00:16:12,341 --> 00:16:16,981
+After 1 there is a space and then after 2 there is a space and then we have 3.
+
+225
+00:16:16,981 --> 00:16:21,741
+Like this after every number in this pattern there is a space.
+
+226
+00:16:21,741 --> 00:16:23,861
+So we have to give space like this.
+
+227
+00:16:23,861 --> 00:16:24,861
+Okay?
+
+228
+00:16:24,861 --> 00:16:25,861
+Clear?
+
+229
+00:16:25,861 --> 00:16:26,861
+Now shall we solve this question?
+
+230
+00:16:26,861 --> 00:16:27,861
+Right.
+
+231
+00:16:27,861 --> 00:16:31,940
+Let's solve this question in the code playground.
+
+232
+00:16:31,940 --> 00:16:32,940
+So what we have to do?
+
+233
+00:16:32,940 --> 00:16:34,541
+What is the first step?
+
+234
+00:16:34,541 --> 00:16:36,581
+The first step is taking the input.
+
+235
+00:16:36,581 --> 00:16:39,581
+Let's just reset all of this.
+
+236
+00:16:39,581 --> 00:16:40,581
+Okay.
+
+237
+00:16:40,581 --> 00:16:41,581
+We have to take the input.
+
+238
+00:16:41,581 --> 00:16:42,581
+Right?
+
+239
+00:16:42,581 --> 00:16:43,581
+So for that let's say here we have number.
+
+240
+00:16:43,581 --> 00:16:44,581
+Right?
+
+241
+00:16:44,581 --> 00:16:45,581
+We have to take a number.
+
+242
+00:16:45,581 --> 00:16:46,581
+Okay.
+
+243
+00:16:46,581 --> 00:16:53,620
+So here we have to write number equal to int or input.
+
+244
+00:16:53,620 --> 00:16:54,620
+Right?
+
+245
+00:16:54,620 --> 00:16:56,180
+So we have to read the input.
+
+246
+00:16:56,180 --> 00:16:57,180
+Right?
+
+247
+00:16:57,180 --> 00:17:02,821
+So here let's say I have given 3 and I'll just print this number.
+
+248
+00:17:02,821 --> 00:17:04,021
+Right?
+
+249
+00:17:04,021 --> 00:17:07,261
+And we'll see the output.
+
+250
+00:17:07,261 --> 00:17:08,261
+So what output did we get?
+
+251
+00:17:08,261 --> 00:17:09,261
+We got 3.
+
+252
+00:17:09,261 --> 00:17:10,261
+Right?
+
+253
+00:17:10,261 --> 00:17:12,261
+So we got the output that is necessary for us.
+
+254
+00:17:12,261 --> 00:17:13,261
+Okay.
+
+255
+00:17:13,261 --> 00:17:15,500
+So now we are done with reading the input.
+
+256
+00:17:15,500 --> 00:17:16,500
+That is the first step.
+
+257
+00:17:16,500 --> 00:17:17,500
+That's done.
+
+258
+00:17:17,500 --> 00:17:18,500
+Now what we have to do?
+
+259
+00:17:18,500 --> 00:17:19,500
+We have to print the pattern.
+
+260
+00:17:19,500 --> 00:17:22,500
+We have to print the triangular pattern.
+
+261
+00:17:22,500 --> 00:17:23,500
+Right?
+
+262
+00:17:23,500 --> 00:17:26,220
+So for that what we have to do?
+
+263
+00:17:26,220 --> 00:17:27,620
+Let's take an example of 3.
+
+264
+00:17:27,620 --> 00:17:30,340
+For 3 what should the output be?
+
+265
+00:17:30,340 --> 00:17:32,101
+It should be 1 space.
+
+266
+00:17:32,101 --> 00:17:34,861
+In the next, in the first row it should be 1 space.
+
+267
+00:17:34,861 --> 00:17:38,301
+In the second row it should be 1 space, 2 space.
+
+268
+00:17:38,301 --> 00:17:39,301
+Right?
+
+269
+00:17:39,301 --> 00:17:43,421
+And in the third row it should be 1 space, 2 space and 3 space.
+
+270
+00:17:43,421 --> 00:17:44,421
+Okay?
+
+271
+00:17:44,421 --> 00:17:46,821
+So this is the pattern that we want for input 3.
+
+272
+00:17:46,821 --> 00:17:49,021
+Let's just write it and see.
+
+273
+00:17:49,021 --> 00:17:50,021
+Okay?
+
+274
+00:17:50,021 --> 00:17:59,701
+Let's write print 1 space and then let, in the second row we want 1 space and next what
+
+275
+00:17:59,701 --> 00:18:00,701
+we want?
+
+276
+00:18:00,701 --> 00:18:01,701
+We want 2 space.
+
+277
+00:18:01,701 --> 00:18:02,701
+Okay?
+
+278
+00:18:02,701 --> 00:18:11,301
+And then in the third row we want 1 space plus 2 space plus we want 3 space.
+
+279
+00:18:11,301 --> 00:18:12,301
+Right?
+
+280
+00:18:12,301 --> 00:18:13,301
+We want 1 space, 2 space, 3 space.
+
+281
+00:18:14,180 --> 00:18:19,180
+Like that I'll just use the string concatenation for us to understand in a better way.
+
+282
+00:18:19,180 --> 00:18:20,180
+Okay?
+
+283
+00:18:20,180 --> 00:18:23,940
+Now I'll run the code and see.
+
+284
+00:18:23,940 --> 00:18:28,460
+So there you can see here there's 1, 1, 2, there's 1, 2, 3.
+
+285
+00:18:28,460 --> 00:18:29,460
+Right?
+
+286
+00:18:29,460 --> 00:18:30,500
+So you understood this part.
+
+287
+00:18:30,500 --> 00:18:32,381
+So we want a pattern like this.
+
+288
+00:18:32,381 --> 00:18:34,340
+We have taken for the input 3.
+
+289
+00:18:34,340 --> 00:18:38,500
+Now let's just solve for input 3 and then we'll extend it for any number.
+
+290
+00:18:38,500 --> 00:18:39,500
+Okay?
+
+291
+00:18:39,500 --> 00:18:41,340
+So now what we have to do?
+
+292
+00:18:41,340 --> 00:18:47,500
+So here if you observe the code, here you see there's a pattern, there's a 1 space and
+
+293
+00:18:47,500 --> 00:18:48,500
+then there is 2 space.
+
+294
+00:18:48,500 --> 00:18:49,500
+Right?
+
+295
+00:18:49,500 --> 00:18:50,500
+1, 2, 1, 2, 3.
+
+296
+00:18:50,500 --> 00:18:51,500
+Like this there's a sequence of numbers.
+
+297
+00:18:51,500 --> 00:18:52,500
+Right?
+
+298
+00:18:52,500 --> 00:18:57,740
+If you take an input 4, we want 1, 2, 1, 2, 3, 1, 2, 3, 4 like this.
+
+299
+00:18:57,740 --> 00:19:01,021
+So basically what we have, we have a sequence there.
+
+300
+00:19:01,021 --> 00:19:05,101
+When we have a sequence, what do we use?
+
+301
+00:19:05,101 --> 00:19:06,541
+We use our for loop.
+
+302
+00:19:06,541 --> 00:19:07,541
+Right?
+
+303
+00:19:07,541 --> 00:19:08,780
+We have to use our for loop.
+
+304
+00:19:08,780 --> 00:19:12,381
+So what we'll do is, let's use the for loop.
+
+305
+00:19:12,381 --> 00:19:17,581
+So for that, let's just try to use the for loop for the second row.
+
+306
+00:19:17,581 --> 00:19:18,581
+Okay?
+
+307
+00:19:18,581 --> 00:19:22,660
+So for that, first what I have to do, I need some output for the second row.
+
+308
+00:19:22,660 --> 00:19:27,060
+Let's just store it and say row underscore out in an empty, let's just initialize with
+
+309
+00:19:27,060 --> 00:19:28,581
+an empty string.
+
+310
+00:19:28,581 --> 00:19:32,101
+Now in row underscore out, we have the line.
+
+311
+00:19:32,101 --> 00:19:35,021
+Now what I'll do is, I have a sequence.
+
+312
+00:19:35,021 --> 00:19:36,021
+Right?
+
+313
+00:19:36,021 --> 00:19:39,101
+So I need to iterate over the sequence and print the output.
+
+314
+00:19:39,101 --> 00:19:41,620
+So for that, what I have to use, I have to use for loop.
+
+315
+00:19:41,620 --> 00:19:42,620
+Right?
+
+316
+00:19:42,620 --> 00:19:48,381
+So for, let's write sequence underscore number in range, right?
+
+317
+00:19:48,381 --> 00:19:49,981
+I have a sequence.
+
+318
+00:19:49,981 --> 00:19:53,261
+Now what should be the start and end in this range?
+
+319
+00:19:53,261 --> 00:19:54,261
+Let's understand.
+
+320
+00:19:54,261 --> 00:20:00,301
+So in the second row, what we have to print, we have to print one space and two space.
+
+321
+00:20:00,301 --> 00:20:02,021
+So what is the starting?
+
+322
+00:20:02,021 --> 00:20:03,021
+It is 1.
+
+323
+00:20:03,021 --> 00:20:04,581
+So the starting should be 1.
+
+324
+00:20:05,141 --> 00:20:07,180
+Then we want 1 and 2.
+
+325
+00:20:07,180 --> 00:20:08,180
+Right?
+
+326
+00:20:08,180 --> 00:20:09,180
+We don't want 3.
+
+327
+00:20:09,180 --> 00:20:10,180
+Right?
+
+328
+00:20:10,180 --> 00:20:11,180
+We want 1, 2.
+
+329
+00:20:11,180 --> 00:20:12,180
+So what should be the end?
+
+330
+00:20:12,180 --> 00:20:13,180
+It should be 3.
+
+331
+00:20:13,180 --> 00:20:14,180
+If you write 2, what will happen?
+
+332
+00:20:14,180 --> 00:20:15,180
+We'll only get 1.
+
+333
+00:20:15,180 --> 00:20:16,180
+Right?
+
+334
+00:20:16,180 --> 00:20:21,701
+So we want 1 and 2 and the end index is not included, so we have to write 3.
+
+335
+00:20:21,701 --> 00:20:22,701
+Okay?
+
+336
+00:20:22,701 --> 00:20:24,861
+So then what I'll write is, I need this part.
+
+337
+00:20:24,861 --> 00:20:25,861
+Right?
+
+338
+00:20:25,861 --> 00:20:28,220
+I have to use the sequence number and print.
+
+339
+00:20:28,220 --> 00:20:34,101
+So let's say row underscore output equal to row underscore output plus, so initially it's
+
+340
+00:20:34,101 --> 00:20:39,701
+an empty string, plus what I have to do, I have to add this sequence number and then
+
+341
+00:20:39,701 --> 00:20:41,100
+actually there is a space.
+
+342
+00:20:41,100 --> 00:20:42,100
+Right?
+
+343
+00:20:42,100 --> 00:20:44,180
+After every number, there is a space.
+
+344
+00:20:44,180 --> 00:20:45,781
+So I've added that space.
+
+345
+00:20:45,781 --> 00:20:52,341
+Here, when you write first sequence number in range of 1 comma 3, so basically this range
+
+346
+00:20:52,341 --> 00:20:55,180
+will give you a sequence of integers.
+
+347
+00:20:55,180 --> 00:20:58,940
+So here the sequence number will be of integer data type.
+
+348
+00:20:58,940 --> 00:21:02,980
+But you cannot add an integer data type with a string data type.
+
+349
+00:21:02,980 --> 00:21:03,980
+Right?
+
+350
+00:21:04,860 --> 00:21:05,860
+So how do I have to do this?
+
+351
+00:21:05,860 --> 00:21:08,021
+You have to convert it into a string.
+
+352
+00:21:08,021 --> 00:21:10,060
+So how do you convert it into a string?
+
+353
+00:21:10,060 --> 00:21:12,100
+What did we learn in type conversion?
+
+354
+00:21:12,100 --> 00:21:13,100
+We have to use strof.
+
+355
+00:21:13,100 --> 00:21:14,100
+Right?
+
+356
+00:21:14,100 --> 00:21:17,100
+So we'll use strof, sequence number.
+
+357
+00:21:17,100 --> 00:21:18,100
+Right?
+
+358
+00:21:18,100 --> 00:21:19,100
+Clear?
+
+359
+00:21:19,100 --> 00:21:25,701
+So what we have done, initially it's an empty string, then we added the sequence number
+
+360
+00:21:25,701 --> 00:21:27,740
+which is 1 and space.
+
+361
+00:21:27,740 --> 00:21:31,740
+So at the end of this one iteration, we'll have one space.
+
+362
+00:21:32,060 --> 00:21:36,620
+Again, when you go back, what we'll have in the sequence number, what is the next item
+
+363
+00:21:36,620 --> 00:21:37,620
+in the sequence?
+
+364
+00:21:37,620 --> 00:21:38,620
+2.
+
+365
+00:21:38,620 --> 00:21:39,620
+Right?
+
+366
+00:21:39,620 --> 00:21:44,141
+So currently in row out, there is one space, then we have added 2 and then space.
+
+367
+00:21:44,141 --> 00:21:46,180
+So we'll have one space, two space.
+
+368
+00:21:46,180 --> 00:21:47,180
+Right?
+
+369
+00:21:47,180 --> 00:21:48,940
+So that is the output that we want.
+
+370
+00:21:48,940 --> 00:21:50,661
+Let's just print and see.
+
+371
+00:21:50,661 --> 00:21:51,661
+Okay?
+
+372
+00:21:51,661 --> 00:21:53,221
+We'll print it and see.
+
+373
+00:21:53,221 --> 00:21:54,221
+Okay?
+
+374
+00:21:54,221 --> 00:21:57,420
+Let's just remove this part and we'll see the output.
+
+375
+00:21:57,420 --> 00:21:58,420
+Let's run the code.
+
+376
+00:21:58,420 --> 00:21:59,420
+See?
+
+377
+00:21:59,420 --> 00:22:00,420
+We got the output.
+
+378
+00:22:00,420 --> 00:22:01,420
+Right?
+
+379
+00:22:02,100 --> 00:22:04,100
+So in the second row, it's appropriately one space, two space.
+
+380
+00:22:04,100 --> 00:22:05,100
+Right?
+
+381
+00:22:05,100 --> 00:22:06,701
+So we got our necessary output.
+
+382
+00:22:06,701 --> 00:22:07,701
+Okay.
+
+383
+00:22:07,701 --> 00:22:10,221
+So we are done with doing this second row.
+
+384
+00:22:10,221 --> 00:22:11,221
+Right?
+
+385
+00:22:11,221 --> 00:22:14,620
+The second row, we have used this per loop and we have properly written.
+
+386
+00:22:14,620 --> 00:22:18,420
+Now what we'll do is, we'll do the same thing for the third row.
+
+387
+00:22:18,420 --> 00:22:19,420
+Okay?
+
+388
+00:22:19,420 --> 00:22:20,740
+In the third row, what do we want?
+
+389
+00:22:20,740 --> 00:22:24,261
+We have one space, two space and three space.
+
+390
+00:22:24,261 --> 00:22:25,261
+Right?
+
+391
+00:22:25,261 --> 00:22:27,540
+So it's actually similar to the second row.
+
+392
+00:22:27,540 --> 00:22:29,540
+There, we have one, two.
+
+393
+00:22:29,661 --> 00:22:30,661
+Right?
+
+394
+00:22:30,661 --> 00:22:31,661
+Here, it is one, two, three.
+
+395
+00:22:31,661 --> 00:22:37,261
+So if we just run this block of code three times, it's sufficient.
+
+396
+00:22:37,261 --> 00:22:38,261
+Right?
+
+397
+00:22:38,261 --> 00:22:40,221
+Then we'll get one, two, three.
+
+398
+00:22:40,221 --> 00:22:46,180
+So what we have to do, we'll just copy this piece of code and then we'll come here, we'll
+
+399
+00:22:46,180 --> 00:22:47,180
+paste it.
+
+400
+00:22:47,180 --> 00:22:48,180
+Right?
+
+401
+00:22:48,180 --> 00:22:50,180
+We have to run this block of code three times.
+
+402
+00:22:50,180 --> 00:22:51,180
+Right?
+
+403
+00:22:51,180 --> 00:22:52,701
+We have one, two and three.
+
+404
+00:22:52,701 --> 00:22:55,701
+So what we have to write here, we have to write four.
+
+405
+00:22:55,701 --> 00:22:56,701
+Okay?
+
+406
+00:22:56,701 --> 00:22:57,701
+Now we'll run the code and see.
+
+407
+00:22:57,701 --> 00:22:58,701
+I'll just remove this part.
+
+408
+00:22:58,701 --> 00:22:59,701
+See?
+
+409
+00:22:59,701 --> 00:23:00,701
+You got the same output.
+
+410
+00:23:00,701 --> 00:23:01,701
+Right?
+
+411
+00:23:01,701 --> 00:23:02,701
+So there is one, two, three in the last.
+
+412
+00:23:02,701 --> 00:23:03,701
+That is what we want.
+
+413
+00:23:03,701 --> 00:23:04,701
+One space, two space, three space.
+
+414
+00:23:04,701 --> 00:23:05,701
+And we got it appropriately.
+
+415
+00:23:05,701 --> 00:23:06,701
+Now we are done with the second row and the third row.
+
+416
+00:23:06,701 --> 00:23:07,701
+Can we do the same thing with the first row?
+
+417
+00:23:07,701 --> 00:23:08,701
+Right?
+
+418
+00:23:08,701 --> 00:23:09,701
+Shall we try?
+
+419
+00:23:09,701 --> 00:23:10,701
+Okay.
+
+420
+00:23:10,701 --> 00:23:11,701
+So in the first row, what do we want?
+
+421
+00:23:11,701 --> 00:23:12,701
+We want one space.
+
+422
+00:23:12,701 --> 00:23:13,701
+Right?
+
+423
+00:23:13,701 --> 00:23:14,701
+So for that, what we can do, we have to just run this block of code three times.
+
+424
+00:23:14,701 --> 00:23:15,701
+Right?
+
+425
+00:23:15,701 --> 00:23:16,701
+And then we'll get one, two, three.
+
+426
+00:23:16,701 --> 00:23:17,701
+Okay?
+
+427
+00:23:17,701 --> 00:23:18,701
+So in the first row, what do we want?
+
+428
+00:23:18,701 --> 00:23:19,701
+We want one space.
+
+429
+00:23:19,701 --> 00:23:20,701
+Right?
+
+430
+00:23:20,701 --> 00:23:28,821
+So for that, what we can do, we have to just run this block of code once.
+
+431
+00:23:28,821 --> 00:23:29,821
+Right?
+
+432
+00:23:29,821 --> 00:23:30,821
+Then it is sufficient.
+
+433
+00:23:30,821 --> 00:23:31,821
+We'll do the same thing.
+
+434
+00:23:31,821 --> 00:23:32,821
+Okay?
+
+435
+00:23:32,821 --> 00:23:33,821
+So I'll just copy this piece of code.
+
+436
+00:23:33,821 --> 00:23:41,141
+Here, instead of writing one, three, if you write one, three, what will happen?
+
+437
+00:23:41,141 --> 00:23:43,901
+This line will be executed two times.
+
+438
+00:23:43,901 --> 00:23:44,901
+Now what we want?
+
+439
+00:23:44,901 --> 00:23:46,901
+It has to be only executed once.
+
+440
+00:23:46,901 --> 00:23:47,901
+Then what I have to do?
+
+441
+00:23:47,901 --> 00:23:48,901
+Instead of three, I will write two.
+
+442
+00:23:48,901 --> 00:23:49,901
+Okay?
+
+443
+00:23:50,100 --> 00:23:51,100
+Okay?
+
+444
+00:23:51,100 --> 00:23:59,341
+Now I'll just remove this and we'll run the code and see we got one, one, two, and one,
+
+445
+00:23:59,341 --> 00:24:00,341
+two, three.
+
+446
+00:24:00,341 --> 00:24:04,341
+So we are done with getting this pattern for input three.
+
+447
+00:24:04,341 --> 00:24:05,901
+So observe one thing.
+
+448
+00:24:05,901 --> 00:24:11,500
+Here, this thing and this thing and this thing, they are actually the same code.
+
+449
+00:24:11,500 --> 00:24:11,781
+Right?
+
+
+
+450
+00:24:11,762 --> 00:24:18,162
+The only difference here is this, right, here it's 2, here it's 3, here it's 4 and which
+
+451
+00:24:18,162 --> 00:24:24,242
+is again a sequence, first in the, for the first row we have 2, whereas to print the
+
+452
+00:24:24,242 --> 00:24:29,502
+second row we have 3 and for printing the third row we have 4.
+
+453
+00:24:29,502 --> 00:24:32,721
+So basically what is there, there is a sequence.
+
+454
+00:24:32,721 --> 00:24:37,981
+So for that what we have to do, for sequence what do we do, we use the for loop, right,
+
+455
+00:24:37,981 --> 00:24:39,742
+so let's use the for loop.
+
+456
+00:24:39,742 --> 00:24:45,642
+So we'll write a for loop, okay, since it's related to row, let's just write row number
+
+457
+00:24:45,642 --> 00:24:55,602
+in range of, okay, so first row, right, we'll start from row number 1, we have to go till,
+
+458
+00:24:55,602 --> 00:24:58,721
+let's first do it for the input 3, okay.
+
+459
+00:24:58,721 --> 00:25:04,201
+So for input 3 how many rows do you need, you need 3 rows, right, so this has to be
+
+460
+00:25:04,201 --> 00:25:11,861
+this block of code which is repeated, let's, let me just copy this piece of code, let's
+
+461
+00:25:11,861 --> 00:25:18,742
+just paste it here, right, okay.
+
+462
+00:25:18,742 --> 00:25:24,501
+So here this block of code should be executed 3 times, for the input 3 we have to execute
+
+463
+00:25:24,501 --> 00:25:30,422
+it 3 times, right, so then what I have to write here, it should be 1, 2 and 3, so here
+
+464
+00:25:30,522 --> 00:25:35,321
+what we should have, 4, since the end index is not included, then this block of code will
+
+465
+00:25:35,321 --> 00:25:43,681
+be executed 3 times, right, so I'll just remove this piece of code and then, okay, then again
+
+466
+00:25:43,681 --> 00:25:48,522
+there is one more thing that we have to do, that is this number, right, this is a sequence,
+
+467
+00:25:48,522 --> 00:25:53,961
+so for the first row it should be 2, for the second row it should be 3, for the third row
+
+468
+00:25:53,961 --> 00:25:59,762
+it should be 4, nothing but row number plus 1, right, for the first it is 2, that is nothing
+
+469
+00:25:59,821 --> 00:26:06,982
+but 1 plus 1, for the second row it is 2 plus 1, for the third row it is 3 plus 1, so it's
+
+470
+00:26:06,982 --> 00:26:13,382
+nothing but row number plus 1, so let's just write that, row underscore number plus 1,
+
+471
+00:26:13,382 --> 00:26:14,382
+okay.
+
+472
+00:26:14,382 --> 00:26:21,702
+Now shall we run the code and see, okay, we'll run the code and see we have the output, right,
+
+473
+00:26:21,702 --> 00:26:27,301
+see we have written so many lines of code, it's just got into such small piece of code,
+
+474
+00:26:27,842 --> 00:26:35,241
+right, now coming to this part, this particular code will get executed for 3, like let's say
+
+475
+00:26:35,241 --> 00:26:42,041
+if we give 4 then what will happen, still we'll have 1, 1, 2, 1, 2, 3, but for 4 what
+
+476
+00:26:42,041 --> 00:26:43,041
+we should get?
+
+477
+00:26:43,041 --> 00:26:47,881
+We should get 1, we should get 1, 2, we should get 1, 2, 3 and then we have to get 1, 2,
+
+478
+00:26:47,881 --> 00:26:54,482
+3, 4 also, right, but that row is missing, the fourth row is missing because why?
+
+479
+00:26:54,661 --> 00:27:00,661
+Here this block of code will only get executed 3 times because here what we have written?
+
+480
+00:27:00,661 --> 00:27:04,741
+We have written 4, right, but what we have to write?
+
+481
+00:27:04,741 --> 00:27:10,342
+It should be depending on the input, right, so this particular block of code should be
+
+482
+00:27:10,342 --> 00:27:14,982
+executed based on the input that we have given, so what is the input?
+
+483
+00:27:14,982 --> 00:27:22,422
+This num, right, so we'll write num and then this block of code should be executed, the
+
+484
+00:27:22,422 --> 00:27:27,041
+number that we have given, right, if we are given n as the input, if this should be executed
+
+485
+00:27:27,041 --> 00:27:30,642
+n times, but if we write like this then what will happen?
+
+486
+00:27:30,642 --> 00:27:36,202
+This will be executed only n-1 times because the n index is not included, so what we have
+
+487
+00:27:36,202 --> 00:27:37,202
+to write?
+
+488
+00:27:37,202 --> 00:27:42,161
+Num plus 1, okay, so when we write num plus 1 then what will happen?
+
+489
+00:27:42,161 --> 00:27:47,241
+This block of code will be executed the n times, right, the number that we have given
+
+490
+00:27:47,241 --> 00:27:48,241
+here.
+
+491
+00:27:48,342 --> 00:27:54,342
+Let's run the code and see, see now it's working for the input 4, right, see we got the triangular
+
+492
+00:27:54,342 --> 00:28:01,702
+pattern appropriately, similarly let's say let's give 3 and see for 3 it's proper, let's
+
+493
+00:28:01,702 --> 00:28:10,502
+try with say 5, so 5 also it's proper, right, clear, so this is how we have to write the
+
+494
+00:28:10,502 --> 00:28:15,422
+code, see we have written a nested loop code and it's so simple for us, right, so like
+
+495
+00:28:15,601 --> 00:28:21,202
+this if we do it systematically one after the other then we can easily write even the
+
+496
+00:28:21,202 --> 00:28:26,601
+nested loop codes, okay, now we'll go back to the slides.
+
+497
+00:28:26,601 --> 00:28:32,522
+So we have solved this question, now let's look into some possible mistakes, so one possible
+
+498
+00:28:32,522 --> 00:28:38,962
+mistake here is where in the outer loop, right, there when you have written range of 1, if
+
+499
+00:28:38,962 --> 00:28:44,661
+you write num, then what will happen, the repeat, the block of code will be repeated
+
+500
+00:28:44,661 --> 00:28:50,221
+only num minus 1 times, right, if you give an input 3 then the block of code will be
+
+501
+00:28:50,221 --> 00:28:56,182
+executed only 2 times, so that's why see in the output we have only 2 rows, actually what
+
+502
+00:28:56,182 --> 00:29:02,902
+we need to have, we need to have 3 rows, right, so that is an issue here, so for that what
+
+503
+00:29:02,902 --> 00:29:10,762
+we have to do, we have to write it as num plus 1, okay, and then another possible mistake
+
+504
+00:29:10,762 --> 00:29:20,082
+here is when you are writing the inner loop, there in the range if you write as row underscore
+
+505
+00:29:20,082 --> 00:29:25,682
+num, if you give as range of row underscore num, then what will happen, the sequence will
+
+506
+00:29:25,682 --> 00:29:32,202
+start from 0, if you don't mention the start index then range will automatically start
+
+507
+00:29:32,501 --> 00:29:38,422
+the sequence from 0, right, so for that then what happen in the output, in the first row
+
+508
+00:29:38,422 --> 00:29:44,742
+what do we have, we have 0, then we have 01, then we have 012, right, so basically the
+
+509
+00:29:44,742 --> 00:29:51,702
+sequence is starting from 0, but from where it should start, it should start from 1, right,
+
+510
+00:29:51,702 --> 00:29:55,982
+so that is an another possible mistake here, so what do you have to write, you have to
+
+511
+00:29:55,982 --> 00:30:03,121
+write 1, row underscore num plus 1, okay, so you should be very conscious about what
+
+512
+00:30:03,121 --> 00:30:08,041
+you have given in the range, what is the start index and the end index that you have mentioned
+
+513
+00:30:08,041 --> 00:30:09,041
+in the range.
+
+514
+00:30:09,041 --> 00:30:13,721
+Let's just try out this possible mistakes and see in the code playground, so in the
+
+515
+00:30:13,721 --> 00:30:20,281
+code playground when you are writing range 1, num plus 1, then instead of let's say you
+
+516
+00:30:20,281 --> 00:30:27,661
+forgot to write this plus 1, then what will happen, let's just try it out for say 4, okay,
+
+517
+00:30:27,661 --> 00:30:33,381
+so what happen the 1, 2, 3, 4 is missing, right, you can check with 3, okay, so actually
+
+518
+00:30:33,381 --> 00:30:40,182
+for the input 3 you need 3 rows, but what's happening we have only 2 rows, right, so that
+
+519
+00:30:40,182 --> 00:30:45,501
+is an issue, okay, so what we have to write actually we have to have 3 rows, so for that
+
+520
+00:30:45,501 --> 00:30:51,402
+we have to write here num plus 1 in the outer loop, this is the outer loop and this is the
+
+521
+00:30:51,402 --> 00:30:53,922
+inner loop, okay, clear.
+
+522
+00:30:53,922 --> 00:31:01,362
+Now another possible mistake that we have discussed is writing this as row underscore
+
+523
+00:31:01,362 --> 00:31:07,161
+num directly like this, right, when you write just row underscore num then where will the
+
+524
+00:31:07,161 --> 00:31:11,922
+sequence start from 0, right, so we'll run the code and see, so what we'll have, we'll
+
+525
+00:31:11,922 --> 00:31:19,462
+have 0, 0, 1, 0, 1, 2, so you'll have sequence like this, so this is again an issue, right,
+
+526
+00:31:19,462 --> 00:31:25,501
+so when you have 0, 0, 1, 0, 1, 2 what happen instead of starting the sequence from 1, the
+
+527
+00:31:25,501 --> 00:31:30,101
+sequence has started from 0, so that is an issue, then what you have to write we have
+
+528
+00:31:30,101 --> 00:31:35,781
+to actually start the sequence from 1 and then it should go till row underscore num
+
+529
+00:31:35,781 --> 00:31:41,202
+plus 1, right, it has to, this end is not included, so that's why we have to write like
+
+530
+00:31:41,202 --> 00:31:42,202
+this.
+
+531
+00:31:42,202 --> 00:31:48,922
+Now we'll run the code and see, so we'll get a necessary output, right, let's see for 4
+
+532
+00:31:48,922 --> 00:31:54,802
+also, so I hope you understood what are the possible mistakes, so what you have to be
+
+533
+00:31:54,802 --> 00:31:59,402
+very careful about is when you are writing the values at the start index and the end
+
+534
+00:31:59,402 --> 00:32:03,962
+index in the range, you have to be very careful what you have mentioned in the start and what
+
+535
+00:32:03,962 --> 00:32:08,262
+you have mentioned in the end, okay, clear this part, okay.
+
+536
+00:32:08,262 --> 00:32:13,061
+Now we'll go back to the slides, so we are done solving this question and also we have
+
+537
+00:32:13,061 --> 00:32:19,661
+seen what are the possible mistakes, now here in this particular question the outer loop
+
+538
+00:32:19,661 --> 00:32:25,982
+is also a for loop and the inner loop is also a for loop, but in case of nested loops you
+
+539
+00:32:25,982 --> 00:32:31,422
+can use for or while, you can have for in the outer loop, you can have while in the
+
+540
+00:32:31,781 --> 00:32:37,561
+outer loop and you can also have for or while in the inner loop also like this, see here
+
+541
+00:32:37,561 --> 00:32:42,962
+the outer loop is a for loop whereas the inner loop is a while loop, right, so like this
+
+542
+00:32:42,962 --> 00:32:48,722
+we can have, okay similarly like in this case the outer loop is a while loop whereas the
+
+543
+00:32:48,722 --> 00:32:54,501
+inner loop is a for loop, you can use different combination, similarly we can have the outer
+
+544
+00:32:54,501 --> 00:32:58,962
+loop can also be a while loop and the inner loop can also be a while loop like this it
+
+545
+00:32:58,962 --> 00:33:05,001
+could be a combination of for and while or it could be both for or both while, okay so
+
+546
+00:33:05,001 --> 00:33:11,801
+there is no restriction that you should have a particular set like this, okay only for
+
+547
+00:33:11,801 --> 00:33:16,202
+should be used in outer, only while should be used in outer like this there is no such
+
+548
+00:33:16,202 --> 00:33:21,881
+restriction, you can use any loop in the outer loop, you can also use any loop in the inner
+
+549
+00:33:21,881 --> 00:33:23,881
+loop, right, clear.
+
+550
+00:33:23,881 --> 00:33:29,282
+So here even one more important point here is when you are having these inner loops you
+
+551
+00:33:29,282 --> 00:33:34,681
+can have multiple inner loops in an outer loop, right, in the repeating block of code
+
+552
+00:33:34,681 --> 00:33:39,402
+of the outer loop, right, the repeating block of the outer loop you can have multiple inner
+
+553
+00:33:39,402 --> 00:33:45,921
+loops, here in this example you can have another while loop inside that, okay you can have
+
+554
+00:33:45,921 --> 00:33:50,642
+while condition A, inside that you have while condition B, right, you can also have a while
+
+555
+00:33:50,642 --> 00:33:54,561
+condition C inside that repeating block of code, okay.
+
+556
+00:33:54,561 --> 00:34:02,082
+So like this you can have multiple inner loops in the block of code of outer loop, okay.
+
+557
+00:34:02,082 --> 00:34:07,162
+So like this you can try out with different things and see the output and try them, okay
+
+558
+00:34:07,162 --> 00:34:12,181
+and also to apply these concepts we are providing you coding practice.
+
+559
+00:34:12,181 --> 00:34:15,522
+So a lot of questions are available for you to solve.
+
+560
+00:34:15,522 --> 00:34:20,481
+So whenever you get time do practice these questions, these are very very important.
+
+561
+00:34:21,321 --> 00:34:26,522
+So especially in case of programming as I always mention practice is very important,
+
+562
+00:34:26,522 --> 00:34:30,962
+that's when you will be able to apply the concepts that we have, that you have learnt
+
+563
+00:34:30,962 --> 00:34:34,001
+in the session and that we have taught you, right.
+
+564
+00:34:34,001 --> 00:34:37,001
+So do practice these questions a lot, okay.
+
+565
+00:34:37,001 --> 00:34:42,441
+So whenever you get time do practice them and regarding that daily challenge, right,
+
+566
+00:34:42,441 --> 00:34:44,921
+so the daily challenge is here.
+
+567
+00:34:44,921 --> 00:34:47,361
+So this is the block of code, right.
+
+568
+00:34:47,361 --> 00:34:53,481
+So there is a mistake in this because of that we are not getting the expected output.
+
+569
+00:34:53,481 --> 00:35:00,202
+So for the input 3 the expected output is 3, 2, 1, 2, 1 and 1, okay, in the first row
+
+570
+00:35:00,202 --> 00:35:05,162
+it should be 3, 2, 1, in the second row it should be 2, 1 and in the third row it should
+
+571
+00:35:05,162 --> 00:35:06,162
+be 1.
+
+572
+00:35:06,162 --> 00:35:11,162
+So this is the expected output but this block of code, with this block of code we are not
+
+573
+00:35:11,162 --> 00:35:13,121
+getting this expected output.
+
+574
+00:35:13,121 --> 00:35:17,202
+So you need to identify what is the mistake, okay.
+
+575
+00:35:17,202 --> 00:35:20,001
+So we will discuss about this in the next session.
+
+576
+00:35:20,001 --> 00:35:27,042
+Regarding feedback, do provide us the feedback, your valuable suggestions and inputs and anything
+
+577
+00:35:27,042 --> 00:35:28,722
+that you want to convey to us.
+
+578
+00:35:28,722 --> 00:35:35,642
+There is an entire team who looks into each and every point that you mention in the feedback.
+
+579
+00:35:35,642 --> 00:35:37,722
+So please do provide us the feedback.
+
+580
+00:35:37,722 --> 00:35:42,881
+If they are already part of the planning, then we will introduce them in the coming
+
+581
+00:35:42,881 --> 00:35:43,881
+sessions.
+
+582
+00:35:43,881 --> 00:35:48,921
+In case they are not part of it, we will try to include them and give you the best possible
+
+583
+00:35:48,921 --> 00:35:49,921
+experience.
+
+584
+00:35:49,921 --> 00:35:55,202
+So please do provide us your valuable inputs, suggestions, anything that you want to convey
+
+585
+00:35:55,202 --> 00:35:56,202
+to us.
+
+586
+00:35:56,202 --> 00:36:01,642
+So to submit the feedback, there is a submit feedback button just below the video.
+
+587
+00:36:01,642 --> 00:36:04,722
+Click on it and give your inputs and suggestions.
+
+588
+00:36:04,722 --> 00:36:09,042
+We will do look into it and try to add them into the sessions.
+
+589
+00:36:09,042 --> 00:36:10,681
+Thank you so much.
+
+590
+00:36:10,681 --> 00:36:12,001
+All the best.
+
+

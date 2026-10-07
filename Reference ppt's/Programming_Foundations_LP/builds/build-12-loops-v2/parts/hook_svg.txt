@@ -1,0 +1,106 @@
+<svg class="fig hmorph" viewBox="0 0 1000 480" xmlns="http://www.w3.org/2000/svg" role="img"
+ aria-label="A photocopier at the shop outside the gate. The operator types forty and presses start once; inside the machine sits a column of forty identical make-one-copy instructions, which collapse into a single instruction inside a while loop">
+
+  <!-- the shop outside the gate. It never moves. -->
+  <g class="hshop">
+    <rect x="44" y="120" width="230" height="210" rx="14" fill="#fff" stroke="var(--dk-blue)" stroke-width="3"/>
+    <rect x="70" y="96" width="178" height="26" rx="6" fill="#F2F2F0" stroke="#D9D9D6" stroke-width="2"/>
+    <rect x="70" y="152" width="178" height="76" rx="8" fill="#F7FAFC" stroke="#C9D3DA" stroke-width="2"/>
+    <rect x="92" y="172" width="134" height="7" rx="3.5" fill="#C9D3DA"/>
+    <rect x="92" y="190" width="104" height="7" rx="3.5" fill="#C9D3DA"/>
+    <rect x="92" y="208" width="126" height="7" rx="3.5" fill="#C9D3DA"/>
+    <rect x="86" y="256" width="72" height="42" rx="8" fill="var(--dk-blue)"/>
+    <text x="122" y="283" text-anchor="middle" style="font:600 16px var(--sans)" fill="#fff">START</text>
+    <rect x="176" y="256" width="72" height="42" rx="8" fill="#F2F2F0" stroke="#D9D9D6" stroke-width="2"/>
+    <text x="212" y="283" text-anchor="middle" style="font:600 17px var(--mono)" fill="var(--dk-text)">40</text>
+    <text x="159" y="362" text-anchor="middle" style="font:400 19px var(--sans)" fill="var(--dk-line)">the xerox shop outside the gate</text>
+    <text x="159" y="388" text-anchor="middle" style="font:400 19px var(--sans)" fill="var(--dk-line)">he types 40, presses START</text>
+    <text x="159" y="414" text-anchor="middle" style="font:400 19px var(--sans)" fill="var(--dk-line)">once, and walks away</text>
+    <text x="159" y="74" text-anchor="middle" style="font:600 22px var(--sans)" fill="var(--dk-text)">40 copies, please</text>
+  </g>
+
+  <!-- the tray. The card claims the machine repeats one job; a still picture of
+       a photocopier does not show it doing anything, so one sheet leaves the
+       tray, then the next, then the next, for as long as the shop is on screen.
+       Three sheets on a stagger read as "and it keeps going", where forty drawn
+       sheets would just be noise. -->
+  <g class="htray">
+    <rect class="tray" x="276" y="292" width="116" height="10" rx="5"/>
+    <rect class="sheet s1" x="268" y="186" width="98" height="60" rx="3"/>
+    <rect class="sheet s2" x="268" y="186" width="98" height="60" rx="3"/>
+    <rect class="sheet s3" x="268" y="186" width="98" height="60" rx="3"/>
+    <text class="traylbl" x="334" y="328" text-anchor="middle">one copy</text>
+  </g>
+
+  <!-- what the machine itself has to do. This is the only group that transforms:
+       it squashes from a 304px column down onto the single line of the loop
+       body, a vertical scale about y = 232.4 written origin-independently. -->
+  <!-- the empty slot, up from press 1. The card asks what is going on inside the
+       machine, so the space that answers it has to be visible and visibly empty,
+       or half the card is white until press 2. -->
+  <g class="hslot">
+    <rect x="414" y="16" width="332" height="360" rx="14"/>
+    <text x="580" y="404" text-anchor="middle">inside the machine</text>
+  </g>
+
+  <g class="hgroup">
+    <g fill="#EAF6FC" stroke="var(--dk-cyan)" stroke-width="2">
+      <rect x="430" y="56" width="300" height="18" rx="4"/>
+      <rect x="430" y="82" width="300" height="18" rx="4"/>
+      <rect x="430" y="108" width="300" height="18" rx="4"/>
+      <rect x="430" y="134" width="300" height="18" rx="4"/>
+      <rect x="430" y="160" width="300" height="18" rx="4"/>
+      <rect x="430" y="186" width="300" height="18" rx="4"/>
+      <rect x="430" y="212" width="300" height="18" rx="4"/>
+      <rect x="430" y="238" width="300" height="18" rx="4"/>
+      <rect x="430" y="264" width="300" height="18" rx="4"/>
+      <rect x="430" y="290" width="300" height="18" rx="4"/>
+      <rect x="430" y="316" width="300" height="18" rx="4"/>
+      <rect x="430" y="342" width="300" height="18" rx="4"/>
+    </g>
+  </g>
+
+  <!-- everything written on the column: fades out as the column collapses -->
+  <g class="houter">
+    <text x="580" y="34" text-anchor="middle" style="font:600 19px var(--sans)" fill="var(--dk-text)">inside the machine</text>
+    <text x="580" y="70" text-anchor="middle" style="font:15px var(--mono)" fill="var(--dk-text)">make one copy</text>
+    <text x="580" y="96" text-anchor="middle" style="font:15px var(--mono)" fill="var(--dk-text)">make one copy</text>
+    <text x="580" y="122" text-anchor="middle" style="font:15px var(--mono)" fill="var(--dk-text)">make one copy</text>
+    <text x="580" y="148" text-anchor="middle" style="font:15px var(--mono)" fill="var(--dk-text)">make one copy</text>
+    <text x="580" y="174" text-anchor="middle" style="font:15px var(--mono)" fill="var(--dk-text)">make one copy</text>
+    <text x="580" y="200" text-anchor="middle" style="font:15px var(--mono)" fill="var(--dk-text)">make one copy</text>
+    <text x="580" y="226" text-anchor="middle" style="font:15px var(--mono)" fill="var(--dk-text)">make one copy</text>
+    <text x="580" y="252" text-anchor="middle" style="font:15px var(--mono)" fill="var(--dk-text)">make one copy</text>
+    <text x="580" y="278" text-anchor="middle" style="font:15px var(--mono)" fill="var(--dk-text)">make one copy</text>
+    <text x="580" y="304" text-anchor="middle" style="font:15px var(--mono)" fill="var(--dk-text)">make one copy</text>
+    <text x="580" y="330" text-anchor="middle" style="font:15px var(--mono)" fill="var(--dk-text)">make one copy</text>
+    <text x="580" y="356" text-anchor="middle" style="font:15px var(--mono)" fill="var(--dk-text)">make one copy</text>
+    <text x="580" y="392" text-anchor="middle" style="font:600 20px var(--sans)" fill="var(--dk-line)">&#8230; and twenty-eight more</text>
+  </g>
+
+  <!-- step 2: the brace and the count -->
+  <g class="hnote">
+    <path d="M770 56 h18 v146 h16 h-16 v146 h-18" fill="none" stroke="var(--dk-red)" stroke-width="3"/>
+    <text x="820" y="196" style="font:700 24px var(--sans)" fill="var(--dk-red)">one job, done</text>
+    <text x="820" y="226" style="font:700 24px var(--sans)" fill="var(--dk-red)">forty times</text>
+    <text x="820" y="256" style="font:700 24px var(--sans)" fill="var(--dk-red)">over</text>
+  </g>
+
+  <!-- step 3: the loop. The collapsed column lands inside this dashed body box. -->
+  <g class="hcode">
+    <rect x="408" y="186" width="344" height="58" rx="8" fill="none" stroke="var(--dk-cyan)"
+          stroke-width="2.5" stroke-dasharray="10 7"/>
+    <text x="352" y="166" style="font:24px var(--mono)" fill="var(--dk-red)">while <tspan fill="var(--dk-text)">copies &lt; </tspan><tspan fill="var(--dk-blue)">40</tspan><tspan fill="var(--dk-text)">:</tspan></text>
+    <text x="440" y="209" style="font:22px var(--mono)" fill="var(--dk-blue)">make_one_copy<tspan fill="var(--dk-text)">()</tspan></text>
+    <g fill="none" stroke="var(--dk-blue)" stroke-width="3" stroke-linecap="round">
+      <path d="M400 244 H336 V146 H350"/>
+      <path d="M342 139 l9 7 l-9 7"/>
+    </g>
+    <circle cx="400" cy="244" r="6" fill="var(--dk-blue)"/>
+  </g>
+
+  <g class="hcap">
+    <text x="352" y="300" style="font:600 21px var(--sans)" fill="var(--dk-line)">one instruction, written once</text>
+    <text x="352" y="330" style="font:600 21px var(--sans)" fill="var(--dk-line)">forty copies still come out</text>
+  </g>
+</svg>

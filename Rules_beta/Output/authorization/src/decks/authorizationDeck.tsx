@@ -39,8 +39,8 @@ import { ArrowRight, Check, Cross } from '@/ui/icons'
  * groups as chips. The facts are the source's own.
  *
  * Every content slide goes through a kit slide type, and every kit light type
- * lays out through `ZonedFrame` (content rule 22). Headings stay on one line
- * (content rule 25): a title that wraps gets shorter words.
+ * lays out through `ZonedFrame` (content rule 32). Headings stay on one line
+ * (content rule 35): a title that wraps gets shorter words.
  */
 
 export const authorizationMeta: DeckMeta = {

@@ -93,7 +93,7 @@ export function SlideHeader({
     >
       {!centered && (
         /*
-          TWO BARS, SHORTER, PULLED IN TOWARDS THE TEXT (content rule 23). This
+          TWO BARS, SHORTER, PULLED IN TOWARDS THE TEXT (content rule 33). This
           replaced ONE full-height rail, `-left-16 top-1 h-full w-[6px]`.
 
           The geometry is measured off `Rules_beta/graphics.png` rather than

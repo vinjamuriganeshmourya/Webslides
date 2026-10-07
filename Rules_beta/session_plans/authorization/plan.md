@@ -39,7 +39,7 @@ shown:
   "Think of an Office Building" on two code pages and "Use It On The View" on
   three pages. Each slide here names its own idea.
 
-## 2. Layout: every content slide follows content rule 22
+## 2. Layout: every content slide follows content rule 32
 
 - **Header:** the kicker (concept) and the title only. No lead in the header.
 - **Space-1** (x 64..1159): the lead is the first block, then the body, centred
@@ -47,7 +47,7 @@ shown:
 - **Speaker box** (x 913..1280, y 0..220) stays empty.
 - Content slides are built on the session-owned `ZonedSlide` used by
   `Rules_beta/introduction_to_oops`. Bodies are made from kit blocks only.
-- **Headings stay on one line (rule 25).** Any title that wraps in Poppins gets
+- **Headings stay on one line (rule 35).** Any title that wraps in Poppins gets
   shortened.
 
 ## 3. Concept map and agenda
@@ -156,8 +156,8 @@ C = content slide number (the 30). **CODE** marks the five code slides.
 ## 6. Verification
 
 `typecheck`, `build:html`, then `video-safe`, `qa` and `align-check` in
-parallel, `preview.mjs`, and a look at every slide's screenshot for rule 22
-(zones) and rule 25 (no heading wraps).
+parallel, `preview.mjs`, and a look at every slide's screenshot for rule 32
+(zones) and rule 35 (no heading wraps).
 
 ## 7. Decisions for sign-off
 
@@ -190,7 +190,7 @@ Generated into `Rules_beta/Output/authorization/`, 43 slides. Deliverable:
 - **C6 and C29 lost their callouts.** Their last line sat under the deck's
   controls (`align-check`). The callout text moved into the lead.
 - **The agenda circle reads "Today's session / Agenda"**, and the feedback
-  frame "Your feedback". Both kit defaults wrapped onto two lines (rule 25).
+  frame "Your feedback". Both kit defaults wrapped onto two lines (rule 35).
 - **Titles renamed on the slide:** C3 "Two Words, Two Questions", C9 "The
   Check, Written by Hand", C18 "Reading vs Changing", C19 "Swap In a Softer
   Rule", C21 "Any Logged-in User Can Write", C26 "Our Own Rule".

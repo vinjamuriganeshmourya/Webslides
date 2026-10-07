@@ -1,0 +1,659 @@
+<div id="guide-view">
+<h1 class="g-h1">Instructor guide</h1>
+<p class="g-meta">Session 11 &middot; Nested Conditional Statements &middot; 75 minutes &middot; read this once before class, keep it open on your laptop during</p>
+
+<div class="g-sec">
+<h3>How to use this</h3>
+<p>One entry per slide, in the order you will present them. <b>How it goes</b> is the thread of the slide &mdash; what to say, in order. Quoted phrases are worth saying close to as written; the rest is yours, in your own words.</p>
+<p><b>Nothing starts out of nowhere.</b> Every slide begins from something the room already has &mdash; an app they use, the program they just ran, the answer they just gave &mdash; and ends by handing over to the next slide. If you find yourself opening a slide cold, go back one step and connect it.</p>
+<p><b>Three habits carry the session.</b> Walk it in small steps and check as you go &mdash; &ldquo;so what happens if the PIN is wrong? Will it even look at the balance? No, right?&rdquo; Ask before you tell, always. And offer doubts often: &ldquo;any doubts here?&rdquo; costs four seconds and saves ten minutes.</p>
+</div>
+
+<p class="ghd">Slide by slide</p>
+
+<article class="gcard" data-card="1">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Opening &middot; 1 min &middot; slide 1 of 31</p>
+<h4>Welcome</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Greet them and take attendance while this is up.</li>
+<li>Nothing about the topic yet, and the worksheet stays closed &mdash; it opens at the first activity.</li>
+</ol></div>
+<ul class="gdo">
+<li>Attendance only. Keep it to a minute.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> stragglers at the back. Settle the room before the title slide.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="2">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Opening &middot; slide 2 of 31</p>
+<h4>Title &mdash; Nested Conditional Statements</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Name the topic: &ldquo;today it is nested conditional statements.&rdquo;</li>
+<li>Make the promise early, before they are holding anything: &ldquo;you will open a worksheet part-way through, and <b>everything you fill in today gets submitted at the end.</b>&rdquo;</li>
+<li>Do not explain it yet &mdash; connect backwards instead: &ldquo;but before anything new, let us check what stayed from last session.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Read the title and move. Retrieval before new material.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> the urge to define &ldquo;nested&rdquo; here. The payment hook does it far better in two minutes.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="3">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Warm-up poll &middot; slide 3 of 31</p>
+<h4>Recap &mdash; the title slide</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>&ldquo;Three quick questions on last session. Nothing new in them.&rdquo;</li>
+<li>Set the rule before the first question so nobody is surprised: &ldquo;pick your answer in your head, do not shout it out.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Five seconds on this slide. It is a signpost.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> nothing here. Move on.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="4">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Warm-up poll &middot; 3 min &middot; slide 4 of 31 &middot; three questions</p>
+<h4>Recap poll &mdash; three from last session</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Read the question and the four options aloud. Let the timer run &mdash; that is their thinking time.</li>
+<li>Count the room option by option: &ldquo;how many think it is option one? Hands up.&rdquo; &hellip; two &hellip; three &hellip; four. Say each count out loud: &ldquo;okay, about fifteen for option two.&rdquo;</li>
+<li>Only now reveal. Then explain briefly &mdash; a line for <em>every</em> option, from the table below, wrong ones included.</li>
+<li>Same three moves for Q2 and Q3.</li>
+<li>Hand off after Q3: &ldquo;good, that tells me where we are. Now the new thing &mdash; and we are starting from your phone.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Count before you reveal. Once they know the answer you cannot see what they thought.</li>
+</ul>
+<table class="g-data">
+<tr><th>Q</th><th>Opt</th><th>Say after the reveal</th></tr>
+<tr><td>Q1</td><td><b>1</b></td><td>Inside the if, and 2 &gt; 3 is false. Skipped without being read.</td></tr>
+<tr><td></td><td><b>2</b> &#10003;</td><td>Correct. The condition fails; the last line is outside the if.</td></tr>
+<tr><td></td><td><b>3</b></td><td>Both only print when the condition is true. It never was.</td></tr>
+<tr><td></td><td><b>4</b></td><td>The last line is at column zero. Nothing above it can stop it.</td></tr>
+<tr><td>Q2</td><td><b>1</b></td><td>Nothing prints. Python checks the shape of the file before running any of it.</td></tr>
+<tr><td></td><td><b>2</b></td><td>The common answer, and still wrong. Not even the first line runs.</td></tr>
+<tr><td></td><td><b>3</b> &#10003;</td><td>Correct. Line 3 is indented further for no reason, and Python will not guess.</td></tr>
+<tr><td></td><td><b>4</b></td><td>That is about a name that does not exist. The names are fine; the shape is not.</td></tr>
+<tr><td>Q3</td><td><b>1</b></td><td>Reads the else as still belonging to the if. Column zero already closed it.</td></tr>
+<tr><td></td><td><b>2</b></td><td>True if the else were not there. It is, and it has nothing to attach to.</td></tr>
+<tr><td></td><td><b>3</b> &#10003;</td><td>Correct. Python reads the file, finds an else with no if, and refuses to start.</td></tr>
+<tr><td></td><td><b>4</b></td><td>Right family, wrong error. Every indent is fine; the else is orphaned.</td></tr>
+</table>
+<p class="gwatch"><b>Watch for</b> the counts you said out loud, especially Q2. If more than about a third miss it, say so &mdash; &ldquo;a lot of us are not sure about this one&rdquo; &mdash; and slow down when elif arrives.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="5">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Hook &middot; 3 min &middot; slide 5 of 31 &middot; three presses</p>
+<h4>Behind the scenes on a &#8377;450 payment</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Start from what everyone has done: &ldquo;I think all of us have used GPay or PhonePe to send money to someone.&rdquo;</li>
+<li>&ldquo;Let us see what actually happens behind the scenes.&rdquo; Walk the order: it checks the PIN first, then the balance, and only then does the money move.</li>
+<li>Check them with a question, do not tell: &ldquo;so what if the PIN is wrong? Will it even check your bank balance? No, right? Good.&rdquo;</li>
+<li>Press once. The gate shuts and the balance check greys out on its own. Say nothing while it moves, then: &ldquo;nobody ever found out whether you had the money.&rdquo;</li>
+<li>Press again: &ldquo;now let us see how this looks in code. Two ifs, one inside the other. PIN okay, go inside and check balance. Balance okay, then only send.&rdquo;</li>
+<li>Offer doubts, then hand off: &ldquo;any doubts here? Good &mdash; now you tell me if this sort of thing has happened to <em>you</em> this week.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Right arrow steps the animation. <b>r</b> replays it.</li>
+<li>Call it &ldquo;an if inside an if&rdquo;, never &ldquo;two ifs&rdquo; on their own.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> anyone saying &ldquo;two separate ifs&rdquo;. That phrase becomes the wrong shape three slides from now &mdash; correct it here, gently.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="6">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Your turn &middot; 1 min &middot; slide 6 of 31</p>
+<h4>Your turn &mdash; where else did that happen?</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Carry the question straight over from the payment: &ldquo;that app asked the second question only because the first one passed. Where else has that happened to you this week?&rdquo;</li>
+<li>Then stop talking. The silence is doing the work &mdash; do not fill it with your own example.</li>
+<li>Take four. Repeat each one back in their words and write it on the board.</li>
+<li>Do not judge any of them. &ldquo;Interesting&rdquo; is enough for all four.</li>
+<li>Hand off by picking one: &ldquo;someone said movie tickets &mdash; let us actually look at that one.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>If the room is truly silent after ten seconds, name something on <em>this</em> campus &mdash; the WiFi login, the canteen slide, the gate register &mdash; and ask who else has one.</li>
+<li>Never go round naming people.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> answers that describe two separate checks rather than one inside another. Leave it &mdash; the next slide settles it. Keep the four on the board; they come back at the takeaways.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="7">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">The movie ticket &middot; 2 min &middot; slide 7 of 31 &middot; three presses</p>
+<h4>Behind the scenes on a movie ticket</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Pick up their example by name: &ldquo;booking a ticket &mdash; same thing. What does the app check before it even lets you pick a seat?&rdquo;</li>
+<li>Take the answer from them: seats first, then payment.</li>
+<li>Press once. The show sells out and the payment check greys out. Then: &ldquo;housefull means nobody ever found out whether your payment would have gone through.&rdquo;</li>
+<li>Press again for the code: &ldquo;same two checks, same shape &mdash; one if inside another.&rdquo;</li>
+<li>Hand off: &ldquo;two completely different apps, one shape. That shape is today's session.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Right arrow steps it, same as the payment slide.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> the recognition on the second press. If it lands, you can move quickly through the agenda.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="8">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Agenda &middot; 1 min &middot; slide 8 of 31</p>
+<h4>Agenda &mdash; Nested Conditions to Else If</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Connect to what they just saw: &ldquo;that shape has a name &mdash; nested conditions. And there is a second one we will get to, else-if.&rdquo;</li>
+<li>Say the one idea that joins them: &ldquo;nested asks the second thing only if the first was <b>true</b>. Else-if asks it only if the first was <b>false</b>.&rdquo;</li>
+<li>Point at &ldquo;Indentation&rdquo;: &ldquo;this is not a third topic. It is how you write down which of the two you meant.&rdquo;</li>
+<li>Hand off: &ldquo;we start with the nested one.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>This is where the one idea gets said, not at the takeaways.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> pace. One minute. If you are explaining here, you are doing the next slide's job.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="9">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">The nested shape &middot; 3 min &middot; slide 9 of 31</p>
+<h4>Nested Conditions &mdash; the shape and its three names</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Open with the question, not the answer: &ldquo;four blocks on the screen. Which of these depends on condition A?&rdquo; Take answers.</li>
+<li>Then confirm and extend: &ldquo;if A is false, Python jumps the whole orange box &mdash; without reading a single line inside it.&rdquo;</li>
+<li>Name the parts as you point: the orange box is the <b>conditional block</b>; Block 2, indented under the inner if, is the <b>nested conditional block</b>.</li>
+<li>Check them: &ldquo;how many yeses does Block 2 need? And Block 3? And Block 4?&rdquo; Write <b>2, 1, 0</b> on the board as they answer.</li>
+<li>Any doubts, then hand off: &ldquo;let us trace one of these ourselves.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Do not open the worksheet yet. It opens on the next slide.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> the 2, 1, 0 answers. If they come easily, the hook did its job.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="10" data-handout>
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Hands-on 1 &middot; 7 min &middot; slide 10 of 31 &middot; worksheet page 1, task 1</p>
+<h4>Trace it first, then run it</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Send them to the worksheet now, while they are looking at the program: &ldquo;open the session worksheet on your laptop, name and roll number at the top &mdash; remember, this comes back to me at the end.&rdquo;</li>
+<li>Set it up from the diagram they just saw: &ldquo;this is that same shape, as a real program. Nine lines.&rdquo;</li>
+<li>&ldquo;Do not run it yet &mdash; I want it traced in the worksheet first. All four combinations of A and B, what does each one print. Page one, task one. Five minutes.&rdquo; Start the timer.</li>
+<li>While they work, walk the rows and check in &mdash; spread these out, one at a time: &ldquo;are you guys done?&rdquo; &middot; &ldquo;come on, let us see who finishes first&rdquo; &middot; &ldquo;any doubts about the task? Ask now&rdquo; &middot; &ldquo;two minutes left, finish the last row.&rdquo;</li>
+<li>Hands off keyboards, then ask &mdash; do not tell: &ldquo;which two rows printed exactly the same thing?&rdquo; Wait. &ldquo;And what does that tell you about condition B?&rdquo;</li>
+<li>Hand off to the keyboard: &ldquo;now type it in and run all four. Change only line 1 and line 2 &mdash; the machine is just checking whether you were right.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Worksheet open and named before you start the timer.</li>
+<li>Press play on the timer. It does not start by itself.</li>
+<li>Short of time: trace all four in the worksheet, run only rows 3 and 4.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> <code>print("Block 2")</code> indented twice on their screens. <b>Answers:</b> True/True &rarr; 1, 2, 3, 4 &middot; True/False &rarr; 1, 3, 4 &middot; False/either &rarr; 4 only.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="11">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Hands-on 2 &middot; 5 min &middot; slide 11 of 31 &middot; two steps</p>
+<h4>Nesting inside else</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Connect to the program still on their screens: &ldquo;almost the same program &mdash; one thing has moved. What is different?&rdquo; Take hands until someone says the inner if went into the else.</li>
+<li>&ldquo;Right. So now the second question gets asked only when the first one says <em>no</em>.&rdquo;</li>
+<li>Type it together: &ldquo;I am typing it too, keep pace with me.&rdquo; Before every run: &ldquo;predict it first &mdash; what will it print?&rdquo;</li>
+<li>Let them play: &ldquo;now change both names however you like, and tell me which blocks never printed for you.&rdquo;</li>
+<li>Any doubts, then hand off: &ldquo;good. Now a bigger one &mdash; a program that claims to do something. Let us see whether it actually does.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Type on the projector at their pace, not yours.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> the point landing: when condition_a is True the else is skipped entirely, so condition_b is never read. <b>Answers:</b> a False b True &rarr; 2, 3, 4 &middot; a False b False &rarr; 3, 4 &middot; a True, either b &rarr; 1, 4.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="12">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Activity &middot; 8 min &middot; slide 12 of 31 &middot; worksheet page 2, task 2</p>
+<h4>Program tracing &mdash; does it do what it claims?</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Frame it as a claim to test: &ldquo;this one says it prints the greatest of three numbers. Page two, task two &mdash; trace it and tell me whether it really does.&rdquo;</li>
+<li>Model the first two lines aloud &mdash; say what the machine <em>does</em> before what the line <em>means</em> &mdash; then: &ldquo;the rest is yours.&rdquo;</li>
+<li>While they work: &ldquo;are you guys done?&rdquo; &middot; &ldquo;any doubts on the task, ask now&rdquo; &middot; &ldquo;fill a row only if that line actually runs.&rdquo;</li>
+<li>Hands off keyboards, and only then the check: &ldquo;exactly two of the twelve rows should be empty. Does yours match?&rdquo; Then take the verdict: &ldquo;so does it work?&rdquo;</li>
+<li>Now break it: &ldquo;type it with the last four lines pulled out to column zero, and run 1 2 9, then 5 2 1.&rdquo;</li>
+<li>Hand off with the question, unanswered: &ldquo;why does one input error and the other one not? Hold that &mdash; next slide is that exact program.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Do not give the two-empty-rows check before hands are off keyboards.</li>
+<li>Short of time: skip the pairing, keep both runs.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> the verdict: yes, it prints 9. <b>Broken version:</b> 5 2 1 prints 5 then <code>NameError</code>; 1 2 9 prints 9 cleanly. Same program, right for one input and dead for the other &mdash; and they built it, so nobody can call it a trick.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="13">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Type it and run it &middot; 2 min &middot; slide 13 of 31</p>
+<h4>Nested Conditions &mdash; the correct program</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Show them the clean version first: &ldquo;this is the correct one &mdash; same program as your worksheet, every branch properly indented.&rdquo;</li>
+<li>Break it live: &ldquo;watch what I change &mdash; nothing but where these four lines sit.&rdquo; Pull <code>if is_b_greatest:</code> down to <code>print(c)</code> out to column zero.</li>
+<li>Ask, do not tell: &ldquo;so why did 5 2 1 die and 1 2 9 not?&rdquo; Wait for them.</li>
+<li>Then say it: &ldquo;is_b_greatest is created inside the else. When the if branch runs, that name never exists.&rdquo;</li>
+<li>Hand off: &ldquo;any doubts on that one? Good &mdash; quiz time, and then we are back.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>They type the broken version and run 1&#160;2&#160;9, then 5&#160;2&#160;1.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> this landing before you move on &mdash; the exit poll checks the same idea. If the room is blank, run 5&#160;2&#160;1 again slowly.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="14">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Classroom quiz &middot; 1 min &middot; slide 14 of 31</p>
+<h4>Classroom Quiz Time</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>&ldquo;Quiz time &mdash; open the learning platform.&rdquo;</li>
+<li>Give the return time out loud <em>and</em> write it on the board.</li>
+<li>Hand off before they go: &ldquo;when you come back, nobody types anything for a few minutes. You will see why.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Nothing to teach on this slide.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> the room drifting after the quiz. The next slide is the physical one &mdash; that is deliberate.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="15">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Stand-up &middot; 2 min &middot; slide 15 of 31 &middot; the one physical activity</p>
+<h4>You are the program</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Pick up the promise you made before the quiz: &ldquo;nobody types this one. <b>You</b> are the program.&rdquo;</li>
+<li>Read all three lines out <em>before</em> anyone moves &mdash; one at a time teaches a sequence, not a nest.</li>
+<li>Walk the moves aloud: &ldquo;line one is a question, answer it in your head. Yes means stand. If you are standing, now answer line three &mdash; hand up if your roll number ends in an even digit. Last line is at column zero, so everybody sits.&rdquo; Then: &ldquo;go.&rdquo;</li>
+<li>Now the payoff, to the half still sitting: &ldquo;everyone who stayed seated &mdash; hands up if you checked your roll number.&rdquo; No hands.</li>
+<li>Land it: &ldquo;that is the whole idea. You did not check it and find it false. You never read that line at all.&rdquo;</li>
+<li>Hand off: &ldquo;now sit back down, because I have a problem for you to solve.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>If almost nobody stands, use A&ndash;R instead of A&ndash;M.</li>
+<li>Short of time: cut this whole slide. Nothing later depends on it.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> the room enjoying it &mdash; that is the point after a quiz. Nobody is singled out, and staying seated is a correct answer.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="16">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Discover &middot; 5 min &middot; slide 16 of 31 &middot; four steps</p>
+<h4>Discover it first &mdash; how would you grade this?</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Set the problem plainly: &ldquo;marks out of 100, print the grade. Four bands, on the screen.&rdquo;</li>
+<li>Hand it over with a constraint: &ldquo;write it with what you already know &mdash; there is no new keyword yet. Three minutes, on your own screen.&rdquo;</li>
+<li>While they work: &ldquo;are you guys done?&rdquo; &middot; &ldquo;any doubts, ask now&rdquo; &middot; &ldquo;one minute left.&rdquo;</li>
+<li>Hands off keyboards, and <b>before showing anything</b>: &ldquo;what other approaches are possible?&rdquo; Collect every one on the board first, working or not. <em>This is the session norm from here on.</em></li>
+<li>Now show them two at a time, and for each ask: &ldquo;what does this one cost you?&rdquo; Do not correct anyone.</li>
+<li>Hand off with the question left open: &ldquo;so what we actually want is shape three's behaviour with shape one's flatness. Python has one word for exactly that.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Do not say the word elif on this slide.</li>
+<li>You will hear 1 and 3. Nudge for 2 with &ldquo;what if you wrote both ends of the band?&rdquo;, and for 4 with &ldquo;what if you saved the grade instead of printing it?&rdquo;</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> shape 4 &mdash; correct on 61&ndash;100 and quietly calls 20 a D. Ask why before you say it.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="17">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">elif &middot; 4 min &middot; slide 17 of 31</p>
+<h4>Elif Statement &mdash; the skeleton</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Answer the question you just left hanging: &ldquo;that one word is <b>elif</b>.&rdquo;</li>
+<li>Define it in their terms: &ldquo;elif means &mdash; if the previous question was false, here is the next one.&rdquo;</li>
+<li>Point at the indents: &ldquo;notice there is no box inside a box. All three questions sit at the same level. This is a <b>ladder</b>, not a nest.&rdquo;</li>
+<li>Any doubts, then hand off: &ldquo;now let us put it on your grade problem.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Do not explain what runs when. The walker two slides from now does that far better.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> anyone drawing it as a nest in their notes. Point back at the indent.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="18">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">elif &middot; slide 18 of 31</p>
+<h4>Multiple Elif Statements &mdash; the grade ladder</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Give them ownership: &ldquo;this is your problem, solved. Same four bands, one check each.&rdquo;</li>
+<li>Ask before explaining: &ldquo;marks are 72 &mdash; what prints?&rdquo; Take the answer from them.</li>
+<li>Then extend it: &ldquo;C. And notice &mdash; three conditions were tested, but the 61 check and the else were never even looked at.&rdquo;</li>
+<li>Two facts worth saying here: &ldquo;you can chain as many elifs as you like, and the final else is optional &mdash; leave it off and 40 marks prints nothing at all.&rdquo;</li>
+<li>Break it in front of them: &ldquo;watch &mdash; I move the 61 check to the top. Now 72 gets a D, and this is still perfectly valid Python.&rdquo;</li>
+<li>Hand off: &ldquo;let us actually watch one of these run, line by line.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Ask for the output before anything else on this slide.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> the reaction to the break. That surprise is what the order-matters slide builds on later.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="19">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Follow the dot &middot; 2 min &middot; slide 19 of 31</p>
+<h4>How elif actually runs</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Set up a disagreement first: &ldquo;marks are 72. How many conditions does Python actually test? Hands for one &hellip; two &hellip; three &hellip; four.&rdquo;</li>
+<li>Let them argue for a moment, then vote again. &ldquo;Okay &mdash; let us watch it.&rdquo;</li>
+<li>Press play once and say nothing while the dot moves.</li>
+<li>Then read the result off the screen: &ldquo;three tested, one printed. Look at the grey &mdash; two checks and the else were never looked at. Not read and found false. <b>Never read.</b>&rdquo;</li>
+<li>Try two more: drag to 95 &mdash; one test, everything below it grey. Drag to 40 &mdash; four tests, all false, and only then the else.</li>
+<li>Hand off: &ldquo;now you type one of these yourself.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li><b>r</b> resets it.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> the vote changing after the argument. If it does not, play it and let the dot settle it.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="20">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Hands-on &middot; 4 min &middot; slide 20 of 31 &middot; three steps</p>
+<h4>Add one more grade</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>&ldquo;Type the ladder from the slide and run a few different marks. Two minutes.&rdquo; Check in while they type: &ldquo;are you guys done? Any doubts?&rdquo;</li>
+<li>Then spring it, with no warning: &ldquo;I forgot grade E, for 51 to 60. Add it at the bottom, after the else. Run it. What happened?&rdquo;</li>
+<li>Let them react before you explain. Then read the error out: &ldquo;<code>SyntaxError: 'elif' block follows an 'else' block</code> &mdash; and notice, <em>nothing</em> printed. Not even the grades that worked a minute ago.&rdquo;</li>
+<li>Say why: &ldquo;Python read the whole file first, found a check after the catch-all, and refused to start.&rdquo;</li>
+<li>Ask before showing: &ldquo;so where does E belong?&rdquo; Then show the correct ladder and let them fix their own.</li>
+<li>Hand off: &ldquo;keep that program open. Pens for two minutes.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Do not warn them before the broken version. The surprise is the lesson.</li>
+<li>Short of time: move E yourself.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> the surprise that <em>nothing</em> prints. <b>Fix:</b> a fourth <code>elif marks &gt;= 51</code> above the <code>else</code>; then 95, 85, 72, 65, 55, 40 give A, B, C, D, E, F.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="21">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Trace table &middot; 1 min &middot; slide 21 of 31 &middot; worksheet page 3, task 3</p>
+<h4>Two programs, one word of difference</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Set it up: &ldquo;two programs, one word different on line four. Page three, task three.&rdquo;</li>
+<li>Give the rule carefully: &ldquo;for every condition write whether Python <b>tested</b> it &mdash; yes or no. Not true or false.&rdquo;</li>
+<li>Fill Program P's first two rows aloud together, then 90 seconds on their own.</li>
+<li>Vote: &ldquo;does Program Q print a Y? Hands for yes &hellip; for no.&rdquo; Let them argue 45 seconds, vote again, then reveal one row at a time.</li>
+<li>Anonymous diagnosis: &ldquo;hands up if your Q table has a Y in it.&rdquo; Four seconds and you know where the room is.</li>
+<li>Hand off: &ldquo;so now &mdash; why exactly did grade E fail earlier? Next slide.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Short of time: trace P only and say what Q prints.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> the Y hands. That is the elif-as-a-second-if misconception, counted in four seconds.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="22">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Why that failed &middot; 2 min &middot; slide 22 of 31</p>
+<h4>Common Mistake &mdash; elif after else</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Confirm what they already hit: &ldquo;this is exactly what happened to you with grade E.&rdquo;</li>
+<li>Give the reason in one sentence: &ldquo;else has to be last, because else means <em>everything remaining</em> &mdash; and nothing remains after that.&rdquo;</li>
+<li>Name the two kinds of failure side by side: &ldquo;the greatest-of-three program <em>ran</em> and then died. This one never started. Tell those two apart and you can debug.&rdquo;</li>
+<li>Any doubts, then hand off: &ldquo;one more problem, and this one you solve on your own.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Put it up as confirmation, not as a reveal. They already found it.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> the connection back to poll Q3 &mdash; same family of error.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="23">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Solve it yourself &middot; 8 min &middot; slide 23 of 31</p>
+<h4>Question &mdash; divisible by 10 or by 5 or neither</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Give them the tool first: &ldquo;<code>n % 5 == 0</code> is how you ask &lsquo;does five divide this&rsquo;.&rdquo;</li>
+<li>Then set the trap as a question: &ldquo;now take the number ten. Is it divisible by ten? Yes. By five? Also yes.&rdquo;</li>
+<li>Let that sit for five seconds without resolving it.</li>
+<li>Hand off: &ldquo;keep that in your head &mdash; here is exactly what the output has to look like.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Do not answer the overlap here. The next two slides are built on it.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> someone spotting the overlap unprompted. If they do, say &ldquo;hold that thought&rdquo; and move on.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="24">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Solve it yourself &middot; slide 24 of 31 &middot; 5-minute timer on the slide</p>
+<h4>Output format &mdash; then they solve it</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Read the three rules slowly &mdash; especially the second: &ldquo;if divisible by five, <b>but not ten</b>&rdquo; &mdash; and the three strings character for character.</li>
+<li>Hand it over: &ldquo;five minutes, your machines, no help from me. Starting the timer now.&rdquo;</li>
+<li>While they work, walk the rows: &ldquo;are you guys done?&rdquo; &middot; &ldquo;any doubts, ask now&rdquo; &middot; &ldquo;two minutes left.&rdquo;</li>
+<li>If you see three separate ifs on a screen, run 10 on it and let them watch two lines print. Say nothing else.</li>
+<li>Hand off when the timer ends: &ldquo;hands off keyboards. Let us write it together.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Press play on the timer &mdash; bottom left of the slide.</li>
+<li>Short of time: pause it at three minutes and start writing sooner.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> three-separate-ifs on their screens. It is the most common shape and the most instructive to run.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="25">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Solve it yourself &middot; slide 25 of 31</p>
+<h4>If - Elif - Else &mdash; the answer</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Walk the three checks in order as you point: &ldquo;ten first, then five, then the catch-all.&rdquo;</li>
+<li>Then hand the reasoning to them: &ldquo;why does the ten check have to come first?&rdquo; They should be able to answer this now.</li>
+<li>If anyone used three separate ifs, run 10 on their program and let the room see two lines print.</li>
+<li>Hand off: &ldquo;leave this program open. I want to change exactly one thing in it.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Reveal only after they have written their own. This is the copy they photograph.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> whether they can answer the &ldquo;why first&rdquo; question themselves. If not, the next slide does it the hard way.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="26">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Hands-on 3 &middot; 3 min &middot; slide 26 of 31 &middot; two presses</p>
+<h4>Order matters</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Start from their working program: &ldquo;yours works. I am going to swap the two checks and change nothing else.&rdquo;</li>
+<li>Press <b>Swap the two checks</b> and say nothing. The lines move; no outputs yet.</li>
+<li>Now make them commit: &ldquo;what does it print now for 25? For 30? For 9? For 10?&rdquo; Take answers out loud before the second press.</li>
+<li>Press <b>Show what it prints</b>. Then: &ldquo;two of the four still pass. A test of 25 and 9 would have shipped this.&rdquo;</li>
+<li>Ask: &ldquo;what happened to the check for ten?&rdquo; Wait for <em>unreachable</em>.</li>
+<li>Land it and hand off: &ldquo;with elif, the order you write the checks in is part of the answer. One last question before you go.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Two buttons, in order: Swap first, outputs second. Never both at once.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> the answer &ldquo;unreachable &mdash; still written, never asked&rdquo;. <b>Swapped:</b> 25 &rarr; by 5 &middot; 30 &rarr; by 5 &middot; 10 &rarr; by 5 &middot; 9 &rarr; neither.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="27">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Exit poll &middot; 4 min &middot; slide 27 of 31 &middot; hard floor</p>
+<h4>Exit poll &mdash; one question</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Set the story once: &ldquo;Kiran tapped Book on the railway app, and the screen showed him <b>nothing at all</b>. Which values was it running with?&rdquo;</li>
+<li>&ldquo;Two and a half minutes. Think it through properly &mdash; you will need to check all four.&rdquo; Start the timer, then say nothing.</li>
+<li>Count the room: &ldquo;how many for option one? &hellip; two? &hellip; three? &hellip; four?&rdquo;</li>
+<li>Before revealing, ask the question that decides it: &ldquo;that else on line 6 &mdash; whose else is it? Line 1's, or line 2's?&rdquo; Call a <b>group</b> to defend its answer.</li>
+<li>Reveal, then a line for every option from the table below.</li>
+<li>Hand off: &ldquo;last thing &mdash; the whole session on one screen.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Do not hint that one of the four prints nothing. That is the question.</li>
+<li>Whatever is unfinished elsewhere, stop it and run this slide.</li>
+</ul>
+<table class="g-data">
+<tr><th>Opt</th><th>Say after the reveal</th></tr>
+<tr><td><b>1</b></td><td>Line 1 True, line 2 True &mdash; it prints Booked. They stopped reading after the outer if.</td></tr>
+<tr><td><b>2</b> &#10003;</td><td>Correct. Line 1 True ends the ladder; line 2 False has nowhere to go, because line 2 has no else.</td></tr>
+<tr><td><b>3</b></td><td>Line 1 False, so the ladder moves on and line 4 is True &mdash; it prints Waiting list.</td></tr>
+<tr><td><b>4</b></td><td>Line 1 False, line 4 False, so the else on line 6 runs and prints Booked.</td></tr>
+</table>
+<p class="gwatch"><b>Watch for</b> option <b>4</b> &mdash; the indentation misread the whole session was built to break. If much of the room picks it, that opens the next session.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="28">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Key takeaways &middot; 2 min &middot; slide 28 of 31 &middot; seven presses</p>
+<h4>Key Takeaways &mdash; the session as one map</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Frame it before the first press: &ldquo;everything we did today, on one screen. I will build it up with you.&rdquo;</li>
+<li>One press per box, and as each appears name where it happened: &ldquo;that is the stand-up&rdquo; &middot; &ldquo;that is the movie ticket&rdquo; &middot; &ldquo;that is grade E&rdquo; &middot; &ldquo;that is the swap.&rdquo;</li>
+<li>At the last two boxes: &ldquo;notice these two sit under <em>both</em> branches. They are true whichever shape you write.&rdquo;</li>
+<li>Close: &ldquo;photograph this one. This is the whole session.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>Right arrow does the same as the button.</li>
+<li>Ask nothing here &mdash; the exit poll just did that.</li>
+<li>Short of time: reveal the two branches and the red bar.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> phones coming out. That is the signal it landed.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="29">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Close &middot; 1 min &middot; slide 29 of 31</p>
+<h4>Next Session &mdash; Loops</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Connect forward from what they just learned: &ldquo;today every question got asked once. Next session, loops &mdash; a condition that gets asked again and again.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>One line. Do not start teaching loops.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> the clock. Everything after this slide is buffer.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="30">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Close &middot; slide 30 of 31</p>
+<h4>Feedback</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Ask one specific thing, never &ldquo;any feedback?&rdquo;: &ldquo;which shape would you struggle to write from memory &mdash; the nest, or the ladder?&rdquo;</li>
+<li>Give them the signal: &ldquo;one finger for the nest, two for the ladder, a fist if both.&rdquo;</li>
+<li>Count the fists out loud so they know you saw them.</li>
+</ol></div>
+<ul class="gdo">
+<li>That fist count opens the loops session.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> a lot of fists. It means the session went too fast &mdash; worth knowing before next week.</p>
+</div>
+</article>
+
+<article class="gcard" data-card="31">
+<div class="gthumb"></div>
+<div class="gbody">
+<p class="gwhen">Close &middot; slide 31 of 31</p>
+<h4>Thank You</h4>
+<div class="gflow"><b>How it goes</b><ol>
+<li>Close the loop you opened in minute one: &ldquo;submit your worksheet before you leave &mdash; name and roll number at the top.&rdquo;</li>
+<li>&ldquo;See you next session.&rdquo;</li>
+</ol></div>
+<ul class="gdo">
+<li>See every worksheet submitted. You promised at the start; finish it.</li>
+</ul>
+<p class="gwatch"><b>Watch for</b> laptops shut without submitting. Count submissions against attendance before you leave the room.</p>
+</div>
+</article>
+
+<div class="g-sec">
+<h3>Common guidelines</h3>
+
+<h4>Never start a slide cold</h4>
+<p>Every slide should open from something the room already has &mdash; an app they use, the program still on their screens, the answer somebody just gave &mdash; and close by pointing at the next one. If a slide ever feels abrupt, the fix is almost always one sentence at the end of the <em>previous</em> slide, not a longer explanation on this one.</p>
+
+<h4>Walk it in steps, and check as you go</h4>
+<p>Do not deliver a finished explanation. Say one step, then ask the next one as a question: &ldquo;so if the PIN is wrong, will it even check the balance? No, right? Good.&rdquo; The &ldquo;right?&rdquo; is not filler &mdash; it is a checkpoint, and if the room does not answer it, you have found the gap before it cost you anything. Offer doubts at the end of every concept slide: four seconds, and it saves ten minutes later.</p>
+
+<h4>How every poll runs</h4>
+<p>Same three moves each time. <b>Let them think</b> &mdash; the timer is thinking time, not pressure. <b>Count all four options out loud</b> before you reveal anything; once they know the answer you can no longer see what they actually thought. <b>Then reveal and say a line about every option</b>, wrong ones included &mdash; a wrong option nobody explains is a wrong option they keep.</p>
+
+<h4>Picking students &mdash; the rotation rule</h4>
+<p>Never call a name. Call a <b>group</b>, so nobody is singled out and nobody can hide: roll numbers ending 1, 2 or 3 &middot; first names starting with a vowel &middot; the window row &middot; everyone who stayed seated in the stand-up. Different group every question, different sets next session. If the same four hands answer everything, you have a quiet class and a loud four, not an engaged class.</p>
+
+<h4>When nobody answers</h4>
+<p>Count ten seconds in your head before you fill the silence. It almost never takes ten. If it does, narrow the question &mdash; &ldquo;is it the first line or the second one?&rdquo; &mdash; rather than answering it yourself.</p>
+
+<h4>Why tracing before running</h4>
+<p>Running code is fast and forgiving: a wrong guess costs nothing, because the machine answers in half a second. A trace has no machine to ask, so the only way to fill the row is to run the program in your own head &mdash; which is the skill the whole session is building. The run afterwards is not the exercise; it is the marking scheme. Skip the trace and the room still gets the right answers, just from the interpreter rather than from themselves.</p>
+
+<h4>Reading the room</h4>
+<ul>
+<li><b>Fewer than half the hands up on a poll</b> &mdash; they did not understand the <em>question</em>, not the topic. Read the question again; do not explain the answer.</li>
+<li><b>The same four voices every time</b> &mdash; rotation rule, immediately.</li>
+<li><b>Heads down and no typing during a hands-on</b> &mdash; the instruction was unclear, not the task. Say it again in one sentence.</li>
+<li><b>Nobody asks a doubt when you offer</b> &mdash; walk the rows instead. The doubts come one to one, not to the whole room.</li>
+<li><b>They finish a trace in under two minutes</b> &mdash; they guessed. Ask one of them to read row 3 aloud.</li>
+</ul>
+
+<h4>The dash on the worksheet</h4>
+<p>A dash in a trace table means <em>this name does not have a value yet</em>. It is a correct answer, not a blank. Say that when the worksheet opens, or half the room will leave those boxes empty and assume they failed the task.</p>
+
+<h4>Why the worksheet repeats itself</h4>
+<p>Task 1 and task 3 ask nearly the same thing, and that is deliberate. The second one is not revision &mdash; it is the check that the first one stuck, and the twenty minutes of new material between them is the point. Do not let anyone skip task 3 because it looks familiar.</p>
+</div>
+</div>

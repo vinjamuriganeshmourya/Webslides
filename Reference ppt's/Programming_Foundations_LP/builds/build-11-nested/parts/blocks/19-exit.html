@@ -1,0 +1,27 @@
+<section class="block block-exit" id="exit"><div class="block-head"><span class="block-icon" aria-hidden="true">&#127919;</span><h2>Exit Poll &mdash; one question, two and a half minutes</h2></div><div class="pcard" data-label="Exit Poll &mdash; one question"><div class="slide-head"><span class="slide-title">Exit Poll &mdash; one question</span></div><div class="stage" id="stage-exit"><div class="sl-head"><span class="sl-bar" aria-hidden="true"></span><div><p class="sl-eyebrow">Before You Go</p><h3 class="sl-title">Exit Poll</h3></div></div>
+
+<div class="stage-step on" data-label="Tatkal &middot; the screen showed nothing">
+<div class="pollcols">
+<div>
+<pre class="slabcode">1  <b>if</b> seats &gt; <i>0</i>:
+2      <b>if</b> tatkal:
+3          <i>print</i>(<em>"Booked"</em>)
+4  <b>elif</b> tatkal:
+5      <i>print</i>(<em>"Waiting list"</em>)
+6  <b>else</b>:
+7      <i>print</i>(<em>"Booked"</em>)</pre>
+<ul class="vopts"><li data-k="1"><code>seats = 12</code> &middot; <code>tatkal = True</code></li><li data-k="2" class="right"><code>seats = 3</code> &middot; <code>tatkal = False</code></li><li data-k="3"><code>seats = 0</code> &middot; <code>tatkal = True</code></li><li data-k="4"><code>seats = 0</code> &middot; <code>tatkal = False</code></li></ul>
+</div>
+<div>
+<p class="stage-q">Kiran taps <b>Book</b>. "The screen showed me <b>nothing at all</b>."</p>
+<p class="stage-q"><b>Which values was it running with?</b></p>
+<p class="ans"><b>2.</b> Line 1 True, so lines 4 and 6 are never asked. Line 2 False &mdash; and <b>line 2 has no else</b>. Nothing runs.<span class="mtrace" aria-hidden="true"><span class="wline ran">1  if seats &gt; 0:  True</span><span class="wline ran">2      if tatkal:    False</span><span class="wline dead">3          print(...)</span><span class="wline dead">4  elif tatkal:      never asked</span><span class="wline dead">6  else:                never asked</span></span></p>
+<div class="stage-ctl"><button type="button" data-reveal="Reveal answer">Reveal answer</button><span class="tmr" data-secs="150"></span></div>
+</div>
+</div>
+</div>
+
+<div class="stage-rule" aria-hidden="true"></div></div>
+
+
+</div></section>

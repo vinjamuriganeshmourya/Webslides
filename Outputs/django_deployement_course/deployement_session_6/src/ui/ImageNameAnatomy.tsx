@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
 import { colors } from '@/design/tokens'
+import { lit } from './litSurface'
 
 /**
  * A full Docker image name, split into the three parts it is actually made of.
@@ -27,7 +28,7 @@ import { colors } from '@/design/tokens'
  * them. An `<svg>` is one DOM rectangle to all three harnesses, which is how two
  * session 4 figures shipped with overlapping `<text>` and reported clean.
  *
- * THE ABSENT DOCKER ID. Slide 26 renders `python:3.13-slim`, an official image,
+ * THE ABSENT DOCKER ID. `c2-youve-read-it` renders `python:3.14-slim`, an official image,
  * which genuinely has no Docker ID. The name line stays literal there, because a
  * placeholder inside the name would teach a string nobody types. The id keeps its
  * caption column instead, drawn dashed and muted with the reason in it, so the
@@ -54,27 +55,20 @@ const PAINT = {
   tag: colors.accentDark,
 } as const
 
-/** Chip grounds, as the token hue at low alpha. */
-const WASH = {
-  id: 'rgba(45,99,251,0.12)',
-  repo: 'rgba(18,181,168,0.12)',
-  tag: 'rgba(229,115,42,0.14)',
-} as const
-
-function Part({
-  text,
-  paint,
-  wash,
-}: {
-  text: string
-  paint: string
-  wash: string
-}) {
+function Part({ text, paint }: { text: string; paint: string }) {
+  /*
+    LIT, NOT A FLAT WASH. Each part used to be a 12 percent tint of its own hue
+    with nothing else on it, so the three chips read as three coloured regions
+    inside one panel rather than as three separable blocks of a name. `lit` at
+    `tint` amplitude is the STYLE_GUIDE section 9 recipe at the volume a surface
+    carrying dark text can take: the chip now has a top-left highlight, a ramp in
+    its own hue, a shadow tinted with that hue and the two hairlines.
+  */
   return (
     <Reveal dir="up">
       <span
-        className="inline-block rounded-md px-3 py-1.5 font-mono text-[34px] font-bold leading-none"
-        style={{ background: wash, color: paint }}
+        className="inline-block rounded-lg px-3 py-1.5 font-mono text-[34px] font-bold leading-none"
+        style={{ ...lit(paint, 'tint'), color: paint }}
       >
         {text}
       </span>
@@ -110,26 +104,50 @@ function Caption({
     /* The same four-layer depth as the panel above, one step quieter: the
        captions explain the name, they do not compete with it. Hover is gated to
        a real pointer for the same reason. */
-    <div
-      className={`rounded-card px-4 py-3 transition-[transform,box-shadow] duration-200 ease-out [@media(hover:hover)and(pointer:fine)]:hover:-translate-y-[2px] ${
-        absent ? 'border border-dashed' : 'border border-l-[3px]'
-      }`}
-      style={{
-        borderColor: absent ? colors.muted : paint,
-        backgroundImage: `linear-gradient(180deg, ${colors.surface} 0%, ${colors.surface2} 100%)`,
-        boxShadow: [
-          `inset 0 1px 0 rgba(255,255,255,0.9)`,
-          `0 1px 3px -1px ${colors.brandDeep}1f`,
-          `0 10px 24px -16px ${colors.brand}4d`,
-        ].join(', '),
-      }}
-    >
-      <p className="font-mono text-body-sm font-bold" style={{ color: absent ? colors.muted : paint }}>
-        {value}
-      </p>
-      <p className="mt-1 font-heading text-body-sm font-semibold" style={{ color: colors.body }}>
-        {label}
-      </p>
+    <div className="flex flex-col items-center">
+      {/*
+        THE TICK, AND IT IS THE FIGURE'S ARGUMENT.
+
+        Until now the only thing joining a caption to the part of the name it
+        explains was that the two shared a colour. Colour alone fails the two
+        cases this figure exists for: a projector that shifts the hues, and the
+        slide where the Docker ID is ABSENT and the eye has to be told which gap
+        the caption belongs to. A 14px rule in the part's own hue, rising out of
+        the top of the card towards the name, says it structurally. Drawn as two
+        real elements rather than SVG, so `align-check` can measure them.
+      */}
+      <span
+        className="block w-[2px] rounded-full"
+        style={{
+          height: 16,
+          background: absent
+            ? `linear-gradient(180deg, ${colors.muted}00 0%, ${colors.muted}80 100%)`
+            : `linear-gradient(180deg, ${paint}00 0%, ${paint} 100%)`,
+        }}
+      />
+      <span
+        className="mb-[-4px] block h-[7px] w-[7px] rounded-full"
+        style={{
+          background: absent ? colors.muted : paint,
+          boxShadow: `0 0 0 3px ${colors.surface}`,
+        }}
+      />
+      <div
+        className={`w-full rounded-card px-4 py-3 transition-[transform,box-shadow] duration-200 ease-out [@media(hover:hover)and(pointer:fine)]:hover:-translate-y-[2px] ${
+          absent ? 'border border-dashed' : 'border border-l-[3px]'
+        }`}
+        style={{
+          borderColor: absent ? colors.muted : paint,
+          ...lit(absent ? colors.muted : paint, absent ? 'quiet' : 'tint'),
+        }}
+      >
+        <p className="font-mono text-body-sm font-bold" style={{ color: absent ? colors.muted : paint }}>
+          {value}
+        </p>
+        <p className="mt-1 font-heading text-body-sm font-semibold" style={{ color: colors.body }}>
+          {label}
+        </p>
+      </div>
     </div>
   )
 }
@@ -156,7 +174,7 @@ export function ImageNameAnatomy({
 
     This used to be `w-full max-w-[980px]`. With three parts that looked right,
     because the name nearly filled it. With TWO parts, which is what an official
-    image like `python:3.13-slim` has, the name stopped around x=560 and left
+    image like `python:3.14-slim` has, the name stopped around x=560 and left
     roughly 570px of empty panel: the user reported the container as bigger than
     required, on that exact slide.
 
@@ -233,15 +251,15 @@ export function ImageNameAnatomy({
           >
             {dockerId ? (
               <>
-                <Part text={dockerId} paint={PAINT.id} wash={WASH.id} />
+                <Part text={dockerId} paint={PAINT.id} />
                 <Punct mark="/" />
               </>
             ) : null}
-            <Part text={repository} paint={PAINT.repo} wash={WASH.repo} />
+            <Part text={repository} paint={PAINT.repo} />
             {tag ? (
               <>
                 <Punct mark=":" />
-                <Part text={tag} paint={PAINT.tag} wash={WASH.tag} />
+                <Part text={tag} paint={PAINT.tag} />
               </>
             ) : null}
           </RevealGroup>
@@ -255,7 +273,7 @@ export function ImageNameAnatomy({
           The id column is always present: when there is no Docker ID it says so,
           and says why. */}
       <Reveal dir="up">
-        <div className="mt-5 flex gap-4 [&>*]:min-w-[188px] [&>*]:flex-1">
+        <div className="mt-5 flex items-start gap-4 [&>*]:min-w-[188px] [&>*]:flex-1">
           <Caption
             label={L.id}
             value={dockerId ?? 'none'}
@@ -274,7 +292,7 @@ export function ImageNameAnatomy({
 
       {note ? (
         <Reveal dir="up">
-          <p className="mt-4 text-body-sm font-medium" style={{ color: colors.body }}>
+          <p className="mt-4 text-center text-body-sm font-medium" style={{ color: colors.body }}>
             {note}
           </p>
         </Reveal>

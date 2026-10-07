@@ -4,7 +4,7 @@ import { accentByTone, type Tone } from '@/design/tokens'
 /**
  * Small uppercase eyebrow label.
  *
- * NO LEADING ACCENT TICK (content rule 23). The label used to open with a 3px x
+ * NO LEADING ACCENT TICK (content rule 33). The label used to open with a 3px x
  * 24px pill in the tone; it was a second accent competing with the header's
  * gradient bars, and it is gone, with the `gap-2` that spaced it.
  */

@@ -1,0 +1,18 @@
+# From the Jenkins instance, reaching the app server over the VPC's own network.
+# Proves the rule whose SOURCE is jenkins-sg, with no address written anywhere.
+# Real output, 2026-09-16.
+
+ubuntu@ip-172-31-15-67:~$ hostname -I
+172.31.15.67 172.17.0.1
+
+ubuntu@ip-172-31-15-67:~$ # can I reach the app server on 22, privately?
+PRIVATE 22: OPEN
+
+ubuntu@ip-172-31-15-67:~$ # its ssh banner, so this is really sshd answering
+SSH-2.0-OpenSSH_10.2p1 Ubuntu-2ubuntu3.2
+
+ubuntu@ip-172-31-15-67:~$ # and the app's own port, also over the private network
+PRIVATE 8000: OPEN
+
+# Both instances sit in vpc-0292256715a0e0ab2, 172.31.0.0/16. This traffic
+# never leaves AWS and never touches the Elastic IP.

@@ -1,5 +1,6 @@
 import { SlideBase } from '@/ui/SlideBase'
 import { SlideHeader } from '@/ui/SlideHeader'
+import { SlideLead } from '@/ui/SlideLead'
 import { Step } from '@/motion/Stepper'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
 import { accentByTone, colors } from '@/design/tokens'
@@ -43,8 +44,8 @@ import type { ConversationSlideProps } from './types'
  * THE HEIGHT BUDGET
  *
  * A one-line turn is about 56px and a two-line turn about 84px. The well runs
- * y=220..656 with a lead-less header, so six one-line turns or four two-line
- * turns. `qa.mjs` catches the overflow; the budget is here so it does not have to.
+ * y=220..656 with no lead under the header, so six one-line turns or four
+ * two-line turns; a lead costs about 50px of that, which is one turn. `qa.mjs` catches the overflow; the budget is here so it does not have to.
  */
 export function ConversationSlide({
   kicker,
@@ -61,7 +62,13 @@ export function ConversationSlide({
   return (
     <SlideBase variant="light" lesson={lesson}>
       <div className="flex h-full flex-col">
-        <SlideHeader kicker={kicker} title={title} lead={lead} tone={tone} />
+        <SlideHeader kicker={kicker} title={title} tone={tone} />
+        {/*
+          The point opens the well, above the transcript and outside the centred
+          block. Inside the turn grid it would take the speaker gutter and read as
+          a line of dialogue with nobody saying it.
+        */}
+        {lead && <SlideLead tone={tone}>{lead}</SlideLead>}
         <div className="flex min-h-0 flex-1 flex-col justify-center">
           {/*
             The gutter is a fixed 150px so every line of dialogue starts on the

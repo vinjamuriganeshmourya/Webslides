@@ -1,0 +1,2009 @@
+1
+00:00:00,000 --> 00:00:11,760
+Hello everyone, welcome to today's session, in today's session we will be discussing about
+
+2
+00:00:11,760 --> 00:00:17,840
+comparing strings and naming variables, firstly let's quickly recap what we have seen in the
+
+3
+00:00:17,840 --> 00:00:23,840
+previous session, so in the previous session we have seen about the loop control statements,
+
+4
+00:00:23,840 --> 00:00:29,760
+in that we learned about break and continue, right, so in break we have seen that, so when
+
+5
+00:00:29,760 --> 00:00:35,279
+you write a break statement and when python executes this break statement then in that
+
+6
+00:00:35,279 --> 00:00:41,520
+repeating block the remaining statements below the break statement will not get executed,
+
+7
+00:00:41,520 --> 00:00:45,919
+so the block of code which is below the break statement will not get executed
+
+8
+00:00:45,919 --> 00:00:50,480
+and directly it will come out of the loop, okay, so this is break.
+
+9
+00:00:51,360 --> 00:00:57,279
+And then coming to continue, so when the python executes the continue statement
+
+10
+00:00:57,279 --> 00:01:04,559
+present inside the repeated block then automatically we will go back to the loop
+
+11
+00:01:04,559 --> 00:01:09,919
+statement, so the code below the continue statement, the repeated block of code which
+
+12
+00:01:09,919 --> 00:01:16,239
+is below the continue statement that will not get executed and then will go back to the loop statement,
+
+13
+00:01:16,239 --> 00:01:20,879
+and then if it's a while loop then again the condition will get checked and based on that
+
+14
+00:01:20,879 --> 00:01:28,000
+the block will get executed, otherwise if it is a for loop then it will go to the next item in the
+
+15
+00:01:28,000 --> 00:01:34,400
+sequence and based on that we will execute the repeated block, okay, so this is how the break
+
+16
+00:01:34,400 --> 00:01:40,400
+and the continue work. And then we learned about the pass statement, right, so the pass statement
+
+17
+00:01:40,400 --> 00:01:46,800
+is used as a syntactic placeholder, so when you want to test a piece of code you are not done
+
+18
+00:01:46,879 --> 00:01:51,519
+completely writing the code, but you want to test the code that you have written so far,
+
+19
+00:01:51,519 --> 00:01:56,559
+so in such cases wherever there are empty blocks where you haven't written it yet
+
+20
+00:01:56,559 --> 00:02:02,320
+there you can write the pass statement, right, so when the python executes this pass statement
+
+21
+00:02:02,320 --> 00:02:08,160
+then nothing will happen that is there won't be any changes in the variables or there won't be any
+
+22
+00:02:08,160 --> 00:02:14,320
+logical changes, okay, so it's just a syntactic placeholder, so like we have seen here there is
+
+23
+00:02:14,320 --> 00:02:20,800
+elif condition B, right, so there the block 2 what we have to write there is not yet decided,
+
+24
+00:02:20,800 --> 00:02:28,080
+so what did we do? We cannot leave that as empty, right, so as a placeholder we have written the
+
+25
+00:02:28,080 --> 00:02:34,320
+pass, okay, there we have the pass, so generally it's used when you want to test the code before
+
+26
+00:02:34,320 --> 00:02:39,919
+even completing the entire code, okay, so this is regarding the pass statement.
+
+27
+00:02:40,000 --> 00:02:44,960
+Now we'll see the daily challenge, so in the previous session the challenge was this,
+
+28
+00:02:45,839 --> 00:02:50,479
+what was it we have given a piece of code, what you have to do is you have to check
+
+29
+00:02:50,479 --> 00:02:56,240
+whether the given number is a prime number or not, okay, so this is what you have to check,
+
+30
+00:02:57,119 --> 00:03:04,080
+so there is a small mistake in this, see for 22, is it a prime number? No, right,
+
+31
+00:03:04,080 --> 00:03:09,679
+so what is the expected output? False, but we are not getting this expected output,
+
+32
+00:03:09,679 --> 00:03:15,279
+so we'll see what is the issue in this, let's understand, so what's happening here? We have
+
+33
+00:03:15,279 --> 00:03:22,479
+an input, okay, and we are iterating over each number between 2 and N, remember generally in
+
+34
+00:03:22,479 --> 00:03:28,960
+prime number how do we do it? So we have to check whether there is any factor between 2 and N,
+
+35
+00:03:28,960 --> 00:03:34,399
+right, that is N-1, so just before the N, you have to iterate over each number in the sequence
+
+36
+00:03:34,399 --> 00:03:41,360
+2, 3, 4 up to N-1 and then check if there is any factor for the input, okay, for N,
+
+37
+00:03:41,919 --> 00:03:47,360
+so for that what we have to do? We have to check the divisibility, right, so if a number is
+
+38
+00:03:47,360 --> 00:03:53,600
+divisible by N then the remainder will be 0, so if a number is divisible by N then that number is
+
+39
+00:03:53,600 --> 00:04:01,600
+a factor of N, right, so what we have to do here? We have to check whether the remainder will be 0
+
+40
+00:04:01,600 --> 00:04:07,039
+or not, when you divide N with I then we have to check whether the remainder is 0 or not,
+
+41
+00:04:07,039 --> 00:04:13,039
+so there the condition check is, but observe that what did we write? We have written I
+
+42
+00:04:13,039 --> 00:04:19,200
+modular operator N equal to equal to 0, right, so what did we write? We are checking whether
+
+43
+00:04:19,200 --> 00:04:25,760
+the remainder of dividing I, if we divide I with N we are checking whether the remainder is 0 or
+
+44
+00:04:25,760 --> 00:04:32,480
+not, but what do we have to check? We have to check whether the remainder is 0 when we divide
+
+45
+00:04:32,480 --> 00:04:39,760
+N with I, not I with N, right, so here the issue is that, so what we have to do here? We have to
+
+46
+00:04:39,760 --> 00:04:47,200
+check the divisibility of N with I, so N modular I, it should be that, so if condition, the condition
+
+47
+00:04:47,279 --> 00:04:53,839
+should be N modular I whether it's equal to 0, okay, that should be the condition, so here what
+
+48
+00:04:53,839 --> 00:04:59,600
+happened? We have written I modular N, so that is the issue here, so once you correct that then we'll
+
+49
+00:04:59,600 --> 00:05:05,679
+get the expected output, so what do you have to write? You have to write N modular I when it is
+
+50
+00:05:05,679 --> 00:05:12,320
+equal to 0 only then it means that there is a, I is a factor of N that means it's not a prime number,
+
+51
+00:05:12,320 --> 00:05:17,279
+right, so that is what we have done, we have said that it is prime is false and then there is no
+
+52
+00:05:17,279 --> 00:05:22,320
+need of iterating, right, once we know that it's not a prime number there is no need of iterating
+
+53
+00:05:22,320 --> 00:05:28,000
+over another number in the sequence, so directly we can exit the loop, so that's why we have written
+
+54
+00:05:28,000 --> 00:05:34,000
+the break statement, okay, so we have seen this code and we have identified the mistake.
+
+55
+00:05:34,000 --> 00:05:39,679
+So let's try this out in the code playground and see, so this is the code, right, so this is the
+
+56
+00:05:39,679 --> 00:05:45,200
+code that we have given in the identify the mistake, so here what did we do? We have written
+
+57
+00:05:45,200 --> 00:05:53,279
+I modular N, but what should it be? It should be N modular I, right, so when we divide N with I
+
+58
+00:05:53,279 --> 00:05:58,720
+we are checking whether the remainder is 0 or not, so it should be N modular I, now we'll run
+
+59
+00:05:58,720 --> 00:06:04,079
+the code and see, see for 22 what should be the output? It should be false, right, see we got
+
+60
+00:06:04,079 --> 00:06:09,279
+false, let's say for 2 what should be the output? It should be true, right, it's a prime number,
+
+61
+00:06:09,440 --> 00:06:16,559
+let's say 17 which is also a prime number, right, so we got true, similarly 15 which is not a prime
+
+62
+00:06:16,559 --> 00:06:22,079
+number so we should get false, see we got the output, right, so we are done seeing the solution
+
+63
+00:06:22,079 --> 00:06:28,320
+for the identify the mistake. Now we'll go back to the slides, so we are done with this, now we'll
+
+64
+00:06:28,320 --> 00:06:34,000
+see what is the today's agenda, so in today's agenda firstly we'll look into comparing strings,
+
+65
+00:06:34,559 --> 00:06:40,799
+here we'll see about the concept of Unicode and the different utilities that we have the ORD and
+
+66
+00:06:40,799 --> 00:06:47,200
+CHR, what are these and what can we do with that, so we'll understand this, and then we'll learn
+
+67
+00:06:47,200 --> 00:06:52,239
+about naming variables, right, what are the best practices when it comes to naming the variables
+
+68
+00:06:52,239 --> 00:06:56,720
+and what are the different rules involved in that and the case styles, we'll learn about all of
+
+69
+00:06:56,720 --> 00:07:03,519
+these things today, okay, so let's start with comparing the strings, so here a very important
+
+70
+00:07:03,519 --> 00:07:11,839
+concept is Unicode, so in computer each character is stored as a number, so in a string if there is
+
+71
+00:07:11,839 --> 00:07:18,480
+a character each character is actually stored as a number, so where every character will have a
+
+72
+00:07:18,480 --> 00:07:26,079
+unique Unicode value, okay, see there is A, right, so A is a character, so A will have a unique
+
+73
+00:07:26,079 --> 00:07:33,279
+Unicode value which is 65, okay, similarly there is Z, okay, which has a unique Unicode value
+
+74
+00:07:33,279 --> 00:07:41,440
+which is 122, like this every character, every possible character will have a Unicode value which
+
+75
+00:07:41,440 --> 00:07:48,880
+is unique, okay, so in the computer basically each character is stored as a Unicode, okay,
+
+76
+00:07:48,880 --> 00:07:55,440
+so like this, see for capital A it's 65, for 1 the digit 1, see in strings I'm talking about the
+
+77
+00:07:55,440 --> 00:08:02,640
+character 1, not the number 1, okay, so for that the Unicode is 49, similarly for star the Unicode
+
+78
+00:08:02,720 --> 00:08:10,160
+is 42, like this each character, each possible character will have a unique Unicode value,
+
+79
+00:08:10,160 --> 00:08:17,040
+and based on that the computer internally stores these characters using these Unicode values, okay,
+
+80
+00:08:17,040 --> 00:08:23,839
+so to find what is a Unicode value of a character you can use ORD, okay, see there is ORD, right,
+
+81
+00:08:23,839 --> 00:08:28,959
+so what you have to do is you have to write ORD of and you have to give the character,
+
+82
+00:08:28,959 --> 00:08:35,840
+so what will it do? It will give you the Unicode value of that character, okay, so if you say ORD
+
+83
+00:08:35,840 --> 00:08:40,719
+of A it will give the Unicode value of A, similarly whichever character, for whichever
+
+84
+00:08:40,719 --> 00:08:46,000
+character you want the Unicode value you can mention it here and then you'll get the Unicode
+
+85
+00:08:46,000 --> 00:08:52,640
+value, okay, so we'll see the example for this, so what you have to do is see here, what we have
+
+86
+00:08:53,200 --> 00:09:00,880
+we have written Unicode underscore value equal to ORD of A, okay, so A is a character, right,
+
+87
+00:09:00,880 --> 00:09:06,080
+in double quotes we have written A, so what we were trying to do? We are trying to find the
+
+88
+00:09:06,080 --> 00:09:12,880
+Unicode value of the character A, so that we have stored in Unicode value variable,
+
+89
+00:09:12,880 --> 00:09:20,239
+so when we print it what did we get? We got 65, right, so the Unicode value of A is 65,
+
+90
+00:09:20,239 --> 00:09:24,799
+like this whichever character you want you can find the Unicode value of it,
+
+91
+00:09:25,359 --> 00:09:27,599
+so we'll try this out in the code playground and see.
+
+92
+00:09:29,440 --> 00:09:34,960
+So in the code playground let me just remove this block of code, now what we'll do is let's
+
+93
+00:09:34,960 --> 00:09:39,280
+try to find the Unicode value of a particular character, so I'll just write a variable,
+
+94
+00:09:39,919 --> 00:09:48,400
+okay, value equal to ORD of A, okay, so now I'll print the Unicode value and we'll see the value,
+
+95
+00:09:48,400 --> 00:09:56,880
+okay, so let's say for A what is Unicode value? We should get 65, see we got 65,
+
+96
+00:09:56,880 --> 00:10:04,000
+right, similarly what we can do is let's say we'll write some H, right, so what is the Unicode value
+
+97
+00:10:04,000 --> 00:10:10,479
+for that? Okay, 72, like this even it could be as simple as hash, this is also a character,
+
+98
+00:10:10,479 --> 00:10:15,119
+right, in a string you can have any characters like this, so we'll run the code, so for any
+
+99
+00:10:15,119 --> 00:10:20,239
+possible character there will be a unique Unicode value, see it's 35, like this you can give
+
+100
+00:10:20,239 --> 00:10:28,640
+different even dot will have a Unicode value, okay, see it's 46, like this each character,
+
+101
+00:10:28,640 --> 00:10:34,320
+each possible character will have a Unicode value, based on that the computer stores that
+
+102
+00:10:34,320 --> 00:10:40,159
+character based on this Unicode values, okay, so in this way we can find the Unicode value
+
+103
+00:10:40,159 --> 00:10:45,359
+of each character using the ORD, okay. Now we'll go back to the slides.
+
+104
+00:10:46,479 --> 00:10:53,200
+So we understood about this ORD, right, so now what we'll do is we'll see what is a character
+
+105
+00:10:53,200 --> 00:11:00,080
+at Unicode, that is given a Unicode value let's say you want to find what is the character,
+
+106
+00:11:00,080 --> 00:11:07,280
+so for that you have to use CHR, okay, so we have learned about ORD, right, so in that what we'll
+
+107
+00:11:07,359 --> 00:11:14,479
+do? We will give the character and it will give us the Unicode value, whereas the CHR for this
+
+108
+00:11:14,479 --> 00:11:19,840
+we will give the Unicode value and it will give us the character at that Unicode value, okay,
+
+109
+00:11:19,840 --> 00:11:25,440
+which will have that Unicode value, okay, so for example see here what we have written,
+
+110
+00:11:25,440 --> 00:11:31,679
+we have written CHR of 75, so when we have written CHR of 75 and stored the character,
+
+111
+00:11:31,679 --> 00:11:38,080
+see what is the character present at 75, it is K, right, so the Unicode value of K is 75,
+
+112
+00:11:38,080 --> 00:11:45,280
+nothing but if you give 75 then the character with the Unicode 75 is K, so we got that output.
+
+113
+00:11:45,280 --> 00:11:50,640
+Similarly, what we are doing here? We want the character present at 100, right, what is the
+
+114
+00:11:50,640 --> 00:11:55,280
+character with Unicode value 100, this is what we want, so for that what did we write? We have
+
+115
+00:11:55,280 --> 00:12:01,359
+written CHR of 100 and then we have printed the character and see what we got, we got D,
+
+116
+00:12:01,359 --> 00:12:08,479
+so D is a character with the Unicode value 100, okay, so like this what we can do? We can give
+
+117
+00:12:08,479 --> 00:12:13,599
+a Unicode value and find what is the character, corresponding character and also we can give a
+
+118
+00:12:13,599 --> 00:12:19,200
+character and find the corresponding value, okay, we'll try this out in the code playground and see,
+
+119
+00:12:19,280 --> 00:12:25,359
+okay, so in the code playground what we'll do is there is a char, okay, you want to find the
+
+120
+00:12:25,359 --> 00:12:32,719
+character, so CHR is a function for which we'll give the Unicode value, let's say I'm giving 100,
+
+121
+00:12:32,719 --> 00:12:39,520
+okay, let me print the character, okay, so for that what did I get? So I should get D,
+
+122
+00:12:39,520 --> 00:12:45,440
+right, see I got D, let's say I'm giving say 105, okay, we'll run the code and see,
+
+123
+00:12:45,440 --> 00:12:57,119
+see I got I, right, similarly let's say some 56, right, we'll run the code and see we'll have a,
+
+124
+00:12:57,119 --> 00:13:04,080
+this is another character, right, so like this what we can do is we can find the character present
+
+125
+00:13:04,080 --> 00:13:12,640
+at the Unicode value with the help of CHR, okay, so we have seen about ORD and then we have seen
+
+126
+00:13:12,719 --> 00:13:19,679
+about CHR, okay, so with the help of these with the ORD what we can do? We can provide the
+
+127
+00:13:19,679 --> 00:13:25,200
+character and based on the character that we have given we'll get the Unicode value, if you want to
+
+128
+00:13:25,200 --> 00:13:31,200
+find the character present at a particular Unicode value that for that you'll use the CHR function,
+
+129
+00:13:31,200 --> 00:13:38,159
+okay, so we have to use the CHR, so this is what we have learned today. Okay, now we'll proceed.
+
+
+
+130
+00:13:38,211 --> 00:13:39,211
+further.
+
+131
+00:13:39,211 --> 00:13:40,211
+So what did we do?
+
+132
+00:13:40,211 --> 00:13:42,331
+We have learnt about two things.
+
+133
+00:13:42,331 --> 00:13:43,851
+First is ORD.
+
+134
+00:13:43,851 --> 00:13:46,171
+So in ORD what we'll do?
+
+135
+00:13:46,171 --> 00:13:51,011
+So given the character ORD will give us the unicode value of it corresponding unicode
+
+136
+00:13:51,011 --> 00:13:52,011
+value.
+
+137
+00:13:52,011 --> 00:13:58,131
+Similarly in CHR you will give the unicode value and then CHR will give us the corresponding
+
+138
+00:13:58,131 --> 00:13:59,131
+character.
+
+139
+00:13:59,131 --> 00:14:01,291
+So we have learnt about these two things.
+
+140
+00:14:01,291 --> 00:14:03,691
+Now we'll see the ranges.
+
+141
+00:14:03,691 --> 00:14:07,611
+So far what we have seen we are giving a character and we are getting the unicode value or we
+
+142
+00:14:07,611 --> 00:14:10,571
+are getting the unicode value and we got the character.
+
+143
+00:14:10,571 --> 00:14:13,850
+So it's just specific to one character but generally what are the ranges?
+
+144
+00:14:13,850 --> 00:14:15,650
+How are these numbers assigned?
+
+145
+00:14:15,650 --> 00:14:17,451
+We'll see about that.
+
+146
+00:14:17,451 --> 00:14:20,451
+So here you can see the ranges there.
+
+147
+00:14:20,451 --> 00:14:28,010
+Here if it is between 48 to 57 the unicode values between 48 to 57 are the number digits.
+
+148
+00:14:28,010 --> 00:14:34,330
+So it's nothing but 48 means double code 0, 49 means double code 1 like this.
+
+149
+00:14:34,330 --> 00:14:36,371
+So that is the unicode values.
+
+150
+00:14:37,130 --> 00:14:40,170
+So from 48 to 57 they are the number digits.
+
+151
+00:14:40,170 --> 00:14:46,291
+Then we have 65 to 90 is for the capital letters that is uppercase letters that is capital
+
+152
+00:14:46,291 --> 00:14:49,130
+A, capital B, capital C like this till capital Z.
+
+153
+00:14:49,130 --> 00:14:54,450
+So for those the unicode values will range between 65 to 90.
+
+154
+00:14:54,450 --> 00:15:01,931
+So for capital A the unicode value is 65 and for capital Z the unicode value is 90.
+
+155
+00:15:01,931 --> 00:15:05,130
+And then coming to the small letters.
+
+156
+00:15:05,170 --> 00:15:12,011
+So for small letters the unicode values range from 97 to 122 that is the unicode value for
+
+157
+00:15:12,011 --> 00:15:19,611
+small letter A is 97 whereas the unicode value for a small letter Z is 122 and based on that
+
+158
+00:15:19,611 --> 00:15:26,770
+like D, C all of these things will lie in between 97 to 122 in an alphabetical order.
+
+159
+00:15:26,770 --> 00:15:31,850
+And then the remaining there will be special characters like at the rate, hash, dot, comma
+
+160
+00:15:31,850 --> 00:15:36,971
+all other in the remaining characters will fall in the remaining ranges, okay.
+
+161
+00:15:36,971 --> 00:15:38,971
+So these are the unicode ranges.
+
+162
+00:15:38,971 --> 00:15:44,050
+Now what we'll do is we'll just print some unicode values and understand.
+
+163
+00:15:44,050 --> 00:15:45,450
+So for that what we can do?
+
+164
+00:15:45,450 --> 00:15:49,451
+We can directly create a sequence of integers, right.
+
+165
+00:15:49,451 --> 00:15:55,531
+Let's say I want to see the print all the capital letters, right, the alphabet, capital
+
+166
+00:15:55,531 --> 00:15:56,731
+alphabets.
+
+167
+00:15:56,731 --> 00:15:57,850
+So for that what I'll do?
+
+168
+00:15:57,850 --> 00:15:59,291
+What is the unicode range?
+
+169
+00:15:59,291 --> 00:16:05,410
+It is 65 to 90, right, 6 for capital A is 65 whereas for capital Z it is 90.
+
+170
+00:16:05,410 --> 00:16:06,931
+So in the range what will I write?
+
+171
+00:16:06,931 --> 00:16:12,850
+The start index will be 65 and the end index will be 91 since we need 90 also.
+
+172
+00:16:12,850 --> 00:16:16,330
+So we have written that and we are iterating and we are printing the characters.
+
+173
+00:16:16,330 --> 00:16:19,451
+We'll write this and see in the code playground.
+
+174
+00:16:19,451 --> 00:16:24,850
+So in the code playground let's say for, okay, some unicode value, right, we are iterating
+
+175
+00:16:24,850 --> 00:16:32,890
+over different unicode values in range from 65 which is the starting of a capital A, the
+
+176
+00:16:32,890 --> 00:16:38,410
+index for our capital A and then what we have to write 91, right, the unicode range for
+
+177
+00:16:38,410 --> 00:16:40,690
+capital letters is 65 to 90.
+
+178
+00:16:40,690 --> 00:16:43,451
+So we have to write 91 and then what I'll do?
+
+179
+00:16:43,451 --> 00:16:48,291
+I have to print the character at that particular unicode value, right, a character with that
+
+180
+00:16:48,291 --> 00:16:49,451
+unicode value.
+
+181
+00:16:49,451 --> 00:16:53,630
+So for that what is it that I have to use CHR, right.
+
+182
+00:16:53,630 --> 00:16:56,791
+So CHR, unicode value, okay.
+
+183
+00:16:56,791 --> 00:16:57,791
+So done.
+
+184
+00:16:57,791 --> 00:17:02,830
+Now we'll run the code and see, okay.
+
+185
+00:17:02,830 --> 00:17:03,830
+See what did we get?
+
+186
+00:17:03,830 --> 00:17:08,511
+We got A, B, C, D, E, F, G, H, C, W, X, Y, Z till Z.
+
+187
+00:17:08,511 --> 00:17:10,711
+We got all the characters, right.
+
+188
+00:17:10,711 --> 00:17:12,031
+So like this what we can do?
+
+189
+00:17:12,031 --> 00:17:13,671
+We can print the characters.
+
+190
+00:17:13,671 --> 00:17:15,711
+So in the similarly what you can do?
+
+191
+00:17:15,711 --> 00:17:18,910
+You can try with the different numbers also.
+
+192
+00:17:18,910 --> 00:17:23,050
+Say you want small letters, right, it's 97 to 122.
+
+193
+00:17:23,470 --> 00:17:25,610
+So we'll run the code.
+
+194
+00:17:25,610 --> 00:17:29,970
+So see, small A, B, C, D and it gone till W, X, Y, Z.
+
+195
+00:17:29,970 --> 00:17:35,011
+See like this what you can do is with the help of this you can find out any characters,
+
+196
+00:17:35,011 --> 00:17:39,371
+right, present at particular unicode value, okay.
+
+197
+00:17:39,371 --> 00:17:41,250
+Now we'll go back to the slides.
+
+198
+00:17:41,250 --> 00:17:46,211
+So we understood this and we executed the code and we got the output, right.
+
+199
+00:17:46,211 --> 00:17:49,130
+So now coming back to comparing the strings.
+
+200
+00:17:49,130 --> 00:17:52,270
+So we understood the concept of unicode, right.
+
+201
+00:17:52,490 --> 00:17:58,191
+So what did we understand that in computer each character is stored as a number and the
+
+202
+00:17:58,191 --> 00:18:00,311
+number is nothing but the unicode number.
+
+203
+00:18:00,311 --> 00:18:04,830
+So each character will have a unique value with a unique unicode value.
+
+204
+00:18:04,830 --> 00:18:07,911
+With that the computer stored the characters.
+
+205
+00:18:07,911 --> 00:18:13,510
+So when you are actually comparing strings what Python does is it basically compares
+
+206
+00:18:13,510 --> 00:18:15,550
+the unicode values.
+
+207
+00:18:15,550 --> 00:18:20,911
+That is basically A has a unicode value and B also has a unicode value.
+
+208
+00:18:20,911 --> 00:18:22,110
+So what does Python do?
+
+209
+00:18:22,950 --> 00:18:27,751
+It will compare the unicode values of A and B. So when you are writing print double codes
+
+210
+00:18:27,751 --> 00:18:32,631
+A less than double codes B, what exactly we are doing, A will have a unicode value.
+
+211
+00:18:32,631 --> 00:18:37,510
+This is a capital A so it's 65 and B has a unicode value.
+
+212
+00:18:37,510 --> 00:18:41,471
+It's capital B. So here the unicode value is 66.
+
+213
+00:18:41,471 --> 00:18:47,591
+So what we are comparing is whether 65 is less than 66 or not which is true.
+
+214
+00:18:47,591 --> 00:18:50,211
+So what will the output be, true, right.
+
+215
+00:18:50,211 --> 00:18:51,510
+So what are we doing here?
+
+216
+00:18:51,911 --> 00:18:56,550
+We are comparing the unicode values of the characters, okay.
+
+217
+00:18:56,550 --> 00:18:59,010
+So similarly we will see another example.
+
+218
+00:18:59,010 --> 00:19:00,010
+See here.
+
+219
+00:19:00,010 --> 00:19:01,010
+What are we comparing here?
+
+220
+00:19:01,010 --> 00:19:07,191
+We are comparing the lowercase alphabet A, right, so small letter A and then capital
+
+221
+00:19:07,191 --> 00:19:08,191
+letter A.
+
+222
+00:19:08,191 --> 00:19:11,510
+So what are the unicode values for small letter A?
+
+223
+00:19:11,510 --> 00:19:14,790
+The unicode value is 97, right.
+
+224
+00:19:14,790 --> 00:19:17,431
+For capital A what is the unicode value?
+
+225
+00:19:17,431 --> 00:19:19,251
+It is 65.
+
+226
+00:19:19,251 --> 00:19:22,691
+Is 97 greater than 65, true, right.
+
+227
+00:19:22,691 --> 00:19:24,411
+So the output is true.
+
+228
+00:19:24,411 --> 00:19:27,851
+Similarly here you can see what do we have.
+
+229
+00:19:27,851 --> 00:19:29,170
+In double codes we have 9.
+
+230
+00:19:29,170 --> 00:19:31,170
+So it's nothing but the character 9.
+
+231
+00:19:31,170 --> 00:19:33,851
+We are comparing that with character 5.
+
+232
+00:19:33,851 --> 00:19:36,251
+So what are the unicode values for character 9?
+
+233
+00:19:36,251 --> 00:19:37,691
+See we have seen the ranges, right.
+
+234
+00:19:37,691 --> 00:19:41,251
+So from 48 the ranges will go till 56.
+
+235
+00:19:41,251 --> 00:19:46,931
+So if you compare that then 9 is greater than 5, right.
+
+236
+00:19:46,931 --> 00:19:48,450
+So in that way what output will get?
+
+237
+00:19:48,450 --> 00:19:49,450
+Will get true.
+
+238
+00:19:49,450 --> 00:19:50,890
+See the output are true.
+
+239
+00:19:50,890 --> 00:19:54,531
+So it's as per the output that we are expecting, right.
+
+240
+00:19:54,531 --> 00:20:00,251
+So in this way what we are doing is we are comparing the unicode values, okay.
+
+241
+00:20:00,251 --> 00:20:04,851
+So we are comparing the unicode value of A, small letter A and capital letter A. Similarly
+
+242
+00:20:04,851 --> 00:20:08,990
+we are comparing the unicode value of 9 with the unicode value of 5, okay.
+
+243
+00:20:08,990 --> 00:20:13,691
+So when you are actually comparing strings what you are internally doing is you are comparing
+
+244
+00:20:13,691 --> 00:20:16,330
+the unicode values, right.
+
+245
+00:20:16,730 --> 00:20:18,971
+So we will try this out and see.
+
+246
+00:20:18,971 --> 00:20:26,330
+So in this what we will do is let's try to compare, first we will start with A, B, okay.
+
+247
+00:20:26,330 --> 00:20:33,211
+Print A whether it's less than B, okay.
+
+248
+00:20:33,211 --> 00:20:34,211
+What will be the output?
+
+249
+00:20:34,211 --> 00:20:36,411
+It will be true, right.
+
+250
+00:20:36,411 --> 00:20:42,411
+Because the unicode values we have seen it's some 65 and this is 66, okay.
+
+251
+00:20:42,411 --> 00:20:44,610
+So then we got the output true.
+
+252
+00:20:44,610 --> 00:20:52,691
+And then similarly let's say I am comparing small letter A with some capital letter A
+
+253
+00:20:52,691 --> 00:20:54,251
+then what will be the output be?
+
+254
+00:20:54,251 --> 00:20:55,890
+True, right.
+
+255
+00:20:55,890 --> 00:21:03,911
+So let's say I am comparing some D with say maybe E, right.
+
+256
+00:21:03,911 --> 00:21:06,251
+So what will the output be, right.
+
+257
+00:21:06,251 --> 00:21:11,851
+So the output will be false because the unicode value of D is less than the unicode value
+
+258
+00:21:11,851 --> 00:21:13,330
+of E.
+
+259
+00:21:13,330 --> 00:21:18,691
+So in this way basically we are comparing the unicode values, okay.
+
+260
+00:21:18,691 --> 00:21:20,450
+Now we will go back to the slides.
+
+261
+00:21:20,450 --> 00:21:23,170
+So we understood this part clearly, right.
+
+262
+00:21:23,170 --> 00:21:28,770
+Next what we will do is let's compare strings, right, where here we have compared the characters,
+
+263
+00:21:28,770 --> 00:21:29,770
+right.
+
+264
+00:21:29,770 --> 00:21:34,031
+Here what we will do is we will take the strings which have length greater than 1.
+
+265
+00:21:34,031 --> 00:21:40,730
+So here what we are doing, we are doing string comparison of bad and bad, okay.
+
+266
+00:21:40,730 --> 00:21:49,050
+So here what Python does is it starts comparing the strings like character by character.
+
+267
+00:21:49,050 --> 00:21:50,691
+That is what will it do.
+
+268
+00:21:50,691 --> 00:21:54,411
+First it will check for first character here and the first character here.
+
+269
+00:21:54,411 --> 00:21:58,911
+So the first character here is B and the first character here is B, okay.
+
+270
+00:21:58,911 --> 00:22:00,631
+So these both are same.
+
+271
+00:22:00,631 --> 00:22:05,450
+Next what it will do, it will compare A and it will compare A. These both are also same.
+
+272
+00:22:05,450 --> 00:22:09,411
+Next what it will do, it will compare D and it will compare T, right.
+
+273
+00:22:09,411 --> 00:22:14,250
+So it's a unicode value of D and T. It will compare these two things, right.
+
+274
+00:22:14,250 --> 00:22:18,370
+So is the unicode value of D greater than T, no, right.
+
+275
+00:22:18,370 --> 00:22:21,450
+So what will the output be, false, okay.
+
+276
+00:22:21,450 --> 00:22:22,570
+So you understood, right.
+
+277
+00:22:22,570 --> 00:22:29,570
+Here Python compares the strings character by character, one after the other, okay.
+
+278
+00:22:29,570 --> 00:22:31,031
+So you understood this part, right.
+
+279
+00:22:31,031 --> 00:22:33,051
+So because of that the output is false.
+
+280
+00:22:33,051 --> 00:22:35,890
+We will try this out and see.
+
+281
+00:22:35,890 --> 00:22:43,611
+So in the code playground, so let's say print, okay, bad, whether you are checking whether
+
+282
+00:22:43,611 --> 00:22:46,370
+it's greater than or equal to bad or not, okay.
+
+283
+00:22:46,370 --> 00:22:48,370
+We will run the code.
+
+284
+00:22:48,370 --> 00:22:51,651
+So what should the output be, false, right.
+
+285
+00:22:51,651 --> 00:22:56,851
+Let's say you want to compare something S. Let's say I will just write S. What will the
+
+286
+00:22:56,851 --> 00:23:02,231
+output be, okay, let's say Y, okay.
+
+287
+00:23:02,231 --> 00:23:04,810
+So what will the output be, true, right.
+
+288
+00:23:04,810 --> 00:23:10,171
+Because the unicode value of Y is greater than the unicode value of T. Let's say I am
+
+289
+00:23:10,171 --> 00:23:19,791
+just saying something like ABC and here what I am comparing is XBC.
+
+290
+00:23:19,791 --> 00:23:21,711
+Then what will happen?
+
+291
+00:23:21,711 --> 00:23:24,971
+So here first it will check character by character, right.
+
+292
+00:23:24,971 --> 00:23:27,291
+So it will check A with X.
+
+293
+00:23:27,291 --> 00:23:31,390
+So is the unicode value of A greater than X, no, right.
+
+294
+00:23:31,390 --> 00:23:33,531
+So what should the output be, false.
+
+295
+00:23:33,531 --> 00:23:34,971
+It won't check the other characters.
+
+296
+00:23:34,971 --> 00:23:39,211
+Just first it will check character by character, right, initially only what happened, the unicode
+
+297
+00:23:39,211 --> 00:23:43,171
+value of A is not greater than the unicode value of X.
+
+298
+00:23:43,171 --> 00:23:46,091
+So what will happen, you will get false, okay.
+
+299
+00:23:46,091 --> 00:23:47,770
+So clear this part.
+
+300
+00:23:47,770 --> 00:23:49,491
+Now we will go back to the slides.
+
+301
+00:23:49,491 --> 00:23:54,890
+So basically Python compares strings character by character.
+
+302
+00:23:54,890 --> 00:23:56,851
+Now we will see another example.
+
+303
+00:23:56,851 --> 00:24:01,851
+See here what's happening, we are comparing 98 with 123.
+
+304
+00:24:01,851 --> 00:24:08,211
+So here what will happen, this is 98 is a string, 98, so we should call it as 98 string
+
+305
+00:24:08,211 --> 00:24:12,370
+and then what we have here, we have 123 which is another string.
+
+306
+00:24:12,370 --> 00:24:18,171
+So character by character, how do we compare, we compare 9 with 1.
+
+307
+00:24:18,171 --> 00:24:22,591
+Is the unicode value of 9 less than or equal to 1, no, right.
+
+308
+00:24:22,591 --> 00:24:24,810
+So what should the output be, false.
+
+309
+00:24:24,810 --> 00:24:26,770
+See we got the output as false.
+
+310
+00:24:26,770 --> 00:24:32,851
+So here you have to notice that 98 is a string, here 98 is a string, 123 is a string, they
+
+311
+00:24:32,851 --> 00:24:34,450
+are not the numbers.
+
+312
+00:24:34,450 --> 00:24:39,491
+So the unicode value of each character will get start comparing, okay, will start comparing
+
+313
+00:24:39,491 --> 00:24:40,491
+that, okay.
+
+314
+00:24:40,491 --> 00:24:42,971
+We will see another example.
+
+315
+00:24:42,971 --> 00:24:50,130
+See here what is present, so we have 98 and here we have 984, we have 98, we have 984.
+
+316
+00:24:50,130 --> 00:24:54,491
+So what will it do, we have 9 and we will compare 9, okay, these both are same, the
+
+317
+00:24:54,491 --> 00:24:56,291
+unicode values are same.
+
+318
+00:24:56,810 --> 00:25:02,491
+Next what we will do, we will compare 8 with the 8, here again the unicode values are same.
+
+319
+00:25:02,491 --> 00:25:07,491
+Then what happen, there are no more characters left in the first string, right, but here
+
+320
+00:25:07,491 --> 00:25:11,211
+in this string there is 4, okay, which is in another character.
+
+321
+00:25:11,211 --> 00:25:16,450
+But here since this character is done and this string is done, what we will get is it
+
+322
+00:25:16,450 --> 00:25:17,651
+is true.
+
+323
+00:25:17,651 --> 00:25:21,930
+So the output will be true, okay, you understood this part, right.
+
+324
+00:25:21,930 --> 00:25:25,971
+So when you have equal and strings, we will compare each of this and based on the unicode
+
+325
+00:25:26,651 --> 00:25:30,890
+value, if it is done till then, then what will happen, the one with the lesser one will
+
+326
+00:25:30,890 --> 00:25:35,211
+be less, okay, which where the length of the string is done that will be less, so because
+
+327
+00:25:35,211 --> 00:25:37,890
+of that we got the output as true.
+
+328
+00:25:37,890 --> 00:25:40,330
+Let's try this out and see.
+
+329
+00:25:40,330 --> 00:25:47,971
+So in the code program, so we will write print, okay, let's say 98 less than 1, 2, 3, okay,
+
+330
+00:25:47,971 --> 00:25:53,051
+so what should the output be, false, right, see we got the output as false.
+
+331
+00:25:53,130 --> 00:25:58,971
+Similarly let's say 984, then what will happen, the first two characters are same but here
+
+332
+00:25:58,971 --> 00:26:03,690
+we have reached the end of the string, here we have one more character, in that case the
+
+333
+00:26:03,690 --> 00:26:07,570
+one which has reached the string will have the less value, so because of that this is
+
+334
+00:26:07,570 --> 00:26:13,031
+true, okay, you understood this part, right, okay, now we will go back to the slides.
+
+335
+00:26:13,031 --> 00:26:18,450
+So we understood about the string comparing, right, now what we will do is we will see
+
+336
+00:26:18,450 --> 00:26:23,731
+about naming variables, okay, so the string comparison concept we understood very well
+
+337
+00:26:23,731 --> 00:26:30,250
+and we understood what is unicode and how the computer stores values, right, using the
+
+338
+00:26:30,250 --> 00:26:34,370
+unicode values, it stored the characters using the unicode values.
+
+339
+00:26:34,370 --> 00:26:39,450
+Now we will see about naming variables, that is when you are naming the variables what
+
+340
+00:26:39,450 --> 00:26:45,111
+are the best practices, what are the rules, all of these details we will understand, okay.
+
+341
+00:26:45,111 --> 00:26:53,671
+So firstly let's look into the rules of naming the variables, so one rule is we have to use
+
+342
+00:26:53,671 --> 00:26:59,111
+capital letters, small letters, digits or underscores in the variable naming, we shouldn't
+
+343
+00:26:59,111 --> 00:27:04,791
+use any other characters, okay, so either it can have capital letters or small letters
+
+344
+00:27:04,791 --> 00:27:12,031
+or digits or underscore, other than that we shouldn't use any other characters, okay,
+
+345
+00:27:12,031 --> 00:27:16,390
+so we will see some examples of which are the right way to use and which are not.
+
+
+
+346
+00:27:16,422 --> 00:27:22,262
+1, so here you can see age which has all the characters are alphabets right, the small
+
+347
+00:27:22,262 --> 00:27:28,702
+letters and then in input underscore 1 see we have either small letters or underscore
+
+348
+00:27:28,702 --> 00:27:34,221
+right, so even that is a correct way of naming and then we have high score right, high underscore
+
+349
+00:27:34,221 --> 00:27:39,342
+score, so it's either small letters or underscore which is again a correct way of naming, again
+
+350
+00:27:39,342 --> 00:27:44,822
+we have underscore counter 2, so this is also a correct way of naming, okay, so we can use
+
+351
+00:27:44,822 --> 00:27:49,902
+either capital letters, small letters, digits or underscore, we shouldn't use any other
+
+352
+00:27:49,902 --> 00:27:53,142
+characters while naming the variables.
+
+353
+00:27:53,142 --> 00:27:58,701
+Next so here you can see we cannot use spaces, commas and special characters when you are
+
+354
+00:27:58,701 --> 00:28:03,341
+naming the variables, okay, so you shouldn't give spaces between the variable names or
+
+355
+00:28:03,341 --> 00:28:08,462
+commas like this, you can see the example here, see left it has all small characters
+
+356
+00:28:08,462 --> 00:28:13,742
+it's fine, and then start underscore playing, there also there are all small letters or
+
+357
+00:28:13,742 --> 00:28:19,221
+underscore, there is underscore, so it is also fine, then again you see there is read,
+
+358
+00:28:19,221 --> 00:28:25,182
+comma, space, write, space and space learn like this, right, so here what we have?
+
+359
+00:28:25,182 --> 00:28:30,341
+We have space, comma, special characters, like this we shouldn't write, okay, you shouldn't
+
+360
+00:28:30,341 --> 00:28:35,822
+have spaces, you shouldn't have commas, even if there is a single space then it is not
+
+361
+00:28:35,822 --> 00:28:42,701
+correct, okay, it won't work, so there shouldn't be any spaces or commas or any special characters
+
+362
+00:28:42,701 --> 00:28:45,061
+when you are naming the variables.
+
+363
+00:28:45,061 --> 00:28:51,222
+And then coming to the next rule, so the variable name must begin with capital letter or a small
+
+364
+00:28:51,222 --> 00:28:57,742
+letter or underscore, okay, so the starting of the variable name should be either a capital
+
+365
+00:28:57,742 --> 00:29:03,261
+letter like capital A or capital B, capital V like this, or it can be a small letter like
+
+366
+00:29:03,261 --> 00:29:09,301
+small a, small b like this, or it can be underscore, okay, like we have seen that previously underscore
+
+367
+00:29:09,301 --> 00:29:14,061
+counter 2, like this also we can write, we'll see some examples.
+
+368
+00:29:14,061 --> 00:29:19,061
+See there is left, it's starting with a small letter that is agree, and then here in underscore
+
+369
+00:29:19,061 --> 00:29:24,341
+player 1, see this it's starting with underscore, that is also fine, even in the height and
+
+370
+00:29:24,341 --> 00:29:31,302
+weight, in feet there it's starting with capital H, right, that is also fine, whereas here
+
+371
+00:29:31,302 --> 00:29:32,862
+you see what we have written?
+
+372
+00:29:32,862 --> 00:29:39,261
+We have written 1 underscore player, so basically the variable name is starting with a digit
+
+373
+00:29:40,222 --> 00:29:44,821
+So here what did we say it should begin with capital letter, small letter and underscore,
+
+374
+00:29:44,821 --> 00:29:50,621
+so basically the variable name shouldn't begin with a digit, okay, so that's why it's a wrong
+
+375
+00:29:50,621 --> 00:29:55,261
+way of naming the variable, it won't work if you write like this, okay, so what do you
+
+376
+00:29:55,261 --> 00:29:56,261
+have to do?
+
+377
+00:29:56,261 --> 00:30:02,821
+The variable name must begin with a capital letter, small letter or an underscore, okay,
+
+378
+00:30:02,821 --> 00:30:03,821
+clear.
+
+379
+00:30:04,101 --> 00:30:09,742
+Now we'll look into another rule, so here we cannot use keywords, okay, when you are
+
+380
+00:30:09,742 --> 00:30:14,541
+writing the variable name you shouldn't use a variable name which are keywords, that is
+
+381
+00:30:14,541 --> 00:30:19,981
+in case of Python what will happen is some words are reserved for some special meaning,
+
+382
+00:30:19,981 --> 00:30:25,662
+like for example we have the while loop, right, where the while word is reserved for the while
+
+383
+00:30:25,662 --> 00:30:31,541
+loop, similarly for for loop the for word is reserved, so these are called keywords,
+
+384
+00:30:31,541 --> 00:30:36,061
+so when you are naming the variable they shouldn't be these keywords, we'll see some
+
+385
+00:30:36,061 --> 00:30:41,101
+examples, see we can have move underscore player 1 if like this, but we shouldn't write
+
+386
+00:30:41,101 --> 00:30:47,701
+while, we shouldn't write for like this, we shouldn't use as the variable names, okay,
+
+387
+00:30:47,701 --> 00:30:53,341
+so clear this part, so we cannot use keywords which are reserved for special meaning in
+
+388
+00:30:53,341 --> 00:30:59,242
+Python, okay, like while, for like these things you shouldn't use, okay.
+
+389
+00:30:59,242 --> 00:31:05,242
+So how do you know what are the keywords, right, for that Python will provide us a help,
+
+390
+00:31:05,242 --> 00:31:10,362
+right, it's a utility that Python provides us, so when you write help of in double quotes
+
+391
+00:31:10,362 --> 00:31:16,481
+keywords then all the keywords which are reserved, right, those will get displayed, so based
+
+392
+00:31:16,481 --> 00:31:21,961
+on that in case you are using any such name then you have to not use that name, see we
+
+393
+00:31:21,961 --> 00:31:26,201
+have written that table there, you can also try it out in the code playground, we'll just
+
+394
+00:31:26,201 --> 00:31:34,562
+see, okay, in the code playground, here if you write help of double quotes keywords,
+
+395
+00:31:34,562 --> 00:31:42,281
+okay, now we'll run the code, see here we got a list of Python keywords, you can see
+
+396
+00:31:42,281 --> 00:31:47,281
+here there are lot of Python keywords, so you shouldn't use these keywords, so you can
+
+397
+00:31:47,281 --> 00:31:51,682
+know what are the keywords with the help of this help, okay.
+
+398
+00:31:51,682 --> 00:31:56,362
+Now we'll go back to the slides, so we understood this, right, this is one rule, so we have
+
+399
+00:31:56,362 --> 00:32:02,601
+seen about the different rules in naming, so the first rule was the variable name should
+
+400
+00:32:02,601 --> 00:32:06,761
+consist of underscore, capital letters and all of these things, right, I'll just show
+
+401
+00:32:06,761 --> 00:32:13,242
+you the first rule, okay, so we can use capital letters, small letters, digits or underscores
+
+402
+00:32:13,242 --> 00:32:18,842
+in the variable naming, and the second rule was we shouldn't use space, commas and special
+
+403
+00:32:18,842 --> 00:32:25,122
+characters, and then we have seen about the variable name should begin with either a capital
+
+404
+00:32:25,122 --> 00:32:30,642
+letter, small letter or underscore, it shouldn't begin with digits or any special characters,
+
+405
+00:32:30,642 --> 00:32:36,201
+okay, and then we cannot use keywords, okay, there are some keywords which are reserved
+
+406
+00:32:36,201 --> 00:32:41,601
+in Python, we cannot use them, to find out what are the keywords you can use the help
+
+407
+00:32:41,601 --> 00:32:43,362
+utility, okay.
+
+408
+00:32:43,362 --> 00:32:47,562
+Now what we'll do is we'll see a question, so now you tell me which of the following
+
+409
+00:32:47,562 --> 00:32:53,522
+is the current, is a valid variable name, see in the first what do we have?
+
+410
+00:32:53,522 --> 00:32:54,522
+Is it valid?
+
+411
+00:32:54,522 --> 00:33:02,601
+Yes, right, because first thing is it has only, it has either underscore or the alphabets,
+
+412
+00:33:02,601 --> 00:33:06,562
+right, small letters or capital letters, it is beginning with a capital letter, and it's
+
+413
+00:33:06,562 --> 00:33:13,402
+not a keyword, so the first name is a valid one, similarly second one, is it valid?
+
+414
+00:33:13,402 --> 00:33:20,802
+No, because basically int is actually a keyword, so you shouldn't use it, and then is the third
+
+415
+00:33:20,802 --> 00:33:21,802
+one valid?
+
+416
+00:33:21,802 --> 00:33:27,761
+No, because there is space, there is question mark and brackets, we shouldn't use any special
+
+417
+00:33:27,761 --> 00:33:31,082
+characters or space like this.
+
+418
+00:33:31,082 --> 00:33:33,481
+Next is the fourth one valid?
+
+419
+00:33:33,481 --> 00:33:39,441
+No, because it's starting with 1, right, it's starting with a digit, it should either, you
+
+420
+00:33:39,441 --> 00:33:44,402
+should start the variable name with either an alphabet or underscore, is the fifth name
+
+421
+00:33:44,402 --> 00:33:45,402
+valid?
+
+422
+00:33:45,402 --> 00:33:50,362
+Yes, because it's starting with underscore and there are only underscores in alphabets,
+
+423
+00:33:50,362 --> 00:33:56,041
+right, and it's not a keyword, so it is correct, okay, so we have understood about different
+
+424
+00:33:56,041 --> 00:33:58,281
+rules in naming the variables.
+
+425
+00:33:58,281 --> 00:34:03,362
+Now we'll see about the naming conventions that is in case we have understood the rules
+
+426
+00:34:03,362 --> 00:34:08,201
+in naming, right, but there are some conventions which generally software developers use while
+
+427
+00:34:08,281 --> 00:34:12,842
+coding, so that it's more understandable, right, the program will be more understandable
+
+428
+00:34:12,842 --> 00:34:17,802
+and whoever will looks into the code he will be able to understand, so for that we'll have
+
+429
+00:34:17,802 --> 00:34:24,922
+some naming conventions, it's always best practice to follow these naming conventions,
+
+430
+00:34:24,922 --> 00:34:30,441
+so generally what we do is for learn, what we have to do is we have to see about some
+
+431
+00:34:30,441 --> 00:34:36,242
+case styles, okay, there are some most common naming conventions, okay, we'll understand
+
+432
+00:34:36,281 --> 00:34:38,381
+what are the different case styles.
+
+433
+00:34:38,381 --> 00:34:44,122
+So firstly let's say you want to store the value of total bill, okay, you want to name
+
+434
+00:34:44,122 --> 00:34:51,082
+it as some total bill, so there are different case types, okay, one such thing is camel
+
+435
+00:34:51,082 --> 00:34:57,281
+case, so if you want to name it with the convention of camel case, with the case type as camel
+
+436
+00:34:57,281 --> 00:35:02,802
+case, then what you have to write is like this, see there total bill are two different
+
+437
+00:35:02,802 --> 00:35:09,402
+words, so first we'll write total with all the letters in lower case, and then in the
+
+438
+00:35:09,402 --> 00:35:15,161
+second word the first character will be in upper case, and the remaining characters will
+
+439
+00:35:15,161 --> 00:35:20,842
+be in lower case, this is called the camel case, this is one case type, okay, so here
+
+440
+00:35:20,842 --> 00:35:26,001
+the first character of the first word will be in lower case, and all other characters
+
+441
+00:35:26,001 --> 00:35:31,362
+will be in lower case, and then the first letter of the next word like this whichever
+
+442
+00:35:31,362 --> 00:35:36,922
+words are present that should be in capital, like here it's total bill, so from the second
+
+443
+00:35:36,922 --> 00:35:41,721
+word the first letter will be capital and the remaining letters will be in lower case,
+
+444
+00:35:41,721 --> 00:35:42,721
+okay.
+
+445
+00:35:42,721 --> 00:35:47,562
+So this is camel case, let's say total bill amount, if you want to store that then what
+
+446
+00:35:47,562 --> 00:35:48,562
+you'll write?
+
+447
+00:35:48,562 --> 00:35:52,721
+You'll write total which will all be in lower case, then you'll write bill where B will
+
+448
+00:35:52,721 --> 00:35:57,601
+be capital and the remaining will be in lower case, and then if you write amount then the
+
+449
+00:35:57,601 --> 00:36:03,362
+A will be in upper case and the remaining letters M, O, U and T will be in lower case,
+
+450
+00:36:03,362 --> 00:36:06,841
+okay, this is the case type of camel case.
+
+451
+00:36:06,841 --> 00:36:12,841
+Now coming to Pascal case, here in the Pascal case it's just like camel case only that in
+
+452
+00:36:12,841 --> 00:36:18,641
+the first word also the first letter will be in capital, see in total bill the first
+
+453
+00:36:18,641 --> 00:36:24,882
+T is also in capital, okay, so that's the difference between Pascal case and camel case.
+
+454
+00:36:25,161 --> 00:36:30,841
+Another case type is snake case, in snake case what we do is we'll write the first word
+
+455
+00:36:30,841 --> 00:36:36,442
+which will all be, all the characters will be in lower case and then each word are separated
+
+456
+00:36:36,442 --> 00:36:41,841
+from one another with underscore, that is here total bill are two different words, right,
+
+457
+00:36:41,841 --> 00:36:45,762
+so we'll write total underscore bill, like this let's say you want to write total bill
+
+458
+00:36:45,762 --> 00:36:51,601
+amount you'll write total underscore bill underscore amount, okay, this is snake case.
+
+459
+00:36:51,601 --> 00:36:57,281
+In Python generally we follow snake case notation for naming the variables, that is like this
+
+460
+00:36:57,281 --> 00:37:02,961
+where each word is separated by underscores, okay, so in Python programming we follow the
+
+461
+00:37:02,961 --> 00:37:07,882
+snake case notation, there are different notations, right, there we have seen camel case, Pascal
+
+462
+00:37:07,882 --> 00:37:12,281
+case, right, so in that we use the snake case notation.
+
+463
+00:37:12,281 --> 00:37:17,242
+And coming to let's see a small question, so what we want to store is we want to store
+
+464
+00:37:17,242 --> 00:37:21,841
+the value of sum of even numbers in a variable, now what we have to do?
+
+465
+00:37:21,841 --> 00:37:26,521
+We have to give a variable name, what you have to do is you have to choose which of
+
+466
+00:37:26,521 --> 00:37:31,721
+the following names is most suitable, there you can see the different options, sum, sum
+
+467
+00:37:31,721 --> 00:37:37,442
+of even number, sum underscore of underscore even underscore nums like this, so which one
+
+468
+00:37:37,442 --> 00:37:38,442
+is the most suitable?
+
+469
+00:37:38,442 --> 00:37:46,442
+The third one, right, sum of even numbers, because firstly the variable name should properly
+
+470
+00:37:46,442 --> 00:37:50,721
+indicate the purpose, right, so what is the purpose here?
+
+471
+00:37:50,721 --> 00:37:56,242
+Storing about sum of even numbers, so it's properly conveying that, and another point
+
+472
+00:37:56,242 --> 00:38:01,481
+here is see the case type also, so the remaining things are not following in any of the case
+
+473
+00:38:01,481 --> 00:38:07,802
+types but here it is written in snake case, so in that way this is the, that is the reason
+
+474
+00:38:07,802 --> 00:38:11,841
+that the third option is the most suitable one, okay.
+
+475
+00:38:11,841 --> 00:38:16,322
+So we have learned a lot of new things today, so let's quickly summarize what we have seen
+
+476
+00:38:17,202 --> 00:38:23,242
+today, so we have seen how to compare the strings, right, so we have seen that in computer
+
+477
+00:38:23,242 --> 00:38:28,961
+each character will have a unique unicode value and based on that number the computer
+
+478
+00:38:28,961 --> 00:38:35,122
+stored the characters, so to find what is the unicode value for a particular character
+
+479
+00:38:35,122 --> 00:38:43,281
+you can use ORD, if you want to find the character of a particular unicode value for that you
+
+480
+00:38:43,281 --> 00:38:50,641
+have to use CHR, okay, and then we have seen how does Python compare strings, right, so
+
+481
+00:38:50,641 --> 00:38:57,242
+Python will compare the unicode values when you say some capital A less than capital B
+
+482
+00:38:57,242 --> 00:39:03,242
+then you are basically comparing the unicode values of A and B, so basically we compare
+
+483
+00:39:03,242 --> 00:39:05,682
+the unicode values of the characters.
+
+484
+00:39:05,682 --> 00:39:10,401
+In case of blending, when you have strings what it will do?
+
+485
+00:39:10,401 --> 00:39:16,922
+It will compare character by character, so in each string if you compare two strings
+
+486
+00:39:16,922 --> 00:39:22,281
+character by character we start comparing the strings, okay, then we have seen about
+
+487
+00:39:22,281 --> 00:39:26,961
+the rules for naming variables, right, we have seen four rules about the naming variables
+
+488
+00:39:26,961 --> 00:39:31,882
+and then we have seen the naming conventions in that we have seen about this case styles
+
+489
+00:39:31,882 --> 00:39:37,762
+that is a snake case, Pascal case and Camels case, in Python generally it's always best
+
+490
+00:39:37,762 --> 00:39:43,601
+practice to use the snake case, it's general notation in programmers to use snake case
+
+491
+00:39:43,601 --> 00:39:45,922
+in case of Python, okay.
+
+492
+00:39:45,922 --> 00:39:51,242
+So regarding the next session it is a code walkthrough session and you have to practice
+
+493
+00:39:51,242 --> 00:39:56,521
+a lot in programming practice is very very important, so for you to practice we have
+
+494
+00:39:56,521 --> 00:40:02,802
+provided a lot of questions, you can practice through these questions and then coming to
+
+495
+00:40:02,802 --> 00:40:10,002
+feedback, so your feedback is very very valuable to us as I always mention, so do provide us
+
+496
+00:40:10,002 --> 00:40:15,281
+feedback, so your inputs will be considered there is a whole team who looks into your
+
+497
+00:40:15,281 --> 00:40:22,002
+inputs, if they are already planned they will be introduced, in case if they are not planned
+
+498
+00:40:22,002 --> 00:40:27,481
+we will include them, so do provide us your valuable inputs, suggestions or anything that
+
+499
+00:40:27,481 --> 00:40:33,262
+you want to convey to us, so for that you have to click on the submit feedback button,
+
+500
+00:40:33,262 --> 00:40:37,882
+so just below the video you'll find a submit feedback button, click on it and give us your
+
+501
+00:40:37,882 --> 00:40:41,841
+valuable feedback, so thank you and all the best.
+
+

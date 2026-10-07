@@ -1,0 +1,32 @@
+<section class="block block-hands" id="hands2"><div class="block-head"><span class="block-icon" aria-hidden="true">&#128187;</span><h2>Hands-on 3 &mdash; Order matters</h2></div><div class="pcard" data-label="Hands-on 3 &mdash; Order matters"><div class="slide-head"><span class="slide-title">Hands-on 3 &mdash; Order matters</span></div><div class="stage" id="stage-h2"><div class="sl-head"><span class="sl-bar" aria-hidden="true"></span><div><p class="sl-eyebrow">If - Elif - Else</p><h3 class="sl-title">Order Matters</h3></div></div>
+
+<div class="stage-step on" data-label="swap, predict, reveal">
+<p class="stage-q">Your program works. I am going to swap the two checks and change <b>nothing else</b>.</p>
+<p class="bigask">What does it print now for 25, 30, 9 and 10?</p>
+<div class="swapwrap" id="sw-rungs">
+<div>
+<pre class="swapcode">n = <i>10</i>
+
+<b>if</b> <span class="rung" data-rung="a">n % <i>10</i> == <i>0</i>:
+    <i>print</i>(<em>"Divisible by 10"</em>)</span>
+<b>elif</b> <span class="rung" data-rung="b">n % <i>5</i> == <i>0</i>:
+    <i>print</i>(<em>"Divisible by 5"</em>)</span>
+<b>else</b>:
+    <i>print</i>(<em>"Not Divisible by 10 or 5"</em>)</pre>
+</div>
+<div>
+<table class="swaprun">
+<tr><th>n</th><th>as written</th><th>after the swap</th></tr>
+<tr><td>25</td><td>Divisible by 5</td><td>Divisible by 5</td></tr>
+<tr><td>30</td><td>Divisible by 10</td><td class="bad">Divisible by 5</td></tr>
+<tr><td>10</td><td>Divisible by 10</td><td class="bad">Divisible by 5</td></tr>
+<tr><td>9</td><td>Not Divisible by 10 or 5</td><td>Not Divisible by 10 or 5</td></tr>
+</table>
+<div class="stage-ctl here"><button type="button" class="accent" data-swap="sw-rungs" data-label="Swap the two checks">Swap the two checks</button><button type="button" class="accent" data-swapout="sw-rungs" data-label="Show what it prints">Show what it prints</button></div>
+</div>
+</div>
+</div>
+
+<div class="stage-ctl"><button type="button" data-stage-prev>Back</button><button type="button" data-stage-next>Next</button><span class="ctl-count"></span></div><div class="stage-rule" aria-hidden="true"></div></div>
+
+</div></section>

@@ -1,0 +1,2062 @@
+{
+ "meta": {
+  "session": "19 - Lists",
+  "course": "Programming Foundations",
+  "one_idea": "A list keeps many values under one name, in order. You reach each value by its position, positions start at 0, and a slice stops just before its stop number.",
+  "outcomes": [
+   "Make a list with square brackets and commas, and say what print shows for it.",
+   "Use len and a position number to reach any item, and know that the last position is len minus 1.",
+   "Predict what +, += [x] and * do to a list.",
+   "Read a slice with a start, a stop and a step, and say which items it takes.",
+   "Tell an index that crashes (road_trip[6]) from a slice that does not (road_trip[4:10])."
+  ],
+  "previous": "18 - Comparing Strings & Naming Variables",
+  "slides_dir": "C:\\Lesson Plans New\\builds\\build-19-lists\\work\\slides",
+  "deck_total": 44,
+  "kept": [
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   30,
+   32,
+   42
+  ],
+  "cuts": [
+   [
+    "1-2",
+    "Welcome and title. The fixed spine cards replace them."
+   ],
+   [
+    "3-7",
+    "A recap of compound assignment, floor division and escape characters. Session 18 taught none of these. The recap card S-RECAP uses session 18's string comparisons instead."
+   ],
+   [
+    "8-9",
+    "Last session's daily challenge (the number pyramid). It belongs to that session's close."
+   ],
+   [
+    "10",
+    "The deck agenda. The spine agenda replaces it, without Mutability."
+   ],
+   [
+    "11-12",
+    "Data structures in general, and the four built in ones. One spoken line in the guide; tuples, sets and dictionaries are not taught yet."
+   ],
+   [
+    "21-22",
+    "The same program as slide 23, built up over three slides. C8 walks slide 23 one pass per press."
+   ],
+   [
+    "29, 31",
+    "The same code as slides 30 and 32 without the output. C12 asks for the output first, then shows it."
+   ],
+   [
+    "33-36",
+    "Mutability: changing an item with list_a[3] = 4, and strings refusing it. Kept for the next session, Working with Lists, so today has no changing of items."
+   ],
+   [
+    "37-38",
+    "Bullet takeaways. Replaced by the example board K1."
+   ],
+   [
+    "39-40",
+    "Next session and Practice. We do not promise the next topic by name, and Practice is a picture."
+   ],
+   [
+    "41, 43-44",
+    "Feedback and thank you. The fixed spine cards replace them."
+   ]
+  ],
+  "defects": [
+   [
+    "slides 3-7",
+    "The recap covers compound assignment, // and escape characters, which the previous session (18, Comparing Strings & Naming Variables) does not teach.",
+    "The recap S-RECAP uses session 18's string comparisons."
+   ],
+   [
+    "slides 37-38",
+    "The eyebrow says Conditional Statements on the Lists takeaways.",
+    "Not used. K1 replaces them."
+   ],
+   [
+    "recording, 25:03",
+    "The instructor says \"list A plus equal to I\". Written that way, list_a += i raises TypeError: 'int' object is not iterable.",
+    "Task 2 (T2) makes the room create exactly this bug and see the error."
+   ]
+  ],
+  "notes": [
+   "The room is 50 to 60 first-year students on laptops. Laptops stay shut until task 1, except for the classroom quiz.",
+   "One world through the session: a Road Trip playlist of six film songs. The hook, task 1, the slice walker and the exit all use the same six songs in the same order.",
+   "The six songs, in order: Chuttamalle, Hukum, Illuminati, Naatu Naatu, Kaavaalaa, Kesariya. The hook adds a seventh, Kissik.",
+   "Nothing before the title card may say list or playlist on screen. The playlist screen is a real Spotify layout with its Playlist label left off.",
+   "No item of a list is changed in this session (no list_a[2] = 4). That is the next session.",
+   "The bar to beat is Plans/DSA/Module 3 - Stacks & Queues/01 - Introduction to Stacks/: a simulation the room drives, and a machine that refuses a wrong move."
+  ],
+  "topics": [
+   "lists",
+   "strings",
+   "for-loops"
+  ]
+ },
+ "build_contract": [
+  "One self-contained HTML file. It opens offline from a USB stick and makes no network request.",
+  "It opens in presenter view. There is no sidebar, top bar or button the instructor has to use.",
+  "Right arrow or the clicker is one press. Left arrow goes back one press. F goes full screen, A shows all the cards, and End shows the whole card at once. The instructor guide tells the instructor these keys, so they must work.",
+  "Every card is its own screen, in the order of this spec. Press 1 is what shows when the card opens.",
+  "Every card's outer element carries data-spec=\"<card id>\" and data-presses=\"<number of presses>\". The review script reads both.",
+  "No link to any other file. The students' handout and the instructor guide are separate files, and a link from this file is how a class finds the answers."
+ ],
+ "rules": [
+  "No autoplay. Nothing moves on a timer. One press, one move, with a caption that says what just happened.",
+  "Commit, then reveal. Where a card asks a question, the answer shows only on the press after the room has answered.",
+  "Wrong answers stay private. No names, no per-student results on screen. Hands are counted out loud, never shown.",
+  "The topic is named once. Nothing before the title card says today's topic, not a heading, not a caption, not a file name on a code card.",
+  "Words are exact. Words in quotation marks, and every line under Exact words, are final. The rest of a press describes what happens, in your own design. If an exact line does not fit, ask for a new one; do not rewrite it.",
+  "Code is exact. Copy code and outputs from the JSON, never retype them. Every output here came from running the program.",
+  "Simple English. Short sentences, everyday words. No em-dashes anywhere, the page title included.",
+  "Every card moves. A card that introduces an idea steps; a static card is a picture of a lecture."
+ ],
+ "beats": [
+  {
+   "name": "Welcome",
+   "kind": "concept",
+   "mins": 1,
+   "start": 0,
+   "cards": [
+    {
+     "id": "S-WELCOME",
+     "title": "Welcome",
+     "source": "spine:welcome",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap",
+   "kind": "concept",
+   "mins": 1,
+   "start": 1,
+   "cards": [
+    {
+     "id": "S-RECAP-CARD",
+     "title": "Recap card",
+     "source": "spine:recap_card",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap sort: True or False",
+   "kind": "quiz",
+   "mins": 3,
+   "start": 2,
+   "cards": [
+    {
+     "id": "S-RECAP",
+     "title": "Recap: True or False",
+     "source": "spine:recap",
+     "purpose": "Pull back how Python compares two strings: letter by letter, by Unicode number.",
+     "heading": "True or False?",
+     "show": [
+      "Say True or False before the chip moves.",
+      "Prints True",
+      "Prints False"
+     ],
+     "presses": [
+      {
+       "screen": "Two bins, <q>Prints True</q> and <q>Prints False</q>, and five chips waiting in a tray, each an expression.",
+       "say": "Read chip 1 out loud. Everyone says True or False at once.",
+       "room": "Say True or False."
+      },
+      {
+       "screen": "Chip 1 (<q>\"a\" > \"A\"</q>) flies into <q>Prints True</q> and its why line shows: <q>Small a is 97 and capital A is 65, so a is bigger.</q>",
+       "say": "Read the why line. Then read the next chip out loud.",
+       "room": "Say the next one before the press."
+      },
+      {
+       "screen": "Chip 2 (<q>\"98\" <= \"123\"</q>) flies into <q>Prints False</q> and its why line shows: <q>Python checks the first letters: 9 comes after 1.</q>",
+       "say": "Read the why line. Then read the next chip out loud.",
+       "room": "Say the next one before the press."
+      },
+      {
+       "screen": "Chip 3 (<q>\"BAD\" >= \"BAT\"</q>) flies into <q>Prints False</q> and its why line shows: <q>B and A are the same. Then D comes before T.</q>",
+       "say": "Read the why line. Then read the next chip out loud.",
+       "room": "Say the next one before the press."
+      },
+      {
+       "screen": "Chip 4 (<q>\"9\" > \"5\"</q>) flies into <q>Prints True</q> and its why line shows: <q>9 comes after 5, so it is bigger.</q>",
+       "say": "Read the why line. Then read the next chip out loud.",
+       "room": "Say the next one before the press."
+      },
+      {
+       "screen": "Chip 5 (<q>\"Apple\" < \"apple\"</q>) flies into <q>Prints True</q> and its why line shows: <q>Capital A is 65, small a is 97.</q>",
+       "say": "Read the why line. Then read the next chip out loud.",
+       "room": "Say the next one before the press."
+      }
+     ],
+     "code": [
+      {
+       "file": "chip1",
+       "src": "print(\"a\" > \"A\")",
+       "output": "True"
+      },
+      {
+       "file": "chip2",
+       "src": "print(\"98\" <= \"123\")",
+       "output": "False"
+      },
+      {
+       "file": "chip3",
+       "src": "print(\"BAD\" >= \"BAT\")",
+       "output": "False"
+      },
+      {
+       "file": "chip4",
+       "src": "print(\"9\" > \"5\")",
+       "output": "True"
+      },
+      {
+       "file": "chip5",
+       "src": "print(\"Apple\" < \"apple\")",
+       "output": "True"
+      }
+     ],
+     "interaction": "Format: sort. The room says True or False out loud together before each chip moves. Nobody is counted or named.",
+     "must": [
+      "One chip moves per press. Its why line stays under the bin after it lands.",
+      "Chip 2 is the one to slow down on: most rooms say True for \"98\" <= \"123\" because 98 is less than 123 as a number."
+     ],
+     "data": {
+      "chips": [
+       {
+        "chip": "\"a\" > \"A\"",
+        "value": "True",
+        "bin": "Prints True",
+        "why": "Small a is 97 and capital A is 65, so a is bigger."
+       },
+       {
+        "chip": "\"98\" <= \"123\"",
+        "value": "False",
+        "bin": "Prints False",
+        "why": "Python checks the first letters: 9 comes after 1."
+       },
+       {
+        "chip": "\"BAD\" >= \"BAT\"",
+        "value": "False",
+        "bin": "Prints False",
+        "why": "B and A are the same. Then D comes before T."
+       },
+       {
+        "chip": "\"9\" > \"5\"",
+        "value": "True",
+        "bin": "Prints True",
+        "why": "9 comes after 5, so it is bigger."
+       },
+       {
+        "chip": "\"Apple\" < \"apple\"",
+        "value": "True",
+        "bin": "Prints True",
+        "why": "Capital A is 65, small a is 97."
+       }
+      ]
+     },
+     "play": "How the bins, the chips and the flight look.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Hook: the Road Trip playlist",
+   "kind": "hook",
+   "mins": 5,
+   "start": 5,
+   "cards": [
+    {
+     "id": "H1",
+     "title": "Seven songs, one name",
+     "source": "new",
+     "animated": "hook",
+     "purpose": "Feel why a program needs one name that holds many values in order, before any code. A Spotify playlist already is that thing.",
+     "heading": "Your Road Trip songs",
+     "show": [
+      "Road Trip",
+      "6 songs, about 21 min",
+      "So far, one variable holds one value. How would a program keep these six songs?",
+      "Spotify calls this song 1. What number should Python give it?"
+     ],
+     "presses": [
+      {
+       "screen": "A Spotify desktop screen, dark with the green accent: cover art, the title <q>Road Trip</q>, the line <q>6 songs, about 21 min</q>, a green play button, and a table with the columns #, Title, Album, time. Six rows, numbered 1 to 6, in the order in data.songs. A player bar at the bottom. Caption: <q>Your Road Trip songs on Spotify.</q>",
+       "say": "Who has made one of these?",
+       "room": "Hands up."
+      },
+      {
+       "screen": "The question appears beside the screen: <q>So far, one variable holds one value. How would a program keep these six songs?</q>",
+       "say": "Take three or four answers. Expect song1, song2 and so on. Write nothing yet.",
+       "room": "Say ideas out loud."
+      },
+      {
+       "screen": "Their answer, drawn. Out of each row slides a variable box, one per song: <q>song1 = \"Chuttamalle\"</q>, <q>song2 = \"Hukum\"</q>, <q>song3 = \"Illuminati\"</q>, <q>song4 = \"Naatu Naatu\"</q>, <q>song5 = \"Kaavaalaa\"</q>, <q>song6 = \"Kesariya\"</q>. The six boxes sit apart from each other. Caption: <q>Six songs, six separate variables.</q>",
+       "say": "This works. Now watch what the app does next."
+      },
+      {
+       "screen": "On Spotify, the app adds <q>Kissik</q> as row 7 (no menu label on screen) and the count line becomes <q>7 songs, about 24 min</q>. On our side a seventh box <q>song7 = \"Kissik\"</q> has to be made by hand. Caption: <q>One more song. The app just adds it. We need a new variable.</q>",
+       "say": "And with 50 songs?",
+       "room": "Say it: 50 variables."
+      },
+      {
+       "screen": "The app's count line glows. Caption: <q>The app knows it has 7 songs. Which line of our program knows that?</q>",
+       "say": "None of them. Seven boxes do not know they belong together.",
+       "room": "Answer: none."
+      },
+      {
+       "screen": "The turn, in one movement: the seven boxes slide together into one row of joined boxes, in the same order, under one name tag <q>road_trip</q>. The separate variable names fade. Beside the row: <q>7 songs</q>. Under each box an empty position slot. Caption: <q>One name. Seven songs, in order.</q>",
+       "say": "Same songs, same order, one name. Do not name it."
+      },
+      {
+       "screen": "The first position slot glows with a ? and the Spotify row number 1 glows beside it. Caption: <q>Spotify calls this song 1. What number should Python give it?</q>",
+       "say": "Take answers. Do not say who is right. Card C1 answers it.",
+       "room": "Guess a number."
+      }
+     ],
+     "must": [
+      "The order of the songs never changes, not even during the turn.",
+      "The turn is one movement: separate boxes becoming one joined row under one name.",
+      "The position slots stay empty on this card. Only the ? shows."
+     ],
+     "must_not": [
+      "Say list or playlist anywhere on screen before the title card, including Spotify's own Playlist label. The instructor may hear the room say it; that is the guess we want.",
+      "Animate by itself. Every change waits for a press."
+     ],
+     "data": {
+      "songs": [
+       {
+        "no": 1,
+        "title": "Chuttamalle",
+        "film": "Devara",
+        "time": "3:37"
+       },
+       {
+        "no": 2,
+        "title": "Hukum",
+        "film": "Jailer",
+        "time": "3:25"
+       },
+       {
+        "no": 3,
+        "title": "Illuminati",
+        "film": "Aavesham",
+        "time": "2:40"
+       },
+       {
+        "no": 4,
+        "title": "Naatu Naatu",
+        "film": "RRR",
+        "time": "3:35"
+       },
+       {
+        "no": 5,
+        "title": "Kaavaalaa",
+        "film": "Jailer",
+        "time": "3:10"
+       },
+       {
+        "no": 6,
+        "title": "Kesariya",
+        "film": "Brahmastra",
+        "time": "4:28"
+       }
+      ],
+      "new_song": {
+       "title": "Kissik",
+       "film": "Pushpa 2",
+       "time": "2:55"
+      },
+      "variables": [
+       "song1 = \"Chuttamalle\"",
+       "song2 = \"Hukum\"",
+       "song3 = \"Illuminati\"",
+       "song4 = \"Naatu Naatu\"",
+       "song5 = \"Kaavaalaa\"",
+       "song6 = \"Kesariya\"",
+       "song7 = \"Kissik\""
+      ],
+      "row": [
+       "Chuttamalle",
+       "Hukum",
+       "Illuminati",
+       "Naatu Naatu",
+       "Kaavaalaa",
+       "Kesariya",
+       "Kissik"
+      ]
+     },
+     "play": "The Spotify screen is yours to make real: cover art, the green, the row hover, the player bar. Film names stand in for albums. How the boxes slide out of the rows and join is yours.",
+     "press_count": 7
+    }
+   ]
+  },
+  {
+   "name": "Today's topic",
+   "kind": "concept",
+   "mins": 1,
+   "start": 10,
+   "cards": [
+    {
+     "id": "S-TITLE",
+     "title": "Title",
+     "source": "spine:title",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Agenda",
+   "kind": "concept",
+   "mins": 1,
+   "start": 11,
+   "cards": [
+    {
+     "id": "S-AGENDA",
+     "title": "Agenda",
+     "source": "spine:agenda",
+     "show": [
+      "Make a list",
+      "many values, one name",
+      "Reach one item",
+      "len and the position number",
+      "Join and repeat",
+      "+, += and *",
+      "Take a part",
+      "a slice, and the step"
+     ],
+     "presses": [
+      {
+       "screen": "Stop 1 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 2 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 3 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 4 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      }
+     ],
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Make a list: brackets, commas, a list inside a list",
+   "kind": "concept",
+   "mins": 4,
+   "start": 12,
+   "cards": [
+    {
+     "id": "C1",
+     "title": "A list: one name, an ordered row",
+     "source": [
+      13
+     ],
+     "purpose": "A list holds items in order, and every item has a position number that starts at 0. This answers the hook's question.",
+     "heading": "A list",
+     "show": [
+      "Holds many items, in order, under one name.",
+      "Positions start at 0."
+     ],
+     "presses": [
+      {
+       "screen": "Slide 13's idea on the hook's own row: the 7 road_trip songs as joined boxes, in the hook's order, with the position row under them empty. The words <q>Holds many items, in order, under one name.</q> beside it.",
+       "say": "This is the row from the hook. Python calls it a list."
+      },
+      {
+       "screen": "The position numbers drop in one by one, left to right: 0 to 6. Then <q>Positions start at 0.</q> Beside it, small: Spotify said 1, Python says 0.",
+       "say": "Who guessed 0 in the hook? Spotify starts at 1, Python starts at 0.",
+       "room": "Hands up if you said 0."
+      }
+     ],
+     "must": [
+      "The position numbers sit under the boxes, smaller than the values, so value and position never look alike.",
+      "This card uses the hook's songs, not the deck's [5, \"Six\", 2, 8.2]. C2 is the first card that shows the deck's list, so its a or 2 question stays open."
+     ],
+     "data": {
+      "row": [
+       "Chuttamalle",
+       "Hukum",
+       "Illuminati",
+       "Naatu Naatu",
+       "Kaavaalaa",
+       "Kesariya",
+       "Kissik"
+      ]
+     },
+     "play": "How the hook's row comes back. Slide 13's dashed boxes are a fine start.",
+     "press_count": 2
+    },
+    {
+     "id": "C2",
+     "title": "Make one: square brackets, commas",
+     "source": [
+      14,
+      15
+     ],
+     "purpose": "Make a list with [ ] and commas. A variable inside it is stored as its value.",
+     "heading": "Making a list",
+     "show": [
+      "Square brackets around it. A comma between items."
+     ],
+     "code": [
+      {
+       "file": "list.py",
+       "src": "a = 2\nlist_a = [5, \"Six\", a, 8.2]\nprint(type(list_a))\nprint(list_a)",
+       "output": "<class 'list'>\n[5, 'Six', 2, 8.2]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The code, with no output yet. The brackets and commas on line 2 are marked. Caption: <q>Square brackets around it. A comma between items.</q>",
+       "say": "Line 2 has a in it. What will print show there, a or 2?",
+       "room": "Say a or 2."
+      },
+      {
+       "screen": "Line 3's output: <q><class 'list'></q>.",
+       "say": "type tells us what kind of value it is."
+      },
+      {
+       "screen": "Line 4's output: <q>[5, 'Six', 2, 8.2]</q>. The 2 is marked: it was a.",
+       "say": "Python stores the value of a, not the letter."
+      }
+     ],
+     "must": [
+      "Output appears one line per press, only after the room has said a or 2."
+     ],
+     "play": "The editor card and the output panel.",
+     "press_count": 3
+    },
+    {
+     "id": "C3",
+     "title": "A list inside a list",
+     "source": [
+      16
+     ],
+     "purpose": "An item can itself be a list. It still counts as one item.",
+     "heading": "A list inside a list",
+     "code": [
+      {
+       "file": "lists.py",
+       "src": "a = 2\nlist_a = [5, \"Six\", a, 8.2]\nlist_b = [1, list_a]\nprint(list_b)",
+       "output": "[1, [5, 'Six', 2, 8.2]]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The code, no output yet. Caption: <q>What does print(list_b) show?</q>",
+       "say": "Everyone says it.",
+       "room": "Say it."
+      },
+      {
+       "screen": "The output <q>[1, [5, 'Six', 2, 8.2]]</q>. The outer brackets and the inner brackets are marked in two colours.",
+       "say": "The whole of list_a sits inside list_b. Do not count the items yet; C4 asks that."
+      }
+     ],
+     "must_not": [
+      "Say or show how many items list_b has. C4 asks the room to predict it."
+     ],
+     "play": "How a box holds a smaller row.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Reach one item: len, the position, a loop over it",
+   "kind": "concept",
+   "mins": 5,
+   "start": 16,
+   "cards": [
+    {
+     "id": "C4",
+     "title": "len counts the items",
+     "source": [
+      17
+     ],
+     "purpose": "len gives how many items a list has. A list inside a list counts as one.",
+     "heading": "How many items?",
+     "code": [
+      {
+       "file": "len.py",
+       "src": "a = 2\nlist_a = [5, \"Six\", a, 8.2]\nprint(len(list_a))",
+       "output": "4"
+      },
+      {
+       "file": "len_b.py",
+       "src": "a = 2\nlist_a = [5, \"Six\", a, 8.2]\nlist_b = [1, list_a]\nprint(len(list_b))",
+       "output": "2"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "len.py, no output. Caption: <q>What does len(list_a) give?</q>",
+       "say": "Everyone says it.",
+       "room": "Say a number."
+      },
+      {
+       "screen": "Output <q>4</q>. The four boxes count up 1, 2, 3, 4 as it lands.",
+       "say": "Four items."
+      },
+      {
+       "screen": "len_b.py from C3. Caption: <q>And len(list_b)?</q>",
+       "say": "Think about C3 first.",
+       "room": "Say a number."
+      },
+      {
+       "screen": "Output <q>2</q>. list_b drawn as two boxes; the second holds all of list_a, small, inside it.",
+       "say": "The list inside counts as one item."
+      }
+     ],
+     "play": "Layout. The two programs can share one card side by side.",
+     "press_count": 4
+    },
+    {
+     "id": "C5",
+     "title": "Reach one item by its position",
+     "source": [
+      18
+     ],
+     "purpose": "list_a[i] gives the item at position i. The first is [0], the last is [len - 1]. Index and value are different things.",
+     "heading": "Reaching one item",
+     "show": [
+      "list_a[position]"
+     ],
+     "code": [
+      {
+       "file": "index.py",
+       "src": "a = 2\nlist_a = [5, \"Six\", a, 8.2]\nprint(list_a[1])",
+       "output": "Six"
+      },
+      {
+       "file": "index.py",
+       "src": "a = 2\nlist_a = [5, \"Six\", a, 8.2]\nprint(list_a[0])",
+       "output": "5"
+      },
+      {
+       "file": "index.py",
+       "src": "a = 2\nlist_a = [5, \"Six\", a, 8.2]\nprint(list_a[3])",
+       "output": "8.2"
+      },
+      {
+       "file": "index.py",
+       "src": "a = 2\nlist_a = [5, \"Six\", a, 8.2]\nprint(list_a[len(list_a) - 1])",
+       "output": "8.2"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The four boxes with positions 0 to 3 under them. A cursor sits above the row, not on any box. Caption: <q>The second item is at position 1.</q>",
+       "say": "What will list_a[1] give?",
+       "room": "Say it."
+      },
+      {
+       "screen": "The line <q>print(list_a[1])</q> arrives at the top, the biggest text on the card. The cursor drops onto position 1 and the output shows <q>Six</q>.",
+       "say": "Ask before each one.",
+       "room": "Say the value before the press."
+      },
+      {
+       "screen": "The line <q>print(list_a[0])</q> arrives at the top, the biggest text on the card. The cursor drops onto position 0 and the output shows <q>5</q>.",
+       "say": "Ask before each one.",
+       "room": "Say the value before the press."
+      },
+      {
+       "screen": "The line <q>print(list_a[3])</q> arrives at the top, the biggest text on the card. The cursor drops onto position 3 and the output shows <q>8.2</q>.",
+       "say": "Ask before each one.",
+       "room": "Say the value before the press."
+      },
+      {
+       "screen": "The line <q>print(list_a[len(list_a) - 1])</q> arrives at the top, the biggest text on the card. The cursor drops onto position 3 and the output shows <q>8.2</q>.",
+       "say": "len(list_a) is 4, so len minus 1 is 3, the last position.",
+       "room": "Say the value before the press."
+      }
+     ],
+     "must": [
+      "The cursor points at the position number and the output shows the value: two different things, both visible.",
+      "The line being asked about is the biggest text on the card, at the top."
+     ],
+     "must_not": [
+      "Show what happens with list_a[4]. Task 1 lets the room find that out."
+     ],
+     "play": "The cursor and how it moves.",
+     "press_count": 5
+    },
+    {
+     "id": "C6",
+     "title": "A loop goes through every item",
+     "source": [
+      19
+     ],
+     "purpose": "for item in list_a takes each item in order, one per pass.",
+     "heading": "Going through every item",
+     "code": [
+      {
+       "file": "loop.py",
+       "src": "a = 2\nlist_a = [5, \"Six\", a, 8.2]\nfor item in list_a:\n    print(item)",
+       "output": "5\nSix\n2\n8.2"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The code. Caption: <q>How many lines will it print?</q>",
+       "say": "Everyone says a number.",
+       "room": "Say a number."
+      },
+      {
+       "screen": "One pass per press: the cursor moves to the next box, item takes its value, and the output adds one line.",
+       "n": 4,
+       "say": "Read the value as it prints."
+      }
+     ],
+     "must": [
+      "One item per press, left to right."
+     ],
+     "data": {
+      "output": [
+       "5",
+       "Six",
+       "2",
+       "8.2"
+      ]
+     },
+     "play": "How item is shown taking each value.",
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Task 1: predict the Road Trip lines, then run",
+   "kind": "activity",
+   "mins": 6,
+   "start": 21,
+   "cards": [
+    {
+     "id": "T1",
+     "title": "Task 1, predict then run",
+     "source": "new",
+     "handout": "Task 1",
+     "activity": 2,
+     "timer": 240,
+     "purpose": "Commit to what five lines print, then run them. The last line has no answer they have seen: there is no position 6.",
+     "heading": "Predict, then run",
+     "show": [
+      "Worksheet · Task 1",
+      "Open Task 1 on your worksheet.",
+      "Type what lines 2 to 6 print. Do not run it yet.",
+      "Then type it in the playground, run it, and compare."
+     ],
+     "code": [
+      {
+       "file": "road_trip.py",
+       "src": "road_trip = [\"Chuttamalle\", \"Hukum\", \"Illuminati\", \"Naatu Naatu\", \"Kaavaalaa\", \"Kesariya\"]\nprint(len(road_trip))\nprint(road_trip[1])\nprint(road_trip[0], road_trip[5])\nprint(road_trip[len(road_trip) - 1])\nprint(road_trip[6])",
+       "output": "6\nHukum\nChuttamalle Kesariya\nKesariya\nIndexError: list index out of range"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The steps, the program with line numbers, the six songs drawn as boxes with positions 0 to 5, and a 4 minute timer.",
+       "say": "Worksheet open. Type first, then run. Start the timer.",
+       "room": "Type predictions, then run in the playground."
+      },
+      {
+       "screen": "Line 2 is lit, the cursor shows the position it reaches, and the terminal adds <q>6</q>. Why line: <q>Six songs, so len gives 6.</q>",
+       "say": "Read the why line.",
+       "room": "Check your line."
+      },
+      {
+       "screen": "Line 3 is lit, the cursor shows the position it reaches, and the terminal adds <q>Hukum</q>. Why line: <q>Positions start at 0, so position 1 is the second song.</q>",
+       "say": "Read the why line.",
+       "room": "Check your line."
+      },
+      {
+       "screen": "Line 4 is lit, the cursor shows the position it reaches, and the terminal adds <q>Chuttamalle Kesariya</q>. Why line: <q>Position 0 is the first song and position 5 is the last.</q>",
+       "say": "Read the why line.",
+       "room": "Check your line."
+      },
+      {
+       "screen": "Line 5 is lit, the cursor shows the position it reaches, and the terminal adds <q>Kesariya</q>. Why line: <q>len is 6, so this is road_trip[5], the last song.</q>",
+       "say": "Read the why line.",
+       "room": "Check your line."
+      },
+      {
+       "screen": "Line 6 is lit, the cursor shows the position it reaches, and the terminal adds <q>IndexError: list index out of range</q>. Why line: <q>The last position is 5. There is no position 6, so Python stops with an error.</q>",
+       "say": "Who typed something else? Do not name anyone.",
+       "room": "Check your line."
+      }
+     ],
+     "answer": "line 2: 6; line 3: Hukum; line 4: Chuttamalle Kesariya; line 5: Kesariya; line 6: IndexError: list index out of range.",
+     "must": [
+      "Nothing about the output shows until the timer has ended.",
+      "On line 6 the cursor goes past the last box and finds nothing there. The error is shown exactly as Python prints it.",
+      "Lines 2 to 5 stay on screen after the error, because Python printed them first."
+     ],
+     "must_not": [
+      "Show the error message before the line 6 press."
+     ],
+     "data": {
+      "answers": {
+       "2": "6",
+       "3": "Hukum",
+       "4": "Chuttamalle Kesariya",
+       "5": "Kesariya",
+       "6": "IndexError: list index out of range"
+      },
+      "why": {
+       "2": "Six songs, so len gives 6.",
+       "3": "Positions start at 0, so position 1 is the second song.",
+       "4": "Position 0 is the first song and position 5 is the last.",
+       "5": "len is 6, so this is road_trip[5], the last song.",
+       "6": "The last position is 5. There is no position 6, so Python stops with an error."
+      }
+     },
+     "play": "The layout of steps, timer, code, boxes and terminal.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Game G1: the hostel Maggi case",
+   "kind": "activity",
+   "mins": 6,
+   "start": 27,
+   "cards": [
+    {
+     "id": "G1",
+     "title": "Who took the Maggi?",
+     "game": "detective",
+     "purpose": "Use positions, len and a loop over a list as clues, and let what each clue prints decide who is ruled out.",
+     "heading": "Who took the Maggi?",
+     "data": {
+      "setup": {
+       "case": "The last packet of Maggi vanished from the Room 204 shelf last night. Four suspects. Who took it?",
+       "suspects": [
+        {
+         "name": "Arjun",
+         "room": "201",
+         "says": "I was asleep by 10."
+        },
+        {
+         "name": "Bhavya",
+         "room": "204",
+         "says": "I was at the mess till late."
+        },
+        {
+         "name": "Charan",
+         "room": "204",
+         "says": "I was in my room all night."
+        },
+        {
+         "name": "Divya",
+         "room": "207",
+         "says": "I was in the library."
+        }
+       ],
+       "culprit": "Charan"
+      },
+      "rounds": [
+       {
+        "clue": "The gate book: the name at position 1 left the hostel at 9 pm and came back next morning.",
+        "program": "gate_book = [\"Divya\", \"Arjun\", \"Bhavya\"]\nprint(gate_book[1])",
+        "options": [
+         "Divya",
+         "Arjun",
+         "Bhavya"
+        ],
+        "answer": "Arjun",
+        "why": {
+         "Divya": "Divya is at position 0. Positions start at 0, not 1.",
+         "Bhavya": "Bhavya is at position 2. Count from 0: Divya 0, Arjun 1."
+        },
+        "because": "It prints Arjun, so Arjun is out.",
+        "rules_out": [
+         "Arjun"
+        ],
+        "steps": [
+         {
+          "caption": "It prints Arjun.",
+          "printed": "Arjun"
+         }
+        ],
+        "ask": "What does this clue print?"
+       },
+       {
+        "clue": "The library sign-in sheet: everyone the loop prints was in the library till midnight.",
+        "program": "library = [\"Divya\", \"Arjun\"]\nfor name in library:\n    print(name)",
+        "options": [
+         "Divya then Arjun",
+         "['Divya', 'Arjun']",
+         "Divya"
+        ],
+        "answer": "Divya then Arjun",
+        "why": {
+         "['Divya', 'Arjun']": "The loop prints each item on its own line, not the list.",
+         "Divya": "The loop goes through every item, not only the first."
+        },
+        "because": "It prints Divya, then Arjun, so Divya is out.",
+        "rules_out": [
+         "Divya"
+        ],
+        "steps": [
+         {
+          "caption": "It prints Divya.",
+          "printed": "Divya"
+         },
+         {
+          "caption": "It prints Arjun.",
+          "printed": "Divya\nArjun"
+         }
+        ],
+        "ask": "What does this clue print?"
+       },
+       {
+        "clue": "The mess register: the last name on it was eating at 11 pm.",
+        "program": "mess = [\"Arjun\", \"Divya\", \"Charan\", \"Bhavya\"]\nprint(mess[len(mess) - 1])",
+        "options": [
+         "Bhavya",
+         "Charan",
+         "IndexError"
+        ],
+        "answer": "Bhavya",
+        "why": {
+         "Charan": "len(mess) - 1 is 3, and position 3 is Bhavya. Charan is position 2.",
+         "IndexError": "mess[len(mess)] would crash. With - 1 it is the last position, 3."
+        },
+        "because": "It prints Bhavya, so Bhavya is out.",
+        "rules_out": [
+         "Bhavya"
+        ],
+        "steps": [
+         {
+          "caption": "It prints Bhavya.",
+          "printed": "Bhavya"
+         }
+        ],
+        "ask": "What does this clue print?"
+       },
+       {
+        "clue": "The CCTV list: whoever is at position 3 walked past the shelf.",
+        "program": "cctv = [\"Bhavya\", \"Divya\", \"Arjun\"]\nprint(cctv[3])",
+        "options": [
+         "Arjun",
+         "Nothing",
+         "IndexError"
+        ],
+        "answer": "IndexError",
+        "why": {
+         "Arjun": "Arjun is at position 2, the last one. Three names means positions 0, 1, 2.",
+         "Nothing": "Python does not stay quiet. A position that is not there stops the program with an error."
+        },
+        "because": "There is no position 3, so the clue crashes and rules nobody out.",
+        "rules_out": [
+         "nobody"
+        ],
+        "steps": [
+         {
+          "caption": "Python stops with IndexError: list index out of range. Nothing prints.",
+          "printed": "IndexError: list index out of range"
+         }
+        ],
+        "ask": "What does this clue print?"
+       }
+      ]
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "The culprit is the only suspect no clue rules out.",
+      "Option \"Divya then Arjun\" in round 2 is drawn as two lines, Divya above Arjun.",
+      "Round 4 crashes: the suspects board does not change, and the caption says nobody is ruled out. Its rules_out is [\"nobody\"], not a suspect."
+     ],
+     "play": "A hostel notice board with four suspect cards, each with the room number and what they say. The clue sheets (gate book, library sheet, mess register, CCTV list) look like real paper and screens.",
+     "presses": [
+      {
+       "screen": "Round 1 of 4. The round's setup, as in the data. The question: <q>What does this clue print?</q> Options: A <q>Divya</q>, B <q>Arjun</q>, C <q>Bhavya</q>. Nothing runs yet.",
+       "say": "What does this clue print? Hands up.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>It prints Arjun.</q>",
+       "say": "Read the line."
+      },
+      {
+       "screen": "The answer: <q>Arjun</q>. <q>It prints Arjun, so Arjun is out.</q> Then a line for every other option: <q>Divya</q> <q>Divya is at position 0. Positions start at 0, not 1.</q>; <q>Bhavya</q> <q>Bhavya is at position 2. Count from 0: Divya 0, Arjun 1.</q>.",
+       "say": "Who does that rule out?"
+      },
+      {
+       "screen": "Round 2 of 4. The round's setup, as in the data. The question: <q>What does this clue print?</q> Options: A <q>Divya then Arjun</q>, B <q>['Divya', 'Arjun']</q>, C <q>Divya</q>. Nothing runs yet.",
+       "say": "What does this clue print? Hands up.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>It prints Divya.</q>",
+       "say": "Read the line."
+      },
+      {
+       "screen": "<q>It prints Arjun.</q> In the data: printed = Divya\nArjun.",
+       "say": "Read the line."
+      },
+      {
+       "screen": "The answer: <q>Divya then Arjun</q>. <q>It prints Divya, then Arjun, so Divya is out.</q> Then a line for every other option: <q>['Divya', 'Arjun']</q> <q>The loop prints each item on its own line, not the list.</q>; <q>Divya</q> <q>The loop goes through every item, not only the first.</q>.",
+       "say": "Who does that rule out?"
+      },
+      {
+       "screen": "Round 3 of 4. The round's setup, as in the data. The question: <q>What does this clue print?</q> Options: A <q>Bhavya</q>, B <q>Charan</q>, C <q>IndexError</q>. Nothing runs yet.",
+       "say": "What does this clue print? Hands up.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>It prints Bhavya.</q>",
+       "say": "Read the line."
+      },
+      {
+       "screen": "The answer: <q>Bhavya</q>. <q>It prints Bhavya, so Bhavya is out.</q> Then a line for every other option: <q>Charan</q> <q>len(mess) - 1 is 3, and position 3 is Bhavya. Charan is position 2.</q>; <q>IndexError</q> <q>mess[len(mess)] would crash. With - 1 it is the last position, 3.</q>.",
+       "say": "Who does that rule out?"
+      },
+      {
+       "screen": "Round 4 of 4. The round's setup, as in the data. The question: <q>What does this clue print?</q> Options: A <q>Arjun</q>, B <q>Nothing</q>, C <q>IndexError</q>. Nothing runs yet.",
+       "say": "What does this clue print? Hands up.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Python stops with IndexError: list index out of range. Nothing prints.</q>",
+       "say": "Read the line."
+      },
+      {
+       "screen": "The answer: <q>IndexError</q>. <q>There is no position 3, so the clue crashes and rules nobody out.</q> Then a line for every other option: <q>Arjun</q> <q>Arjun is at position 2, the last one. Three names means positions 0, 1, 2.</q>; <q>Nothing</q> <q>Python does not stay quiet. A position that is not there stops the program with an error.</q>.",
+       "say": "Who does that rule out?"
+      },
+      {
+       "screen": "The suspect left on the board is unmasked: the data's setup.culprit.",
+       "say": "Case closed.",
+       "room": "Say the name together."
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Name the culprit before the last clue."
+     ],
+     "interaction": "A short mystery. Each clue is a program; what it prints rules suspects out. The room follows the clues to the answer.",
+     "game_def": {
+      "id": "detective",
+      "name": "Detective case",
+      "one_line": "A short mystery. Each clue is a program; what it prints rules suspects out. The room follows the clues to the answer.",
+      "how": [
+       "The case in two lines, and three or four suspects with their details on cards.",
+       "Each clue is a short program over the suspects' details.",
+       "The room votes what the clue prints. Each press runs one line; then the suspects it rules out are crossed off.",
+       "After the last clue one suspect is left."
+      ],
+      "setup": {
+       "case": "the mystery, exact, two lines at most",
+       "suspects": "the suspects and their details, as data",
+       "culprit": "who is left at the end, computed"
+      },
+      "round": {
+       "clue": "the clue's line of story, exact",
+       "program": "the code, exact",
+       "rules_out": "the suspects it crosses off"
+      },
+      "step": {
+       "printed": "what has printed so far"
+      }
+     },
+     "press_count": 14
+    }
+   ]
+  },
+  {
+   "name": "Classroom quiz on the portal",
+   "kind": "quiz",
+   "mins": 5,
+   "start": 33,
+   "cards": [
+    {
+     "id": "S-QUIZ",
+     "title": "Quiz",
+     "source": "spine:quiz",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Join, grow, repeat: +, += [i], *",
+   "kind": "concept",
+   "mins": 5,
+   "start": 38,
+   "cards": [
+    {
+     "id": "C7",
+     "title": "Join two lists with +",
+     "source": [
+      20
+     ],
+     "purpose": "+ makes one new list: all of the first, then all of the second.",
+     "heading": "Joining two lists",
+     "code": [
+      {
+       "file": "join.py",
+       "src": "list_a = [1, 2, 3]\nlist_b = [\"a\", \"b\", \"c\"]\nlist_c = list_a + list_b\nprint(list_c)",
+       "output": "[1, 2, 3, 'a', 'b', 'c']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The code. list_a and list_b drawn as two rows. Caption: <q>What will list_c be?</q>",
+       "room": "Say it.",
+       "say": "Same as strings: + joins."
+      },
+      {
+       "screen": "The two rows slide together into one: <q>[1, 2, 3, 'a', 'b', 'c']</q>.",
+       "say": "First list, then second, in order."
+      }
+     ],
+     "play": "How the rows join.",
+     "press_count": 2
+    },
+    {
+     "id": "C8",
+     "title": "Grow a list one item at a time",
+     "source": [
+      21,
+      23
+     ],
+     "purpose": "Start from [] and add with += [i]. The brackets matter: += adds a list to a list.",
+     "heading": "Adding items to a list",
+     "show": [
+      "[] is an empty list."
+     ],
+     "code": [
+      {
+       "file": "grow.py",
+       "src": "list_a = []\nprint(list_a)\nfor i in range(1, 4):\n    list_a += [i]\nprint(list_a)",
+       "output": "[]\n[1, 2, 3]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The code. list_a drawn as an empty row. Caption: <q>[] is an empty list.</q> and the question <q>What does line 5 print?</q>",
+       "say": "Everyone says it.",
+       "room": "Say the list."
+      },
+      {
+       "screen": "One step per press, following data.steps: the line runs, i takes its value, and a new box joins the end of list_a. Captions as in the data.",
+       "n": 6,
+       "say": "Point at the new box each time."
+      }
+     ],
+     "must": [
+      "A new box is added at the end; the old boxes do not move.",
+      "The two print lines show [] first and the full list last."
+     ],
+     "data": {
+      "steps": [
+       {
+        "line": 1,
+        "list_a": [],
+        "caption": "Line 1: list_a starts empty."
+       },
+       {
+        "line": 2,
+        "list_a": [],
+        "prints": "[]",
+        "caption": "Line 2 prints []."
+       },
+       {
+        "line": 4,
+        "i": 1,
+        "list_a": [
+         1
+        ],
+        "caption": "i is 1. list_a += [1] puts 1 at the end."
+       },
+       {
+        "line": 4,
+        "i": 2,
+        "list_a": [
+         1,
+         2
+        ],
+        "caption": "i is 2. list_a += [2] puts 2 at the end."
+       },
+       {
+        "line": 4,
+        "i": 3,
+        "list_a": [
+         1,
+         2,
+         3
+        ],
+        "caption": "i is 3. list_a += [3] puts 3 at the end."
+       },
+       {
+        "line": 5,
+        "list_a": [
+         1,
+         2,
+         3
+        ],
+        "prints": "[1, 2, 3]",
+        "caption": "Line 5 prints [1, 2, 3]."
+       }
+      ]
+     },
+     "play": "How a box joins the row.",
+     "press_count": 7
+    },
+    {
+     "id": "C9",
+     "title": "Repeat a list with *",
+     "source": [
+      24
+     ],
+     "purpose": "* 3 makes one list with the items three times over, in order.",
+     "heading": "Repeating a list",
+     "code": [
+      {
+       "file": "repeat.py",
+       "src": "list_a = [1, 2]\nlist_b = list_a * 3\nprint(list_b)",
+       "output": "[1, 2, 1, 2, 1, 2]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The code. Caption: <q>What will list_b be?</q>",
+       "room": "Say it.",
+       "say": "Some will say [3, 6]. Take it, do not correct it yet."
+      },
+      {
+       "screen": "The row [1, 2] copies itself three times, joined: <q>[1, 2, 1, 2, 1, 2]</q>.",
+       "say": "Not times each number. The whole list, three times."
+      }
+     ],
+     "play": "How the copies appear.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Task 2: type it, drop the brackets, run",
+   "kind": "activity",
+   "mins": 5,
+   "start": 43,
+   "cards": [
+    {
+     "id": "T2",
+     "title": "Task 2, I forgot the brackets",
+     "source": "new",
+     "handout": "Task 2",
+     "activity": 19,
+     "timer": 240,
+     "purpose": "Type a list builder, then make one change (drop the brackets) and see Python refuse it. Nothing prints at all.",
+     "heading": "Type it, change it, run it",
+     "show": [
+      "Worksheet · Task 2",
+      "Your gym plan: 5 push-ups on day 1, then 5 more every day.",
+      "Type the program. Predict, then run.",
+      "Now change line 3. Predict again, then run."
+     ],
+     "code": [
+      {
+       "file": "pushups.py",
+       "src": "pushups = []\nfor day in range(1, 6):\n    pushups += [day * 5]\nprint(pushups)",
+       "output": "[5, 10, 15, 20, 25]"
+      },
+      {
+       "file": "pushups_changed.py",
+       "src": "pushups = []\nfor day in range(1, 6):\n    pushups += day * 5\nprint(pushups)",
+       "output": "TypeError: 'int' object is not iterable"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The story line, the program, the steps and a 4 minute timer.",
+       "say": "Type it, predict, run. Then I will tell you my mistake.",
+       "room": "Type, predict on the worksheet, run."
+      },
+      {
+       "screen": "The output <q>[5, 10, 15, 20, 25]</q>.",
+       "say": "Now: I forgot the brackets on line 3. Make it pushups += day * 5. Predict, then run.",
+       "room": "Change line 3, predict, run."
+      },
+      {
+       "screen": "The changed program with line 3 marked, and the terminal: <q>TypeError: 'int' object is not iterable</q>. Above it, the empty space where the list used to print. Caption: <q>Nothing printed at all. Python stopped at line 3.</q>",
+       "say": "Let them react first. Then: += goes through what is on its right, item by item. day * 5 is one number. It has no items."
+      },
+      {
+       "screen": "Line 3 back to <q>pushups += [day * 5]</q>.",
+       "say": "Keep the brackets."
+      }
+     ],
+     "answer": "First run: [5, 10, 15, 20, 25]. After the change: TypeError: 'int' object is not iterable, and nothing prints.",
+     "must": [
+      "The change is framed as the instructor's mistake, not a trap.",
+      "The error is shown exactly as Python prints it, and the empty output above it is visible."
+     ],
+     "play": "Layout.",
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Take a part: slicing",
+   "kind": "concept",
+   "mins": 3,
+   "start": 48,
+   "cards": [
+    {
+     "id": "C10",
+     "title": "Take a part of a list",
+     "source": [
+      25,
+      26
+     ],
+     "purpose": "list_a[0:2] starts at position 0 and stops before position 2. Leave the start out and it means from the beginning. A slice is a new, smaller list.",
+     "heading": "Taking part of a list",
+     "show": [
+      "Start at the first number. Stop before the second.",
+      "No start number means start at 0."
+     ],
+     "code": [
+      {
+       "file": "slice.py",
+       "src": "list_a = [5, \"Six\", 2, 8.2]\nlist_b = list_a[0:2]\nprint(list_b)",
+       "output": "[5, 'Six']"
+      },
+      {
+       "file": "slice_short.py",
+       "src": "list_a = [5, \"Six\", 2, 8.2]\nlist_b = list_a[:2]\nprint(list_b)",
+       "output": "[5, 'Six']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The four boxes with positions. Caption: <q>list_a[0] gives one item: 5.</q>",
+       "say": "That is one item. Now I want the first two."
+      },
+      {
+       "screen": "The first two boxes get a dashed frame, with no line written yet. Caption: <q>How do we ask for these two?</q>",
+       "say": "Take answers. Someone may say list_a[0, 1].",
+       "room": "Say ideas."
+      },
+      {
+       "screen": "The line <q>list_b = list_a[0:2]</q> arrives at the top, the biggest text on the card. Under it: <q>Start at the first number. Stop before the second.</q>",
+       "say": "Stop before 2, so position 2 is not taken. What will it print?",
+       "room": "Say it."
+      },
+      {
+       "screen": "Output <q>[5, 'Six']</q>. The box at position 2 is outlined in red: the stop, not taken.",
+       "say": "A slice gives back a list."
+      },
+      {
+       "screen": "The deck's short form <q>list_a[:2]</q> appears under it with the same output, and <q>No start number means start at 0.</q>",
+       "say": "Same slice, start left out."
+      }
+     ],
+     "must": [
+      "The line is written only on press 3, after the room has tried. [:2] comes last, as the same slice.",
+      "Position 2 is visibly the wall: outlined, not taken."
+     ],
+     "play": "How the frame and the wall look.",
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "The slice walker",
+   "kind": "hook",
+   "mins": 4,
+   "start": 51,
+   "cards": [
+    {
+     "id": "E1",
+     "title": "The slice walker",
+     "source": "new",
+     "animated": "explainer",
+     "purpose": "Watch a slice happen: a cursor starts at start, takes a song, jumps by step, and stops at the stop without taking it. Every song it skips greys out and stays grey.",
+     "heading": "Follow the slice",
+     "show": [
+      "road_trip",
+      "start",
+      "stop",
+      "step",
+      "Decide what it gives before the press."
+     ],
+     "code": [
+      {
+       "file": "road_trip[1:4]",
+       "src": "print(road_trip[1:4])",
+       "output": "['Hukum', 'Illuminati', 'Naatu Naatu']"
+      },
+      {
+       "file": "road_trip[2:2]",
+       "src": "print(road_trip[2:2])",
+       "output": "[]"
+      },
+      {
+       "file": "road_trip[0:6:2]",
+       "src": "print(road_trip[0:6:2])",
+       "output": "['Chuttamalle', 'Illuminati', 'Kaavaalaa']"
+      },
+      {
+       "file": "road_trip[4:10]",
+       "src": "print(road_trip[4:10])",
+       "output": "['Kaavaalaa', 'Kesariya']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The six Road Trip songs as boxes with positions 0 to 5, three sliders under them (start, stop, step) and the expression built from them, big, at the top. An empty result row. Sliders set to the first run. Caption: <q>Decide what it gives before the press.</q>",
+       "say": "Read road_trip[1:4] out loud. Everyone decides their answer first.",
+       "room": "Commit to an answer."
+      },
+      {
+       "screen": "The instructor sets the sliders to <q>road_trip[1:4]</q>. The cursor waits above position 1. Caption: <q>Say it before the press.</q>",
+       "say": "Ask for the answer. Take three.",
+       "room": "Say it."
+      },
+      {
+       "screen": "One cursor move per press, following data.runs (road_trip[1:4]): a taken song drops into the result row; a skipped song greys out and stays grey; the stop box is a wall the cursor bumps and does not take; past the last box the slice just ends. Captions from the data.",
+       "n": 4,
+       "say": "Read the caption."
+      },
+      {
+       "screen": "The instructor sets the sliders to <q>road_trip[2:2]</q>. The cursor waits above position 2. Caption: <q>Say it before the press.</q>",
+       "say": "Ask for the answer. Take three.",
+       "room": "Say it."
+      },
+      {
+       "screen": "One cursor move per press, following data.runs (road_trip[2:2]): a taken song drops into the result row; a skipped song greys out and stays grey; the stop box is a wall the cursor bumps and does not take; past the last box the slice just ends. Captions from the data.",
+       "n": 1,
+       "say": "Read the caption."
+      },
+      {
+       "screen": "The instructor sets the sliders to <q>road_trip[0:6:2]</q>. The cursor waits above position 0. Caption: <q>The third number is the step. Jump 2 each time.</q> then <q>Say it before the press.</q>",
+       "say": "Ask for the answer. Take three.",
+       "room": "Say it."
+      },
+      {
+       "screen": "One cursor move per press, following data.runs (road_trip[0:6:2]): a taken song drops into the result row; a skipped song greys out and stays grey; the stop box is a wall the cursor bumps and does not take; past the last box the slice just ends. Captions from the data.",
+       "n": 4,
+       "say": "Read the caption."
+      },
+      {
+       "screen": "The instructor sets the sliders to <q>road_trip[4:10]</q>. The cursor waits above position 4. Caption: <q>Say it before the press.</q>",
+       "say": "Ask for the answer. Take three.",
+       "room": "Say it."
+      },
+      {
+       "screen": "One cursor move per press, following data.runs (road_trip[4:10]): a taken song drops into the result row; a skipped song greys out and stays grey; the stop box is a wall the cursor bumps and does not take; past the last box the slice just ends. Captions from the data.",
+       "n": 3,
+       "say": "Read the caption."
+      },
+      {
+       "screen": "All four results stay listed beside the row: <q>road_trip[1:4]</q> gives <q>['Hukum', 'Illuminati', 'Naatu Naatu']</q>; <q>road_trip[2:2]</q> gives <q>[]</q>; <q>road_trip[0:6:2]</q> gives <q>['Chuttamalle', 'Illuminati', 'Kaavaalaa']</q>; <q>road_trip[4:10]</q> gives <q>['Kaavaalaa', 'Kesariya']</q>.",
+       "say": "Two findings: start equal to stop gives nothing, and a slice can run past the end with no error."
+      }
+     ],
+     "answer": "road_trip[1:4] gives ['Hukum', 'Illuminati', 'Naatu Naatu']; road_trip[2:2] gives []; road_trip[0:6:2] gives ['Chuttamalle', 'Illuminati', 'Kaavaalaa']; road_trip[4:10] gives ['Kaavaalaa', 'Kesariya'].",
+     "must": [
+      "Skipped and never-reached songs grey out and stay grey until the next run starts.",
+      "The stop box is visibly not taken, every run.",
+      "Run 2 (road_trip[2:2]) has one press: the cursor meets the wall at once and the result row stays empty, shown as [].",
+      "Run 4 (road_trip[4:10]) ends past the last song with no error. Say so on screen."
+     ],
+     "must_not": [
+      "Show a free code box or a picker of other lists. It runs these four slices on this list only.",
+      "Move by itself. One cursor move per press."
+     ],
+     "data": {
+      "songs": [
+       "Chuttamalle",
+       "Hukum",
+       "Illuminati",
+       "Naatu Naatu",
+       "Kaavaalaa",
+       "Kesariya"
+      ],
+      "runs": [
+       {
+        "expr": "road_trip[1:4]",
+        "start": 1,
+        "stop": 4,
+        "step": 1,
+        "result": "['Hukum', 'Illuminati', 'Naatu Naatu']",
+        "events": [
+         {
+          "i": 1,
+          "do": "take",
+          "got": [
+           "Hukum"
+          ],
+          "caption": "Position 1: take Hukum."
+         },
+         {
+          "i": 2,
+          "do": "take",
+          "got": [
+           "Hukum",
+           "Illuminati"
+          ],
+          "caption": "Position 2: take Illuminati."
+         },
+         {
+          "i": 3,
+          "do": "take",
+          "got": [
+           "Hukum",
+           "Illuminati",
+           "Naatu Naatu"
+          ],
+          "caption": "Position 3: take Naatu Naatu."
+         },
+         {
+          "i": 4,
+          "do": "wall",
+          "got": [
+           "Hukum",
+           "Illuminati",
+           "Naatu Naatu"
+          ],
+          "caption": "Position 4 is the stop. Python stops before it."
+         }
+        ]
+       },
+       {
+        "expr": "road_trip[2:2]",
+        "start": 2,
+        "stop": 2,
+        "step": 1,
+        "result": "[]",
+        "events": [
+         {
+          "i": 2,
+          "do": "wall",
+          "got": [],
+          "caption": "Position 2 is the stop. Python stops before it."
+         }
+        ]
+       },
+       {
+        "expr": "road_trip[0:6:2]",
+        "start": 0,
+        "stop": 6,
+        "step": 2,
+        "result": "['Chuttamalle', 'Illuminati', 'Kaavaalaa']",
+        "events": [
+         {
+          "i": 0,
+          "do": "take",
+          "got": [
+           "Chuttamalle"
+          ],
+          "caption": "Position 0: take Chuttamalle. Jump 2."
+         },
+         {
+          "i": 2,
+          "do": "take",
+          "got": [
+           "Chuttamalle",
+           "Illuminati"
+          ],
+          "caption": "Position 2: take Illuminati. Jump 2."
+         },
+         {
+          "i": 4,
+          "do": "take",
+          "got": [
+           "Chuttamalle",
+           "Illuminati",
+           "Kaavaalaa"
+          ],
+          "caption": "Position 4: take Kaavaalaa. Jump 2."
+         },
+         {
+          "i": 6,
+          "do": "wall",
+          "got": [
+           "Chuttamalle",
+           "Illuminati",
+           "Kaavaalaa"
+          ],
+          "caption": "Position 6 is the stop. Python stops before it."
+         }
+        ]
+       },
+       {
+        "expr": "road_trip[4:10]",
+        "start": 4,
+        "stop": 10,
+        "step": 1,
+        "result": "['Kaavaalaa', 'Kesariya']",
+        "events": [
+         {
+          "i": 4,
+          "do": "take",
+          "got": [
+           "Kaavaalaa"
+          ],
+          "caption": "Position 4: take Kaavaalaa."
+         },
+         {
+          "i": 5,
+          "do": "take",
+          "got": [
+           "Kaavaalaa",
+           "Kesariya"
+          ],
+          "caption": "Position 5: take Kesariya."
+         },
+         {
+          "i": 6,
+          "do": "end",
+          "got": [
+           "Kaavaalaa",
+           "Kesariya"
+          ],
+          "caption": "Position 6 is past the last song. The slice just ends. No error."
+         }
+        ]
+       }
+      ]
+     },
+     "play": "How the cursor, the wall and the grey look, and how the sliders sit. The sliders may be live for the instructor between runs, as long as each run follows the data.",
+     "press_count": 18
+    }
+   ]
+  },
+  {
+   "name": "Every second one: the step",
+   "kind": "concept",
+   "mins": 2,
+   "start": 55,
+   "cards": [
+    {
+     "id": "C11",
+     "title": "The step: every third item",
+     "source": [
+      27,
+      28
+     ],
+     "purpose": "Check: use the step from the walker on a new list.",
+     "heading": "Slicing with a step",
+     "code": [
+      {
+       "file": "step.py",
+       "src": "list_a = [\"R\", \"B\", \"G\", \"O\", \"W\"]\nlist_b = list_a[0:5:3]\nprint(list_b)",
+       "output": "['R', 'O']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The five boxes R B G O W with positions 0 to 4, and the code. Caption: <q>Start 0, stop before 5, jump 3. What does it give?</q>",
+       "say": "Use the walker in your head.",
+       "room": "Say it."
+      },
+      {
+       "screen": "The cursor hops 0, then 3, then hits 6 past the end. Output <q>['R', 'O']</q>.",
+       "say": "0, then 3. 6 is past the end."
+      }
+     ],
+     "play": "Redraw it.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "list() turns a string or a range into a list",
+   "kind": "concept",
+   "mins": 2,
+   "start": 57,
+   "cards": [
+    {
+     "id": "C12",
+     "title": "Turn a string or a range into a list",
+     "source": [
+      30,
+      32
+     ],
+     "purpose": "list() takes anything you can loop over and makes a list of its items.",
+     "heading": "Making a list with list()",
+     "code": [
+      {
+       "file": "from_string.py",
+       "src": "color = \"Red\"\nlist_a = list(color)\nprint(list_a)",
+       "output": "['R', 'e', 'd']"
+      },
+      {
+       "file": "from_range.py",
+       "src": "list_a = list(range(4))\nprint(list_a)",
+       "output": "[0, 1, 2, 3]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "from_string.py. Caption: <q>What does list(\"Red\") give?</q>",
+       "room": "Say it."
+      },
+      {
+       "screen": "Output <q>['R', 'e', 'd']</q>: one letter per box.",
+       "say": "A for loop over Red gives R, e, d. So does list()."
+      },
+      {
+       "screen": "from_range.py. Caption: <q>And list(range(4))?</q>",
+       "room": "Say it.",
+       "say": "Remember where range stops."
+      },
+      {
+       "screen": "Output <q>[0, 1, 2, 3]</q>.",
+       "say": "range stops before 4."
+      }
+     ],
+     "play": "Layout.",
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Spot the error: one list or two",
+   "kind": "activity",
+   "mins": 3,
+   "start": 59,
+   "cards": [
+    {
+     "id": "A1",
+     "title": "Spot the error: one list or two",
+     "source": [
+      42
+     ],
+     "activity": 3,
+     "purpose": "+= puts the items of a list in, one by one. To put a whole list in as one item, wrap it in brackets.",
+     "heading": "Find the mistake",
+     "code": [
+      {
+       "file": "animals.py",
+       "src": "animals = ['cat', 'dog']\nwild_animals = ['Tiger', 'Fox']\nanimals += wild_animals\nprint(animals)",
+       "output": "['cat', 'dog', 'Tiger', 'Fox']"
+      },
+      {
+       "file": "animals_fixed.py",
+       "src": "animals = ['cat', 'dog']\nwild_animals = ['Tiger', 'Fox']\nanimals += [wild_animals]\nprint(animals)",
+       "output": "['cat', 'dog', ['Tiger', 'Fox']]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The code and the output it should give: <q>['cat', 'dog', ['Tiger', 'Fox']]</q>. Caption: <q>What does it really print?</q>",
+       "say": "Everyone says what it really prints.",
+       "room": "Say it."
+      },
+      {
+       "screen": "Real output <q>['cat', 'dog', 'Tiger', 'Fox']</q> under the wanted one. The two differences are marked.",
+       "say": "Tiger and Fox went in as two items."
+      },
+      {
+       "screen": "Caption: <q>Change one line so it prints the wanted output.</q>",
+       "say": "Which line? What do you add?",
+       "room": "Say the fix."
+      },
+      {
+       "screen": "Line 3 becomes <q>animals += [wild_animals]</q> and the output matches.",
+       "say": "Brackets around it: one item, a whole list. Like C3."
+      }
+     ],
+     "play": "Redraw the deck's slide.",
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Your turn: the weekday spend",
+   "kind": "hands",
+   "mins": 5,
+   "start": 62,
+   "cards": [
+    {
+     "id": "P1",
+     "title": "Your turn: the canteen week",
+     "source": "new",
+     "activity": 9,
+     "timer": 240,
+     "handout": "Task 3",
+     "purpose": "Use slices and a loop to add up part of a list, inside a real problem.",
+     "heading": "Ravi's canteen week",
+     "show": [
+      "Your turn · 5 minutes",
+      "Ravi wrote down what he spent at the canteen each day this week, Monday to Sunday.",
+      "spend = [60, 45, 80, 30, 55, 140, 110]",
+      "Print how much he spent on weekdays (Monday to Friday), then on the weekend.",
+      "Use a slice for each part and a loop to add it up.",
+      "Type both totals on your worksheet."
+     ],
+     "code": [
+      {
+       "file": "sample output",
+       "src": "",
+       "output": "Weekdays: ...\nWeekend: ..."
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The story, the list with Mon to Sun under its boxes, the steps, the output format with the totals as dots, and a 5 minute timer.",
+       "say": "Say the hint once: which positions are Monday to Friday? Start the timer.",
+       "room": "Code in the playground, type totals on the worksheet."
+      },
+      {
+       "screen": "One worked solution, written in, and its output.",
+       "say": "Show it only after the timer. Point at spend[0:5] and spend[5:7]."
+      }
+     ],
+     "answer": "Weekdays: 270, Weekend: 250.",
+     "must": [
+      "The totals are not on screen until the second press."
+     ],
+     "must_not": [
+      "Mention sum(). It has not been taught; a loop is the tool here."
+     ],
+     "data": {
+      "solution": "spend = [60, 45, 80, 30, 55, 140, 110]\nweekdays = 0\nfor amount in spend[0:5]:\n    weekdays += amount\nweekend = 0\nfor amount in spend[5:7]:\n    weekend += amount\nprint(\"Weekdays:\", weekdays)\nprint(\"Weekend:\", weekend)",
+      "days": [
+       "Mon",
+       "Tue",
+       "Wed",
+       "Thu",
+       "Fri",
+       "Sat",
+       "Sun"
+      ],
+      "spend": [
+       60,
+       45,
+       80,
+       30,
+       55,
+       140,
+       110
+      ]
+     },
+     "play": "How the week is drawn: a canteen bill, a UPI history, anything they know.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Exit: which one prints nothing",
+   "kind": "exit",
+   "mins": 4,
+   "start": 67,
+   "cards": [
+    {
+     "id": "X1",
+     "title": "Exit: which one prints no song?",
+     "source": "new",
+     "activity": 1,
+     "timer": 150,
+     "purpose": "Check the slice model landed: the stop is a wall, start past the wall gives nothing, and a slice may run past the end.",
+     "heading": "Which one prints no song?",
+     "show": [
+      "Your app plays a part of the Road Trip songs.",
+      "Which values of a and b print no song at all?"
+     ],
+     "code": [
+      {
+       "file": "play_part.py",
+       "src": "road_trip = [\"Chuttamalle\", \"Hukum\", \"Illuminati\", \"Naatu Naatu\", \"Kaavaalaa\", \"Kesariya\"]\nfor song in road_trip[a:b]:\n    print(song)"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Story line, the program with line numbers, the question, and 3 options as values: A <q>a = 1, b = 2</q>, B <q>a = 4, b = 2</q>, C <q>a = 5, b = 6</q>. A 2:30 timer.",
+       "say": "Everyone answers. Count hands for every option.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "The right option marks, and every option shows what it prints and its why line, as in data.",
+       "say": "Go through every option, not only the right one."
+      }
+     ],
+     "answer": "B, a = 4, b = 2. a = 1, b = 2: prints ['Hukum']. a = 4, b = 2: prints nothing. a = 5, b = 6: prints ['Kesariya'].",
+     "must_not": [
+      "Show any output before the second press."
+     ],
+     "data": {
+      "options": [
+       {
+        "a": 1,
+        "b": 2,
+        "prints": [
+         "Hukum"
+        ],
+        "why": "Start 1, stop before 2: one song, Hukum. Only the stop is left out, not the start."
+       },
+       {
+        "a": 4,
+        "b": 2,
+        "prints": [],
+        "why": "Start at 4 and the stop, 2, is already behind you. The slice is empty, so the loop never runs."
+       },
+       {
+        "a": 5,
+        "b": 6,
+        "prints": [
+         "Kesariya"
+        ],
+        "why": "Position 5 is Kesariya. road_trip[6] crashes, but a slice that stops at 6 is fine."
+       }
+      ],
+      "right": "B"
+     },
+     "play": "Layout. It can look like a music app's Play part button.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Key takeaways: the example board",
+   "kind": "buffer",
+   "mins": 2,
+   "start": 71,
+   "cards": [
+    {
+     "id": "K1",
+     "title": "Lists, in six examples",
+     "source": "new",
+     "purpose": "Six real lines from today, each with what it gives and the rule it shows.",
+     "heading": "Lists, in six examples",
+     "show": [
+      "Make one",
+      "Square brackets, commas between.",
+      "Count it",
+      "len gives how many items.",
+      "Reach one",
+      "Positions start at 0.",
+      "Join two",
+      "+ makes a new list. road_trip does not change.",
+      "Grow it",
+      "+= [x] adds x at the end. Keep the brackets.",
+      "Take a part",
+      "Start at 0. Stop before 2."
+     ],
+     "code": [
+      {
+       "file": "Make one",
+       "src": "road_trip = [\"Hukum\", \"Kissik\"]\nprint(road_trip)",
+       "output": "['Hukum', 'Kissik']"
+      },
+      {
+       "file": "Count it",
+       "src": "print(len(road_trip))",
+       "output": "2"
+      },
+      {
+       "file": "Reach one",
+       "src": "print(road_trip[0])",
+       "output": "Hukum"
+      },
+      {
+       "file": "Join two",
+       "src": "print(road_trip + [\"Kesariya\"])",
+       "output": "['Hukum', 'Kissik', 'Kesariya']"
+      },
+      {
+       "file": "Grow it",
+       "src": "road_trip += [\"Kaavaalaa\"]\nprint(road_trip)",
+       "output": "['Hukum', 'Kissik', 'Kaavaalaa']"
+      },
+      {
+       "file": "Take a part",
+       "src": "print(road_trip[0:2])",
+       "output": "['Hukum', 'Kissik']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Example 1 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 2 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 3 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 4 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 5 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 6 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      }
+     ],
+     "must": [
+      "All six slots are there from press 1, empty.",
+      "Examples, not a concept map.",
+      "The six examples run as one program in this order; each result is what that line prints at that point."
+     ],
+     "play": "The grid and the colour of each example.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Feedback",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 73,
+   "cards": [
+    {
+     "id": "S-FEEDBACK",
+     "title": "Feedback",
+     "source": "spine:feedback",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Thank you",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 74,
+   "cards": [
+    {
+     "id": "S-THANKYOU",
+     "title": "Thankyou",
+     "source": "spine:thankyou",
+     "press_count": 0
+    }
+   ]
+  }
+ ]
+}

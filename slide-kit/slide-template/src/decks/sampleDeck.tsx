@@ -12,6 +12,19 @@ import {
   CircuitMap,
   GateFlow,
   TrackSwitch,
+  FileTree,
+  SwapRows,
+  Terminal,
+  ThreeLanes,
+  TillRow,
+  QUEUE_FIXTURE,
+  NestedBoundary,
+  LogoWall,
+  RadialSpread,
+  PromptCard,
+  ValueTypeMap,
+  VariableTrace,
+  EvalSteps,
 } from '@/ui'
 import type { FlowchartFigureProps } from '@/ui'
 import {
@@ -159,6 +172,21 @@ export const sampleDeck: SlideDef[] = [
       'THE PAUSE BEAT. One question, hero scale, optically centred, and nothing else on the slide. No bullets, no figure, no answer: the room answers out loud and the NEXT slide responds. A compound question gets split into two of these.',
   },
   {
+    id: 'sample-question-choices',
+    section: 'Slide types',
+    label: 'Question · choices',
+    element: (
+      <QuestionSlide
+        question="A container writes a file. The container is deleted and recreated. Is the file still there?"
+        qualifier="Nothing else about the setup changes"
+        choices={['Yes', 'No']}
+        lesson="Component Gallery"
+      />
+    ),
+    notes:
+      'THE SAME PAUSE BEAT, WITH THE ANSWERS THE ROOM IS CHOOSING BETWEEN. `choices` takes two or three short strings and draws them as identical boxes under the question. It is FOR replacing the stage direction decks used to print as a bullet ("say yes or no before the next slide"), which told the room how to behave rather than showing it what it was picking. It must NOT carry a hint: the boxes are deliberately drawn the same, so never tint, tick, enlarge or order one of them to signal the answer, and never use it for more than three options. The answer is still the NEXT slide. Confusable with QuestionPointsSlide, which puts the ANSWER on the same frame as click-revealed points and is therefore the wrong type whenever the room is meant to commit first.',
+  },
+  {
     id: 'welcome',
     label: 'Welcome',
     transition: 'zoom',
@@ -221,6 +249,17 @@ export const sampleDeck: SlideDef[] = [
     ),
   },
   {
+    id: 'fig-nested-boundary',
+    label: 'NestedBoundary',
+    section: 'Concepts',
+    element: (
+      <ContentSlide kicker="Figures" title="NestedBoundary" lead="Boxes inside boxes, the innermost solid. For a claim of the shape: this is stuck inside that" lesson="Gallery">
+        <NestedBoundary className="mx-auto max-w-[840px]" />
+      </ContentSlide>
+    ),
+    notes: 'FOR: containment, and what containment traps. Docker-inside-Docker is the default. MUST NOT carry a stack of peers, which is LayerStack, or an outsider trying to get in, which is MachineBoundary. CONFUSABLE WITH SocketBridge, its pair: the same two things side by side instead of nested. Show this one, then that one.',
+  },
+  {
     id: 'what-is-api',
     label: 'What is an API',
     section: 'Concepts',
@@ -237,6 +276,36 @@ export const sampleDeck: SlideDef[] = [
           { text: 'Data usually travels as JSON', sub: 'lightweight & language-agnostic', icon: 'code' },
         ]}
       />
+    ),
+  },
+  {
+    id: 'content-split-default',
+    label: 'Content · points beside a figure (default split)',
+    section: 'Concepts',
+    notes:
+      'THE TWO-COLUMN MODE OF ContentSlide: pass BOTH `points` and children and the bullets and the figure sit side by side. This slide passes neither `split` nor `columnAlign`, so it is the historical rendering — the prose gets 1.4fr against the figure\'s 1fr (649px against 463px) and each column centres itself independently. Worst at: a figure that needs width. 463px is narrower than a `Terminal` line of any length, and `Terminal` wraps `break-words`, so it breaks an image name MID-TOKEN. Reach for `split="even"` there.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="Two columns"
+        title="Points beside a figure"
+        lead="The bullets and the figure are one idea, so they arrive together."
+        points={[
+          { text: 'The list keeps the wider column', icon: 'target' },
+          { text: 'The figure takes what is left', icon: 'bolt' },
+          { text: 'Both animate on slide entry', icon: 'arrow' },
+        ]}
+      >
+        <Terminal
+          path="C:\ecommerce"
+          lines={[
+            { text: 'docker ps', kind: 'cmd' },
+            { text: 'CONTAINER ID   STATUS', kind: 'out' },
+            { text: 'a41f9c2b       Up 2 minutes', kind: 'out' },
+          ]}
+          caption="Short lines fit the narrow column"
+        />
+      </ContentSlide>
     ),
   },
   {
@@ -760,6 +829,112 @@ export const sampleDeck: SlideDef[] = [
     ),
   },
   {
+    id: 'three-lanes',
+    label: 'Three lanes (figure)',
+    section: 'DRF',
+    notes:
+      'FOR THREE NAMED PRACTICES THAT DIFFER ONLY IN HOW FAR THEY REACH ALONG ONE CHAIN. Built for CI, Continuous Delivery and Continuous Deployment, and the contract carries no CI/CD in it: any set of terms whose relationship is CONTAINMENT along a shared sequence fits, and any set whose relationship is not containment does not. `terms` is INNERMOST FIRST and the array order IS the containment claim, so shuffling it is a content error rather than a layout one. `reaches` is the 1-based stage the automation reaches THROUGH, inclusive, and every span, dim boundary and marker in the figure derives from that one number, so no two parts of the figure can disagree about where a term stops. `approval` draws the human decision at a term\'s own boundary, which is the ONLY thing separating the two CDs in every published definition: span length alone states the difference and hides the why. Tones are ROLES (inner, middle, outer), not hexes, so a caller cannot reach a verdict hue: green, amber and red stay reserved for pass, warn and fail, and the ramp doubles as a luminance ramp so the three survive a greyscale projector. It reveals one lane per click, four beats on one frame, which is what lets one slide replace four definition slides without breaking content rule 25. Chosen from four candidates in slide-kit/cicd-reach-lab because it is the shape Atlassian, Red Hat, AWS, CircleCI, IBM and Bitrise all publish, so the room meets it again in any article they read, and because it is the only candidate that asks no lookup of the viewer. It costs height: 394px against the 425px ceiling, so it takes a slide with no points and a one-line lead. ReachBands is the same convention in 276px and stays in the lab.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="How far the robot goes"
+        title="Three lanes"
+        lead="Same chain of stages. The three terms differ only in where the automation stops"
+      >
+        <ThreeLanes
+          stages={[
+            { n: 1, label: 'FETCH', caption: 'get the code' },
+            { n: 2, label: 'TEST', caption: 'run the tests' },
+            { n: 3, label: 'BUILD', caption: 'build the image' },
+            { n: 4, label: 'PUSH', caption: 'image to the registry' },
+            { n: 5, label: 'DEPLOY', caption: 'run on the server' },
+          ]}
+          terms={[
+            { name: 'Continuous Integration', reaches: 2, then: 'You are told at once if it broke', tone: 'inner' },
+            { name: 'Continuous Delivery', reaches: 4, then: 'Ready to go live, and it waits', approval: true, tone: 'middle' },
+            { name: 'Continuous Deployment', reaches: 5, then: 'It goes live on its own', tone: 'outer' },
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'till-row',
+    label: 'Till row (figure)',
+    section: 'DRF',
+    notes:
+      'FOR ONE WAITING LINE AND A FIXED NUMBER OF WORKER SLOTS THAT TAKE FROM IT. Built for a Jenkins job, its build queue and its two executors, and the contract carries no Jenkins in it: anything where one trigger creates work, the work WAITS IN ORDER, and a counted set of workers consumes it one at a time fits. `queue` is FRONT OF THE LINE FIRST and that order IS the queue discipline, so shuffling it is a content error rather than a layout one. The number of workers is the `executors` array length and nothing else, and a slot with no `running` is drawn as an EMPTY FRAME the same size as a busy one, never as a dimmed copy: opacity reads as present but unimportant, and only a hole in the picture reads as nothing here. That is what lets a viewer count free slots at a glance, which is the count that explains why the line is or is not moving. THE FAN IS THE POINT: one connector leaves the front of the line, runs along a rail under the desks and rises into EVERY desk with its own arrowhead, because the next ticket is not promised to a particular worker, it goes to whichever frees up first. A single arrow into one desk would teach a wrong queue discipline. It reveals in five beats, six with `done`, in the order the room learns the words: the job, the trigger, the line, both desks together, the fan, the verdict. Busy and free arrive as ONE beat because a contrast cannot be revealed in halves. Chosen from three candidates in slide-kit/queue-lab because it is the only one that draws the mechanism rather than the parts, and it keeps Jenkins own panel titles so the room meets the same picture on the real dashboard. NOT FOR A SEQUENCE: a queue and a worker are not two steps in a row, and drawing them as a chain hides the only fact that matters, that the line exists because there are two slots and not four. Not for a snapshot that has to MOVE either: this draws one instant, and the run stepping from the line into a freed slot is the instructor saying so. Height is a function of the queue length, so it caps at four waiting tickets; five puts the rail past the well. The line is a column and costs 268px of width, which leaves a busy slot room for one short line of note.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="Where a build waits"
+        title="Till row"
+        lead="One line of waiting runs, and a fixed number of slots that take from the front of it"
+      >
+        <TillRow {...QUEUE_FIXTURE} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'file-tree',
+    label: 'File tree (figure)',
+    section: 'DRF',
+    notes:
+      'FOR "WHERE DOES THIS FILE GO". A slide that shows a file\'s CONTENTS never says which folder it belongs in, and "create a file called Dockerfile" is not an instruction until it does. `state` is what makes it teach: `new` is the file this slide asks them to create (brand, tagged once, on the top-level entry only), `existing` is already there from an earlier slide, `later` is named but not created yet (dashed, italic). `open` names the folder that STARTS open, and its children are drawn INSIDE a recessed well that belongs to it rather than as siblings indented by 22px. It is an accordion: every folder row with children is a real button, clicking one shuts whatever was open, there is no all-shut state, and the well reserves the tallest folder\'s height so nothing on the slide moves when the open folder changes. Use it whenever the tree runs past about six rows: session 4 shipped nine flat rows and the review read them as one list rather than as three folders. OMIT `open` and every folder renders expanded with no chevrons, which is what sessions 2 and 3 ship, so the prop is additive. It must NOT be used as a general nested list: the glyphs are a folder and a file, and the header row is a filesystem path, so pointing it at a taxonomy or a menu makes the slide claim something untrue (rule 8).',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="The starting point"
+        title="Where the new file goes"
+        lead="One folder open at a time, so the room reads three folders rather than one list."
+      >
+        <FileTree
+          root="C:\project"
+          open="backend"
+          entries={[
+            { name: 'backend', folder: true, state: 'existing' },
+            { name: 'manage.py', depth: 1, state: 'existing' },
+            { name: 'requirements.txt', depth: 1, state: 'existing', note: 'about to change' },
+            { name: 'Dockerfile', depth: 1, state: 'new' },
+            { name: '.dockerignore', depth: 1, state: 'later' },
+            { name: 'frontend', folder: true, state: 'existing' },
+            { name: 'package.json', depth: 1, state: 'existing' },
+            { name: 'vite.config.js', depth: 1, state: 'existing' },
+            { name: 'docker-compose.yml', state: 'later', note: 'the next section' },
+          ]}
+          caption="backend is open because this slide points at requirements.txt. Shut folders carry a count, not their contents."
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'swap-rows',
+    label: 'Swap rows (figure)',
+    section: 'DRF',
+    notes:
+      'FOR A COMPARISON WHERE ONE SIDE STANDS IN FOR THE OTHER. A phone\'s speed dial and a Makefile\'s targets; a Python function and a Makefile; a manual ritual and an automated one. Every row is ONE object divided internally, not two boxes with an arrow between them: the familiar side is recessed into it and the new side is raised out of it, so the pairing reads as the sentence "this stands in for that" with no glyph needed. That recessed-to-raised inversion is the argument, and therefore the constraint. It asserts a DIRECTION, so it must NOT be used for two alternatives being weighed against each other, which have none: a DataTable with identical row labels is the figure for that, and drawing peers this way claims something untrue (rule 8). `code` sets both cells of a pairing in monospace, because `make "up"` is a thing you type and reads as the name of an idea when set as prose. There is deliberately no emphasis flag; compareFigure.ts records why it was removed rather than kept and ignored. Chosen in slide-kit/comparison-lab over LedgerCompare, MirrorCards and CallerView, and that lab\'s CLAUDE.md says what each was worse at. Worst at: more than four pairings, because each row is a drawn object rather than a line of text.',
+    element: (
+      <ContentSlide
+        lesson={FOOTER}
+        kicker="One stands in for the other"
+        title="Swap rows"
+        lead="A Makefile does for your commands exactly what a function does for your code."
+      >
+        <SwapRows
+          leftLabel="A Python function"
+          rightLabel="A Makefile"
+          pairs={[
+            { from: 'make_coffee()', to: 'make "up"', code: true },
+            { from: 'Body of the function', to: 'docker compose command under the target' },
+            { from: 'Caller writes one line', to: 'Anyone running the project types one short word' },
+            { from: 'Caller never reads the body', to: 'Nobody needs to know the Docker flags' },
+          ]}
+          caption="The long thing still exists. It has stopped being anybody's problem."
+        />
+      </ContentSlide>
+    ),
+  },
+  {
     id: 'architecture',
     label: 'Architecture (only image)',
     section: 'DRF',
@@ -774,18 +949,128 @@ export const sampleDeck: SlideDef[] = [
     ),
   },
   {
+    id: 'code-output',
+    label: 'Code and its output',
+    section: 'Python figures',
+    notes:
+      'A SNIPPET AND EXACTLY WHAT IT PRINTED. Not CodeBlock (a file), not Terminal (a shell with a folder path), not SyntaxBreakdown (the shape of a construct). `location` is the code panel title and names where the code runs, per rule 31. `output` is pasted from a real run, never composed. Two panes compare; `layout="stack"` gives one wide pane for a long traceback line.',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Printing the Result">
+        <CodeOutput
+          panes={[
+            { label: 'No quotes', location: 'Code Playground · main.py', code: 'print(2 + 5)', output: '7' },
+            { label: 'Quotes', location: 'Code Playground · main.py', code: 'print("2 + 5")', output: '2 + 5' },
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'logo-wall',
+    label: 'Logo wall',
+    section: 'Python figures',
+    notes:
+      'MARKS WITH THEIR NAMES, when the marks ARE the argument: scale ("around 700 languages") or familiarity ("the companies you know run on this"). Every mark carries its name (rule 12), every src must be on disk, and if the marks are not the claim this is decoration filling space (rule 8).',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Popular Programming Languages" lead="Around ~ 700 Programming Languages">
+        <LogoWall
+          cols={4}
+          marks={[
+            { src: '/assets/tech/python.png', name: 'Python' },
+            { src: '/assets/tech/django.png', name: 'Django' },
+            { src: '/assets/tech/nodejs.png', name: 'Node.js' },
+            { src: '/assets/tech/react.png', name: 'React' },
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'radial-spread',
+    label: 'Radial spread',
+    section: 'Python figures',
+    notes:
+      'ONE THING REACHING INTO MANY PLACES. STYLE_GUIDE §8 names this the form for "reach", which a grid of cards cannot draw. Spokes draw one after another on entry (the reach is watched, not shown). Not for a sequence, not for alternatives, and not for fewer than four spokes.',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Versatile Language" lead="Has applications in almost every field.">
+        <RadialSpread
+          hub="Python"
+          hubLogo="/assets/tech/python.png"
+          spokes={[
+            { icon: 'bulb', label: 'AI/Machine Learning' },
+            { icon: 'database', label: 'Big Data' },
+            { icon: 'devices', label: 'Smart Device/IOT' },
+            { icon: 'play', label: 'Game Development' },
+            { icon: 'server', label: 'Backend Development' },
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'prompt-card',
+    label: 'Prompt card',
+    section: 'Python figures',
+    notes:
+      'TEXT THE LEARNER PASTES INTO AN AI TOOL. Not a file, not a shell, not a callout: the prompt IS the slide. `location` names where it is typed (rule 31 by analogy). [Bracketed] slots render dashed, like a placeholder part in SyntaxBreakdown. `fontSize` is the lever for a long prompt, never maxHeight.',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Quiz Generation">
+        <PromptCard prompt={"I've just completed learning about [concept]. Can you create a comprehensive quiz to test my understanding of this concept?"} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'value-type-map',
+    label: 'Value to type',
+    section: 'Python figures',
+    notes:
+      'VALUES BESIDE THEIR TYPES, when the pairing is the whole claim: 2 is an Integer and "2" is a String. Two or three rows. A fourth row is a DataTable; a value with no partner is a Chip.',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title={'2 vs 2.0 vs "2.0"'} lead="Mathematical Value vs Character">
+        <ValueTypeMap pairs={[{ value: '2', type: 'Integer' }, { value: '2.0', type: 'Float' }, { value: '"2.0"', type: 'String' }]} />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'variable-trace',
+    label: 'Variable trace',
+    section: 'Python figures',
+    notes:
+      'A PROGRAM RUN ONE LINE PER CLICK, variables drawn as boxes (the course\'s container analogy), output appended as it prints. Step 0 is the code alone. Claims exactly steps.length build steps. Every output is pasted from a real run.',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Variable Assignment">
+        <VariableTrace
+          code={'a = 1\nprint(a)\na = 2\nprint(a)'}
+          steps={[
+            { line: 1, boxes: [{ name: 'a', value: '1' }], output: [] },
+            { line: 2, boxes: [{ name: 'a', value: '1' }], output: ['1'] },
+            { line: 3, boxes: [{ name: 'a', value: '2' }], output: ['1'] },
+            { line: 4, boxes: [{ name: 'a', value: '2' }], output: ['1', '2'] },
+          ]}
+        />
+      </ContentSlide>
+    ),
+  },
+  {
+    id: 'eval-steps',
+    label: 'Evaluation steps',
+    section: 'Python figures',
+    notes:
+      'ONE EXPRESSION REWRITTEN DOWN TO ITS VALUE, one operation per line, the value set apart. For order-of-operations teaching. Not a run (CodeOutput), not a trace (VariableTrace), not a procedure (StepList).',
+    element: (
+      <ContentSlide lesson={FOOTER} kicker="Python figures" title="Approach - 1">
+        <EvalSteps steps={['5 * 2 + 3 * 4', '10 + 12', '22']} />
+      </ContentSlide>
+    ),
+  },
+  {
     id: 'quiz-time',
     label: 'Quiz time',
     section: 'Wrap-up',
     transition: 'zoom',
     notes:
-      'THE ANNOUNCEMENT FRAME, AND THE ONLY QUIZ FRAME A DECK HAS. It carries no question by design: questions are delivered by an external quiz component, so this hands over to it. QuizSlide was retired for exactly this reason and sync-kit.mjs deletes it from any session that still has it. Rule 18: every deck carries a quiz frame, and a lone one sits immediately before the takeaways.',
-    element: (
-      <QuizTimeSlide
-        lesson={FOOTER}
-        subtitle="Four questions on serializers, views and status codes."
-      />
-    ),
+      'THE ANNOUNCEMENT FRAME, AND THE ONLY QUIZ FRAME A DECK HAS. It carries no question by design: questions are delivered by an external quiz component, so this hands over to it. QuizSlide was retired for exactly this reason and sync-kit.mjs deletes it from any session that still has it. Rule 18: every deck carries a quiz frame, and a lone one sits immediately before the takeaways. Content rule 28: the frame says "Quiz Time!" and nothing else, so no subtitle is passed here. Because the questions live in the external tool and not on the slide, any subtitle naming what the quiz covers previews the questions and answers some of them. It is also the one frame in the deck with nothing to read, which is what moves the room off the screen and onto the tool. QuizTimeSlideProps still declares an optional subtitle so every delivered session keeps compiling; do not use it.',
+    element: <QuizTimeSlide lesson={FOOTER} />,
   },
   {
     id: 'takeaways',
@@ -928,7 +1213,7 @@ export const sampleDeck: SlideDef[] = [
     label: 'CodeBlock: trace features',
     section: 'Panels',
     notes:
-      "FOR: the kit's one code box when it teaches: `filename=\"Python\" chip={false}` (content rule 26, the language once), `rows` so a run of consecutive code slides keeps one box height, `lines` for a trace (now, ran, dead, warn, error, mark), `loop` for the loop-back arrow and `labels` for per-line annotations. Every row is pinned to one height only when these are used, so other decks' panels are unchanged. Built for PF 14 \"For Loop\".",
+      "FOR: the kit's one code box when it teaches: `filename=\"Python\" chip={false}` (content rule 31, the language once), `rows` so a run of consecutive code slides keeps one box height, `lines` for a trace (now, ran, dead, warn, error, mark), `loop` for the loop-back arrow and `labels` for per-line annotations. Every row is pinned to one height only when these are used, so other decks' panels are unchanged. Built for PF 14 \"For Loop\".",
     element: (
       <GallerySlideBase lesson={FOOTER}>
         <GalleryZonedFrame kicker="Panels" title="CodeBlock, traced" lead="One code box, with line states, a loop arrow and labels" mode="top" wide>

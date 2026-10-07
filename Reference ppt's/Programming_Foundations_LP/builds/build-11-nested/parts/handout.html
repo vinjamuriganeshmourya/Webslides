@@ -1,0 +1,42 @@
+<div id="handout-view">
+<h1 class="g-h1">Student worksheet</h1>
+<div class="h-actions">
+<button type="button" id="get-worksheet">Download the worksheet &mdash; HTML</button>
+<button type="button" class="ghost" id="print-handout">Save as PDF</button>
+<span>The <b>HTML</b> is the one students use: they type into it, it saves as they go, and it
+has a button that copies their answers for submitting. The <b>PDF</b> is the same three tasks
+laid out for A4, for review.</span>
+</div>
+<span id="ws-src" hidden data-b64="{{WORKSHEET_B64}}"></span>
+
+<div class="sheet">
+<div class="sh-band"><span class="t">Nested Conditional Statements</span><span class="s">CCBP 4.0 &middot; Session 11</span><span class="p">page 1 of 3</span></div>
+<div class="sh-name"><span>Name</span><span>Roll no.</span></div>
+<div class="task"><div class="task-hd"><span class="badge">1</span><span class="h">Trace all four here &mdash; then run them</span></div><div class="cue"><b>Where this happens:</b> the program is on the screen. <b>Trace it here first</b> and fill in all four rows. You type it into the playground afterwards, to check whether you were right.</div><table class="w"><tr><th style="width:17%">condition_a</th><th style="width:17%">condition_b</th><th>What it prints</th></tr><tr><td class="c">True</td><td class="c">True</td><td style="height:13mm"></td></tr><tr><td class="c">True</td><td class="c">False</td><td style="height:13mm"></td></tr><tr><td class="c">False</td><td class="c">True</td><td style="height:13mm"></td></tr><tr><td class="c">False</td><td class="c">False</td><td style="height:13mm"></td></tr></table></div>
+<div class="sh-foot"><span>Name and roll number at the top &mdash; <b>this worksheet is collected at the end</b></span><b>page 1 of 3</b></div>
+</div>
+
+<div class="sheet">
+<div class="sh-band"><span class="t">Nested Conditional Statements</span><span class="s">CCBP 4.0 &middot; Session 11</span><span class="p">page 2 of 3</span></div>
+<div class="task"><div class="task-hd"><span class="badge">2</span><span class="h">Program tracing &mdash; does it do what it claims?</span></div><div class="cue">This program is meant to print the <b>greatest of three numbers</b>. Trace it and decide whether it actually does. There is a row for each of the twelve lines &mdash; fill it in only if that line runs. Write a dash <b>&mdash;</b> in any box where the name does not have a value yet.</div><pre>  1  a = int(input())
+  2  b = int(input())
+  3  c = int(input())
+  4  is_a_greatest = (a &gt; b) and (a &gt; c)
+  5  if is_a_greatest:
+  6      print(a)
+  7  else:
+  8      is_b_greatest = (b &gt; c)
+  9      if is_b_greatest:
+ 10          print(b)
+ 11      else:
+ 12          print(c)</pre><p class="tracelab">Input: <b>a = 1, b = 2, c = 9</b> &mdash; fill a row only if that line actually runs</p><table class="w tr"><tr><th style="width:8%">Line</th><th style="width:8%">a</th><th style="width:8%">b</th><th style="width:8%">c</th><th>is_a_greatest / is_b_greatest</th><th style="width:22%">Printed</th></tr><tr><td class="ln">1</td><td style="height:9mm"></td><td></td><td></td><td></td><td></td></tr><tr><td class="ln">2</td><td style="height:9mm"></td><td></td><td></td><td></td><td></td></tr><tr><td class="ln">3</td><td style="height:9mm"></td><td></td><td></td><td></td><td></td></tr><tr><td class="ln">4</td><td style="height:9mm"></td><td></td><td></td><td></td><td></td></tr><tr><td class="ln">5</td><td style="height:9mm"></td><td></td><td></td><td></td><td></td></tr><tr><td class="ln">6</td><td style="height:9mm"></td><td></td><td></td><td></td><td></td></tr><tr><td class="ln">7</td><td style="height:9mm"></td><td></td><td></td><td></td><td></td></tr><tr><td class="ln">8</td><td style="height:9mm"></td><td></td><td></td><td></td><td></td></tr><tr><td class="ln">9</td><td style="height:9mm"></td><td></td><td></td><td></td><td></td></tr><tr><td class="ln">10</td><td style="height:9mm"></td><td></td><td></td><td></td><td></td></tr><tr><td class="ln">11</td><td style="height:9mm"></td><td></td><td></td><td></td><td></td></tr><tr><td class="ln">12</td><td style="height:9mm"></td><td></td><td></td><td></td><td></td></tr></table></div>
+<div class="sh-foot"><span>Name and roll number at the top &mdash; <b>this worksheet is collected at the end</b></span><b>page 2 of 3</b></div>
+</div>
+
+<div class="sheet">
+<div class="sh-band"><span class="t">Nested Conditional Statements</span><span class="s">CCBP 4.0 &middot; Session 11</span><span class="p">page 3 of 3</span></div>
+<div class="task"><div class="task-hd"><span class="badge">3</span><span class="h">Two programs, one word of difference</span></div><p class="task-instr">Work down each table one row per line. In the middle column write whether Python <b>tested</b> that condition &mdash; <b>yes</b> or <b>no</b>, not true or false.</p><table class="w"><tr><th style="width:38%">Program P</th><th style="width:32%">Condition tested? yes / no</th><th>Printed</th></tr><tr><td class="c">1  a = 5</td><td style="height:14mm"></td><td></td></tr><tr><td class="c">2  if a &gt; 3:</td><td style="height:14mm"></td><td></td></tr><tr><td class="c">3      print("X")</td><td style="height:14mm"></td><td></td></tr><tr><td class="c">4  if a &gt; 1:</td><td style="height:14mm"></td><td></td></tr><tr><td class="c">5      print("Y")</td><td style="height:14mm"></td><td></td></tr></table><table class="w"><tr><th style="width:38%">Program Q &mdash; line 4 differs</th><th style="width:32%">Condition tested? yes / no</th><th>Printed</th></tr><tr><td class="c">1  a = 5</td><td style="height:14mm"></td><td></td></tr><tr><td class="c">2  if a &gt; 3:</td><td style="height:14mm"></td><td></td></tr><tr><td class="c">3      print("X")</td><td style="height:14mm"></td><td></td></tr><tr><td class="c">4  elif a &gt; 1:</td><td style="height:14mm"></td><td></td></tr><tr><td class="c">5      print("Y")</td><td style="height:14mm"></td><td></td></tr></table></div>
+<div class="sh-foot"><span>Name and roll number at the top &mdash; <b>this worksheet is collected at the end</b></span><b>page 3 of 3</b></div>
+</div>
+</div>
+

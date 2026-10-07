@@ -21,8 +21,23 @@ import type { Tone } from '@/design/tokens'
  * weight as the laptop on the left. Session 6's slide 20 needed all three.
  */
 
-/** The mark beside a station. Only these five PNGs exist in the asset library. */
-export type StationLogo = 'docker' | 'git' | 'python' | 'nodejs' | 'makefile'
+/**
+ * The mark beside a station. Every name here MUST have a real PNG in
+ * `slide-kit/assets/tech/`, and a matching row in `LOGO_SRC` in each variant.
+ *
+ * `github` and `jenkins` were added for Deployment session 7, whose architecture
+ * chain is Developer, GitHub, Jenkins, Docker Hub, EC2. `git` and `github` are
+ * deliberately separate: one is the tool and one is the service, and session 7
+ * names both on the same slide.
+ */
+export type StationLogo =
+  | 'docker'
+  | 'git'
+  | 'github'
+  | 'jenkins'
+  | 'python'
+  | 'nodejs'
+  | 'makefile'
 
 export interface FlowStation {
   label: ReactNode

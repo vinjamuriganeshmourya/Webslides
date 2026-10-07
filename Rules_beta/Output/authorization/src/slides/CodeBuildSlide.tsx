@@ -36,7 +36,7 @@ export function CodeBuildSlide({
 }: CodeBuildSlideProps) {
   return (
     <SlideBase variant="light" lesson={lesson} padded={false}>
-      {/* ZONED (content rule 22), pinned at the top of the body box rather than
+      {/* ZONED (content rule 32), pinned at the top of the body box rather than
           centred: the code panel is a fixed box that must not move between the
           steps of one file, and centring would shift it whenever the annotation
           beside it changed height. */}

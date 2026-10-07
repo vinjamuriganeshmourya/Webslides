@@ -43,8 +43,8 @@ import type { ConversationSlideProps } from './types'
  * THE HEIGHT BUDGET
  *
  * A one-line turn is about 56px and a two-line turn about 84px. The well runs
- * y=220..656 with a lead-less header, so six one-line turns or four two-line
- * turns. `qa.mjs` catches the overflow; the budget is here so it does not have to.
+ * y=220..656 with no lead under the header, so six one-line turns or four
+ * two-line turns; a lead costs about 50px of that, which is one turn. `qa.mjs` catches the overflow; the budget is here so it does not have to.
  */
 export function ConversationSlide({
   kicker,

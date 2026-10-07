@@ -1,0 +1,8 @@
+[debug] [vite] connecting...
+[debug] [vite] connected.
+[info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[verbose] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+[error] Access to fetch at 'http://13.202.184.214:8000/api/users/login/' from origin 'http://13.202.184.214:3000' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+[requestfailed] POST http://13.202.184.214:8000/api/users/login/ net::ERR_FAILED
+[error] Failed to load resource: net::ERR_FAILED
+[pageerror] TypeError: Failed to fetch

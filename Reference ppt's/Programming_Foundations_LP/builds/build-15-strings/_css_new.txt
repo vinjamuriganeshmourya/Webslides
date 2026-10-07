@@ -1,0 +1,230 @@
+
+/* =================== the hook: a code with a hash between every character ===
+   One moving group, `.hkcomb`. Scaling it by two about the first mark sends
+   the marks from cells 1, 2, 3, 4 to cells 1, 3, 5, 7, so the jump getting
+   longer IS the argument and the characters never move. The origin is written
+   into the transform, because transform-origin on an SVG group is not
+   honoured everywhere. */
+.hkwrap{display:flex;flex:1;min-height:0;align-items:center;justify-content:center}
+.hkfig{display:block;width:100%;height:auto;max-height:100%}
+
+/* the slots are there from press 1, drawn empty. A half blank card while the
+   instructor is still talking reads as a card that did not finish loading. */
+.hkcell .hkhit{fill:#FFFFFF}
+.hkcell .hkbox{fill:#FBFCFD;stroke:#E2E9EF;stroke-width:2;stroke-dasharray:6 5;
+  transition:fill 260ms var(--ease-out),stroke 260ms var(--ease-out)}
+.an-2 .hkcell .hkbox,.an-3 .hkcell .hkbox,.an-4 .hkcell .hkbox{
+  fill:#F4F7FA;stroke:#CFE0EC;stroke-dasharray:none}
+.hkch,.hkix{opacity:0;transition:opacity 320ms var(--ease-out),
+  fill 260ms var(--ease-out)}
+.an-2 .hkch,.an-3 .hkch,.an-4 .hkch,
+.an-2 .hkix,.an-3 .hkix,.an-4 .hkix{opacity:1}
+.hkch{font:700 38px var(--mono);fill:#2B3138}
+.hkix{font:600 20px var(--mono);fill:#8B98A5}
+.hkghp{fill:none;stroke:#DDE5EC;stroke-width:2.5;stroke-dasharray:8 7;
+  transition:opacity 260ms var(--ease-out)}
+.an-3 .hkghp,.an-4 .hkghp{opacity:0}
+/* the digits light up as the marks LAND on them, not while they are still
+   travelling. Slowed down, the early highlight reads as the answer arriving
+   before the argument does. */
+.an-4 .hkcell.hkd .hkbox{fill:#DCF0FB;stroke:var(--dk-blue);stroke-width:3;
+  transition-delay:640ms}
+.an-4 .hkcell.hkd .hkch{fill:var(--dk-blue);transition-delay:640ms}
+
+.hkcomb{opacity:0;transform-box:view-box;transform-origin:0 0;
+  transition:opacity 260ms var(--ease-out),
+             transform 900ms var(--ease-in-out)}
+.an-3 .hkcomb,.an-4 .hkcomb{opacity:1}
+.an-4 .hkcomb{transform:translate(__SHIFT__px,0) scale(2,1)}
+.hkmark{fill:var(--dk-blue)}
+.hkarc{fill:none;stroke:var(--dk-blue);stroke-width:3;stroke-dasharray:7 6}
+.hklbl{font:700 22px var(--sans);fill:var(--dk-blue);opacity:0;
+  transition:opacity 260ms var(--ease-out)}
+.an-3 .hklbl1{opacity:1}
+.an-4 .hklbl2{opacity:1}
+
+.hkres{opacity:0;transition:opacity 300ms var(--ease-out)}
+.an-3 .hkres1{opacity:1}
+.an-4 .hkres2{opacity:1}
+.hkres>rect{fill:#FFFFFF;stroke:#CFE0EC;stroke-width:2.5}
+.hkres2>rect{fill:#EAF6FC;stroke:var(--dk-blue);stroke-width:3}
+.hkyou{font:600 22px var(--sans);fill:#6B7784}
+.hkpt{font:700 34px var(--mono);fill:#2B3138}
+.hkres2 .hkpt{fill:var(--dk-blue)}
+.hkpn{font:600 17px var(--sans);fill:#8B98A5}
+
+.hkcap{opacity:0;transition:opacity 260ms var(--ease-out)}
+.hkcaps text{font:600 24px var(--sans);fill:var(--dk-text)}
+.an-1 .hkcap1,.an-2 .hkcap2,.an-3 .hkcap3,.an-4 .hkcap4{opacity:1}
+@media (prefers-reduced-motion:reduce){
+  /* the colour changes stay, the travel goes. The finding lives in the end
+     state, so the end state must still be reachable. */
+  .hkcomb{transition-duration:1ms}
+}
+@media print{
+  .hkch,.hkix,.hkcomb,.hklbl2,.hkres2,.hkcap4{opacity:1}
+  .hkcomb{transform:translate(__SHIFT__px,0) scale(2,1)}
+}
+
+/* a numbered run of instructions on a panel. It used to carry an inline
+   16px, which no projector rule can beat, so it stayed at reading size. */
+.steplist{margin:0 0 12px;padding-left:22px;font:16px/1.7 var(--sans);
+  color:var(--dk-text)}
+.steplist li{margin:0 0 8px}
+.steplist b{color:var(--dk-blue)}
+.steplist code{font:.95em var(--mono);color:var(--dk-blue)}
+body.present .steplist{font-size:clamp(14px,1.5vw,24px);
+  padding-left:clamp(20px,1.8vw,34px)}
+body.present .steplist li{margin-bottom:clamp(6px,1vh,14px)}
+
+/* ======================= worksheet task 1: three slices, written down first */
+.qlist{margin:0 0 12px;padding:0;list-style:none}
+.qlist li{margin:0 0 9px;padding:9px 14px;border-radius:9px;background:#F4F7FA;
+  border-left:4px solid var(--dk-cyan)}
+.qlist code{font:700 19px var(--mono);color:var(--dk-blue)}
+body.present .qlist code{font-size:clamp(17px,1.8vw,30px)}
+body.present .qlist li{padding:clamp(8px,1.2vh,16px) clamp(11px,1.2vw,22px)}
+
+/* one box per character with its index under it, for the cards that ask for a
+   slice. The index has to be in front of them, not counted on fingers. */
+.seqbar.ixb{align-items:flex-start}
+.seqbar.ixb .bx{flex-direction:column;height:58px;justify-content:center;
+  border-color:#CFE0EC;background:#F4F7FA}
+.seqbar.ixb .bx b{font:700 20px/1 var(--mono);color:var(--dk-text)}
+.seqbar.ixb .bx i{margin-top:3px;font:600 12px/1 var(--mono);font-style:normal;
+  color:#8B98A5}
+body.present .seqbar.ixb .bx{height:clamp(52px,5.2vw,86px)}
+body.present .seqbar.ixb .bx b{font-size:clamp(17px,1.8vw,30px)}
+body.present .seqbar.ixb .bx i{font-size:clamp(11px,1.1vw,18px)}
+
+/* ====================== the slice machine: predict, then run ================
+   Run is locked until an option is picked. That gate is the activity, and it
+   is the only thing on this card that cannot be skipped. */
+.mach{display:flex;flex-direction:column;flex:1;min-height:0;
+  justify-content:safe center}
+.mtop{display:flex;align-items:baseline;flex:none;margin:0 0 6px}
+.mvar{font:600 20px var(--mono);color:var(--dk-text)}
+.mvar em{color:#22863A;font-style:normal}
+.mlv{margin-left:auto;font:600 14px var(--sans);color:var(--dk-line)}
+.mrail{display:block;width:100%;height:auto;flex:none;max-height:30vh}
+.mcell rect{fill:#F4F7FA;stroke:#CFE0EC;stroke-width:2;
+  transition:fill 200ms var(--ease-out),stroke 200ms var(--ease-out)}
+.mcell .mch{font:700 34px var(--mono);fill:#2B3138;
+  transition:fill 200ms var(--ease-out)}
+.mcell .mix{font:600 20px var(--mono);fill:#8B98A5}
+.mcell.hit rect{fill:#DCF0FB;stroke:var(--dk-blue);stroke-width:3}
+.mcell.hit .mch{fill:var(--dk-blue)}
+.mask{flex:none;margin:6px 0 10px;font:17px var(--sans);color:var(--dk-text)}
+.mask b{font:700 19px var(--mono);color:var(--dk-blue)}
+.mopts{display:flex;flex-wrap:wrap;flex:none;margin:0}
+.mopt{flex:1 1 44%;display:flex;align-items:center;margin:0 10px 10px 0;
+  padding:9px 13px;border:2px solid #D8E2EA;border-radius:11px;background:#fff;
+  cursor:pointer;text-align:left;
+  transition:border-color 160ms var(--ease-out),
+             background-color 160ms var(--ease-out),
+             opacity 160ms var(--ease-out),transform 140ms var(--ease-out)}
+.mopt:active{transform:scale(.97)}
+.mopt .ml{flex:none;margin-right:11px;width:26px;height:26px;border-radius:8px;
+  background:#EEF3F7;color:#5A6A75;font:700 14px/26px var(--mono);
+  text-align:center}
+.mopt .mv{font:700 18px var(--mono);color:var(--dk-text)}
+.mopt.picked{border-color:var(--dk-blue);background:#EAF6FC}
+.mopt.right{border-color:#1F9D62;background:#E9F6ED}
+.mopt.right .ml{background:#1F9D62;color:#fff}
+.mopt.wrong{opacity:.5}
+.mopt[disabled]{cursor:default}
+body.present .mvar{font-size:clamp(17px,1.8vw,30px)}
+body.present .mlv{font-size:clamp(12px,1.3vw,19px)}
+body.present .mask{font-size:clamp(15px,1.6vw,26px)}
+body.present .mask b{font-size:clamp(16px,1.7vw,28px)}
+body.present .mopt .mv{font-size:clamp(16px,1.7vw,28px)}
+body.present .mopt .ml{width:clamp(24px,2.4vw,40px);height:clamp(24px,2.4vw,40px);
+  line-height:clamp(24px,2.4vw,40px);font-size:clamp(12px,1.3vw,20px)}
+body.present .mopt{padding:clamp(8px,1.2vh,16px) clamp(11px,1.2vw,22px)}
+@media (prefers-reduced-motion:reduce){
+  .mcell rect,.mcell .mch,.mopt{transition-duration:1ms}
+}
+
+/* ============== worksheet task 3: the task, then one operation per press ====
+   The two halves of the right column are laid out as columns in their own
+   right; without this they inherit a flex ROW from .p2 > div and the timer
+   sits beside the instructions. */
+.t3ask,.t3chk{flex-direction:column;flex:1;min-height:0}
+/* the output box stops growing, so both columns centre in the card */
+.tw .term{flex:none;min-height:104px;max-height:24vh}
+body.present .tw .term{min-height:clamp(96px,15vh,200px)}
+.tw .seqbar .bx{transition:opacity 220ms var(--ease-out),
+                           transform 220ms var(--ease-out)}
+/* a space you can see. The guide names the grey dot once, at line 1. */
+.seqbar .bx .sp,.varbox .vl .sp{color:#AEB8C2}
+
+/* ===================== the explainer: where does strip stop? ================
+   Three states and the third is the point. A character that is in the set and
+   sits in the middle is never reached, goes `never`, and STAYS that way after
+   the run ends. */
+.seqbar.strip{min-height:96px;align-items:flex-start}
+/* wide enough that a stop tag and a never tag on neighbouring boxes do not
+   run into each other */
+/* nine boxes have to fit the column on one line, or the tag under the last
+   one ends up under the first. Wide enough for a stop tag, narrow enough
+   that 9 of them plus their margins clear 48% of the card. */
+.seqbar.strip .bx{position:relative;overflow:visible;width:50px}
+body.present .seqbar.strip .bx{width:clamp(44px,3.4vw,60px);
+  margin-right:clamp(5px,.6vw,11px)}
+.seqbar.strip .bx i{position:absolute;left:50%;top:100%;
+  transform:translateX(-50%);margin-top:5px;white-space:nowrap;
+  font:600 11px/1 var(--sans);font-style:normal;color:#C7454E}
+.seqbar.strip .bx i.ok{color:#12633F}
+.seqbar.strip .bx.never{opacity:.34;border-style:dashed;border-color:#C7454E;
+  background:#FBF1F1}
+.seqbar.strip .bx.stop{border-color:#1F9D62;background:#E9F6ED}
+/* the output box stops growing, so the right column centres in the card the
+   way the left one does instead of towering over it */
+.sw .term{flex:none;min-height:104px;max-height:24vh}
+body.present .sw .term{min-height:clamp(96px,15vh,200px)}
+body.present .seqbar.strip{min-height:clamp(88px,11vh,150px)}
+body.present .seqbar.strip .bx i{font-size:clamp(10px,1.05vw,17px)}
+
+/* the key under the program. It is deliberately not `.wkey .sw`, because the
+   explainer's own wrapper carries the class `sw` and a two-purpose class name
+   is how a legend ends up greyed out by the walker that runs beside it. */
+.wkey .sw-k{flex:none;width:16px;height:16px;margin:0 7px 0 14px;
+  border-radius:4px;border:1px solid #D6E2EA}
+.wkey .sw-k:first-child{margin-left:0}
+.wkey .sw-k.ran{background:#EAF6FC}
+.wkey .sw-k.now{background:#CFE9F8;box-shadow:inset 3px 0 0 var(--dk-blue)}
+.wkey .sw-k.dead{background:#FBF1F1;border-style:dashed;border-color:#C7454E;
+  opacity:.5}
+body.present .wkey .sw-k{width:clamp(14px,1.4vw,22px);
+  height:clamp(14px,1.4vw,22px)}
+
+@media (prefers-reduced-motion:reduce){
+  /* the colour and the marks stay, because the finding lives in the end
+     state. Only the travel goes. */
+  .seqbar.strip .bx,.tw .seqbar .bx{transition-duration:1ms}
+  .hkcell .hkbox,.hkch,.hkix,.hkres,.hkcap,.hklbl{transition-duration:1ms}
+  .ewstep,.ewgh .ewline{transition-duration:1ms}
+}
+@media print{
+  .seqbar.strip .bx.never,.seqbar.strip .bx.stop{opacity:1}
+}
+
+/* ======================= you write the other end =========================== */
+.ew .p2>div:first-child{flex:1 1 50%}
+.ew .p2>div:last-child{flex:1 1 50%}
+/* two presses on the shared controller. .stage-step belongs to the OTHER
+   stepper, so a card that mixes the two shows press 1 for ever. */
+.ew .ewstep{display:none;flex:1;min-height:0;flex-direction:column;
+  justify-content:safe center}
+.ew.an-1 .ew1,.ew.an-2 .ew2{display:flex}
+/* the slots the room is about to fill, drawn empty from press 1 */
+.ewgh{flex:none;margin:0 0 14px;padding:14px 16px;border-radius:10px;
+  border:2px dashed #D8E2EA;background:#FBFCFD}
+.ewgh .lb{display:block;margin:0 0 10px;font:600 13px var(--sans);
+  color:#8B98A5}
+.ewgh .ewline{display:block;height:14px;margin:0 0 11px;border-radius:7px;
+  background:#EEF2F6}
+.ewgh .ewline:last-child{margin-bottom:0;width:62%}
+.ewgh .ewline:nth-child(2){width:82%}
+body.present .ewgh .lb{font-size:clamp(12px,1.3vw,19px)}
+body.present .ewgh .ewline{height:clamp(13px,1.7vh,26px)}

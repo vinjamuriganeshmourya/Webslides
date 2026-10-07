@@ -327,9 +327,29 @@ export function SlideBase({
         `lesson` is still accepted (it is part of the kit's API and `sampleDeck`
         passes it) but is no longer rendered.
       */}
+      {/*
+        THE MARK'S BAND, AND WHY IT MOVED.
+
+        The content region above ends at y=656 (720 less its 64px bottom
+        padding). The mark used to be 36px tall on 16px of padding, which put its
+        top edge at y=668 — twelve pixels of clearance, and any slide whose column
+        overran its padding landed straight on it. Two session 3 slides did: a
+        full-width `Callout` at the foot of a tall slide overlapped the mark by
+        about ten pixels.
+
+        It is now 32px on 12px of padding, so the mark occupies y 676..708 and the
+        clearance doubles to 20px, while still leaving a 4px gap above the 8px
+        brand bar at the very bottom. The mark is the slide's signature, so it
+        gives up eight pixels rather than the content giving up a line; `Callout`
+        gives up the other eight from its own vertical padding.
+
+        Do not push it lower. The logo PNG has no transparent margin of its own,
+        so its ink runs to the edge of the box and any further and it sits on the
+        brand bar.
+      */}
       {footer && (
-        <footer className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-center justify-end px-8 pb-4">
-          {footerLogo && <Logo className="h-9" onDark={dark} />}
+        <footer className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-center justify-end px-8 pb-3">
+          {footerLogo && <Logo className="h-8" onDark={dark} />}
         </footer>
       )}
       {footer && !dark && <div className="slide-footer-bar" />}

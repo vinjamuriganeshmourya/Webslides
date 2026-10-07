@@ -1,0 +1,400 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Loop Control Statements: student worksheet</title><style>
+:root{
+  --ink:#101318; --mid:#39404B; --soft:#6B7280; --rule:#D8DDE4; --fill:#F4F6F8;
+  --accent:#006DAF; --accent-soft:#E7F1FA; --cyan:#3FB5E5;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#EEF1F4;color:var(--ink);font:16px/1.6 var(--sans)}
+.ws{max-width:900px;margin:0 auto;padding:0 22px 110px;background:#fff;
+  min-height:100vh;box-shadow:0 0 0 1px var(--rule)}
+.ws-band{background:var(--accent);color:#fff;margin:0 -22px 24px;padding:22px 26px}
+.ws-band h1{margin:0;font-size:23px;letter-spacing:-.01em}
+.ws-band p{margin:5px 0 0;font-size:13.5px;opacity:.85}
+.ws-who{display:flex;flex-wrap:wrap;margin:0 0 26px}
+.ws-who label{flex:1 1 220px;margin-right:16px;font-size:13px;color:var(--soft)}
+.ws-who input{display:block;width:100%;margin-top:4px;padding:9px 11px;
+  border:1px solid var(--rule);border-radius:8px;font:15px var(--sans)}
+.task{border-left:3px solid var(--accent);padding:0 0 0 18px;margin:0 0 38px}
+.task-hd{display:flex;align-items:baseline;margin:0 0 9px}
+.badge{flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);
+  color:#fff;font:700 14px/26px var(--sans);text-align:center;margin-right:11px}
+.task-hd .h{font:700 19px var(--sans);letter-spacing:-.01em}
+.task-instr{margin:0 0 14px;font-size:15.5px;color:var(--mid)}
+.task-instr b{color:var(--ink)}
+pre{margin:0 0 16px;padding:14px 16px;background:var(--fill);border:1px solid var(--rule);
+  border-radius:9px;font:14px/1.8 var(--mono);white-space:pre;overflow-x:auto}
+pre .no{display:inline-block;width:1.8em;color:#9AA1B0}
+.fld{display:block;margin:0 0 15px}
+.fld span{display:block;font-size:13px;font-weight:650;color:var(--soft);margin-bottom:5px}
+.fld input,.fld textarea{width:100%;padding:11px 13px;border:1px solid var(--rule);
+  border-radius:8px;font:15px/1.6 var(--mono);background:#fff;color:var(--ink);resize:vertical}
+.fld input:focus,.fld textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.fld.ans input{font-weight:650;background:#FFFDF3;border-color:#E3D2A0}
+table.grid{width:100%;border-collapse:collapse;margin:0 0 16px}
+table.grid th,table.grid td{border:1px solid var(--rule);padding:8px 10px;
+  font-size:14px;text-align:left;vertical-align:middle}
+table.grid th{background:var(--fill);font-weight:650;font-size:13px}
+table.grid td.c{font:14px var(--mono);white-space:pre;background:var(--fill);
+  text-align:center;width:72px}
+table.grid input{width:100%;border:0;padding:5px 3px;font:15px var(--mono);background:transparent}
+table.grid input:focus{outline:2px solid var(--accent)}
+
+/* tapped answers. They record a decision; nothing here ever marks it. */
+.taps{display:flex;flex-wrap:wrap;margin:0 0 15px}
+.taps>span.lb{flex:none;margin-right:12px;align-self:center;font-size:13px;
+  font-weight:650;color:var(--soft)}
+.tap{flex:none;margin:0 9px 8px 0;padding:9px 18px;border-radius:999px;
+  border:2px solid var(--rule);background:#fff;color:var(--mid);
+  font:650 15px var(--sans);cursor:pointer;
+  transition:transform 140ms var(--ease-out),background-color 160ms var(--ease-out),
+             border-color 160ms var(--ease-out),color 160ms var(--ease-out)}
+.tap:active{transform:scale(.96)}
+.tap[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.binrow{display:flex;align-items:center;margin:0 0 9px}
+.binrow .q{flex:1;min-width:0;padding:9px 13px;border-radius:9px;background:var(--fill);
+  font:15px var(--mono);margin-right:12px}
+.binrow .tap{width:42px;padding:9px 0;text-align:center}
+.steps{list-style:none;margin:0 0 15px;padding:0}
+.steps li{display:flex;align-items:flex-start;margin:0 0 9px}
+.steps .tick{flex:none;width:28px;height:28px;margin-right:12px;border-radius:8px;
+  border:2px solid var(--rule);background:#fff;color:transparent;cursor:pointer;
+  font:700 16px/24px var(--sans);text-align:center;
+  transition:transform 140ms var(--ease-out),background-color 160ms var(--ease-out)}
+.steps .tick:active{transform:scale(.94)}
+.steps .tick[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.steps .tx{flex:1;min-width:0;font-size:15.5px;color:var(--mid);padding-top:2px}
+.steps .tx b{color:var(--ink)}
+.note{margin:0 0 15px;padding:12px 15px;background:var(--accent-soft);border-radius:9px;
+  font-size:15px;color:var(--mid)}
+.note b{color:var(--ink)}
+.ws-foot{margin:34px 0 0;padding-top:16px;border-top:1px solid var(--rule);
+  font-size:13px;color:var(--soft)}
+.ws-save{position:fixed;right:16px;bottom:16px;padding:8px 14px;border-radius:999px;
+  background:var(--ink);color:#fff;font-size:12px;opacity:0;transition:opacity 220ms}
+.ws-save.on{opacity:.85}
+@media (prefers-reduced-motion:reduce){ .tap,.steps .tick{transition:none} }
+@media (max-width:600px){ .ws{padding:0 15px 90px} .ws-band{margin:0 -15px 18px} }
+</style><!--wsx:start--><style>
+.wsx-bar{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;margin:18px 0 0;padding:12px 14px;border-radius:10px;background:#F4F6F8;border:1px solid #D8DDE4}
+.wsx-sub{flex:none;padding:10px 22px;border:0;border-radius:999px;background:#006DAF;color:#fff;font:700 15px ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif;cursor:pointer;transition:transform 140ms cubic-bezier(0.23,1,0.32,1)}
+.wsx-sub:active{transform:scale(.96)}
+.wsx-sub:disabled{background:#6B7280;cursor:default;transform:none}
+.wsx-out{flex:1 1 220px;font-size:14px;color:#39404B}
+.wsx-out b{color:#101318}
+.wsx-locked input,.wsx-locked select,.wsx-locked textarea{opacity:1;-webkit-text-fill-color:currentColor}
+.wsx-locked [aria-disabled=true]{cursor:default}
+input.wsx-ok,select.wsx-ok,textarea.wsx-ok{background:#E9F7EE !important;border-color:#1E9E52 !important;box-shadow:inset 0 0 0 2px #1E9E52 !important;color:#101318 !important;-webkit-text-fill-color:#101318 !important;transition:none !important}
+input.wsx-bad,select.wsx-bad,textarea.wsx-bad{background:#FDECEC !important;border-color:#D14343 !important;box-shadow:inset 0 0 0 2px #D14343 !important;color:#101318 !important;-webkit-text-fill-color:#101318 !important;transition:none !important}
+[data-tap].wsx-ok{box-shadow:0 0 0 3px #1E9E52}
+[data-tap].wsx-bad{box-shadow:0 0 0 3px #D14343}
+[data-tap].wsx-miss{box-shadow:0 0 0 3px #1E9E52;border-style:dashed}
+input[type=checkbox].wsx-ok,input[type=radio].wsx-ok{outline:3px solid #1E9E52;outline-offset:2px;box-shadow:none}
+input[type=checkbox].wsx-bad,input[type=radio].wsx-bad{outline:3px solid #D14343;outline-offset:2px;box-shadow:none}
+input[type=checkbox].wsx-miss,input[type=radio].wsx-miss{outline:3px dashed #1E9E52;outline-offset:2px}
+.wsx-ans{display:block;text-transform:none;letter-spacing:normal;margin:4px 0 0;font:600 12.5px/1.4 ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif;color:#1E7A43;white-space:normal;text-align:left}
+.wsx-ans b{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.wsx-ans.wsx-show{color:#39404B;font-weight:500}
+.wsx-fab{position:fixed;left:16px;bottom:16px;z-index:50;padding:10px 18px;border:0;border-radius:999px;background:#101318;color:#fff;font:700 14px ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(16,19,24,.25)}
+.wsx-card{position:fixed;left:16px;bottom:64px;z-index:50;width:min(380px,calc(100vw - 32px));max-height:70vh;overflow:auto;padding:14px 16px;border-radius:14px;background:#fff;border:1px solid #D8DDE4;box-shadow:0 12px 36px rgba(16,19,24,.22);font:14px/1.5 ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif;color:#101318}
+.wsx-card[hidden]{display:none}
+.wsx-card-hd{display:flex;justify-content:space-between;align-items:center;font-size:16px;margin:0 0 6px}
+.wsx-card-hd button{border:0;background:none;font-size:22px;line-height:1;cursor:pointer;color:#6B7280}
+.wsx-sum{margin:0 0 8px;color:#39404B}
+.wsx-sum small{display:block;margin-top:2px;font-size:12px;color:#5A6270}
+/* the Aptitude worksheets pin their own answered pill bottom left, where this
+   button sits; put the pill beside the button, not under it */
+body .ws-count{left:132px}
+.wsx-sub-hd{margin:14px 0 4px;font-size:12px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.04em}
+.wsx-card table{width:100%;border-collapse:collapse}
+.wsx-card td{padding:7px 4px;border-top:1px solid #EEF1F4;vertical-align:top}
+.wsx-card td:last-child{text-align:right;white-space:nowrap;font-weight:700}
+.wsx-card small{display:block;font-weight:400;color:#6B7280;font-size:12px}
+.wsx-card i{font-weight:400;color:#6B7280}
+@media (prefers-reduced-motion:reduce){.wsx-sub{transition:none}}
+@media print{.wsx-fab,.wsx-card,.wsx-bar button{display:none}}
+</style><!--wsx:end-->
+</head><body><div class="ws"><div class="ws-band"><h1>Loop Control Statements</h1><p>Programming Foundations &middot; Session 17</p></div><div class="ws-who"><label>Name<input type="text" autocomplete="off"></label><label>Roll no.<input type="text" autocomplete="off"></label></div><section class="task"><div class="task-hd"><span class="badge">1</span><span class="h">Trace it before you run it</span></div><p class="task-instr">Read the program. <b>Do not type it anywhere.</b> Fill one row each time line 4 runs: the value of <b>a</b>, the value of <b>b</b>, whether the <b>break</b> on line 5 runs, and what line 6 prints. Leave a row empty if you do not need it.</p><pre><span class="no">1</span>for a in range(2):
+<span class="no">2</span>    print(&quot;outer : &quot; + str(a))
+<span class="no">3</span>    for b in range(4):
+<span class="no">4</span>        if b == 1:
+<span class="no">5</span>            break
+<span class="no">6</span>        print(&quot; inner : &quot; + str(b))</pre><table class="grid"><tr><th>Row</th><th>a</th><th>b</th><th>Does line 5 run? (yes or no)</th><th>What line 6 prints</th></tr><tr><td class="c">1</td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td></tr><tr><td class="c">2</td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td></tr><tr><td class="c">3</td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td></tr><tr><td class="c">4</td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td></tr><tr><td class="c">5</td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td></tr><tr><td class="c">6</td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td><td><input type="text" autocomplete="off"></td></tr></table><label class="fld"><span>Everything the program prints, in order, one line each</span><textarea rows="5" spellcheck="false"></textarea></label></section><section class="task"><div class="task-hd"><span class="badge">2</span><span class="h">First word in capitals: type it, then take the break out</span></div><p class="task-instr">This program prints the first word of a sentence in capitals. Type it into the playground. <b>Every time, type what you think it prints before you press run.</b> Tick each step as you finish it.</p><pre><span class="no">1</span>sentence = input()
+<span class="no">2</span>first_word = &quot;&quot;
+<span class="no">3</span>for char in sentence:
+<span class="no">4</span>    if char == &quot; &quot;:
+<span class="no">5</span>        break
+<span class="no">6</span>    first_word = first_word + char
+<span class="no">7</span>print(first_word.upper())</pre><ul class="steps"><li><button type="button" class="tick" data-tap="t2s1" aria-pressed="false">&#10003;</button><span class="tx"><b>Step 1.</b> Type it. The input is <code>Python is fun</code></span></li><li><button type="button" class="tick" data-tap="t2s2" aria-pressed="false">&#10003;</button><span class="tx"><b>Step 2.</b> Delete lines 4 and 5, the if and the break. Same input. Predict, then run.</span></li><li><button type="button" class="tick" data-tap="t2s3" aria-pressed="false">&#10003;</button><span class="tx"><b>Step 3.</b> Put lines 4 and 5 back. Now the input is <code>Hello</code>, one word with no space. Predict, then run.</span></li></ul><label class="fld"><span>Step 1: what it prints</span><input type="text" autocomplete="off" spellcheck="false"></label><label class="fld"><span>Step 2: what you think it prints without lines 4 and 5</span><input type="text" autocomplete="off" spellcheck="false"></label><label class="fld"><span>Step 2: what it really printed</span><input type="text" autocomplete="off" spellcheck="false"></label><label class="fld"><span>Step 3: what you think it prints for Hello</span><input type="text" autocomplete="off" spellcheck="false"></label><label class="fld"><span>Step 3: what it really printed</span><input type="text" autocomplete="off" spellcheck="false"></label></section><section class="task"><div class="task-hd"><span class="badge">3</span><span class="h">pass, continue or break: predict, then run</span></div><p class="task-instr">Type this program into the playground. The input is <b>5</b>. Line 4 changes each time. <b>Type what it prints first, then run it.</b></p><pre><span class="no">1</span>n = int(input())
+<span class="no">2</span>for i in range(n):
+<span class="no">3</span>    if i == 3:
+<span class="no">4</span>        pass
+<span class="no">5</span>    print(i)</pre><label class="fld"><span>Line 4 is <code>pass</code>: what you think it prints</span><input type="text" autocomplete="off" spellcheck="false"></label><label class="fld"><span>Line 4 is <code>pass</code>: what it really printed</span><input type="text" autocomplete="off" spellcheck="false"></label><label class="fld"><span>Line 4 is <code>continue</code>: what you think it prints</span><input type="text" autocomplete="off" spellcheck="false"></label><label class="fld"><span>Line 4 is <code>continue</code>: what it really printed</span><input type="text" autocomplete="off" spellcheck="false"></label><label class="fld"><span>Line 4 is <code>break</code>: what you think it prints</span><input type="text" autocomplete="off" spellcheck="false"></label><label class="fld"><span>Line 4 is <code>break</code>: what it really printed</span><input type="text" autocomplete="off" spellcheck="false"></label><label class="fld"><span>Which one surprised you, and why?</span><input type="text" autocomplete="off" spellcheck="false"></label></section><p class="ws-foot">Your answers are saved on this laptop. Press Submit under an activity to check it.</p></div><div class="ws-save">saved</div><script>
+(function(){
+  var KEY='ws:loop-control';
+  function fields(){ return [].slice.call(
+    document.querySelectorAll('input[type=text],textarea')); }
+  function taps(){ return [].slice.call(document.querySelectorAll('[data-tap]')); }
+  var tag=document.querySelector('.ws-save'), t=null;
+  function flash(){ if(!tag) return; tag.classList.add('on');
+    clearTimeout(t); t=setTimeout(function(){ tag.classList.remove('on'); },1100); }
+  function save(){
+    try{
+      var v={}, p={};
+      fields().forEach(function(f,i){ if(f.value) v[i]=f.value; });
+      taps().forEach(function(b){ if(b.getAttribute('aria-pressed')==='true')
+        p[b.dataset.tap]=1; });
+      localStorage.setItem(KEY, JSON.stringify({v:v,p:p}));
+      flash();
+    }catch(e){}
+  }
+  try{
+    var saved=JSON.parse(localStorage.getItem(KEY)||'{}');
+    if(saved.v) fields().forEach(function(f,i){ if(saved.v[i]!=null) f.value=saved.v[i]; });
+    if(saved.p) taps().forEach(function(b){
+      if(saved.p[b.dataset.tap]) b.setAttribute('aria-pressed','true'); });
+  }catch(e){}
+  document.addEventListener('input', save);
+  document.addEventListener('click', function(e){
+    var b=e.target.closest('[data-tap]'); if(!b) return;
+    var grp=b.dataset.group;
+    if(grp){ [].forEach.call(document.querySelectorAll('[data-group="'+grp+'"]'),
+      function(x){ x.setAttribute('aria-pressed', x===b ? 'true':'false'); }); }
+    else { b.setAttribute('aria-pressed',
+      b.getAttribute('aria-pressed')==='true' ? 'false':'true'); }
+    save();
+  });
+})();
+</script><!--wsx:start--><script>window.WS_KEY={"id":"pf17","title":"PF 17 Loop Control Statements","tasks":{"1":[{"i":0,"a":["0"]},{"i":1,"a":["0"]},{"i":2,"a":["no","n"]},{"i":3,"a":["inner : 0","inner: 0","inner :0"],"cs":true},{"i":4,"a":["0"]},{"i":5,"a":["1"]},{"i":6,"a":["yes","y"]},{"i":8,"a":["1"]},{"i":9,"a":["0"]},{"i":10,"a":["no","n"]},{"i":11,"a":["inner : 0","inner: 0","inner :0"],"cs":true},{"i":12,"a":["1"]},{"i":13,"a":["1"]},{"i":14,"a":["yes","y"]},{"i":24,"a":["outer : 0 inner : 0 outer : 1 inner : 0","outer : 0, inner : 0, outer : 1, inner : 0","outer : 0,inner : 0,outer : 1,inner : 0","outer : 0inner : 0outer : 1inner : 0"],"cs":true}],"2":[{"i":3,"a":["PYTHON"],"cs":true},{"i":4,"a":["PYTHON IS FUN"],"cs":true},{"i":5,"a":["PYTHON IS FUN"],"cs":true},{"i":6,"a":["HELLO"],"cs":true},{"i":7,"a":["HELLO"],"cs":true}],"3":[{"i":0,"a":["0 1 2 3 4","0, 1, 2, 3, 4","0,1,2,3,4","01234"]},{"i":1,"a":["0 1 2 3 4","0, 1, 2, 3, 4","0,1,2,3,4","01234"]},{"i":2,"a":["0 1 2 4","0, 1, 2, 4","0,1,2,4","0124"]},{"i":3,"a":["0 1 2 4","0, 1, 2, 4","0,1,2,4","0124"]},{"i":4,"a":["0 1 2","0, 1, 2","0,1,2","012"]},{"i":5,"a":["0 1 2","0, 1, 2","0,1,2","012"]}]}};</script><script>
+/* ws-submit: a Submit button on every task, marking, and a saved score card.
+   Injected by tools/ws_submit/inject.py. Reads window.WS_KEY:
+     { id, title, tasks: { "<task no>": [ item, ... ] } }
+   An item is one point:
+     { i: 3, a: ["67"] }                    text/select: any accepted answer
+     { i: [4,5,6], a: [["7"],["8"],["9"]] }  several fields, all must be right
+     { i: [7,8,9], on: [8] }                 taps/ticks/radios: exactly these on
+     { i: 2, show: "..." }                   not marked; the model answer shows
+   Add within: ".w-col" to any item: the other unkeyed text fields inside that
+   container (a stack column, say) must be left empty for the point.
+   Text is compared ignoring case, spaces, quotes round the whole answer, commas
+   in numbers, a rupee sign and a trailing %. Add cs: true where case matters.
+   i counts the task's fields in page order: input, select, textarea, [data-tap].
+   Everything lives in localStorage, so it survives closing the laptop. */
+(function(){
+  var K = window.WS_KEY; if(!K || !K.tasks) return;
+  /* written set-ups carry a sample answer and no mark; the card says so, or its
+     total reads as a bug next to a page counter that counts every box */
+  var hasShow = Object.keys(K.tasks).some(function(no){
+    return K.tasks[no].some(function(it){ return it.show != null; }); });
+  var STORE = 'wsx:' + K.id, INDEX = 'wsx:index';
+  function load(k){ try{ return JSON.parse(localStorage.getItem(k) || 'null'); }catch(e){ return null; } }
+  function keep(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  var state = load(STORE) || { tasks: {} };
+
+  var tasks = [].slice.call(document.querySelectorAll('section.task'));
+  function fields(sec){
+    return [].slice.call(sec.querySelectorAll('input:not([type=hidden]),select,textarea,[data-tap]'));
+  }
+  function isToggle(el){
+    return el.hasAttribute('data-tap') || el.type === 'checkbox' || el.type === 'radio';
+  }
+  function isOn(el){
+    return el.hasAttribute('data-tap') ? el.getAttribute('aria-pressed') === 'true' : !!el.checked;
+  }
+  function norm(s, cs){
+    s = String(s == null ? '' : s); if(!cs) s = s.toLowerCase();
+    s = s.replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
+    s = s.replace(/₹|\brs\.?(?=\s*\d)/gi, '').replace(/\s+/g, ' ').trim();
+    if(/^(['"]).*\1$/.test(s)) s = s.slice(1, -1).trim();
+    var n = s.replace(/\s*%$/, '');
+    if(/^-?\d{1,3}(,\d{2,3})+(\.\d+)?$/.test(n)) n = n.replace(/,/g, '');  /* 1,200 and 1,00,000 */
+    if(n !== '' && !isNaN(n) && !/^-?0\d/.test(n)) return 'n:' + (+n);  /* "0912" stays text */
+    return s.replace(/\s*([,;:=+\-*\/()\[\]<>])\s*/g, '$1');
+  }
+  function textRight(el, acc, cs){
+    var v = norm(el.value, cs); if(v === '') return false;
+    return acc.some(function(a){ return norm(a, cs) === v; });
+  }
+  function shown(acc){ return acc[0]; }
+
+  function keyed(no){
+    var set = [];
+    (K.tasks[no] || []).forEach(function(it){ set = set.concat(it.i); });
+    return set;
+  }
+  function extras(it, els, f, used){
+    if(!it.within) return [];
+    var box = els[0].closest(it.within); if(!box) return [];
+    return [].slice.call(box.querySelectorAll('input[type=text],input:not([type]),textarea'))
+      .filter(function(e){ return used.indexOf(f.indexOf(e)) < 0; });
+  }
+  function grade(no){
+    var items = K.tasks[no] || [], f = fields(tasks[no - 1]), got = 0, total = 0, marks = [], used = keyed(no);
+    items.forEach(function(it){
+      var idx = [].concat(it.i), els = idx.map(function(n){ return f[n]; });
+      if(els.some(function(e){ return !e; })) return;
+      if(it.show != null){ marks.push({ els: els, show: it.show }); return; }
+      total++;
+      var ok = true, per = [];
+      if(it.on){
+        els.forEach(function(e, k){
+          var want = it.on.indexOf(idx[k]) > -1, r = isOn(e) === want;
+          per.push({ el: e, ok: r, want: want }); if(!r) ok = false;
+        });
+      } else {
+        var acc = Array.isArray(it.i) ? it.a : [it.a];
+        els.forEach(function(e, k){
+          var a = [].concat(acc[k]), r = textRight(e, a, it.cs);
+          per.push({ el: e, ok: r, answer: shown(a) }); if(!r) ok = false;
+        });
+      }
+      extras(it, els, f, used).forEach(function(e){
+        if(String(e.value).trim()){ ok = false; per.push({ el: e, ok: false, answer: '', empty: true }); }
+      });
+      if(ok) got++;
+      marks.push({ per: per, ok: ok });
+    });
+    return { got: got, total: total, marks: marks };
+  }
+
+  function note(el, html, cls){
+    var host = el.closest('td,th') || el.closest('label') || el;
+    var n = document.createElement('span');
+    n.className = 'wsx-ans ' + (cls || ''); n.innerHTML = html;
+    if(host === el) el.insertAdjacentElement('afterend', n); else host.appendChild(n);
+  }
+  function esc(s){ return String(s).replace(/[&<>]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]; }); }
+
+  function paint(no, res){
+    var sec = tasks[no - 1];
+    sec.classList.add('wsx-locked');
+    [].forEach.call(sec.querySelectorAll('.wsx-ans'), function(n){ n.remove(); });
+    fields(sec).forEach(function(e){
+      if(e.tagName === 'BUTTON') e.setAttribute('aria-disabled', 'true'); else e.disabled = true;
+    });
+    res.marks.forEach(function(m){
+      if(m.show != null){ note(m.els[m.els.length - 1], 'Sample answer: <b>' + esc(m.show) + '</b>', 'wsx-show'); return; }
+      m.per.forEach(function(p){
+        if(p.want !== undefined){
+          if(p.want) p.el.classList.add(isOn(p.el) ? 'wsx-ok' : 'wsx-miss');
+          else if(isOn(p.el)) p.el.classList.add('wsx-bad');
+          return;
+        }
+        p.el.classList.add(p.ok ? 'wsx-ok' : 'wsx-bad');
+        if(!p.ok) note(p.el, p.empty ? 'Leave this empty' : 'Answer: <b>' + esc(p.answer) + '</b>');
+      });
+    });
+    var bar = sec.querySelector('.wsx-bar'), btn = bar.querySelector('button'), out = bar.querySelector('.wsx-out');
+    btn.disabled = true; btn.textContent = 'Submitted';
+    out.innerHTML = res.total
+      ? 'Score: <b>' + res.got + ' / ' + res.total + '</b>' + (res.got === res.total ? ' &middot; all correct' : ' &middot; the right answers are marked in green')
+      : 'Done. Your instructor will go over this one in class.';
+  }
+
+  function saveIndex(){
+    var ix = load(INDEX) || {}, g = 0, t = 0, n = 0;
+    Object.keys(state.tasks).forEach(function(k){ g += state.tasks[k].got; t += state.tasks[k].total; n++; });
+    ix[K.id] = { title: K.title || document.title, got: g, total: t, done: n,
+                 of: Object.keys(K.tasks).length, at: Date.now(), url: location.pathname };
+    keep(INDEX, ix);
+  }
+
+  function blanks(no){
+    var f = fields(tasks[no - 1]), n = 0;
+    (K.tasks[no] || []).forEach(function(it){
+      if(it.show != null) return;
+      var els = [].concat(it.i).map(function(k){ return f[k]; }).filter(Boolean);
+      if(it.on ? !els.some(isOn) : els.some(function(e){ return !String(e.value).trim(); })) n++;
+    });
+    return n;
+  }
+  function submit(no){
+    var bar = tasks[no - 1].querySelector('.wsx-bar');
+    var n = blanks(no);
+    if(n && !bar.dataset.warned){
+      bar.dataset.warned = '1';
+      bar.querySelector('.wsx-out').innerHTML = '<b>' + n + (n === 1 ? ' answer is' : ' answers are') +
+        ' still empty.</b> Fill ' + (n === 1 ? 'it' : 'them') + ', or press Submit again to check anyway.';
+      return;
+    }
+    var res = grade(no);
+    state.tasks[no] = { got: res.got, total: res.total, at: Date.now() };
+    keep(STORE, state); saveIndex(); paint(no, res); renderCard();
+  }
+
+  /* a locked task ignores taps before the page's own handler sees them */
+  document.addEventListener('click', function(e){
+    var t = e.target.closest && e.target.closest('.wsx-locked [data-tap], .wsx-locked button:not(.wsx-sub)');
+    if(t){ e.stopImmediatePropagation(); e.preventDefault(); }
+  }, true);
+
+  tasks.forEach(function(sec, k){
+    var no = k + 1; if(!K.tasks[no]) return;
+    var bar = document.createElement('div'); bar.className = 'wsx-bar';
+    bar.innerHTML = '<button type="button" class="wsx-sub">Submit</button><span class="wsx-out">Check this activity when you are sure. You cannot change it after.</span>';
+    bar.querySelector('button').addEventListener('click', function(){ submit(no); });
+    sec.appendChild(bar);
+  });
+
+  /* score card */
+  var fab = document.createElement('button'); fab.type = 'button'; fab.className = 'wsx-fab'; fab.textContent = 'My scores';
+  var card = document.createElement('div'); card.className = 'wsx-card'; card.hidden = true;
+  fab.addEventListener('click', function(){ card.hidden = !card.hidden; if(!card.hidden) renderCard(); });
+  document.body.appendChild(fab); document.body.appendChild(card);
+  /* Some worksheets pin their own bar or pill along the bottom. If one sits
+     under this button, lift the button (and its card) clear of it. */
+  function clearFab(){
+    fab.style.bottom = ''; card.style.bottom = '';
+    var f = fab.getBoundingClientRect(), top = f.bottom;
+    [].forEach.call(document.body.querySelectorAll('*'), function(e){
+      if(e === fab || e === card || fab.contains(e) || card.contains(e)) return;
+      var st = getComputedStyle(e);
+      if(st.position !== 'fixed' || st.display === 'none' || st.visibility === 'hidden') return;
+      var r = e.getBoundingClientRect();
+      if(r.width && r.left < f.right && f.left < r.right && r.top < f.bottom && f.top < r.bottom)
+        top = Math.min(top, r.top);
+    });
+    if(top < f.bottom){
+      var lift = innerHeight - top + 8;
+      fab.style.bottom = lift + 'px'; card.style.bottom = (lift + 48) + 'px';
+    }
+  }
+  clearFab(); window.addEventListener('resize', clearFab);
+  function when(ms){ var d = new Date(ms); return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' }); }
+  function renderCard(){
+    if(card.hidden) return;
+    var rows = '', g = 0, t = 0;
+    tasks.forEach(function(sec, k){
+      var no = k + 1; if(!K.tasks[no]) return;
+      var h = sec.querySelector('.h,.t-title,h2,h3'), s = state.tasks[no];
+      var name = h ? h.textContent.trim() : 'Activity ' + no;
+      if(s){ g += s.got; t += s.total; }
+      rows += '<tr><td>' + no + '. ' + esc(name) + '</td><td>' +
+        (s ? (s.total ? s.got + ' / ' + s.total : 'done') + '<small>' + when(s.at) + '</small>' : '<i>not yet</i>') + '</td></tr>';
+    });
+    var ix = load(INDEX) || {}, others = '';
+    Object.keys(ix).filter(function(id){ return id !== K.id; })
+      .sort(function(a, b){ return ix[b].at - ix[a].at; })
+      .forEach(function(id){ var o = ix[id];
+        others += '<tr><td>' + esc(o.title) + '</td><td>' + (o.total ? o.got + ' / ' + o.total : '&ndash;') +
+          '<small>' + o.done + ' of ' + o.of + ' done</small></td></tr>'; });
+    card.innerHTML = '<div class="wsx-card-hd"><b>My scores</b><button type="button" aria-label="Close">&times;</button></div>' +
+      '<p class="wsx-sum">Marks on this worksheet: <b>' + g + ' / ' + t + '</b>' +
+      (hasShow ? '<small>Boxes with a sample answer are not marked, so this can be less than your answered count.</small>' : '') +
+      '</p><table>' + rows + '</table>' +
+      (others ? '<p class="wsx-sub-hd">Other worksheets on this laptop</p><table>' + others + '</table>' : '');
+    card.querySelector('.wsx-card-hd button').onclick = function(){ card.hidden = true; };
+  }
+
+  /* re-mark submitted tasks once the page has put the saved answers back */
+  function restore(){
+    Object.keys(state.tasks).forEach(function(no){ if(tasks[no - 1] && K.tasks[no]) paint(+no, grade(+no)); });
+    if(Object.keys(state.tasks).length) saveIndex();
+  }
+  if(document.readyState === 'complete') setTimeout(restore, 0);
+  else window.addEventListener('load', function(){ setTimeout(restore, 0); });
+})();
+</script><!--wsx:end-->
+</body></html>

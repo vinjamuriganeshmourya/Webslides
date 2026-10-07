@@ -1,0 +1,124 @@
+# ------------------------------------------------------------- the right side
+STORY = [
+    "Two weeks together, and Sanjay forgot.",
+    "Anjali says he never even apologised.",
+    "Sanjay says he said sorry on Tuesday.",
+]
+
+ASKS = [
+    "One of them has to be wrong.",
+    "The phone agrees with Anjali. No match.",
+    "There it is, from Tuesday. So who is lying?",
+    "Neither. Look at what he actually typed.",
+    "Five boxes side by side. That is all we can ask for.",
+    "Same first box. It just jumps two at a time.",
+]
+
+
+def rail():
+    """Two rails, and only one is ever up.
+
+    While the phone is telling the story the story IS the content of the right
+    half, so it is set large and centred. Once the boxes arrive on press 4 the
+    same three lines shrink to a strip of context above them. Nothing moves:
+    one group is hidden and the other shown.
+    """
+    big = "".join(
+        f'<text class="hkstoryB" x="{RAIL_X}" y="{130 + i * 52}">'
+        f'{html.escape(t)}</text>' for i, t in enumerate(STORY))
+    big += "".join(
+        f'<text class="hkaskB hkaskB{i}" x="{RAIL_X}" y="358">'
+        f'{html.escape(t)}</text>' for i, t in enumerate(ASKS[:3], 1))
+    small = "".join(
+        f'<text class="hkstory" x="{RAIL_X}" y="{RAIL_Y + i * RAIL_DY}">'
+        f'{html.escape(t)}</text>' for i, t in enumerate(STORY))
+    small += "".join(
+        f'<text class="hkask hkask{i}" x="{RAIL_X}" y="{ASK_Y}">'
+        f'{html.escape(t)}</text>' for i, t in enumerate(ASKS[3:], 4))
+    return (f'<g class="hkrail hkrailbig">{big}</g>'
+            f'<g class="hkrail hkrailsm">{small}</g>')
+
+
+def strip():
+    """The message opened out into one box per character, with its index. The
+    four spaces get a grey dot, because a space nobody can see is a space
+    nobody counts."""
+    cells = ""
+    for i, ch in enumerate(MSG):
+        x = cx(i) - CW / 2
+        space = ch == ' '
+        glyph = '&#183;' if space else html.escape(ch)
+        cells += (
+            f'<g class="hkcell{" hksp" if space else " hkd"}">'
+            f'<rect class="hkbox" x="{x:.0f}" y="{TOP}" width="{CW}" '
+            f'height="{CH}" rx="10"/>'
+            f'<text class="hkch" x="{cx(i)}" y="{TOP + 47}" '
+            f'text-anchor="middle">{glyph}</text>'
+            f'<text class="hkix" x="{cx(i)}" y="{IDX_Y}" '
+            f'text-anchor="middle">{i}</text>'
+            '</g>')
+    return f'<g class="hkstrip">{cells}</g>'
+
+
+def comb():
+    """The one thing that moves. Five marks and the four jumps between them,
+    drawn on cells 0 to 4 and scaled by two about the first mark."""
+    n = RUN_B - RUN_A
+    marks = "".join(
+        f'<rect class="hkmark" x="{cx(RUN_A + k) - 2.5}" y="{STEM_Y}" '
+        f'width="5" height="{STEM_H}" rx="2.5"/>' for k in range(n))
+    arcs = ""
+    for k in range(n - 1):
+        x1, x2 = cx(RUN_A + k), cx(RUN_A + k + 1)
+        arcs += (f'<path class="hkarc" d="M{x1},{ARC_Y} '
+                 f'Q{(x1 + x2) / 2:.0f},{ARC_Y + 2 * ARC_DIP} {x2},{ARC_Y}" '
+                 'vector-effect="non-scaling-stroke"/>')
+    return f'<g class="hkcomb">{marks}{arcs}</g>'
+
+
+def _pill(cls, text, note):
+    """What you get out. The wrong one vanishes when the right one arrives."""
+    return (f'<g class="{cls}">'
+            f'<rect x="{PILL_X}" y="{PILL_Y}" width="{PILL_W}" '
+            f'height="{PILL_H}" rx="14"/>'
+            f'<text class="hkpt" x="{PILL_X + PILL_W / 2:.0f}" '
+            f'y="{PILL_Y + 42}" text-anchor="middle">{html.escape(text)}</text>'
+            f'<text class="hkpn" x="{PILL_X + PILL_W + 18}" '
+            f'y="{PILL_Y + 40}">{note}</text>'
+            '</g>')
+
+
+def ghost():
+    """The empty slot, from the moment the boxes arrive. A card that is half
+    blank while the instructor talks reads as one that did not finish."""
+    return ('<g class="hkgh">'
+            f'<text class="hkyou" x="{PILL_X - 18}" y="{PILL_Y + 40}" '
+            'text-anchor="end">you get</text>'
+            f'<rect class="hkghp" x="{PILL_X}" y="{PILL_Y}" '
+            f'width="{PILL_W}" height="{PILL_H}" rx="14"/>'
+            '</g>')
+
+
+def body():
+    n = RUN_B - RUN_A
+    lbl1 = (cx(RUN_A + 1) + cx(RUN_A + 2)) / 2
+    lbl2 = (cx(JUMP_A + 2 * JUMP_S) + cx(JUMP_A + 3 * JUMP_S)) / 2
+    svg = (
+        f'<svg class="fig hkfig" viewBox="0 0 {VB_W} {VB_H}" '
+        'xmlns="http://www.w3.org/2000/svg" role="img" '
+        'aria-label="A WhatsApp chat where a search for sorry finds nothing, '
+        'and the message that says it is typed with a space between every '
+        'letter">'
+        + phone()
+        + rail()
+        + ghost()
+        + strip()
+        + comb()
+        + f'<text class="hklbl hklbl1" x="{lbl1:.0f}" y="{LBL_Y}" '
+          'text-anchor="middle">one box further</text>'
+        + f'<text class="hklbl hklbl2" x="{lbl2:.0f}" y="{LBL_Y}" '
+          'text-anchor="middle">two boxes further</text>'
+        + _pill('hkres hkres1', P.hook_run_out(), 'the spaces came too')
+        + _pill('hkres hkres2', P.hook_jump_out(), 'there it is')
+        + '</svg>')
+    return f'<div class="hkwrap">{svg}</div>'

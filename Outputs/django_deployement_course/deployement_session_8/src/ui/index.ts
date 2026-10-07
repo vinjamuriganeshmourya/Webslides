@@ -1,7 +1,16 @@
 /** Barrel export for all shared slide building blocks. */
 export { SlideBase, type SlideVariant } from './SlideBase'
 export { SlideHeader } from './SlideHeader'
+/*
+  The sentence under the heading, drawn as the FIRST thing in the content well.
+  Reach for it in a new slide type that takes a `lead`: the header no longer
+  accepts one, so the type renders `<SlideLead tone={tone}>{lead}</SlideLead>`
+  itself, outside whatever block it centres below. Not for an aside or a warning,
+  which is `Callout`.
+*/
+export { SlideLead } from './SlideLead'
 export { Logo } from './Logo'
+export { Tech } from './Tech'
 export { DotGrid, Blob, Orb, WaveArc } from './Decor'
 export { Kicker, Chip, NumberBadge } from './primitives'
 export { BulletList, Card, CardGrid, StatTile, type BulletItem } from './content'
@@ -27,6 +36,7 @@ export { FileTree, type FileEntry, type FileState } from './FileTree'
 export { LayerStack, LayerGap, type Layer, type LayerState } from './LayerStack'
 export { MachineBoundary } from './MachineBoundary'
 export { SocketBridge } from './SocketBridge'
+export { NestedBoundary, DIND_LEVELS, type NestedLevel, type BoundaryTone } from './NestedBoundary'
 export { TunnelPath } from './TunnelPath'
 export { JourneyRoadmap } from './JourneyRoadmap'
 export { StepList, FlowChart, type Step, type FlowNode } from './flow'
@@ -54,6 +64,18 @@ export { ScenarioCard, type ScenarioBeat } from './ScenarioCard'
    `StatusList` is a list whose rows carry verdicts, `ChatThread` is a two-voice
    exchange. See each file's header for what it must not be used for. */
 export { SyntaxBreakdown, type SyntaxPart } from './SyntaxBreakdown'
+
+/* A comparison where one side stands in for the other: one pairing is one
+   object, familiar side recessed, new side raised. Chosen in
+   `slide-kit/comparison-lab` over three other candidates. NOT for two peers
+   being weighed against each other -- it asserts a direction. */
+export { SwapRows } from './SwapRows'
+export type { CompareFigureProps, ComparePair } from './compareFigure'
+
+/* The style guide's surface lighting (section 9) for SVG figures, which cannot
+   express it as CSS. Declare `<SurfaceDefs/>` once per `<svg>`, then spread
+   `surface(tone)` onto a `<rect>`. */
+export { SurfaceDefs, surface, TopHighlight, type SurfaceTone } from './svgDepth'
 export { StatusList, type StatusItem, type StatusKind } from './StatusList'
 export { ChatThread, type ChatTurn } from './ChatThread'
 
@@ -103,8 +125,97 @@ export {
   type FanOutSource,
   type FanOutCopy,
 } from './figures/FanOut'
+/*
+  THREE LANES — how far the automation reaches under each of the three CI/CD
+  terms. On the barrel as one figure with one shape, like `FanOut` above it.
+
+  Chosen out of `slide-kit/cicd-reach-lab`, which built four candidates for the
+  same contract: `StopPoints` (three markers on one chain), `NestedSpans` (three
+  brackets above it), `ReachBands` (three bars from a shared left edge) and this.
+  The lab's brief came from the session 7 review, "research the best ways to
+  represent CI/CD and use those", and the answer that survived is the
+  conventional one: Atlassian, Red Hat, AWS Prescriptive Guidance, CircleCI, IBM
+  and Bitrise all publish the same picture, so a learner who reads any article
+  after the session meets this diagram again.
+
+  It is also the only candidate that asks NOTHING of the viewer. The other three
+  draw the reach as an abstraction over a single chain, so a reader has to carry
+  a bar or bracket's right end back up to the stage above it. Here each lane
+  states its own outcome in place. The price is height, paid three times, and it
+  fits: measured at 394px against the 425px ceiling where a composite's top edge
+  starts centring into the instructor-video reserve.
+
+  `ReachBands` stays in the lab rather than the kit. It is the same convention
+  drawn in 276px, and worth promoting if a future deck needs the height back.
+*/
+export { ThreeLanes } from './ThreeLanes'
+export { ReachChain } from './ReachChain'
+export { ApprovalMark } from './ApprovalMark'
+export { CHAIN, REACH_PAINT, type CicdReachProps, type ReachStage, type ReachTerm } from './cicdReach'
+
+/*
+  TILL ROW. One waiting line, and a fixed number of service desks that the
+  front of the line can go to either of. On the barrel as one figure with one
+  shape, like `ThreeLanes` above it.
+
+  Chosen out of `slide-kit/queue-lab`, which built three candidates for the same
+  `QueueFigureProps` contract: `QueueBelt`, `DashboardPanels` and this. The claim
+  all three had to carry is that one job is triggered, runs wait in a line, and a
+  fixed number of executor slots take them.
+
+  It won because it is the only candidate that DRAWS THE MECHANISM rather than
+  the parts. A connector leaves the front of the line, runs along a rail under
+  both desks, and rises into each desk's bottom edge with its own arrowhead, so
+  the dependency between a free slot and the next ticket is geometry rather than
+  words. That dependency is the one thing a learner cannot work out from a list
+  of four definitions, and the other two candidates either state it in a caption
+  or leave it to be inferred.
+
+  It also keeps Jenkins' own panel titles, `Build queue` and `Build executor
+  status` with its slot count, so it still passes content rule 27: a picture the
+  learner meets again elsewhere beats a better one they see once.
+
+  `QueueBelt` lost because its tickets run RIGHT TO LEFT inside the queue well,
+  so a reader scanning left to right meets `#4` before `#3` and has to be told by
+  a caption which end is the front. `DashboardPanels` lost because it draws the
+  two panels and not the flow between them, which leaves the reader to infer the
+  one relationship the figure exists to show. Both stay in the lab, and
+  `DashboardPanels` is worth reaching for if a future slide needs the panels
+  without the flow.
+*/
+export { TillRow, tillRowHeight } from './TillRow'
+export {
+  QUEUE_FIXTURE,
+  type QueueFigureProps,
+  type QueueJob,
+  type QueuedRun,
+  type ExecutorSlot,
+  type FinishedRun,
+} from './queueFigure'
+
 export * as Icons from './icons'
 export { iconByName, type IconName } from './icons'
+/*
+  THE PYTHON COURSE FIGURES, promoted from `python/1_programming_with_python`.
+
+  `CodeOutput` is a snippet beside what it printed: the claim every language
+  lesson makes and neither `CodeBlock` (a file) nor `Terminal` (a shell) could.
+  `LogoWall` is marks with their names, for a claim about scale or familiarity.
+  `RadialSpread` is one hub reaching into many places, the form STYLE_GUIDE §8
+  names for "reach" and the kit did not have.
+*/
+export { CodeOutput, type CodeOutputPane } from './CodeOutput'
+export { LogoWall, type WallMark } from './LogoWall'
+export { RadialSpread, type Spoke } from './RadialSpread'
+/* Sessions 2 to 4 of the same course. `PromptCard` is text pasted into an AI
+   tool, `ValueTypeMap` pairs values with their types, `VariableTrace` runs a
+   program one line per click with its variables as boxes, `EvalSteps` rewrites an
+   expression down to its value. */
+export { PromptCard } from './PromptCard'
+export { ValueTypeMap, type ValueTypePair } from './ValueTypeMap'
+export { VariableTrace, type TraceStep } from './VariableTrace'
+export { EvalSteps } from './EvalSteps'
+export { MonoBadge } from './MonoBadge'
 export { Illustration, type IllustrationName } from './characters/Illustration'
 export { Nova, type NovaPose } from './characters/Nova'
 

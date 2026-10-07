@@ -1,0 +1,32 @@
+<section class="block block-hook" id="walker"><div class="block-head"><span class="block-icon" aria-hidden="true">🎬</span><h2>Follow the dot — how elif actually runs</h2></div><div class="pcard" data-label="Follow the dot — how elif actually runs"><div class="slide-head"><span class="slide-title">Follow the dot — how elif actually runs</span></div><div class="stage" id="stage-walk"><div class="sl-head"><span class="sl-bar" aria-hidden="true"></span><div><p class="sl-eyebrow">Multiple Elif Statements</p><h3 class="sl-title">Follow the Dot</h3></div></div><p class="stage-q">The dot is Python. Drag the marks, then press play. <b>Watch what it never touches.</b></p><div class="walker" id="walker"><div class="wcode"><pre><span class="wline" id="wl1">marks <b>=</b> <i>72</i></span><span class="wline" id="wl2"></span><span class="wline" id="wl3"><b>if</b> marks <b>&gt;=</b> <i>91</i>:</span><span class="wline" id="wl4">    <i>print</i>(<em>"A"</em>)</span><span class="wline" id="wl5"><b>elif</b> marks <b>&gt;=</b> <i>81</i>:</span><span class="wline" id="wl6">    <i>print</i>(<em>"B"</em>)</span><span class="wline" id="wl7"><b>elif</b> marks <b>&gt;=</b> <i>71</i>:</span><span class="wline" id="wl8">    <i>print</i>(<em>"C"</em>)</span><span class="wline" id="wl9"><b>elif</b> marks <b>&gt;=</b> <i>61</i>:</span><span class="wline" id="wl10">    <i>print</i>(<em>"D"</em>)</span><span class="wline" id="wl11"><b>else</b>:</span><span class="wline" id="wl12">    <i>print</i>(<em>"F"</em>)</span></pre><div class="wslide"><label>marks = 72</label><input type="range" min="0" max="100" value="72" step="1" aria-label="marks"></div><div class="wctl"><button type="button" data-w="play">Play</button><button type="button" class="ghost" data-w="step">One step</button><button type="button" class="ghost" data-w="reset">Reset</button></div><div class="wout" aria-live="polite"></div></div><div class="wviz"><svg class="wchart" viewBox="0 0 560 580" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flowchart of the grade ladder: four conditions in sequence, each with a True exit">
+<g class="wnode" data-node="a"><rect x="110" y="10" width="200" height="48" rx="10"/><text x="210" y="40" text-anchor="middle" id="wassign">marks = 72</text></g>
+<path class="wedge" data-edge="d0in" d="M210 41 L210 67"/>
+<g class="wnode wdia" data-node="d0"><polygon points="210,67 305,105 210,143 115,105"/><text x="210" y="111" text-anchor="middle">marks &gt;= 91 ?</text></g>
+<path class="wedge" data-edge="t0" d="M305 105 L360 105"/>
+<text class="wlbl" x="322" y="96">True</text>
+<g class="wnode" data-node="p0"><rect x="360" y="81" width="180" height="48" rx="10"/><text x="450" y="111" text-anchor="middle">print("A")</text></g>
+<text class="wlbl" x="220" y="163">False</text>
+<path class="wedge" data-edge="d1in" d="M210 141 L210 167"/>
+<g class="wnode wdia" data-node="d1"><polygon points="210,167 305,205 210,243 115,205"/><text x="210" y="211" text-anchor="middle">marks &gt;= 81 ?</text></g>
+<path class="wedge" data-edge="t1" d="M305 205 L360 205"/>
+<text class="wlbl" x="322" y="196">True</text>
+<g class="wnode" data-node="p1"><rect x="360" y="181" width="180" height="48" rx="10"/><text x="450" y="211" text-anchor="middle">print("B")</text></g>
+<text class="wlbl" x="220" y="263">False</text>
+<path class="wedge" data-edge="d2in" d="M210 241 L210 267"/>
+<g class="wnode wdia" data-node="d2"><polygon points="210,267 305,305 210,343 115,305"/><text x="210" y="311" text-anchor="middle">marks &gt;= 71 ?</text></g>
+<path class="wedge" data-edge="t2" d="M305 305 L360 305"/>
+<text class="wlbl" x="322" y="296">True</text>
+<g class="wnode" data-node="p2"><rect x="360" y="281" width="180" height="48" rx="10"/><text x="450" y="311" text-anchor="middle">print("C")</text></g>
+<text class="wlbl" x="220" y="363">False</text>
+<path class="wedge" data-edge="d3in" d="M210 341 L210 367"/>
+<g class="wnode wdia" data-node="d3"><polygon points="210,367 305,405 210,443 115,405"/><text x="210" y="411" text-anchor="middle">marks &gt;= 61 ?</text></g>
+<path class="wedge" data-edge="t3" d="M305 405 L360 405"/>
+<text class="wlbl" x="322" y="396">True</text>
+<g class="wnode" data-node="p3"><rect x="360" y="381" width="180" height="48" rx="10"/><text x="450" y="411" text-anchor="middle">print("D")</text></g>
+<path class="wedge" data-edge="d4in" d="M210 443 L210 481"/>
+<text class="wlbl" x="220" y="463">False</text>
+<g class="wnode" data-node="e"><rect x="110" y="481" width="200" height="48" rx="10"/><text x="210" y="511" text-anchor="middle">else</text></g>
+<path class="wedge" data-edge="tf" d="M310 505 L360 505"/>
+<g class="wnode" data-node="pf"><rect x="360" y="481" width="180" height="48" rx="10"/><text x="450" y="511" text-anchor="middle">print("F")</text></g>
+<g class="wdot" aria-hidden="true"><circle r="8"/></g>
+</svg></div></div><div class="stage-rule" aria-hidden="true"></div></div></div></section>

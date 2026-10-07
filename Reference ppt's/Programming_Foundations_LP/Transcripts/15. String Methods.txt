@@ -1,0 +1,2068 @@
+1
+00:00:00,000 --> 00:00:11,840
+Hello everyone, welcome to today's session, in today's session we will learn about string
+
+2
+00:00:11,840 --> 00:00:17,580
+methods, okay, so first quickly we'll see what we have seen in the previous sessions,
+
+3
+00:00:17,580 --> 00:00:22,480
+so the previous session we have seen about for loop, we use for loop when we want to
+
+4
+00:00:22,480 --> 00:00:29,559
+iterate over each item in a sequence, especially when we have a sequence and we want to iterate
+
+5
+00:00:29,559 --> 00:00:36,720
+over each item in the sequence then we will use the first statement, in this we can have
+
+6
+00:00:36,720 --> 00:00:42,840
+the sequence as either a sequence of characters or sequence of numbers or it can be any other
+
+7
+00:00:42,840 --> 00:00:48,360
+sequences, okay, we have seen about the sequence of characters and sequence of numbers, so
+
+8
+00:00:48,360 --> 00:00:53,160
+the syntax is like this, you have for and then you write space and you give the variable
+
+9
+00:00:53,160 --> 00:00:59,919
+name in and the sequence which has to be specified colon and then you will give proper
+
+10
+00:00:59,919 --> 00:01:05,599
+indentation, right, the standard is 4 tab spaces and then we will write the block of
+
+11
+00:01:05,599 --> 00:01:11,879
+code which has to be repeated multiple times, okay, so we have seen an example, right, so
+
+12
+00:01:11,879 --> 00:01:18,599
+for the iterating over string we have seen an example, here we have given python, we
+
+13
+00:01:18,599 --> 00:01:23,320
+have stored it in the word and when we have written for each char in word what we are
+
+14
+00:01:23,320 --> 00:01:29,279
+doing is we are iterating over each character present in the string and then we are printing
+
+15
+00:01:29,279 --> 00:01:36,599
+it, right, so this is an example of iterating over a sequence of characters that is string.
+
+16
+00:01:36,599 --> 00:01:42,160
+If you want to generate a sequence of numbers then we have seen that for that we will use
+
+17
+00:01:42,160 --> 00:01:47,680
+range, right, so we can specify the start and the end, where the sequence should start
+
+18
+00:01:47,760 --> 00:01:53,639
+and where it should end, so when you write range of start, end and give the specific
+
+19
+00:01:53,639 --> 00:01:59,080
+numbers in the start and end then you will get a sequence of numbers starting from the
+
+20
+00:01:59,080 --> 00:02:05,160
+number you have specified at start till the integer just before the end, okay, we will
+
+21
+00:02:05,160 --> 00:02:11,039
+see an example, so here we have written range 5, 10, right, so for that what is the sequence
+
+22
+00:02:11,039 --> 00:02:17,479
+that we will get, it will start at 5, we will have 5, 6, 7, 8, 9, right, we don't
+
+23
+00:02:17,479 --> 00:02:23,399
+have 10, the end will not be included, so 10 is not included, we have 9, so in this
+
+24
+00:02:23,399 --> 00:02:31,240
+way we can get a sequence of integers by specifying the start and the end using this range, right,
+
+25
+00:02:31,240 --> 00:02:35,600
+so we have seen a code for that, right here we got 5, 6, 7, since we have mentioned the
+
+26
+00:02:35,600 --> 00:02:40,880
+start as 5 and end as 8, right, so we have seen about all of these things in the previous
+
+27
+00:02:41,720 --> 00:02:48,119
+session, and then we have seen about a challenge, the last session's challenge was this, okay,
+
+28
+00:02:48,119 --> 00:02:55,279
+here what we have to do is we had to get, you will given me an input, okay, in the output
+
+29
+00:02:55,279 --> 00:03:00,279
+we have to separate each character with a hyphen, right, so there is a P, hyphen Y,
+
+30
+00:03:00,279 --> 00:03:07,639
+hyphen T, hyphen H, hyphen O, hyphen N, right, so like this we have to have hyphens in between,
+
+31
+00:03:07,639 --> 00:03:13,199
+okay, this was the question, and the code for it was this, but there is a mistake in
+
+32
+00:03:13,199 --> 00:03:19,039
+this code, we had to identify the mistake, many of you are actually identify the mistake
+
+33
+00:03:19,039 --> 00:03:25,199
+appropriately, we will see what is the correct solution, so here when we, here what did we
+
+34
+00:03:25,199 --> 00:03:30,600
+write, we have written B equal to double quotes, an empty string, here actually what we had
+
+35
+00:03:30,600 --> 00:03:36,320
+to write is we had to write B equal to A of 0, if we start with B equal to empty string
+
+36
+00:03:36,399 --> 00:03:42,520
+then we were getting an output like hyphen Y, hyphen T, hyphen H, like this we are getting
+
+37
+00:03:42,520 --> 00:03:48,240
+the output, the initial, the first letter P was missing, so for that what we have to
+
+38
+00:03:48,240 --> 00:03:55,360
+do, we have to write B equal to A of 0 instead of the empty string, okay, here there are
+
+39
+00:03:55,360 --> 00:04:00,240
+multiple ways of solving this question, okay, there are multiple solutions, right, so this
+
+40
+00:04:00,240 --> 00:04:04,759
+is one way of correcting the mistake, there are multiple ways where you can correct this
+
+41
+00:04:04,759 --> 00:04:07,080
+mistake, okay, this is one way.
+
+42
+00:04:07,080 --> 00:04:13,199
+Now what we'll do is we'll look into today's session, so the agenda for the today's session
+
+43
+00:04:13,199 --> 00:04:19,959
+is string methods, so initially what we'll do is we'll learn about string slicing especially
+
+44
+00:04:19,959 --> 00:04:25,760
+the extended slicing, then we will see about string methods, okay, we'll learn about few
+
+45
+00:04:25,760 --> 00:04:31,559
+string methods that is strip, is digit, replace like this, we'll learn about few string methods,
+
+46
+00:04:31,880 --> 00:04:37,720
+okay, so we'll start with string slicing, so what did we learn previously?
+
+47
+00:04:37,720 --> 00:04:44,239
+Let's say there is a message, hi Ravi, now we want to extract a part of the string, then
+
+48
+00:04:44,239 --> 00:04:49,000
+we use the string slicing, right, this is what we have learned so far, so for that what
+
+49
+00:04:49,000 --> 00:04:50,000
+do we do?
+
+50
+00:04:50,000 --> 00:04:55,839
+Let's say the variable message has hi Ravi, now to extract the part of the string that
+
+51
+00:04:55,839 --> 00:04:57,519
+is Ravi, what did we write?
+
+52
+00:04:57,519 --> 00:05:02,920
+We have written message square bracket and we have specified the index where the part
+
+53
+00:05:02,920 --> 00:05:08,359
+of the index starts which is 3, right, and then colon and then we have given 7, that
+
+54
+00:05:08,359 --> 00:05:13,959
+is still where it has to go, here it has to go till 7, so we have mentioned 3 colon 7,
+
+55
+00:05:13,959 --> 00:05:18,880
+this is how we will extract a part of the string, the entire part of the string from
+
+56
+00:05:18,880 --> 00:05:21,320
+the message, right.
+
+57
+00:05:21,320 --> 00:05:27,399
+Now let's say we were given a message like this, okay, let's say this is a secret message,
+
+58
+00:05:28,279 --> 00:05:29,279
+here what it is present?
+
+59
+00:05:29,279 --> 00:05:34,600
+There is a hyphens in between, right, there is a hyphen R, hyphen A, hyphen B, hyphen
+
+60
+00:05:34,600 --> 00:05:42,320
+I, hyphen, right, what we want is from this we want to extract Ravi, okay, so alternately
+
+61
+00:05:42,320 --> 00:05:49,279
+there are hyphens present, we want to only extract Ravi from this, so how do we do it?
+
+62
+00:05:49,279 --> 00:05:53,959
+With the string slicing that we have seen so far, we can extract the entire part of
+
+63
+00:05:53,959 --> 00:06:00,200
+the string that is we will even get the hyphens, right, but what we want, we don't want the
+
+64
+00:06:00,200 --> 00:06:05,119
+hyphens, we only want the characters in between that is Ravi, we want only that.
+
+65
+00:06:05,119 --> 00:06:06,760
+How do we do it?
+
+66
+00:06:06,760 --> 00:06:12,480
+So to access the parts of the string or here we have to access alternately, right, so to
+
+67
+00:06:12,480 --> 00:06:17,880
+access like this we use extended slicing, okay, so what are we doing here?
+
+68
+00:06:17,880 --> 00:06:24,119
+We want the alternate strings starting from index 1, we want alternate strings, right,
+
+69
+00:06:24,119 --> 00:06:30,839
+so for that we will use extended slicing, here the syntax is the variable in which the
+
+70
+00:06:30,839 --> 00:06:36,200
+message is told, you have to give that variable, then the square bracket, you have to mention
+
+71
+00:06:36,200 --> 00:06:42,440
+the start index from where the index should start for that part of the string, okay, and
+
+72
+00:06:42,440 --> 00:06:48,640
+then colon and end index, you have to specify the end index, then colon there is step, so
+
+73
+00:06:48,640 --> 00:06:50,160
+what is the step?
+
+74
+00:06:50,160 --> 00:06:55,519
+This step determines the increment between each index per slicing that is let's take
+
+75
+00:06:55,519 --> 00:07:02,640
+the example here, okay, so we have to start at index 1, okay, so here in Ravi we have
+
+76
+00:07:02,640 --> 00:07:07,279
+to start at index 1, right, then what we have to do?
+
+77
+00:07:07,279 --> 00:07:12,420
+We have to take 2 steps and then we have to go to the next index, right, then again what
+
+78
+00:07:12,420 --> 00:07:13,420
+we have to do?
+
+79
+00:07:13,420 --> 00:07:18,500
+We have to take 2 steps further and we have to get the next character, so we have to do
+
+80
+00:07:18,500 --> 00:07:22,859
+this like you see there is Ravi, okay, so in this what do we want?
+
+81
+00:07:22,859 --> 00:07:28,579
+We have to start with index 1, okay, because the first character is present at index 1,
+
+82
+00:07:28,579 --> 00:07:34,619
+okay, then we have to take 2 steps further, okay, 1, 2, we have taken 2 steps further,
+
+83
+00:07:34,619 --> 00:07:35,619
+then where will we go?
+
+84
+00:07:35,619 --> 00:07:40,299
+We go at A, right, then again we have to take 2 steps, then we'll go to B, so like this
+
+85
+00:07:40,299 --> 00:07:42,540
+with 2 steps what we are doing?
+
+86
+00:07:42,540 --> 00:07:48,380
+We are getting the character whichever we want, right, so we have to mention the step
+
+87
+00:07:48,380 --> 00:07:54,660
+as 2, okay, the number of steps that we take to get the character is nothing but step here,
+
+88
+00:07:54,660 --> 00:07:59,859
+okay, so now we'll see the same Ravi example, here it's starting with 1, so the starting
+
+89
+00:07:59,859 --> 00:08:07,739
+index is 1, okay, then it has to go to Ravi, right, so we'll give one more, right, so it
+
+90
+00:08:07,739 --> 00:08:14,380
+should go to 8, the 7 index should be included, right, so we'll give 8 that is the end index.
+
+91
+00:08:14,380 --> 00:08:15,380
+Next what we have to do?
+
+92
+00:08:15,380 --> 00:08:21,660
+We have to mention the step, right, so to mention the step what we are doing is from
+
+93
+00:08:21,660 --> 00:08:28,779
+1, okay, we are taking 2 steps, right, 1, 2, then we'll get A, again from A, 3, 4,
+
+94
+00:08:28,779 --> 00:08:35,700
+then we'll get B, so again it's 2 steps, right, so the step is 2, so by writing like this
+
+95
+00:08:35,700 --> 00:08:42,940
+square brackets 1 colon 8 colon 2, we are getting the output Ravi, right, so 1 plus
+
+96
+00:08:42,940 --> 00:08:48,780
+2 will get 3, so we'll get the character present at the index 3, again 3 plus 2 is 5, then
+
+97
+00:08:48,780 --> 00:08:54,299
+we'll get the character present at the index 5, then again 5 plus 2 is 7, then we'll get
+
+98
+00:08:54,299 --> 00:08:59,900
+the character at index 7, after that what happened we came to the end index, right,
+
+99
+00:08:59,900 --> 00:09:05,460
+so we'll stop there, okay, this is how we do extended slicing, right, we can get alternate
+
+100
+00:09:06,219 --> 00:09:12,700
+letters or even we can specify the step as 2, 3 like this we can specify different steps,
+
+101
+00:09:12,700 --> 00:09:17,059
+okay, we'll try this out in the code playground and see.
+
+102
+00:09:17,059 --> 00:09:21,700
+So coming to code playground, so here what I'll do is let's say I have message, we'll
+
+103
+00:09:21,700 --> 00:09:29,020
+try out the same thing, okay, hyphen R, hyphen A, hyphen B, hyphen I, hyphen, okay, this
+
+104
+00:09:29,020 --> 00:09:34,500
+is the message that we have, right, the secret message which we have, let me write a secret,
+
+105
+00:09:34,539 --> 00:09:40,859
+okay, so now we have the secret message, next what we have to do, we want Ravi from this,
+
+106
+00:09:40,859 --> 00:09:46,179
+right, so for that what we have seen that if you have to write the secret message that
+
+107
+00:09:46,179 --> 00:09:51,260
+is available, right, square brackets, we have to specify the start index which is this is
+
+108
+00:09:51,260 --> 00:09:59,059
+0 and this is 1, it has to start from R, right, so we have to give 1 colon, then it has to
+
+109
+00:09:59,059 --> 00:10:04,580
+go till I, right, so we have to give 8 that is the end index, then we have to mention
+
+110
+00:10:04,580 --> 00:10:10,619
+the step, right, so here what is the step, you have to take 2 steps, right, we have seen,
+
+111
+00:10:10,619 --> 00:10:12,659
+so what will we specify here?
+
+112
+00:10:12,659 --> 00:10:17,940
+2, right, so we'll now print this part, okay, we'll see, what we should get?
+
+113
+00:10:17,940 --> 00:10:26,340
+We should get Ravi, right, so now we'll run the code and see, see we got Ravi, right,
+
+114
+00:10:26,340 --> 00:10:31,739
+so this is what we are expecting and we got the expected output, right, so like this what
+
+115
+00:10:31,739 --> 00:10:40,500
+you can do is you can give different values, let's say here you write it as say for, okay,
+
+116
+00:10:40,500 --> 00:10:47,539
+let's say false, okay, and then we'll run the code and see.
+
+117
+00:10:47,539 --> 00:10:55,380
+So what happened, here is index 1, okay, then A, then L, then L, and then what happened
+
+118
+00:10:55,380 --> 00:11:01,900
+the end index is 8, right, so it will stop here, we won't get S, let's say this is 10,
+
+119
+00:11:01,900 --> 00:11:09,380
+then what will happen we will get S also, right, see like this we can get characters
+
+120
+00:11:09,380 --> 00:11:14,340
+in between which are in pattern, okay, like after every 2 steps we want a character, let's
+
+121
+00:11:14,340 --> 00:11:19,419
+say after every 3 steps you want a character, it's a pattern, right, so if you have, if
+
+122
+00:11:19,419 --> 00:11:24,979
+you want to extract the characters which are in pattern like after every 2 steps, after
+
+123
+00:11:24,979 --> 00:11:29,700
+every 3 steps like this then we can use the extended slicing.
+
+124
+00:11:29,700 --> 00:11:35,580
+Now we'll go back to the slides, we'll see an another example now, let's say the string
+
+125
+00:11:35,580 --> 00:11:43,020
+is waterfall, okay, now what I'm writing here is here we have written 1 colon 6, right,
+
+126
+00:11:43,020 --> 00:11:48,739
+so the start index is 1, so where will it start, it will start at A, okay, then we are
+
+127
+00:11:48,739 --> 00:11:54,739
+specifying this end index 6, so it will go till F, now what we have mentioned is we have
+
+128
+00:11:55,500 --> 00:11:59,900
+mentioned a step which is 3, we can give 2, 3 like this, we can give any number there
+
+129
+00:11:59,900 --> 00:12:06,419
+in the step, okay, so because it is 3, what happen we start with 1, so it's A, so we got
+
+130
+00:12:06,419 --> 00:12:13,580
+A, and then we'll take 3 steps, so 1, 2, 3, next what we'll do it, we'll get the character
+
+131
+00:12:13,580 --> 00:12:19,780
+present at the 4th index, right, so what is the character R, right, so we got A, R, then
+
+132
+00:12:19,780 --> 00:12:25,940
+again we'll take 3 steps, but then this end, but the end index is 6, right, so there is
+
+133
+00:12:25,940 --> 00:12:31,020
+no more other character, so the output is A, R, see we got the output as A, R, we'll
+
+134
+00:12:31,020 --> 00:12:34,260
+try this out in the code playground.
+
+135
+00:12:34,260 --> 00:12:42,739
+So coming to here, let's say you have waterfall, okay, so here what we are writing we want
+
+136
+00:12:42,739 --> 00:12:50,219
+1, 6, 3, okay, we'll run the code and see, right, so it will start at A, and then we'll
+
+137
+00:12:50,219 --> 00:12:56,380
+go to R, so A, R, clear, so we can try out with different values like this and see, right,
+
+138
+00:12:56,380 --> 00:13:00,460
+so you can try out with different strings, different giving different start index, giving
+
+139
+00:13:00,460 --> 00:13:04,780
+different end index in step, you can vary different values for the start index, end
+
+140
+00:13:04,780 --> 00:13:08,099
+index and the step and you can try them out, okay.
+
+141
+00:13:08,099 --> 00:13:12,739
+Now we'll go back to the slides, now what we'll see is we'll learn about few string
+
+142
+00:13:12,739 --> 00:13:19,140
+methods, so what are these string methods, firstly methods are the Python has a set of
+
+143
+00:13:19,140 --> 00:13:24,820
+inbuilt reusable utilities, okay, these are called methods, what they do is they'll simplify
+
+144
+00:13:24,820 --> 00:13:29,859
+the most common operations like when we are writing codes some operations will be there
+
+145
+00:13:29,859 --> 00:13:35,340
+which are very common among the different codes, okay, so for that the Python has provided
+
+146
+00:13:35,340 --> 00:13:42,059
+inbuilt reusable utilities, those are called methods, so some are related to strings, like
+
+147
+00:13:42,059 --> 00:13:46,820
+see you can see an example here, right, is digit, lower, starts with like this, these
+
+148
+00:13:46,820 --> 00:13:51,700
+are some examples of the string methods, there are many more like this, so today we'll learn
+
+149
+00:13:51,700 --> 00:13:56,940
+about few string methods, so these are the reusable utilities that the Python provides
+
+150
+00:13:56,940 --> 00:14:02,099
+us, so with the help of this we can write the codes in a very easy way, okay.
+
+151
+00:14:02,099 --> 00:14:09,140
+So now let's take a scenario, let's say you want to set a pin for your phone, okay, so
+
+152
+00:14:09,140 --> 00:14:16,059
+when you open you want that pin as your security, so it should be a 4 digit pin, so what we
+
+153
+00:14:16,059 --> 00:14:21,580
+have to do when you set this pin we have to check whether it's a 4 digit pin, whether
+
+154
+00:14:21,580 --> 00:14:27,140
+it's a valid, right, so whether it's valid by that I mean whether it's a 4 digit or whether
+
+155
+00:14:27,140 --> 00:14:32,200
+each of the input is a number or not, so we have to check all of these things, right,
+
+156
+00:14:32,200 --> 00:14:37,219
+so whether each character that you have given as input is a number or not, and also we have
+
+157
+00:14:37,219 --> 00:14:43,059
+to check if the length of the input is 4 digits, okay, we'll solve this and see some string
+
+158
+00:14:43,059 --> 00:14:48,500
+methods for this, to simplify whether the each character of the input is a number what
+
+159
+00:14:48,500 --> 00:14:53,419
+you have to do generally you have to iterate over each character and check, instead the
+
+160
+00:14:53,460 --> 00:14:59,940
+string methods has provided us is digit, okay, with is digit what we can do is we can directly
+
+161
+00:14:59,940 --> 00:15:07,059
+check if each of the characters that are present in the string is a digit, okay, so here is
+
+162
+00:15:07,059 --> 00:15:13,500
+a syntax, we'll have the variable in which the string is stored, dot is digit and then
+
+163
+00:15:13,500 --> 00:15:20,140
+we'll write the brackets, okay, so with this what it does is it will check if all the characters
+
+164
+00:15:20,460 --> 00:15:25,739
+in the string are digits, if all the characters present in the strings are digits then it
+
+165
+00:15:25,739 --> 00:15:32,820
+will give us true, otherwise it will give us false, okay, so here take an example there
+
+166
+00:15:32,820 --> 00:15:39,460
+we have a pin, say 4748, okay, now what we are writing, we are writing the, it's stored
+
+167
+00:15:39,460 --> 00:15:42,140
+in the variable pin, right, so the string variable.
+
+
+
+168
+00:15:42,115 --> 00:15:48,435
+variable pin.isDigit and we are writing the brackets, okay what this will do?
+
+169
+00:15:48,435 --> 00:15:53,995
+The isDigit string method will check if each character present in that string stored in
+
+170
+00:15:53,995 --> 00:16:00,355
+pin variable is a digit or not, if all the characters are digits then it will give us
+
+171
+00:16:00,355 --> 00:16:07,115
+true otherwise it will give us false, so in isDigit the variable isDigit it will store
+
+172
+00:16:07,115 --> 00:16:10,135
+either true or false, okay.
+
+173
+00:16:10,135 --> 00:16:14,394
+See there is some more part of code where we are checking whether it's a 4 digit number
+
+174
+00:16:14,394 --> 00:16:16,155
+or not, right so what we will do?
+
+175
+00:16:16,155 --> 00:16:21,835
+We will see the length, right so length of pin if it is 4 that means that it is 4 digit,
+
+176
+00:16:21,835 --> 00:16:26,435
+right so we are checking whether it's 4 digit and also we are checking if all the digits
+
+177
+00:16:26,435 --> 00:16:32,475
+present in the pin are integers, are digits, okay and then we are seeing whether the pin
+
+178
+00:16:32,475 --> 00:16:34,714
+is valid or not, okay.
+
+179
+00:16:34,714 --> 00:16:39,675
+So now we will mainly focus on isDigit, right so this is the string method that we are learning
+
+180
+00:16:39,675 --> 00:16:40,675
+today, okay.
+
+181
+00:16:40,675 --> 00:16:41,675
+So here what did we do?
+
+182
+00:16:41,675 --> 00:16:46,795
+We have checked whether the string present in the pin is if all the characters in that
+
+183
+00:16:46,795 --> 00:16:52,155
+input are digits or not, so what did we get?
+
+184
+00:16:52,155 --> 00:17:00,915
+We got the output as true, let's take a different value, okay let's say you have entered 984A,
+
+185
+00:17:00,915 --> 00:17:07,595
+okay so the last character in the input is not a digit, right so what we should get?
+
+186
+00:17:07,595 --> 00:17:13,354
+We should get it as false because the last digit is not a integer, so we got the output
+
+187
+00:17:13,354 --> 00:17:18,915
+as false, right we will try this out in our code playground and see.
+
+188
+00:17:18,915 --> 00:17:20,394
+So first what we have to do?
+
+189
+00:17:20,394 --> 00:17:26,155
+We have a pin variable where we store the pin, okay let's say 4748.
+
+190
+00:17:26,155 --> 00:17:27,155
+Now what we will do?
+
+191
+00:17:27,155 --> 00:17:33,034
+We will write isDigit, okay now what we have to check if each character present in the
+
+192
+00:17:33,034 --> 00:17:39,435
+input in the pin is a digit, right if it is, if each, if every character in the input is
+
+193
+00:17:39,435 --> 00:17:44,354
+a digit we have to say true otherwise false, right so for that what do we do?
+
+194
+00:17:44,354 --> 00:17:51,034
+We have the pin variable where the pin is stored dot isDigit, okay.
+
+195
+00:17:51,034 --> 00:17:56,635
+So we have stored that, we use this string method isDigit and stored whatever value this
+
+196
+00:17:56,635 --> 00:17:59,495
+is giving in the isDigit variable.
+
+197
+00:17:59,495 --> 00:18:08,355
+Now we will print it, okay now we will run the code and see, see we got true, right so
+
+198
+00:18:08,355 --> 00:18:13,314
+it's very clear, right how to do these things, so we can try out with different values let's
+
+199
+00:18:13,314 --> 00:18:21,475
+say a, b, 5, 6 what we should get the output false, right so we got the output as false.
+
+200
+00:18:21,475 --> 00:18:30,115
+Let's try with some more values like this, so if each and every character present in
+
+201
+00:18:30,115 --> 00:18:35,314
+the string is a digit then it will give us true otherwise the string method isDigit will
+
+202
+00:18:35,314 --> 00:18:39,314
+return false, okay now we will go back to the slides.
+
+203
+00:18:39,314 --> 00:18:44,475
+So we have seen about the isDigit, right now we will learn about another string method.
+
+204
+00:18:44,475 --> 00:18:49,314
+Let's understand a scenario, see we fill out a lot of forms, right sign up forms like this
+
+205
+00:18:49,314 --> 00:18:54,394
+whenever we register our account like that sometimes what will happen will add extra
+
+206
+00:18:54,394 --> 00:18:58,635
+spaces in the beginning, will add some extra spaces at the end like this, these things
+
+207
+00:18:58,635 --> 00:19:05,314
+happen, what we want to do is we want to remove these extra spaces because when we are comparing
+
+208
+00:19:05,314 --> 00:19:10,435
+the string which has these extra spaces in the beginning or at the end with the actual
+
+209
+00:19:10,435 --> 00:19:14,115
+mobile number, like let's take an example of mobile number, okay we enter our phone
+
+210
+00:19:14,115 --> 00:19:19,674
+number, right so what we do when we are entering by mistake there might be a space in the beginning
+
+211
+00:19:19,674 --> 00:19:24,555
+or space at the end, when we compare with the actual mobile number, in the actual mobile
+
+212
+00:19:24,555 --> 00:19:28,954
+number there won't be any spaces, right and we are comparing these two mobile numbers
+
+213
+00:19:28,954 --> 00:19:34,754
+see when we are doing is equal to what are we getting false, the numbers are same just
+
+214
+00:19:34,754 --> 00:19:39,555
+because of the extra spaces in the beginning and the extra spaces at the end, what's happening
+
+215
+00:19:39,555 --> 00:19:45,075
+we are getting the output as false, though the numbers are same, so in such cases what
+
+216
+00:19:45,075 --> 00:19:51,195
+we have to do is we have to remove these extra spaces in the beginning and at the end, so
+
+217
+00:19:51,195 --> 00:19:57,435
+for that we have a string method which is strip, so the syntax is here, you will have
+
+218
+00:19:57,435 --> 00:20:04,315
+a variable dot strip and you will have the brackets, okay the variable in which the string
+
+219
+00:20:04,394 --> 00:20:10,995
+is stored dot strip and the brackets, what this will do is it will remove all the leading
+
+220
+00:20:10,995 --> 00:20:17,394
+spaces that is a space, extra spaces present in the beginning, okay and also the trailing
+
+221
+00:20:17,394 --> 00:20:22,234
+spaces that is the spaces which are present, the extra spaces present at the end of the
+
+222
+00:20:22,234 --> 00:20:28,835
+string, it will remove those and give us the string, see that we have a space in the beginning
+
+223
+00:20:28,835 --> 00:20:32,875
+and then we have written the mobile number and then there is a space at the end and we
+
+224
+00:20:32,875 --> 00:20:37,954
+are storing it in the variable mobile, now when we are doing mobile dot strip what it
+
+225
+00:20:37,954 --> 00:20:42,315
+does is it will remove the space in the beginning and the space at the end that is the leading
+
+226
+00:20:42,315 --> 00:20:47,755
+spaces and the trailing spaces, okay and it will give us the number, see you can see the
+
+227
+00:20:47,755 --> 00:20:48,755
+output there, right.
+
+228
+00:20:48,755 --> 00:20:56,514
+We will try out the same thing in the code playground, so let's say we have mobile equal
+
+229
+00:20:56,514 --> 00:21:07,875
+to, let's say like this, okay, let's say there is so many spaces like this, okay now
+
+230
+00:21:07,875 --> 00:21:18,634
+what I will do is I will print mobile dot strip, okay now let's run the code and see,
+
+231
+00:21:18,634 --> 00:21:19,634
+so what happen?
+
+232
+00:21:19,634 --> 00:21:23,474
+See there were a lot of spaces in the beginning, right you can see there is a spaces but do
+
+233
+00:21:23,474 --> 00:21:24,914
+we have that spaces here?
+
+234
+00:21:24,914 --> 00:21:29,715
+No, they are not present, right even the spaces which are at the end are actually not present
+
+235
+00:21:29,715 --> 00:21:35,074
+in this, okay we have only string like this, okay so like this the spaces which are in
+
+236
+00:21:35,074 --> 00:21:40,835
+the beginning and the spaces which are in the end those will be removed, okay, here
+
+237
+00:21:40,835 --> 00:21:46,875
+one caution is let's say there are spaces like this, okay in that case the strip will
+
+238
+00:21:46,875 --> 00:21:51,234
+not remove the spaces which are present in the beginning, see the space is still there,
+
+239
+00:21:51,495 --> 00:21:55,835
+okay it will only remove the spaces which are present in the beginning and at the end
+
+240
+00:21:55,835 --> 00:22:00,634
+not the spaces which are present in between, okay this is very important, only the leading
+
+241
+00:22:00,634 --> 00:22:06,055
+spaces and the trailing spaces, okay now we will go back to the slides.
+
+242
+00:22:06,055 --> 00:22:11,914
+So we have tried this out and we got the output, right, let's say instead of spaces you have
+
+243
+00:22:11,914 --> 00:22:16,835
+some other characters, unnecessary characters in the beginning or at the end, like in this
+
+244
+00:22:16,835 --> 00:22:24,674
+case we have Ravi dot, okay we don't want that dot, so if you want to remove the characters
+
+245
+00:22:24,674 --> 00:22:29,995
+like this which are unnecessary for you, you can specify the character to the strip which
+
+246
+00:22:29,995 --> 00:22:32,995
+has to be removed, here what is the syntax?
+
+247
+00:22:32,995 --> 00:22:38,914
+We have the string variable dot, strip and in the brackets you can mention the character
+
+248
+00:22:38,914 --> 00:22:44,234
+that you want to remove, let's say here I want to remove dot, so what did I specify
+
+249
+00:22:44,234 --> 00:22:48,474
+there in double quotes, I have specified dot, so what will it do?
+
+250
+00:22:48,474 --> 00:22:53,755
+It will remove the extra dots which are present in the beginning and at the end, okay, so
+
+251
+00:22:53,755 --> 00:22:58,115
+we will try this out and see, okay.
+
+252
+00:22:58,115 --> 00:23:05,914
+So let's say we will come back here, okay there is say name, okay, Ravi dot, okay, now
+
+253
+00:23:05,914 --> 00:23:13,715
+what I'll do is I will remove the extra dot which is present, okay.
+
+254
+00:23:14,194 --> 00:23:15,794
+So now let's run the code and see.
+
+255
+00:23:15,794 --> 00:23:16,794
+So what we should get?
+
+256
+00:23:16,794 --> 00:23:21,315
+We should get Ravi without the dot, see we got, let's say there are so many dots like
+
+257
+00:23:21,315 --> 00:23:28,194
+this, okay, then also it will remove the entire dots which are present in the beginning and
+
+258
+00:23:28,194 --> 00:23:34,555
+also in the end, and we got see Ravi, we got this Ravi, clear, like this we can specify
+
+259
+00:23:34,555 --> 00:23:39,155
+any character we want not just dot, see we have tried about space, if it is space you
+
+260
+00:23:39,155 --> 00:23:43,755
+need not mention it, it will automatically understand that it has to remove the spaces,
+
+261
+00:23:43,755 --> 00:23:49,354
+in case of any other characters that you want to remove you need to mention them specifically.
+
+262
+00:23:49,354 --> 00:23:54,074
+Let's say we have some hyphen, okay, you want to remove hyphen, okay, what I'll do is I'll
+
+263
+00:23:54,074 --> 00:24:02,115
+add some hyphens here, okay, and we'll run the code and see, okay, see we got Ravi that
+
+264
+00:24:02,115 --> 00:24:06,914
+could be any character you need to specify it here and that particular characters whichever
+
+265
+00:24:06,914 --> 00:24:11,035
+are present in the beginning and the end will be removed, but if they, let's say they
+
+266
+00:24:11,035 --> 00:24:15,354
+are present like this, okay, so will they remove those?
+
+267
+00:24:15,354 --> 00:24:20,515
+No, the characters that are present in the between will not be removed, see the starting
+
+268
+00:24:20,515 --> 00:24:24,834
+hyphens and the ending hyphens got removed but the hyphens which are present inside the
+
+269
+00:24:24,834 --> 00:24:30,234
+string didn't get removed, so what exactly strip does is it will go from the beginning,
+
+270
+00:24:30,234 --> 00:24:36,834
+okay, it will check for hyphen, okay, so since wherever it finds a hyphen it will remove,
+
+271
+00:24:37,755 --> 00:24:41,674
+so once it gets another character which is not hyphen, see R is not hyphen, right, so
+
+272
+00:24:41,674 --> 00:24:47,474
+this R is not hyphen, so it will stop there, okay, and whatever string is present it will
+
+273
+00:24:47,474 --> 00:24:52,594
+print that, okay, again what it does is from the ending it will check for hyphens, okay,
+
+274
+00:24:52,594 --> 00:24:55,714
+this is all hyphens, right, it will remove till there.
+
+275
+00:24:55,714 --> 00:25:00,234
+Now what it got I, which is not hyphen, so it will stop there, so whichever is present
+
+276
+00:25:00,234 --> 00:25:05,755
+in the between will get that output, okay, this is how the strip works, okay.
+
+277
+00:25:05,755 --> 00:25:09,875
+So now what we'll do is we'll try out let's say there are some dots, there are hyphens,
+
+278
+00:25:09,875 --> 00:25:15,075
+like this we can try out with different values, okay, let's say there maybe you can try out
+
+279
+00:25:15,075 --> 00:25:21,474
+with say iterate, okay, hash maybe, okay, so like this what you can do is you can try out
+
+280
+00:25:21,474 --> 00:25:26,914
+with different characters and see how it's working, okay.
+
+281
+00:25:26,914 --> 00:25:31,315
+So what it does from the beginning it will check for hashes, it has come till here, it
+
+282
+00:25:31,315 --> 00:25:33,515
+has found R, so what will it do?
+
+283
+00:25:33,515 --> 00:25:38,955
+It will print from R, okay, and then from the back it will check for hashes, it has
+
+284
+00:25:38,955 --> 00:25:45,875
+come till I, okay, and then it will stop there and it will print the entire Ravi R-A-V-I,
+
+285
+00:25:45,875 --> 00:25:48,834
+okay, clear?
+
+286
+00:25:48,834 --> 00:25:52,674
+So this is how the strip string method will work, okay.
+
+287
+00:25:52,674 --> 00:25:58,274
+Now we'll go back to the slides, so we have seen this, right, so what did I say that it
+
+288
+00:25:58,274 --> 00:26:02,635
+will remove the specific characters that are leading or trailing, okay, it won't remove
+
+289
+00:26:02,635 --> 00:26:08,674
+the characters that are present in between, right, see here we have M.Ravi., right, so
+
+290
+00:26:08,674 --> 00:26:13,635
+it has removed the dot which is at the end, but the dot which is present inside the string
+
+291
+00:26:13,635 --> 00:26:20,914
+is not removed, see M. that dot we still have it in the output, so it will remove the characters
+
+292
+00:26:20,914 --> 00:26:26,794
+which are specified which are in the leading and the trailing, okay, clear?
+
+293
+00:26:26,794 --> 00:26:33,034
+Now let's say you want to specify different characters like you have some characters say
+
+294
+00:26:33,034 --> 00:26:38,154
+comma, dot, spaces, you want to remove all of these characters in the leading and the
+
+295
+00:26:38,154 --> 00:26:43,794
+trailing parts, okay, so for that also you can specify, so what do you do?
+
+296
+00:26:43,794 --> 00:26:47,875
+You can specify all the characters that you want to remove, see here what we have?
+
+297
+00:26:47,875 --> 00:26:53,195
+We have space, comma, dot, we don't want any of these characters, these all are unnecessary
+
+298
+00:26:53,195 --> 00:26:54,714
+characters for us.
+
+299
+00:26:55,635 --> 00:26:56,635
+So what did we mention there?
+
+300
+00:26:56,635 --> 00:27:01,395
+We have written name, dot, strip, okay, in that brackets we have mentioned all the characters
+
+301
+00:27:01,395 --> 00:27:06,234
+which we don't want like the space, the comma and the dot, okay, so for that what did we
+
+302
+00:27:06,234 --> 00:27:07,234
+get?
+
+303
+00:27:07,234 --> 00:27:11,515
+We got directly Ravi, okay, all of these whichever are leading and trailing they are removed
+
+304
+00:27:11,515 --> 00:27:17,195
+and we got the string, right, we'll try this out in the code playground.
+
+305
+00:27:17,195 --> 00:27:23,315
+So let's say we have Ravi itself, there are some let's say commas, dots, comma, space,
+
+306
+00:27:23,315 --> 00:27:32,555
+I'm just say Ravi, okay, and then there is a comma, dot, okay, there is a spaces, okay
+
+307
+00:27:32,555 --> 00:27:34,635
+like this you can add anything.
+
+308
+00:27:34,635 --> 00:27:35,635
+Now what I want?
+
+309
+00:27:35,635 --> 00:27:41,274
+I don't want the extra commas, extra spaces, dots, I don't want any of this, so for that
+
+310
+00:27:41,274 --> 00:27:42,274
+what I'll do?
+
+311
+00:27:42,274 --> 00:27:46,875
+I don't want the spaces, so space I'll give that and then I don't want the comma, I don't
+
+312
+00:27:46,875 --> 00:27:53,034
+want dot, okay, I've mentioned all of these things here, okay and now I'll run the code.
+
+313
+00:27:53,755 --> 00:27:54,755
+See what did we get?
+
+314
+00:27:54,755 --> 00:28:00,755
+We got this, right, so for clarity what I'll do is I'll just remove this part, so see we
+
+315
+00:28:00,755 --> 00:28:06,914
+got Ravi, right, it's very clear, right, so you can mention all the characters whichever
+
+316
+00:28:06,914 --> 00:28:11,555
+are unnecessary for you and you can mention here in the strip and the leading and the
+
+317
+00:28:11,555 --> 00:28:15,875
+trailing those characters which are present in the leading and trailing will get removed,
+
+318
+00:28:15,875 --> 00:28:16,875
+okay.
+
+319
+00:28:16,875 --> 00:28:19,354
+Now we'll go back to the slides.
+
+320
+00:28:19,354 --> 00:28:23,195
+So we have seen this, right, we got the output as Ravi, okay.
+
+321
+00:28:23,195 --> 00:28:28,195
+Now what we'll do is we'll learn about another string method, okay, let's say there is a
+
+322
+00:28:28,195 --> 00:28:33,195
+spelling mistake in the string, you have written a paragraph or very big string, okay, in that
+
+323
+00:28:33,195 --> 00:28:39,354
+let's say everywhere where you have written the, okay, the, instead of writing the you
+
+324
+00:28:39,354 --> 00:28:44,774
+have written the, okay, now what you have to do to correct this mistake?
+
+325
+00:28:44,774 --> 00:28:49,815
+You have to go to the every place, you have to first identify the every place, go there,
+
+326
+00:28:49,815 --> 00:28:54,294
+correct this, okay, every place where you have done that mistake you have to correct
+
+327
+00:28:54,294 --> 00:28:55,294
+it, okay.
+
+328
+00:28:55,294 --> 00:29:02,094
+Instead of that the python has provided as a string method, with that string method what
+
+329
+00:29:02,094 --> 00:29:08,815
+we can do is we can replace all the occurrences of TEH with the correct spell which is THE,
+
+330
+00:29:08,815 --> 00:29:14,695
+okay, all the occurrences wherever we have done that mistake it will get corrected, okay,
+
+331
+00:29:15,615 --> 00:29:19,774
+so it's very simple, right, instead of you going every place and then correcting it what
+
+332
+00:29:19,774 --> 00:29:24,774
+we can do is we can replace it like this and we can correct the mistake.
+
+333
+00:29:24,774 --> 00:29:29,455
+So when what is that string method that is nothing but replace, okay, we have the string
+
+334
+00:29:29,455 --> 00:29:35,875
+variable dot, we'll write the replace, okay, dot replace of and we'll give the string which
+
+335
+00:29:35,875 --> 00:29:40,734
+has to be replaced, the old substring, right, a part of the string we wanted to be replaced,
+
+336
+00:29:40,734 --> 00:29:42,935
+right, so that is the old substring.
+
+337
+00:29:43,174 --> 00:29:48,015
+And the double quotes you'll give that old substring, comma and you'll give the new substring
+
+338
+00:29:48,015 --> 00:29:54,654
+that is the new substring with which it has to get replaced, okay, then wherever this
+
+339
+00:29:54,654 --> 00:29:59,094
+old part of the string is present, the part of the string or the substring we'll call
+
+340
+00:29:59,094 --> 00:30:04,815
+the same, okay, wherever the old substring is present it will replace it with the new
+
+341
+00:30:04,815 --> 00:30:10,414
+substring, okay, we'll see here, there you can see there is a sentence it's written actually
+
+342
+00:30:10,414 --> 00:30:15,935
+what we wanted to write is the cat and the dog, okay, here by mistake what did we write
+
+343
+00:30:15,935 --> 00:30:23,174
+instead of writing THE for the, we have written TEH, okay, so wherever there is TEH now I
+
+344
+00:30:23,174 --> 00:30:31,214
+want to replace it with THE, okay, so what we have written there, sentence dot replace
+
+345
+00:30:31,214 --> 00:30:35,695
+of and what did we write, we have written the old string, right, the string it has to
+
+346
+00:30:35,695 --> 00:30:43,375
+be replaced, so the part of the substring that has to be replaced is TEH, that substring
+
+347
+00:30:43,375 --> 00:30:48,935
+should be replaced with THE which is the correct spelling, right, so what did we write, we
+
+348
+00:30:48,935 --> 00:30:53,935
+have written first the old which is TEH, comma and we have given the new.
+
+349
+00:30:53,935 --> 00:31:00,294
+Now we'll see the output, see we got the cat and the dog, we did not go identify wherever
+
+350
+00:31:00,294 --> 00:31:05,015
+we have done that mistake and correct it, right, so in this way simply by using this
+
+351
+00:31:05,015 --> 00:31:11,414
+replace what we can do, we can directly correct it and we can get the output, okay, clear,
+
+352
+00:31:11,414 --> 00:31:15,174
+right, so we'll try this out in the code playground.
+
+353
+00:31:15,174 --> 00:31:24,255
+So let's say we have some message, okay, equal to say we'll take the same example.
+
+
+
+354
+00:31:24,230 --> 00:31:37,310
+okay, now what we have to do is we have to replace dot, we have to replace, what we have
+
+355
+00:31:37,310 --> 00:31:38,310
+to replace?
+
+356
+00:31:38,310 --> 00:31:39,310
+What is the substring?
+
+357
+00:31:39,310 --> 00:31:44,390
+Teh is a substring right, we have to replace it with, what is the correct spelling?
+
+358
+00:31:44,390 --> 00:31:49,590
+Thehe right, so we have to replace teh with thehe, so first what we have to do?
+
+359
+00:31:49,590 --> 00:31:53,990
+We have to give the old substring then we have to give the new substring.
+
+360
+00:31:54,750 --> 00:32:02,550
+Now let's say, let's store it in the message and then now what we will do is we will print
+
+361
+00:32:02,550 --> 00:32:03,550
+it.
+
+362
+00:32:03,550 --> 00:32:11,070
+Now we will run the code and see, okay, see we got the output right, the cat and the dog,
+
+363
+00:32:11,070 --> 00:32:16,270
+see it all got updated, see here you can see it got updated, like this that could be anything,
+
+364
+00:32:16,590 --> 00:32:27,230
+let's say you have written another substring, can we write out something, let's say education
+
+365
+00:32:27,230 --> 00:32:38,829
+is a key factor, right, education is important, let's say we have made some mistake in education,
+
+366
+00:32:38,829 --> 00:32:44,030
+okay, let's say I forgot to write you, okay, now what I will do?
+
+367
+00:32:44,789 --> 00:32:50,550
+I will copy this part, okay, so this is the old substring which has to be replaced with
+
+368
+00:32:50,550 --> 00:32:55,829
+the correct substring, right, so we actually write education, okay, now we will run the
+
+369
+00:32:55,829 --> 00:33:03,670
+code and see, see it got updated right, we have education, see here, like this what we
+
+370
+00:33:03,670 --> 00:33:09,109
+can do is we can correct the mistakes, we can update the messages with the appropriate
+
+371
+00:33:09,109 --> 00:33:13,990
+things, right, so this is very important when it comes to having so many changes like this,
+
+372
+00:33:14,950 --> 00:33:16,950
+okay, now we'll go back to the slides.
+
+373
+00:33:16,950 --> 00:33:22,749
+So we have seen about the replace string method, right, now we'll learn about another new string
+
+374
+00:33:22,749 --> 00:33:30,670
+method, let's say you have a string, you have given a URL as a string, what you have to
+
+375
+00:33:30,670 --> 00:33:40,349
+do is you have to check whether this URL is secure or not, so generally if a URL has HTTPS
+
+376
+00:33:40,349 --> 00:33:49,069
+colon slash slash then it is a secure URL, if it has HTTP colon slash slash then it is
+
+377
+00:33:49,069 --> 00:33:56,789
+not a secure URL, so HTTPS colon slash slash is important to say that it is a secure URL,
+
+378
+00:33:56,789 --> 00:33:57,789
+okay.
+
+379
+00:33:57,789 --> 00:34:02,869
+Now what we have to check, any URL that is given to us we have to check whether it is
+
+380
+00:34:02,869 --> 00:34:11,470
+starting with HTTPS colon slash slash, right, this is what we have to check, okay, so for
+
+381
+00:34:11,470 --> 00:34:19,190
+that we have a string method which is starts with, so we have the string variable dot starts
+
+382
+00:34:19,190 --> 00:34:24,030
+with and in the brackets we will give the string, the substring with which we have to
+
+383
+00:34:24,030 --> 00:34:31,030
+check, okay, so this starts with will give us true if the actually string starts with
+
+384
+00:34:31,190 --> 00:34:37,069
+that specific value that we have mentioned, otherwise it will give us false, so here what
+
+385
+00:34:37,069 --> 00:34:46,750
+we have, we have URL as HTTPS colon slash slash, right, so what are we checking with?
+
+386
+00:34:46,750 --> 00:34:53,590
+We are checking whether this URL starts with that HTTPS colon slash slash, yeah, so and
+
+387
+00:34:53,590 --> 00:35:00,909
+that is getting stored in a secure URL, so since the HTTPS colon slash slash on the go
+
+388
+00:35:00,909 --> 00:35:08,110
+model dot com is starting with that HTTPS colon slash slash, so it is a secure URL,
+
+389
+00:35:08,110 --> 00:35:09,670
+so what we should get output?
+
+390
+00:35:09,670 --> 00:35:13,830
+We should get the output as true, so we got the output as true, right, now we will do
+
+391
+00:35:13,830 --> 00:35:17,149
+the same thing in our code playground and check.
+
+392
+00:35:17,149 --> 00:35:27,950
+So let's say we have a URL, okay, we will take the example of Arzoni, HTTPS slash slash,
+
+393
+00:35:27,950 --> 00:35:41,230
+this means it's a secure URL, okay, this is the URL, okay, now what we have to do is we
+
+394
+00:35:41,230 --> 00:35:47,870
+have to check whether this URL starts with, so here starts with is the string method,
+
+395
+00:35:47,870 --> 00:35:53,550
+okay, whether it starts with HTTPS colon slash slash, we have to check whether it starts
+
+396
+00:35:53,550 --> 00:36:03,589
+with this or not, okay, so if it is starts with this it's a secure URL, okay, so now
+
+397
+00:36:03,589 --> 00:36:09,110
+we will print this and see whether it's secure or not, okay.
+
+398
+00:36:09,990 --> 00:36:10,990
+Now what output did we get?
+
+399
+00:36:10,990 --> 00:36:16,710
+We got it true, let's say here it is HTTP, then it is not secure, right, so what we should
+
+400
+00:36:16,710 --> 00:36:17,710
+get?
+
+401
+00:36:17,710 --> 00:36:22,390
+We should get false, see if let's say this is not present, let's say there is some say
+
+402
+00:36:22,390 --> 00:36:25,110
+com, then what we should get?
+
+403
+00:36:25,110 --> 00:36:30,430
+We are getting as false, right, so it should start with this, like this we can specify
+
+404
+00:36:30,430 --> 00:36:39,509
+any string you want, let's say you want to check, so here is present, you have to check
+
+405
+00:36:39,509 --> 00:36:45,629
+whether on the go is present or not, okay, that also you can check, okay, see we got
+
+406
+00:36:45,629 --> 00:36:50,550
+true, right, because there is on the go, like this what we can do is we can try with different
+
+407
+00:36:50,550 --> 00:36:55,430
+values and see, okay, starts with you can try with this string method and see and try
+
+408
+00:36:55,430 --> 00:37:00,469
+out with different, different strings that you can give and check it out, okay.
+
+409
+00:37:00,469 --> 00:37:05,710
+Now we will go back to the slides, okay, we have seen about starts with, right, so similarly
+
+410
+00:37:05,710 --> 00:37:11,589
+what we have is we have ends with string method also, let's say what you want to do is you
+
+411
+00:37:11,589 --> 00:37:17,349
+want to check whether the given email id is a gmail id or not, you are given with an id,
+
+412
+00:37:17,349 --> 00:37:21,990
+you have to check whether it's a gmail id or not, so for that what we have to check
+
+413
+00:37:21,990 --> 00:37:27,830
+whether the email id ends with at the rate gmail.com, right, we have to check this, so
+
+414
+00:37:27,830 --> 00:37:32,870
+for that what we have similar to starts with, we have ends with, okay, so we have the string
+
+415
+00:37:32,870 --> 00:37:38,870
+variable dot ends with in the brackets we'll mention the string with which we have to check,
+
+416
+00:37:38,870 --> 00:37:44,110
+here with what we have to check at the rate gmail.com, so we have mentioned that string,
+
+417
+00:37:44,110 --> 00:37:50,509
+okay, so if the string actually ends with the specified value then it will give us true,
+
+418
+00:37:50,509 --> 00:37:55,270
+otherwise it will give us false, okay, so here actually it's ending with at the rate
+
+419
+00:37:55,270 --> 00:37:58,270
+gmail.com, so what output we should get?
+
+420
+00:37:58,270 --> 00:38:03,950
+We should get true, we got that output, okay, we'll try this out.
+
+421
+00:38:03,950 --> 00:38:13,909
+Let's say we have an email id, okay, equal to say I'll just write my, I'm just writing
+
+422
+00:38:13,909 --> 00:38:19,670
+my email id, okay, pranita.gmail.com, okay, now what I have to check is whether it's a
+
+423
+00:38:19,830 --> 00:38:25,870
+gmail id or not, so for that what I'll do, I have email id dot, I have to check ends
+
+424
+00:38:25,870 --> 00:38:33,589
+with, right, so I have to check with at the rate gmail.com, so with whichever string that
+
+425
+00:38:33,589 --> 00:38:37,870
+you want to check you have to mention that here, okay.
+
+426
+00:38:37,870 --> 00:38:53,830
+Now let's say I'll store this here, now we'll print this, now we'll run the code and see,
+
+427
+00:38:53,830 --> 00:38:54,830
+what we should get?
+
+428
+00:38:54,830 --> 00:39:06,029
+We should get true, so we got true, let's say I've given some yahoo account, okay, okay,
+
+429
+00:39:06,029 --> 00:39:07,029
+then what we should get?
+
+430
+00:39:07,029 --> 00:39:12,029
+We should get say false, so we got false, right, so in this way what we can do is we
+
+431
+00:39:12,029 --> 00:39:18,509
+can check whether the string is ending with the specified value or not, okay.
+
+432
+00:39:18,509 --> 00:39:23,029
+Now we'll go back to the slides, so we have checked with ends with, right, there are some
+
+433
+00:39:23,029 --> 00:39:27,430
+other string methods, we'll discuss about that also, let's say what you want to do is
+
+434
+00:39:27,430 --> 00:39:33,309
+you want to convert the given string into upper cases like you are filling some application
+
+435
+00:39:33,309 --> 00:39:38,469
+form, okay, then what you have to do is whatever may be in whichever whether you are giving
+
+436
+00:39:38,469 --> 00:39:43,230
+a capital letters or small letters you have to convert it into capital letters that is
+
+437
+00:39:43,230 --> 00:39:45,430
+upper case letters, okay.
+
+438
+00:39:45,430 --> 00:39:51,349
+So we have to convert the string into upper case, so for that also we have a string method,
+
+439
+00:39:51,349 --> 00:39:56,949
+see the python has given us a lot of inbuilt methods, right, so with all of these methods
+
+440
+00:39:56,949 --> 00:40:02,029
+the tasks of R become very, very easy, so here what we have?
+
+441
+00:40:02,029 --> 00:40:07,589
+We have this string variable dot upper of, okay, what will it do?
+
+442
+00:40:07,589 --> 00:40:12,709
+Whatever string is present in the string variable, okay, we'll convert it in, all the characters
+
+443
+00:40:12,709 --> 00:40:17,510
+in that string will be converted into upper case letters, see here what we have?
+
+444
+00:40:17,510 --> 00:40:23,349
+We have written RAVI, all of these letters are in lower case that is they are small letters,
+
+445
+00:40:23,349 --> 00:40:28,750
+these are not capital letters, when we are writing name dot upper of, what did we get?
+
+446
+00:40:28,750 --> 00:40:33,990
+We got RAVI, right, all of them are capital C, capital R, capital A, capital V, capital
+
+447
+00:40:33,990 --> 00:40:38,789
+A, like this every letter is capital, okay, clear.
+
+448
+00:40:38,789 --> 00:40:44,750
+Now let's say some letters are upper case, some letters are lower case, see here we have
+
+449
+00:40:44,750 --> 00:40:51,110
+written AYUSH, then A is capital, Y is small, U is capital, S is small like this, right,
+
+450
+00:40:51,110 --> 00:40:56,190
+in that case also irrespective of whether it's a capital letter that is whether it's
+
+451
+00:40:56,190 --> 00:41:01,190
+an upper case letter or whether it's a lower case letter, we are converting it into an
+
+452
+00:41:01,190 --> 00:41:06,550
+upper case letter, see we have AYUSH with all the letters in upper case, right, we'll
+
+453
+00:41:06,550 --> 00:41:09,110
+try this out and see.
+
+454
+00:41:09,110 --> 00:41:16,949
+So let's say we have a name, okay, let's say I'll write my name, okay, now what I want
+
+455
+00:41:16,949 --> 00:41:22,550
+to do is I want to convert each and every character in my name into upper case, so for
+
+456
+00:41:22,550 --> 00:41:23,550
+that what I'll use?
+
+457
+00:41:23,550 --> 00:41:36,389
+I'll use name dot upper, okay, now we'll print this and see, now we'll run the code.
+
+458
+00:41:36,389 --> 00:41:37,389
+So what do we have?
+
+459
+00:41:37,389 --> 00:41:42,709
+Each and every character is in upper case, right, so irrespective, see here P is actually
+
+460
+00:41:42,709 --> 00:41:50,070
+capital, let's say I'll make it T, I'll make an N capital, right, so what happened?
+
+461
+00:41:50,070 --> 00:41:57,550
+Every letter has been converted into upper case, right, now we'll go back to the slides.
+
+462
+00:41:57,550 --> 00:42:02,190
+Similarly what we can do is we can convert every letter in the string into lower case
+
+463
+00:42:02,190 --> 00:42:08,230
+also that is small letters, okay, see here we have RAVI where each letter is in upper
+
+464
+00:42:08,230 --> 00:42:14,110
+case, we have converted into smaller case, so for that we have the string method lower,
+
+465
+00:42:14,110 --> 00:42:20,789
+okay, so the syntax is similar to upper, we have the string variable dot lower in brackets,
+
+466
+00:42:20,789 --> 00:42:23,149
+okay, see then we have the brackets.
+
+467
+00:42:23,149 --> 00:42:24,149
+What will it do?
+
+468
+00:42:24,149 --> 00:42:29,349
+It will convert each character present in the string to lower case, okay, so we got
+
+469
+00:42:29,349 --> 00:42:35,589
+the output, see it's all in capitals, we got RAVI, okay, similarly we have RAVI, then we
+
+470
+00:42:35,589 --> 00:42:41,269
+have written name dot lower, so we got RAVI, similarly see A is capital, still it has been
+
+471
+00:42:41,269 --> 00:42:46,469
+converted into lower, P is in lower case, again we'll have it here lower case also,
+
+472
+00:42:46,469 --> 00:42:50,190
+okay, we'll try this out and see.
+
+473
+00:42:50,190 --> 00:42:56,190
+Let's say I'll write my entire name as like this, okay, now what I want?
+
+474
+00:42:56,190 --> 00:43:02,750
+I want to convert it into lower case, okay, so now I'll run the code and you can see my
+
+475
+00:43:02,909 --> 00:43:08,870
+name is in all lower case letters, right, so let's say few are in lower case, few are
+
+476
+00:43:08,870 --> 00:43:15,230
+in upper case, okay, now we'll run the code and see, see all of the characters will get
+
+477
+00:43:15,230 --> 00:43:19,829
+converted, see all of this characters got converted into lower case, so in this way
+
+478
+00:43:19,829 --> 00:43:24,310
+what we can do is we can convert the all the characters present in the string to either
+
+479
+00:43:24,310 --> 00:43:29,570
+upper case or lower case with the string methods upper and lower, okay.
+
+480
+00:43:29,570 --> 00:43:33,690
+Now we'll go back to the slides, so we have seen about this, right, we have seen the output
+
+481
+00:43:33,690 --> 00:43:39,889
+also, okay, so today what we have done, we have learnt a lot of new things, right, the
+
+482
+00:43:39,889 --> 00:43:45,010
+extended slicing, so many string methods, today is so much knowledge that we have gained
+
+483
+00:43:45,010 --> 00:43:51,449
+today, right, so we have seen about the extended slicing that is in case in a string, you want
+
+484
+00:43:51,449 --> 00:43:56,730
+to extract the characters which are present in a pattern like after 3 steps you want a
+
+485
+00:43:56,889 --> 00:44:02,490
+character, after every 3 steps you want a particular character, okay, in that cases
+
+486
+00:44:02,490 --> 00:44:08,409
+we will use extended slicing, okay, we have seen about the syntax also, right, we'll give
+
+487
+00:44:08,409 --> 00:44:15,130
+the variable name, square brackets, start index, colon, end index, colon and the step,
+
+488
+00:44:15,130 --> 00:44:21,170
+okay, after how many steps you want the character, that step you need to mention them, okay,
+
+489
+00:44:21,170 --> 00:44:26,610
+and then we have seen about few string methods, so the sum of the string methods are strip,
+
+490
+00:44:26,690 --> 00:44:31,329
+right, so if you want to remove the extra spaces which are present in the beginning
+
+491
+00:44:31,329 --> 00:44:37,969
+or the end, the leading spaces and the trading spaces, so for that we use strip, other than
+
+492
+00:44:37,969 --> 00:44:43,849
+spaces you can also remove the unnecessary characters that you want say dot, comma or
+
+493
+00:44:43,849 --> 00:44:49,849
+hyphen, at the rate hash like this whichever character or it could be some alphabets also,
+
+494
+00:44:49,849 --> 00:44:53,730
+okay, you can whichever character you want, if you want to remove it from the leading
+
+495
+00:44:53,730 --> 00:44:57,409
+and the trading you can mention that in the strip.
+
+496
+00:44:57,409 --> 00:45:03,649
+And then we have seen about is digit, okay, in case if you want to check whether every
+
+497
+00:45:03,649 --> 00:45:08,570
+digit in the string, if every digit present in this, every character present in the string
+
+498
+00:45:08,570 --> 00:45:14,690
+is a digit, you use the is digit, okay, so we have seen that it'll return true, it'll
+
+499
+00:45:14,690 --> 00:45:22,089
+give us true if every character present in the string is a digit, okay, otherwise it
+
+500
+00:45:22,089 --> 00:45:24,130
+will give us false.
+
+501
+00:45:24,130 --> 00:45:29,769
+Then we have seen about replace, so let's say there is a part of the string with which
+
+502
+00:45:29,769 --> 00:45:36,449
+you want to replace it with a new string, okay, so for that we will use replace, so
+
+503
+00:45:36,449 --> 00:45:41,969
+the replace will check all the occurrences of that old string and will replace it with
+
+504
+00:45:41,969 --> 00:45:47,289
+the new string, right, and then we have seen about starts with, if you want to check whether
+
+505
+00:45:47,289 --> 00:45:53,370
+the string starts with a particular value you can use the starts with string method,
+
+506
+00:45:53,370 --> 00:45:58,250
+similarly if you want to check whether the string ends with a particular value you can
+
+507
+00:45:58,250 --> 00:46:03,370
+use ends with, then lower and upper, in case you want to convert the string, if you want
+
+508
+00:46:03,370 --> 00:46:08,529
+to convert each and every character of the string to lower case you can use lower and
+
+509
+00:46:08,529 --> 00:46:12,930
+if you want to convert them to upper case you can use upper, right, so we have learned
+
+510
+00:46:12,930 --> 00:46:17,730
+a lot of new things today, so we need to apply those things, right, then only we will
+
+511
+00:46:17,730 --> 00:46:22,889
+be able to understand them well and do a lot of coding questions with that, so for that
+
+512
+00:46:22,889 --> 00:46:28,370
+we are providing you a lot of coding questions, so whenever you find time try to solve these
+
+513
+00:46:28,370 --> 00:46:33,209
+questions, okay, so when you are applying these concepts and solving these questions
+
+514
+00:46:33,209 --> 00:46:37,889
+that's when you will be able to go forward in this programming, it's very important that
+
+515
+00:46:37,889 --> 00:46:43,570
+you practice, okay, there are coding questions available, solve them, okay, so till then
+
+516
+00:46:43,570 --> 00:46:45,769
+thank you and all the best.
+

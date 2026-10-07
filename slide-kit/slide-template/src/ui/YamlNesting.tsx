@@ -22,6 +22,11 @@ const YAML = [
   { text: 'skills:', indent: 1 },
   { text: '- python', indent: 2 },
   { text: '- react', indent: 2 },
+  /* Two blank rows, pairing with Python's `]` and `}`. YAML closes a block by
+     dedenting, so there is nothing to write here, and that absence IS the
+     comparison the slide is making. */
+  { text: '', indent: 0 },
+  { text: '', indent: 0 },
 ]
 
 const PY = [
@@ -30,6 +35,18 @@ const PY = [
   { text: '"skills": [', indent: 1 },
   { text: '"python",', indent: 2 },
   { text: '"react",', indent: 2 },
+  /*
+    THE TWO CLOSING LINES ARE NOT OPTIONAL, and they were missing.
+
+    The panel is captioned "Python you already write" and showed a dict literal
+    that opened a brace and a bracket and closed neither. On the one slide whose
+    argument is that YAML is a format they can already read, the exhibit was not
+    a thing anyone could run. YAML's own panel is padded with two blank rows so
+    the two panels stay the same height and every line still pairs with the line
+    opposite it, which is the alignment the header comment above depends on.
+  */
+  { text: ']', indent: 1 },
+  { text: '}', indent: 0 },
 ]
 
 function Panel({
@@ -56,12 +73,12 @@ function Panel({
       <div className="mb-2 text-xs font-bold uppercase tracking-wide" style={{ color: colors.muted }}>
         {title}
       </div>
-      <div className="space-y-1">
+      <div className="space-y-0">
         {lines.map((l, i) => (
           <div
             key={i}
             className="font-mono text-body-sm font-semibold"
-            style={{ paddingLeft: l.indent * 16, color: l.indent === 0 ? keyColor : colors.ink, height: 20 }}
+            style={{ paddingLeft: l.indent * 16, color: l.indent === 0 ? keyColor : colors.ink, height: 18 }}
           >
             {l.text}
           </div>
@@ -80,7 +97,7 @@ export function YamlNesting({ className = '' }: { className?: string }) {
         <Panel title="YAML" lines={YAML} keyColor={colors.brandDark} instant={instant} delay={0.1} />
 
         <motion.div
-          className="flex h-[168px] w-10 shrink-0 items-center justify-center"
+          className="flex h-[174px] w-[104px] shrink-0 items-center justify-center"
           initial={instant ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4, delay: instant ? 0 : 0.5 }}
@@ -95,14 +112,14 @@ export function YamlNesting({ className = '' }: { className?: string }) {
 
       {/* The two rules, stated as rules, because the panels show them but do not
           name them. */}
-      <div className="mt-3 flex gap-3">
+      <div className="mt-2 flex gap-3">
         {[
           { rule: 'key: value', gloss: 'a pair, like a dictionary' },
           { rule: 'indentation', gloss: 'nesting, like a Python block' },
         ].map((r, i) => (
           <motion.div
             key={r.rule}
-            className="flex-1 rounded-lg px-3 py-2"
+            className="flex-1 rounded-lg px-3 py-1.5"
             style={{ background: colors.surface2 }}
             initial={instant ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}

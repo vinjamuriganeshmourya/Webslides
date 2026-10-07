@@ -1,0 +1,90 @@
+<section class="block block-hook" id="hook"><div class="block-head"><span class="block-icon" aria-hidden="true">&#129693;</span><h2>Hook &mdash; Behind the scenes on a &#8377;450 payment</h2></div><div class="pcard" data-label="Hook &mdash; Behind the scenes on a &#8377;450 payment"><div class="slide-head"><span class="slide-title">Hook &mdash; Behind the scenes on a &#8377;450 payment</span></div><div class="stage hk-1" id="stage-hook"><div class="sl-head"><span class="sl-bar" aria-hidden="true"></span><div><p class="sl-eyebrow">Conditional Statements</p><h3 class="sl-title">Behind the Scenes</h3></div></div>
+<svg class="fig gmorph" viewBox="0 0 1000 480" xmlns="http://www.w3.org/2000/svg" role="img"
+ aria-label="A payment app showing a failed payment with Incorrect PIN, beside the two checks the app runs - the PIN check containing the balance check - which collapse into two indented lines of Python">
+<defs>
+  <linearGradient id="phScreen" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#6D28A8"/><stop offset="1" stop-color="#4C1D7A"/>
+  </linearGradient>
+  <linearGradient id="panelWash" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#F3E9FB"/><stop offset="1" stop-color="#E6F5FC"/>
+  </linearGradient>
+</defs>
+
+<!-- the phone the question is actually about -->
+<g class="gphone">
+<rect x="40" y="40" width="220" height="400" rx="26" fill="#fff" stroke="#4C1D7A" stroke-width="3"/>
+<rect x="125" y="54" width="50" height="8" rx="4" fill="#C9D3DA"/>
+<rect x="56" y="78" width="188" height="346" rx="14" fill="url(#phScreen)"/>
+<!-- the app mark, purple wallet -->
+<circle cx="84" cy="106" r="14" fill="#fff"/>
+<text x="84" y="113" text-anchor="middle" style="font:700 16px var(--sans)" fill="#5F259F">&#8377;</text>
+<text x="106" y="112" style="font:700 15px var(--sans)" fill="#fff">UPI Wallet</text>
+<text x="76" y="152" style="font:600 12px var(--sans)" fill="#C9A9E8">PAYING</text>
+<text x="76" y="180" style="font:600 19px var(--sans)" fill="#fff">Ramesh K.</text>
+<text x="76" y="246" style="font:700 46px var(--sans)" fill="#fff">&#8377;450</text>
+<rect x="76" y="282" width="148" height="48" rx="10" fill="#00BAF2"/>
+<text x="150" y="313" text-anchor="middle" style="font:700 20px var(--sans)" fill="#fff">Pay</text>
+</g>
+<g class="gshut">
+<rect x="56" y="348" width="188" height="56" rx="10" fill="var(--dk-red)"/>
+<text x="150" y="383" text-anchor="middle" style="font:700 19px var(--sans)" fill="#fff">Incorrect PIN</text>
+</g>
+
+<!-- every payment app you use runs the same two checks -->
+<g class="gouter">
+<rect x="300" y="16" width="680" height="60" rx="14" fill="url(#panelWash)"/>
+<circle cx="332" cy="46" r="17" fill="#5F259F"/>
+<text x="332" y="53" text-anchor="middle" style="font:700 17px var(--sans)" fill="#fff">&#8377;</text>
+<g transform="translate(372 46)">
+  <path d="M0 -17 A17 17 0 0 1 14.7 8.5" fill="none" stroke="#EA4335" stroke-width="5" stroke-linecap="round"/>
+  <path d="M14.7 8.5 A17 17 0 0 1 -14.7 8.5" fill="none" stroke="#FBBC04" stroke-width="5" stroke-linecap="round"/>
+  <path d="M-14.7 8.5 A17 17 0 0 1 0 -17" fill="none" stroke="#34A853" stroke-width="5" stroke-linecap="round"/>
+  <text x="0" y="6" text-anchor="middle" style="font:700 17px var(--sans)" fill="#4285F4">G</text>
+</g>
+<text x="404" y="53" style="font:600 21px var(--sans)" fill="#4C1D7A">Every one of them runs the same two checks</text>
+</g>
+
+<!-- the two checks, nested. Only the rects live in .ggroup, so only they collapse. -->
+<g class="ggroup" fill="none" stroke-width="3">
+<rect x="320" y="90" width="640" height="290" rx="16" stroke="#5F259F"/>
+<g class="ginner">
+<rect x="400" y="168" width="520" height="152" rx="13" stroke="#00BAF2" stroke-dasharray="11 8"/>
+<rect x="480" y="245" width="430" height="60" rx="10" stroke="#00BAF2" fill="#E6F7FD"/>
+</g>
+</g>
+<g class="gouter">
+<g fill="none" stroke="#5F259F" stroke-width="2.6">
+<rect x="344" y="119" width="27" height="20" rx="3"/>
+<path d="M350 119 v-6 a7.5 7.5 0 0 1 15 0 v6"/>
+</g>
+<text x="386" y="137" style="font:700 23px var(--sans)" fill="#5F259F">Is the PIN correct?</text>
+<g class="ginner">
+<circle cx="434" cy="199" r="14" fill="none" stroke="#00A3D9" stroke-width="2.6"/>
+<text x="434" y="207" text-anchor="middle" style="font:700 17px var(--sans)" fill="#00A3D9">&#8377;</text>
+<text x="460" y="207" style="font:700 22px var(--sans)" fill="#0B7FAD">Is the balance enough?</text>
+<text x="695" y="284" text-anchor="middle" style="font:700 22px var(--sans)" fill="#0B7FAD">&#8377;450 moves</text>
+</g>
+<rect x="320" y="400" width="640" height="52" rx="12" fill="#FFF3E0" stroke="#F0B95B" stroke-width="2"/>
+<text x="640" y="433" text-anchor="middle" style="font:600 21px var(--sans)" fill="#8A5A12">back to the home screen</text>
+</g>
+<g class="gnote">
+<g stroke="var(--dk-red)" stroke-width="4" stroke-linecap="round">
+<path d="M912 120 l26 26"/>
+<path d="M938 120 l-26 26"/>
+</g>
+<text x="742" y="207" style="font:700 22px var(--sans)" fill="var(--dk-red)">never checked</text>
+</g>
+<g class="gcode">
+<text x="322" y="152" style="font:26px var(--mono)" fill="var(--dk-red)">if <tspan fill="var(--dk-text)">pin_ok</tspan>:</text>
+<text x="362" y="192" style="font:26px var(--mono)" fill="var(--dk-red)">if <tspan fill="var(--dk-text)">balance_ok</tspan>:</text>
+<text x="402" y="262" style="font:26px var(--mono)" fill="#5F259F">transfer<tspan fill="var(--dk-text)">(450)</tspan></text>
+<text x="322" y="342" style="font:26px var(--mono)" fill="#5F259F">home_screen<tspan fill="var(--dk-text)">()</tspan></text>
+</g>
+<g class="gcap">
+<text x="690" y="158" style="font:600 21px var(--sans)" fill="var(--dk-line)">column zero</text>
+<text x="690" y="198" style="font:600 21px var(--sans)" fill="var(--dk-line)">one indent in</text>
+<text x="690" y="348" style="font:600 21px var(--sans)" fill="var(--dk-line)">outside both</text>
+</g>
+</svg>
+<div class="stage-ctl"><button type="button" id="hk-next">Two checks, in order</button><button type="button" class="ghost" id="hk-replay">Replay</button><span class="ctl-count" id="hk-count"></span></div><div class="stage-rule" aria-hidden="true"></div></div>
+</div></section>

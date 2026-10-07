@@ -1,5 +1,10 @@
 # Point-stating lab
 
+**APPROVED 2026-09-02.** The user approved every lab in the kit. All three
+variants are kept and promoted, imported by path from
+`@/ui/points/`, and listed in `slide-kit/slide-types/README.md`.
+
+
 Three ways of stating a short set of points, behind one prop contract, so the
 user can pick what is worth keeping and the winner gets promoted into the kit.
 Nothing in here is a session. The deck renders variants and nothing else.

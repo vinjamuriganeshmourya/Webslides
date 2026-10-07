@@ -1,0 +1,89 @@
+<svg class="fig gmorph" viewBox="0 0 1000 480" xmlns="http://www.w3.org/2000/svg" role="img"
+ aria-label="An attendance register beside the same two steps, call the name and tick, written out once per roll number sixty times, which fold into one block of five lines with a counter and an arrow that loops back to the question">
+
+  <!-- the register on the desk: the thing the question is actually about -->
+  <g class="greg">
+    <rect x="40" y="36" width="250" height="408" rx="14" fill="#fff" stroke="var(--dk-blue)" stroke-width="3"/>
+    <text x="60" y="68" style="font:600 13px var(--sans)" fill="#8A98A3">ATTENDANCE</text>
+    <text x="270" y="68" text-anchor="end" style="font:600 13px var(--sans)" fill="#8A98A3">60 STUDENTS</text>
+    <line x1="40" y1="82" x2="290" y2="82" stroke="#E2E5EB" stroke-width="2"/>
+    <rect x="48" y="220" width="234" height="34" rx="8" fill="#EAF6FC"/>
+    <text x="62" y="112" style="font:600 17px var(--sans)" fill="var(--dk-text)">1</text>
+    <rect x="94" y="99" width="118" height="12" rx="6" fill="#DDE3E8"/>
+    <path d="M242 104 l8 8 l16 -18" fill="none" stroke="#22863A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="62" y="156" style="font:600 17px var(--sans)" fill="var(--dk-text)">2</text>
+    <rect x="94" y="143" width="96" height="12" rx="6" fill="#DDE3E8"/>
+    <path d="M242 148 l8 8 l16 -18" fill="none" stroke="#22863A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="62" y="200" style="font:600 17px var(--sans)" fill="var(--dk-text)">3</text>
+    <rect x="94" y="187" width="130" height="12" rx="6" fill="#DDE3E8"/>
+    <path d="M242 192 l8 8 l16 -18" fill="none" stroke="#22863A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="62" y="244" style="font:600 17px var(--sans)" fill="var(--dk-blue)">4</text>
+    <rect x="94" y="231" width="108" height="12" rx="6" fill="#C9D3DA"/>
+    <text x="62" y="288" style="font:600 17px var(--sans)" fill="var(--dk-text)">5</text>
+    <rect x="94" y="275" width="124" height="12" rx="6" fill="#DDE3E8"/>
+    <text x="62" y="332" style="font:600 17px var(--sans)" fill="var(--dk-text)">6</text>
+    <rect x="94" y="319" width="90" height="12" rx="6" fill="#DDE3E8"/>
+    <text x="165" y="378" text-anchor="middle" style="font:700 26px var(--sans)" fill="#B9BDC4">&#8942;</text>
+    <text x="62" y="422" style="font:600 17px var(--sans)" fill="var(--dk-text)">60</text>
+    <rect x="94" y="409" width="112" height="12" rx="6" fill="#DDE3E8"/>
+  </g>
+
+  <!-- the sixty rows. Only the rects live in .ggroup, so only they fold. -->
+  <g class="ggroup" fill="#fff" stroke="var(--dk-blue)" stroke-width="2.6">
+    <rect x="340" y="80" width="620" height="56" rx="10"/>
+    <rect x="340" y="150" width="620" height="56" rx="10"/>
+    <rect x="340" y="220" width="620" height="56" rx="10"/>
+    <rect x="340" y="290" width="620" height="56" rx="10"/>
+    <rect x="340" y="372" width="620" height="56" rx="10"/>
+  </g>
+
+  <g class="gouter">
+    <text x="364" y="116" style="font:700 21px var(--sans)" fill="var(--dk-blue)">Roll 1</text>
+    <text x="470" y="116" style="font:400 21px var(--sans)" fill="var(--dk-text)">call the name</text>
+    <text x="655" y="116" style="font:400 21px var(--sans)" fill="#B9BDC4">&#183;</text>
+    <text x="690" y="116" style="font:400 21px var(--sans)" fill="var(--dk-text)">tick the register</text>
+    <text x="364" y="186" style="font:700 21px var(--sans)" fill="var(--dk-blue)">Roll 2</text>
+    <text x="470" y="186" style="font:400 21px var(--sans)" fill="var(--dk-text)">call the name</text>
+    <text x="655" y="186" style="font:400 21px var(--sans)" fill="#B9BDC4">&#183;</text>
+    <text x="690" y="186" style="font:400 21px var(--sans)" fill="var(--dk-text)">tick the register</text>
+    <text x="364" y="256" style="font:700 21px var(--sans)" fill="var(--dk-blue)">Roll 3</text>
+    <text x="470" y="256" style="font:400 21px var(--sans)" fill="var(--dk-text)">call the name</text>
+    <text x="655" y="256" style="font:400 21px var(--sans)" fill="#B9BDC4">&#183;</text>
+    <text x="690" y="256" style="font:400 21px var(--sans)" fill="var(--dk-text)">tick the register</text>
+    <text x="364" y="326" style="font:700 21px var(--sans)" fill="var(--dk-blue)">Roll 4</text>
+    <text x="470" y="326" style="font:400 21px var(--sans)" fill="var(--dk-text)">call the name</text>
+    <text x="655" y="326" style="font:400 21px var(--sans)" fill="#B9BDC4">&#183;</text>
+    <text x="690" y="326" style="font:400 21px var(--sans)" fill="var(--dk-text)">tick the register</text>
+    <text x="650" y="358" text-anchor="middle" style="font:700 30px var(--sans)" fill="#B9BDC4">&#8942;</text>
+    <text x="364" y="408" style="font:700 21px var(--sans)" fill="var(--dk-blue)">Roll 60</text>
+    <text x="470" y="408" style="font:400 21px var(--sans)" fill="var(--dk-text)">call the name</text>
+    <text x="655" y="408" style="font:400 21px var(--sans)" fill="#B9BDC4">&#183;</text>
+    <text x="690" y="408" style="font:400 21px var(--sans)" fill="var(--dk-text)">tick the register</text>
+  </g>
+
+  <!-- step two: the two things the room has to notice -->
+  <g class="gnote">
+    <text x="960" y="62" text-anchor="end" style="font:700 21px var(--sans)" fill="var(--dk-red)">the same two lines, sixty times</text>
+    <rect x="700" y="436" width="256" height="34" rx="8" fill="var(--dk-red)"/>
+    <text x="828" y="460" text-anchor="middle" style="font:700 17px var(--sans)" fill="#fff">Roll 61? Nobody. Stop.</text>
+  </g>
+
+  <!-- step three: one block, one counter, one arrow back to the question -->
+  <g class="gcode">
+    <rect x="340" y="136" width="620" height="304" rx="14" fill="var(--dk-card)"/>
+    <path d="M362 396 H350 V244 H358" fill="none" stroke="#F5A623" stroke-width="3" stroke-dasharray="8 6" stroke-linecap="round"/>
+    <path d="M356 236 L370 244 L356 252 Z" fill="#F5A623"/>
+    <text x="380" y="196" style="font:25px var(--mono)" fill="var(--dk-text)">roll = <tspan fill="var(--dk-blue)">1</tspan></text>
+    <text x="380" y="244" style="font:25px var(--mono)" fill="var(--dk-red)">while <tspan fill="var(--dk-text)">roll &lt;= </tspan><tspan fill="var(--dk-blue)">60</tspan><tspan fill="var(--dk-text)">:</tspan></text>
+    <text x="428" y="296" style="font:25px var(--mono)" fill="var(--dk-text)">call the name</text>
+    <text x="428" y="344" style="font:25px var(--mono)" fill="var(--dk-text)">tick the register</text>
+    <text x="428" y="396" style="font:25px var(--mono)" fill="var(--dk-text)">roll = roll + <tspan fill="var(--dk-blue)">1</tspan></text>
+  </g>
+
+  <g class="gcap">
+    <text x="760" y="196" style="font:600 21px var(--sans)" fill="var(--dk-line)">start counting</text>
+    <text x="760" y="244" style="font:600 21px var(--sans)" fill="var(--dk-line)">ask this every time</text>
+    <text x="760" y="320" style="font:600 21px var(--sans)" fill="var(--dk-line)">the two lines</text>
+    <text x="760" y="396" style="font:600 21px var(--sans)" fill="var(--dk-line)">next student</text>
+  </g>
+</svg>

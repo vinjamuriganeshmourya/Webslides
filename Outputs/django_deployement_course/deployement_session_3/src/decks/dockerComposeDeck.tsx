@@ -9,7 +9,7 @@ import {
   FeedbackSlide,
   KeyTakeawaysSlide,
   PracticeSlide,
-  QuizTimeSlide,
+  QuestionSlide,
   RecapSlide,
   SectionBreakerSlide,
   ThankYouSlide,
@@ -25,6 +25,7 @@ import {
   DataTable,
   FileTree,
   HandRitual,
+  Icons,
   OneProcessRule,
   Orchestra,
   StackUp,
@@ -103,13 +104,161 @@ const SESSION = 'Docker Compose for Multi-Container Apps'
  *   CWD                  every `docker compose` command, because Compose reads
  *                        `docker-compose.yml` from the folder you stand in
  *
- * That last one is why slide 58 exists at all: run it one level up and Compose
+ * That last one is why the wrong-folder slide exists at all: run it one level up and Compose
  * says `no configuration file provided`. Never simplify these three to one path.
  */
 const PROJECT = 'C:\\nxttrendz'
 const CWD = `${PROJECT}\\docker-demo`
 const BUILD_BE = `${CWD}\\backend`
 const BUILD_FE = `${CWD}\\frontend`
+
+/**
+ * THE COMPOSE NETWORK'S EDGE, DRAWN AS AN EDGE.
+ *
+ * The closing slide of concept 4 used to be words only: a lead, one bullet and a
+ * callout saying that a container from a separate `docker run` cannot resolve
+ * `backend`. That is a claim about a BOUNDARY, and a boundary is the one kind of
+ * claim a sentence is worst at: the room had just watched two containers talk to
+ * each other by name, and nothing on the slide showed where that stops.
+ *
+ * WHY NOT AN EXISTING FIGURE. `ComposeNetwork` takes `act: 0 | 1` and both acts
+ * draw the same two containers with only the arrow moving, which is its whole
+ * contract on slides 64 and 65; it has no third container and no outside. And
+ * `MachineBoundary` draws a different session's problem entirely (a browser,
+ * `localhost`, a second person's computer), so reaching for it would be content
+ * rule 8's exact failure: an available-but-unrelated illustration that
+ * contradicts the slide it sits on.
+ *
+ * SAME FOOTPRINT AS `ComposeNetwork`, 620x268, deliberately. Concept 4 now ends
+ * on three frames whose figure occupies the same rectangle, so the eye reads the
+ * third as the same picture with something added rather than as a new diagram.
+ *
+ * NO SVG TEXT. Every label here is a real DOM node in a flex box, so it cannot
+ * collide the way SVG labels have twice in this repo (content rule 17), and the
+ * alignment harnesses can actually measure it. Nothing hand-animates either, so
+ * there is no `useInstant` obligation: `ContentSlide` wraps children in one
+ * `Reveal`, which lands the whole figure with its bullets in one beat.
+ */
+function ComposeBoundary() {
+  const card =
+    'flex items-center gap-2.5 whitespace-nowrap rounded-xl border-2 bg-white px-3 py-2.5 font-mono text-body-sm font-bold'
+  return (
+    <div className="relative" style={{ width: 620, height: 268 }}>
+      {/* The project. Dashed, because Compose drew it without being asked and it
+          is the ground the two services sit on, not a box added around them. */}
+      <div
+        className="absolute left-0 top-0 flex flex-col rounded-xl2 border-2 border-dashed px-4 pb-3 pt-3"
+        style={{ width: 340, height: 268, borderColor: colors.brand, background: colors.surface }}
+      >
+        <div
+          className="text-center font-mono text-xs font-bold uppercase tracking-wide"
+          style={{ color: colors.brandDark }}
+        >
+          docker-compose.yml
+        </div>
+        <div className="mt-3 flex flex-1 flex-col justify-center gap-2.5">
+          <div className={card} style={{ borderColor: colors.brand, color: colors.brandDark }}>
+            <Tech name="python" />
+            backend
+          </div>
+          {/* The link that works, stated as the address rather than an arrow, so
+              the working case and the failing case are compared as strings. */}
+          <div
+            className="self-center whitespace-nowrap rounded-pill px-3 py-1 font-mono text-xs font-bold"
+            style={{ background: `${colors.success}1A`, color: colors.success }}
+          >
+            backend:8000 resolves
+          </div>
+          <div className={card} style={{ borderColor: colors.brand, color: colors.brandDark }}>
+            <Tech name="nodejs" />
+            frontend
+          </div>
+        </div>
+        <div className="text-center text-xs font-semibold" style={{ color: colors.muted }}>
+          one project, one network
+        </div>
+      </div>
+
+      {/*
+        THE BLOCKED REQUEST, AS ONE CLUSTER IN THE GAP.
+
+        Line, cross and caption were three separately positioned absolute boxes
+        and the arithmetic put the caption straight across the `frontend` card
+        while the cross floated below its own line. They are one centred flex
+        column now, sitting in the 132px channel between the project and the
+        outsider, so the three parts cannot drift apart from each other and the
+        caption has clear space of its own (content rule 17).
+
+        It stops AT the boundary rather than reaching the backend and failing
+        there, because the container is never on the network in the first place.
+      */}
+      <div
+        className="absolute flex flex-col items-center"
+        style={{ left: 340, top: 104, width: 124 }}
+      >
+        <div className="relative flex h-6 w-full items-center">
+          <div
+            className="h-0 w-full border-t-2 border-dashed"
+            style={{ borderColor: colors.danger }}
+          />
+          <div
+            className="absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-bold text-white"
+            style={{ width: 24, height: 24, background: colors.danger, fontSize: 14 }}
+          >
+            &#215;
+          </div>
+        </div>
+        <div
+          className="mt-1.5 text-center text-xs font-bold leading-tight"
+          style={{ color: colors.danger }}
+        >
+          backend does not resolve
+        </div>
+      </div>
+
+      {/* The outsider. Same card shape as the two services, so the ONLY
+          difference the eye can find is which side of the dashes it is on. */}
+      <div
+        className="absolute flex flex-col items-center gap-2"
+        style={{ left: 464, top: 90, width: 156 }}
+      >
+        <div className={card} style={{ borderColor: colors.muted, color: colors.body }}>
+          docker run
+        </div>
+        <div className="text-center text-xs font-semibold" style={{ color: colors.muted }}>
+          started on its own
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * THE SESSION'S FOUR PROMISES, WRITTEN ONCE AND READ TWICE.
+ *
+ * These are the deck's four sections. The agenda slide states them at the top of
+ * the session and the key takeaways slide states them again at the end, and the
+ * two must be the SAME WORDS: the room is being handed back exactly what it was
+ * promised, so a takeaway that paraphrases its agenda item quietly changes the
+ * promise between the first frame and the last.
+ *
+ * They used to be two separate arrays. Both were correct on the day they were
+ * written and neither was checked against the other afterwards, so all eight
+ * strings had drifted apart: "A Second Container" was handed back as
+ * "Containerise an app in any runtime", and takeaway 3's sub introduced five
+ * YAML keys that appear nowhere on the agenda. The deck's own speaker note had
+ * already written down the rule that catches this ("if a takeaway does not match
+ * an agenda item, one of the two slides is wrong") and nothing enforced it.
+ *
+ * One array does enforce it. A wording change now lands on both slides or on
+ * neither, and there is no version of this file where they disagree.
+ */
+const AGENDA: { title: string; sub: string }[] = [
+  { title: 'Node Container Image', sub: 'The same six instructions, a different runtime' },
+  { title: 'Running Both Python and Node Containers', sub: 'Six commands by hand, and five details to remember' },
+  { title: 'One File for the Whole App', sub: 'Writing docker-compose.yml, one key at a time' },
+  { title: 'Running the Stack: Integrating the Containers', sub: 'One command, and how they find each other by name' },
+]
 
 /* ------------------------------------------------------------------ */
 /* Shared slide furniture                                              */
@@ -127,7 +276,19 @@ function Code({ children }: { children: ReactNode }) {
         identifier is a single token; it wraps as a unit or not at all.
       */
       className="whitespace-nowrap rounded-md px-1.5 py-0.5 font-mono"
-      style={{ fontSize: '0.9em', background: 'rgba(11,95,255,0.10)', color: colors.brandDark }}
+      /*
+        THE BACKGROUND IS A TOKEN WITH AN ALPHA SUFFIX, NOT A LITERAL.
+
+        This was `rgba(11,95,255,0.10)`, copied forward from v2 of session 1 and
+        still sitting in four other decks. `rgb(11,95,255)` is `#0B5FFF`, the OLD
+        brand blue: after the palette moved to `#2D63FB` the chip was tinted with
+        a colour from no theme at all, one shade off every other blue on the
+        slide, on every one of the ~120 inline code mentions in this deck. It is
+        also a colour literal inside a deck file, which hard rule 5 forbids
+        outright. `${colors.brand}1a` is the same 10% tint of the CURRENT brand,
+        and it moves automatically the next time the palette does.
+      */
+      style={{ fontSize: '0.9em', background: `${colors.brand}1a`, color: colors.brandDark }}
     >
       {children}
     </span>
@@ -306,55 +467,22 @@ export const dockerComposeDeck: SlideDef[] = [
     notes: 'Kicker plus the session name. Nothing else competes with it.',
   },
   {
-    id: 'recap-dockerfile',
-    section: 'Opening',
-    label: 'Recap: the Dockerfile',
-    element: (
-      /*
-        THE RECAP OPENS ON THEIR OWN FILE.
-
-        Six lines they typed last week, and the two commands they ran. Starting on
-        the artifact rather than on a list of claims means the room recognises the
-        session before it has to remember anything about it.
-      */
-      <ContentSlide
-        kicker="Recap"
-        title="Where we Left Off"
-        lead="Last session you packaged a three-line Python script into an image of your own"
-        lesson={SESSION}
-        points={[
-          { text: 'Six instructions, one per line', sub: 'Each one became a layer of the image' },
-          { text: 'docker build turned the file into an image', sub: 'docker run started a container from it' },
-        ]}
-      >
-        <CodeBlock
-          filename="docker-demo\Dockerfile"
-          language="dockerfile"
-          code={`FROM python:3.14-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-CMD ["python", "app.py"]`}
-          maxHeight={260}
-        />
-      </ContentSlide>
-    ),
-    notes:
-      'Read the file out loud once, fast. They wrote it, so this is recognition, not teaching. The next slide is the four things it bought them.',
-  },
-  {
     id: 'recap-what-it-bought',
     section: 'Opening',
     label: 'Recap: what it bought',
     element: (
       /*
-        SAME TITLE AS THE SLIDE BEFORE IT, deliberately. The corpus signals a
-        continuation with a repeated title, never with "part 2".
+        THE WHOLE RECAP, ON ONE FRAME (review zolbq2).
 
-        These four points are Session 2's key takeaways. If a point here is not on
-        that slide, it does not belong on this one: the room was promised those
-        four things and handed them back, so opening today with a fifth claim
+        There used to be a `recap-dockerfile` slide ahead of this one, reprinting
+        the six-line Dockerfile they wrote. It was cut as recognised-but-not-taught
+        material: the room reads its own file again on the very next concept, where
+        line one is being changed, so showing it twice in four slides spent a frame
+        on nothing new. The recap now opens straight on what that work bought them.
+
+        These four points are the previous deck's key takeaways. If a point here is
+        not on that slide, it does not belong on this one: the room was promised
+        those four things and handed them back, so opening today with a fifth claim
         makes the two decks disagree about what was covered.
       */
       <RecapSlide
@@ -370,29 +498,7 @@ CMD ["python", "app.py"]`}
       />
     ),
     notes:
-      'Session 2 key takeaways, verbatim and in order. Land on the last one: unchanged layers come from the cache, which is why the dependency file is copied before the code. That fact returns on slide 16.',
-  },
-  {
-    id: 'the-gap',
-    section: 'Opening',
-    label: 'The gap today closes',
-    element: (
-      <ContentSlide
-        kicker="Recap"
-        title="One Program, Two Programs"
-        lead="You packaged one script. Your real application is two, and they do not even run on the same thing"
-        lesson={SESSION}
-        points={[
-          { text: 'React is the UI', sub: 'Components, and the fetch calls that ask for data' },
-          { text: 'Django is the API', sub: 'Models, business logic, and the data itself' },
-          { text: 'So how do you run two containers together?', tone: 'brand' },
-        ]}
-      >
-        <TwoRuntimes />
-      </ContentSlide>
-    ),
-    notes:
-      'The hinge into today. They have shipped this exact pair in the integration course, so do not explain what React and Django are. The question at the bottom is the session, and it stays unanswered until slide 29.',
+      'The previous deck’s key takeaways, verbatim and in order. Land on the last one: unchanged layers come from the cache, which is why the dependency file is copied before the code. That fact returns on the Node Dockerfile slide.',
   },
   {
     id: 'agenda',
@@ -403,19 +509,78 @@ CMD ["python", "app.py"]`}
         kicker={SESSION}
         title="Today's Agenda"
         lesson={SESSION}
-        /* Four items, and they are the deck's four sections. The key takeaways
-           slide restates exactly these, so the room hears the same four things
-           three times: here, as they happen, and at the close. */
-        items={[
-          { title: 'A Second Container', sub: 'The same six instructions, on the Node runtime' },
-          { title: 'Running Both By Hand', sub: 'Six commands, and why that does not scale' },
-          { title: 'One File for the Whole App', sub: 'Writing docker-compose.yml, one key at a time' },
-          { title: 'Running the Stack', sub: 'One command, and how containers find each other' },
-        ]}
+        /* Four items, and they are the deck's four sections. `AGENDA` is shared
+           with the key takeaways slide, so the room hears the same four things
+           in the same words three times: here, as they happen, and at the close. */
+        items={AGENDA}
       />
     ),
     notes:
       'Four items. Point out that items 1 and 2 are the problem and items 3 and 4 are the answer, so nobody spends the first half wondering when Compose arrives.',
+  },
+  {
+    id: 'the-gap',
+    section: 'Opening',
+    label: 'One program so far',
+    element: (
+      /*
+        MOVED OUT OF THE RECAP RUN AND SPLIT IN TWO (review 0s2j10).
+
+        It used to sit between the recap and the agenda, carrying both
+        "you packaged one script" and "your real application is two programs" in a
+        single lead. Two claims, and only the first is recap: the second is the
+        reason today's session exists. So the pair now sits AFTER the agenda, where
+        the room already knows what is coming, and each claim gets its own slide.
+
+        This half is the one that looks backwards, so it carries no figure. The
+        picture belongs to the slide that makes the new claim.
+      */
+      <ContentSlide
+        kicker={SESSION}
+        title="One Program"
+        lead="The image you have built so far holds exactly one thing: a single Python script"
+        lesson={SESSION}
+        points={[
+          { text: 'One script inside the image', sub: 'app.py, and the packages it needs to run' },
+          { text: 'One runtime inside the image', sub: 'Python, chosen by the first line of the Dockerfile' },
+          { text: 'One image, one container', sub: 'docker build made the image, docker run started the container' },
+        ]}
+      />
+    ),
+    notes:
+      'Ten seconds. This is the ceiling of what they can do today, stated plainly, so the next slide can show what their real application actually looks like.',
+  },
+  {
+    id: 'the-gap-two-programs',
+    section: 'Opening',
+    label: 'Two programs',
+    element: (
+      /*
+        THE OTHER HALF, and the hinge into today.
+
+        The figure gets the full width of the well rather than a third of it beside
+        a bullet column. Squeezed into the narrow column the two cards wrapped their
+        role lines onto extra lines, grew taller, and left the arrow pair stranded
+        near the top of the gap between them (review 0s2j10, arrow placement). At
+        full width the cards sit at their natural size and the arrows read as
+        joining them.
+      */
+      <ContentNoteSlide
+        kicker={SESSION}
+        title="Two Programs"
+        lead="Your real application is two programs, and they do not even run on the same runtime"
+        lesson={SESSION}
+        note={{
+          kind: 'info',
+          title: "Today's question",
+          body: <>So how do you run two containers together?</>,
+        }}
+      >
+        <TwoRuntimes />
+      </ContentNoteSlide>
+    ),
+    notes:
+      'They have shipped this exact pair in the integration course, so do not explain what React and Django are. The question in the note is the session, and it stays unanswered until Compose arrives in concept 2.',
   },
   {
     id: 'setup',
@@ -425,10 +590,10 @@ CMD ["python", "app.py"]`}
       <ContentSlide
         kicker={SESSION}
         title="Initial Setup"
-        lead="Everyone starts from the same running state. Run these two checks step by step :"
+        lead="Check your setup before you start. Run these two checks step by step"
         lesson={SESSION}
         points={[
-          { text: 'Open C:\\nxttrendz in VS Code', sub: 'Same workspace as last session' },
+          { text: 'Open C:\\nxttrendz in VS Code', sub: 'The same workspace you have been working in' },
           { text: 'Start Docker Desktop and wait for it to say running', sub: 'Nothing today works before it does' },
         ]}
       >
@@ -446,33 +611,33 @@ CMD ["python", "app.py"]`}
       </ContentSlide>
     ),
     notes:
-      'Wait for hands. Anyone whose Docker Desktop is not running loses the whole session. The four files listed are last session\'s, still where they left them. Transcript quoted from the TR, not captured.',
+      'Wait for hands. Anyone whose Docker Desktop is not running loses the whole session. The four files listed are the ones they already built, still where they left them. Transcript quoted from the TR, not captured.',
   },
 
-  /* --- Concept 1: A Second Container, slides 8 to 22 ---------------- */
+  /* --- Concept 1: Node Container Image, slides 8 to 22 ---------------- */
   {
     id: 'c1-divider',
-    section: 'A Second Container',
+    section: 'Node Container Image',
     label: 'Divider 1',
     element: (
       <SectionBreakerSlide
         index={1}
-        title="A Second Container"
+        title="Node Container Image"
         subtitle="Same six instructions, a different runtime"
         lesson={SESSION}
       />
     ),
     notes:
-      'Say the section out loud as a question: your app is two programs, so let us build the second one. The room expects something new and hard; the payoff on slide 17 is that there was nothing new at all.',
+      'Say the section out loud as a question: your app is two programs, so let us build the second one. The room expects something new and hard; the payoff on the line-by-line slide is that there was nothing new at all.',
   },
   {
     id: 'c1-a-choice',
-    section: 'A Second Container',
+    section: 'Node Container Image',
     label: 'That line was a choice',
     element: (
       <ContentSlide
-        kicker="A Second Container"
-        title="That Line Was a Choice"
+        kicker="Node Container Image"
+        title="Line One Names Python"
         lead="Line one picked the program that runs your code. Every other line in the file stayed the same"
         lesson={SESSION}
       >
@@ -487,8 +652,8 @@ COPY requirements.txt .`}
             maxHeight={150}
           />
           <Callout kind="info" title="Nothing about Docker is tied to Python" asStep={false}>
-            Your image carries Python because line one said so. Change that one word and the image
-            carries something else
+            Your image carries Python only because line one names it. Change that name and the
+            image carries a different program
           </Callout>
         </div>
       </ContentSlide>
@@ -498,7 +663,7 @@ COPY requirements.txt .`}
   },
   {
     id: 'c1-runtime',
-    section: 'A Second Container',
+    section: 'Node Container Image',
     label: 'What is a runtime',
     element: (
       /*
@@ -509,22 +674,11 @@ COPY requirements.txt .`}
         of times, because the definition then confirms something they already
         know rather than adding something they do not.
       */
-      <ContentNoteSlide
-        kicker="A Second Container"
+      <ContentSlide
+        kicker="Node Container Image"
         title="What is a Runtime"
-        lead="The program that runs your code. It is not your code, and your code cannot run without it"
+        lead="A runtime is the software that reads your code file and actually runs it. You have two of them installed already"
         lesson={SESSION}
-        note={{
-          kind: 'tip',
-          title: 'Docker Hub has one base image per runtime',
-          body: (
-            <>
-              <Code>node:22-alpine</Code>, <Code>openjdk:21</Code>, <Code>golang:1.23</Code>,{' '}
-              <Code>php:8.3</Code>. Same <Code>FROM</Code>, a different word.{' '}
-              <Code>-slim</Code> and <Code>-alpine</Code> are each runtime's minimal variant
-            </>
-          ),
-        }}
       >
         <CardGrid cols={2}>
           <Card title={<Tech name="python" label="Python" />} tone="brand">
@@ -535,14 +689,65 @@ COPY requirements.txt .`}
             Runs <Code>.js</Code> files. You start React with <Code>npm start</Code>
           </Card>
         </CardGrid>
-      </ContentNoteSlide>
+      </ContentSlide>
     ),
     notes:
-      'Ask which of the two they have installed. Almost everyone says both, which is the answer: they have been using two runtimes all along without a word for it. The callout names four base images and no logos, because they will type the name, not the logo.',
+      'Ask which of the two they have installed. Almost everyone says both, which is the answer: they have been using two runtimes all along without a word for it. The image-tag detail used to be squeezed into a callout here and now has the slide after this one to itself.',
+  },
+  {
+    id: 'c1-image-tags',
+    section: 'Node Container Image',
+    label: 'The tag after the colon',
+    element: (
+      /*
+        PULLED OUT OF A CALLOUT ON THE SLIDE BEFORE (review jqhw6h).
+
+        The four base-image names used to be crammed into the runtime slide's note,
+        which is the wrong place twice over: it is a second idea on a definition
+        slide, and a callout has no room to say what the half after the colon
+        actually means. The room types this string on line one of every Dockerfile
+        they will ever write, so it gets a frame of its own.
+      */
+      <ContentNoteSlide
+        kicker="Node Container Image"
+        title="The Tag After the Colon"
+        lead="A base image name has two halves: the runtime before the colon, and which build of it you want after the colon"
+        lesson={SESSION}
+        points={[
+          {
+            /* The two tag strings ARE the slide, so they carry the deck's inline
+               token emphasis rather than sitting in plain bullet text (review
+               4z0d1w). `Code` is the same span every command mention uses. */
+            text: <Code>python:3.14-slim</Code>,
+            sub: 'The Python runtime, version 3.14, in the build named slim',
+          },
+          {
+            text: <Code>node:22-alpine</Code>,
+            sub: 'The Node runtime, version 22, in the build named alpine',
+          },
+          {
+            text: 'slim and alpine are the small builds',
+            sub: 'The same runtime with fewer extra programs packed around it, so the image is smaller',
+          },
+        ]}
+        note={{
+          kind: 'tip',
+          title: 'Docker Hub has one base image per runtime',
+          body: (
+            <>
+              <Code>openjdk:21</Code> for Java, <Code>golang:1.23</Code> for Go,{' '}
+              <Code>php:8.3</Code> for PHP. The same <Code>FROM</Code> line, a different word
+            </>
+          ),
+        }}
+      />
+    ),
+    notes:
+      'Write one name on the board and split it with a slash: runtime, then colon, then version and build. Say out loud that leaving the tag off is allowed and is a bad habit, because you then get whatever Docker Hub calls latest today. Do not go further into image sizes; the point is only that the word after the colon is a choice.',
   },
   {
     id: 'c1-two-programs',
-    section: 'A Second Container',
+    section: 'Node Container Image',
     label: 'Two runtimes, not one',
     element: (
       /*
@@ -554,9 +759,9 @@ COPY requirements.txt .`}
         one-process rule three slides later.
       */
       <ContentSlide
-        kicker="A Second Container"
+        kicker="Node Container Image"
         title="Two Runtimes, Not One"
-        lead="Both are already on your disk. Three rows describe how each one runs, and every row differs"
+        lead="Your React frontend and Django backend are already on your disk"
         lesson={SESSION}
       >
         <div className="flex items-start gap-6">
@@ -566,7 +771,7 @@ COPY requirements.txt .`}
             entries={[
               { name: 'backend', folder: true, note: 'Django, the APIs (Python)', state: 'existing' },
               { name: 'frontend', folder: true, note: 'React, the UI (Node)', state: 'existing' },
-              { name: 'docker-demo', folder: true, note: "last session's practice folder", state: 'existing' },
+              { name: 'docker-demo', folder: true, note: 'the practice folder you already made', state: 'existing' },
             ]}
           />
           <DataTable
@@ -574,8 +779,8 @@ COPY requirements.txt .`}
             compact
             columns={[
               { label: '', weight: 1 },
-              { label: 'Frontend', weight: 1, align: 'center' },
-              { label: 'Backend', weight: 1, align: 'center' },
+              { label: 'Frontend', weight: 1 },
+              { label: 'Backend', weight: 1 },
             ]}
             rows={[
               ['Runtime', <Tech key="n" name="nodejs" label="Node.js" />, <Tech key="p" name="python" label="Python" />],
@@ -587,11 +792,11 @@ COPY requirements.txt .`}
       </ContentSlide>
     ),
     notes:
-      'Slide 5 already said the app is two programs, so do not re-argue it. This slide answers the question slide 10 opens: you now know what a runtime is, so how different are these two? Have them open the folder, then read the table down the middle column and down the right. Three rows, three differences, and no single image is right for both.',
+      'The opening already said the app is two programs, so do not re-argue it. This slide answers the question the runtime definition opens: you now know what a runtime is, so how different are these two? Have them open the folder, then read the table down the middle column and down the right. Three rows, three differences, and no single image is right for both.',
   },
   {
     id: 'c1-one-container-q',
-    section: 'A Second Container',
+    section: 'Node Container Image',
     label: 'The pause beat',
     element: (
       /*
@@ -601,12 +806,11 @@ COPY requirements.txt .`}
         out loud by them before it is answered. Anything else on this slide gives
         the answer away, so the slide carries the question and one prompt.
       */
-      <ContentSlide
-        kicker="A Second Container"
-        title="Could Both Fit in One Container?"
-        lead="Two runtimes, two dependency files, two start commands, inside one image. Would that work?"
+      <QuestionSlide
+        kicker="Node Container Image"
+        question="Could both programs fit inside one container?"
+        qualifier="Two runtimes, two dependency files, two start commands"
         lesson={SESSION}
-        points={[{ text: 'Say what you think before the next slide', tone: 'brand' }]}
       />
     ),
     notes:
@@ -614,13 +818,13 @@ COPY requirements.txt .`}
   },
   {
     id: 'c1-one-process',
-    section: 'A Second Container',
+    section: 'Node Container Image',
     label: 'One container, one process',
     element: (
       <ContentNoteSlide
-        kicker="A Second Container"
+        kicker="Node Container Image"
         title="One Container, One Process"
-        lead="Technically yes, and it would be a mess"
+        lead="Both programs fit, and one crash takes down both"
         lesson={SESSION}
         note={{
           kind: 'success',
@@ -640,11 +844,11 @@ COPY requirements.txt .`}
   },
   {
     id: 'c1-workspace',
-    section: 'A Second Container',
+    section: 'Node Container Image',
     label: "Today's workspace",
     element: (
       <ContentNoteSlide
-        kicker="A Second Container"
+        kicker="Node Container Image"
         title="Today's Workspace"
         lead="Two applications, so two folders inside docker-demo, each with its own Dockerfile"
         lesson={SESSION}
@@ -654,26 +858,64 @@ COPY requirements.txt .`}
           body: (
             <>
               A single Dockerfile at the top of <Code>docker-demo</Code> with <Code>COPY . .</Code>{' '}
-              would sweep <strong>both</strong> applications into <strong>one</strong> image. Last
-              session's warning, in a new shape
+              would sweep <strong>both</strong> applications into <strong>one</strong> image. One
+              Dockerfile can only ever build one application
             </>
           ),
         }}
       >
-        <FileTree
-          root={CWD}
-          width={620}
-          caption="Named to match the real project, so everything learnt today transfers when only the paths change"
-          entries={[
-            {
-              name: 'backend',
-              folder: true,
-              note: "last session's four files, moved in here unchanged",
-              state: 'existing',
-            },
-            { name: 'frontend', folder: true, note: 'new, and empty for now', state: 'new' },
-          ]}
-        />
+        {/*
+          THE INSTRUCTION SITS OUTSIDE THE TREE AND POINTS AT IT (review 52lyv9).
+
+          It used to be an entry note reading "last session's four files, moved in
+          here unchanged", set in the tree's small annotation type. That put the
+          only thing the room has to DO on this slide inside a picture of the
+          result, in the smallest text on the frame. It is now a callout to the
+          left of the tree, carrying the arrow glyph so it reads as pointing at the
+          folders it is describing.
+
+          There is no dedicated pointer or annotation component in `src/ui`, so the
+          arrow is the callout's own icon slot rather than new markup.
+
+          SIDES SWAPPED (review onu1vc): the tree leads and the instruction follows
+          it. The room now reads the folders first and the thing to do second,
+          which is the order they act in. Done by reordering these two children,
+          not by touching `ContentNoteSlide`. The arrow is rotated so it still
+          points AT the tree, which is now on its left; `Icons.ArrowRight` spreads
+          its props onto the `svg`, so a class is enough and no second glyph is
+          needed.
+        */}
+        <div className="flex items-center gap-5">
+          <FileTree
+            root={CWD}
+            width={470}
+            entries={[
+              /*
+                SHORT NOTES, BECAUSE THE ROW ALSO CARRIES THE "CREATE THIS" TAG
+                (review ib0npk).
+
+                `FileTree` tags every top-level `new` entry automatically, and the
+                tag shares one right-aligned wrapper with the note. At 470px wide,
+                "the Node application, empty for now" plus the tag left the two
+                fighting for the same half of the row. The Callout beside the tree
+                already carries the instruction and the detail, so the note here is
+                back to naming the folder and nothing else.
+              */
+              { name: 'backend', folder: true, note: 'the Python app', state: 'new' },
+              { name: 'frontend', folder: true, note: 'the Node app', state: 'new' },
+            ]}
+          />
+          <Callout
+            kind="info"
+            title="Create these two folders"
+            icon={<Icons.ArrowRight width={20} height={20} className="rotate-180" />}
+            className="w-[500px]"
+            asStep={false}
+          >
+            Then move your four existing files into <Code>backend</Code>. Their content does not
+            change, only the folder they sit in
+          </Callout>
+        </div>
       </ContentNoteSlide>
     ),
     notes:
@@ -681,7 +923,7 @@ COPY requirements.txt .`}
   },
   {
     id: 'c1-node-side-files',
-    section: 'A Second Container',
+    section: 'Node Container Image',
     label: 'The Node side',
     element: (
       /*
@@ -693,9 +935,9 @@ COPY requirements.txt .`}
         shape as the Python side, and only the filenames changed.
       */
       <ContentSlide
-        kicker="A Second Container"
+        kicker="Node Container Image"
         title="The Node Side"
-        lead="A script, and a file listing its dependencies. Every line has a counterpart you already have"
+        lead="server.js is the frontend script, package.json lists its dependencies"
         lesson={SESSION}
       >
         <div className="flex items-start gap-5">
@@ -737,21 +979,23 @@ console.log("Frontend ready");`}
   },
   {
     id: 'c1-node-dockerfile',
-    section: 'A Second Container',
+    section: 'Node Container Image',
     label: 'The Node Dockerfile',
     element: (
       <ContentNoteSlide
-        kicker="A Second Container"
+        kicker="Node Container Image"
         title="The Node Dockerfile"
-        lead="The same recipe, with the Python words swapped for Node words"
+        lead="The same six instructions as the Python Dockerfile, written for the Node runtime"
         lesson={SESSION}
         note={{
           kind: 'note',
           title: 'Why the dependency file is copied first',
           body: (
             <>
-              Last session's cache reason, unchanged. <Code>npm install</Code> is the slow step and
-              rarely needs to re-run, so its layer has to sit above the code layer
+              <Code>npm install</Code> is the slow step, and it only has to run again when{' '}
+              <Code>package.json</Code> changes. Copying <Code>package.json</Code> before the code
+              keeps that step above the code layer, so editing your code does not download every
+              package again
             </>
           ),
         }}
@@ -774,7 +1018,7 @@ CMD ["node", "server.js"]`}
   },
   {
     id: 'c1-line-by-line',
-    section: 'A Second Container',
+    section: 'Node Container Image',
     label: 'Line by line against Python',
     element: (
       /*
@@ -785,9 +1029,9 @@ CMD ["node", "server.js"]`}
         rather than a claim they have to accept.
       */
       <ContentSlide
-        kicker="A Second Container"
+        kicker="Node Container Image"
         title="Line by Line Against Python"
-        lead="Six rows, and the answer in the last column is yes every time"
+        lead="The Python Dockerfile and the Node Dockerfile, one instruction at a time"
         lesson={SESSION}
       >
         <div className="grid gap-4">
@@ -797,7 +1041,7 @@ CMD ["node", "server.js"]`}
             { label: 'Step', weight: 0.8 },
             { label: 'Python image', weight: 1.3 },
             { label: 'Node image', weight: 1.2 },
-            { label: 'Same idea?', weight: 1.3, dim: true },
+            { label: 'Same idea?', weight: 1.3 },
           ]}
           rows={[
             [<Code key="a">FROM</Code>, 'python:3.14-slim', 'node:22-alpine', 'Base image with the runtime'],
@@ -819,13 +1063,13 @@ CMD ["node", "server.js"]`}
   },
   {
     id: 'c1-dockerignore',
-    section: 'A Second Container',
+    section: 'Node Container Image',
     label: 'Its .dockerignore',
     element: (
       <ContentNoteSlide
-        kicker="A Second Container"
+        kicker="Node Container Image"
         title="Its .dockerignore"
-        lead="node_modules is the Node equivalent of env, and excluding it is not optional tidying"
+        lead="npm install saves every downloaded package into a folder called node_modules. That folder must be left out of the image"
         lesson={SESSION}
         note={{
           kind: 'warning',
@@ -834,7 +1078,8 @@ CMD ["node", "server.js"]`}
             <>
               <Code>COPY . .</Code> would overwrite the packages <Code>npm install</Code> had just
               installed <strong>inside</strong> the image with the ones from your machine, built for
-              your OS rather than the container's. Confusing to debug, trivial to prevent
+              your OS rather than the container's. One line in <Code>.dockerignore</Code> keeps
+              <Code>node_modules</Code> out
             </>
           ),
         }}
@@ -856,7 +1101,16 @@ npm-debug.log`}
             caption="Both folders now hold the same four kinds of file"
             entries={[
               { name: 'backend', folder: true, note: 'Dockerfile · requirements.txt · .dockerignore · app.py', state: 'existing' },
-              { name: 'frontend', folder: true, note: 'Dockerfile · package.json · .dockerignore · server.js', state: 'new' },
+              /*
+                `existing`, NOT `new` (review espvd3). Two slides ago `frontend`
+                was the folder being created; by this slide it exists and the tree
+                is making a symmetry argument, which the caption states: both
+                folders now hold the same four kinds of file. Leaving it `new` both
+                said something untrue and printed the automatic CREATE THIS tag
+                into the same right-aligned wrapper as a fifty-character note, at
+                which point neither one was readable.
+              */
+              { name: 'frontend', folder: true, note: 'Dockerfile · package.json · .dockerignore · server.js', state: 'existing' },
             ]}
           />
         </div>
@@ -866,14 +1120,69 @@ npm-debug.log`}
       'The overwrite failure is worth thirty seconds: packages compiled for Windows landing inside a Linux container is the kind of bug that eats an evening. The tree on the right is the section\'s finished state.',
   },
   {
+    id: 'c1-build-where',
+    section: 'Node Container Image',
+    label: 'Where the build runs from',
+    element: (
+      /*
+        THE FIRST OF TWO `docker build` SLIDES (review 93g162 and 3arrpt).
+
+        "From inside the frontend folder, because a build must only ever see its
+        own app's files" used to be one clause of the build slide's lead, and a
+        clause is not an explanation of the thing that goes wrong most often. The
+        room now sees the claim instead of reading it: the folder in the tree on
+        the left, and the same folder in the prompt on the right. `dir` is there so
+        the two halves list the same four names.
+
+        Both slides keep the title `docker build`, which is how the corpus signals a
+        continuation.
+      */
+      <ContentSlide
+        kicker="Node Container Image"
+        title="docker build"
+        lead="Run the build from inside the frontend folder. A build only sees the files in the folder it runs from"
+        lesson={SESSION}
+      >
+        <div className="flex items-start gap-5">
+          <FileTree
+            root={CWD}
+            width={430}
+            caption="Run from frontend, the build cannot see backend at all"
+            entries={[
+              { name: 'backend', folder: true, note: 'not part of this build', state: 'existing' },
+              { name: 'frontend', folder: true, note: 'you are here', state: 'existing' },
+              { name: 'Dockerfile', depth: 1, state: 'existing' },
+              { name: 'package.json', depth: 1, state: 'existing' },
+              { name: '.dockerignore', depth: 1, state: 'existing' },
+              { name: 'server.js', depth: 1, state: 'existing' },
+            ]}
+          />
+          <Terminal
+            className="flex-1"
+            path={BUILD_FE}
+            caption="Terminal · inside the frontend folder"
+            fontSize={13}
+            lines={[
+              { text: 'dir', kind: 'cmd' },
+              { text: 'Dockerfile      package.json', kind: 'out' },
+              { text: '.dockerignore   server.js', kind: 'out' },
+            ]}
+          />
+        </div>
+      </ContentSlide>
+    ),
+    notes:
+      'Read the prompt path out loud and then read the tree, in that order, so the room checks their own prompt against the picture. The wrong folder is the single commonest error in this section. Have them cd into frontend first, then run dir and match the four names against the tree.',
+  },
+  {
     id: 'c1-build',
-    section: 'A Second Container',
+    section: 'Node Container Image',
     label: 'docker build',
     element: (
       <ContentSlide
-        kicker="A Second Container"
+        kicker="Node Container Image"
         title="docker build"
-        lead="From inside the frontend folder, because a build must only ever see its own app's files"
+        lead="One command reads the Dockerfile in this folder and turns it into an image"
         lesson={SESSION}
       >
         <div className="mx-auto grid w-[900px] gap-4">
@@ -893,57 +1202,71 @@ npm-debug.log`}
           ]}
         />
           <div className="grid grid-cols-2 gap-4">
-            <Callout kind="info" title="Five steps for six lines" asStep={false}>
+            <Callout kind="info" title="Six instructions, five build steps" asStep={false}>
               <Code>CMD</Code> is not a build step: it only runs when a container starts
             </Callout>
             <Callout kind="tip" title="Step 4 is the slow one" asStep={false}>
-              <Code>npm install</Code>, exactly as the cache reason predicted
+              <Code>npm install</Code> downloads every package, which is why <Code>package.json</Code> is copied first
             </Callout>
           </div>
         </div>
       </ContentSlide>
     ),
     notes:
-      'Check the prompt path with them before running it: the wrong folder is the error that cost the room twenty minutes last session. Timings are illustrative, quoted from the TR rather than captured.',
+      'The previous slide settled the folder, so go straight to the command. The trailing dot is the folder being handed to the build. Timings are illustrative, quoted from the TR rather than captured.',
   },
   {
     id: 'c1-run',
-    section: 'A Second Container',
+    section: 'Node Container Image',
     label: 'docker run',
     element: (
-      <ContentNoteSlide
-        kicker="A Second Container"
+      /*
+        THE ONE NOTE BECAME TWO CALLOUTS (review 7w9uhl).
+
+        "It printed its message and finished, exactly as the Python container did.
+        A container lives as long as its process does" packed two separate lessons
+        into one sentence: what just happened on screen, and the rule that explains
+        it. Split, the first says what the room is looking at and the second says
+        why it stopped, which is the question they actually ask here.
+
+        Same shape as the build slide above: transcript, then a pair of callouts,
+        both `asStep={false}` so the whole slide arrives at once.
+      */
+      <ContentSlide
+        kicker="Node Container Image"
         title="docker run"
         lead="One image, one container, two printed lines"
         lesson={SESSION}
-        note={{
-          kind: 'note',
-          title: 'Same behaviour, different language',
-          body: (
-            <>
-              It printed its message and finished, exactly as the Python container did. A container
-              lives as long as its process does
-            </>
-          ),
-        }}
       >
-        <Terminal
-          path={BUILD_FE}
-          caption="Terminal · the frontend container"
-          lines={[
-            { text: 'docker run nxttrendz-frontend', kind: 'cmd' },
-            { text: 'nxttrendz frontend starting...', kind: 'out' },
-            { text: 'Frontend ready', kind: 'ok' },
-          ]}
-        />
-      </ContentNoteSlide>
+        <div className="mx-auto grid w-[900px] gap-4">
+          <Terminal
+            path={BUILD_FE}
+            caption="Terminal · the frontend container"
+            lines={[
+              { text: 'docker run nxttrendz-frontend', kind: 'cmd' },
+              { text: 'nxttrendz frontend starting...', kind: 'out' },
+              { text: 'Frontend ready', kind: 'ok' },
+            ]}
+          />
+          <div className="grid grid-cols-2 gap-4">
+            <Callout kind="note" title="Where the two lines came from" asStep={false}>
+              Docker ran <Code>server.js</Code> inside the container. The two lines are its two{' '}
+              <Code>console.log</Code> calls
+            </Callout>
+            <Callout kind="success" title="Why it stopped on its own" asStep={false}>
+              A container lives as long as the program inside it. The script hit its last line, so
+              the container ended too, exactly as the Python one did
+            </Callout>
+          </div>
+        </div>
+      </ContentSlide>
     ),
     notes:
       'Their first container that is not Python. Nothing about Docker noticed the difference, which is the whole point of the section.',
   },
   {
     id: 'c1-rebuild-backend',
-    section: 'A Second Container',
+    section: 'Node Container Image',
     label: 'Rebuild the Python side',
     element: (
       /*
@@ -954,7 +1277,7 @@ npm-debug.log`}
         slide is teaching: which folder each command belongs to.
       */
       <ContentSlide
-        kicker="A Second Container"
+        kicker="Node Container Image"
         title="Rebuild the Python Side"
         lead="The Python files moved into their own folder, and the image gets a clearer name"
         lesson={SESSION}
@@ -982,7 +1305,7 @@ npm-debug.log`}
               { text: 'REPOSITORY          TAG      IMAGE ID', kind: 'out' },
               { text: 'nxttrendz-frontend  latest   7c1e4f90ab23', kind: 'out' },
               { text: 'nxttrendz-backend   latest   3f2a8b91c04d', kind: 'out' },
-              { text: 'nxttrendz-app       latest   3f2a8b91c04d', kind: 'out' },
+              { text: 'nxttrendz-app       latest   l6fdagb93c2d', kind: 'out' },
             ]}
           />
         </div>
@@ -991,57 +1314,40 @@ npm-debug.log`}
     notes:
       'Two panels because there are two folders. The backend build is fast because every layer came from the cache: nothing in that folder changed, only its location. Transcripts quoted from the TR.',
   },
+  
   {
-    id: 'c1-two-images',
-    section: 'A Second Container',
-    label: 'Two images of your own',
+    id: 'c1-run-them-together-q',
+    section: 'Node Container Image',
+    label: 'The question this raises',
     element: (
-      <ContentNoteSlide
-        kicker="A Second Container"
-        title="Two Images of Your Own"
-        lead="Two applications, two runtimes, two images. So how do we run them together?"
+      /*
+        THE QUESTION GETS ITS OWN BEAT.
+
+        It used to be the second half of the previous slide's lead, tucked in
+        behind a table and a callout, so the room read it as a caption rather
+        than as something it was being asked. On its own frame it is the only
+        thing on screen, and the whole of concept 2 is the answer.
+      */
+      <QuestionSlide
+        kicker="Node Container Image"
+        question="So how do we run them together?"
+        qualifier="The application needs both containers running at the same time"
         lesson={SESSION}
-        note={{
-          kind: 'info',
-          title: 'One image, two names',
-          body: (
-            <>
-              <Code>nxttrendz-backend</Code> and <Code>nxttrendz-app</Code> show the{' '}
-              <strong>same IMAGE ID</strong>: the code is identical, so Docker stored one image and
-              gave it two names. <Code>docker rmi nxttrendz-app</Code> removes the old name and
-              leaves the image in place
-            </>
-          ),
-        }}
-      >
-        <DataTable
-          columns={[
-            { label: 'REPOSITORY', weight: 1.3 },
-            { label: 'IMAGE ID', weight: 1 },
-            { label: 'SIZE', weight: 0.7, align: 'center' },
-          ]}
-          rows={[
-            ['nxttrendz-frontend', '7c1e4f90ab23', '182MB'],
-            ['nxttrendz-backend', '3f2a8b91c04d', '156MB'],
-            ['nxttrendz-app', '3f2a8b91c04d', '156MB'],
-          ]}
-          highlight={[2, 3]}
-        />
-      </ContentNoteSlide>
+      />
     ),
     notes:
-      'Somebody always asks why two rows share an ID, so answer it before they do. Then land the question in the lead: two images exist, and starting the app now means running both. That is the next section.',
+      'Ask it and wait. Most rooms answer "run both commands", which is exactly right and is exactly what the next section makes them count. Do not name Compose here.',
   },
 
-  /* --- Concept 2: Running Both By Hand, slides 23 to 32 ------------- */
+  /* --- Concept 2: Running Both Python and Node Containers, slides 23 to 32 ------------- */
   {
     id: 'c2-divider',
-    section: 'Running Both By Hand',
+    section: 'Running Both Python and Node Containers',
     label: 'Divider 2',
     element: (
       <SectionBreakerSlide
         index={2}
-        title="Running Both By Hand"
+        title="Running Both Python and Node Containers"
         subtitle="You have two images. Now start the application"
         lesson={SESSION}
       />
@@ -1051,7 +1357,7 @@ npm-debug.log`}
   },
   {
     id: 'c2-by-hand',
-    section: 'Running Both By Hand',
+    section: 'Running Both Python and Node Containers',
     label: 'What it actually takes',
     element: (
       /*
@@ -1062,19 +1368,13 @@ npm-debug.log`}
         place for each half.
       */
       <ContentNoteSlide
-        kicker="Running Both By Hand"
+        kicker="Running Both Python and Node Containers"
         title="What It Actually Takes"
-        lead="Two images, two folders. Starting the application by hand means all of this"
+        lead="Two images in two folders take six commands to start"
         lesson={SESSION}
         note={{
           kind: 'warning',
-          title: 'Six commands, six chances to be in the wrong folder',
-          body: (
-            <>
-              The error that cost the room twenty minutes last session:{' '}
-              <Code>path "." not found</Code>
-            </>
-          ),
+          body: 'Six commands, six chances to be in the wrong folder',
         }}
       >
         <div className="flex items-start gap-4">
@@ -1108,19 +1408,18 @@ npm-debug.log`}
   },
   {
     id: 'c2-remember',
-    section: 'Running Both By Hand',
+    section: 'Running Both Python and Node Containers',
     label: 'What must be remembered',
     element: (
       <ContentSlide
-        kicker="Running Both By Hand"
+        kicker="Running Both Python and Node Containers"
         title="What Must Be Remembered"
-        lead="Correctly, every single time, with nothing to check it against"
         lesson={SESSION}
       >
         <DataTable
           columns={[
             { label: 'Detail', weight: 1.2 },
-            { label: 'If you get it wrong', weight: 1.5, dim: true },
+            { label: 'If you get it wrong', weight: 1.5 },
           ]}
           rows={[
             ['Which folder each build runs from', 'The build fails, or builds the wrong app'],
@@ -1137,16 +1436,63 @@ npm-debug.log`}
   },
   {
     id: 'c2-does-not-scale',
-    section: 'Running Both By Hand',
-    label: 'Why it does not scale',
+    section: 'Running Both Python and Node Containers',
+    label: 'A real app is bigger',
+    element: (
+      /*
+        SPLIT OUT OF ONE SLIDE (review c:2xtbx0).
+
+        It used to read "Six commands run two containers. Four containers is the
+        normal shape of a real application" and leave the room to join the two
+        halves themselves. This slide does the first half only: what a real
+        application actually runs. The arithmetic is the next slide.
+      */
+      <ContentSlide
+        kicker="Running Both Python and Node Containers"
+        title="A Real Application Is Bigger"
+        lead="Our app is two containers. A real application usually runs four"
+        lesson={SESSION}
+      >
+        <CardGrid cols={2}>
+          <Card title="What we have today" tone="brand">
+            A <strong>backend</strong> and a <strong>frontend</strong>. Two containers, and you
+            start both of them yourself
+          </Card>
+          {/*
+            SQLITE IS NAMED, BECAUSE IT IS WHAT THEY ACTUALLY HAVE (review ne3645).
+
+            This card used to assert that a real project adds "a database to store
+            the data", which reads as news to a room whose project has stored its
+            data since day one. Their database is SQLite: a file sitting next to
+            the code, inside the backend, with no container of its own. So the
+            card no longer introduces a database, it moves one: the container
+            arrives when the file stops being enough, which is the honest reason a
+            fourth container shows up and the only version of this claim the room
+            can check against their own repository.
+          */}
+          <Card title="What a bigger project adds" tone="accent">
+            Your data lives in a <strong>SQLite</strong> file today. Projects that outgrow it run
+            the <strong>database</strong> in its own container, and often a <strong>cache</strong>{' '}
+            beside it
+          </Card>
+        </CardGrid>
+      </ContentSlide>
+    ),
+    notes:
+      'Do not build the database or the cache: they are named so the room knows what a normal project looks like, and left alone (rule S1). Say out loud that SQLite is already their database, so this is not a new component, it is the same one moving out of the backend folder. Ask how many containers their own project would need. Four is the usual answer.',
+  },
+  {
+    id: 'c2-ritual-doubles',
+    section: 'Running Both Python and Node Containers',
+    label: 'The ritual doubles',
     element: (
       <ContentSlide
-        kicker="Running Both By Hand"
-        title="Add a Database and a Cache"
-        lead="Six commands run two containers. Four containers is the normal shape of a real application"
+        kicker="Running Both Python and Node Containers"
+        title="The Ritual Doubles"
+        lead="Each container costs three commands, so four containers cost twelve"
         lesson={SESSION}
         points={[
-          { text: 'The ritual doubles, and so does every risk', tone: 'brand' },
+          { text: 'Twelve commands to start the app', sub: 'And more again to stop and clean up' },
           {
             text: 'Nothing in the folder says these belong together',
             sub: 'Someone opening docker-demo cannot tell it is one application',
@@ -1158,11 +1504,11 @@ npm-debug.log`}
       </ContentSlide>
     ),
     notes:
-      'The database and cache rows are dashed because we are not building them: they are the shape of a real project, named and left alone. The third bullet is the one that matters most and is the one rooms miss: this is not just tedious, it is undocumented.',
+      'Count it out loud: cd, build, run, for each of the four. The number rolling from 6 to 12 is the whole figure. The third bullet is the one rooms miss: this is not just tedious, it is undocumented.',
   },
   {
     id: 'c2-the-question',
-    section: 'Running Both By Hand',
+    section: 'Running Both Python and Node Containers',
     label: 'The question',
     element: (
       /*
@@ -1172,19 +1518,19 @@ npm-debug.log`}
         carries one sentence because a second line would give the room somewhere
         else to look while the question is landing.
       */
-      <ContentSlide
-        kicker="Running Both By Hand"
-        title="The Question"
-        lead="How do we define a multi-container application ONCE, in a file, and start or stop it with one command?"
+      <QuestionSlide
+        kicker="Running Both Python and Node Containers"
+        question="Could the whole application be written down in one file?"
+        qualifier="Every container it needs, started and stopped by one command"
         lesson={SESSION}
       />
     ),
     notes:
-      'Read it slowly and stop. Three words carry it: once, file, single. Do not name the tool yet. The next slide answers the question with an orchestra, not with a product.',
+      'Read it out and stop. Two things are being asked for: one file, and one command. Do not name the tool yet. The next slide answers with an orchestra, not with a product.',
   },
   {
     id: 'c2-orchestra',
-    section: 'Running Both By Hand',
+    section: 'Running Both Python and Node Containers',
     label: 'Picture an orchestra',
     element: (
       /*
@@ -1197,22 +1543,25 @@ npm-debug.log`}
         the full width and the room gets to just watch it.
       */
       <ContentSlide
-        kicker="Running Both By Hand"
+        kicker="Running Both Python and Node Containers"
         title="Picture an Orchestra"
-        lead="A single musician can start playing on their own. An orchestra cannot"
+        lead="One musician can start alone. An orchestra needs a written score and one conductor to start together"
         lesson={SESSION}
       >
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-4">
           <Orchestra />
+          <Callout kind="info" asStep={false} className="max-w-[1040px]">
+            One score says what to play, one baton says when. Two containers need one file and one command
+          </Callout>
         </div>
       </ContentSlide>
     ),
     notes:
-      'Let the baton fall before you say anything. The teaching is the timing: all four players start on one beat. Do not map the analogy here, the next slide does that properly.',
+      'Let the baton fall before you say anything. The teaching is the timing: all four players start on one beat. The callout names what made that possible, and nothing more. The full mapping is the next slide.',
   },
   {
     id: 'c2-what-is-compose',
-    section: 'Running Both By Hand',
+    section: 'Running Both Python and Node Containers',
     label: 'What is Docker Compose',
     element: (
       /*
@@ -1220,12 +1569,13 @@ npm-debug.log`}
 
         An analogy that is never mapped is decoration. Each row of this map takes
         one thing from the previous slide and names its technical counterpart, so
-        the orchestra is spent here and then dropped.
+        the orchestra is spent here and then dropped. The previous slide names only
+        what the score and the baton do; every row below is new.
       */
       <ContentNoteSlide
-        kicker="Running Both By Hand"
+        kicker="Running Both Python and Node Containers"
         title="What is Docker Compose"
-        lead="The answer to the question, and it is a tool whose whole job is that file"
+        lead="One tool reads one file and runs every container the application needs"
         lesson={SESSION}
         noteFirst
         note={{
@@ -1259,17 +1609,17 @@ npm-debug.log`}
   },
   {
     id: 'c2-declarative',
-    section: 'Running Both By Hand',
+    section: 'Running Both Python and Node Containers',
     label: 'Commands to a file',
     element: (
       <ContentNoteSlide
-        kicker="Running Both By Hand"
+        kicker="Running Both Python and Node Containers"
         title="Commands to a File"
-        lead="The shift in thinking, and you have made this exact shift once before"
+        lead="Compose describes what you want. docker run tells Docker each step"
         lesson={SESSION}
         note={{
           kind: 'tip',
-          title: 'You already did this with Django',
+          title: 'Django models declare the schema, migrations perform the steps',
           body: (
             <>
               Instead of writing SQL statements to create a table, you declared a{' '}
@@ -1295,7 +1645,7 @@ npm-debug.log`}
   },
   {
     id: 'c2-what-changes',
-    section: 'Running Both By Hand',
+    section: 'Running Both Python and Node Containers',
     label: 'What changes, what does not',
     element: (
       /*
@@ -1305,7 +1655,7 @@ npm-debug.log`}
         changes is who types the commands.
       */
       <ContentNoteSlide
-        kicker="Running Both By Hand"
+        kicker="Running Both Python and Node Containers"
         title="What Changes, What Does Not"
         lead="Compose is not a new way to build images. It is a way to stop typing"
         lesson={SESSION}
@@ -1315,7 +1665,7 @@ npm-debug.log`}
           body: (
             <>
               Compose calls <Code>docker build</Code> and <Code>docker run</Code> for you. It does
-              not replace them, and everything you learnt last session still applies
+              not replace them, and everything you have already learnt still applies
             </>
           ),
         }}
@@ -1323,7 +1673,7 @@ npm-debug.log`}
         <DataTable
           columns={[
             { label: 'Stays exactly the same', weight: 1 },
-            { label: 'Changes', weight: 1, dim: true },
+            { label: 'Changes', weight: 1 },
           ]}
           rows={[
             ['Both Dockerfiles, untouched', 'Who types the six commands'],
@@ -1336,19 +1686,7 @@ npm-debug.log`}
     notes:
       'Say the callout twice. Rooms leave this section believing Compose replaced Docker, and then cannot explain why the Dockerfile still matters. It matters because Compose reads it.',
   },
-  {
-    id: 'c2-quiz',
-    section: 'Running Both By Hand',
-    label: 'Quiz Time!',
-    element: (
-      <QuizTimeSlide
-        subtitle="Two containers, six commands, and one file that has not been written yet"
-        lesson={SESSION}
-      />
-    ),
-    notes:
-      'The mid-deck checkpoint, at the concept boundary the rest of the session depends on. If the room cannot say why running two containers by hand does not scale, the whole compose file lands as syntax. Hand over to the quiz component.',
-  },
+ 
 
   /* --- Concept 3: Writing docker-compose.yml, slides 33 to 48 ------- */
   {
@@ -1400,21 +1738,33 @@ npm-debug.log`}
               { name: 'frontend', folder: true, state: 'existing' },
             ]}
           />
-          <Terminal
-            className="flex-1"
-            path={CWD}
-            caption="Terminal · the prompt for the rest of the session"
-            fontSize={13}
-            lines={[
-              { text: 'cd C:\\nxttrendz\\docker-demo', kind: 'cmd' },
-              { text: 'type nul > docker-compose.yml', kind: 'cmd' },
-            ]}
-          />
+          {/*
+            CREATED IN THE EDITOR, NOT FROM A SHELL (review vnglmz).
+
+            This used to be a two-command Terminal: `cd`, then `type nul >
+            docker-compose.yml`. Both were noise. `type nul` is a Windows-only
+            trick for making an empty file, so it taught a shell idiom on the one
+            slide whose subject is a filename, and the room then had to switch to
+            the editor anyway to type a single character into it. The instruction
+            that replaced it carries the thing the slide is actually for: what the
+            file must be called, and which other names Compose will answer to.
+          */}
+          <Callout
+            kind="info"
+            title="Create it in VS Code"
+            icon={<Icons.ArrowRight width={20} height={20} className="rotate-180" />}
+            className="w-[500px]"
+            asStep={false}
+          >
+            New File inside <Code>docker-demo</Code>. All lower case, one hyphen, and the{' '}
+            <Code>.yml</Code> ending. Compose answers to <Code>compose.yml</Code> as well, and{' '}
+            <Code>docker-compose.yml</Code> is the name you will meet everywhere
+          </Callout>
         </div>
       </ContentNoteSlide>
     ),
     notes:
-      'It sits above both folders because it is the one file that describes both. Have everyone cd into docker-demo now and stay there: slide 58 is the error they get if they drift out of it.',
+      'It sits above both folders because it is the one file that describes both. Have everyone cd into docker-demo now and stay there: the wrong-folder slide is the error they get if they drift out of it.',
   },
   {
     id: 'c3-yaml',
@@ -1444,7 +1794,19 @@ npm-debug.log`}
           ),
         }}
       >
-        <YamlNesting />
+        {/*
+          THE FIGURE IS INTRINSICALLY 568px WIDE, SO IT IS CENTRED EXPLICITLY
+          (review jesoyt).
+
+          `YamlNesting`'s two panels are a fixed `w-[248px]` each, but the two
+          rule chips under them are `flex-1`. Dropped into the slide's full-width
+          body that made the bottom of the figure stretch to ~1150px while the top
+          stayed at 568px and hung off the left edge: the "totally misaligned"
+          the review is pointing at. Capping the wrapper at the panels' own width
+          makes the chips line up under the panels, and rule S14 wants a
+          fixed-width figure centred on the stage rather than stranded left.
+        */}
+        <YamlNesting className="mx-auto w-[632px]" />
       </ContentNoteSlide>
     ),
     notes:
@@ -1458,7 +1820,7 @@ npm-debug.log`}
       <CodeBuildSlide
         kicker="One File for the Whole App"
         title="services"
-        lead="The top-level section. Every container an application needs is one service"
+        lead="A service is one container. This section lists every container the application needs"
         lesson={SESSION}
         filename="docker-demo\docker-compose.yml"
         code={compose(0)}
@@ -1469,7 +1831,7 @@ npm-debug.log`}
             <>
               Under it, one entry per container. <Code>backend</Code> and <Code>frontend</Code> are{' '}
               <strong>our</strong> names for them, not Docker's. Keep them short and meaningful,
-              because they earn a second job in the last section of today
+              because the names appear on every container Compose creates
             </>
           ),
           replaces: 'nothing yet, this is the skeleton',
@@ -1477,7 +1839,7 @@ npm-debug.log`}
       />
     ),
     notes:
-      'A service is one container. Say that sentence and no more: the word service is doing a lot of work later and it starts as a synonym. Do not hint at the second job yet, that is slide 61.',
+      'A service is one container. Say that sentence and no more: the word service is doing a lot of work later and it starts as a synonym. Do not hint at the second job yet, that is the service-name slide in concept 4.',
   },
   {
     id: 'c3-build-key',
@@ -1496,8 +1858,8 @@ npm-debug.log`}
           key: 'build: ./backend',
           body: (
             <>
-              Do not look for a ready-made image, <strong>build one</strong> from the Dockerfile in
-              that folder. The folder can no longer be the wrong one, because it is written down
+              Build the image from the Dockerfile in that folder. The folder is written in the
+              file, so the build can never run from the wrong one again
             </>
           ),
           replaces: 'two cd commands and two docker build commands',
@@ -1508,8 +1870,8 @@ npm-debug.log`}
           body: (
             <>
               <Code>build:</Code> is for <strong>your own code</strong>. <Code>image:</Code> is for
-              ready-made software from Docker Hub, like the <Code>hello-world</Code> image from
-              session 1. Both services here are ours. Compose paths use forward slashes on Windows
+              ready-made software from Docker Hub, like the <Code>hello-world</Code> image you have
+              already pulled. Both services here are ours. Compose paths use forward slashes on Windows
               too
             </>
           ),
@@ -1540,7 +1902,7 @@ npm-debug.log`}
               "remember to start the backend first"
             </>
           ),
-          replaces: 'the start-order row from the remember-this table',
+          replaces: 'remembering to start the backend before the frontend',
         }}
         note={{
           kind: 'warning',
@@ -1574,7 +1936,7 @@ npm-debug.log`}
         lesson={SESSION}
         note={{
           kind: 'tip',
-          title: 'You have read one before',
+          title: 'Django settings.py reads the environment',
           body: (
             <>
               Django's <Code>settings.py</Code> pulls its secret key and debug flag out of the
@@ -1655,7 +2017,7 @@ npm-debug.log`}
         lesson={SESSION}
         note={{
           kind: 'success',
-          title: 'The payoff',
+          title: 'The same image runs on any machine',
           body: (
             <>
               The <strong>same image</strong> runs on your laptop and on a real server, and only
@@ -1701,7 +2063,7 @@ console.log("Backend address:", process.env.API_URL);`}
       <ContentNoteSlide
         kicker="One File for the Whole App"
         title="Never Put Secrets Here"
-        lead="Not every setting belongs in this file"
+        lead="Passwords and API keys never go in docker-compose.yml"
         lesson={SESSION}
         note={{
           kind: 'warning',
@@ -1731,14 +2093,26 @@ console.log("Backend address:", process.env.API_URL);`}
     label: 'A prediction',
     element: (
       /*
-        PAUSE BEAT. No answer on this slide.
+        A REAL QUESTION SLIDE, NOT A CONTENT SLIDE WITH ONE BULLET (review uwey9a).
+
+        It used to be a `ContentSlide` whose lead was the question and whose only
+        point was "Say yes or no before the next slide". Both halves were wrong.
+        Hard rule 16: a posed question goes on `QuestionSlide`, or it renders
+        top-left at lead size with an empty well under it and the one thing the
+        room is meant to think about is neither the largest thing on screen nor
+        centred on it. And the instruction to answer was stage direction printed
+        on the slide: the pause is the instructor's to hold, and the next slide
+        being the answer is the mechanism, so writing it down says nothing the
+        frame does not already say.
+
+        The `qualifier` is the constraint needed in order to answer, not a hint.
       */
-      <ContentSlide
+      <QuestionSlide
         kicker="One File for the Whole App"
-        title="A Prediction"
-        lead="A container writes a file. The container is deleted and recreated. Is the file still there?"
+        question="A container writes a file. The container is deleted and recreated. Is the file still there?"
+        qualifier="Nothing else about the setup changes"
+        choices={['Yes', 'No']}
         lesson={SESSION}
-        points={[{ text: 'Say yes or no before the next slide', tone: 'brand' }]}
       />
     ),
     notes:
@@ -1756,17 +2130,17 @@ console.log("Backend address:", process.env.API_URL);`}
         lesson={SESSION}
         points={[
           {
-            text: 'The frozen image rule, from the other side',
+            text: 'Every container starts from the image',
             sub: 'The image never changes, so nothing the container wrote is kept',
           },
-          { text: 'For a script that only prints, fine', sub: 'For anything holding data, a disaster' },
+          { text: 'A script that only prints loses nothing', sub: 'Anything storing data loses every row' },
         ]}
       >
         <VolumeSurvival act={0} />
       </ContentSlide>
     ),
     notes:
-      'This is last session\u2019s frozen-image rule seen from the other direction, so name the connection out loud. Let the container fade before reading the second bullet: the picture makes the argument and the words only confirm it.',
+      'This is the frozen-image rule they already know, seen from the other direction, so name the connection out loud. Let the container fade before reading the second bullet: the picture makes the argument and the words only confirm it.',
   },
   {
     id: 'c3-volume',
@@ -1804,13 +2178,13 @@ console.log("Backend address:", process.env.API_URL);`}
       <CodeBuildSlide
         kicker="One File for the Whole App"
         title="volumes"
-        lead="Two halves, separated by a colon. Read them right to left"
+        lead="The volume name on the left, the container folder on the right"
         lesson={SESSION}
         filename="docker-demo\docker-compose.yml"
         code={compose(4)}
         highlight={COMPOSE_HL[4]}
         annotation={{
-          key: 'db_data : /app/data',
+          key: 'db_data:/app/data',
           body: (
             <>
               <Code>/app/data</Code> is the folder <strong>inside the container</strong> whose
@@ -1826,7 +2200,8 @@ console.log("Backend address:", process.env.API_URL);`}
           body: (
             <>
               The <Code>volumes:</Code> block at the far left sits level with <Code>services:</Code>,
-              not inside a service, and it is what tells Docker to create the storage
+              not inside a service, and it is what tells Docker to create the storage. Nothing
+              follows the name because Docker fills in every setting itself
             </>
           ),
         }}
@@ -1847,7 +2222,7 @@ console.log("Backend address:", process.env.API_URL);`}
         lesson={SESSION}
         points={[
           { text: 'Appends one line every time the container starts', sub: 'Then prints how many lines it has' },
-          { text: 'The path matters, not the code', sub: '/app/data is the folder the volume is plugged into' },
+          { text: 'The script writes to /app/data', sub: '/app/data is the folder the volume is plugged into' },
         ]}
       >
         <CodeBlock
@@ -1902,15 +2277,15 @@ with open("/app/data/starts.txt") as f:
       'Read it as a sentence: my app is two services, backend built from backend\\Dockerfile, told which mode it is in, keeping its data in a volume; and frontend, built from frontend\\Dockerfile, told where the backend is, started after it. Now let them photograph it.',
   },
 
-  /* --- Concept 4: Running the Stack, slides 49 to 63 ---------------- */
+  /* --- Concept 4: Running the Stack: Integrating the Containers, slides 49 to 63 ---------------- */
   {
     id: 'c4-divider',
-    section: 'Running the Stack',
+    section: 'Running the Stack: Integrating the Containers',
     label: 'Divider 4',
     element: (
       <SectionBreakerSlide
         index={4}
-        title="Running the Stack"
+        title="Running the Stack: Integrating the Containers"
         subtitle="One command, and how containers find each other"
         lesson={SESSION}
       />
@@ -1920,7 +2295,7 @@ with open("/app/data/starts.txt") as f:
   },
   {
     id: 'c4-up-explain',
-    section: 'Running the Stack',
+    section: 'Running the Stack: Integrating the Containers',
     label: 'What up will do',
     element: (
       /*
@@ -1929,9 +2304,9 @@ with open("/app/data/starts.txt") as f:
         the room reads output it has already been told how to read.
       */
       <ContentSlide
-        kicker="Running the Stack"
+        kicker="Running the Stack: Integrating the Containers"
         title="What up Will Do"
-        lead="Before we run anything, here is everything one command is about to do for us"
+        lead="One command builds both images, creates the network and volume, and starts both"
         lesson={SESSION}
       >
         <CardGrid cols={2}>
@@ -1955,7 +2330,7 @@ with open("/app/data/starts.txt") as f:
   },
   {
     id: 'c4-up',
-    section: 'Running the Stack',
+    section: 'Running the Stack: Integrating the Containers',
     label: 'docker compose up',
     element: (
       /*
@@ -1967,7 +2342,7 @@ with open("/app/data/starts.txt") as f:
         keeps both things the room actually has to pair up.
       */
       <ContentSlide
-        kicker="Running the Stack"
+        kicker="Running the Stack: Integrating the Containers"
         title="docker compose up"
         lead="One command, from docker-demo. The docker-demo prefix on every name is the project name"
         lesson={SESSION}
@@ -2001,11 +2376,11 @@ with open("/app/data/starts.txt") as f:
   },
   {
     id: 'c4-ps',
-    section: 'Running the Stack',
+    section: 'Running the Stack: Integrating the Containers',
     label: 'Where did they go',
     element: (
       <ContentNoteSlide
-        kicker="Running the Stack"
+        kicker="Running the Stack: Integrating the Containers"
         title="Where Did They Go"
         lead="Both scripts printed their lines and finished, so nothing is running"
         lesson={SESSION}
@@ -2015,7 +2390,7 @@ with open("/app/data/starts.txt") as f:
           body: (
             <>
               The same is true of the logs: <Code>docker compose logs backend</Code> shows one
-              service's output. Everything you learnt last session still works, scoped to this app
+              service's output. Everything you have already learnt still works, scoped to this app
             </>
           ),
         }}
@@ -2047,21 +2422,21 @@ with open("/app/data/starts.txt") as f:
       </ContentNoteSlide>
     ),
     notes:
-      'The empty table is the same surprise as last session\u2019s empty docker ps, so name the connection: a container lives as long as its process. Exited (0) means finished cleanly, not crashed.',
+      'The empty table is the same surprise as the empty docker ps they already saw, so name the connection: a container lives as long as its process. Exited (0) means finished cleanly, not crashed.',
   },
   {
     id: 'c4-detached',
-    section: 'Running the Stack',
+    section: 'Running the Stack: Integrating the Containers',
     label: 'What is detached mode',
     element: (
       <ContentNoteSlide
-        kicker="Running the Stack"
+        kicker="Running the Stack: Integrating the Containers"
         title="What is Detached Mode"
         lead="Plain up holds your terminal until the containers finish. With -d, Compose hands it back"
         lesson={SESSION}
         note={{
           kind: 'tip',
-          title: 'You have met this before',
+          title: 'Django runserver holds the terminal in the same way',
           body: (
             <>
               <Code>python manage.py runserver</Code> holds your terminal the same way. The output
@@ -2088,11 +2463,11 @@ with open("/app/data/starts.txt") as f:
   },
   {
     id: 'c4-volume-works',
-    section: 'Running the Stack',
+    section: 'Running the Stack: Integrating the Containers',
     label: 'Watching the volume work',
     element: (
       <ContentSlide
-        kicker="Running the Stack"
+        kicker="Running the Stack: Integrating the Containers"
         title="Watching the Volume Work"
         lead="Run the stack a second time, and a third. The containers are new every time and the count is not"
         lesson={SESSION}
@@ -2121,11 +2496,11 @@ with open("/app/data/starts.txt") as f:
   },
   {
     id: 'c4-down',
-    section: 'Running the Stack',
+    section: 'Running the Stack: Integrating the Containers',
     label: 'One command down',
     element: (
       <ContentNoteSlide
-        kicker="Running the Stack"
+        kicker="Running the Stack: Integrating the Containers"
         title="One Command Down"
         lead="Containers and network cleaned up, in the right order, every time"
         lesson={SESSION}
@@ -2159,11 +2534,11 @@ with open("/app/data/starts.txt") as f:
   },
   {
     id: 'c4-down-v',
-    section: 'Running the Stack',
+    section: 'Running the Stack: Integrating the Containers',
     label: 'down -v',
     element: (
       <ContentNoteSlide
-        kicker="Running the Stack"
+        kicker="Running the Stack: Integrating the Containers"
         title="down -v"
         lead="The same command, plus one flag, and the count is back to 1"
         lesson={SESSION}
@@ -2195,21 +2570,21 @@ with open("/app/data/starts.txt") as f:
   },
   {
     id: 'c4-rebuild',
-    section: 'Running the Stack',
+    section: 'Running the Stack: Integrating the Containers',
     label: 'Code changed? Rebuild',
     element: (
       <ContentNoteSlide
-        kicker="Running the Stack"
+        kicker="Running the Stack: Integrating the Containers"
         title="Code Changed? Rebuild"
         lead="Images are frozen at build time, and that has not changed"
         lesson={SESSION}
         note={{
           kind: 'warning',
-          title: 'The trap, in its two-container form',
+          title: 'Compose reuses an existing image unless you ask it to rebuild',
           body: (
             <>
               Without <Code>--build</Code>, Compose reuses the images it already has and your change
-              appears to do nothing. This is last session's "I edited the code and still see the old
+              appears to do nothing. This is the familiar "I edited the code and still see the old
               output", twice over
             </>
           ),
@@ -2229,26 +2604,26 @@ with open("/app/data/starts.txt") as f:
       </ContentNoteSlide>
     ),
     notes:
-      'Name the trap by name and in their own words from last session. Twice over is the new part: with two services, one can be rebuilt and the other stale, and the symptoms are baffling.',
+      'Name the trap by name and in the words they already have for it. Twice over is the new part: with two services, one can be rebuilt and the other stale, and the symptoms are baffling.',
   },
   {
     id: 'c4-wrong-folder',
-    section: 'Running the Stack',
+    section: 'Running the Stack: Integrating the Containers',
     label: 'The error you will hit',
     element: (
       <ContentNoteSlide
-        kicker="Running the Stack"
+        kicker="Running the Stack: Integrating the Containers"
         title="The Error You Will Hit"
         lead="Run it one level up, from C:\nxttrendz, and Compose stops before it starts"
         lesson={SESSION}
         note={{
           kind: 'note',
-          title: 'Why',
+          title: 'No compose file exists one level up',
           body: (
             <>
               <Code>docker compose</Code> reads <Code>docker-compose.yml</Code> from the folder you
-              are standing in. One level up, there is no such file. Same lesson as last session's
-              build context: read the path in your prompt before you blame the tool
+              are standing in. One level up, there is no such file. Same lesson as the build context you
+              already met: read the path in your prompt before you blame the tool
             </>
           ),
         }}
@@ -2269,11 +2644,11 @@ with open("/app/data/starts.txt") as f:
   },
   {
     id: 'c4-summary',
-    section: 'Running the Stack',
+    section: 'Running the Stack: Integrating the Containers',
     label: 'Command summary',
     element: (
       <ContentSlide
-        kicker="Running the Stack"
+        kicker="Running the Stack: Integrating the Containers"
         title="Command Summary"
         lead="Every command in this session, in one place"
         lesson={SESSION}
@@ -2282,7 +2657,7 @@ with open("/app/data/starts.txt") as f:
           compact
           columns={[
             { label: 'Command', weight: 1.1 },
-            { label: 'Purpose', weight: 1.7, dim: true },
+            { label: 'Purpose', weight: 1.7 },
           ]}
           rows={[
             ['docker compose up', 'Build if needed, then start all services, output in the terminal'],
@@ -2302,7 +2677,7 @@ with open("/app/data/starts.txt") as f:
   },
   {
     id: 'c4-localhost',
-    section: 'Running the Stack',
+    section: 'Running the Stack: Integrating the Containers',
     label: 'localhost is not the other container',
     element: (
       /*
@@ -2314,9 +2689,9 @@ with open("/app/data/starts.txt") as f:
         the address.
       */
       <ContentSlide
-        kicker="Running the Stack"
+        kicker="Running the Stack: Integrating the Containers"
         title="localhost Is Not the Other Container"
-        lead="Why http://backend:8000, and not localhost:8000, the address that worked all through the integration course?"
+        lead="Your run printed Backend address: http://backend:8000. Until now every address you used was localhost, so why not here?"
         lesson={SESSION}
         points={[
           {
@@ -2327,7 +2702,7 @@ with open("/app/data/starts.txt") as f:
             text: 'The request never leaves',
             sub: 'It goes back into its own container, where nothing is listening',
           },
-          { text: 'This is the number one multi-container mistake', tone: 'brand' },
+          { text: 'localhost is the most common multi-container mistake', tone: 'brand' },
         ]}
       >
         <ComposeNetwork act={0} />
@@ -2338,7 +2713,7 @@ with open("/app/data/starts.txt") as f:
   },
   {
     id: 'c4-service-name',
-    section: 'Running the Stack',
+    section: 'Running the Stack: Integrating the Containers',
     label: 'Service names are hostnames',
     element: (
       /*
@@ -2360,9 +2735,9 @@ with open("/app/data/starts.txt") as f:
         title and never explained.
       */
       <ContentSlide
-        kicker="Running the Stack"
+        kicker="Running the Stack: Integrating the Containers"
         title="Service Names Are Hostnames"
-        lead="Remember the network Compose created without being asked? Every service in the file is attached to it"
+        lead="Compose created a private network, and every service in the file is attached to it"
         lesson={SESSION}
         points={[
           {
@@ -2380,128 +2755,78 @@ with open("/app/data/starts.txt") as f:
       </ContentSlide>
     ),
     notes:
-      'The word hostname is new: it is the name you put in an address where a machine belongs, and localhost is one they already know. Point out that the picture has not changed at all from the last slide, only the arrow, because that is the whole teaching. Then land the rename: change the service to api: and the address becomes api:8000, which is why choosing service names carefully was worth mentioning back on slide 36. Service names are not labels, they are addresses.',
-  },
-  {
-    id: 'c4-who-uses-which',
-    section: 'Running the Stack',
-    label: 'Who uses which',
-    element: (
-      /*
-        S1 IS ENFORCED HERE. Row two names the outside world and leaves it
-        unopened: no port, no ports: key, no browser. It is a real problem of
-        equal weight, and it is not today's, so it is stated plainly rather than
-        greyed out.
-      */
-      <ContentNoteSlide
-        kicker="Running the Stack"
-        title="Who Uses Which"
-        lead="Two cases, and only one of them is open to you today"
-        lesson={SESSION}
-        note={{
-          kind: 'success',
-          title: 'One line to remember',
-          body: <>Inside Docker, a service name is an address</>,
-        }}
-      >
-        <DataTable
-          columns={[
-            { label: 'Who is connecting', weight: 1.2 },
-            { label: 'Where the code runs', weight: 1.2 },
-            { label: 'Address to use', weight: 1.1 },
-          ]}
-          rows={[
-            ['One container to another', 'Inside Docker, on the Compose network', 'backend, the service name'],
-            ['Anything else to a container', 'Outside Docker', 'Not possible until the service opens a port'],
-          ]}
-        />
-      </ContentNoteSlide>
-    ),
-    notes:
-      'Row two will get a question. Answer it in one sentence: opening a container to the world outside Docker is a separate key, and it comes later in this course. Do not name the key and do not draw it.',
+      'The word hostname is new: it is the name you put in an address where a machine belongs, and localhost is one they already know. Point out that the picture has not changed at all from the last slide, only the arrow, because that is the whole teaching. Then land the rename: change the service to api: and the address becomes api:8000, which is why choosing service names carefully was worth mentioning back on the services slide. Service names are not labels, they are addresses.',
   },
   {
     id: 'c4-same-file-only',
-    section: 'Running the Stack',
+    section: 'Running the Stack: Integrating the Containers',
     label: 'Same file, same network',
     element: (
-      <ContentNoteSlide
-        kicker="Running the Stack"
+      /*
+        BULLETS LEFT, FIGURE RIGHT, MATCHING THE TWO SLIDES BEFORE IT.
+
+        This was a `ContentNoteSlide` carrying one bullet and a callout, and the
+        callout was doing the teaching. Two problems with that. The claim is about
+        a boundary, which is the one thing a sentence draws worst, and the slide
+        broke the layout continuity the comment on the previous slide exists to
+        protect: concept 4's last three frames now put their figure in the same
+        rectangle, so the room reads an addition rather than a new diagram.
+
+        The lead is gone on purpose. "The boundary of the claim, so nobody
+        over-generalises it" described the slide's job to the room instead of
+        teaching anything, and with no lead `ContentSlide` applies its
+        `visualGuard` padding, which keeps the figure clear of the video box.
+      */
+      <ContentSlide
+        kicker="Running the Stack: Integrating the Containers"
         title="Same File, Same Network"
-        lead="The boundary of the claim, so nobody over-generalises it"
         lesson={SESSION}
-        note={{
-          kind: 'note',
-          title: 'Which is why it needed no setup from you',
-          body: (
-            <>
-              Only services in the same Compose file share this network. A container started by a
-              separate <Code>docker run</Code> is not on it and cannot resolve <Code>backend</Code>
-            </>
-          ),
-        }}
         points={[
           {
             text: 'One file, one network, one project',
             sub: 'The project name on every created thing is what keeps them apart',
           },
+          {
+            text: 'Only services in this file are on it',
+            sub: 'They reach each other by service name, with no setup from you',
+          },
+          {
+            text: 'A separate docker run stays outside',
+            sub: 'It never joins the network, so the name backend means nothing to it',
+            tone: 'brand',
+          },
         ]}
-      />
+      >
+        <ComposeBoundary />
+      </ContentSlide>
     ),
     notes:
-      'Short, and it closes a loop: the project name from slide 51 is the mechanism behind the boundary. Somebody always tries to reach a compose service from a stray docker run container, and this is the slide that told them why it fails.',
+      'Short, and it closes a loop: the project name from the detached-mode slide is the mechanism behind the boundary. Somebody always tries to reach a compose service from a stray docker run container, and this is the slide that told them why it fails. If anyone asks how something OUTSIDE Docker reaches a container at all, answer in one sentence and move on: that needs a separate key, and it comes later in this course. Do not name the key and do not draw it.',
   },
 
   /* --- Back matter, slides 64 to 69 --------------------------------- */
-  {
-    id: 'quiz',
-    section: 'Close',
-    label: 'Quiz Time!',
-    element: (
-      <QuizTimeSlide
-        subtitle="One file, one command, and the address that is not localhost"
-        lesson={SESSION}
-      />
-    ),
-    notes:
-      'The late checkpoint. The question worth asking is the networking one, because it is the only idea today that contradicts something they already believed. Hand over to the quiz component.',
-  },
+ 
   {
     id: 'takeaways',
     section: 'Close',
     label: 'Key Takeaways',
     element: (
       /*
-        THE AGENDA'S FOUR ITEMS, RESTATED AS OUTCOMES, in a different UI. Same
-        four things the room was promised on slide 6, in the same order, now
-        phrased as things they can do.
+        THE AGENDA'S FOUR ITEMS, IN THE AGENDA'S OWN WORDS.
+
+        Read straight off `AGENDA`, never retyped. The takeaways slide is the
+        agenda handed back, so the difference between the two frames is the UI
+        and the tense the instructor reads them in, not the wording.
       */
       <KeyTakeawaysSlide
         kicker={SESSION}
         title="Key Takeaways"
         lesson={SESSION}
-        points={[
-          {
-            text: 'Containerise an app in any runtime',
-            sub: 'Swap the base image, the dependency file and the start command',
-          },
-          {
-            text: 'Say why running containers by hand does not scale',
-            sub: 'Six commands per two services, and none of it written down',
-          },
-          {
-            text: 'Write a docker-compose.yml',
-            sub: 'services, build, depends_on, environment and volumes',
-          },
-          {
-            text: 'Start and stop a whole stack with one command',
-            sub: 'And address one container from another by its service name',
-          },
-        ]}
+        points={AGENDA.map((item) => ({ text: item.title, sub: item.sub }))}
       />
     ),
     notes:
-      'Point back at the agenda as you read: same four items, now in the past tense. If a takeaway does not match an agenda item, one of the two slides is wrong.',
+      'Point back at the agenda as you read: the same four items in the same words, now in the past tense. Both slides render from one list, so they cannot disagree.',
   },
   {
     id: 'practice',
@@ -2511,18 +2836,33 @@ with open("/app/data/starts.txt") as f:
       <PracticeSlide
         kicker={SESSION}
         title="Try it by yourself"
-        prompt="Add a third service to your compose file, on a third runtime, and prove to yourself that the volume survives"
+        prompt="Build today's two service stack again, from an empty folder, without looking at the finished file"
         lesson={SESSION}
+        /*
+          THE SAME WORK AGAIN, NOT AN EXTENSION OF IT.
+
+          This used to ask for a THIRD service on a THIRD runtime, with any base
+          image they liked from Docker Hub. Read as practice that is a new task
+          wearing practice's clothes: it adds a runtime the session never showed,
+          a base image nobody has chosen before, and a fourth service block to a
+          file the room has written exactly once. Anyone who had not followed the
+          session cleanly was now stuck on something harder than the lesson, on
+          their own, with no instructor in the room.
+
+          Repetition is what a practice slide is for. These four tasks are the
+          session's own four sections, done again from an empty folder, so the
+          only thing being tested is whether they can reproduce today unaided.
+        */
         tasks={[
-          { text: 'Create a third folder with its own Dockerfile', sub: 'Pick any base image you like from Docker Hub' },
-          { text: 'Give it one environment variable and print it', sub: 'The same shape as APP_ENV' },
-          { text: 'Make the frontend depend on it too', sub: 'Then watch the start order in the output' },
+          { text: 'Recreate backend and frontend with their Dockerfiles', sub: 'The same six instructions in each, one runtime per folder' },
+          { text: 'Write docker-compose.yml from an empty file', sub: 'services, build, depends_on, environment and volumes' },
+          { text: 'Run docker compose up and read both logs', sub: 'Check the start order, and the address the frontend prints' },
           { text: 'Run down, then up, and check the count', sub: 'Then down -v, and check it again' },
         ]}
       />
     ),
     notes:
-      'The shape, not the solution. A third service is a symmetric extension of everything they just did, so nobody needs a new idea to finish it. The last task is the one that proves they understood volumes.',
+      'Repetition, not extension. Every task here is something the session already did in front of them, so nobody needs a new idea to finish it and nobody gets stuck alone on something harder than the lesson. Doing it from an empty folder is the whole point: following along is not the same as being able to reproduce it. The last task is the one that proves they understood volumes.',
   },
   {
     id: 'feedback',
@@ -2558,7 +2898,7 @@ with open("/app/data/starts.txt") as f:
     label: 'Thank You',
     element: (
       /*
-        NO MESSAGE. The deck already ends on slide 68's teaser, and a line here as
+        NO MESSAGE. The deck already ends on the next-up teaser, and a line here as
         well gave it two endings, which is the same reason `ThankYouSlideProps`
         carries no `nextUp`. The mark on stage is the whole slide.
       */

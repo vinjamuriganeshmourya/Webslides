@@ -25,7 +25,7 @@ a flat contradiction of session 3's rule and **refuses to resolve it**. Slides 6
 to 69 resolve it.
 
 This is content rule 4 and it is the best beat in the TR. Any edit that explains
-the answer before slide 67 costs the session its ending. If a learner solves it
+the answer before `c4-paradox-resolved` costs the session its ending. If a learner solves it
 early, the instructor note says to acknowledge them and move on rather than
 teaching it there.
 
@@ -60,12 +60,19 @@ So: **any slide with a `CodeBlock`, `Terminal`, `DataTable`, `FileTree` or a
 figure gets a `lead`.** It is also better slide copy, so this costs nothing.
 
 `BrowserOutsideDocker` needed more than a lead. At full width it is 1152x534,
-too tall to centre clear of the rectangle, so slide 69 caps it with
+too tall to centre clear of the rectangle, so `c4-who-talks` caps it with
 `className="mx-auto max-w-[800px]"`. Do not remove that cap.
 
-## S6 The four figures are not in the kit
+## S6 Three figures are session-owned, and the fourth is gone
 
-`PortPublish`, `BrowserOutsideDocker`, `VolumeShadow` and `ExecAnatomy` live in
+**`ExecAnatomy` was deleted on 2026-09-03.** The review said "design is not
+nyc", and the answer was not a redesign: this is the fourth time this course
+hand-rolled a syntax anatomy, and the generalised version has been in the kit as
+`SyntaxBreakdown` the whole time. Slide `c4-exec-anatomy` composes the kit
+component. Do not rebuild it here. If a syntax figure is needed and
+`SyntaxBreakdown` cannot do it, that is a kit change.
+
+`PortPublish`, `BrowserOutsideDocker` and `VolumeShadow` live in
 this session's `src/ui/`. Content rule 14 makes promotion the user's call, and
 the plan's §5.1 records the recommendation: the first two are general to any
 containerised web app, the last two are close to one-offs for this TR.
@@ -132,6 +139,17 @@ arithmetic looks right in source right up until a font renders wider than the
 coordinate assumed, and SVG text has no layout engine to keep it apart from a
 neighbour.
 
+## S10a A line number typed by hand is a line number that will be wrong
+
+`c2-five-of-seven` shipped with `highlight={[3, 11]}` on the backend Dockerfile.
+Line 3 was right. Line 11 is the **blank line** above the `CMD`, which is line
+12, so the slide lit an empty row for two weeks and the review asked the obvious
+question: *"Why 11 is highlighted?"*
+
+`hl()` exists for exactly this and S10 already said so, and the slide simply did
+not use it. **Every `highlight` in this deck derives from its own text.** If you
+find yourself counting rows in a code panel, you are writing the bug.
+
 ## S10 Compose highlights are derived, not counted
 
 `hl(stage, ...needles)` at the top of the deck returns the line numbers whose
@@ -159,3 +177,11 @@ reviewed by the user.
 | 2026-08-21 | Slides overlapping, and asked for a deterministic constraint | `align-check.mjs` added to the mandatory sweep in generate-slides §7. It already existed and had never been run |
 | 2026-08-21 | Slides 42 and 70 had overlapping labels inside figures | Content rule 17, and S9 above |
 | 2026-08-21 | Deck had no quiz frame; one is mandatory and a lone one goes before Key Takeaways | Content rule 18. `quiz-time` inserted at 77, deck now 80 |
+| 2026-09-03 | Five slides introduced a mechanism before the problem it solves (`ENV`, `.dockerignore` entries, `ports`, the volume, pinning) | **`PEDAGOGY_GUIDELINES.md` §2**, "the four beats of a new concept", as a hard rule. Six slides added, the ports sequence re-ordered. See plan §9 |
+| 2026-09-03 | "the container depth is missing all are very flat" | **`STYLE_GUIDE.md` §9.** The recipe already existed in `deployement_session_1_v3` and had never been promoted: `MachineBoundary`, `LayerStack` and `ContainerJourney` moved into the kit lit, `DataTable` and `FileTree` lit, and `svgDepth.tsx` added to the kit for SVG figures |
+| 2026-09-03 | Agenda rejected twice: first as figurative, then for its articles and helping words | **`TEXT_GUIDELINES.md` §4a.** The `AGENDA` array is now the single source for the agenda, the four dividers, the `section` fields and the recap |
+| 2026-09-03 | `ProceduralStepsSlide` centred its own header, so the title moved between slides | Kit fix. It was breaking content rule 19 in every session, not just this one |
+| 2026-09-03 | Slide 29: *".nvmrc -> tells developers/tools which Node version to use, Dockerfile -> tells Docker which Node version to put in the container"* | Added as two bullets. Both files name the same version and neither reads the other, so a learner is entitled to ask why both exist |
+| 2026-09-03 | Slide 30: *"4 and 9th row is highlighted in code: Not needed as both are empty rows"* | `highlight={[4, 9]}` lit two BLANK lines. Now `hl(FRONTEND_DOCKERFILE, 'package-lock.json', 'CMD ')`. **Second time in this deck** after `c2-five-of-seven`'s `[3, 11]`, which is why S10a exists |
+| 2026-09-03 | Slide 41: the callout title and body said the same thing in different word order | Merged. The rule is the title, and the body carries the reason: every request arrives from outside the container, so `127.0.0.1` refuses all of them |
+| 2026-09-03 | *"After slide 54 add one new slide"* with the wrong and right volume mounts | New `c3-volume-rule`, a `StatusPointsSlide`. Registry line: rows that carry verdicts are a `StatusList`, and two stacked `Callout`s read as two things that must not be missed, which is neither. Both mount strings in mono, because they differ by five characters and the eye has to land on exactly that |

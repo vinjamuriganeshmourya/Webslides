@@ -1,0 +1,489 @@
+/* ============ the hook: ONE transform ============
+   The column of forty identical make-one-copy instructions is the only group
+   that moves. It squashes onto the single line inside the loop body — a scale of
+   18/304 about y = 232.4, written origin-independently so a renderer that
+   ignores transform-origin lands in the same place:
+       scaling by s about y=b  ==  translate(0, b(1-s)) scale(1,s)
+       b = 232.4,  s = 0.0592  ->  translate(0, 218.6) scale(1, .0592)
+   900ms, because here the motion IS the argument. A little blur on each side
+   of the crossfade stops the eye reading two drawings instead of one turning
+   into the other. */
+.hmorph .hslot rect{fill:none;stroke:#D8E3EC;stroke-width:2;stroke-dasharray:8 8}
+.hmorph .hslot text{font:600 19px var(--sans);fill:#9FB0BE}
+.hmorph .hslot{opacity:1;transition:opacity var(--dur-base) var(--ease-out)}
+:is(.an-2,.an-3,.an-8) .hmorph .hslot{opacity:0}
+
+.hmorph .hgroup{opacity:0;transform-box:view-box;transform-origin:0 0;
+ transition:transform var(--dur-morph) var(--ease-out),
+            opacity var(--dur-base) var(--ease-out)}
+:is(.an-2,.an-3,.an-8) .hmorph .hgroup{opacity:1}
+.an-8 .hmorph .hgroup{transform:translate(0px,218.6px) scale(1,.0592)}
+
+.hmorph .houter{opacity:0;filter:blur(0);
+ transition:opacity var(--dur-base) var(--ease-out),filter var(--dur-base) var(--ease-out)}
+:is(.an-2,.an-3) .hmorph .houter{opacity:1}
+.an-8 .hmorph .houter{filter:blur(4px)}
+
+.hmorph .hcode,.hmorph .hcap{opacity:0;filter:blur(4px);
+ transition:opacity var(--dur-base) var(--ease-out),filter var(--dur-base) var(--ease-out)}
+.an-8 .hmorph .hcode,.an-8 .hmorph .hcap{opacity:1;filter:blur(0);transition-delay:480ms}
+
+.hmorph .hnote{opacity:0;transition:opacity var(--dur-base) var(--ease-out)}
+.an-3 .hmorph .hnote{opacity:1}
+
+/* presses 3 to 6 are the room's own examples. The machine stands down rather
+   than being stacked under, so the card never grows past its own height. */
+.hkyt{display:none}
+:is(.an-4,.an-5,.an-6,.an-7) .hkfig{display:none}
+:is(.an-4,.an-5,.an-6,.an-7) .hkyt{display:block}
+
+/* the worked examples, revealed one per press AFTER the room has offered theirs.
+   Its own class, not .exgrid: the shared one is wired to presses 2 to 5. */
+.exg2{display:flex;flex-wrap:wrap;margin:18px -9px 0}
+.exg2 .ex{flex:1 1 240px;min-width:0;margin:0 9px 18px;padding:16px 18px 18px;
+  border:2px solid #D6E6F0;border-left:6px solid var(--dk-cyan);border-radius:10px;
+  background:#F7FBFD;opacity:0;transform:translateY(10px);
+  transition:opacity 380ms var(--ease-out),transform 380ms var(--ease-out)}
+.exg2 .ex{opacity:.16;transform:none;border-style:dashed}
+.exg2 .ex > *{opacity:0;transition:opacity var(--dur-base) var(--ease-out)}
+.exg2 .ex b{display:block;font-size:1.06em;color:var(--dk-blue);margin:0 0 6px}
+.exg2 .ex span{display:block;color:var(--dk-text)}
+.exg2 .ex em{font-style:normal;font-weight:650;color:var(--dk-red)}
+.an-5 .exg2 .ex:nth-child(-n+1),.an-6 .exg2 .ex:nth-child(-n+2),
+.an-7 .exg2 .ex:nth-child(-n+3){opacity:1;border-style:solid}
+.an-5 .exg2 .ex:nth-child(-n+1) > *,.an-6 .exg2 .ex:nth-child(-n+2) > *,
+.an-7 .exg2 .ex:nth-child(-n+3) > *{opacity:1}
+body.present .exg2{margin-top:34px}
+body.present .exg2 .ex{padding:22px 24px 24px;font-size:clamp(14px,1.2vw,20px)}
+
+/* ============ the agenda: four stops, one per press ============
+   A list of four bullets is what this replaces. Each press lays one more length
+   of rail and lands the next stop, so the room sees the session go somewhere. */
+.agroute > g{opacity:0;transform:translateY(10px);transform-box:fill-box;
+  transform-origin:50% 50%;
+  transition:opacity 380ms var(--ease-out),transform 380ms var(--ease-out)}
+.an-1 .agroute > g:nth-of-type(-n+1),.an-2 .agroute > g:nth-of-type(-n+2),
+.an-3 .agroute > g:nth-of-type(-n+3),.an-4 .agroute > g:nth-of-type(-n+4){
+  opacity:1;transform:none}
+/* the empty rail and the four hollow stops, up from press 1 */
+.agroute .railghost{stroke:#E4EBF0;stroke-width:7;fill:none;stroke-linecap:round}
+.agroute .dotghost{fill:#FFFFFF;stroke:#D8E3EC;stroke-width:2;stroke-dasharray:6 6}
+.agroute .nghost{font:700 28px var(--sans);fill:#CBD5DF}
+.agroute .dot{fill:var(--dk-blue)}
+.agroute .n{font:700 28px var(--sans);fill:#fff}
+.agroute .t{font:600 25px var(--sans);fill:var(--dk-blue)}
+.agroute .d{font:400 19px var(--sans);fill:var(--dk-line)}
+
+@media (prefers-reduced-motion:reduce){
+  .exg2 .ex,.agroute > g{transition-duration:1ms;transform:none}
+  .hmorph *{transition:none !important}
+  .hmorph .hcode,.hmorph .hcap,.hmorph .houter{filter:none}
+}
+@media print{
+  .exg2 .ex,.agroute > g{opacity:1;transform:none}
+  .exg2 .ex > *{opacity:1}
+  .hkfig,.hkyt{display:block}
+  .hmorph .hgroup{transform:translate(0px,218.6px) scale(1,.0592) !important;opacity:1}
+  .hmorph .hcode,.hmorph .hcap{opacity:1 !important;filter:none !important}
+  .hmorph .houter,.hmorph .hnote{opacity:0 !important}
+}
+
+/* ============ execution walker ============
+   The dot is Python. It walks one route and comes back up the same edge to the
+   same test, which is the session's idea; everything it never touches greys out
+   and stays grey. Deck palette throughout, so the panel still reads as a slide. */
+.walker{display:flex;flex:1;min-height:0;margin:0}
+.wcode{flex:0 0 46%;min-width:0;display:flex;flex-direction:column;padding-right:20px}
+.wviz{flex:1;min-width:0;display:flex;flex-direction:column}
+.wcode pre{margin:0;padding:12px 14px;background:var(--dk-card);border-radius:8px;
+ font:13.5px/1.62 var(--mono);color:var(--dk-text);white-space:pre;overflow-x:auto}
+.wline{display:block;padding:0 6px;margin:0 -6px;border-radius:4px;
+ transition:background-color 200ms var(--ease-out),opacity 320ms var(--ease-out)}
+.wline b{color:var(--dk-red);font-weight:400}
+.wline i{color:var(--dk-blue);font-style:normal}
+.wline em{color:#22863A;font-style:normal}
+.wline.ran{background:#DCEEF9}
+.wline.now{background:#B9DCF2}
+.wline.dead{opacity:.26}
+
+.wctl{display:flex;align-items:center;margin:12px 0 0;flex-wrap:wrap}
+.wctl button{background:var(--dk-blue);color:#fff;border:0;border-radius:8px;padding:8px 15px;
+ font:inherit;font-size:13.5px;font-weight:650;cursor:pointer;margin-right:8px;
+ transition:transform var(--dur-fast) var(--ease-out)}
+.wctl button.ghost{background:none;color:var(--dk-blue);border:1px solid #BFD9EA}
+.wctl button:active{transform:scale(.97)}
+.wslide{display:flex;align-items:center;margin:12px 0 0}
+.wslide label{flex:0 0 auto;margin-right:10px;font:600 13.5px var(--mono);color:var(--dk-text);
+ font-variant-numeric:tabular-nums}
+.wslide input{flex:1;min-width:0;accent-color:var(--dk-blue)}
+.wout{flex:none;margin:12px 0 0;padding:9px 13px;min-height:2.6em;background:#000;border-radius:4px;
+ font:14px/1.5 var(--mono);color:#fff;white-space:pre-wrap}
+.wout:empty::before{content:'Press play. Whatever the program prints appears here.';color:#7C7C7C}
+
+.wchart{display:block;width:100%;height:auto;flex:1;min-height:0;margin:0}
+.wchart .wnode rect,.wchart .wnode polygon{fill:#fff;stroke:#C3D4DF;stroke-width:2;
+ transition:stroke 220ms var(--ease-out),fill 220ms var(--ease-out),opacity 320ms var(--ease-out)}
+.wchart .wnode text{font:600 14px var(--sans);fill:var(--dk-text);
+ transition:fill 220ms var(--ease-out),opacity 320ms var(--ease-out)}
+.wchart .wedge{stroke:#C3D4DF;stroke-width:2;fill:none;
+ transition:stroke 220ms var(--ease-out),opacity 320ms var(--ease-out)}
+.wchart .wlbl{font:600 12px var(--sans);fill:var(--dk-line)}
+.wchart .visited rect,.wchart .visited polygon{stroke:var(--dk-blue);fill:#EAF6FC}
+.wchart .visited text{fill:var(--dk-blue)}
+.wchart .wedge.visited{stroke:var(--dk-blue)}
+.wchart .no rect,.wchart .no polygon{stroke:var(--dk-red)}
+.wchart .dead,.wchart .wedge.dead{opacity:.2}
+.wdot circle{fill:var(--dk-red)}
+.wdot{transform:translate(128px,34px);transition:transform 420ms var(--ease-out)}
+.wdot.off{opacity:0}
+
+body.present .wcode pre{font-size:clamp(12px,1.2vw,19px)}
+body.present .wcode{padding-right:clamp(14px,2vw,34px)}
+body.present .wout{font-size:clamp(13px,1.35vw,21px)}
+body.present .wctl button,body.present .wslide label{font-size:clamp(12px,1.25vw,18px)}
+body.present .wchart .wnode text{font:600 clamp(11px,1.05vw,16px) var(--sans)}
+@media (prefers-reduced-motion:reduce){
+  .wdot,.wline,.wchart *{transition:none !important}
+}
+
+/* ---- the concept map: loops, its two kinds, then the deck's own while-loop
+       block diagram rebuilt one band per press ---- */
+.tkmap .tkbox rect{fill:#fff;stroke:var(--dk-cyan);stroke-width:2}
+.tkmap .tkroot rect{fill:#EAF6FC;stroke:var(--dk-blue);stroke-width:2.5}
+.tkmap text{font:600 17px var(--sans);fill:var(--dk-text)}
+.tkmap .tkroot text{font:600 22px var(--mono);fill:var(--dk-blue)}
+.tkmap path{stroke:var(--dk-cyan);stroke-width:2;fill:none}
+/* the solid bands carry white labels, and the loop's return arrow is orange, so
+   both need a class: CSS beats a presentation attribute, and `.tkmap text` and
+   `.tkmap path` would otherwise repaint them */
+.tkmap .tkslab text{font:600 19px var(--mono);fill:#fff}
+.tkmap .tkarrow{stroke:#F59A23;stroke-width:3;fill:none;stroke-linecap:round}
+.tkmap .tkcode text{font:600 20px var(--mono);fill:var(--dk-red)}
+.tkmap .tkcode .cnd{fill:#2E7D32}
+.tkmap .tkcode .col{fill:var(--dk-text)}
+/* no presenter font override here: the SVG itself scales, and a px clamp on
+   SVG text is read as user units, which grew the labels out of their boxes */
+
+/* ---- a numbered code slab, so poll options can point at a line ---- */
+pre.slabcode .ln{color:#9AA1B0}
+
+/* the walker's key line, so the grey state is named in words too */
+.stage-note em.dead{opacity:.26;font-style:normal}
+
+/* the checkpoint pill carries a whole sentence ("they can say what a loop is
+   for"), which the template's nowrap clipped against the 266px sidebar */
+.sp-cp span{white-space:normal;line-height:1.45;max-width:100%}
+.sp-cp::after{align-self:flex-end;margin-bottom:6px}
+
+/* the recap card is its own title, so the stage header stands down for it and
+   comes back for the three questions behind it */
+#stage-poll[data-at="0"] .sl-head{display:none}
+
+
+/* ============ tap to classify: which part is this line? ============
+   Activity library template 23. Six concrete lines, three bins, one case live
+   at a time. The commitment happened on the worksheet; this is the room's vote
+   being tested in public, and a wrong bin has to bounce or the panel is a list. */
+.cl-wrap{display:flex;gap:18px;flex:1;min-height:0;margin-top:14px}
+.cl-cases{flex:1.15;display:flex;flex-direction:column;gap:8px;min-width:0}
+.cl-case{display:flex;flex-direction:column;gap:3px;padding:9px 13px;border-radius:10px;
+  border:1px solid var(--rule,#E2E6EC);background:#fff;opacity:.38;
+  transition:opacity var(--dur-base) var(--ease-out),
+             border-color var(--dur-base) var(--ease-out),
+             transform var(--dur-base) var(--ease-out),
+             box-shadow var(--dur-base) var(--ease-out)}
+.cl-case .cl-src{font:600 13px var(--sans);color:var(--dk-line,#6B7785);letter-spacing:.2px}
+.cl-case code{font:400 17px var(--mono);color:var(--dk-text)}
+.cl-case.cur{opacity:1;border-color:var(--dk-cyan);
+  box-shadow:0 2px 0 0 var(--dk-cyan) inset,0 6px 18px rgba(20,20,40,.07)}
+/* the chip leaves first, and only then does the list close up. Collapsing the
+   height in the same frame makes the five below it jump while the eye is still
+   on the one that moved. */
+.cl-case.done{opacity:0;transform:translateX(22px) scale(.96);pointer-events:none;
+  height:0;padding:0;border-width:0;margin:0;overflow:hidden;
+  transition:opacity var(--dur-base) var(--ease-out),
+             transform var(--dur-base) var(--ease-out),
+             height 1ms linear var(--dur-base),
+             padding 1ms linear var(--dur-base),
+             margin 1ms linear var(--dur-base),
+             border-width 1ms linear var(--dur-base)}
+.cl-case.bounce{animation:clbounce 420ms var(--ease-out)}
+@keyframes clbounce{0%,100%{transform:none}
+  22%{transform:translateX(-7px)}58%{transform:translateX(7px)}82%{transform:translateX(-3px)}}
+
+.cl-bins{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
+.cl-bin{flex:1;display:flex;flex-direction:column;gap:6px;align-items:stretch;
+  border:2px dashed var(--rule,#E2E6EC);border-radius:12px;background:var(--surface,#FAFBFC);
+  padding:10px 12px;text-align:left;font:inherit;cursor:pointer;
+  transition:border-color var(--dur-fast) var(--ease-out),
+             background var(--dur-fast) var(--ease-out)}
+.cl-bin:hover{border-color:var(--dk-cyan)}
+.cl-bin b{font:650 16px var(--sans);color:var(--dk-blue)}
+.cl-bin.no{border-color:#D0342C;background:#FCF1F1}
+.cl-drop{display:flex;flex-direction:column;gap:5px}
+.cl-landed{padding:6px 10px;border-radius:8px;background:#EAF6FC;border:1px solid #BEE3F3;
+  font:400 15px var(--mono);color:var(--dk-text);
+  animation:clland var(--dur-base) var(--ease-out) both}
+@keyframes clland{from{opacity:0;transform:translateY(-12px) scale(.96)}to{opacity:1;transform:none}}
+
+.cl-say{margin:12px 0 0;min-height:1.5em;font-size:16px;color:var(--dk-text);
+  padding-left:12px;border-left:3px solid transparent}
+.cl-say.yes{border-color:#1B7F3B}
+.cl-say.no{border-color:#D0342C}
+body.present .cl-case code{font-size:clamp(15px,1.25vw,21px)}
+body.present .cl-bin b{font-size:clamp(15px,1.15vw,20px)}
+body.present .cl-say{font-size:clamp(15px,1.15vw,20px)}
+
+@media (prefers-reduced-motion:reduce){
+  .cl-case,.cl-bin,.cl-landed{transition-duration:1ms;animation-duration:1ms}
+  .cl-case.bounce{animation:none;border-color:#D0342C}
+}
+@media print{ .cl-case{opacity:1;height:auto} }
+
+/* ============ sequence of instructions, as an animation ============
+   Deck slide 9 is a paragraph beside a grey rectangle standing in for "a block
+   of code": it asserts that every line runs once and never shows one running.
+   Five presses walk a marker down a five line program, the box called `a` takes
+   a new value with the old one struck out, and the console fills a line at a
+   time. Only the marker moves; everything else is an opacity change, so the
+   whole thing is two animatable properties. */
+.seqfig .sqpanel{fill:#F7FAFC;stroke:#DCE3EA;stroke-width:2}
+.seqfig .sqdark{fill:#111A22}
+.seqfig .sqslot{fill:none;stroke:#DCE3EA;stroke-width:2;stroke-dasharray:7 7}
+.seqfig .sqslotd{fill:none;stroke:#2C3944;stroke-width:2;stroke-dasharray:7 7}
+.seqfig .sqhd{font:600 17px var(--sans);fill:var(--dk-line)}
+.seqfig .ln{font:600 17px var(--mono);fill:#9AA1B0}
+.seqfig .prog{font:400 21px var(--mono);fill:var(--dk-text)}
+.seqfig .prog .fn{fill:#6F42C1}
+.seqfig .prog .num{fill:#005CC5}
+.seqfig .val{font:700 34px var(--mono);fill:var(--dk-blue)}
+.seqfig .strike{stroke:#9AA1B0;stroke-width:3;stroke-linecap:round}
+.seqfig .outln{font:600 26px var(--mono);fill:#EAF6FC}
+.seqfig .sqband{fill:#DCEEF9}
+.seqfig .sqcaret{fill:var(--dk-red)}
+.seqfig .sqghost{fill:none;stroke:#DCE3EA;stroke-width:2;stroke-dasharray:8 7}
+.an-6 .seqfig .sqghost{opacity:0;transition:opacity var(--dur-fast) linear}
+.seqfig .sqsay{fill:#EAF6FC;stroke:var(--dk-cyan);stroke-width:2}
+.seqfig .saytx{font:600 21px var(--sans);fill:var(--dk-blue)}
+.seqfig .sqask{fill:var(--dk-blue)}
+.seqfig .asktx{font:700 23px var(--sans);fill:#fff}
+
+.seqfig .sq1,.seqfig .sq2,.seqfig .sq3,.seqfig .sq4,.seqfig .sq5,.seqfig .sq6{
+  opacity:0;transition:opacity var(--dur-base) var(--ease-out)}
+:is(.an-1,.an-2,.an-3,.an-4,.an-5,.an-6) .seqfig .sq1,
+:is(.an-2,.an-3,.an-4,.an-5,.an-6) .seqfig .sq2,
+:is(.an-3,.an-4,.an-5,.an-6) .seqfig .sq3,
+:is(.an-4,.an-5,.an-6) .seqfig .sq4,
+:is(.an-5,.an-6) .seqfig .sq5,
+.an-6 .seqfig .sq6{opacity:1}
+/* an empty slot stops being a slot the moment its value lands in it */
+.seqfig .sqslot,.seqfig .sqslotd{transition:opacity var(--dur-base) var(--ease-out)}
+:is(.an-1,.an-2,.an-3,.an-4,.an-5,.an-6) .seqfig .m1,
+:is(.an-2,.an-3,.an-4,.an-5,.an-6) .seqfig .m2,
+:is(.an-4,.an-5,.an-6) .seqfig .m3,
+:is(.an-3,.an-4,.an-5,.an-6) .seqfig .d1,
+:is(.an-5,.an-6) .seqfig .d2{opacity:0}
+/* the marker is the one thing that moves, and it moves one line per press */
+.seqfig .sqptr{transform-box:view-box;transform-origin:0 0;
+  transition:transform var(--dur-base) var(--ease-out)}
+.an-2 .seqfig .sqptr{transform:translateY(44px)}
+.an-3 .seqfig .sqptr{transform:translateY(88px)}
+.an-4 .seqfig .sqptr{transform:translateY(132px)}
+.an-5 .seqfig .sqptr{transform:translateY(176px)}
+.an-6 .seqfig .sqptr{transform:translateY(176px);opacity:.35}
+
+/* ============ a drawing beside the words, never under them ============
+   Four cards used to be a question, a code slab and half a screen of white.
+   The drawing sits in the second column, so the card gets shorter rather than
+   taller and nothing it already says is said twice. */
+.twocol{display:flex;gap:22px;align-items:flex-start;min-height:0}
+.twocol > *{min-width:0}
+.twocol .tc-a{flex:1.25}
+.twocol .tc-b{flex:1;display:flex;align-items:center;justify-content:center}
+.twocol .tc-b svg{display:block;width:100%;max-width:340px;height:auto;margin:0}
+body.present .twocol{flex:1;gap:clamp(20px,2.6vw,46px);align-items:center}
+body.present .twocol .tc-b svg{max-width:none;max-height:100%}
+body.present .twocol .tc-a{display:flex;flex-direction:column;justify-content:center}
+
+.artfig .aslab{fill:#F7FAFC;stroke:#DCE3EA;stroke-width:2}
+.artfig .aline,.brk2 .aline{fill:#C9D3DA}
+.artfig .alab,.brk2 .alab{font:600 13px var(--sans);fill:var(--dk-line)}
+.artfig .anum{font:700 16px var(--sans);fill:var(--dk-blue);text-anchor:middle}
+.artfig .aarrow,.brk2 .aarrow{stroke:var(--dk-cyan);stroke-width:3;fill:none;
+  stroke-linecap:round;stroke-linejoin:round}
+.artfig .abad{fill:rgba(199,69,78,.22);stroke:var(--dk-red);stroke-width:1.5}
+.artfig .abug{font:700 18px var(--sans);fill:var(--dk-red)}
+.artfig .adark,.brk2 .adark{fill:#111A22}
+.artfig .astar{font:700 34px var(--mono);fill:#EAF6FC}
+.brk2 .aslab{fill:#F7FAFC;stroke:#DCE3EA;stroke-width:2}
+.brk2 .agone{fill:#E7B4B8}
+.brk2 .acut{stroke:var(--dk-red);stroke-width:2.5;stroke-linecap:round}
+.brk2 .aout{fill:#5FA8D3}
+.brk2 .aforever{font:600 12px var(--sans);fill:#9AA1B0}
+.brk2 .aswapa{fill:#4EB3EA}
+.brk2 .aswapb{fill:#6AAB4C}
+
+/* the two changes, side by side, so the card is one screen and not three */
+.brk2{display:flex;gap:18px;margin:10px 0 0}
+.brk-step{flex:1;min-width:0;border:1px solid var(--rule,#E2E6EC);border-left:5px solid var(--dk-cyan);
+  border-radius:10px;background:#F7FBFD;padding:12px 14px 10px;position:relative}
+.brk-step p{margin:0 0 8px;font-size:16px;line-height:1.45;color:var(--dk-text)}
+.brk-step svg{display:block;width:100%;height:auto;max-width:320px;margin:0 auto}
+.brk-n{position:absolute;top:-11px;left:-11px;width:26px;height:26px;border-radius:50%;
+  background:var(--dk-blue);color:#fff;font:700 14px var(--sans);display:grid;place-items:center}
+body.present .brk2{gap:clamp(16px,2vw,34px);margin-top:clamp(10px,1.6vh,24px)}
+body.present .brk-step p{font-size:clamp(14px,1.35vw,22px)}
+
+/* ============ the hook's three examples, each one actually looping ============
+   Three paragraphs in three boxes is what this replaces. Every box now holds a
+   small machine doing its one job over and over while the instructor talks
+   about it, and the animation only turns on the press that reveals that box, so
+   three loops are never spinning at once. */
+.exart{margin:0 0 10px}
+.exart svg{display:block;width:100%;max-width:230px;height:auto;margin:0 auto}
+.exart .exbody{fill:#fff;stroke:var(--dk-blue);stroke-width:3}
+.exart .exscreen{fill:#111A22}
+.exart .exscr{font:700 20px var(--mono);fill:#5FD0F5}
+.exart .exslot{fill:#2C3944}
+.exart .exnote{fill:#CDE7C6;stroke:#6AAB4C;stroke-width:2}
+.exart .exrow{fill:#EAF0F4}
+.exart .extick{fill:#6AAB4C;opacity:0}
+.exart .extower{fill:#9FB0BE}
+.exart .exwave{stroke:var(--dk-cyan);stroke-width:2.5;fill:none;stroke-linecap:round;opacity:.5}
+.exart .exmsg rect{fill:var(--dk-blue)}
+.exart .exshaft{fill:#F2F6F9;stroke:#C9D3DA;stroke-width:2}
+.exart .exfloor{stroke:#DCE3EA;stroke-width:2}
+.exart .exfl{font:600 13px var(--sans);fill:var(--dk-line)}
+.exart .exlamp{fill:#F59A23;opacity:.18}
+.exart .excar rect{fill:var(--dk-blue)}
+
+/* every moving part is declared here and paused; the press that reveals the
+   box is the only thing that starts it */
+.exart .exnote,.exart .extick,.exart .exmsg,.exart .exlamp,.exart .excar{
+  animation-duration:2.7s;animation-iteration-count:infinite;
+  animation-timing-function:var(--ease-out);animation-play-state:paused}
+.exart .exnote{animation-name:ex-note}
+.exart .exnote.n2{animation-delay:.5s}
+.exart .exnote.n3{animation-delay:1s}
+.exart .extick{animation-name:ex-tick}
+.exart .extick.t2{animation-delay:.6s}
+.exart .extick.t3{animation-delay:1.2s}
+.exart .exmsg{animation-name:ex-msg;transform-box:view-box;transform-origin:0 0}
+.exart .excar{animation-name:ex-car;transform-box:view-box;transform-origin:0 0}
+.exart .exlamp{animation-name:ex-lamp}
+.exart .exlamp.l4{animation-delay:.1s}
+.exart .exlamp.l3{animation-delay:.75s}
+.exart .exlamp.l2{animation-delay:1.4s}
+.exart .exlamp.l1{animation-delay:2s}
+.an-5 .exg2 .ex:nth-child(1) .exart *,
+.an-6 .exg2 .ex:nth-child(-n+2) .exart *,
+.an-7 .exg2 .ex:nth-child(-n+3) .exart *{animation-play-state:running}
+
+@keyframes ex-note{0%{opacity:0;transform:translateY(0)}
+  8%{opacity:1}
+  46%,100%{opacity:0;transform:translateY(26px)}}
+@keyframes ex-tick{0%,10%{opacity:0;transform:scale(.4)}
+  22%,100%{opacity:1;transform:none}}
+@keyframes ex-msg{0%{opacity:0;transform:translate(0,0)}
+  6%,26%{opacity:1;transform:translate(0,0)}
+  33%{opacity:0}
+  34%,60%{opacity:1;transform:translate(0,30px)}
+  66%{opacity:0}
+  67%,92%{opacity:1;transform:translate(0,60px)}
+  100%{opacity:0;transform:translate(0,60px)}}
+@keyframes ex-car{0%,8%{transform:translateY(0)}
+  22%,36%{transform:translateY(-30px)}
+  50%,64%{transform:translateY(-60px)}
+  78%,100%{transform:translateY(-90px)}}
+@keyframes ex-lamp{0%,14%{opacity:1}22%,100%{opacity:.18}}
+
+/* the two kinds of loop are the point of that row, so they read as names */
+.tkmap .tkbox .kind{font:700 22px var(--mono);fill:var(--dk-blue)}
+.tkmap .tkbox .when{font:400 16px var(--sans);fill:var(--dk-line)}
+
+@media (prefers-reduced-motion:reduce){
+  .seqfig .sqptr,.seqfig .sq1,.seqfig .sq2,.seqfig .sq3,.seqfig .sq4,
+  .seqfig .sq5,.seqfig .sq6{transition-duration:1ms}
+  .exart *{animation:none !important}
+}
+@media print{
+  .seqfig .sq1,.seqfig .sq2,.seqfig .sq3,.seqfig .sq4,.seqfig .sq5,
+  .seqfig .sq6{opacity:1}
+  .exart *{animation:none !important}
+  .exart .extick,.exart .exlamp{opacity:1}
+}
+
+/* the shop keeps working while the instructor talks over it. One sheet, then
+   the next, then the next: the picture makes the same claim the words do. */
+.hmorph .htray .tray{fill:#D9D9D6}
+.hmorph .htray .sheet{fill:#fff;stroke:#C9D3DA;stroke-width:2;opacity:0;
+  transform-box:view-box;transform-origin:0 0;
+  animation:hk-sheet 2.1s var(--ease-out) infinite;animation-play-state:paused}
+.hmorph .htray .s2{animation-delay:.7s}
+.hmorph .htray .s3{animation-delay:1.4s}
+:is(.an-1,.an-2,.an-3,.an-8) .hmorph .htray .sheet{animation-play-state:running}
+.hmorph .htray .traylbl{font:400 17px var(--sans);fill:var(--dk-line)}
+@keyframes hk-sheet{0%{opacity:0;transform:translate(0,0)}
+  12%{opacity:1}
+  74%,100%{opacity:0;transform:translate(18px,58px)}}
+@media (prefers-reduced-motion:reduce){
+  .hmorph .htray .sheet{animation:none;opacity:1}
+}
+@media print{ .hmorph .htray .sheet{animation:none;opacity:1} }
+
+/* the "where else" half of the hook is the whole card while it is up, so it
+   takes the whole card. Before this the three boxes hugged the question and
+   left a third of a screen of white under them. */
+/* each half is grown only on the presses it is up for. A blanket
+   `body.present .hkfig{display:flex}` outranks the rule that hides the machine
+   on presses 4 to 7, and puts both halves on the card at once. */
+body.present :is(.an-1,.an-2,.an-3,.an-8) .hkfig,
+body.present :is(.an-4,.an-5,.an-6,.an-7) .hkyt{flex:1;min-height:0;display:flex;
+  flex-direction:column;justify-content:center}
+body.present .exg2{flex:1;min-height:0;align-items:stretch;flex-wrap:nowrap}
+.exg2 .ex{display:flex;flex-direction:column}
+.exg2 .exart{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+/* height first, width follows: `width:100%` with `max-height` makes a browser
+   shrink the box on both axes and the drawing comes out thumbnail sized */
+body.present .exart svg{width:auto;height:100%;max-width:100%;max-height:none}
+/* a box that has not been revealed yet shows its machine as an outline, so the
+   room can see three are coming and what kind of thing they are */
+.exg2 .ex > *{opacity:0;transition:opacity var(--dur-base) var(--ease-out)}
+.exg2 .ex > .exart{opacity:.15}
+.exart .exkey{fill:#DCE3EA}
+
+/* program 1 is not broken by a wrong line, it is missing one, so its marker is
+   an empty slot. A red line there would teach the wrong thing before they read
+   a word of it. */
+.artfig .amiss{fill:none;stroke:var(--dk-red);stroke-width:2;stroke-dasharray:6 5}
+/* the two changes fill the card rather than sitting in a band across its middle */
+body.present .brk2{flex:1;min-height:0;align-items:stretch}
+body.present .brk-step{display:flex;flex-direction:column}
+body.present .brk-step{justify-content:center}
+body.present .brk-step svg{max-width:100%;width:100%;height:auto;flex:0 0 auto;
+  margin-top:clamp(8px,1.4vh,22px)}
+
+/* the walker's left column ran out of content two thirds of the way down the
+   card. The console takes the rest: it is the thing the room is waiting on. */
+body.present .wout{flex:1 1 auto;min-height:0}
+
+/* the little drawing above each agenda stop */
+.agroute .agi .agbar{fill:var(--dk-cyan)}
+.agroute .agi .agarc{fill:none;stroke:var(--dk-blue);stroke-width:5;
+  stroke-linecap:round;stroke-linejoin:round}
+.agroute .agi .agbreak{stroke:var(--dk-red);stroke-width:5;stroke-linecap:round}
+.agroute .agi .agdot{fill:var(--dk-blue)}
+
+/* ---- the exit card's answer column ----
+   Everything on that card lives in the left column until somebody presses
+   Reveal, so the right half was a white rectangle with two buttons floating at
+   the top of it. An outlined slot says where the answer is going to land. */
+.pollcols > div:last-child::after{
+  content:"The answer lands here when I press Reveal answer.";
+  order:9;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:18px;margin-top:14px;border:2px dashed var(--rule,#E2E6EC);
+  border-radius:12px;color:var(--muted,#6B7785);font-size:15px;line-height:1.45}
+.stage-step.told .pollcols > div:last-child::after{display:none}
+body.present .pollcols > div:last-child::after{font-size:clamp(14px,1.3vw,21px)}
+body.present .pollcols > div:first-child{justify-content:center}
+@media print{ .pollcols > div:last-child::after{display:none} }

@@ -1,0 +1,2667 @@
+{
+ "meta": {
+  "session": "22 - Functions",
+  "course": "Programming Foundations",
+  "one_idea": "A function is a named block written once. def only stores it; a call runs it, by jumping into the block and coming back. An argument sends a value in, and return hands a value back out.",
+  "outcomes": [
+   "Write a function with def, a name, brackets, a colon and an indented block.",
+   "Say why a function that is defined but never called prints nothing.",
+   "Follow a call: Python jumps to the block, runs it, then comes back to the line after the call.",
+   "Explain the NameError when a function is called before its def.",
+   "Pass a value with greet(word=name), and say why msg made inside is unknown outside.",
+   "Use return to get a value back, and say why a line after return never runs."
+  ],
+  "previous": "21 - Lists and Strings",
+  "slides_dir": "C:\\Lesson Plans New\\builds\\build-22-functions\\work\\slides",
+  "deck_total": 55,
+  "kept": [
+   9,
+   11,
+   12,
+   16,
+   20,
+   21,
+   28,
+   31,
+   32,
+   34,
+   36,
+   39,
+   40,
+   41,
+   43,
+   45,
+   48
+  ],
+  "cuts": [
+   [
+    "1-2",
+    "Welcome and deck title. The fixed spine cards replace them."
+   ],
+   [
+    "3-8",
+    "A recap that lists what session 21 covered. Reading is not remembering; S-RECAP is a bug to find instead."
+   ],
+   [
+    "10",
+    "The answer slide of the daily challenge. S-RECAP reveals it on its own presses."
+   ],
+   [
+    "13-15",
+    "Build-up of slide 16. C2 steps the same picture, one label per press."
+   ],
+   [
+    "17-19",
+    "Build-up of slide 20. C3 steps it."
+   ],
+   [
+    "22-27",
+    "Build-up of slide 28. The explainer E1 walks the program one move per press."
+   ],
+   [
+    "29-30",
+    "Build-up of slide 31. C5 steps it."
+   ],
+   [
+    "33, 35",
+    "Build-up of slides 34 and 36. C7 and C8 step them."
+   ],
+   [
+    "37-38",
+    "Build-up of slide 39. C9 steps it."
+   ],
+   [
+    "42",
+    "The output of slide 41. C11 reveals it on its own press."
+   ],
+   [
+    "44",
+    "Build-up of slide 45. C12 steps it."
+   ],
+   [
+    "46-47",
+    "Two summary diagrams. The example board K1 replaces them. \"Arguments and return are optional\" is one spoken line in the guide."
+   ],
+   [
+    "49",
+    "Bullet takeaways. Replaced by K1."
+   ],
+   [
+    "50-51",
+    "Practice picture and next-session slide. One spoken line each in the guide."
+   ],
+   [
+    "52, 54-55",
+    "Feedback, thank you, all the best. The fixed spine cards replace them."
+   ],
+   [
+    "53",
+    "Daily challenge for the next session. Not projected; see defects."
+   ]
+  ],
+  "defects": [
+   [
+    "slide 53",
+    "The daily challenge calls get_list(string_a), a call without word=. This session teaches only the argument=value form; the plain form is session 23's topic.",
+    "Not projected. Fix the slide to get_list(string_a=string_a), or move the challenge to session 23."
+   ],
+   [
+    "slides 12, 21",
+    "The eyebrow says Introduction while every other teaching slide says Functions.",
+    "Not used as text."
+   ],
+   [
+    "slide 47",
+    "The label \"Returning Value(optional\" has a broken subscript and a stray bracket.",
+    "Not used. K1 replaces the slide."
+   ],
+   [
+    "slide 45",
+    "The output box is an empty black box with no word under it. On a projector it reads as a missing picture.",
+    "C12 says it in words: the output box stays empty and the caption reads (nothing)."
+   ],
+   [
+    "slides 15, 46",
+    "\"Functional Block\" is used for the indented block. The transcript says function block and functional block.",
+    "C2 uses \"Function block\", one word fewer and the same meaning."
+   ]
+  ],
+  "notes": [
+   "The room is 50 to 60 first-year students on laptops. Laptops stay shut except on T1, T2 and the classroom quiz.",
+   "One world for the session: Teja's birthday. The deck's own input is Teja, so the hook, the tasks, the game and the exit are all at Teja's party. Friends: Rahul, Priya.",
+   "Votes are taken option by option: the instructor reads each option and asks how many think it is that one. Hands up. Nobody is named.",
+   "Calls are written only as greet(word=name), with the argument name and an equals sign, as the deck does. Never greet(name). That plain form is the next session.",
+   "One picture for the whole session: A call is drawn as a jump: an arrow from the call line up to the def header, and on the way back an arrow from the block to the call line. The call line stays marked while the block runs: it is waiting. A call opens the function's own area beside its block. Boxes made in the call (the argument, msg) live there, and vanish the moment the call ends. No grey ghost is left behind.",
+   "Nothing before the title card may say the session's name. The hook shows a song and a party, never code words like def.",
+   "The bar to beat is Plans/DSA/Module 3 - Stacks & Queues/01 - Introduction to Stacks/: a simulation the room drives, a picture that refuses to lie."
+  ],
+  "topics": [
+   "functions",
+   "sequence"
+  ]
+ },
+ "build_contract": [
+  "One self-contained HTML file. It opens offline from a USB stick and makes no network request.",
+  "It opens in presenter view. There is no sidebar, top bar or button the instructor has to use.",
+  "Right arrow or the clicker is one press. Left arrow goes back one press. F goes full screen, A shows all the cards, and End shows the whole card at once. The instructor guide tells the instructor these keys, so they must work.",
+  "Every card is its own screen, in the order of this spec. Press 1 is what shows when the card opens.",
+  "Every card's outer element carries data-spec=\"<card id>\" and data-presses=\"<number of presses>\". The review script reads both.",
+  "No link to any other file. The students' handout and the instructor guide are separate files, and a link from this file is how a class finds the answers."
+ ],
+ "rules": [
+  "No autoplay. Nothing moves on a timer. One press, one move, with a caption that says what just happened.",
+  "Commit, then reveal. Where a card asks a question, the answer shows only on the press after the room has answered.",
+  "Wrong answers stay private. No names, no per-student results on screen. Hands are counted out loud, never shown.",
+  "The topic is named once. Nothing before the title card says today's topic, not a heading, not a caption, not a file name on a code card.",
+  "Words are exact. Words in quotation marks, and every line under Exact words, are final. The rest of a press describes what happens, in your own design. If an exact line does not fit, ask for a new one; do not rewrite it.",
+  "Code is exact. Copy code and outputs from the JSON, never retype them. Every output here came from running the program.",
+  "Simple English. Short sentences, everyday words. No em-dashes anywhere, the page title included.",
+  "Every card moves. A card that introduces an idea steps; a static card is a picture of a lecture."
+ ],
+ "beats": [
+  {
+   "name": "Welcome",
+   "kind": "concept",
+   "mins": 1,
+   "start": 0,
+   "cards": [
+    {
+     "id": "S-WELCOME",
+     "title": "Welcome",
+     "source": "spine:welcome",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap",
+   "kind": "concept",
+   "mins": 1,
+   "start": 1,
+   "cards": [
+    {
+     "id": "S-RECAP-CARD",
+     "title": "Recap card",
+     "source": "spine:recap_card",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap bug: the 1 6 / 2 6 / 3 6 program",
+   "kind": "quiz",
+   "mins": 3,
+   "start": 2,
+   "cards": [
+    {
+     "id": "S-RECAP",
+     "title": "Recap: find the line",
+     "source": "spine:recap",
+     "purpose": "Deck slides 9 and 10, the daily challenge. Pull back session 21's split and counting from the end: list_b[n] is always the last item, list_b[n-i] steps back.",
+     "heading": "Which line is to blame?",
+     "show": [
+      "We want the first list forwards and the second list backwards, side by side.",
+      "Input:",
+      "It prints:",
+      "We wanted:",
+      "Which line is to blame?"
+     ],
+     "presses": [
+      {
+       "screen": "The story line <q>We want the first list forwards and the second list backwards, side by side.</q>, the program with line numbers (deck slide 9), the input <q>1,2,3</q> and <q>4,5,6</q>, and under it <q>It prints:</q> <q>1 6 / 2 6 / 3 6</q> beside <q>We wanted:</q> <q>1 6 / 2 5 / 3 4</q>. The question <q>Which line is to blame?</q>",
+       "say": "This was your daily challenge. Pick a line number. Line 6? Hands up. Line 7? Line 8?",
+       "room": "Hands up for a line number."
+      },
+      {
+       "screen": "Line 7 lights up as the culprit. The why line shows: <q>list_b[n] is the last item on every pass. list_b[n-i] steps back one place each pass.</q>",
+       "say": "What should line 7 say? Take answers before the next press.",
+       "room": "Say the fix."
+      },
+      {
+       "screen": "Line 7 becomes <q>num_2 = list_b[n-i]</q> and the output changes to <q>1 6 / 2 5 / 3 4</q>.",
+       "say": "n minus i: 2, then 1, then 0. The second list walks backwards."
+      }
+     ],
+     "code": [
+      {
+       "file": "challenge.py",
+       "src": "list_a = input().split(\",\")\nlist_b = input().split(\",\")\nlen_of_list_a = len(list_a)\nn = len_of_list_a - 1\nfor i in range(len_of_list_a):\n    num_1 = list_a[i]\n    num_2 = list_b[n]\n    result = str(num_1) + \" \" + str(num_2)\n    print(result)",
+       "output": "1 6\n2 6\n3 6",
+       "input": "1,2,3\n4,5,6"
+      },
+      {
+       "file": "challenge_fixed.py",
+       "src": "list_a = input().split(\",\")\nlist_b = input().split(\",\")\nlen_of_list_a = len(list_a)\nn = len_of_list_a - 1\nfor i in range(len_of_list_a):\n    num_1 = list_a[i]\n    num_2 = list_b[n-i]\n    result = str(num_1) + \" \" + str(num_2)\n    print(result)",
+       "output": "1 6\n2 5\n3 4",
+       "input": "1,2,3\n4,5,6"
+      }
+     ],
+     "interaction": "Format: bug. The room votes on the line by hands, option by option, before the culprit lights. Nobody is named.",
+     "must": [
+      "The wrong output and the wanted output are both on screen from press 1, so the room compares them.",
+      "The program is the deck's slide 9, word for word."
+     ],
+     "data": {
+      "lines": [
+       "list_a = input().split(\",\")",
+       "list_b = input().split(\",\")",
+       "len_of_list_a = len(list_a)",
+       "n = len_of_list_a - 1",
+       "for i in range(len_of_list_a):",
+       "    num_1 = list_a[i]",
+       "    num_2 = list_b[n]",
+       "    result = str(num_1) + \" \" + str(num_2)",
+       "    print(result)"
+      ],
+      "input": [
+       "1,2,3",
+       "4,5,6"
+      ],
+      "wrong": "1 6\n2 6\n3 6",
+      "right": "1 6\n2 5\n3 4",
+      "culprit": 7,
+      "fix": "    num_2 = list_b[n-i]",
+      "why": "list_b[n] is the last item on every pass. list_b[n-i] steps back one place each pass."
+     },
+     "play": "How the culprit lights and how the fix slides in.",
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "Hook: the midnight birthday song",
+   "kind": "hook",
+   "mins": 5,
+   "start": 5,
+   "cards": [
+    {
+     "id": "H1",
+     "title": "The song, three times in one night",
+     "source": "new",
+     "animated": "hook",
+     "purpose": "Feel, from a night they have all had, that the same four lines happen again and again, that nobody writes them out each time, and that knowing the song does not sing it. The last press draws the shape of today's construct: one named block, started by its name.",
+     "heading": "It is Teja's birthday",
+     "show": [
+      "12:00 AM. It is Teja's birthday.",
+      "Happy birthday to you",
+      "Happy birthday to you",
+      "Happy birthday dear Teja",
+      "Happy birthday to you",
+      "What does everyone do now?",
+      "Did anyone write the song down first?",
+      "Learn it once. Start it by its name. Any time."
+     ],
+     "presses": [
+      {
+       "screen": "A hostel room at night. A phone lock screen shows <q>12:00 AM</q>. A cake with <q>Happy Birthday Teja</q> in icing and lit candles. Friends around it. On the side, a timeline with one entry: <q>12:00 AM</q> <q>The cake is out.</q>. Caption: <q>12:00 AM. It is Teja's birthday.</q>",
+       "say": "Midnight in the hostel. It is Teja's birthday. What happens right now?",
+       "room": "Say it out loud: we sing."
+      },
+      {
+       "screen": "The four lines of the song appear over the cake, one under the other: <q>Happy birthday to you</q> <q>Happy birthday to you</q> <q>Happy birthday dear Teja</q> <q>Happy birthday to you</q>. The timeline entry gets a small song mark.",
+       "say": "Everyone sings. Cake, photos. Done?"
+      },
+      {
+       "screen": "The timeline adds <q>12:20 AM</q> <q>Amma video-calls Teja.</q> A WhatsApp video call screen opens with Amma's tile. Caption: <q>What does everyone do now?</q>",
+       "say": "Amma calls on video. What does everyone do?",
+       "room": "Say it: sing again."
+      },
+      {
+       "screen": "The same four lines appear again under the 12:20 entry. Then the timeline adds <q>12:45 AM</q> <q>Friends from C block arrive.</q> and the four lines appear a third time. Twelve lines of song now on screen.",
+       "say": "C block friends arrive late. Same song, third time."
+      },
+      {
+       "screen": "Caption: <q>Did anyone write the song down first?</q>",
+       "say": "Did anyone write the lyrics before singing? Did anyone sing it at 11:59, before the cake? Everyone knew it at 11:59.",
+       "room": "Say: no. Someone just starts it."
+      },
+      {
+       "screen": "The turn, one movement: the three copies of the four lines fold into ONE card. The card has a name on top, <q>Happy birthday song</q>, and the four lines sit indented under the name. On the timeline, each of the three moments now holds only a small tag <q>Happy birthday song!</q> with an arrow up to the card. Caption: <q>Learn it once. Start it by its name. Any time.</q>",
+       "say": "Hold this picture: a name, and a block under it. Do not name it yet. What do you think today is about?",
+       "room": "Guess the topic."
+      }
+     ],
+     "must": [
+      "The song really is sung again for the video call and for the late friends; that is the reuse. The same four lines each time.",
+      "The last press is one movement: three copies becoming one named card, with three tags pointing at it.",
+      "On the last press the four lines are indented under the name, the way a block sits under its header."
+     ],
+     "must_not": [
+      "Say the session name, or any code word (def, call, block), anywhere on this card.",
+      "Show any code on this card.",
+      "Animate by itself. Every change waits for a press."
+     ],
+     "data": {
+      "song": [
+       "Happy birthday to you",
+       "Happy birthday to you",
+       "Happy birthday dear Teja",
+       "Happy birthday to you"
+      ],
+      "timeline": [
+       {
+        "time": "12:00 AM",
+        "event": "The cake is out."
+       },
+       {
+        "time": "12:20 AM",
+        "event": "Amma video-calls Teja."
+       },
+       {
+        "time": "12:45 AM",
+        "event": "Friends from C block arrive."
+       }
+      ]
+     },
+     "play": "The hostel room, the cake, the phone clock and the WhatsApp video call are yours to make real: the green call screen, Amma's tile, candles. The timeline can look like a phone's notification list. How the copies fold into one card is yours.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Today's topic",
+   "kind": "concept",
+   "mins": 1,
+   "start": 10,
+   "cards": [
+    {
+     "id": "S-TITLE",
+     "title": "Title",
+     "source": "spine:title",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Agenda",
+   "kind": "concept",
+   "mins": 1,
+   "start": 11,
+   "cards": [
+    {
+     "id": "S-AGENDA",
+     "title": "Agenda",
+     "source": "spine:agenda",
+     "purpose": "Name the four stops of today, so the room knows where the session goes. Deck slide 11's stops.",
+     "play": "How the stops sit and light. The deck's arrow of three steps on slide 11 is a fine start.",
+     "show": [
+      "Define",
+      "write the block once, give it a name",
+      "Call",
+      "run it by its name",
+      "Pass a value",
+      "send a value in",
+      "Return a value",
+      "get a value back"
+     ],
+     "presses": [
+      {
+       "screen": "Stop 1 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 2 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 3 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 4 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      }
+     ],
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Write it once: def, a name, a block",
+   "kind": "concept",
+   "mins": 3,
+   "start": 12,
+   "cards": [
+    {
+     "id": "C1",
+     "title": "The song, three times, in Python",
+     "source": [
+      12
+     ],
+     "purpose": "See the hook as a program: the same four lines written three times. A function is the way to write them once.",
+     "heading": "Write it once?",
+     "show": [
+      "Teja's party, written in Python.",
+      "12 of 15 lines are the same song.",
+      "Can we write the song once and use it three times?",
+      "A function is a block of reusable code that does one job.",
+      "Reusing code: use it again, without writing it again."
+     ],
+     "code": [
+      {
+       "file": "party_long.py",
+       "src": "print(\"Cake is out!\")\nprint(\"Happy birthday to you\")\nprint(\"Happy birthday to you\")\nprint(\"Happy birthday dear Teja\")\nprint(\"Happy birthday to you\")\nprint(\"Amma is on video call!\")\nprint(\"Happy birthday to you\")\nprint(\"Happy birthday to you\")\nprint(\"Happy birthday dear Teja\")\nprint(\"Happy birthday to you\")\nprint(\"C block friends are here!\")\nprint(\"Happy birthday to you\")\nprint(\"Happy birthday to you\")\nprint(\"Happy birthday dear Teja\")\nprint(\"Happy birthday to you\")",
+       "output": "Cake is out!\nHappy birthday to you\nHappy birthday to you\nHappy birthday dear Teja\nHappy birthday to you\nAmma is on video call!\nHappy birthday to you\nHappy birthday to you\nHappy birthday dear Teja\nHappy birthday to you\nC block friends are here!\nHappy birthday to you\nHappy birthday to you\nHappy birthday dear Teja\nHappy birthday to you"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "party_long.py with line numbers, no output. Caption: <q>Teja's party, written in Python.</q>",
+       "say": "This is the night from the hook. Count the lines that repeat.",
+       "room": "Count."
+      },
+      {
+       "screen": "The song lines light up in three groups of four. Caption: <q>12 of 15 lines are the same song.</q>",
+       "say": "Teja's name was spelled wrong. How many lines do you fix?",
+       "room": "Say: three."
+      },
+      {
+       "screen": "Caption: <q>Can we write the song once and use it three times?</q>",
+       "say": "Take ideas. Do not answer yet.",
+       "room": "Say ideas."
+      },
+      {
+       "screen": "Deck slide 12's two lines, each with its small picture: <q>A function is a block of reusable code that does one job.</q> and <q>Reusing code: use it again, without writing it again.</q>",
+       "say": "Like the song: learn it once, sing it any time."
+      }
+     ],
+     "play": "How the three groups light up. The deck's block picture on slide 12 is a fine start for the definition.",
+     "press_count": 4
+    },
+    {
+     "id": "C2",
+     "title": "def, a name, a block",
+     "source": [
+      13,
+      14,
+      15,
+      16
+     ],
+     "purpose": "A function starts with a header (def, the name, brackets, a colon), and its block sits indented under it.",
+     "heading": "Defining a function",
+     "show": [
+      "def function_name():",
+      "Reusable block of code",
+      "Function header",
+      "Function block",
+      "A function is known by its name.",
+      "The song, written once."
+     ],
+     "code": [
+      {
+       "file": "song.py",
+       "src": "def birthday_song():\n    print(\"Happy birthday to you\")\n    print(\"Happy birthday to you\")\n    print(\"Happy birthday dear Teja\")\n    print(\"Happy birthday to you\")"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "<q>def function_name():</q> as the biggest text at the top, and under it an indented box <q>Reusable block of code</q>.",
+       "say": "def is short for define. Then a space and the name."
+      },
+      {
+       "screen": "The first line gets a dashed outline and the label <q>Function header</q>.",
+       "say": "def, a space, the name, brackets, a colon."
+      },
+      {
+       "screen": "The indented box gets a dashed outline and the label <q>Function block</q>.",
+       "say": "Indented by 4 spaces, the same as an if block."
+      },
+      {
+       "screen": "An arrow points at function_name with <q>A function is known by its name.</q>",
+       "say": "Same rules as a variable name. Each function gets its own name."
+      },
+      {
+       "screen": "Under the shape, song.py appears: the four prints of the song, indented under <q>def birthday_song():</q>. Caption: <q>The song, written once.</q>",
+       "say": "That is the card from the hook, in Python."
+      }
+     ],
+     "must": [
+      "The empty indent strip on the left of the block stays visible: the indent is part of the rule."
+     ],
+     "play": "The deck's dashed outlines and orange labels are a fine start.",
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Defined is not run: why no Hello?",
+   "kind": "concept",
+   "mins": 3,
+   "start": 15,
+   "cards": [
+    {
+     "id": "C3",
+     "title": "Why did Hello not print?",
+     "source": [
+      17,
+      18,
+      19,
+      20
+     ],
+     "purpose": "A def only stores the block. Nothing calls greet, so Hello never prints.",
+     "heading": "Defining a function",
+     "show": [
+      "What will it print?",
+      "Why did Hello not print?",
+      "The block runs only when the function is called."
+     ],
+     "code": [
+      {
+       "file": "greet.py",
+       "src": "def greet():\n    print(\"Hello\")\n\nname = input()\nprint(name)",
+       "output": "Teja",
+       "input": "Teja"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "greet.py with line numbers, the input box <q>Teja</q>, an empty output box. Caption: <q>What will it print?</q> Options: A <q>Hello / Teja</q>, B <q>Teja</q>.",
+       "say": "Option A, hands up. Option B.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "The output box fills: <q>Teja</q>. Caption: <q>Why did Hello not print?</q>",
+       "say": "Take reasons. Do not answer yet.",
+       "room": "Say reasons."
+      },
+      {
+       "screen": "Line 2, print(\"Hello\"), greys out. Caption: <q>The block runs only when the function is called.</q>",
+       "say": "Like the song at 11:59. Everyone knew it. Nobody sang it."
+      }
+     ],
+     "answer": "B. It prints only Teja.",
+     "must": [
+      "The output appears only after the vote."
+     ],
+     "play": "Layout.",
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "Calling: Python jumps in and comes back",
+   "kind": "hook",
+   "mins": 4,
+   "start": 18,
+   "cards": [
+    {
+     "id": "C4",
+     "title": "Call it by its name",
+     "source": [
+      21
+     ],
+     "purpose": "To run the block, write the function's name and brackets. That line is a call, and you can call it as often as you need.",
+     "heading": "Calling a function",
+     "show": [
+      "How do we start the block?",
+      "function_name()",
+      "Calling a function",
+      "11 lines of code. The same screen as 15 lines."
+     ],
+     "code": [
+      {
+       "file": "party_short.py",
+       "src": "def birthday_song():\n    print(\"Happy birthday to you\")\n    print(\"Happy birthday to you\")\n    print(\"Happy birthday dear Teja\")\n    print(\"Happy birthday to you\")\n\nprint(\"Cake is out!\")\nbirthday_song()\nprint(\"Amma is on video call!\")\nbirthday_song()\nprint(\"C block friends are here!\")\nbirthday_song()",
+       "output": "Cake is out!\nHappy birthday to you\nHappy birthday to you\nHappy birthday dear Teja\nHappy birthday to you\nAmma is on video call!\nHappy birthday to you\nHappy birthday to you\nHappy birthday dear Teja\nHappy birthday to you\nC block friends are here!\nHappy birthday to you\nHappy birthday to you\nHappy birthday dear Teja\nHappy birthday to you"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The def shape from C2. Below it, empty space. Caption: <q>How do we start the block?</q>",
+       "say": "In the hook, how did the song start? Someone said its name.",
+       "room": "Say ideas."
+      },
+      {
+       "screen": "Below the def, <q>function_name()</q> appears twice, each with an arrow up to the header, and the label <q>Calling a function</q>.",
+       "say": "The name and brackets. Call it as many times as you need."
+      },
+      {
+       "screen": "party_short.py: the song written once, and three calls between the three party lines. Caption: <q>11 lines of code. The same screen as 15 lines.</q>",
+       "say": "Same screen as C1. Fix Teja's name now: one line."
+      }
+     ],
+     "must": [
+      "The line function_name() is written only after the room has tried."
+     ],
+     "play": "The deck's slide 21 drawing is a fine start.",
+     "press_count": 3
+    },
+    {
+     "id": "E1",
+     "title": "Follow the call",
+     "source": [
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28
+     ],
+     "animated": "explainer",
+     "purpose": "Watch a call happen: Python jumps from the call line up to the block, runs it, and comes back to the line after the call.",
+     "heading": "Follow the call",
+     "show": [
+      "What will it print?",
+      "A call jumps into the block, runs it, and comes back."
+     ],
+     "code": [
+      {
+       "file": "greet_call.py",
+       "src": "def greet():\n    print(\"Hello\")\n\nname = input()\ngreet()\nprint(name)",
+       "output": "Hello\nTeja",
+       "input": "Teja"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "greet_call.py with line numbers, the input box <q>Teja</q>, an empty output box and an empty area for name boxes. Caption: <q>What will it print?</q> Options: A <q>Hello / Teja</q>, B <q>Teja / Hello</q>, C <q>Teja</q>.",
+       "say": "Option A, hands up. B. C.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "One move per press, following data.steps, caption from the data. Line 1 lights and its block is skipped. Line 4 makes a box name holding <q>'Teja'</q>. On line 5 a dashed arrow jumps up to line 1; line 5 stays marked as waiting. Line 2 prints Hello into the output. A dashed arrow goes back down to line 5, then line 6 prints Teja.",
+       "n": 7,
+       "say": "Read the caption. Where is Python now?",
+       "room": "Say the next line before each press."
+      },
+      {
+       "screen": "The whole route stays drawn: the two jump arrows and the order of lines <q>1, 4, 5, 1, 2, 5, 6</q>. Caption: <q>A call jumps into the block, runs it, and comes back.</q>",
+       "say": "Who said B? Python finished the block before it came back to line 6."
+      }
+     ],
+     "answer": "A. Lines run in the order 1, 4, 5, 1, 2, 5, 6; it prints Hello / Teja.",
+     "must": [
+      "A call is drawn as a jump: an arrow from the call line up to the def header, and on the way back an arrow from the block to the call line. The call line stays marked while the block runs: it is waiting.",
+      "One move per press. The output fills only on the print presses.",
+      "Line 5 stays marked while the block runs, and is lit again on the way back."
+     ],
+     "must_not": [
+      "Show a free code box, a picker or an input field. It runs this one program with the input Teja.",
+      "Move by itself."
+     ],
+     "data": {
+      "steps": [
+       {
+        "line": 1,
+        "where": "main",
+        "kind": "def",
+        "caption": "Line 1: Python learns the name greet. The block is skipped for now.",
+        "screen": [],
+        "main": {},
+        "local": {}
+       },
+       {
+        "line": 4,
+        "where": "main",
+        "kind": "input",
+        "caption": "Line 4: input() reads 'Teja' into name.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       },
+       {
+        "line": 5,
+        "where": "main",
+        "kind": "call",
+        "caption": "Line 5 calls greet.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       },
+       {
+        "line": 1,
+        "where": "greet",
+        "kind": "jump-in",
+        "caption": "Python jumps to line 1, into greet.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       },
+       {
+        "line": 2,
+        "where": "greet",
+        "kind": "print",
+        "caption": "Line 2: prints Hello.",
+        "screen": [
+         "Hello"
+        ],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       },
+       {
+        "line": 5,
+        "where": "main",
+        "kind": "jump-back",
+        "caption": "greet is done. Python jumps back to line 5.",
+        "screen": [
+         "Hello"
+        ],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       },
+       {
+        "line": 6,
+        "where": "main",
+        "kind": "print",
+        "caption": "Line 6: prints Teja.",
+        "screen": [
+         "Hello",
+         "Teja"
+        ],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       }
+      ],
+      "order": [
+       1,
+       4,
+       5,
+       1,
+       2,
+       5,
+       6
+      ]
+     },
+     "play": "The marker, the jump arrows and the boxes. The deck's orange dashed arrows on slides 24 to 28 are a fine start.",
+     "press_count": 9
+    }
+   ]
+  },
+  {
+   "name": "Task 1: the party screen, then move the def",
+   "kind": "activity",
+   "mins": 6,
+   "start": 22,
+   "cards": [
+    {
+     "id": "T1",
+     "title": "Task 1: the party screen",
+     "source": "new",
+     "handout": "Task 1",
+     "activity": 19,
+     "timer": 300,
+     "purpose": "Type a function and its call, predict, run; call it twice; then break it by moving the def below the calls, and see what prints before the error.",
+     "heading": "The party screen",
+     "show": [
+      "Worksheet · Task 1",
+      "Rahul writes the program for the TV at Teja's party.",
+      "Type it. Predict. Run.",
+      "Amma is calling! Add one more birthday_song() at the end.",
+      "My notes had the def at the bottom. Move lines 1 to 3 to the end. Run.",
+      "Cake time! printed. Then Python stopped at line 2."
+     ],
+     "code": [
+      {
+       "file": "party.py",
+       "src": "def birthday_song():\n    print(\"Happy birthday to you\")\n    print(\"Happy birthday dear Teja\")\n\nprint(\"Cake time!\")\nbirthday_song()\nprint(\"Blow the candles!\")",
+       "output": "Cake time!\nHappy birthday to you\nHappy birthday dear Teja\nBlow the candles!"
+      },
+      {
+       "file": "party_twice.py",
+       "src": "def birthday_song():\n    print(\"Happy birthday to you\")\n    print(\"Happy birthday dear Teja\")\n\nprint(\"Cake time!\")\nbirthday_song()\nprint(\"Blow the candles!\")\nbirthday_song()",
+       "output": "Cake time!\nHappy birthday to you\nHappy birthday dear Teja\nBlow the candles!\nHappy birthday to you\nHappy birthday dear Teja"
+      },
+      {
+       "file": "party_moved.py",
+       "src": "print(\"Cake time!\")\nbirthday_song()\nprint(\"Blow the candles!\")\nbirthday_song()\n\ndef birthday_song():\n    print(\"Happy birthday to you\")\n    print(\"Happy birthday dear Teja\")",
+       "output": "Cake time!\nNameError: name 'birthday_song' is not defined"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The story line, party.py with line numbers, the steps <q>Type it. Predict. Run.</q> and a 5 minute timer.",
+       "say": "Worksheet tab and playground open. Type it. Type your prediction. Then run.",
+       "room": "Type, predict, run."
+      },
+      {
+       "screen": "Step 2 appears: <q>Amma is calling! Add one more birthday_song() at the end.</q>",
+       "say": "One more line. Predict, then run.",
+       "room": "Add the line, predict, run."
+      },
+      {
+       "screen": "Step 3 appears: <q>My notes had the def at the bottom. Move lines 1 to 3 to the end. Run.</q>",
+       "say": "This is how I wrote it in my notes. Move it and run. Let them react first.",
+       "room": "Move the lines, run."
+      },
+      {
+       "screen": "The terminal as Python shows it: <q>Cake time!</q> then <q>NameError: name 'birthday_song' is not defined</q>. Caption: <q>Cake time! printed. Then Python stopped at line 2.</q>",
+       "say": "Line 1 ran. Line 2 called a name Python had not met yet."
+      }
+     ],
+     "answer": "party.py prints Cake time! / Happy birthday to you / Happy birthday dear Teja / Blow the candles!. With the second call: Cake time! / Happy birthday to you / Happy birthday dear Teja / Blow the candles! / Happy birthday to you / Happy birthday dear Teja. Moved: Cake time! / NameError: name 'birthday_song' is not defined.",
+     "must": [
+      "The move is framed as the instructor's own notes, not a test.",
+      "The error shows after the line that printed first, exactly as Python prints it."
+     ],
+     "must_not": [
+      "Show any output before the room has run it."
+     ],
+     "play": "The TV frame for the output and the layout of steps, timer and code.",
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Define before you call",
+   "kind": "concept",
+   "mins": 2,
+   "start": 28,
+   "cards": [
+    {
+     "id": "C5",
+     "title": "Define first, then call",
+     "source": [
+      29,
+      30,
+      31
+     ],
+     "purpose": "Python reads top to bottom. A call before the def finds no such name: NameError.",
+     "heading": "Defining and calling",
+     "show": [
+      "What will be the output?",
+      "A function should be defined before it is called."
+     ],
+     "code": [
+      {
+       "file": "greet_before.py",
+       "src": "name = input()\ngreet()\nprint(name)\n\ndef greet():\n    print(\"Hello\")",
+       "output": "NameError: name 'greet' is not defined",
+       "input": "Teja"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "greet_before.py with line numbers and the input <q>Teja</q>. Caption: <q>What will be the output?</q>",
+       "say": "You just saw this in Task 1. What do you expect?",
+       "room": "Say it."
+      },
+      {
+       "screen": "Line 2 turns red. The output: <q>NameError: name 'greet' is not defined</q>.",
+       "say": "At line 2, greet does not exist yet."
+      },
+      {
+       "screen": "Caption: <q>A function should be defined before it is called.</q>",
+       "say": "Define first. Then call."
+      }
+     ],
+     "answer": "NameError: name 'greet' is not defined",
+     "play": "Layout.",
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "Game G1: the party screen machine",
+   "kind": "activity",
+   "mins": 5,
+   "start": 30,
+   "cards": [
+    {
+     "id": "G1",
+     "title": "The party screen machine",
+     "game": "predict-run",
+     "purpose": "Predict what the party TV shows for five small programs: one call, two calls, the def at the bottom, no call, only a def.",
+     "heading": "What does the party screen show?",
+     "data": {
+      "setup": {
+       "object": "the party TV at Teja's party, showing each printed line as it lands, beside the program with a marker on the line Python is running; on a call the marker jumps up into cheer's block and back",
+       "start": {
+        "screen": [],
+        "line": null
+       }
+      },
+      "rounds": [
+       {
+        "ask": "What does the party screen show?",
+        "program": "def cheer():\n    print(\"Hurray!\")\n\nprint(\"Cake\")\ncheer()\nprint(\"Candles\")",
+        "options": [
+         "Cake\nHurray!\nCandles",
+         "Hurray!\nCake\nCandles",
+         "Cake\nCandles",
+         "Hurray!\nCake\nHurray!\nCandles"
+        ],
+        "answer": "Cake\nHurray!\nCandles",
+        "because": "Line 1 only stores cheer. Line 5 calls it, so Hurray! comes between Cake and Candles.",
+        "why": {
+         "Hurray!\nCake\nCandles": "That runs the block where it is written. A def only stores it.",
+         "Cake\nCandles": "cheer() on line 5 calls it, so the block runs there.",
+         "Hurray!\nCake\nHurray!\nCandles": "The def does not print. Only the call does."
+        },
+        "steps": [
+         {
+          "caption": "Line 1: Python learns the name cheer. The block is skipped for now.",
+          "state": {
+           "line": 1,
+           "where": "main",
+           "screen": []
+          }
+         },
+         {
+          "caption": "Line 4: prints Cake.",
+          "state": {
+           "line": 4,
+           "where": "main",
+           "screen": [
+            "Cake"
+           ]
+          }
+         },
+         {
+          "caption": "Line 5 calls cheer.",
+          "state": {
+           "line": 5,
+           "where": "main",
+           "screen": [
+            "Cake"
+           ]
+          }
+         },
+         {
+          "caption": "Python jumps to line 1, into cheer.",
+          "state": {
+           "line": 1,
+           "where": "cheer",
+           "screen": [
+            "Cake"
+           ]
+          }
+         },
+         {
+          "caption": "Line 2: prints Hurray!",
+          "state": {
+           "line": 2,
+           "where": "cheer",
+           "screen": [
+            "Cake",
+            "Hurray!"
+           ]
+          }
+         },
+         {
+          "caption": "cheer is done. Python jumps back to line 5.",
+          "state": {
+           "line": 5,
+           "where": "main",
+           "screen": [
+            "Cake",
+            "Hurray!"
+           ]
+          }
+         },
+         {
+          "caption": "Line 6: prints Candles.",
+          "state": {
+           "line": 6,
+           "where": "main",
+           "screen": [
+            "Cake",
+            "Hurray!",
+            "Candles"
+           ]
+          }
+         }
+        ]
+       },
+       {
+        "ask": "One more cheer() at the end. Now what does the screen show?",
+        "program": "def cheer():\n    print(\"Hurray!\")\n\nprint(\"Cake\")\ncheer()\nprint(\"Candles\")\ncheer()",
+        "options": [
+         "Cake\nHurray!\nCandles\nHurray!",
+         "Cake\nHurray!\nCandles",
+         "Cake\nHurray!\nHurray!\nCandles"
+        ],
+        "answer": "Cake\nHurray!\nCandles\nHurray!",
+        "because": "Every call runs the whole block again: once on line 5, once on line 7.",
+        "why": {
+         "Cake\nHurray!\nCandles": "A function can be called again. Every call runs the block.",
+         "Cake\nHurray!\nHurray!\nCandles": "The second call is on the last line, so its Hurray! comes last."
+        },
+        "steps": [
+         {
+          "caption": "Line 1: Python learns the name cheer. The block is skipped for now.",
+          "state": {
+           "line": 1,
+           "where": "main",
+           "screen": []
+          }
+         },
+         {
+          "caption": "Line 4: prints Cake.",
+          "state": {
+           "line": 4,
+           "where": "main",
+           "screen": [
+            "Cake"
+           ]
+          }
+         },
+         {
+          "caption": "Line 5 calls cheer.",
+          "state": {
+           "line": 5,
+           "where": "main",
+           "screen": [
+            "Cake"
+           ]
+          }
+         },
+         {
+          "caption": "Python jumps to line 1, into cheer.",
+          "state": {
+           "line": 1,
+           "where": "cheer",
+           "screen": [
+            "Cake"
+           ]
+          }
+         },
+         {
+          "caption": "Line 2: prints Hurray!",
+          "state": {
+           "line": 2,
+           "where": "cheer",
+           "screen": [
+            "Cake",
+            "Hurray!"
+           ]
+          }
+         },
+         {
+          "caption": "cheer is done. Python jumps back to line 5.",
+          "state": {
+           "line": 5,
+           "where": "main",
+           "screen": [
+            "Cake",
+            "Hurray!"
+           ]
+          }
+         },
+         {
+          "caption": "Line 6: prints Candles.",
+          "state": {
+           "line": 6,
+           "where": "main",
+           "screen": [
+            "Cake",
+            "Hurray!",
+            "Candles"
+           ]
+          }
+         },
+         {
+          "caption": "Line 7 calls cheer.",
+          "state": {
+           "line": 7,
+           "where": "main",
+           "screen": [
+            "Cake",
+            "Hurray!",
+            "Candles"
+           ]
+          }
+         },
+         {
+          "caption": "Python jumps to line 1, into cheer.",
+          "state": {
+           "line": 1,
+           "where": "cheer",
+           "screen": [
+            "Cake",
+            "Hurray!",
+            "Candles"
+           ]
+          }
+         },
+         {
+          "caption": "Line 2: prints Hurray!",
+          "state": {
+           "line": 2,
+           "where": "cheer",
+           "screen": [
+            "Cake",
+            "Hurray!",
+            "Candles",
+            "Hurray!"
+           ]
+          }
+         },
+         {
+          "caption": "cheer is done. Python jumps back to line 7.",
+          "state": {
+           "line": 7,
+           "where": "main",
+           "screen": [
+            "Cake",
+            "Hurray!",
+            "Candles",
+            "Hurray!"
+           ]
+          }
+         }
+        ]
+       },
+       {
+        "ask": "The def moved to the bottom. What does the screen show?",
+        "program": "print(\"Cake\")\ncheer()\nprint(\"Candles\")\n\ndef cheer():\n    print(\"Hurray!\")",
+        "options": [
+         "Cake\nNameError",
+         "NameError",
+         "Cake\nHurray!\nCandles"
+        ],
+        "answer": "Cake\nNameError",
+        "because": "Cake prints first. Then line 2 calls cheer before Python has read its def.",
+        "why": {
+         "NameError": "Line 1 runs first. Cake prints before Python reaches line 2.",
+         "Cake\nHurray!\nCandles": "Python reads top to bottom. At line 2, cheer does not exist yet."
+        },
+        "steps": [
+         {
+          "caption": "Line 1: prints Cake.",
+          "state": {
+           "line": 1,
+           "where": "main",
+           "screen": [
+            "Cake"
+           ]
+          }
+         },
+         {
+          "caption": "Line 2: NameError: name 'cheer' is not defined. Python stops.",
+          "state": {
+           "line": 2,
+           "where": "main",
+           "screen": [
+            "Cake",
+            "NameError: name 'cheer' is not defined"
+           ]
+          }
+         }
+        ]
+       },
+       {
+        "ask": "No cheer() line at all. What does the screen show?",
+        "program": "def cheer():\n    print(\"Hurray!\")\n\nprint(\"Cake\")\nprint(\"Candles\")",
+        "options": [
+         "Cake\nCandles",
+         "Hurray!\nCake\nCandles",
+         "Cake\nCandles\nHurray!"
+        ],
+        "answer": "Cake\nCandles",
+        "because": "The block is stored but never called, so only Cake and Candles print.",
+        "why": {
+         "Hurray!\nCake\nCandles": "Defining is not calling. Nobody calls cheer, so it never runs.",
+         "Cake\nCandles\nHurray!": "A block that is never called never runs, not even at the end."
+        },
+        "steps": [
+         {
+          "caption": "Line 1: Python learns the name cheer. The block is skipped for now.",
+          "state": {
+           "line": 1,
+           "where": "main",
+           "screen": []
+          }
+         },
+         {
+          "caption": "Line 4: prints Cake.",
+          "state": {
+           "line": 4,
+           "where": "main",
+           "screen": [
+            "Cake"
+           ]
+          }
+         },
+         {
+          "caption": "Line 5: prints Candles.",
+          "state": {
+           "line": 5,
+           "where": "main",
+           "screen": [
+            "Cake",
+            "Candles"
+           ]
+          }
+         }
+        ]
+       },
+       {
+        "ask": "Only a def. What does the screen show?",
+        "program": "def cheer():\n    print(\"Hurray!\")\n    print(\"Cake\")",
+        "options": [
+         "(nothing)",
+         "Hurray!\nCake",
+         "NameError"
+        ],
+        "answer": "(nothing)",
+        "because": "A def with no call stores the block and does nothing else.",
+        "why": {
+         "Hurray!\nCake": "Both prints are inside the block, and nobody calls cheer.",
+         "NameError": "Nothing calls cheer, so Python never looks for it. No error."
+        },
+        "steps": [
+         {
+          "caption": "Line 1: Python learns the name cheer. The block is skipped for now.",
+          "state": {
+           "line": 1,
+           "where": "main",
+           "screen": []
+          }
+         },
+         {
+          "caption": "The program ends. Nothing called cheer, so the screen stays empty.",
+          "state": {
+           "line": null,
+           "where": "main",
+           "screen": []
+          }
+         }
+        ]
+       }
+      ]
+     },
+     "say": {
+      "ask": "Read each option. How many think option A? Hands up. Then B, then C, then D.",
+      "step": "Read the caption. Where is the marker?",
+      "verdict": "Read the line for the most popular wrong option."
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "The answer appears on the object, not only as text.",
+      "Rounds 1 to 3 are Task 1's three runs in small form, so the machine checks the task.",
+      "A call is drawn as a jump: an arrow from the call line up to the def header, and on the way back an arrow from the block to the call line. The call line stays marked while the block runs: it is waiting.",
+      "In round 3, Cake lands on the TV before the error does.",
+      "In round 5 the TV stays empty, and the last press says so.",
+      "An option is the TV screen itself: its lines one under the other. An error on the TV shows as its name, NameError; the step caption gives the full message."
+     ],
+     "play": "The TV can be a real party TV or a projector wall with balloons. The marker and the jump arrows are yours.",
+     "presses": [
+      {
+       "screen": "Round 1 of 5. The round's setup, as in the data. The question: <q>What does the party screen show?</q> Options: A <q>Cake\nHurray!\nCandles</q>, B <q>Hurray!\nCake\nCandles</q>, C <q>Cake\nCandles</q>, D <q>Hurray!\nCake\nHurray!\nCandles</q>. Nothing runs yet.",
+       "say": "Read each option. How many think option A? Hands up. Then B, then C, then D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 1: Python learns the name cheer. The block is skipped for now.</q> In the data: state = {\"line\": 1, \"where\": \"main\", \"screen\": []}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>Line 4: prints Cake.</q> In the data: state = {\"line\": 4, \"where\": \"main\", \"screen\": [\"Cake\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>Line 5 calls cheer.</q> In the data: state = {\"line\": 5, \"where\": \"main\", \"screen\": [\"Cake\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>Python jumps to line 1, into cheer.</q> In the data: state = {\"line\": 1, \"where\": \"cheer\", \"screen\": [\"Cake\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>Line 2: prints Hurray!</q> In the data: state = {\"line\": 2, \"where\": \"cheer\", \"screen\": [\"Cake\", \"Hurray!\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>cheer is done. Python jumps back to line 5.</q> In the data: state = {\"line\": 5, \"where\": \"main\", \"screen\": [\"Cake\", \"Hurray!\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>Line 6: prints Candles.</q> In the data: state = {\"line\": 6, \"where\": \"main\", \"screen\": [\"Cake\", \"Hurray!\", \"Candles\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "The answer: <q>Cake\nHurray!\nCandles</q>. <q>Line 1 only stores cheer. Line 5 calls it, so Hurray! comes between Cake and Candles.</q> Then a line for every other option: <q>Hurray!\nCake\nCandles</q> <q>That runs the block where it is written. A def only stores it.</q>; <q>Cake\nCandles</q> <q>cheer() on line 5 calls it, so the block runs there.</q>; <q>Hurray!\nCake\nHurray!\nCandles</q> <q>The def does not print. Only the call does.</q>.",
+       "say": "Read the line for the most popular wrong option."
+      },
+      {
+       "screen": "Round 2 of 5. The round's setup, as in the data. The question: <q>One more cheer() at the end. Now what does the screen show?</q> Options: A <q>Cake\nHurray!\nCandles\nHurray!</q>, B <q>Cake\nHurray!\nCandles</q>, C <q>Cake\nHurray!\nHurray!\nCandles</q>. Nothing runs yet.",
+       "say": "Read each option. How many think option A? Hands up. Then B, then C, then D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 1: Python learns the name cheer. The block is skipped for now.</q> In the data: state = {\"line\": 1, \"where\": \"main\", \"screen\": []}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>Line 4: prints Cake.</q> In the data: state = {\"line\": 4, \"where\": \"main\", \"screen\": [\"Cake\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>Line 5 calls cheer.</q> In the data: state = {\"line\": 5, \"where\": \"main\", \"screen\": [\"Cake\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>Python jumps to line 1, into cheer.</q> In the data: state = {\"line\": 1, \"where\": \"cheer\", \"screen\": [\"Cake\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>Line 2: prints Hurray!</q> In the data: state = {\"line\": 2, \"where\": \"cheer\", \"screen\": [\"Cake\", \"Hurray!\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>cheer is done. Python jumps back to line 5.</q> In the data: state = {\"line\": 5, \"where\": \"main\", \"screen\": [\"Cake\", \"Hurray!\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>Line 6: prints Candles.</q> In the data: state = {\"line\": 6, \"where\": \"main\", \"screen\": [\"Cake\", \"Hurray!\", \"Candles\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>Line 7 calls cheer.</q> In the data: state = {\"line\": 7, \"where\": \"main\", \"screen\": [\"Cake\", \"Hurray!\", \"Candles\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>Python jumps to line 1, into cheer.</q> In the data: state = {\"line\": 1, \"where\": \"cheer\", \"screen\": [\"Cake\", \"Hurray!\", \"Candles\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>Line 2: prints Hurray!</q> In the data: state = {\"line\": 2, \"where\": \"cheer\", \"screen\": [\"Cake\", \"Hurray!\", \"Candles\", \"Hurray!\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>cheer is done. Python jumps back to line 7.</q> In the data: state = {\"line\": 7, \"where\": \"main\", \"screen\": [\"Cake\", \"Hurray!\", \"Candles\", \"Hurray!\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "The answer: <q>Cake\nHurray!\nCandles\nHurray!</q>. <q>Every call runs the whole block again: once on line 5, once on line 7.</q> Then a line for every other option: <q>Cake\nHurray!\nCandles</q> <q>A function can be called again. Every call runs the block.</q>; <q>Cake\nHurray!\nHurray!\nCandles</q> <q>The second call is on the last line, so its Hurray! comes last.</q>.",
+       "say": "Read the line for the most popular wrong option."
+      },
+      {
+       "screen": "Round 3 of 5. The round's setup, as in the data. The question: <q>The def moved to the bottom. What does the screen show?</q> Options: A <q>Cake\nNameError</q>, B <q>NameError</q>, C <q>Cake\nHurray!\nCandles</q>. Nothing runs yet.",
+       "say": "Read each option. How many think option A? Hands up. Then B, then C, then D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 1: prints Cake.</q> In the data: state = {\"line\": 1, \"where\": \"main\", \"screen\": [\"Cake\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>Line 2: NameError: name 'cheer' is not defined. Python stops.</q> In the data: state = {\"line\": 2, \"where\": \"main\", \"screen\": [\"Cake\", \"NameError: name 'cheer' is not defined\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "The answer: <q>Cake\nNameError</q>. <q>Cake prints first. Then line 2 calls cheer before Python has read its def.</q> Then a line for every other option: <q>NameError</q> <q>Line 1 runs first. Cake prints before Python reaches line 2.</q>; <q>Cake\nHurray!\nCandles</q> <q>Python reads top to bottom. At line 2, cheer does not exist yet.</q>.",
+       "say": "Read the line for the most popular wrong option."
+      },
+      {
+       "screen": "Round 4 of 5. The round's setup, as in the data. The question: <q>No cheer() line at all. What does the screen show?</q> Options: A <q>Cake\nCandles</q>, B <q>Hurray!\nCake\nCandles</q>, C <q>Cake\nCandles\nHurray!</q>. Nothing runs yet.",
+       "say": "Read each option. How many think option A? Hands up. Then B, then C, then D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 1: Python learns the name cheer. The block is skipped for now.</q> In the data: state = {\"line\": 1, \"where\": \"main\", \"screen\": []}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>Line 4: prints Cake.</q> In the data: state = {\"line\": 4, \"where\": \"main\", \"screen\": [\"Cake\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>Line 5: prints Candles.</q> In the data: state = {\"line\": 5, \"where\": \"main\", \"screen\": [\"Cake\", \"Candles\"]}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "The answer: <q>Cake\nCandles</q>. <q>The block is stored but never called, so only Cake and Candles print.</q> Then a line for every other option: <q>Hurray!\nCake\nCandles</q> <q>Defining is not calling. Nobody calls cheer, so it never runs.</q>; <q>Cake\nCandles\nHurray!</q> <q>A block that is never called never runs, not even at the end.</q>.",
+       "say": "Read the line for the most popular wrong option."
+      },
+      {
+       "screen": "Round 5 of 5. The round's setup, as in the data. The question: <q>Only a def. What does the screen show?</q> Options: A <q>(nothing)</q>, B <q>Hurray!\nCake</q>, C <q>NameError</q>. Nothing runs yet.",
+       "say": "Read each option. How many think option A? Hands up. Then B, then C, then D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 1: Python learns the name cheer. The block is skipped for now.</q> In the data: state = {\"line\": 1, \"where\": \"main\", \"screen\": []}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "<q>The program ends. Nothing called cheer, so the screen stays empty.</q> In the data: state = {\"line\": null, \"where\": \"main\", \"screen\": []}.",
+       "say": "Read the caption. Where is the marker?"
+      },
+      {
+       "screen": "The answer: <q>(nothing)</q>. <q>A def with no call stores the block and does nothing else.</q> Then a line for every other option: <q>Hurray!\nCake</q> <q>Both prints are inside the block, and nobody calls cheer.</q>; <q>NameError</q> <q>Nothing calls cheer, so Python never looks for it. No error.</q>.",
+       "say": "Read the line for the most popular wrong option."
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Show the code's output in a console before the object has moved."
+     ],
+     "interaction": "A machine shows a starting state and the operation it is about to run. The room votes on the result; then it runs, one movement per press, on the object itself.",
+     "game_def": {
+      "id": "predict-run",
+      "name": "Predict-then-run machine",
+      "one_line": "A machine shows a starting state and the operation it is about to run. The room votes on the result; then it runs, one movement per press, on the object itself.",
+      "how": [
+       "The card shows the object (a row of letter tiles, a counter, a scoreboard) and the code that acts on it.",
+       "The room votes on concrete values, never English. 'abcd' is an option; 'it skips one' is not.",
+       "It runs one movement per press, on the object: the tile it lands on lights, the counter ticks.",
+       "The verdict says why the answer is right, and gives a line for every wrong option.",
+       "Rounds 1 to 3 are the worksheet task the room just did, so the machine is that task's check. The last round is an edge case (an empty result, a zero)."
+      ],
+      "setup": {
+       "object": "what the machine is drawn as, in one line: 'the string as a row of tiles with index numbers'",
+       "start": "the state on screen before round 1 runs, as data"
+      },
+      "round": {
+       "program": "the code this round runs, exact"
+      },
+      "step": {
+       "state": "what the object shows after this press, as data (the lit tile indexes, the counter value)"
+      }
+     },
+     "press_count": 35
+    }
+   ]
+  },
+  {
+   "name": "Classroom quiz",
+   "kind": "quiz",
+   "mins": 6,
+   "start": 35,
+   "cards": [
+    {
+     "id": "S-QUIZ",
+     "title": "Quiz",
+     "source": "spine:quiz",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Hook 2: one song per friend?",
+   "kind": "hook",
+   "mins": 4,
+   "start": 41,
+   "cards": [
+    {
+     "id": "H2",
+     "title": "One song per friend?",
+     "source": "new",
+     "purpose": "Feel why a function needs a way to take a value in: without it, every friend needs their own function. Then see the short way, and its name.",
+     "heading": "Next week: Rahul's birthday",
+     "show": [
+      "Next week: Rahul's birthday.",
+      "At Rahul's party, it sings dear Teja.",
+      "One song for each friend?",
+      "12 lines for 3 friends.",
+      "A class of 60: 180 lines of def.",
+      "One song. The name goes in when we call it.",
+      "This slot is called an argument."
+     ],
+     "code": [
+      {
+       "file": "party.py",
+       "src": "def birthday_song():\n    print(\"Happy birthday to you\")\n    print(\"Happy birthday dear Teja\")\n\nprint(\"Cake time!\")\nbirthday_song()\nprint(\"Blow the candles!\")",
+       "output": "Cake time!\nHappy birthday to you\nHappy birthday dear Teja\nBlow the candles!"
+      },
+      {
+       "file": "one_per_friend.py",
+       "src": "def song_teja():\n    print(\"Happy birthday to you\")\n    print(\"Happy birthday dear Teja\")\n\ndef song_rahul():\n    print(\"Happy birthday to you\")\n    print(\"Happy birthday dear Rahul\")\n\ndef song_priya():\n    print(\"Happy birthday to you\")\n    print(\"Happy birthday dear Priya\")\n\nsong_teja()\nsong_rahul()\nsong_priya()",
+       "output": "Happy birthday to you\nHappy birthday dear Teja\nHappy birthday to you\nHappy birthday dear Rahul\nHappy birthday to you\nHappy birthday dear Priya"
+      },
+      {
+       "file": "one_song.py",
+       "src": "def birthday_song(friend):\n    print(\"Happy birthday to you\")\n    print(\"Happy birthday dear \" + friend)\n\nbirthday_song(friend=\"Teja\")\nbirthday_song(friend=\"Rahul\")\nbirthday_song(friend=\"Priya\")",
+       "output": "Happy birthday to you\nHappy birthday dear Teja\nHappy birthday to you\nHappy birthday dear Rahul\nHappy birthday to you\nHappy birthday dear Priya"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "party.py from Task 1 on the party TV. Caption: <q>Next week: Rahul's birthday.</q>",
+       "say": "We run the same program at Rahul's party. What will it sing?",
+       "room": "Say it."
+      },
+      {
+       "screen": "The TV shows the output; the line <q>Happy birthday dear Teja</q> turns red. Caption: <q>At Rahul's party, it sings dear Teja.</q>",
+       "say": "Wrong name. How would you fix it with what we know?",
+       "room": "Say ideas."
+      },
+      {
+       "screen": "The long way, written out: one_per_friend.py, three defs, song_teja, song_rahul, song_priya, and three calls. Caption: <q>One song for each friend?</q>",
+       "say": "Three friends, three functions. They differ by one word."
+      },
+      {
+       "screen": "Two counters: <q>12 lines for 3 friends.</q> and <q>A class of 60: 180 lines of def.</q>",
+       "say": "Our class has sixty birthdays."
+      },
+      {
+       "screen": "The short way: one_song.py. One def with <q>friend</q> inside the brackets, used on line 3, and three calls each sending one name. Its output equals the long way's. Caption: <q>One song. The name goes in when we call it.</q> Then the slot friend is circled with the label <q>This slot is called an argument.</q>",
+       "say": "Same screen, one function. The name of that slot: argument."
+      }
+     ],
+     "answer": "Both programs print Happy birthday to you / Happy birthday dear Teja / Happy birthday to you / Happy birthday dear Rahul / Happy birthday to you / Happy birthday dear Priya.",
+     "must": [
+      "The long program is real and runs; its output equals the short one's.",
+      "The line counts are the real counts of the two programs."
+     ],
+     "must_not": [
+      "Animate by itself."
+     ],
+     "data": {
+      "long_lines": 12,
+      "short_lines": 6,
+      "class": 60,
+      "class_def_lines": 180,
+      "output": "Happy birthday to you\nHappy birthday dear Teja\nHappy birthday to you\nHappy birthday dear Rahul\nHappy birthday to you\nHappy birthday dear Priya"
+     },
+     "play": "The party TV, Rahul's cake, and how the three defs collapse into one. The counters can be stat tiles.",
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Arguments: pass a value in",
+   "kind": "concept",
+   "mins": 4,
+   "start": 45,
+   "cards": [
+    {
+     "id": "C7",
+     "title": "Arguments",
+     "source": [
+      32,
+      33,
+      34
+     ],
+     "purpose": "Inside greet we cannot reach name. An argument in the header takes a value in; the call sends it with word=name.",
+     "heading": "Function with arguments",
+     "show": [
+      "Can greet use name to print the greeting?",
+      "def function_name(args):",
+      "We can pass values to a function using arguments.",
+      "Argument",
+      "Passing value"
+     ],
+     "code": [
+      {
+       "file": "greet_question.py",
+       "src": "def greet():\n    msg = \"Hello \" + ?\n    print(msg)\n\nname = input()\ngreet()"
+      },
+      {
+       "file": "greet_word.py",
+       "src": "def greet(word):\n    msg = \"Hello \" + word\n    print(msg)\n\nname = input()\ngreet(word=name)",
+       "output": "Hello Teja",
+       "input": "Teja"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "greet_question.py with a ? box after \"Hello \" + on line 2 (deck slide 32). Caption: <q>Can greet use name to print the greeting?</q>",
+       "say": "name is down on line 5. How does Teja get into greet?",
+       "room": "Say ideas."
+      },
+      {
+       "screen": "<q>def function_name(args):</q> as the biggest text, with <q>We can pass values to a function using arguments.</q> pointing at args.",
+       "say": "Like friend in the hook."
+      },
+      {
+       "screen": "greet_word.py: word in the header gets the label <q>Argument</q>; the call greet(word=name) gets the label <q>Passing value</q>.",
+       "say": "word=name: the value in name goes into word."
+      }
+     ],
+     "must": [
+      "The call is written greet(word=name). Never greet(name)."
+     ],
+     "play": "The deck's dashed labels are a fine start.",
+     "press_count": 3
+    },
+    {
+     "id": "C8",
+     "title": "Hello Teja, then Hello Rahul",
+     "source": [
+      35,
+      36
+     ],
+     "purpose": "On each call, word holds the value sent in. Call again with another value and the same block greets someone else.",
+     "heading": "Function with arguments",
+     "show": [
+      "What will it print?",
+      "Call it again with Rahul."
+     ],
+     "code": [
+      {
+       "file": "greet_word.py",
+       "src": "def greet(word):\n    msg = \"Hello \" + word\n    print(msg)\n\nname = input()\ngreet(word=name)",
+       "output": "Hello Teja",
+       "input": "Teja"
+      },
+      {
+       "file": "greet_twice.py",
+       "src": "def greet(word):\n    msg = \"Hello \" + word\n    print(msg)\n\nname = input()\ngreet(word=name)\nname_1 = input()\ngreet(word=name_1)",
+       "output": "Hello Teja\nHello Rahul",
+       "input": "Teja\nRahul"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "greet_word.py, input <q>Teja</q>. Caption: <q>What will it print?</q>",
+       "say": "Say it out loud.",
+       "room": "Say it."
+      },
+      {
+       "screen": "The call runs as one move: a box word holding <q>'Teja'</q> appears in greet's area, msg appears beside it, the output fills <q>Hello Teja</q>, then both boxes vanish as the call ends.",
+       "say": "word lives only while greet runs."
+      },
+      {
+       "screen": "Lines 7 and 8 of greet_twice.py appear, input <q>Rahul</q>. Caption: <q>Call it again with Rahul.</q> The second call runs as one move: word now holds 'Rahul', the output adds <q>Hello Rahul</q>, the boxes vanish.",
+       "say": "Same block, new value. That is the hook's short way."
+      }
+     ],
+     "answer": "Hello Teja / Hello Rahul",
+     "must": [
+      "A call opens the function's own area beside its block. Boxes made in the call (the argument, msg) live there, and vanish the moment the call ends. No grey ghost is left behind."
+     ],
+     "data": {
+      "steps": [
+       {
+        "line": 1,
+        "where": "main",
+        "kind": "def",
+        "caption": "Line 1: Python learns the name greet. The block is skipped for now.",
+        "screen": [],
+        "main": {},
+        "local": {}
+       },
+       {
+        "line": 5,
+        "where": "main",
+        "kind": "input",
+        "caption": "Line 5: input() reads 'Teja' into name.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       },
+       {
+        "line": 6,
+        "where": "main",
+        "kind": "call",
+        "caption": "Line 6 calls greet.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       },
+       {
+        "line": 1,
+        "where": "greet",
+        "kind": "jump-in",
+        "caption": "Python jumps to line 1, into greet. word = 'Teja'.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {
+         "word": "Teja"
+        }
+       },
+       {
+        "line": 2,
+        "where": "greet",
+        "kind": "line",
+        "caption": "Line 2: msg = 'Hello Teja'.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {
+         "word": "Teja",
+         "msg": "Hello Teja"
+        }
+       },
+       {
+        "line": 3,
+        "where": "greet",
+        "kind": "print",
+        "caption": "Line 3: prints Hello Teja.",
+        "screen": [
+         "Hello Teja"
+        ],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {
+         "word": "Teja",
+         "msg": "Hello Teja"
+        }
+       },
+       {
+        "line": 6,
+        "where": "main",
+        "kind": "jump-back",
+        "caption": "greet is done. Python jumps back to line 6.",
+        "screen": [
+         "Hello Teja"
+        ],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       },
+       {
+        "line": 7,
+        "where": "main",
+        "kind": "input",
+        "caption": "Line 7: input() reads 'Rahul' into name_1.",
+        "screen": [
+         "Hello Teja"
+        ],
+        "main": {
+         "name": "Teja",
+         "name_1": "Rahul"
+        },
+        "local": {}
+       },
+       {
+        "line": 8,
+        "where": "main",
+        "kind": "call",
+        "caption": "Line 8 calls greet.",
+        "screen": [
+         "Hello Teja"
+        ],
+        "main": {
+         "name": "Teja",
+         "name_1": "Rahul"
+        },
+        "local": {}
+       },
+       {
+        "line": 1,
+        "where": "greet",
+        "kind": "jump-in",
+        "caption": "Python jumps to line 1, into greet. word = 'Rahul'.",
+        "screen": [
+         "Hello Teja"
+        ],
+        "main": {
+         "name": "Teja",
+         "name_1": "Rahul"
+        },
+        "local": {
+         "word": "Rahul"
+        }
+       },
+       {
+        "line": 2,
+        "where": "greet",
+        "kind": "line",
+        "caption": "Line 2: msg = 'Hello Rahul'.",
+        "screen": [
+         "Hello Teja"
+        ],
+        "main": {
+         "name": "Teja",
+         "name_1": "Rahul"
+        },
+        "local": {
+         "word": "Rahul",
+         "msg": "Hello Rahul"
+        }
+       },
+       {
+        "line": 3,
+        "where": "greet",
+        "kind": "print",
+        "caption": "Line 3: prints Hello Rahul.",
+        "screen": [
+         "Hello Teja",
+         "Hello Rahul"
+        ],
+        "main": {
+         "name": "Teja",
+         "name_1": "Rahul"
+        },
+        "local": {
+         "word": "Rahul",
+         "msg": "Hello Rahul"
+        }
+       },
+       {
+        "line": 8,
+        "where": "main",
+        "kind": "jump-back",
+        "caption": "greet is done. Python jumps back to line 8.",
+        "screen": [
+         "Hello Teja",
+         "Hello Rahul"
+        ],
+        "main": {
+         "name": "Teja",
+         "name_1": "Rahul"
+        },
+        "local": {}
+       }
+      ]
+     },
+     "play": "How the box appears in greet's area and vanishes.",
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "A variable made inside stays inside",
+   "kind": "concept",
+   "mins": 2,
+   "start": 49,
+   "cards": [
+    {
+     "id": "C9",
+     "title": "msg stays inside",
+     "source": [
+      37,
+      38,
+      39
+     ],
+     "purpose": "msg is made inside greet. When the call ends it is gone, so print(msg) outside gives NameError.",
+     "heading": "Variables inside a function",
+     "show": [
+      "What will it print?",
+      "A variable made inside a function can only be used inside it."
+     ],
+     "code": [
+      {
+       "file": "msg_outside.py",
+       "src": "def greet(word):\n    msg = \"Hello \" + word\n\nname = input()\ngreet(word=name)\nprint(msg)",
+       "output": "NameError: name 'msg' is not defined",
+       "input": "Teja"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "msg_outside.py, input <q>Teja</q>. Caption: <q>What will it print?</q> Options: A <q>Hello Teja</q>, B <q>NameError</q>.",
+       "say": "Option A, hands up. B.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "One move per press, following data.steps. msg appears in greet's area on line 2, then vanishes with word when the call ends. On line 6 print(msg) finds no box: the output shows <q>NameError: name 'msg' is not defined</q>.",
+       "n": 7,
+       "say": "Where is msg when line 6 runs?"
+      },
+      {
+       "screen": "Caption: <q>A variable made inside a function can only be used inside it.</q>",
+       "say": "Like a note the baker writes in the kitchen. It stays in the kitchen."
+      }
+     ],
+     "answer": "NameError: name 'msg' is not defined",
+     "must": [
+      "A call opens the function's own area beside its block. Boxes made in the call (the argument, msg) live there, and vanish the moment the call ends. No grey ghost is left behind."
+     ],
+     "data": {
+      "steps": [
+       {
+        "line": 1,
+        "where": "main",
+        "kind": "def",
+        "caption": "Line 1: Python learns the name greet. The block is skipped for now.",
+        "screen": [],
+        "main": {},
+        "local": {}
+       },
+       {
+        "line": 4,
+        "where": "main",
+        "kind": "input",
+        "caption": "Line 4: input() reads 'Teja' into name.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       },
+       {
+        "line": 5,
+        "where": "main",
+        "kind": "call",
+        "caption": "Line 5 calls greet.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       },
+       {
+        "line": 1,
+        "where": "greet",
+        "kind": "jump-in",
+        "caption": "Python jumps to line 1, into greet. word = 'Teja'.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {
+         "word": "Teja"
+        }
+       },
+       {
+        "line": 2,
+        "where": "greet",
+        "kind": "line",
+        "caption": "Line 2: msg = 'Hello Teja'.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {
+         "word": "Teja",
+         "msg": "Hello Teja"
+        }
+       },
+       {
+        "line": 5,
+        "where": "main",
+        "kind": "jump-back",
+        "caption": "greet is done. Python jumps back to line 5.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       },
+       {
+        "line": 6,
+        "where": "main",
+        "kind": "error",
+        "caption": "Line 6: NameError: name 'msg' is not defined. Python stops.",
+        "screen": [
+         "NameError: name 'msg' is not defined"
+        ],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       }
+      ]
+     },
+     "play": "How the boxes vanish.",
+     "press_count": 9
+    }
+   ]
+  },
+  {
+   "name": "return hands the value back",
+   "kind": "concept",
+   "mins": 4,
+   "start": 51,
+   "cards": [
+    {
+     "id": "C10",
+     "title": "Shout it, or hand it over?",
+     "source": "new",
+     "purpose": "print shows a value and keeps nothing; return hands the value back to the line that called. The cake shop makes the difference visible.",
+     "heading": "Shout it, or hand it over?",
+     "show": [
+      "Write Happy Birthday Teja on the cake.",
+      "Happy Birthday Teja!",
+      "print: everyone hears it. You take home nothing.",
+      "return: the baker hands it back. You carry it to the party.",
+      "Which one do we want from greet?"
+     ],
+     "presses": [
+      {
+       "screen": "A bakery counter near the college gate. Rahul at the counter says: <q>Write Happy Birthday Teja on the cake.</q>",
+       "say": "msg is stuck inside greet. Think of the baker."
+      },
+      {
+       "screen": "Way A: the baker shouts <q>Happy Birthday Teja!</q> across the shop. Rahul walks out with empty hands. Caption: <q>print: everyone hears it. You take home nothing.</q>",
+       "say": "That is print. The words were said. Nothing came back."
+      },
+      {
+       "screen": "Way B: the baker hands Rahul the cake with the words on it. Rahul carries it out. Caption: <q>return: the baker hands it back. You carry it to the party.</q>",
+       "say": "That is return."
+      },
+      {
+       "screen": "Both ways side by side. Caption: <q>Which one do we want from greet?</q>",
+       "say": "Which one?",
+       "room": "Say: hand it back."
+      }
+     ],
+     "must_not": [
+      "Show code on this card."
+     ],
+     "play": "The bakery, the baker, the cake box. This is the same world as the hook.",
+     "press_count": 4
+    },
+    {
+     "id": "C11",
+     "title": "return msg",
+     "source": [
+      40,
+      41,
+      42
+     ],
+     "purpose": "return value sends a value back to the call. greeting = greet(word=name) keeps it, so it can be printed outside.",
+     "heading": "Returning a value",
+     "show": [
+      "return value",
+      "To return a value from the function",
+      "Returning value",
+      "Storing the value returned"
+     ],
+     "code": [
+      {
+       "file": "greet_return.py",
+       "src": "def greet(word):\n    msg = \"Hello \" + word\n    return msg\n\nname = input()\ngreeting = greet(word=name)\nprint(greeting)",
+       "output": "Hello Teja",
+       "input": "Teja"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The def shape with <q>return value</q> as its last line, the biggest text, and the label <q>To return a value from the function</q>.",
+       "say": "return, a space, the value."
+      },
+      {
+       "screen": "greet_return.py: line 3 gets the label <q>Returning value</q>; line 6 gets the label <q>Storing the value returned</q>.",
+       "say": "The call line now has a box on its left: greeting."
+      },
+      {
+       "screen": "One move per press, following data.steps. On line 3 the value 'Hello Teja' leaves greet's area and travels to the call line; word and msg vanish; greeting gets the value. Line 7 prints <q>Hello Teja</q>.",
+       "n": 8,
+       "say": "The cake comes back to the counter."
+      }
+     ],
+     "answer": "Hello Teja",
+     "must": [
+      "A call opens the function's own area beside its block. Boxes made in the call (the argument, msg) live there, and vanish the moment the call ends. No grey ghost is left behind.",
+      "The returned value is drawn moving from the return line to greeting, like the cake handed over."
+     ],
+     "data": {
+      "steps": [
+       {
+        "line": 1,
+        "where": "main",
+        "kind": "def",
+        "caption": "Line 1: Python learns the name greet. The block is skipped for now.",
+        "screen": [],
+        "main": {},
+        "local": {}
+       },
+       {
+        "line": 5,
+        "where": "main",
+        "kind": "input",
+        "caption": "Line 5: input() reads 'Teja' into name.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       },
+       {
+        "line": 6,
+        "where": "main",
+        "kind": "call",
+        "caption": "Line 6 calls greet.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       },
+       {
+        "line": 1,
+        "where": "greet",
+        "kind": "jump-in",
+        "caption": "Python jumps to line 1, into greet. word = 'Teja'.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {
+         "word": "Teja"
+        }
+       },
+       {
+        "line": 2,
+        "where": "greet",
+        "kind": "line",
+        "caption": "Line 2: msg = 'Hello Teja'.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {
+         "word": "Teja",
+         "msg": "Hello Teja"
+        }
+       },
+       {
+        "line": 3,
+        "where": "greet",
+        "kind": "return",
+        "caption": "Line 3: return. greet stops here and hands back the value.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {
+         "word": "Teja",
+         "msg": "Hello Teja"
+        }
+       },
+       {
+        "line": 6,
+        "where": "main",
+        "kind": "jump-back",
+        "caption": "greet hands back 'Hello Teja'. Back on line 6, greeting = 'Hello Teja'.",
+        "screen": [],
+        "main": {
+         "name": "Teja",
+         "greeting": "Hello Teja"
+        },
+        "local": {}
+       },
+       {
+        "line": 7,
+        "where": "main",
+        "kind": "print",
+        "caption": "Line 7: prints Hello Teja.",
+        "screen": [
+         "Hello Teja"
+        ],
+        "main": {
+         "name": "Teja",
+         "greeting": "Hello Teja"
+        },
+        "local": {}
+       }
+      ]
+     },
+     "play": "How the value travels back.",
+     "press_count": 10
+    }
+   ]
+  },
+  {
+   "name": "return exits at once",
+   "kind": "concept",
+   "mins": 3,
+   "start": 55,
+   "cards": [
+    {
+     "id": "C12",
+     "title": "A line after return",
+     "source": [
+      43,
+      44,
+      45
+     ],
+     "purpose": "return ends the function there and then. A line after it never runs, so here nothing prints at all.",
+     "heading": "Returning a value",
+     "show": [
+      "What will it print?",
+      "(nothing)",
+      "return exits the function.",
+      "Code after return does not run."
+     ],
+     "code": [
+      {
+       "file": "after_return.py",
+       "src": "def greet(word):\n    msg = \"Hello \" + word\n    return msg\n    print(msg)\n\nname = input()\ngreeting = greet(word=name)",
+       "output": "(nothing)",
+       "input": "Teja"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "after_return.py, input <q>Teja</q>. Caption: <q>What will it print?</q> Options: A <q>Hello Teja</q>, B <q>(nothing)</q>.",
+       "say": "Option A, hands up. B.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "One move per press, following data.steps. On line 3 a red arrow points out of the function; line 4 is never lit, greys out and stays grey.",
+       "n": 7,
+       "say": "Did Python reach line 4?"
+      },
+      {
+       "screen": "The output box stays empty with the words <q>(nothing)</q>. Captions: <q>return exits the function.</q> <q>Code after return does not run.</q>",
+       "say": "And greeting holds the value, but nobody printed it."
+      }
+     ],
+     "answer": "(nothing)",
+     "must": [
+      "Line 4 greys out and stays grey for the rest of the card. That is the finding."
+     ],
+     "data": {
+      "steps": [
+       {
+        "line": 1,
+        "where": "main",
+        "kind": "def",
+        "caption": "Line 1: Python learns the name greet. The block is skipped for now.",
+        "screen": [],
+        "main": {},
+        "local": {}
+       },
+       {
+        "line": 6,
+        "where": "main",
+        "kind": "input",
+        "caption": "Line 6: input() reads 'Teja' into name.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       },
+       {
+        "line": 7,
+        "where": "main",
+        "kind": "call",
+        "caption": "Line 7 calls greet.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       },
+       {
+        "line": 1,
+        "where": "greet",
+        "kind": "jump-in",
+        "caption": "Python jumps to line 1, into greet. word = 'Teja'.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {
+         "word": "Teja"
+        }
+       },
+       {
+        "line": 2,
+        "where": "greet",
+        "kind": "line",
+        "caption": "Line 2: msg = 'Hello Teja'.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {
+         "word": "Teja",
+         "msg": "Hello Teja"
+        }
+       },
+       {
+        "line": 3,
+        "where": "greet",
+        "kind": "return",
+        "caption": "Line 3: return. greet stops here and hands back the value.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {
+         "word": "Teja",
+         "msg": "Hello Teja"
+        }
+       },
+       {
+        "line": 7,
+        "where": "main",
+        "kind": "jump-back",
+        "caption": "greet hands back 'Hello Teja'. Back on line 7, greeting = 'Hello Teja'.",
+        "screen": [],
+        "main": {
+         "name": "Teja"
+        },
+        "local": {}
+       }
+      ]
+     },
+     "play": "The red exit arrow from deck slide 43 is a fine start.",
+     "press_count": 9
+    }
+   ]
+  },
+  {
+   "name": "Task 2: the cake shop bill",
+   "kind": "activity",
+   "mins": 7,
+   "start": 58,
+   "cards": [
+    {
+     "id": "T2",
+     "title": "Task 2: the icing bill",
+     "source": "new",
+     "handout": "Task 2",
+     "activity": 11,
+     "timer": 360,
+     "purpose": "Finish a function that counts letters and returns a price, call it for two cakes, and see that one changed line changes both bills.",
+     "heading": "The icing bill",
+     "show": [
+      "Worksheet · Task 2",
+      "The bakery writes words on cakes. ₹5 for every letter. Spaces are free.",
+      "Fill line 6. Add cake 2. Predict. Run.",
+      "The bakery now charges ₹7. Which line do you change?",
+      "One line. Both cakes change."
+     ],
+     "code": [
+      {
+       "file": "icing.py",
+       "src": "def icing_cost(text):\n    letters = 0\n    for ch in text:\n        if ch != \" \":\n            letters = letters + 1\n    ________________\n\ncake_1 = input()\ncost_1 = icing_cost(text=cake_1)\nprint(cost_1)"
+      },
+      {
+       "file": "icing_done.py",
+       "src": "def icing_cost(text):\n    letters = 0\n    for ch in text:\n        if ch != \" \":\n            letters = letters + 1\n    return letters * 5\n\ncake_1 = input()\ncost_1 = icing_cost(text=cake_1)\nprint(cost_1)\ncake_2 = input()\ncost_2 = icing_cost(text=cake_2)\nprint(cost_2)",
+       "output": "85\n35",
+       "input": "Happy Birthday Teja\nHi Rahul"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The story line, icing.py with line 6 as a gap, the steps <q>Fill line 6. Add cake 2. Predict. Run.</q> and a 6 minute timer.",
+       "say": "Worksheet tab and playground. Fill the gap, add three lines for cake 2, type your prediction, then run.",
+       "room": "Type, predict, run."
+      },
+      {
+       "screen": "Line 6 fills: <q>return letters * 5</q>. Lines 11 to 13 appear for cake 2.",
+       "say": "Who wrote print instead of return? Then cost_1 has nothing to hold. No names."
+      },
+      {
+       "screen": "Cake 1 as one move: <q>Happy Birthday Teja</q> goes in as text, the letter count <q>17</q> shows, the value <q>85</q> comes back to cost_1 and prints.",
+       "say": "17 letters, times 5."
+      },
+      {
+       "screen": "Cake 2 the same way: <q>Hi Rahul</q>, <q>7</q> letters, <q>35</q>.",
+       "say": "Same block, second call."
+      },
+      {
+       "screen": "Caption: <q>The bakery now charges ₹7. Which line do you change?</q> Then line 6 lights, the 5 becomes 7, and both outputs change to <q>119</q> and <q>49</q>. Caption: <q>One line. Both cakes change.</q>",
+       "say": "Without a function, you would change it in two places. Sixty cakes, sixty places.",
+       "room": "Say the line number."
+      }
+     ],
+     "answer": "Line 6 is return letters * 5. With Happy Birthday Teja and Hi Rahul it prints 85 and 35.",
+     "must": [
+      "No output and no filled line 6 show until the timer has ended.",
+      "One call per press on the reveal."
+     ],
+     "data": {
+      "inputs": [
+       "Happy Birthday Teja",
+       "Hi Rahul"
+      ],
+      "letters": [
+       17,
+       7
+      ],
+      "outputs": [
+       "85",
+       "35"
+      ],
+      "outputs_at_7": [
+       "119",
+       "49"
+      ]
+     },
+     "play": "A bakery bill or a cake box label can hold the outputs.",
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "You have been calling functions all along",
+   "kind": "concept",
+   "mins": 2,
+   "start": 65,
+   "cards": [
+    {
+     "id": "C13",
+     "title": "Built-in functions",
+     "source": [
+      48
+     ],
+     "purpose": "print, int, str and len are functions Python already wrote. Calling them is what the room has done since day one.",
+     "heading": "Built-in functions",
+     "show": [
+      "Where have you seen a name and brackets before?",
+      "print()",
+      "int()",
+      "str()",
+      "len()",
+      "We are already using functions that Python wrote for us.",
+      "len hands back 4, just like return."
+     ],
+     "code": [
+      {
+       "file": "len.py",
+       "src": "n = len(\"Teja\")\nprint(n)",
+       "output": "4"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Four dashed slots. Caption: <q>Where have you seen a name and brackets before?</q>",
+       "say": "Since the first week. Which ones?",
+       "room": "Say names."
+      },
+      {
+       "screen": "The slots fill: <q>print()</q>, <q>int()</q>, <q>str()</q>, <q>len()</q>. Caption: <q>We are already using functions that Python wrote for us.</q>",
+       "say": "Built-in functions. Ready to reuse."
+      },
+      {
+       "screen": "len.py runs: the output shows <q>4</q>. Caption: <q>len hands back 4, just like return.</q>",
+       "say": "n = len(\"Teja\") stores what len returns."
+      }
+     ],
+     "answer": "4",
+     "play": "The deck's green arrows are a fine start.",
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "Exit: which line 8 leaves the screen empty",
+   "kind": "exit",
+   "mins": 4,
+   "start": 67,
+   "cards": [
+    {
+     "id": "X1",
+     "title": "Exit: the empty party screen",
+     "source": "new",
+     "activity": 1,
+     "timer": 150,
+     "purpose": "Check the ideas landed together: return does not print, a line after return never runs, msg made inside is unknown outside.",
+     "heading": "The empty party screen",
+     "show": [
+      "Teja's friend wrote this for the party screen.",
+      "Which line 8 leaves the screen empty: no output and no error?"
+     ],
+     "code": [
+      {
+       "file": "wish.py",
+       "src": "def wish(name):\n    msg = \"Happy birthday \" + name\n    return msg\n    print(msg)\n\nfriend = \"Teja\"\ncard = wish(name=friend)\n# line 8 goes here"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Story line, wish.py with line numbers and line 8 as a gap, the question, and options: A <q>print(card)</q>, B <q>wish(name=friend)</q>, C <q>print(msg)</q>. A 2:30 timer.",
+       "say": "Everyone answers alone. Then option A, hands up. B. C.",
+       "room": "Hands up per option."
+      },
+      {
+       "screen": "The right option marks, and every option shows what the screen shows with it, and its why line, as in data.",
+       "say": "Go through every option, not only the right one."
+      }
+     ],
+     "answer": "B, wish(name=friend). print(card): Happy birthday Teja. wish(name=friend): (nothing). print(msg): NameError: name 'msg' is not defined.",
+     "must_not": [
+      "Show any output before the second press."
+     ],
+     "data": {
+      "options": [
+       {
+        "line8": "print(card)",
+        "shows": "Happy birthday Teja",
+        "why": "card holds what wish handed back, so this prints it."
+       },
+       {
+        "line8": "wish(name=friend)",
+        "shows": "(nothing)",
+        "why": "wish hands back the wish, but nothing prints it, and line 4 never runs after return."
+       },
+       {
+        "line8": "print(msg)",
+        "shows": "NameError: name 'msg' is not defined",
+        "why": "msg was made inside wish. Outside, Python does not know it: NameError."
+       }
+      ],
+      "right": "B"
+     },
+     "play": "Layout. It can sit on the party TV.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Key takeaways: the example board",
+   "kind": "buffer",
+   "mins": 2,
+   "start": 71,
+   "cards": [
+    {
+     "id": "K1",
+     "title": "Functions in six examples",
+     "source": "new",
+     "purpose": "Six real programs from today, each with what it prints and the rule it shows.",
+     "heading": "Today, in six examples",
+     "show": [
+      "Defined, not called",
+      "A def only stores the block. Nothing calls it, so Hello never prints.",
+      "Called",
+      "greet() jumps into the block, runs it, and comes back to the next line.",
+      "Called before the def",
+      "Python reads top to bottom. Define first, then call.",
+      "A value goes in",
+      "word=name sends Teja into the argument word.",
+      "A value comes back",
+      "return hands msg back; greeting keeps it.",
+      "After return",
+      "return exits at once. Line 4 never runs, so nothing prints."
+     ],
+     "code": [
+      {
+       "file": "Defined, not called",
+       "src": "def greet():\n    print(\"Hello\")\n\nname = input()\nprint(name)",
+       "input": "Teja",
+       "output": "Teja"
+      },
+      {
+       "file": "Called",
+       "src": "def greet():\n    print(\"Hello\")\n\nname = input()\ngreet()\nprint(name)",
+       "input": "Teja",
+       "output": "Hello\nTeja"
+      },
+      {
+       "file": "Called before the def",
+       "src": "name = input()\ngreet()\nprint(name)\n\ndef greet():\n    print(\"Hello\")",
+       "input": "Teja",
+       "output": "NameError: name 'greet' is not defined"
+      },
+      {
+       "file": "A value goes in",
+       "src": "def greet(word):\n    msg = \"Hello \" + word\n    print(msg)\n\nname = input()\ngreet(word=name)",
+       "input": "Teja",
+       "output": "Hello Teja"
+      },
+      {
+       "file": "A value comes back",
+       "src": "def greet(word):\n    msg = \"Hello \" + word\n    return msg\n\nname = input()\ngreeting = greet(word=name)\nprint(greeting)",
+       "input": "Teja",
+       "output": "Hello Teja"
+      },
+      {
+       "file": "After return",
+       "src": "def greet(word):\n    msg = \"Hello \" + word\n    return msg\n    print(msg)\n\nname = input()\ngreeting = greet(word=name)",
+       "input": "Teja",
+       "output": "(nothing)"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Example 1 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 2 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 3 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 4 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 5 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 6 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      }
+     ],
+     "must": [
+      "All six slots are there from press 1, empty.",
+      "Examples, not a concept map."
+     ],
+     "play": "The grid and a small jump arrow on each example.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Feedback",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 73,
+   "cards": [
+    {
+     "id": "S-FEEDBACK",
+     "title": "Feedback",
+     "source": "spine:feedback",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Thank you",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 74,
+   "cards": [
+    {
+     "id": "S-THANKYOU",
+     "title": "Thankyou",
+     "source": "spine:thankyou",
+     "press_count": 0
+    }
+   ]
+  }
+ ]
+}

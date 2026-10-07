@@ -131,6 +131,8 @@ import {
   FolderOpen,
   FileText,
   Download,
+  ChevronRight,
+  ChevronDown,
 } from 'lucide-react'
 
 export const iconByName = {
@@ -178,5 +180,10 @@ export const iconByName = {
   'folder-open': FolderOpen,
   file: FileText,
   download: Download,
+  // Added for the FileTree redesign: a folder that can be shut needs a glyph
+  // that says which way it is. The chevron is the only affordance in the figure,
+  // so it is drawn, never implied by indentation alone.
+  'chevron-right': ChevronRight,
+  'chevron-down': ChevronDown,
 }
 export type IconName = keyof typeof iconByName

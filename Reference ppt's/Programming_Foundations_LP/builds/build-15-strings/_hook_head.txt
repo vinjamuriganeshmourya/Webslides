@@ -1,0 +1,91 @@
+"""The hook: Anjali cannot find the apology, and Sanjay swears he sent it.
+
+Two weeks together, Sanjay forgot, and Anjali says he never even apologised.
+Sanjay says he did, on Tuesday. She searches the chat for `sorry`. **No
+messages found.** So one of them is lying, and the room gets to decide which.
+
+Neither. Scroll up and it is right there, from Tuesday: `S O R R Y`, typed
+with a space after every letter the way people do when they mean it. The
+search compares characters, and `sorry` is not inside `S O R R Y`.
+
+That single screen carries both halves of the session. A space is a character,
+which is why two phone numbers that look identical are not equal forty minutes
+later; and the letters you want sit at every second index, which is the step.
+
+One moving group: `.hkcomb`, five marks and the four jumps between them. One
+transform on it, `scaleX(2)` about the first mark, 900ms. The characters never
+move, so the eye has one thing to follow and the jump getting longer IS the
+argument. Nothing on this card is named: slice, step and method all arrive
+later.
+
+Geometry, so the transform can be written as arithmetic rather than guessed:
+
+    cell i is centred at  C0 + i * CELL
+    marks sit on cells 0, 1, 2, 3, 4   before the turn
+    marks sit on cells 0, 2, 4, 6, 8   after it
+
+    scaling by 2 about cell 0 sends c0 -> c0, c1 -> c2, c2 -> c4, c3 -> c6,
+    c4 -> c8
+
+`transform-origin` on an SVG group is not honoured everywhere, so the origin is
+written into the transform: scaling by s about (a, 0) is
+`translate(a * (1 - s), 0) scale(s, 1)`.
+
+**Nothing else in the chat may contain the word.** Anjali's own messages would
+turn up in her own search, so she says `apologised` and Sanjay says `I did`.
+`check_answers.py` greps the whole card for it.
+"""
+import html
+
+import panels as P
+
+# --------------------------------------------------------------- the geometry
+VB_W, VB_H = 1000, 520
+
+CELL = 64
+CW = 60
+C0 = 424              # centre of cell 0
+TOP = 208             # top of the character row
+CH = 68
+
+IDX_Y = 300
+STEM_Y = 318
+STEM_H = 26
+ARC_Y = 352
+ARC_DIP = 32
+LBL_Y = 406
+PILL_X, PILL_W = 550, 260
+PILL_Y, PILL_H = 424, 62
+
+RAIL_X = 378
+RAIL_Y = 56
+RAIL_DY = 36
+ASK_Y = 172
+
+MSG = P.HOOK_MSG
+WORD = P.HOOK_WORD
+RUN_A, RUN_B = P.HOOK_RUN            # a run of five, side by side
+JUMP_A, _JB, JUMP_S = P.HOOK_JUMP    # the same start, two at a time
+
+STEPS = 6
+LABELS = ("the fight|she searches|there it is|nine characters|"
+          "a run of five|the jump")
+
+# WhatsApp's own colours. A near miss reads as a fake, and the room knows this
+# screen better than it knows any diagram.
+WA_GREEN = "#008069"
+WA_BG = "#EFE7DE"
+WA_OUT = "#D9FDD3"
+WA_TICK = "#53BDEB"
+WA_HIT = "#FFE9A8"      # the search highlight WhatsApp paints on a match
+
+
+def cx(i):
+    return C0 + i * CELL
+
+
+SCALE = 2
+ORIGIN = cx(RUN_A)
+SHIFT = ORIGIN * (1 - SCALE)
+
+

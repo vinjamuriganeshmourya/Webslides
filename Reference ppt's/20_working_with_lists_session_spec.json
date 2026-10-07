@@ -1,0 +1,2774 @@
+{
+ "meta": {
+  "session": "20 - Working with Lists",
+  "course": "Programming Foundations",
+  "one_idea": "A name points at a list. list_b = list_a gives the same list a second name, so a change made through one name shows through both. = with a new value moves only that one name.",
+  "outcomes": [
+   "Change one item of a list with list_a[i] = value, and say why a string refuses it.",
+   "Say that every value is an object with an id, and use id() to check if two names share one.",
+   "Predict both prints after list_b = list_a and a change through list_b.",
+   "Tell a line that changes the list (list_b[i] =, +=) from one that moves a name (=, a + [...]).",
+   "Say what prints when a list holds another list, and when it holds a number's value."
+  ],
+  "previous": "19 - Lists",
+  "slides_dir": "C:\\Lesson Plans New\\builds\\build-20-working-lists\\work\\slides",
+  "deck_total": 79,
+  "kept": [
+   7,
+   11,
+   12,
+   13,
+   16,
+   20,
+   27,
+   32,
+   37,
+   41,
+   46,
+   52,
+   58,
+   63,
+   68,
+   75
+  ],
+  "cuts": [
+   [
+    "1-2",
+    "Welcome and title. The fixed spine cards replace them."
+   ],
+   [
+    "3-6",
+    "A recap that lists what session 19 covered. Reading is not remembering; S-RECAP is a bug to find instead."
+   ],
+   [
+    "8-9",
+    "Session 19's daily challenge. Its content becomes the recap card S-RECAP."
+   ],
+   [
+    "10",
+    "The deck agenda. The spine agenda S-AGENDA replaces it."
+   ],
+   [
+    "14, 15",
+    "One spoken line each (stored in memory; id() gives the id). Folded into C3 and C4."
+   ],
+   [
+    "17-19, 21-26",
+    "Build-up steps of slides 20 and 27. C5 and C6 step the same pictures one press at a time."
+   ],
+   [
+    "28-31, 33",
+    "Build-up of slide 32. C7 steps it."
+   ],
+   [
+    "34-36, 38-40",
+    "Build-up of slides 37 and 41. C8 and C9 step them."
+   ],
+   [
+    "42-45",
+    "Build-up of slide 46. Task 2 (T2) asks the room to predict it, then reveals one line per press."
+   ],
+   [
+    "47-51",
+    "Build-up of slide 52. C10 steps it."
+   ],
+   [
+    "53-57, 59-62",
+    "Build-up of slides 58 and 63. The explainer E1 walks both programs line by line."
+   ],
+   [
+    "64-67, 69-74",
+    "Build-up of slides 68 and 75. C11 and C12 step them."
+   ],
+   [
+    "76",
+    "Bullet takeaways. Replaced by the example board K1."
+   ],
+   [
+    "77-79",
+    "Practice picture, thank you, all the best. The fixed spine cards replace them."
+   ]
+  ],
+  "defects": [
+   [
+    "slides 66-68",
+    "list_b = [3, list_a] is drawn as a copy of [1, 2] nested inside list_b's boxes. That reads as list_b holding its own copy, which is the opposite of what slide 68's output shows.",
+    "C11 draws list_b's second slot as an arrow to list_a's own list."
+   ],
+   [
+    "slide 62",
+    "\"updates the object inplace\": inplace should be in place.",
+    "Not used as text. E1 shows it."
+   ],
+   [
+    "slide 7",
+    "Labelled Recap, but session 19's plan cut mutability (deck 19 slides 33-36) to this session.",
+    "T1 teaches it as new, with a playground beat."
+   ],
+   [
+    "not in the deck",
+    "a = \"Hello\"; b = \"Hello\"; print(id(a) == id(b)) prints True: Python reuses short equal strings. A student who tries it will think equal values always share an id.",
+    "No card uses two equal string literals. The guide tells the instructor what to say if a student finds it."
+   ]
+  ],
+  "notes": [
+   "The room is 50 to 60 first-year students on laptops. Laptops stay shut except on T1, T2, T3 and the classroom quiz.",
+   "One world with session 19: the Road Trip songs on Spotify, and the friend Kiran. Songs used: Chuttamalle, Hukum, Illuminati, Naatu Naatu, Kaavaalaa, Kesariya.",
+   "Votes are taken option by option: the instructor reads each option and asks how many think it is that one. Hands up. Nobody is named.",
+   "One picture for the whole session: a name is a tag with an arrow; a list is a row of boxes. Two names on one list are two tags with arrows into ONE row, never two rows. Use it on every card from C5 on.",
+   "An id is never typed as an answer. Ids change on every run. Where a number is shown, label it: your number will be different.",
+   "Nothing before the title card may say the session's name. The hook may show Spotify's own labels.",
+   "The bar to beat is Plans/DSA/Module 3 - Stacks & Queues/01 - Introduction to Stacks/: a simulation the room drives, a picture that refuses to lie."
+  ],
+  "topics": [
+   "lists",
+   "variables"
+  ]
+ },
+ "build_contract": [
+  "One self-contained HTML file. It opens offline from a USB stick and makes no network request.",
+  "It opens in presenter view. There is no sidebar, top bar or button the instructor has to use.",
+  "Right arrow or the clicker is one press. Left arrow goes back one press. F goes full screen, A shows all the cards, and End shows the whole card at once. The instructor guide tells the instructor these keys, so they must work.",
+  "Every card is its own screen, in the order of this spec. Press 1 is what shows when the card opens.",
+  "Every card's outer element carries data-spec=\"<card id>\" and data-presses=\"<number of presses>\". The review script reads both.",
+  "No link to any other file. The students' handout and the instructor guide are separate files, and a link from this file is how a class finds the answers."
+ ],
+ "rules": [
+  "No autoplay. Nothing moves on a timer. One press, one move, with a caption that says what just happened.",
+  "Commit, then reveal. Where a card asks a question, the answer shows only on the press after the room has answered.",
+  "Wrong answers stay private. No names, no per-student results on screen. Hands are counted out loud, never shown.",
+  "The topic is named once. Nothing before the title card says today's topic, not a heading, not a caption, not a file name on a code card.",
+  "Words are exact. Words in quotation marks, and every line under Exact words, are final. The rest of a press describes what happens, in your own design. If an exact line does not fit, ask for a new one; do not rewrite it.",
+  "Code is exact. Copy code and outputs from the JSON, never retype them. Every output here came from running the program.",
+  "Simple English. Short sentences, everyday words. No em-dashes anywhere, the page title included.",
+  "Every card moves. A card that introduces an idea steps; a static card is a picture of a lecture."
+ ],
+ "beats": [
+  {
+   "name": "Welcome",
+   "kind": "concept",
+   "mins": 1,
+   "start": 0,
+   "cards": [
+    {
+     "id": "S-WELCOME",
+     "title": "Welcome",
+     "source": "spine:welcome",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap",
+   "kind": "concept",
+   "mins": 1,
+   "start": 1,
+   "cards": [
+    {
+     "id": "S-RECAP-CARD",
+     "title": "Recap card",
+     "source": "spine:recap_card",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap bug: the wild animals",
+   "kind": "quiz",
+   "mins": 3,
+   "start": 2,
+   "cards": [
+    {
+     "id": "S-RECAP",
+     "title": "Recap: find the line",
+     "source": "spine:recap",
+     "purpose": "Pull back session 19's += on lists: it adds items one by one, and [ ] makes a whole list one item.",
+     "heading": "Which line is to blame?",
+     "show": [
+      "We want Tiger and Fox to stay together, as one item inside animals.",
+      "It prints:",
+      "We wanted:",
+      "Which line is to blame?"
+     ],
+     "presses": [
+      {
+       "screen": "The story line <q>We want Tiger and Fox to stay together, as one item inside animals.</q>, the program with line numbers, and under it <q>It prints:</q> <q>['cat', 'dog', 'Tiger', 'Fox']</q> beside <q>We wanted:</q> <q>['cat', 'dog', ['Tiger', 'Fox']]</q>. The question <q>Which line is to blame?</q>",
+       "say": "Everyone picks a line number. Line 1? Hands up. Line 2? Line 3? Line 4?",
+       "room": "Hands up for a line number."
+      },
+      {
+       "screen": "Line 3 lights up as the culprit. The why line shows: <q>+= adds the items of wild_animals one by one. Put it in [ ] to add the whole list as one item.</q>",
+       "say": "Ask what to change before the next press.",
+       "room": "Say the fix."
+      },
+      {
+       "screen": "Line 3 becomes <q>animals += [wild_animals]</q> and the output changes to <q>['cat', 'dog', ['Tiger', 'Fox']]</q>.",
+       "say": "Brackets around it: the whole list goes in as one item."
+      }
+     ],
+     "code": [
+      {
+       "file": "animals.py",
+       "src": "animals = ['cat', 'dog']\nwild_animals = ['Tiger', 'Fox']\nanimals += wild_animals\nprint(animals)",
+       "output": "['cat', 'dog', 'Tiger', 'Fox']"
+      },
+      {
+       "file": "animals_fixed.py",
+       "src": "animals = ['cat', 'dog']\nwild_animals = ['Tiger', 'Fox']\nanimals += [wild_animals]\nprint(animals)",
+       "output": "['cat', 'dog', ['Tiger', 'Fox']]"
+      }
+     ],
+     "interaction": "Format: bug. The room votes on the line by hands, option by option, before the culprit lights. Nobody is named.",
+     "must": [
+      "The wrong output and the wanted output are both on screen from press 1, so the room compares them."
+     ],
+     "data": {
+      "lines": [
+       "animals = ['cat', 'dog']",
+       "wild_animals = ['Tiger', 'Fox']",
+       "animals += wild_animals",
+       "print(animals)"
+      ],
+      "wrong": "['cat', 'dog', 'Tiger', 'Fox']",
+      "right": "['cat', 'dog', ['Tiger', 'Fox']]",
+      "culprit": 3,
+      "fix": "animals += [wild_animals]",
+      "why": "+= adds the items of wild_animals one by one. Put it in [ ] to add the whole list as one item."
+     },
+     "play": "How the culprit lights and how the fix slides in.",
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "Hook: share the playlist or copy it",
+   "kind": "hook",
+   "mins": 5,
+   "start": 5,
+   "cards": [
+    {
+     "id": "H1",
+     "title": "Share it or copy it?",
+     "source": "new",
+     "animated": "hook",
+     "purpose": "Feel, from an app they use, that two people can hold ONE thing or two copies, and that only one of those shows a change to both. The last press draws the picture the session uses: two tags, one row.",
+     "heading": "Kiran wants your Road Trip songs",
+     "show": [
+      "Way A: Invite Kiran",
+      "Way B: Make Kiran a copy",
+      "Kiran removes song 3. Does it vanish from your phone too?",
+      "Two names. One set of songs, or two?"
+     ],
+     "presses": [
+      {
+       "screen": "Your phone: the Spotify Road Trip screen from session 19, dark with the green accent, cover art, title <q>Road Trip</q>, and four song rows numbered 1 to 4 in the order in data.songs. Caption: <q>Kiran wants your Road Trip songs.</q>",
+       "say": "Remember this from last class? Kiran wants these songs on his phone. How would you give them?",
+       "room": "Say ways out loud."
+      },
+      {
+       "screen": "Two ways appear as real Spotify menu items: <q>Way A: Invite Kiran</q> (Invite collaborators) and <q>Way B: Make Kiran a copy</q> (Add to other playlist, New playlist). Two phone pairs side by side: Way A on the left, Way B on the right. In both, Kiran's phone shows the same four songs.",
+       "say": "Both look the same right now. Same songs, same order."
+      },
+      {
+       "screen": "On both of Kiran's phones, song 3 (<q>Illuminati</q>) gets a swipe and a Remove tap. Your phones do not change yet. Caption: <q>Kiran removes song 3. Does it vanish from your phone too?</q>",
+       "say": "Way A first. How many of you think it vanishes from your phone? Hands up. Now Way B.",
+       "room": "Hands up, Way A then Way B."
+      },
+      {
+       "screen": "Way A: the song row on YOUR phone slides out too; both phones show <q>Chuttamalle, Hukum, Naatu Naatu</q>. Way B: your phone keeps all four; Kiran's shows three. Caption: <q>Way A: one set of songs. Way B: two.</q>",
+       "say": "Way A, you both hold one playlist. Way B, Kiran has his own."
+      },
+      {
+       "screen": "The turn, one movement: the phones fade back and leave what they stand for. Way A: two name tags, <q>you</q> and <q>kiran</q>, with arrows into ONE row of boxes. Way B: two tags with arrows into TWO rows. Caption: <q>Two names. One set of songs, or two?</q>",
+       "say": "Hold this picture. Today's code does both. Do not name it yet.",
+       "room": "Guess what today is about."
+      }
+     ],
+     "must": [
+      "Way A is real Spotify behaviour: a collaborator who removes a song removes it for everyone.",
+      "The song order never changes except the removed row.",
+      "The last press is one movement: phones becoming tags and rows.",
+      "Two names on one list are two tags with arrows into one row of boxes, never two rows."
+     ],
+     "must_not": [
+      "Say the session name before the title card.",
+      "Show any code on this card.",
+      "Animate by itself. Every change waits for a press."
+     ],
+     "data": {
+      "songs": [
+       "Chuttamalle",
+       "Hukum",
+       "Illuminati",
+       "Naatu Naatu"
+      ],
+      "removed_number": 3,
+      "after": {
+       "dropped": "Illuminati",
+       "share": {
+        "yours": [
+         "Chuttamalle",
+         "Hukum",
+         "Naatu Naatu"
+        ],
+        "kiran": [
+         "Chuttamalle",
+         "Hukum",
+         "Naatu Naatu"
+        ]
+       },
+       "copy": {
+        "yours": [
+         "Chuttamalle",
+         "Hukum",
+         "Illuminati",
+         "Naatu Naatu"
+        ],
+        "kiran": [
+         "Chuttamalle",
+         "Hukum",
+         "Naatu Naatu"
+        ]
+       }
+      }
+     },
+     "play": "The Spotify screens are yours to make real: cover art, the green, the swipe and Remove, the collaborator avatars on Way A. How the phones turn into tags and rows is yours.",
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Today's topic",
+   "kind": "concept",
+   "mins": 1,
+   "start": 10,
+   "cards": [
+    {
+     "id": "S-TITLE",
+     "title": "Title",
+     "source": "spine:title",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Agenda",
+   "kind": "concept",
+   "mins": 1,
+   "start": 11,
+   "cards": [
+    {
+     "id": "S-AGENDA",
+     "title": "Agenda",
+     "source": "spine:agenda",
+     "show": [
+      "Change a list",
+      "one item at a time",
+      "Objects and id",
+      "every value has one",
+      "Two names, one list",
+      "change it, both see it",
+      "Change or move?",
+      "=, + and +="
+     ],
+     "presses": [
+      {
+       "screen": "Stop 1 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 2 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 3 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 4 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      }
+     ],
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "A list can change, a string cannot",
+   "kind": "activity",
+   "mins": 4,
+   "start": 12,
+   "cards": [
+    {
+     "id": "T1",
+     "title": "Task 1: change one item",
+     "source": [
+      7
+     ],
+     "handout": "Task 1",
+     "activity": 19,
+     "timer": 180,
+     "purpose": "list_a[3] = 4 changes one item of a list in place. The same move on a string stops with TypeError, and the room finds that out by doing it.",
+     "heading": "Change one item",
+     "show": [
+      "Worksheet · Task 1",
+      "Type it. Predict line 4. Run.",
+      "list_a[3] = 4 puts 4 at position 3."
+     ],
+     "code": [
+      {
+       "file": "change.py",
+       "src": "list_a = [1, 2, 3, 5]\nprint(list_a)\nlist_a[3] = 4\nprint(list_a)",
+       "output": "[1, 2, 3, 5]\n[1, 2, 3, 4]"
+      },
+      {
+       "file": "word.py",
+       "src": "word = \"Hello\"\nprint(word)\nword[0] = \"J\"\nprint(word)",
+       "output": "Hello\nTypeError: 'str' object does not support item assignment"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "change.py with line numbers, the steps <q>Type it. Predict line 4. Run.</q> and a 3 minute timer. list_a drawn as four boxes with positions 0 to 3.",
+       "say": "Worksheet open. Type it, type your prediction for line 4, then run.",
+       "room": "Type, predict, run."
+      },
+      {
+       "screen": "Line 3 runs: the box at position 3 changes from 5 to 4 in place; the other boxes do not move. Output <q>[1, 2, 3, 4]</q>. Caption: <q>list_a[3] = 4 puts 4 at position 3.</q>",
+       "say": "Now my mistake: I want to do the same to a word. Type word.py. Predict, then run.",
+       "room": "Type word.py, predict, run."
+      },
+      {
+       "screen": "word.py. The H box refuses: it shakes and stays H. The terminal shows <q>Hello</q> then <q>TypeError: 'str' object does not support item assignment</q>. Caption: <q>A list can change. A string cannot.</q>",
+       "say": "Let them react first. Line 2 printed, then Python stopped at line 3."
+      }
+     ],
+     "answer": "change.py line 4 prints [1, 2, 3, 4]. word.py prints Hello, then TypeError: 'str' object does not support item assignment.",
+     "must": [
+      "The string change is framed as the instructor's own mistake, not a test.",
+      "The error is shown exactly as Python prints it, after the Hello that printed first."
+     ],
+     "must_not": [
+      "Show either output before the room has run it."
+     ],
+     "play": "The boxes, the refusing H, and the layout of steps, timer and code.",
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "Objects: every value has an id, a name points at it",
+   "kind": "concept",
+   "mins": 9,
+   "start": 16,
+   "cards": [
+    {
+     "id": "C1",
+     "title": "Objects",
+     "source": [
+      11
+     ],
+     "purpose": "Mark the start of the first idea.",
+     "heading": "Objects",
+     "presses": [
+      {
+       "screen": "The deck's one-word divider: <q>Objects</q>.",
+       "say": "Let us see what Python does with every value."
+      }
+     ],
+     "play": "Keep the deck's divider look.",
+     "press_count": 1
+    },
+    {
+     "id": "C2",
+     "title": "Every value is an object",
+     "source": [
+      12
+     ],
+     "purpose": "Anything you can put in a variable is an object: a string, a float, a list.",
+     "heading": "Every value is an object",
+     "show": [
+      "Anu types three values.",
+      "I keep each one as an object.",
+      "Strings, numbers, lists: all objects."
+     ],
+     "presses": [
+      {
+       "screen": "The story cast: Anu at a laptop and the computer drawn with a face. Anu's bubble: <q>Anu types three values.</q> Three values appear one under the other: <q>\"A\"</q>, <q>1.25</q>, <q>[1, 2, 3]</q>.",
+       "say": "What do these three have in common?",
+       "room": "Say ideas."
+      },
+      {
+       "screen": "The computer's bubble: <q>I keep each one as an object.</q> Each value gets a small box around it in the computer's memory.",
+       "say": "Python calls each stored value an object."
+      },
+      {
+       "screen": "Banner: <q>Strings, numbers, lists: all objects.</q>",
+       "say": "Anything you can put in a variable."
+      }
+     ],
+     "play": "The cast and the memory drawing. PF 18's Anu and computer may be reused.",
+     "press_count": 3
+    },
+    {
+     "id": "C3",
+     "title": "Each object gets an id",
+     "source": [
+      13,
+      14
+     ],
+     "purpose": "When Python makes an object it stores it in memory and gives it a unique id, linked to where it sits. The id can change on every run.",
+     "heading": "Each object gets an id",
+     "show": [
+      "Where do you keep it?",
+      "In my memory. Its id is its number.",
+      "Run again, and the id can change."
+     ],
+     "presses": [
+      {
+       "screen": "Anu's bubble: <q>Where do you keep it?</q>",
+       "say": "Where does a value go when you run the program?",
+       "room": "Say ideas."
+      },
+      {
+       "screen": "The computer's bubble: <q>In my memory. Its id is its number.</q> The \"A\" box gets a label: Id, then the deck's example number 140589..., marked <q>your number will be different</q>.",
+       "say": "One id per object. No two objects share one at the same time."
+      },
+      {
+       "screen": "The program runs again: the id label changes to a different long number. Bubble: <q>Run again, and the id can change.</q>",
+       "say": "So we never learn an id by heart. We compare them."
+      }
+     ],
+     "must": [
+      "Every id on screen is labelled as an example."
+     ],
+     "play": "How memory and the id label look.",
+     "press_count": 3
+    },
+    {
+     "id": "C4",
+     "title": "id() shows it",
+     "source": [
+      15,
+      16
+     ],
+     "purpose": "id(x) gives the id of an object. Running it twice proves the number changes between runs.",
+     "heading": "id() gives the id",
+     "show": [
+      "Run it twice. Same number both times?"
+     ],
+     "code": [
+      {
+       "file": "id.py",
+       "src": "print(id(\"Hello\"))",
+       "output": "a long number, different on every laptop and every run"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "id.py. Caption: <q>Run it twice. Same number both times?</q>",
+       "say": "Laptops open, playground only. Type it, run it twice. How many got the same number twice? Hands up.",
+       "room": "Type, run twice, hands up."
+      },
+      {
+       "screen": "Two example outputs, one per run, two different long numbers, labelled as examples.",
+       "say": "Different each run. Your neighbour's is different too. Laptops closed."
+      }
+     ],
+     "play": "Layout.",
+     "press_count": 2
+    },
+    {
+     "id": "C5",
+     "title": "A name points at an object",
+     "source": [
+      17,
+      18,
+      19,
+      20
+     ],
+     "purpose": "a = \"Hello\" makes the object first, then points the name a at it. id(a) gives the id of the object a points at.",
+     "heading": "A name points at an object",
+     "show": [
+      "First the object. Then the name points at it."
+     ],
+     "code": [
+      {
+       "file": "name.py",
+       "src": "a = \"Hello\"\nprint(id(a))",
+       "output": "a long number, different on every laptop and every run"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "name.py with line 1 lit. The object <q>\"Hello\"</q> appears in memory with its id label. No name yet.",
+       "say": "Python makes the object first."
+      },
+      {
+       "screen": "The name tag <q>a</q> appears and an arrow goes from it to \"Hello\". Caption: <q>First the object. Then the name points at it.</q>",
+       "say": "Until now we said a stores Hello. Really, a points at it."
+      },
+      {
+       "screen": "Line 2 lit. The output shows the same number as the \"Hello\" label.",
+       "say": "id(a) is the id of what a points at."
+      }
+     ],
+     "must": [
+      "The arrow goes from the name to the object. The name never sits inside the object."
+     ],
+     "play": "The tag, the arrow and the memory.",
+     "press_count": 3
+    },
+    {
+     "id": "C6",
+     "title": "a + \" World\" makes a new object",
+     "source": [
+      21,
+      24,
+      25,
+      26,
+      27
+     ],
+     "purpose": "a = a + \" World\" builds a new object and moves a to it. So the two ids differ. Old objects with no name left grey out.",
+     "heading": "Same id, or a new one?",
+     "show": [
+      "Will the two ids be the same?",
+      "+ makes a new object. a moves to it."
+     ],
+     "code": [
+      {
+       "file": "hello_world.py",
+       "src": "a = \"Hello\"\nprint(id(a))\na = a + \" World\"\nprint(id(a))",
+       "output": "two different long numbers"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "hello_world.py and the picture from C5. Caption: <q>Will the two ids be the same?</q>",
+       "say": "How many of you think the same? Hands up. Different?",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Line 3, part 1: the object <q>\" World\"</q> appears with its own id.",
+       "say": "Python makes \" World\" first."
+      },
+      {
+       "screen": "Line 3, part 2: a new object <q>\"Hello World\"</q> appears with a new id. \"Hello\" is not changed.",
+       "say": "A string cannot change, remember T1. So + builds a new one."
+      },
+      {
+       "screen": "Line 3, part 3: a's arrow lifts off \"Hello\" and lands on \"Hello World\". \"Hello\" and \" World\" now have no name: they grey out and stay grey.",
+       "say": "a moved. Nothing points at the old ones now."
+      },
+      {
+       "screen": "Line 4: the output shows a second, different number. Caption: <q>+ makes a new object. a moves to it.</q>",
+       "say": "Who said different? That is why."
+      }
+     ],
+     "answer": "The two ids are different.",
+     "must": [
+      "One part of line 3 per press, in this order: \" World\", then \"Hello World\", then the arrow moves.",
+      "Objects with no name left grey out and stay grey for the rest of the card."
+     ],
+     "play": "How the new object appears and how the arrow moves.",
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "A list is an object; two lists or one",
+   "kind": "concept",
+   "mins": 6,
+   "start": 25,
+   "cards": [
+    {
+     "id": "C7",
+     "title": "A list is an object too",
+     "source": [
+      29,
+      30,
+      31,
+      32
+     ],
+     "purpose": "A list is an object that holds arrows to its items. We draw it short: the name, an arrow, a row of boxes.",
+     "heading": "A list is an object too",
+     "show": [
+      "We draw it like this."
+     ],
+     "code": [
+      {
+       "file": "list_id.py",
+       "src": "list_a = [1, 2, 3]\nprint(id(list_a))",
+       "output": "a long number, different on every laptop and every run"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "list_id.py, line 1 lit. Three item objects 1, 2, 3 appear as small cubes.",
+       "say": "Each item is an object."
+      },
+      {
+       "screen": "A list object appears above them: three slots, each with an arrow down to one cube.",
+       "say": "The list holds an arrow to each item."
+      },
+      {
+       "screen": "The tag <q>list_a</q> points at the list object.",
+       "say": "list_a points at the list."
+      },
+      {
+       "screen": "The picture shrinks to the short form: tag, arrow, one row of boxes 1 2 3. Caption: <q>We draw it like this.</q>",
+       "say": "From now on we draw it short."
+      }
+     ],
+     "play": "The cubes and the shrink to the short form.",
+     "press_count": 4
+    },
+    {
+     "id": "C8",
+     "title": "Two lists, same values",
+     "source": [
+      34,
+      35,
+      36,
+      37
+     ],
+     "purpose": "Two [1, 2, 3] written twice are two separate lists, so their ids differ.",
+     "heading": "Same values. Same list?",
+     "show": [
+      "Will the two ids be the same?"
+     ],
+     "code": [
+      {
+       "file": "two_lists.py",
+       "src": "list_a = [1, 2, 3]\nlist_b = [1, 2, 3]\nprint(id(list_a))\nprint(id(list_b))",
+       "output": "two different long numbers"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "two_lists.py. Caption: <q>Will the two ids be the same?</q>",
+       "say": "Same? Hands up. Different? Hands up.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "list_a gets its row; then list_b gets a SECOND row with the same values. Two tags, two rows.",
+       "say": "Two sets of brackets, two lists."
+      },
+      {
+       "screen": "The output: two different numbers.",
+       "say": "Same values, but two lists. Like Way B in the hook."
+      }
+     ],
+     "answer": "Different ids.",
+     "play": "Layout.",
+     "press_count": 3
+    },
+    {
+     "id": "C9",
+     "title": "A second name for the same list",
+     "source": [
+      38,
+      39,
+      40,
+      41
+     ],
+     "purpose": "list_b = list_a does not make a new list. It points a second name at the same one, so the ids match.",
+     "heading": "A second name",
+     "show": [
+      "I want list_b to be this same list. What do I write?",
+      "Two names. One list."
+     ],
+     "code": [
+      {
+       "file": "same_list.py",
+       "src": "list_a = [1, 2, 3]\nlist_b = list_a\nprint(id(list_a))\nprint(id(list_b))",
+       "output": "the same long number, twice"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "list_a and its row. Caption: <q>I want list_b to be this same list. What do I write?</q> No line 2 yet.",
+       "say": "Not a copy. The same list. Take answers.",
+       "room": "Say ideas."
+      },
+      {
+       "screen": "Line 2 arrives at the top, the biggest text on the card: <q>list_b = list_a</q>. A tag list_b appears with an arrow into the SAME row.",
+       "say": "No brackets on the right, so no new list."
+      },
+      {
+       "screen": "Lines 3 and 4 run: the output shows two equal numbers. Caption: <q>Two names. One list.</q>",
+       "say": "Like Way A in the hook."
+      }
+     ],
+     "answer": "The same id, twice.",
+     "must": [
+      "The line list_b = list_a is written only after the room has tried.",
+      "Two names on one list are two tags with arrows into one row of boxes, never two rows."
+     ],
+     "play": "How the second tag arrives.",
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "Task 2: change it through list_b",
+   "kind": "activity",
+   "mins": 6,
+   "start": 31,
+   "cards": [
+    {
+     "id": "T2",
+     "title": "Task 2: predict, then run",
+     "source": [
+      42,
+      43,
+      44,
+      45,
+      46
+     ],
+     "handout": "Task 2",
+     "activity": 2,
+     "timer": 240,
+     "purpose": "Commit to what two programs print when the only difference is line 2. Through a shared list, a change via list_b shows in list_a.",
+     "heading": "Predict, then run",
+     "show": [
+      "Worksheet · Task 2",
+      "Type what lines 4 and 5 print, for A and for B.",
+      "Then run both and compare."
+     ],
+     "code": [
+      {
+       "file": "program_a.py",
+       "src": "list_a = [1, 2, 3, 5]\nlist_b = [1, 2, 3, 5]\nlist_b[3] = 4\nprint(\"list a : \" + str(list_a))\nprint(\"list b : \" + str(list_b))",
+       "output": "list a : [1, 2, 3, 5]\nlist b : [1, 2, 3, 4]"
+      },
+      {
+       "file": "program_b.py",
+       "src": "list_a = [1, 2, 3, 5]\nlist_b = list_a\nlist_b[3] = 4\nprint(\"list a : \" + str(list_a))\nprint(\"list b : \" + str(list_b))",
+       "output": "list a : [1, 2, 3, 4]\nlist b : [1, 2, 3, 4]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Programs A and B side by side with line numbers. Line 2 marked in both, the only difference. The steps and a 4 minute timer.",
+       "say": "Worksheet open. Type your four lines. Then run both.",
+       "room": "Type predictions, then run."
+      },
+      {
+       "screen": "Program A, one line per press, following data.A: tags, rows and arrows update; prints appear.",
+       "n": 5,
+       "say": "Read the caption. Check your line.",
+       "room": "Check each line."
+      },
+      {
+       "screen": "Program B, one line per press, following data.B. On line 3 the box at position 3 changes in the ONE row both tags point at.",
+       "n": 5,
+       "say": "Who typed [1, 2, 3, 5] for list a in B? You were thinking Way B. Do not name anyone.",
+       "room": "Check each line."
+      }
+     ],
+     "answer": "A prints list a : [1, 2, 3, 5] / list b : [1, 2, 3, 4]. B prints list a : [1, 2, 3, 4] / list b : [1, 2, 3, 4].",
+     "must": [
+      "Nothing about the output shows until the timer has ended.",
+      "One line per press. The printed lines appear only on the print presses.",
+      "Two names on one list are two tags with arrows into one row of boxes, never two rows."
+     ],
+     "data": {
+      "A": [
+       {
+        "line": 1,
+        "code": "list_a = [1, 2, 3, 5]",
+        "vars": {
+         "list_a": "[1, 2, 3, 5]"
+        },
+        "points": {
+         "list_a": "L1"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2",
+          "3",
+          "5"
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "list_a points at a new list, [1, 2, 3, 5]."
+       },
+       {
+        "line": 2,
+        "code": "list_b = [1, 2, 3, 5]",
+        "vars": {
+         "list_a": "[1, 2, 3, 5]",
+         "list_b": "[1, 2, 3, 5]"
+        },
+        "points": {
+         "list_a": "L1",
+         "list_b": "L2"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2",
+          "3",
+          "5"
+         ],
+         "L2": [
+          "1",
+          "2",
+          "3",
+          "5"
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "list_b points at a new list, [1, 2, 3, 5]."
+       },
+       {
+        "line": 3,
+        "code": "list_b[3] = 4",
+        "vars": {
+         "list_a": "[1, 2, 3, 5]",
+         "list_b": "[1, 2, 3, 4]"
+        },
+        "points": {
+         "list_a": "L1",
+         "list_b": "L2"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2",
+          "3",
+          "5"
+         ],
+         "L2": [
+          "1",
+          "2",
+          "3",
+          "4"
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "list_b's list changes to [1, 2, 3, 4]."
+       },
+       {
+        "line": 4,
+        "code": "print(\"list a : \" + str(list_a))",
+        "vars": {
+         "list_a": "[1, 2, 3, 5]",
+         "list_b": "[1, 2, 3, 4]"
+        },
+        "points": {
+         "list_a": "L1",
+         "list_b": "L2"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2",
+          "3",
+          "5"
+         ],
+         "L2": [
+          "1",
+          "2",
+          "3",
+          "4"
+         ]
+        },
+        "unnamed": [],
+        "printed": [
+         "list a : [1, 2, 3, 5]"
+        ],
+        "caption": "Prints list a : [1, 2, 3, 5]."
+       },
+       {
+        "line": 5,
+        "code": "print(\"list b : \" + str(list_b))",
+        "vars": {
+         "list_a": "[1, 2, 3, 5]",
+         "list_b": "[1, 2, 3, 4]"
+        },
+        "points": {
+         "list_a": "L1",
+         "list_b": "L2"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2",
+          "3",
+          "5"
+         ],
+         "L2": [
+          "1",
+          "2",
+          "3",
+          "4"
+         ]
+        },
+        "unnamed": [],
+        "printed": [
+         "list b : [1, 2, 3, 4]"
+        ],
+        "caption": "Prints list b : [1, 2, 3, 4]."
+       }
+      ],
+      "B": [
+       {
+        "line": 1,
+        "code": "list_a = [1, 2, 3, 5]",
+        "vars": {
+         "list_a": "[1, 2, 3, 5]"
+        },
+        "points": {
+         "list_a": "L1"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2",
+          "3",
+          "5"
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "list_a points at a new list, [1, 2, 3, 5]."
+       },
+       {
+        "line": 2,
+        "code": "list_b = list_a",
+        "vars": {
+         "list_a": "[1, 2, 3, 5]",
+         "list_b": "[1, 2, 3, 5]"
+        },
+        "points": {
+         "list_a": "L1",
+         "list_b": "L1"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2",
+          "3",
+          "5"
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "list_b now points at the same list as list_a."
+       },
+       {
+        "line": 3,
+        "code": "list_b[3] = 4",
+        "vars": {
+         "list_a": "[1, 2, 3, 4]",
+         "list_b": "[1, 2, 3, 4]"
+        },
+        "points": {
+         "list_a": "L1",
+         "list_b": "L1"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2",
+          "3",
+          "4"
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "The list itself changes to [1, 2, 3, 4]. list_a and list_b both see it."
+       },
+       {
+        "line": 4,
+        "code": "print(\"list a : \" + str(list_a))",
+        "vars": {
+         "list_a": "[1, 2, 3, 4]",
+         "list_b": "[1, 2, 3, 4]"
+        },
+        "points": {
+         "list_a": "L1",
+         "list_b": "L1"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2",
+          "3",
+          "4"
+         ]
+        },
+        "unnamed": [],
+        "printed": [
+         "list a : [1, 2, 3, 4]"
+        ],
+        "caption": "Prints list a : [1, 2, 3, 4]."
+       },
+       {
+        "line": 5,
+        "code": "print(\"list b : \" + str(list_b))",
+        "vars": {
+         "list_a": "[1, 2, 3, 4]",
+         "list_b": "[1, 2, 3, 4]"
+        },
+        "points": {
+         "list_a": "L1",
+         "list_b": "L1"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2",
+          "3",
+          "4"
+         ]
+        },
+        "unnamed": [],
+        "printed": [
+         "list b : [1, 2, 3, 4]"
+        ],
+        "caption": "Prints list b : [1, 2, 3, 4]."
+       }
+      ]
+     },
+     "play": "The layout of two programs and two pictures.",
+     "press_count": 11
+    }
+   ]
+  },
+  {
+   "name": "Game G1: Freeze frame on the shared playlist",
+   "kind": "activity",
+   "mins": 5,
+   "start": 37,
+   "cards": [
+    {
+     "id": "G1",
+     "title": "Freeze frame: the shared Road Trip",
+     "game": "freeze-frame",
+     "purpose": "Say what a name shows at one exact moment, when two names share one list and a third name took one song out of it.",
+     "heading": "Freeze frame",
+     "code": [
+      {
+       "file": "road_trip.py",
+       "src": "road_trip = [\"Chuttamalle\", \"Hukum\", \"Kesariya\"]\nkiran = road_trip\nfirst = road_trip[0]\nkiran[2] = \"Naatu Naatu\"\nroad_trip[0] = \"Kaavaalaa\"\nprint(kiran)\nprint(first)",
+       "output": "['Kaavaalaa', 'Hukum', 'Naatu Naatu']\nChuttamalle"
+      }
+     ],
+     "data": {
+      "setup": {
+       "program": "road_trip = [\"Chuttamalle\", \"Hukum\", \"Kesariya\"]\nkiran = road_trip\nfirst = road_trip[0]\nkiran[2] = \"Naatu Naatu\"\nroad_trip[0] = \"Kaavaalaa\"\nprint(kiran)\nprint(first)"
+      },
+      "rounds": [
+       {
+        "ask": "Frozen after line 4. What is road_trip right now?",
+        "stop": "line 4 has just run",
+        "var": "road_trip",
+        "options": [
+         "['Chuttamalle', 'Hukum', 'Kesariya']",
+         "['Chuttamalle', 'Hukum', 'Naatu Naatu']",
+         "['Chuttamalle', 'Hukum', 'Kesariya', 'Naatu Naatu']"
+        ],
+        "answer": "['Chuttamalle', 'Hukum', 'Naatu Naatu']",
+        "because": "road_trip is ['Chuttamalle', 'Hukum', 'Naatu Naatu'] at that moment.",
+        "why": {
+         "['Chuttamalle', 'Hukum', 'Kesariya']": "Line 2 did not copy the songs. kiran and road_trip are one list, so kiran's change shows here.",
+         "['Chuttamalle', 'Hukum', 'Kesariya', 'Naatu Naatu']": "kiran[2] = puts a song in place of the song at position 2. It does not add one."
+        },
+        "steps": [
+         {
+          "caption": "Line 1 runs. road_trip points at a new list, ['Chuttamalle', 'Hukum', 'Kesariya'].",
+          "line": 1,
+          "vars": {
+           "road_trip": "['Chuttamalle', 'Hukum', 'Kesariya']"
+          },
+          "points": {
+           "road_trip": "L1"
+          },
+          "lists": {
+           "L1": [
+            "'Chuttamalle'",
+            "'Hukum'",
+            "'Kesariya'"
+           ]
+          }
+         },
+         {
+          "caption": "Line 2 runs. kiran now points at the same list as road_trip.",
+          "line": 2,
+          "vars": {
+           "road_trip": "['Chuttamalle', 'Hukum', 'Kesariya']",
+           "kiran": "['Chuttamalle', 'Hukum', 'Kesariya']"
+          },
+          "points": {
+           "road_trip": "L1",
+           "kiran": "L1"
+          },
+          "lists": {
+           "L1": [
+            "'Chuttamalle'",
+            "'Hukum'",
+            "'Kesariya'"
+           ]
+          }
+         },
+         {
+          "caption": "Line 3 runs. first is 'Chuttamalle'.",
+          "line": 3,
+          "vars": {
+           "road_trip": "['Chuttamalle', 'Hukum', 'Kesariya']",
+           "kiran": "['Chuttamalle', 'Hukum', 'Kesariya']",
+           "first": "'Chuttamalle'"
+          },
+          "points": {
+           "road_trip": "L1",
+           "kiran": "L1"
+          },
+          "lists": {
+           "L1": [
+            "'Chuttamalle'",
+            "'Hukum'",
+            "'Kesariya'"
+           ]
+          }
+         },
+         {
+          "caption": "Line 4 runs. The list itself changes to ['Chuttamalle', 'Hukum', 'Naatu Naatu']. road_trip and kiran both see it. Freeze.",
+          "line": 4,
+          "vars": {
+           "road_trip": "['Chuttamalle', 'Hukum', 'Naatu Naatu']",
+           "kiran": "['Chuttamalle', 'Hukum', 'Naatu Naatu']",
+           "first": "'Chuttamalle'"
+          },
+          "points": {
+           "road_trip": "L1",
+           "kiran": "L1"
+          },
+          "lists": {
+           "L1": [
+            "'Chuttamalle'",
+            "'Hukum'",
+            "'Naatu Naatu'"
+           ]
+          }
+         }
+        ]
+       },
+       {
+        "ask": "Frozen after line 5. What is kiran right now?",
+        "stop": "line 5 has just run",
+        "var": "kiran",
+        "options": [
+         "['Kaavaalaa', 'Hukum', 'Kesariya']",
+         "['Kaavaalaa', 'Hukum', 'Naatu Naatu']",
+         "['Chuttamalle', 'Hukum', 'Naatu Naatu']"
+        ],
+        "answer": "['Kaavaalaa', 'Hukum', 'Naatu Naatu']",
+        "because": "kiran is ['Kaavaalaa', 'Hukum', 'Naatu Naatu'] at that moment.",
+        "why": {
+         "['Chuttamalle', 'Hukum', 'Naatu Naatu']": "Line 5 changed road_trip's list. That is kiran's list too.",
+         "['Kaavaalaa', 'Hukum', 'Kesariya']": "Line 4's change is still there. Line 5 only changed position 0."
+        },
+        "steps": [
+         {
+          "caption": "Line 5 runs. The list itself changes to ['Kaavaalaa', 'Hukum', 'Naatu Naatu']. road_trip and kiran both see it. Freeze.",
+          "line": 5,
+          "vars": {
+           "road_trip": "['Kaavaalaa', 'Hukum', 'Naatu Naatu']",
+           "kiran": "['Kaavaalaa', 'Hukum', 'Naatu Naatu']",
+           "first": "'Chuttamalle'"
+          },
+          "points": {
+           "road_trip": "L1",
+           "kiran": "L1"
+          },
+          "lists": {
+           "L1": [
+            "'Kaavaalaa'",
+            "'Hukum'",
+            "'Naatu Naatu'"
+           ]
+          }
+         }
+        ]
+       },
+       {
+        "ask": "Frozen after line 7. What is first right now?",
+        "stop": "line 7 has just run",
+        "var": "first",
+        "options": [
+         "'Kaavaalaa'",
+         "'Chuttamalle'",
+         "'Naatu Naatu'"
+        ],
+        "answer": "'Chuttamalle'",
+        "because": "first is 'Chuttamalle' at that moment.",
+        "why": {
+         "'Kaavaalaa'": "Line 5 put a new song in the slot. first still points at the song it got on line 3.",
+         "'Naatu Naatu'": "Position 2 changed on line 4, not position 0."
+        },
+        "steps": [
+         {
+          "caption": "Line 6 runs. Prints ['Kaavaalaa', 'Hukum', 'Naatu Naatu'].",
+          "line": 6,
+          "vars": {
+           "road_trip": "['Kaavaalaa', 'Hukum', 'Naatu Naatu']",
+           "kiran": "['Kaavaalaa', 'Hukum', 'Naatu Naatu']",
+           "first": "'Chuttamalle'"
+          },
+          "points": {
+           "road_trip": "L1",
+           "kiran": "L1"
+          },
+          "lists": {
+           "L1": [
+            "'Kaavaalaa'",
+            "'Hukum'",
+            "'Naatu Naatu'"
+           ]
+          }
+         },
+         {
+          "caption": "Line 7 runs. Prints Chuttamalle. Freeze.",
+          "line": 7,
+          "vars": {
+           "road_trip": "['Kaavaalaa', 'Hukum', 'Naatu Naatu']",
+           "kiran": "['Kaavaalaa', 'Hukum', 'Naatu Naatu']",
+           "first": "'Chuttamalle'"
+          },
+          "points": {
+           "road_trip": "L1",
+           "kiran": "L1"
+          },
+          "lists": {
+           "L1": [
+            "'Kaavaalaa'",
+            "'Hukum'",
+            "'Naatu Naatu'"
+           ]
+          }
+         }
+        ]
+       }
+      ]
+     },
+     "say": {
+      "ask": "Read each option. How many think option A? Hands up. Then B, then C.",
+      "step": "Read the line and its caption.",
+      "verdict": "Point at the boxes."
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "Each round carries on from where the last one froze.",
+      "The variable boxes are drawn as tags and rows: road_trip and kiran are two tags with arrows into one row; first is a tag with an arrow to one song.",
+      "Round 3: when line 5 changes position 0, first's arrow does not move."
+     ],
+     "play": "The pause marker, the tags and the song row. The rows can look like the hook's Spotify rows.",
+     "presses": [
+      {
+       "screen": "Round 1 of 3. The round's setup, as in the data. The question: <q>Frozen after line 4. What is road_trip right now?</q> Options: A <q>['Chuttamalle', 'Hukum', 'Kesariya']</q>, B <q>['Chuttamalle', 'Hukum', 'Naatu Naatu']</q>, C <q>['Chuttamalle', 'Hukum', 'Kesariya', 'Naatu Naatu']</q>. Nothing runs yet.",
+       "say": "Read each option. How many think option A? Hands up. Then B, then C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 1 runs. road_trip points at a new list, ['Chuttamalle', 'Hukum', 'Kesariya'].</q> In the data: line = 1; vars = {\"road_trip\": \"['Chuttamalle', 'Hukum', 'Kesariya']\"}.",
+       "say": "Read the line and its caption."
+      },
+      {
+       "screen": "<q>Line 2 runs. kiran now points at the same list as road_trip.</q> In the data: line = 2; vars = {\"road_trip\": \"['Chuttamalle', 'Hukum', 'Kesariya']\", \"kiran\": \"['Chuttamalle', 'Hukum', 'Kesariya']\"}.",
+       "say": "Read the line and its caption."
+      },
+      {
+       "screen": "<q>Line 3 runs. first is 'Chuttamalle'.</q> In the data: line = 3; vars = {\"road_trip\": \"['Chuttamalle', 'Hukum', 'Kesariya']\", \"kiran\": \"['Chuttamalle', 'Hukum', 'Kesariya']\", \"first\": \"'Chuttamalle'\"}.",
+       "say": "Read the line and its caption."
+      },
+      {
+       "screen": "<q>Line 4 runs. The list itself changes to ['Chuttamalle', 'Hukum', 'Naatu Naatu']. road_trip and kiran both see it. Freeze.</q> In the data: line = 4; vars = {\"road_trip\": \"['Chuttamalle', 'Hukum', 'Naatu Naatu']\", \"kiran\": \"['Chuttamalle', 'Hukum', 'Naatu Naatu']\", \"first\": \"'Chuttamalle'\"}.",
+       "say": "Read the line and its caption."
+      },
+      {
+       "screen": "The answer: <q>['Chuttamalle', 'Hukum', 'Naatu Naatu']</q>. <q>road_trip is ['Chuttamalle', 'Hukum', 'Naatu Naatu'] at that moment.</q> Then a line for every other option: <q>['Chuttamalle', 'Hukum', 'Kesariya']</q> <q>Line 2 did not copy the songs. kiran and road_trip are one list, so kiran's change shows here.</q>; <q>['Chuttamalle', 'Hukum', 'Kesariya', 'Naatu Naatu']</q> <q>kiran[2] = puts a song in place of the song at position 2. It does not add one.</q>.",
+       "say": "Point at the boxes."
+      },
+      {
+       "screen": "Round 2 of 3. The round's setup, as in the data. The question: <q>Frozen after line 5. What is kiran right now?</q> Options: A <q>['Kaavaalaa', 'Hukum', 'Kesariya']</q>, B <q>['Kaavaalaa', 'Hukum', 'Naatu Naatu']</q>, C <q>['Chuttamalle', 'Hukum', 'Naatu Naatu']</q>. Nothing runs yet.",
+       "say": "Read each option. How many think option A? Hands up. Then B, then C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 5 runs. The list itself changes to ['Kaavaalaa', 'Hukum', 'Naatu Naatu']. road_trip and kiran both see it. Freeze.</q> In the data: line = 5; vars = {\"road_trip\": \"['Kaavaalaa', 'Hukum', 'Naatu Naatu']\", \"kiran\": \"['Kaavaalaa', 'Hukum', 'Naatu Naatu']\", \"first\": \"'Chuttamalle'\"}.",
+       "say": "Read the line and its caption."
+      },
+      {
+       "screen": "The answer: <q>['Kaavaalaa', 'Hukum', 'Naatu Naatu']</q>. <q>kiran is ['Kaavaalaa', 'Hukum', 'Naatu Naatu'] at that moment.</q> Then a line for every other option: <q>['Chuttamalle', 'Hukum', 'Naatu Naatu']</q> <q>Line 5 changed road_trip's list. That is kiran's list too.</q>; <q>['Kaavaalaa', 'Hukum', 'Kesariya']</q> <q>Line 4's change is still there. Line 5 only changed position 0.</q>.",
+       "say": "Point at the boxes."
+      },
+      {
+       "screen": "Round 3 of 3. The round's setup, as in the data. The question: <q>Frozen after line 7. What is first right now?</q> Options: A <q>'Kaavaalaa'</q>, B <q>'Chuttamalle'</q>, C <q>'Naatu Naatu'</q>. Nothing runs yet.",
+       "say": "Read each option. How many think option A? Hands up. Then B, then C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 6 runs. Prints ['Kaavaalaa', 'Hukum', 'Naatu Naatu'].</q> In the data: line = 6; vars = {\"road_trip\": \"['Kaavaalaa', 'Hukum', 'Naatu Naatu']\", \"kiran\": \"['Kaavaalaa', 'Hukum', 'Naatu Naatu']\", \"first\": \"'Chuttamalle'\"}.",
+       "say": "Read the line and its caption."
+      },
+      {
+       "screen": "<q>Line 7 runs. Prints Chuttamalle. Freeze.</q> In the data: line = 7; vars = {\"road_trip\": \"['Kaavaalaa', 'Hukum', 'Naatu Naatu']\", \"kiran\": \"['Kaavaalaa', 'Hukum', 'Naatu Naatu']\", \"first\": \"'Chuttamalle'\"}.",
+       "say": "Read the line and its caption."
+      },
+      {
+       "screen": "The answer: <q>'Chuttamalle'</q>. <q>first is 'Chuttamalle' at that moment.</q> Then a line for every other option: <q>'Kaavaalaa'</q> <q>Line 5 put a new song in the slot. first still points at the song it got on line 3.</q>; <q>'Naatu Naatu'</q> <q>Position 2 changed on line 4, not position 0.</q>.",
+       "say": "Point at the boxes."
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Show the asked variable's box while the question is open."
+     ],
+     "interaction": "A program runs and freezes at a marked moment. The room says what a variable holds right now; then it plays on to that moment, one line per press.",
+     "game_def": {
+      "id": "freeze-frame",
+      "name": "Freeze frame",
+      "one_line": "A program runs and freezes at a marked moment. The room says what a variable holds right now; then it plays on to that moment, one line per press.",
+      "how": [
+       "One program for every round. A pause marker on a line, with the pass it stops on.",
+       "The question names one variable: 'What is total right now?'",
+       "Each press runs one line from where the last round stopped, and the variable boxes update.",
+       "It freezes on the marked moment. The verdict is the value in the box."
+      ],
+      "setup": {
+       "program": "the code, exact; every round uses it"
+      },
+      "round": {
+       "stop": "where it freezes, in words: 'line 3, the 4th time'",
+       "var": "the variable asked about"
+      },
+      "step": {
+       "line": "the line that ran",
+       "vars": "the variables after it"
+      }
+     },
+     "press_count": 13
+    }
+   ]
+  },
+  {
+   "name": "Classroom quiz",
+   "kind": "quiz",
+   "mins": 6,
+   "start": 42,
+   "cards": [
+    {
+     "id": "S-QUIZ",
+     "title": "Quiz",
+     "source": "spine:quiz",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Move the name: list_a = [6, 7]",
+   "kind": "concept",
+   "mins": 3,
+   "start": 48,
+   "cards": [
+    {
+     "id": "C10",
+     "title": "= moves only one name",
+     "source": [
+      47,
+      48,
+      49,
+      50,
+      51,
+      52
+     ],
+     "purpose": "list_a = [6, 7] makes a new list and moves only list_a. list_b still points at the old one.",
+     "heading": "Change the list, or move the name?",
+     "show": [
+      "What does list b print?",
+      "= moves one name. The old list stays."
+     ],
+     "code": [
+      {
+       "file": "move.py",
+       "src": "list_a = [1, 2]\nlist_b = list_a\nlist_a = [6, 7]\nprint(\"list a : \" + str(list_a))\nprint(\"list b : \" + str(list_b))",
+       "output": "list a : [6, 7]\nlist b : [1, 2]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "move.py. Caption: <q>What does list b print?</q> Options: A <q>[6, 7]</q>, B <q>[1, 2]</q>.",
+       "say": "Option A, hands up. Option B.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "One line per press, following data.steps: on line 3 a new row 6 7 appears and list_a's arrow moves to it; list_b's arrow does not move.",
+       "n": 5,
+       "say": "Read the caption.",
+       "room": "Watch list_b's arrow."
+      },
+      {
+       "screen": "Caption: <q>= moves one name. The old list stays.</q>",
+       "say": "Line 3 did not touch the list. It moved list_a."
+      }
+     ],
+     "answer": "list a : [6, 7] / list b : [1, 2].",
+     "must": [
+      "list_b's arrow never moves on this card."
+     ],
+     "data": {
+      "steps": [
+       {
+        "line": 1,
+        "code": "list_a = [1, 2]",
+        "vars": {
+         "list_a": "[1, 2]"
+        },
+        "points": {
+         "list_a": "L1"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2"
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "list_a points at a new list, [1, 2]."
+       },
+       {
+        "line": 2,
+        "code": "list_b = list_a",
+        "vars": {
+         "list_a": "[1, 2]",
+         "list_b": "[1, 2]"
+        },
+        "points": {
+         "list_a": "L1",
+         "list_b": "L1"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2"
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "list_b now points at the same list as list_a."
+       },
+       {
+        "line": 3,
+        "code": "list_a = [6, 7]",
+        "vars": {
+         "list_a": "[6, 7]",
+         "list_b": "[1, 2]"
+        },
+        "points": {
+         "list_a": "L2",
+         "list_b": "L1"
+        },
+        "lists": {
+         "L2": [
+          "6",
+          "7"
+         ],
+         "L1": [
+          "1",
+          "2"
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "list_a points at a new list, [6, 7]. list_b still points at the old one."
+       },
+       {
+        "line": 4,
+        "code": "print(\"list a : \" + str(list_a))",
+        "vars": {
+         "list_a": "[6, 7]",
+         "list_b": "[1, 2]"
+        },
+        "points": {
+         "list_a": "L2",
+         "list_b": "L1"
+        },
+        "lists": {
+         "L2": [
+          "6",
+          "7"
+         ],
+         "L1": [
+          "1",
+          "2"
+         ]
+        },
+        "unnamed": [],
+        "printed": [
+         "list a : [6, 7]"
+        ],
+        "caption": "Prints list a : [6, 7]."
+       },
+       {
+        "line": 5,
+        "code": "print(\"list b : \" + str(list_b))",
+        "vars": {
+         "list_a": "[6, 7]",
+         "list_b": "[1, 2]"
+        },
+        "points": {
+         "list_a": "L2",
+         "list_b": "L1"
+        },
+        "lists": {
+         "L2": [
+          "6",
+          "7"
+         ],
+         "L1": [
+          "1",
+          "2"
+         ]
+        },
+        "unnamed": [],
+        "printed": [
+         "list b : [1, 2]"
+        ],
+        "caption": "Prints list b : [1, 2]."
+       }
+      ]
+     },
+     "play": "How the arrow lifts and lands.",
+     "press_count": 7
+    }
+   ]
+  },
+  {
+   "name": "Explainer: + makes a new list, += grows the same one",
+   "kind": "hook",
+   "mins": 4,
+   "start": 51,
+   "cards": [
+    {
+     "id": "E1",
+     "title": "Follow the arrows: + and +=",
+     "source": [
+      53,
+      56,
+      57,
+      58,
+      59,
+      62,
+      63
+     ],
+     "animated": "explainer",
+     "purpose": "Watch the two lines happen. list_a = list_a + [6, 7] builds a new row and moves list_a. list_a += [6, 7] grows the row both names point at. list_b's arrow never moves.",
+     "heading": "Follow the arrows",
+     "show": [
+      "Run 1",
+      "Run 2",
+      "Say what list b prints before the press.",
+      "+ builds a new list.",
+      "+= grows the same list."
+     ],
+     "code": [
+      {
+       "file": "run1.py",
+       "src": "list_a = [1, 2]\nlist_b = list_a\nlist_a = list_a + [6, 7]\nprint(\"list a : \" + str(list_a))\nprint(\"list b : \" + str(list_b))",
+       "output": "list a : [1, 2, 6, 7]\nlist b : [1, 2]"
+      },
+      {
+       "file": "run2.py",
+       "src": "list_a = [1, 2]\nlist_b = list_a\nlist_a += [6, 7]\nprint(\"list a : \" + str(list_a))\nprint(\"list b : \" + str(list_b))",
+       "output": "list a : [1, 2, 6, 7]\nlist b : [1, 2, 6, 7]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "<q>Run 1</q>: the program with line 3 <q>list_a = list_a + [6, 7]</q> the biggest text. Memory on the other side, empty. Caption: <q>Say what list b prints before the press.</q>",
+       "say": "Option by option: list b prints [1, 2]? Hands up. [1, 2, 6, 7]? Hands up.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Run 1, one line per press, following data.runs[0].steps, caption from the data. On line 3 a short-lived row 6 7 appears first, then a NEW joined row 1 2 6 7 appears and list_a's arrow moves to it; the 6 7 row greys out.",
+       "n": 5,
+       "say": "Read the caption. Watch list_b's arrow.",
+       "room": "Check the prediction."
+      },
+      {
+       "screen": "<q>Run 2</q>: the program with line 3 <q>list_a += [6, 7]</q> the biggest text. Memory on the other side, empty. Caption: <q>Say what list b prints before the press.</q>",
+       "say": "Option by option: list b prints [1, 2]? Hands up. [1, 2, 6, 7]? Hands up.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Run 2, one line per press, following data.runs[1].steps, caption from the data. On line 3 a short-lived row 6 7 appears first, then its boxes slide INTO the row list_a and list_b share; the 6 7 row greys out.",
+       "n": 5,
+       "say": "Read the caption. Watch list_b's arrow.",
+       "room": "Check the prediction."
+      },
+      {
+       "screen": "Both end pictures side by side, with <q>+ builds a new list.</q> under run 1 and <q>+= grows the same list.</q> under run 2.",
+       "say": "Did the line change the list, or move a name? That is the question to ask."
+      }
+     ],
+     "answer": "list_a = list_a + [6, 7]: list a : [1, 2, 6, 7] / list b : [1, 2]. list_a += [6, 7]: list a : [1, 2, 6, 7] / list b : [1, 2, 6, 7].",
+     "must": [
+      "list_b's tag and arrow never move in either run. In run 1 its boxes stay 1 2; in run 2 they grow. That contrast is the finding.",
+      "A row with no name left greys out and stays grey until the run ends.",
+      "One line per press. Line 3 may take two presses: the temporary row, then what happens to it.",
+      "Two names on one list are two tags with arrows into one row of boxes, never two rows."
+     ],
+     "must_not": [
+      "Show a free code box or a picker. It runs these two programs only, run 1 then run 2.",
+      "Move by itself."
+     ],
+     "data": {
+      "runs": [
+       {
+        "key": "plus",
+        "line3": "list_a = list_a + [6, 7]",
+        "src": "list_a = [1, 2]\nlist_b = list_a\nlist_a = list_a + [6, 7]\nprint(\"list a : \" + str(list_a))\nprint(\"list b : \" + str(list_b))",
+        "steps": [
+         {
+          "line": 1,
+          "code": "list_a = [1, 2]",
+          "vars": {
+           "list_a": "[1, 2]"
+          },
+          "points": {
+           "list_a": "L1"
+          },
+          "lists": {
+           "L1": [
+            "1",
+            "2"
+           ]
+          },
+          "unnamed": [],
+          "printed": [],
+          "caption": "list_a points at a new list, [1, 2]."
+         },
+         {
+          "line": 2,
+          "code": "list_b = list_a",
+          "vars": {
+           "list_a": "[1, 2]",
+           "list_b": "[1, 2]"
+          },
+          "points": {
+           "list_a": "L1",
+           "list_b": "L1"
+          },
+          "lists": {
+           "L1": [
+            "1",
+            "2"
+           ]
+          },
+          "unnamed": [],
+          "printed": [],
+          "caption": "list_b now points at the same list as list_a."
+         },
+         {
+          "line": 3,
+          "code": "list_a = list_a + [6, 7]",
+          "vars": {
+           "list_a": "[1, 2, 6, 7]",
+           "list_b": "[1, 2]"
+          },
+          "points": {
+           "list_a": "L2",
+           "list_b": "L1"
+          },
+          "lists": {
+           "L2": [
+            "1",
+            "2",
+            "6",
+            "7"
+           ],
+           "L1": [
+            "1",
+            "2"
+           ]
+          },
+          "unnamed": [],
+          "printed": [],
+          "caption": "list_a points at a new list, [1, 2, 6, 7]. list_b still points at the old one."
+         },
+         {
+          "line": 4,
+          "code": "print(\"list a : \" + str(list_a))",
+          "vars": {
+           "list_a": "[1, 2, 6, 7]",
+           "list_b": "[1, 2]"
+          },
+          "points": {
+           "list_a": "L2",
+           "list_b": "L1"
+          },
+          "lists": {
+           "L2": [
+            "1",
+            "2",
+            "6",
+            "7"
+           ],
+           "L1": [
+            "1",
+            "2"
+           ]
+          },
+          "unnamed": [],
+          "printed": [
+           "list a : [1, 2, 6, 7]"
+          ],
+          "caption": "Prints list a : [1, 2, 6, 7]."
+         },
+         {
+          "line": 5,
+          "code": "print(\"list b : \" + str(list_b))",
+          "vars": {
+           "list_a": "[1, 2, 6, 7]",
+           "list_b": "[1, 2]"
+          },
+          "points": {
+           "list_a": "L2",
+           "list_b": "L1"
+          },
+          "lists": {
+           "L2": [
+            "1",
+            "2",
+            "6",
+            "7"
+           ],
+           "L1": [
+            "1",
+            "2"
+           ]
+          },
+          "unnamed": [],
+          "printed": [
+           "list b : [1, 2]"
+          ],
+          "caption": "Prints list b : [1, 2]."
+         }
+        ],
+        "list_a_moved": true,
+        "list_b_moved": false,
+        "output": "list a : [1, 2, 6, 7]\nlist b : [1, 2]"
+       },
+       {
+        "key": "pluseq",
+        "line3": "list_a += [6, 7]",
+        "src": "list_a = [1, 2]\nlist_b = list_a\nlist_a += [6, 7]\nprint(\"list a : \" + str(list_a))\nprint(\"list b : \" + str(list_b))",
+        "steps": [
+         {
+          "line": 1,
+          "code": "list_a = [1, 2]",
+          "vars": {
+           "list_a": "[1, 2]"
+          },
+          "points": {
+           "list_a": "L1"
+          },
+          "lists": {
+           "L1": [
+            "1",
+            "2"
+           ]
+          },
+          "unnamed": [],
+          "printed": [],
+          "caption": "list_a points at a new list, [1, 2]."
+         },
+         {
+          "line": 2,
+          "code": "list_b = list_a",
+          "vars": {
+           "list_a": "[1, 2]",
+           "list_b": "[1, 2]"
+          },
+          "points": {
+           "list_a": "L1",
+           "list_b": "L1"
+          },
+          "lists": {
+           "L1": [
+            "1",
+            "2"
+           ]
+          },
+          "unnamed": [],
+          "printed": [],
+          "caption": "list_b now points at the same list as list_a."
+         },
+         {
+          "line": 3,
+          "code": "list_a += [6, 7]",
+          "vars": {
+           "list_a": "[1, 2, 6, 7]",
+           "list_b": "[1, 2, 6, 7]"
+          },
+          "points": {
+           "list_a": "L1",
+           "list_b": "L1"
+          },
+          "lists": {
+           "L1": [
+            "1",
+            "2",
+            "6",
+            "7"
+           ]
+          },
+          "unnamed": [],
+          "printed": [],
+          "caption": "The list itself changes to [1, 2, 6, 7]. list_a and list_b both see it."
+         },
+         {
+          "line": 4,
+          "code": "print(\"list a : \" + str(list_a))",
+          "vars": {
+           "list_a": "[1, 2, 6, 7]",
+           "list_b": "[1, 2, 6, 7]"
+          },
+          "points": {
+           "list_a": "L1",
+           "list_b": "L1"
+          },
+          "lists": {
+           "L1": [
+            "1",
+            "2",
+            "6",
+            "7"
+           ]
+          },
+          "unnamed": [],
+          "printed": [
+           "list a : [1, 2, 6, 7]"
+          ],
+          "caption": "Prints list a : [1, 2, 6, 7]."
+         },
+         {
+          "line": 5,
+          "code": "print(\"list b : \" + str(list_b))",
+          "vars": {
+           "list_a": "[1, 2, 6, 7]",
+           "list_b": "[1, 2, 6, 7]"
+          },
+          "points": {
+           "list_a": "L1",
+           "list_b": "L1"
+          },
+          "lists": {
+           "L1": [
+            "1",
+            "2",
+            "6",
+            "7"
+           ]
+          },
+          "unnamed": [],
+          "printed": [
+           "list b : [1, 2, 6, 7]"
+          ],
+          "caption": "Prints list b : [1, 2, 6, 7]."
+         }
+        ],
+        "list_a_moved": false,
+        "list_b_moved": false,
+        "output": "list a : [1, 2, 6, 7]\nlist b : [1, 2, 6, 7]"
+       }
+      ]
+     },
+     "play": "How the arrows, the growing row and the grey look. The deck's dashed boxes and red arrows are a fine start.",
+     "press_count": 13
+    }
+   ]
+  },
+  {
+   "name": "Task 3: trace the two playlists",
+   "kind": "activity",
+   "mins": 6,
+   "start": 55,
+   "cards": [
+    {
+     "id": "T3",
+     "title": "Task 3: one list or two?",
+     "source": "new",
+     "handout": "Task 3",
+     "activity": 18,
+     "timer": 240,
+     "purpose": "Trace a playlist program line by line, deciding after each line if mine and kiran share one list, then predict both prints.",
+     "heading": "One list or two?",
+     "show": [
+      "Worksheet · Task 3",
+      "You share the Road Trip songs with Kiran. Then you both edit.",
+      "After each line: one list or two?",
+      "Then type what the two prints show."
+     ],
+     "code": [
+      {
+       "file": "road_trip.py",
+       "src": "mine = [\"Chuttamalle\", \"Hukum\"]\nkiran = mine\nkiran += [\"Kesariya\"]\nmine = mine + [\"Kaavaalaa\"]\nkiran[0] = \"Illuminati\"\nprint(mine)\nprint(kiran)",
+       "output": "['Chuttamalle', 'Hukum', 'Kesariya', 'Kaavaalaa']\n['Illuminati', 'Hukum', 'Kesariya']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The story line, the program with line numbers, the steps and a 4 minute timer. No picture yet.",
+       "say": "Worksheet open. Tap one list or two for lines 2 to 5, then type the prints. Do not run it yet.",
+       "room": "Tap, type, then run."
+      },
+      {
+       "screen": "The reveal, one line per press, following data.steps: tags, rows and arrows update, caption from the data.",
+       "n": 7,
+       "say": "Check your tap for that line before the next press.",
+       "room": "Check each row."
+      }
+     ],
+     "answer": "One list after lines 2, 3; two after lines 4, 5. Prints ['Chuttamalle', 'Hukum', 'Kesariya', 'Kaavaalaa'] then ['Illuminati', 'Hukum', 'Kesariya'].",
+     "must": [
+      "Line 4 is the turn: a new row appears and only mine moves.",
+      "On line 5 only kiran's row changes.",
+      "Two names on one list are two tags with arrows into one row of boxes, never two rows."
+     ],
+     "must_not": [
+      "Show the picture or any output before the timer ends."
+     ],
+     "data": {
+      "steps": [
+       {
+        "line": 1,
+        "code": "mine = [\"Chuttamalle\", \"Hukum\"]",
+        "vars": {
+         "mine": "['Chuttamalle', 'Hukum']"
+        },
+        "points": {
+         "mine": "L1"
+        },
+        "lists": {
+         "L1": [
+          "'Chuttamalle'",
+          "'Hukum'"
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "mine points at a new list, ['Chuttamalle', 'Hukum']."
+       },
+       {
+        "line": 2,
+        "code": "kiran = mine",
+        "vars": {
+         "mine": "['Chuttamalle', 'Hukum']",
+         "kiran": "['Chuttamalle', 'Hukum']"
+        },
+        "points": {
+         "mine": "L1",
+         "kiran": "L1"
+        },
+        "lists": {
+         "L1": [
+          "'Chuttamalle'",
+          "'Hukum'"
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "kiran now points at the same list as mine."
+       },
+       {
+        "line": 3,
+        "code": "kiran += [\"Kesariya\"]",
+        "vars": {
+         "mine": "['Chuttamalle', 'Hukum', 'Kesariya']",
+         "kiran": "['Chuttamalle', 'Hukum', 'Kesariya']"
+        },
+        "points": {
+         "mine": "L1",
+         "kiran": "L1"
+        },
+        "lists": {
+         "L1": [
+          "'Chuttamalle'",
+          "'Hukum'",
+          "'Kesariya'"
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "The list itself changes to ['Chuttamalle', 'Hukum', 'Kesariya']. mine and kiran both see it."
+       },
+       {
+        "line": 4,
+        "code": "mine = mine + [\"Kaavaalaa\"]",
+        "vars": {
+         "mine": "['Chuttamalle', 'Hukum', 'Kesariya', 'Kaavaalaa']",
+         "kiran": "['Chuttamalle', 'Hukum', 'Kesariya']"
+        },
+        "points": {
+         "mine": "L2",
+         "kiran": "L1"
+        },
+        "lists": {
+         "L2": [
+          "'Chuttamalle'",
+          "'Hukum'",
+          "'Kesariya'",
+          "'Kaavaalaa'"
+         ],
+         "L1": [
+          "'Chuttamalle'",
+          "'Hukum'",
+          "'Kesariya'"
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "mine points at a new list, ['Chuttamalle', 'Hukum', 'Kesariya', 'Kaavaalaa']. kiran still points at the old one."
+       },
+       {
+        "line": 5,
+        "code": "kiran[0] = \"Illuminati\"",
+        "vars": {
+         "mine": "['Chuttamalle', 'Hukum', 'Kesariya', 'Kaavaalaa']",
+         "kiran": "['Illuminati', 'Hukum', 'Kesariya']"
+        },
+        "points": {
+         "mine": "L2",
+         "kiran": "L1"
+        },
+        "lists": {
+         "L2": [
+          "'Chuttamalle'",
+          "'Hukum'",
+          "'Kesariya'",
+          "'Kaavaalaa'"
+         ],
+         "L1": [
+          "'Illuminati'",
+          "'Hukum'",
+          "'Kesariya'"
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "kiran's list changes to ['Illuminati', 'Hukum', 'Kesariya']."
+       },
+       {
+        "line": 6,
+        "code": "print(mine)",
+        "vars": {
+         "mine": "['Chuttamalle', 'Hukum', 'Kesariya', 'Kaavaalaa']",
+         "kiran": "['Illuminati', 'Hukum', 'Kesariya']"
+        },
+        "points": {
+         "mine": "L2",
+         "kiran": "L1"
+        },
+        "lists": {
+         "L2": [
+          "'Chuttamalle'",
+          "'Hukum'",
+          "'Kesariya'",
+          "'Kaavaalaa'"
+         ],
+         "L1": [
+          "'Illuminati'",
+          "'Hukum'",
+          "'Kesariya'"
+         ]
+        },
+        "unnamed": [],
+        "printed": [
+         "['Chuttamalle', 'Hukum', 'Kesariya', 'Kaavaalaa']"
+        ],
+        "caption": "Prints ['Chuttamalle', 'Hukum', 'Kesariya', 'Kaavaalaa']."
+       },
+       {
+        "line": 7,
+        "code": "print(kiran)",
+        "vars": {
+         "mine": "['Chuttamalle', 'Hukum', 'Kesariya', 'Kaavaalaa']",
+         "kiran": "['Illuminati', 'Hukum', 'Kesariya']"
+        },
+        "points": {
+         "mine": "L2",
+         "kiran": "L1"
+        },
+        "lists": {
+         "L2": [
+          "'Chuttamalle'",
+          "'Hukum'",
+          "'Kesariya'",
+          "'Kaavaalaa'"
+         ],
+         "L1": [
+          "'Illuminati'",
+          "'Hukum'",
+          "'Kesariya'"
+         ]
+        },
+        "unnamed": [],
+        "printed": [
+         "['Illuminati', 'Hukum', 'Kesariya']"
+        ],
+        "caption": "Prints ['Illuminati', 'Hukum', 'Kesariya']."
+       }
+      ],
+      "one_list": {
+       "2": true,
+       "3": true,
+       "4": false,
+       "5": false
+      }
+     },
+     "play": "The rows can be Spotify rows again.",
+     "press_count": 8
+    }
+   ]
+  },
+  {
+   "name": "What a list holds: a list, or a number's value",
+   "kind": "concept",
+   "mins": 6,
+   "start": 61,
+   "cards": [
+    {
+     "id": "C11",
+     "title": "A list inside a list",
+     "source": [
+      64,
+      65,
+      66,
+      67,
+      68
+     ],
+     "purpose": "list_b = [3, list_a] holds list_a's own list, not a copy. Change list_a and list_b shows it.",
+     "heading": "A list inside a list",
+     "show": [
+      "What does print(list_b) show?"
+     ],
+     "code": [
+      {
+       "file": "nested.py",
+       "src": "list_a = [1, 2]\nlist_b = [3, list_a]\nlist_a[1] = 4\nprint(list_a)\nprint(list_b)",
+       "output": "[1, 4]\n[3, [1, 4]]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "nested.py. Caption: <q>What does print(list_b) show?</q> Options: A <q>[3, [1, 2]]</q>, B <q>[3, [1, 4]]</q>.",
+       "say": "Option A, hands up. Option B.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "One line per press, following data.steps. list_b's second slot is an ARROW to list_a's row, not a copy of its boxes. On line 3 that row changes and the arrow shows it.",
+       "n": 5,
+       "say": "Read the caption.",
+       "room": "Check."
+      }
+     ],
+     "answer": "[1, 4] / [3, [1, 4]].",
+     "must": [
+      "list_b's second slot is drawn as an arrow to list_a's row (the deck draws a copy; see defects)."
+     ],
+     "data": {
+      "steps": [
+       {
+        "line": 1,
+        "code": "list_a = [1, 2]",
+        "vars": {
+         "list_a": "[1, 2]"
+        },
+        "points": {
+         "list_a": "L1"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2"
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "list_a points at a new list, [1, 2]."
+       },
+       {
+        "line": 2,
+        "code": "list_b = [3, list_a]",
+        "vars": {
+         "list_a": "[1, 2]",
+         "list_b": "[3, [1, 2]]"
+        },
+        "points": {
+         "list_a": "L1",
+         "list_b": "L2"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2"
+         ],
+         "L2": [
+          "3",
+          {
+           "ref": "L1"
+          }
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "list_b points at a new list, [3, [1, 2]]."
+       },
+       {
+        "line": 3,
+        "code": "list_a[1] = 4",
+        "vars": {
+         "list_a": "[1, 4]",
+         "list_b": "[3, [1, 4]]"
+        },
+        "points": {
+         "list_a": "L1",
+         "list_b": "L2"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "4"
+         ],
+         "L2": [
+          "3",
+          {
+           "ref": "L1"
+          }
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "list_a's list changes to [1, 4]. It sits inside list_b too."
+       },
+       {
+        "line": 4,
+        "code": "print(list_a)",
+        "vars": {
+         "list_a": "[1, 4]",
+         "list_b": "[3, [1, 4]]"
+        },
+        "points": {
+         "list_a": "L1",
+         "list_b": "L2"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "4"
+         ],
+         "L2": [
+          "3",
+          {
+           "ref": "L1"
+          }
+         ]
+        },
+        "unnamed": [],
+        "printed": [
+         "[1, 4]"
+        ],
+        "caption": "Prints [1, 4]."
+       },
+       {
+        "line": 5,
+        "code": "print(list_b)",
+        "vars": {
+         "list_a": "[1, 4]",
+         "list_b": "[3, [1, 4]]"
+        },
+        "points": {
+         "list_a": "L1",
+         "list_b": "L2"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "4"
+         ],
+         "L2": [
+          "3",
+          {
+           "ref": "L1"
+          }
+         ]
+        },
+        "unnamed": [],
+        "printed": [
+         "[3, [1, 4]]"
+        ],
+        "caption": "Prints [3, [1, 4]]."
+       }
+      ]
+     },
+     "play": "How a slot holds an arrow.",
+     "press_count": 6
+    },
+    {
+     "id": "C12",
+     "title": "A number inside a list",
+     "source": [
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75
+     ],
+     "purpose": "list_a = [1, a] takes the object a points at right now. a = 3 later moves a, and the list keeps 2.",
+     "heading": "A number inside a list",
+     "show": [
+      "a changes. Does the list?",
+      "The list took 2. a moved; the list did not."
+     ],
+     "code": [
+      {
+       "file": "number.py",
+       "src": "a = 2\nlist_a = [1, a]\nprint(list_a)\na = 3\nprint(list_a)",
+       "output": "[1, 2]\n[1, 2]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "number.py. Caption: <q>a changes. Does the list?</q> Options for line 5: A <q>[1, 2]</q>, B <q>[1, 3]</q>.",
+       "say": "Option A, hands up. Option B.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "One line per press, following data.steps. a's arrow points at a cube 2; the list's second slot also points at that cube. On line 4 a cube 3 appears and only a's arrow moves to it.",
+       "n": 5,
+       "say": "Read the caption.",
+       "room": "Check."
+      },
+      {
+       "screen": "Caption: <q>The list took 2. a moved; the list did not.</q>",
+       "say": "Same rule as C10: = moves one name."
+      }
+     ],
+     "answer": "[1, 2] / [1, 2].",
+     "must": [
+      "On line 4 only a's arrow moves. The list's slot keeps pointing at 2."
+     ],
+     "data": {
+      "steps": [
+       {
+        "line": 1,
+        "code": "a = 2",
+        "vars": {
+         "a": "2"
+        },
+        "points": {},
+        "lists": {},
+        "unnamed": [],
+        "printed": [],
+        "caption": "a is 2."
+       },
+       {
+        "line": 2,
+        "code": "list_a = [1, a]",
+        "vars": {
+         "a": "2",
+         "list_a": "[1, 2]"
+        },
+        "points": {
+         "list_a": "L1"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2"
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "list_a points at a new list, [1, 2]."
+       },
+       {
+        "line": 3,
+        "code": "print(list_a)",
+        "vars": {
+         "a": "2",
+         "list_a": "[1, 2]"
+        },
+        "points": {
+         "list_a": "L1"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2"
+         ]
+        },
+        "unnamed": [],
+        "printed": [
+         "[1, 2]"
+        ],
+        "caption": "Prints [1, 2]."
+       },
+       {
+        "line": 4,
+        "code": "a = 3",
+        "vars": {
+         "a": "3",
+         "list_a": "[1, 2]"
+        },
+        "points": {
+         "list_a": "L1"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2"
+         ]
+        },
+        "unnamed": [],
+        "printed": [],
+        "caption": "a is 3."
+       },
+       {
+        "line": 5,
+        "code": "print(list_a)",
+        "vars": {
+         "a": "3",
+         "list_a": "[1, 2]"
+        },
+        "points": {
+         "list_a": "L1"
+        },
+        "lists": {
+         "L1": [
+          "1",
+          "2"
+         ]
+        },
+        "unnamed": [],
+        "printed": [
+         "[1, 2]"
+        ],
+        "caption": "Prints [1, 2]."
+       }
+      ]
+     },
+     "play": "The cubes and arrows.",
+     "press_count": 7
+    }
+   ]
+  },
+  {
+   "name": "Exit: which line 3 keeps Kiran's list",
+   "kind": "exit",
+   "mins": 4,
+   "start": 67,
+   "cards": [
+    {
+     "id": "X1",
+     "title": "Exit: keep Kiran's songs",
+     "source": "new",
+     "activity": 1,
+     "timer": 150,
+     "purpose": "Check the one idea landed: only a line that builds a new list splits kiran from mine. Every wrong option is a real misconception.",
+     "heading": "Keep Kiran's songs",
+     "show": [
+      "Kiran wants his songs to stay as they are, before you add one.",
+      "Which line 3 makes print(kiran) show ['Hukum', 'Kesariya']?"
+     ],
+     "code": [
+      {
+       "file": "keep.py",
+       "src": "mine = [\"Hukum\", \"Kesariya\"]\nkiran = mine\n# line 3 goes here\nmine += [\"Naatu Naatu\"]\nprint(kiran)"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Story line, the program with line numbers and line 3 as a gap, the question, and options: A <q>kiran += []</q>, B <q>kiran[0] = \"Hukum\"</q>, C <q>kiran = kiran + []</q>, D <q>mine = mine</q>. A 2:30 timer.",
+       "say": "Everyone answers alone. Then option A, hands up. B. C. D.",
+       "room": "Hands up per option."
+      },
+      {
+       "screen": "The right option marks, and every option shows what print(kiran) gives with it and its why line, as in data.",
+       "say": "Go through every option, not only the right one."
+      }
+     ],
+     "answer": "C, kiran = kiran + []. kiran += []: prints ['Hukum', 'Kesariya', 'Naatu Naatu']. kiran[0] = \"Hukum\": prints ['Hukum', 'Kesariya', 'Naatu Naatu']. kiran = kiran + []: prints ['Hukum', 'Kesariya']. mine = mine: prints ['Hukum', 'Kesariya', 'Naatu Naatu'].",
+     "must_not": [
+      "Show any output before the second press."
+     ],
+     "data": {
+      "options": [
+       {
+        "line3": "kiran += []",
+        "prints": "['Hukum', 'Kesariya', 'Naatu Naatu']",
+        "why": "+= changes the list that is already there. Adding nothing still leaves one shared list."
+       },
+       {
+        "line3": "kiran[0] = \"Hukum\"",
+        "prints": "['Hukum', 'Kesariya', 'Naatu Naatu']",
+        "why": "Changing an item does not split the list. It goes into the one shared list."
+       },
+       {
+        "line3": "kiran = kiran + []",
+        "prints": "['Hukum', 'Kesariya']",
+        "why": "+ builds a new list, even when it adds nothing. kiran moves to it; mine's song never reaches it."
+       },
+       {
+        "line3": "mine = mine",
+        "prints": "['Hukum', 'Kesariya', 'Naatu Naatu']",
+        "why": "The right side is the same list. mine points where it already pointed."
+       }
+      ],
+      "right": "C"
+     },
+     "play": "Layout. It can sit in the Spotify world.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Key takeaways: the example board",
+   "kind": "buffer",
+   "mins": 2,
+   "start": 71,
+   "cards": [
+    {
+     "id": "K1",
+     "title": "Two names, one list, in six examples",
+     "source": "new",
+     "purpose": "Six real programs from today, each with what it prints and the rule it shows.",
+     "heading": "Today, in six examples",
+     "show": [
+      "A second name",
+      "Two names, one list.",
+      "Change through one name",
+      "Both names see the change.",
+      "Move one name",
+      "= moves only list_a.",
+      "+ makes a new list",
+      "list_b keeps the old list.",
+      "+= grows the same list",
+      "Both names see it grow.",
+      "A list inside a list",
+      "list_b holds list_a itself."
+     ],
+     "code": [
+      {
+       "file": "A second name",
+       "src": "list_a = [1, 2]\nlist_b = list_a\nprint(id(list_a) == id(list_b))",
+       "output": "True"
+      },
+      {
+       "file": "Change through one name",
+       "src": "list_a = [1, 2]\nlist_b = list_a\nlist_b[0] = 9\nprint(list_a)",
+       "output": "[9, 2]"
+      },
+      {
+       "file": "Move one name",
+       "src": "list_a = [1, 2]\nlist_b = list_a\nlist_a = [6, 7]\nprint(list_b)",
+       "output": "[1, 2]"
+      },
+      {
+       "file": "+ makes a new list",
+       "src": "list_a = [1, 2]\nlist_b = list_a\nlist_a = list_a + [6]\nprint(list_b)",
+       "output": "[1, 2]"
+      },
+      {
+       "file": "+= grows the same list",
+       "src": "list_a = [1, 2]\nlist_b = list_a\nlist_a += [6]\nprint(list_b)",
+       "output": "[1, 2, 6]"
+      },
+      {
+       "file": "A list inside a list",
+       "src": "list_a = [1, 2]\nlist_b = [3, list_a]\nlist_a[1] = 4\nprint(list_b)",
+       "output": "[3, [1, 4]]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Example 1 fills its slot: heading, code, a small tags-and-rows picture, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 2 fills its slot: heading, code, a small tags-and-rows picture, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 3 fills its slot: heading, code, a small tags-and-rows picture, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 4 fills its slot: heading, code, a small tags-and-rows picture, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 5 fills its slot: heading, code, a small tags-and-rows picture, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 6 fills its slot: heading, code, a small tags-and-rows picture, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      }
+     ],
+     "must": [
+      "All six slots are there from press 1, empty.",
+      "Examples, not a concept map.",
+      "Two names on one list are two tags with arrows into one row of boxes, never two rows."
+     ],
+     "play": "The grid and each small picture.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Feedback",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 73,
+   "cards": [
+    {
+     "id": "S-FEEDBACK",
+     "title": "Feedback",
+     "source": "spine:feedback",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Thank you",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 74,
+   "cards": [
+    {
+     "id": "S-THANKYOU",
+     "title": "Thankyou",
+     "source": "spine:thankyou",
+     "press_count": 0
+    }
+   ]
+  }
+ ]
+}

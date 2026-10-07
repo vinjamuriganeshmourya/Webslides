@@ -1,0 +1,99 @@
+/* ============ the hook: the sorry Anjali could not find =====================
+   Six beats. The phone tells the story for three of them, then the message
+   opens out into boxes and the last beat is the turn.
+
+   One moving group, `.hkcomb`. Scaling it by two about the first mark sends
+   the marks from boxes 0, 1, 2, 3, 4 to boxes 0, 2, 4, 6, 8, so the jump
+   getting longer IS the argument and the characters never move. The origin is
+   written into the transform, because transform-origin on an SVG group is not
+   honoured everywhere. */
+.hkwrap{display:flex;flex:1;min-height:0;align-items:center;justify-content:center}
+.hkfig{display:block;width:100%;height:auto;max-height:100%}
+/* the handset lifts off the card the way a photograph of one would */
+.hkphone{filter:drop-shadow(0 12px 26px rgba(11,20,26,.22))}
+
+/* the three phone screens: the fight, her search, and Tuesday */
+.hkscr{opacity:0;transition:opacity 280ms var(--ease-out)}
+.an-1 .hkscr1{opacity:1}
+.an-2 .hkscr2{opacity:1}
+.an-3 .hkscr3,.an-4 .hkscr3,.an-5 .hkscr3,.an-6 .hkscr3{opacity:1}
+.hkcaret{opacity:0}
+.an-2 .hkcaret{animation:hkblink 1.1s steps(1,end) infinite}
+@keyframes hkblink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+/* the story rail. The three setup lines stay up the whole way; the question
+   under them changes on every press, so the right half is never blank while
+   the instructor is still talking. */
+/* the big rail carries beats 1 to 3, where the story is the content */
+.hkrailbig{opacity:0;transition:opacity 240ms var(--ease-out)}
+.an-1 .hkrailbig,.an-2 .hkrailbig,.an-3 .hkrailbig{opacity:1}
+.hkstoryB{font:400 32px var(--sans);fill:#39404B}
+.hkaskB{font:700 34px var(--sans);fill:var(--dk-blue);opacity:0;
+  transition:opacity 240ms var(--ease-out)}
+.an-1 .hkaskB1,.an-2 .hkaskB2,.an-3 .hkaskB3{opacity:1}
+/* the small rail keeps the same three lines above the boxes from beat 4 */
+.hkrailsm{opacity:0;transition:opacity 240ms var(--ease-out)}
+.an-4 .hkrailsm,.an-5 .hkrailsm,.an-6 .hkrailsm{opacity:1}
+.hkstory{font:400 23px var(--sans);fill:#7A8794}
+.hkask{font:700 26px var(--sans);fill:var(--dk-blue);opacity:0;
+  transition:opacity 240ms var(--ease-out)}
+.an-4 .hkask4,.an-5 .hkask5,.an-6 .hkask6{opacity:1}
+
+/* the slots are drawn empty from press 1 and filled on press 4 */
+.hkstrip,.hkgh{opacity:0;transition:opacity 280ms var(--ease-out)}
+.an-4 .hkstrip,.an-5 .hkstrip,.an-6 .hkstrip,
+.an-4 .hkgh,.an-5 .hkgh,.an-6 .hkgh{opacity:1}
+.hkbox{fill:#F4F7FA;stroke:#CFE0EC;stroke-width:2;
+  transition:fill 260ms var(--ease-out),stroke 260ms var(--ease-out)}
+.hkch{font:700 36px var(--mono);fill:#2B3138;transition:fill 260ms var(--ease-out)}
+.hkix{font:600 19px var(--mono);fill:#8B98A5}
+/* a space you can see. Four of the nine boxes are spaces, and that is the
+   whole answer to why the search found nothing. */
+.hkcell.hksp .hkch{fill:#AEB8C2}
+.an-4 .hkcell.hksp .hkbox,.an-5 .hkcell.hksp .hkbox,
+.an-6 .hkcell.hksp .hkbox{fill:#FFFFFF;stroke:#E2E9EF}
+/* the letters light up as the marks LAND on them, not while they are still
+   travelling. Slowed down, the early highlight reads as the answer arriving
+   before the argument does. */
+.an-6 .hkcell.hkd .hkbox{fill:#DCF0FB;stroke:var(--dk-blue);stroke-width:3;
+  transition-delay:640ms}
+.an-6 .hkcell.hkd .hkch{fill:var(--dk-blue);transition-delay:640ms}
+
+.hkghp{fill:none;stroke:#DDE5EC;stroke-width:2.5;stroke-dasharray:8 7;
+  transition:opacity 260ms var(--ease-out)}
+.an-5 .hkghp,.an-6 .hkghp{opacity:0}
+.hkyou{font:600 21px var(--sans);fill:#6B7784}
+
+.hkcomb{opacity:0;transform-box:view-box;transform-origin:0 0;
+  transition:opacity 260ms var(--ease-out),
+             transform 900ms var(--ease-in-out)}
+.an-5 .hkcomb,.an-6 .hkcomb{opacity:1}
+.an-6 .hkcomb{transform:translate(__SHIFT__px,0) scale(2,1)}
+.hkmark{fill:var(--dk-blue)}
+.hkarc{fill:none;stroke:var(--dk-blue);stroke-width:3;stroke-dasharray:7 6}
+.hklbl{font:700 21px var(--sans);fill:var(--dk-blue);opacity:0;
+  transition:opacity 260ms var(--ease-out)}
+.an-5 .hklbl1{opacity:1}
+.an-6 .hklbl2{opacity:1}
+
+.hkres{opacity:0;transition:opacity 300ms var(--ease-out)}
+.an-5 .hkres1{opacity:1}
+.an-6 .hkres2{opacity:1}
+.hkres>rect{fill:#FFFFFF;stroke:#CFE0EC;stroke-width:2.5}
+.hkres2>rect{fill:#EAF6FC;stroke:var(--dk-blue);stroke-width:3}
+.hkpt{font:700 32px var(--mono);fill:#2B3138}
+.hkres2 .hkpt{fill:var(--dk-blue)}
+.hkpn{font:600 16px var(--sans);fill:#8B98A5}
+
+@media (prefers-reduced-motion:reduce){
+  /* the colour changes stay, the travel goes. The finding lives in the end
+     state, so the end state must still be reachable. */
+  .hkcomb{transition-duration:1ms}
+  .hkcaret{animation:none;opacity:1}
+}
+@media print{
+  .hkstrip,.hkgh,.hkcomb,.hklbl2,.hkres2,.hkscr3,
+  .hkrailsm,.hkask6{opacity:1}
+  .hkcomb{transform:translate(__SHIFT__px,0) scale(2,1)}
+}
+

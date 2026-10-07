@@ -1,0 +1,26 @@
+{
+  "session": "12 — Loops",
+  "deck_slides_total": 57,
+  "beats": [
+    {"name": "Opening",                          "mins": 2, "kind": "concept",  "slides": [1, 2]},
+    {"name": "Warm-Up Poll",                     "mins": 3, "kind": "quiz",     "slides": [], "activity": 1},
+    {"name": "Hook · attendance register",       "mins": 5, "kind": "hook",     "slides": [], "animated": "hook"},
+    {"name": "Agenda",                           "mins": 1, "kind": "concept",  "slides": [8]},
+    {"name": "Discover · the next N numbers",    "mins": 5, "kind": "activity", "slides": [], "activity": 9},
+    {"name": "Loops have a shape",               "mins": 4, "kind": "concept",  "slides": [11, 13, 14]},
+    {"name": "Their program inside a while",     "mins": 2, "kind": "concept",  "slides": [17, 21]},
+    {"name": "Vote · the condition",             "mins": 4, "kind": "quiz",     "slides": [], "activity": 2},
+    {"name": "Three parts, named",               "mins": 1, "kind": "concept",  "slides": [23]},
+    {"name": "Paper · mark the three parts",     "mins": 4, "kind": "activity", "slides": [], "activity": 17, "worksheet_page": 1},
+    {"name": "The program, first pass",          "mins": 1, "kind": "concept",  "slides": [27]},
+    {"name": "Trace it, then type it",           "mins": 9, "kind": "activity", "slides": [], "activity": 20, "worksheet_page": 2},
+    {"name": "The fourth ask says False",        "mins": 2, "kind": "concept",  "slides": [39]},
+    {"name": "Follow the counter",               "mins": 4, "kind": "hook",     "slides": [], "animated": "explainer"},
+    {"name": "Break it yourself",                "mins": 7, "kind": "hands",    "slides": [], "activity": 19},
+    {"name": "The two mistakes, named",          "mins": 2, "kind": "concept",  "slides": [45, 46]},
+    {"name": "Square · the problem",             "mins": 1, "kind": "concept",  "slides": [47]},
+    {"name": "Write it yourself",                "mins": 9, "kind": "hands",    "slides": [], "activity": 11, "worksheet_page": 3},
+    {"name": "Solution and takeaways",           "mins": 3, "kind": "concept",  "slides": [50, 51]},
+    {"name": "Exit poll",                        "mins": 6, "kind": "exit",     "slides": [], "activity": 1}
+  ]
+}

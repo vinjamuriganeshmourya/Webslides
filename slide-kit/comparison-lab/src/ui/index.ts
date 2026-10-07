@@ -1,6 +1,14 @@
 /** Barrel export for all shared slide building blocks. */
 export { SlideBase, type SlideVariant } from './SlideBase'
 export { SlideHeader } from './SlideHeader'
+/*
+  The sentence under the heading, drawn as the FIRST thing in the content well.
+  Reach for it in a new slide type that takes a `lead`: the header no longer
+  accepts one, so the type renders `<SlideLead tone={tone}>{lead}</SlideLead>`
+  itself, outside whatever block it centres below. Not for an aside or a warning,
+  which is `Callout`.
+*/
+export { SlideLead } from './SlideLead'
 export { Logo } from './Logo'
 export { DotGrid, Blob, Orb, WaveArc } from './Decor'
 export { Kicker, Chip, NumberBadge } from './primitives'
@@ -26,8 +34,6 @@ export { DataTable, type TableColumn, type TableRow } from './DataTable'
 export { FileTree, type FileEntry, type FileState } from './FileTree'
 export { LayerStack, LayerGap, type Layer, type LayerState } from './LayerStack'
 export { MachineBoundary } from './MachineBoundary'
-export { SocketBridge } from './SocketBridge'
-export { TunnelPath } from './TunnelPath'
 export { JourneyRoadmap } from './JourneyRoadmap'
 export { StepList, FlowChart, type Step, type FlowNode } from './flow'
 
@@ -54,6 +60,11 @@ export { ScenarioCard, type ScenarioBeat } from './ScenarioCard'
    `StatusList` is a list whose rows carry verdicts, `ChatThread` is a two-voice
    exchange. See each file's header for what it must not be used for. */
 export { SyntaxBreakdown, type SyntaxPart } from './SyntaxBreakdown'
+
+/* The style guide's surface lighting (section 9) for SVG figures, which cannot
+   express it as CSS. Declare `<SurfaceDefs/>` once per `<svg>`, then spread
+   `surface(tone)` onto a `<rect>`. */
+export { SurfaceDefs, surface, TopHighlight, type SurfaceTone } from './svgDepth'
 export { StatusList, type StatusItem, type StatusKind } from './StatusList'
 export { ChatThread, type ChatTurn } from './ChatThread'
 
@@ -103,43 +114,6 @@ export {
   type FanOutSource,
   type FanOutCopy,
 } from './figures/FanOut'
-/*
-  OBJECT STATE, AND WHAT ONE METHOD DID TO IT.
-
-  Promoted out of `oops_theory/state_behaviour_constructor`, where `ObjectState`
-  carried eleven slides. On the barrel rather than import-by-path, because unlike
-  the four figure FAMILIES under `src/ui/points`, `pseudocode`, `projectcode` and
-  `features` there is no choice to make here: each is a single figure with one
-  shape, like `LayerStack` and `ContainerJourney` beside them.
-
-  Neither is OOP-specific. The contract is a named thing and the values it holds
-  right now, which is also a build and its settings, a request and its headers, a
-  container and its published ports.
-
-  NOT `DataTable`: a table says "these rows are data" and has no owner to attach
-  them to, and the owner is the teaching. NOT a `Card`: no row structure and
-  nowhere to mark the row that moved.
-*/
-export { ObjectState, ObjectStateRow, type StateRow, type ObjectStateProps } from './ObjectState'
-export { StateChange, type StateSide, type StateChangeProps } from './StateChange'
-
-/*
-  A SNIPPET, AND WHAT RUNNING IT PRINTED.
-
-  Built in `python_programming/programming_with_python`, where thirteen slides
-  needed it, then copied into `oops_theory/state_behaviour_constructor`. Two
-  copies is where this repo stops: the syntax-anatomy figure was hand-rolled
-  three times before it became `SyntaxBreakdown`.
-
-  `CodeBlock` is a FILE (traffic lights, filename, line numbers) and `Terminal`
-  is VS Code's panel, where the command and its output share one scrollback and
-  the folder path is teaching content. Neither can say "this text, run, produces
-  that text", which is what a language lesson is made of.
-
-  Its own header says what `output` may and may not carry.
-*/
-export { CodeOutput, type CodeOutputPane } from './CodeOutput'
-
 export * as Icons from './icons'
 export { iconByName, type IconName } from './icons'
 export { Illustration, type IllustrationName } from './characters/Illustration'

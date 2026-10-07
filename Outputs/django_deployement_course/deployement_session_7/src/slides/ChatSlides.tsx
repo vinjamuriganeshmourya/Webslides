@@ -1,5 +1,6 @@
 import { SlideBase } from '@/ui/SlideBase'
 import { SlideHeader } from '@/ui/SlideHeader'
+import { SlideLead } from '@/ui/SlideLead'
 import { ChatThread } from '@/ui/ChatThread'
 import { Illustration } from '@/ui/characters/Illustration'
 import { RevealGroup, Reveal } from '@/motion/Reveal'
@@ -31,8 +32,9 @@ import type { ChatSlideProps, ChatCharacterSlideProps } from './types'
  * THE HEIGHT BUDGET
  *
  * A one-line bubble with its avatar is about 74px, and each turn adds 12px of
- * gap. The well runs y=220..656, so FIVE one-line turns, or four if two of them
- * wrap. A six-turn exchange is a `ConversationSlide`.
+ * gap. The well runs y=220..656 with no lead under the header, so FIVE one-line
+ * turns, or four if two of them wrap; a lead costs about 50px of that, which is
+ * one turn. A six-turn exchange is a `ConversationSlide`.
  */
 export function ChatSlide({
   kicker,
@@ -47,7 +49,14 @@ export function ChatSlide({
   return (
     <SlideBase variant="light" lesson={lesson}>
       <div className="flex h-full flex-col">
-        <SlideHeader kicker={kicker} title={title} lead={lead} tone={tone} />
+        <SlideHeader kicker={kicker} title={title} tone={tone} />
+        {/*
+          The point opens the well, above the thread and outside the centred
+          block. Inside the thread it would have to be a bubble, and a bubble is
+          somebody saying something: the lead is the deck talking about the
+          exchange, not a turn in it.
+        */}
+        {lead && <SlideLead tone={tone}>{lead}</SlideLead>}
         <div className="flex min-h-0 flex-1 flex-col justify-center">
           <div className="w-full max-w-[840px]">
             <ChatThread turns={turns} who={speakers} tone={tone} immediate={!stepped} />
@@ -100,7 +109,14 @@ export function ChatCharacterSlide({
   return (
     <SlideBase variant="light" lesson={lesson}>
       <div className="flex h-full flex-col">
-        <SlideHeader kicker={kicker} title={title} lead={lead} tone={tone} />
+        <SlideHeader kicker={kicker} title={title} tone={tone} />
+        {/*
+          The point opens the well, above the thread and outside the centred
+          block. Inside the thread it would have to be a bubble, and a bubble is
+          somebody saying something: the lead is the deck talking about the
+          exchange, not a turn in it.
+        */}
+        {lead && <SlideLead tone={tone}>{lead}</SlideLead>}
         <div className="flex min-h-0 flex-1 flex-col justify-center">
           <div className="flex items-center gap-10">
             {/*

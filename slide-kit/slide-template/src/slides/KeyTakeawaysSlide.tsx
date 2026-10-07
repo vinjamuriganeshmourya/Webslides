@@ -15,7 +15,7 @@ export function KeyTakeawaysSlide({
 }: KeyTakeawaysSlideProps) {
   return (
     <SlideBase variant="light" lesson={lesson} padded={false}>
-      {/* left: the takeaways, ZONED (content rule 22). The body box is narrowed
+      {/* left: the takeaways, ZONED (content rule 32). The body box is narrowed
           to the old left column (1.3fr of 1152 less the 48px gap) so the list
           never runs under the mascot. */}
       <ZonedFrame kicker={kicker} title={title} lead={lead} tone="nw" bodyWidth={624}>

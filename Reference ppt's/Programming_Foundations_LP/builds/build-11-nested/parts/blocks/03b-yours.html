@@ -1,0 +1,93 @@
+<section class="block block-activity" id="yours"><div class="block-head"><span class="block-icon" aria-hidden="true">&#128172;</span><h2>Your turn</h2></div><div class="pcard" data-label="Your turn"><div class="slide-head"><span class="slide-title">Your turn</span></div><div class="stage" id="stage-yours"><div class="sl-head"><span class="sl-bar" aria-hidden="true"></span><div><p class="sl-eyebrow">Conditional Statements</p><h3 class="sl-title">Your Turn</h3></div></div>
+<div class="askroom">
+<p class="stage-q">The app asked a second question <b>only because</b> the first one passed.</p>
+<p class="bigask">Where else did that happen to you <b>this week</b>?</p>
+<p class="stage-note">One sentence each. "It checked ______, and only then did it check ______."</p>
+</div>
+<div class="stage-rule" aria-hidden="true"></div></div>
+</div></section>
+<section class="block block-hook" id="ticket"><div class="block-head"><span class="block-icon" aria-hidden="true">&#127916;</span><h2>Behind the scenes on a movie ticket</h2></div><div class="pcard" data-label="Behind the scenes on a movie ticket"><div class="slide-head"><span class="slide-title">Behind the scenes on a movie ticket</span></div><div class="stage an-1" id="stage-ticket" data-anim="3" data-anim-labels="ask the room|seats gone, payment never asked|one inside the other"><div class="sl-head"><span class="sl-bar" aria-hidden="true"></span><div><p class="sl-eyebrow">Conditional Statements</p><h3 class="sl-title">Booking A Seat</h3></div></div>
+<svg class="fig mmorph" viewBox="0 0 1000 480" xmlns="http://www.w3.org/2000/svg" role="img"
+ aria-label="A booking app showing a sold out show, beside the two checks the app runs - the seats check containing the payment check - which collapse into two indented lines of Python">
+<defs>
+<linearGradient id="mkScreen" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#B3252F"/><stop offset="1" stop-color="#7E1620"/>
+</linearGradient>
+<linearGradient id="mkWash" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#FBE9EA"/><stop offset="1" stop-color="#E6F5FC"/>
+</linearGradient>
+</defs>
+
+<!-- the phone the question is about -->
+<g class="mphone">
+<rect x="40" y="40" width="220" height="400" rx="26" fill="#fff" stroke="#7E1620" stroke-width="3"/>
+<rect x="125" y="54" width="50" height="8" rx="4" fill="#C9D3DA"/>
+<rect x="56" y="78" width="188" height="346" rx="14" fill="url(#mkScreen)"/>
+<circle cx="84" cy="106" r="14" fill="#fff"/>
+<text x="84" y="113" text-anchor="middle" style="font:700 15px var(--sans)" fill="#B3252F">&#127916;</text>
+<text x="106" y="112" style="font:700 15px var(--sans)" fill="#fff">Book My Seat</text>
+<text x="76" y="152" style="font:600 12px var(--sans)" fill="#F0B6BA">TONIGHT &middot; 9:30 PM</text>
+<text x="76" y="182" style="font:600 19px var(--sans)" fill="#fff">Screen 3</text>
+<g fill="#F3C3C7">
+<rect x="76" y="208" width="20" height="18" rx="4"/><rect x="102" y="208" width="20" height="18" rx="4"/><rect x="128" y="208" width="20" height="18" rx="4"/><rect x="154" y="208" width="20" height="18" rx="4"/><rect x="180" y="208" width="20" height="18" rx="4"/>
+<rect x="76" y="232" width="20" height="18" rx="4"/><rect x="102" y="232" width="20" height="18" rx="4"/><rect x="128" y="232" width="20" height="18" rx="4"/><rect x="154" y="232" width="20" height="18" rx="4"/><rect x="180" y="232" width="20" height="18" rx="4"/>
+<rect x="76" y="256" width="20" height="18" rx="4"/><rect x="102" y="256" width="20" height="18" rx="4"/><rect x="128" y="256" width="20" height="18" rx="4"/><rect x="154" y="256" width="20" height="18" rx="4"/><rect x="180" y="256" width="20" height="18" rx="4"/>
+</g>
+<rect x="76" y="290" width="148" height="48" rx="10" fill="#F0B95B"/>
+<text x="150" y="321" text-anchor="middle" style="font:700 19px var(--sans)" fill="#5A3A05">Select seats</text>
+</g>
+<g class="mshut">
+<rect x="56" y="352" width="188" height="56" rx="10" fill="var(--dk-red)"/>
+<text x="150" y="387" text-anchor="middle" style="font:700 19px var(--sans)" fill="#fff">Housefull</text>
+</g>
+
+<g class="mouter">
+<rect x="300" y="16" width="680" height="60" rx="14" fill="url(#mkWash)"/>
+<text x="332" y="53" style="font:600 21px var(--sans)" fill="#7E1620">Same two checks, in a different app</text>
+</g>
+
+<!-- the two checks, nested. Only the rects collapse, so the morph is one transform. -->
+<g class="mgroup" fill="none" stroke-width="3">
+<rect x="320" y="90" width="640" height="290" rx="16" stroke="#B3252F"/>
+<g class="minner">
+<rect x="400" y="168" width="520" height="152" rx="13" stroke="#00BAF2" stroke-dasharray="11 8"/>
+<rect x="480" y="245" width="430" height="60" rx="10" stroke="#00BAF2" fill="#E6F7FD"/>
+</g>
+</g>
+<g class="mouter">
+<g fill="none" stroke="#B3252F" stroke-width="2.6">
+<rect x="344" y="120" width="26" height="19" rx="3"/>
+<path d="M344 126 h26"/>
+</g>
+<text x="386" y="137" style="font:700 23px var(--sans)" fill="#B3252F">Are any seats left?</text>
+<g class="minner">
+<circle cx="434" cy="199" r="14" fill="none" stroke="#00A3D9" stroke-width="2.6"/>
+<text x="434" y="207" text-anchor="middle" style="font:600 17px var(--sans)" fill="#00A3D9">&#8377;</text>
+<text x="460" y="207" style="font:700 22px var(--sans)" fill="#0B7FAD">Did the payment clear?</text>
+<text x="695" y="284" text-anchor="middle" style="font:700 22px var(--sans)" fill="#0B7FAD">ticket is printed</text>
+</g>
+<rect x="320" y="400" width="640" height="52" rx="12" fill="#FFF3E0" stroke="#F0B95B" stroke-width="2"/>
+<text x="640" y="433" text-anchor="middle" style="font:600 21px var(--sans)" fill="#8A5A12">back to the home screen</text>
+</g>
+<g class="mnote">
+<g stroke="var(--dk-red)" stroke-width="4" stroke-linecap="round">
+<path d="M912 120 l26 26"/>
+<path d="M938 120 l-26 26"/>
+</g>
+<text x="742" y="207" style="font:700 22px var(--sans)" fill="var(--dk-red)">never checked</text>
+</g>
+<g class="mcode">
+<text x="322" y="152" style="font:26px var(--mono)" fill="var(--dk-red)">if <tspan fill="var(--dk-text)">seats_left</tspan>:</text>
+<text x="362" y="192" style="font:26px var(--mono)" fill="var(--dk-red)">if <tspan fill="var(--dk-text)">payment_ok</tspan>:</text>
+<text x="402" y="262" style="font:26px var(--mono)" fill="#B3252F">print_ticket<tspan fill="var(--dk-text)">()</tspan></text>
+<text x="322" y="342" style="font:26px var(--mono)" fill="#B3252F">home_screen<tspan fill="var(--dk-text)">()</tspan></text>
+</g>
+<g class="mcap">
+<text x="690" y="158" style="font:600 21px var(--sans)" fill="var(--dk-line)">column zero</text>
+<text x="690" y="198" style="font:600 21px var(--sans)" fill="var(--dk-line)">one indent in</text>
+<text x="690" y="348" style="font:600 21px var(--sans)" fill="var(--dk-line)">outside both</text>
+</g>
+</svg>
+<div class="stage-ctl"><button type="button" data-anim-next>Two checks, in order</button><button type="button" class="ghost" data-anim-replay>Replay</button><span class="ctl-count" data-anim-count></span></div>
+<div class="stage-rule" aria-hidden="true"></div></div>
+</div></section>

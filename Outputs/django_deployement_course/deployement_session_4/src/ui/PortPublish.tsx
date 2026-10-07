@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { colors, easing } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
+import { SurfaceDefs, surface, TopHighlight } from '@/ui/svgDepth'
 
 /**
  * `ports: "8000:8000"` — the door on your laptop wired to the door inside the
@@ -54,7 +55,23 @@ function Door({
       style={{ transformOrigin: `${x + DOOR.w / 2}px ${y + DOOR.h / 2}px` }}
       transition={{ duration: 0.45, delay: instant ? 0 : delay, ease: easing.soft }}
     >
-      <rect x={x} y={y} width={DOOR.w} height={DOOR.h} rx={5} fill={colors.white} stroke={paint} strokeWidth={2.5} />
+      {/* A door is a physical thing, so it gets the surface treatment too
+          (STYLE_GUIDE section 9): a ramp instead of a flat white fill, a shadow
+          tinted with its own paint, and a white lip along its top edge. Flat
+          white against a lit zone made the doors read as holes cut in the
+          picture rather than as doors set into a wall. */}
+      <rect
+        x={x}
+        y={y}
+        width={DOOR.w}
+        height={DOOR.h}
+        rx={5}
+        {...surface(side === 'host' ? 'brand' : 'teal')}
+        strokeWidth={2.5}
+      />
+      <TopHighlight x={x} y={y} width={DOOR.w} rx={5} opacity={0.75} />
+      {/* The handle. It keeps its solid paint: it is the one part of the door
+          that is meant to catch the light rather than carry it. */}
       <circle cx={x + DOOR.w - 7} cy={y + DOOR.h / 2} r={2.6} fill={paint} />
       {/*
         BELOW the door, not above it.
@@ -100,16 +117,20 @@ function Zone({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: instant ? 0 : delay, ease: easing.soft }}
     >
+      {/* `fill={colors.surface}` was one flat tint on both zones, so the figure
+          was two outlines on a slide rather than two places with a boundary
+          between them. The tone comes from the zone's own paint so the shadow is
+          tinted with it, which is what keeps the blue half and the teal half
+          telling each other apart at the back of a room. */}
       <rect
         x={box.x}
         y={box.y}
         width={box.w}
         height={box.h}
         rx={14}
-        fill={colors.surface}
-        stroke={paint}
-        strokeWidth={2}
+        {...surface(paint === colors.brand ? 'brand' : 'teal')}
       />
+      <TopHighlight x={box.x} y={box.y} width={box.w} rx={14} />
       <text x={box.x + 18} y={box.y + 32} fontSize={16} fontWeight={800} fill={colors.ink}>
         {title}
       </text>
@@ -126,6 +147,7 @@ export function PortPublish({ className = '' }: { className?: string }) {
   return (
     <div className={className}>
       <svg viewBox="0 0 630 236" className="w-full" role="img" aria-label="A host port wired to a container port">
+        <SurfaceDefs />
         <Zone box={HOST} title="Your laptop" sub="the host machine" paint={colors.brand} delay={0} instant={instant} />
         <Zone
           box={CONT}
