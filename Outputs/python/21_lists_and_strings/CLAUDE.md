@@ -62,7 +62,7 @@ kit's `vite.config.ts` says 5173). Deck file `src/decks/listsStringsDeck.tsx`.
     resumes from the step on screen; a student's switch is remembered per
     slide while the deck is open, never in storage. Timing: wait for the
     step's own motion to settle (visible text still for 750ms), then hold for
-    1400ms + 55ms per newly visible character (code x1.3), 2.6s to 10s. It
+    500ms + 13ms per newly visible character (code x1.3), 1.22s to 3.2s; about 2.5s per step on average (user, 2026-10-07). It
     never crosses a slide. `?all` and `?noauto` turn it off, so the harnesses
     never see an unrequested step (`overlap-check.mjs` loads `noauto`).
     Replay itself remains the player's own button and R. The archived
