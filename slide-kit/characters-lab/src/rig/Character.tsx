@@ -45,6 +45,14 @@ export function Character({ pose, skin, width = 400, className }: { pose: Pose; 
   /* The ear's inner curve is the one line Riya's reference draws on the
      head, in her outline colour; Arjun's is a shade, which Ear defaults to. */
   const earLine = skin.art === 'line' ? skin.outline : undefined
+  /* The narrower female skull gets an ear 20 percent smaller, tucked a px
+     inward so the lock that frames the face covers its front half and only
+     the back half shows against the hair, as in reference/riya.png. At full
+     size the ear stood proud of the hair on both sides and read as two
+     skin blobs; the scale is keyed on headScale, the thing that narrows the
+     skull the ear sits against. */
+  const earScale = skin.headScale.x < 1 ? 0.8 : 1
+  const earX = earScale < 1 ? EAR_X - 1 : EAR_X
 
   const phys = facePhysiology(pose)
   const { nod, turn, faceXf } = phys
