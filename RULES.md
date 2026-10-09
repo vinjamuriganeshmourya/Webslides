@@ -86,7 +86,8 @@ shipped with that exact mistake.
 | 43 | A highlight (glow, ring, tint, outline) matches the exact bounds of the element it highlights, never the width of its parent or container. `overlap-check.mjs` on the built file |
 | 44 | The agenda is static, exactly like Python session 19's: no step-through, no active or selected point, no highlight box or circle, no Next or Replay buttons; it advances with the deck's navigation only |
 | 45 | Arrow heads stay small and proportionate to the line (about 9px on a 2.5 to 3px connector), sized in absolute units, fixed in the arrow component |
-| 46 | A connector line meets its arrow head on the head's own axis: its last stretch is straight along the head's centre line; the head never moves to fix it |
+| 46 | A connector line meets its arrow head on the head's own axis: its last stretch is straight along the head's centre line; the head never moves to fix it. The line ends exactly at the centre of the head's base: no gap, no overlap (butt cap at the base) |
+| 47 | No label, annotation or callout overlaps a code box or any other element at any step; when space is tight, change the layout, never let them overlap. `overlap-check.mjs` on the built file |
 
 ## Process rules
 
@@ -110,6 +111,8 @@ shipped with that exact mistake.
 | A session-owned figure is imported by path, never re-exported from the kit-owned `@/ui` barrel | [`slide-kit/slide-template/KIT.md`](slide-kit/slide-template/KIT.md) |
 | Motion runs at the explanatory tier, roughly double the `animate` skill's UI numbers | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md), section 4b |
 | A pedagogy-team lesson plan is a WORKING DECK: render every card its presenter walks (`.slide, .pcard`, checked against its own counter) and match them, never rebuild from its markup | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md), section 6b |
+| No text runs out of its box (card, panel, option, pill, phone row) at any build step, and none is clipped or truncated to fit; `box-overflow-check.mjs` must print NO OVERFLOW | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md), section 7 |
+| Every deck applies the carry-forward standard: `Group`/`Focus` clusters, `Code.tsx` blanks, cross-fading captions, centred options, one code size, ease-in on every appearance, path-drawn arrows, lab characters, phones at 1 : 2.06, the full gate | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md), section 2b |
 | Every deck navigates three ways: keyboard, two-finger trackpad swipe, touch swipe. One gesture, one slide, never over an on-slide control. A deck not yet synced to the kit hook installs the session copy, `src/decks/figures/gestures.ts`, from its deck file. All three are checked on the built file | same, sections 2 and 7, and the kit's [`src/deck/useGestureNav.ts`](slide-kit/slide-template/src/deck/useGestureNav.ts) |
 | Iterate with a one-slide screenshot; run the three harnesses once, before committing | same, section 6c |
 | Check every build at step 0, mid-run AND fully revealed | same, section 6c |
