@@ -1,0 +1,2721 @@
+{
+ "meta": {
+  "session": "25 - List Methods",
+  "course": "Programming Foundations",
+  "one_idea": "A list has its own tools, called with a dot on the list. append, extend, insert, pop, remove, clear and sort change that same list. index and count give back a number and leave the list alone.",
+  "outcomes": [
+   "Add one item at the end with append, and every item of another list with extend.",
+   "Say what append(list_b) does that extend(list_b) does not: one item that is a whole list.",
+   "Put an item at a place with insert(index, value), and say which items move.",
+   "Take items out with pop, remove and clear, and say that remove takes the first match only.",
+   "Find where a value first appears with index, and how many times with count.",
+   "Say why list_a.sort() changes list_a, sorted(list_a) does not, and list_b = list_a.sort() gives None.",
+   "Build the Fibonacci series in a list with append, and print the Nth term."
+  ],
+  "previous": "24 - Built-in Functions",
+  "slides_dir": "C:\\Lesson Plans New\\builds\\build-25-list-methods\\work\\slides",
+  "deck_total": 37,
+  "kept": [
+   13,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   31,
+   32
+  ],
+  "cuts": [
+   [
+    "1-2",
+    "Welcome and deck title. The fixed spine cards replace them."
+   ],
+   [
+    "3-9",
+    "A recap of Stack, the function call stack and recursion. Our course has no such session before this one; session 24 was Built-in Functions. S-RECAP is a bug recap from session 24 instead."
+   ],
+   [
+    "10-12",
+    "Daily challenge on a recursive sum_of_numbers. Recursion is not taught in this course."
+   ],
+   [
+    "14",
+    "One-word divider. The title card names the topic one card earlier."
+   ],
+   [
+    "30",
+    "Recursion tree for f(4). T2 builds the series with a list and append instead."
+   ],
+   [
+    "33-34",
+    "Bullet takeaways. Replaced by K1, the example board."
+   ],
+   [
+    "35",
+    "Practice picture. One spoken line in the guide."
+   ],
+   [
+    "36-37",
+    "Thank you and all the best. The fixed spine cards replace them."
+   ]
+  ],
+  "defects": [
+   [
+    "slides 3-12",
+    "The recap and daily challenge cover Stack, Function Call Stack and recursion. In the course outline the session before List Methods is Built-in Functions, and there is no recursion session.",
+    "Cut. The recap is a bug card from session 24. Fix the deck's recap to match the timetable."
+   ],
+   [
+    "slides 27-30",
+    "The code walkthrough solves Fibonacci with recursion (the transcript does the same). Recursion is never taught in this course.",
+    "T2 keeps the deck's question and its inputs and outputs, and builds the series in a list with append. Slide 30 is cut."
+   ],
+   [
+    "slide 22",
+    "The code reads index =list_a.index(3), with no space after the equals sign.",
+    "C7 uses the party queue, place = queue.index('Peelings')."
+   ],
+   [
+    "slides 16 to 24",
+    "Every example is a list of small numbers ([1, 2, 3], [1, 3, 2, 3]). On [1, 3, 2, 3], a student who thinks index gives back the value gets 3, which is also where the last 3 sits, so wrong ideas hide behind numbers that look alike.",
+    "The concept cards use the party queue's songs and Teja's play counts. Same method and same shape per slide."
+   ]
+  ],
+  "notes": [
+   "The room is 50 to 60 first-year students on laptops. Laptops stay shut except on T1, the game G1, T2 and the classroom quiz, where only the worksheet tab and the playground are open.",
+   "One world for the session: Teja's YouTube Music queue at a friend's birthday party in the hostel. The hook (H1), Task 1, the game and the exit all use that queue; Hook 2 is his listening history. Songs are Telugu hits the room knows.",
+   "Concept cards use the party queue's songs, not the deck's 1, 2, 3 (rewritten 2026-10-07). The hook's world runs through, and with songs every wrong idea prints something different. Each card's must lines name the wrong idea.",
+   "One picture for lists all session: A list is a row of cells with its index under each cell, from 0. When an item comes in or goes out, the cells after it slide one place and their index numbers change with them. A removed item vanishes. No grey ghost, no strikethrough. The cells close the gap.",
+   "Words: say method, and say it is a function that belongs to the list, called with a dot. Never say object, in place or mutable on screen. Say: it changes the same list.",
+   "Votes are taken option by option: the instructor reads each option and asks how many think it is that one. Hands up. Nobody is named.",
+   "Nothing before the title card may say the session's name. The hook shows a phone, never code.",
+   "The bar to beat is Plans/DSA/Module 3 - Stacks & Queues/01 - Introduction to Stacks/: a simulation the room drives, a picture that refuses to lie."
+  ],
+  "topics": [
+   "lists",
+   "accumulators"
+  ],
+  "engagement": true,
+  "world": "Teja's YouTube Music party queue: Add to queue, Play next, and his play counts",
+  "new_ops": [
+   "append()",
+   "extend()",
+   "insert()",
+   "pop()",
+   "remove()",
+   "clear()",
+   "index()",
+   "count()",
+   "sort()"
+  ]
+ },
+ "build_contract": [
+  "One self-contained HTML file. It opens offline from a USB stick and makes no network request.",
+  "It opens in presenter view. There is no sidebar, top bar or button the instructor has to use.",
+  "Right arrow or the clicker is one press. Left arrow goes back one press. F goes full screen, A shows all the cards, and End shows the whole card at once. The instructor guide tells the instructor these keys, so they must work.",
+  "Every card is its own screen, in the order of this spec. Press 1 is what shows when the card opens.",
+  "Every card's outer element carries data-spec=\"<card id>\" and data-presses=\"<number of presses>\". The review script reads both.",
+  "No link to any other file. The students' handout and the instructor guide are separate files, and a link from this file is how a class finds the answers."
+ ],
+ "rules": [
+  "No autoplay. Nothing moves on a timer. One press, one move, with a caption that says what just happened.",
+  "Commit, then reveal. Where a card asks a question, the answer shows only on the press after the room has answered.",
+  "Wrong answers stay private. No names, no per-student results on screen. Hands are counted out loud, never shown.",
+  "The topic is named once. Nothing before the title card says today's topic, not a heading, not a caption, not a file name on a code card.",
+  "Words are exact. Words in quotation marks, and every line under Exact words, are final. The rest of a press describes what happens, in your own design. If an exact line does not fit, ask for a new one; do not rewrite it.",
+  "Code is exact. Copy code and outputs from the JSON, never retype them. Every output here came from running the program.",
+  "Simple English. Short sentences, everyday words. No em-dashes anywhere, the page title included.",
+  "Every card moves. A card that introduces an idea steps; a static card is a picture of a lecture."
+ ],
+ "beats": [
+  {
+   "name": "Welcome",
+   "kind": "concept",
+   "mins": 1,
+   "start": 0,
+   "cards": [
+    {
+     "id": "S-WELCOME",
+     "title": "Welcome",
+     "source": "spine:welcome",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap",
+   "kind": "concept",
+   "mins": 1,
+   "start": 1,
+   "cards": [
+    {
+     "id": "S-RECAP-CARD",
+     "title": "Recap card",
+     "source": "spine:recap_card",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap bug: Teja's sorted minutes",
+   "kind": "quiz",
+   "mins": 3,
+   "start": 2,
+   "cards": [
+    {
+     "id": "S-RECAP",
+     "title": "Recap: find the line",
+     "source": "spine:recap",
+     "purpose": "Pull back session 24: sorted gives back a new list and leaves the old one alone, so a sorted() call that nothing keeps changes nothing. Today's sort will do it the other way.",
+     "heading": "Which line is to blame?",
+     "show": [
+      "Teja wants his screen time minutes from smallest to biggest.",
+      "It prints:",
+      "We wanted:",
+      "Which line is to blame?",
+      "sorted gives back a new list. Nothing keeps it, so minutes stays as it was."
+     ],
+     "presses": [
+      {
+       "screen": "The story line <q>Teja wants his screen time minutes from smallest to biggest.</q>, the three-line program with line numbers, and under it <q>It prints:</q> <q>[95, 140, 60]</q> beside <q>We wanted:</q> <q>[60, 95, 140]</q>. The question <q>Which line is to blame?</q>",
+       "say": "From last class. Line 1, hands up. Line 2. Line 3.",
+       "room": "Hands up for a line number."
+      },
+      {
+       "screen": "Line 2 lights up as the culprit. The why line shows: <q>sorted gives back a new list. Nothing keeps it, so minutes stays as it was.</q>",
+       "say": "How do we fix line 2? Take two answers before the next press.",
+       "room": "Say the fix."
+      },
+      {
+       "screen": "Line 2 becomes <q>minutes = sorted(minutes)</q> and the output changes to <q>[60, 95, 140]</q>.",
+       "say": "Keep the new list in a name. Hold on to this. Today there is another way."
+      }
+     ],
+     "code": [
+      {
+       "file": "screen_time.py",
+       "src": "minutes = [95, 140, 60]\nsorted(minutes)\nprint(minutes)",
+       "output": "[95, 140, 60]"
+      },
+      {
+       "file": "screen_time_fixed.py",
+       "src": "minutes = [95, 140, 60]\nminutes = sorted(minutes)\nprint(minutes)",
+       "output": "[60, 95, 140]"
+      }
+     ],
+     "interaction": "Format: bug. The room votes on the line by hands, option by option, before the culprit lights. Nobody is named.",
+     "must": [
+      "The wrong output and the wanted output are both on screen from press 1, so the room compares them."
+     ],
+     "must_not": [
+      "Show the culprit before the vote."
+     ],
+     "data": {
+      "lines": [
+       "minutes = [95, 140, 60]",
+       "sorted(minutes)",
+       "print(minutes)"
+      ],
+      "wrong": "[95, 140, 60]",
+      "right": "[60, 95, 140]",
+      "culprit": 2,
+      "fix": "minutes = sorted(minutes)",
+      "why": "sorted gives back a new list. Nothing keeps it, so minutes stays as it was."
+     },
+     "play": "How the culprit lights and how the fix slides in.",
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "Hook: Play next or Add to queue",
+   "kind": "hook",
+   "mins": 4,
+   "start": 5,
+   "cards": [
+    {
+     "id": "H1",
+     "title": "Play next or Add to queue",
+     "source": "new",
+     "animated": "hook",
+     "purpose": "Feel, from a party they have all been at, that a song queue needs different jobs: add at the end, put at a place, take one out. The app gives each job its own button in the queue's own menu. The last press draws today's picture: one row, and a menu of jobs that belongs to it.",
+     "heading": "Who controls the music?",
+     "show": [
+      "Ram: play Chuttamalle next!",
+      "Teja taps Add to queue. When does it play?",
+      "Add to queue: it goes to the end.",
+      "Ram: not at the end! NEXT!",
+      "Which button now?",
+      "Play next: it goes in at a place. The others move down.",
+      "One row of songs. Its own menu of jobs.",
+      "add at the end",
+      "put at a place",
+      "take one out",
+      "empty it"
+     ],
+     "presses": [
+      {
+       "screen": "Teja's phone on YouTube Music at a hostel birthday party. Now playing: <q>Naatu Naatu</q>. Up next: <q>Butta Bomma</q>, <q>Samajavaragamana</q>. A WhatsApp message from Ram drops in: <q>Ram: play Chuttamalle next!</q>",
+       "say": "Everyone has been the one holding the phone at a party. Ram wants his song.",
+       "room": "Listen."
+      },
+      {
+       "screen": "The three-dot menu on Chuttamalle opens. Two buttons are lit: <q>Play next</q> and <q>Add to queue</q>. Teja's thumb taps Add to queue. Caption: <q>Teja taps Add to queue. When does it play?</q>",
+       "say": "Where does the song land? After this one, or somewhere else?",
+       "room": "Say where."
+      },
+      {
+       "screen": "The turn, one movement: Chuttamalle slides into Up next at the bottom, after <q>Samajavaragamana</q>. Caption: <q>Add to queue: it goes to the end.</q>",
+       "say": "Two songs before Ram's. He is not happy."
+      },
+      {
+       "screen": "A new message from Ram: <q>Ram: not at the end! NEXT!</q>. Chuttamalle is swiped out of the queue (Remove from queue). The menu opens again. Caption: <q>Which button now?</q>",
+       "say": "Which button?",
+       "room": "Say: Play next."
+      },
+      {
+       "screen": "Teja taps Play next. Chuttamalle slides in right under Now playing; <q>Butta Bomma</q> and <q>Samajavaragamana</q> each move down one place. Caption: <q>Play next: it goes in at a place. The others move down.</q>",
+       "say": "Same song, a different button, a different place. And the other songs had to move."
+      },
+      {
+       "screen": "The app fades away. The Up next songs become one row of boxes with the numbers 0, 1, 2 under them. Beside the row, a small menu that belongs to it lists four jobs: <q>add at the end</q>, <q>put at a place</q>, <q>take one out</q>, <q>empty it</q>. Caption: <q>One row of songs. Its own menu of jobs.</q>",
+       "say": "This row has a name in Python. You know it. The menu? That is today. Guess what today is about.",
+       "room": "Guess the topic."
+      }
+     ],
+     "must": [
+      "Add to queue lands at the end of Up next, after Samajavaragamana.",
+      "Play next lands right under Now playing, and both other songs move down one place.",
+      "On the last press the menu is drawn attached to the row, not floating apart from it.",
+      "The row on the last press has the numbers 0, 1, 2 under the boxes.",
+      "While it moves, this stays exactly as it was: Now playing and the order of the other songs. Nothing is copied: the one song moves."
+     ],
+     "must_not": [
+      "Say the session name, or any code word (list, method, append, insert, Python code), anywhere on this card.",
+      "Show any code on this card.",
+      "Animate by itself. Every change waits for a press."
+     ],
+     "data": {
+      "now_playing": "Naatu Naatu",
+      "up_next": [
+       "Butta Bomma",
+       "Samajavaragamana"
+      ],
+      "request": "Chuttamalle",
+      "jobs": [
+       "add at the end",
+       "put at a place",
+       "take one out",
+       "empty it"
+      ],
+      "after_add_to_queue": "['Butta Bomma', 'Samajavaragamana', 'Chuttamalle']",
+      "after_play_next": "['Chuttamalle', 'Butta Bomma', 'Samajavaragamana']",
+      "code_for_guide": "up_next = ['Butta Bomma', 'Samajavaragamana']\nup_next.append('Chuttamalle')        # Add to queue\nprint(up_next)\nup_next.remove('Chuttamalle')\nup_next.insert(0, 'Chuttamalle')     # Play next\nprint(up_next)",
+      "code_output_for_guide": "['Butta Bomma', 'Samajavaragamana', 'Chuttamalle']\n['Chuttamalle', 'Butta Bomma', 'Samajavaragamana']"
+     },
+     "engage": "motion",
+     "ops": [
+      "append()",
+      "insert()"
+     ],
+     "motion": "Ram's song travels twice: to the end on Add to queue, then right under Now playing on Play next, with the other songs moving down one place. It proves the same song lands in different places by different jobs.",
+     "keeps": "Now playing and the order of the other songs. Nothing is copied: the one song moves.",
+     "play": "The phone, the party, the WhatsApp pop-up, the swipe: yours to make real. Wear YouTube Music's look: dark screen, red accent, the Up next tab, the three-dot menu sheet with Play next and Add to queue. How the song travels and how the app turns into boxes on the last press is yours.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Today's topic",
+   "kind": "concept",
+   "mins": 1,
+   "start": 9,
+   "cards": [
+    {
+     "id": "S-TITLE",
+     "title": "Title",
+     "source": "spine:title",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Agenda",
+   "kind": "concept",
+   "mins": 1,
+   "start": 10,
+   "cards": [
+    {
+     "id": "S-AGENDA",
+     "title": "Agenda",
+     "source": "spine:agenda",
+     "purpose": "Name the five stops of today in plain words. Deck slide 13's two stops, opened up.",
+     "play": "How the stops sit and light. The deck's arrow on slide 13 is a fine start. No code on this card.",
+     "show": [
+      "Add items",
+      "at the end, or at a place",
+      "Take items out",
+      "the last one, one value, or all",
+      "Ask the list",
+      "where is it, and how many?",
+      "Sort it",
+      "change the list, or make a new one",
+      "Code walkthrough",
+      "the Fibonacci series"
+     ],
+     "presses": [
+      {
+       "screen": "Stop 1 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 2 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 3 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 4 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 5 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      }
+     ],
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "A list's own tools: append one, extend many",
+   "kind": "concept",
+   "mins": 7,
+   "start": 11,
+   "cards": [
+    {
+     "id": "C1",
+     "title": "A list's own tools",
+     "source": [
+      15
+     ],
+     "purpose": "A list method is a function that belongs to the list, called with a dot, like the string methods they know. Then one method at a time.",
+     "heading": "List methods",
+     "show": [
+      "You used these on strings.",
+      "name.upper()",
+      "text.split()",
+      "A list has its own.",
+      "append()",
+      "extend()",
+      "insert()",
+      "pop()",
+      "A method belongs to the list. Call it with a dot."
+     ],
+     "presses": [
+      {
+       "screen": "Two string methods they know: <q>name.upper()</q>, <q>text.split()</q>. Caption: <q>You used these on strings.</q>",
+       "say": "Session 15. A string has its own tools, after a dot. What does upper do?",
+       "room": "Say what upper does."
+      },
+      {
+       "screen": "Deck slide 15: the list's own, <q>append()</q>, <q>extend()</q>, <q>insert()</q>, <q>pop()</q> with <q>A list has its own.</q> A dot is ringed between a list's name and the method. Caption: <q>A method belongs to the list. Call it with a dot.</q>",
+       "say": "Like the queue's own menu in the hook. The dot opens the list's menu. One method at a time now."
+      }
+     ],
+     "engage": "analogy",
+     "analogy": {
+      "world": "YouTube Music",
+      "maps": "the three-dot menu belongs to the queue, and the dot after a list's name opens that list's own methods",
+      "breaks": "the app shows its buttons; Python shows nothing until you type the method's name"
+     },
+     "play": "Deck slide 15. The green arrows are a fine start; the queue's three-dot menu from the hook can come back.",
+     "must": [
+      "Draw it in the YouTube Music world: the three-dot menu belongs to the queue, and the dot after a list's name opens that list's own methods. Do not take the picture further than this: the app shows its buttons; Python shows nothing until you type the method's name"
+     ],
+     "press_count": 2
+    },
+    {
+     "id": "C2",
+     "title": "append",
+     "source": [
+      16
+     ],
+     "purpose": "append adds one item at the end of the same list. Two appends, two songs at the end, in order.",
+     "heading": "Adding items to list",
+     "show": [
+      "What will it print?",
+      "list.append(value)",
+      "Adds an element to the end of the list."
+     ],
+     "code": [
+      {
+       "file": "append.py",
+       "src": "queue = ['Naatu Naatu']\nqueue.append('Kissik')\nqueue.append('Peelings')\nprint(queue)",
+       "output": "['Naatu Naatu', 'Kissik', 'Peelings']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "append.py with line numbers (deck slide 16), its list drawn as cells with the index under each, and an empty output box. Caption: <q>What will it print?</q>",
+       "say": "Two songs are added. What is in queue at the end? Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "One cell per press: Kissik, then Peelings drop in at the end, after Naatu Naatu. The output fills <q>['Naatu Naatu', 'Kissik', 'Peelings']</q>.",
+       "say": "Each one goes at the end.",
+       "n": 2
+      },
+      {
+       "screen": "The shape arrives under the run: <q>list.append(value)</q> with <q>Adds an element to the end of the list.</q>",
+       "say": "Like Add to queue."
+      }
+     ],
+     "answer": "['Naatu Naatu', 'Kissik', 'Peelings']",
+     "must": [
+      "A list is a row of cells with its index under each cell, from 0. When an item comes in or goes out, the cells after it slide one place and their index numbers change with them.",
+      "The output appears only after the room has said or voted it.",
+      "The shape and its meaning come last, after the run, never before.",
+      "While it moves, this stays exactly as it was: Naatu Naatu stays at index 0; no song moves.",
+      "Keep these exact values. Someone who thinks append puts the new song at the front would say ['Peelings', 'Kissik', 'Naatu Naatu']; Python gives ['Naatu Naatu', 'Kissik', 'Peelings']. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show the deck slide's definition before the run."
+     ],
+     "play": "The deck's code box and the cells. One method on screen at a time.",
+     "data": {
+      "cells": [
+       [
+        "Naatu Naatu",
+        "Kissik"
+       ],
+       [
+        "Naatu Naatu",
+        "Kissik",
+        "Peelings"
+       ]
+      ]
+     },
+     "engage": "motion",
+     "ops": [
+      "append()"
+     ],
+     "motion": "One song drops in at the end per press.",
+     "keeps": "Naatu Naatu stays at index 0; no song moves.",
+     "trap": {
+      "belief": "append puts the new song at the front",
+      "wrong": "['Peelings', 'Kissik', 'Naatu Naatu']",
+      "code": 0
+     },
+     "press_count": 4
+    },
+    {
+     "id": "C3",
+     "title": "extend",
+     "source": [
+      17
+     ],
+     "purpose": "extend adds every item of another list at the end, one by one. Ram's list stays as it was.",
+     "heading": "Adding items to list",
+     "show": [
+      "What will it print?",
+      "list_a.extend(list_b)",
+      "Adds all the elements of a sequence to the end of the list."
+     ],
+     "code": [
+      {
+       "file": "extend.py",
+       "src": "queue = ['Naatu Naatu', 'Kissik']\nram = ['Chuttamalle', 'Peelings']\nqueue.extend(ram)\nprint(queue)\nprint(ram)",
+       "output": "['Naatu Naatu', 'Kissik', 'Chuttamalle', 'Peelings']\n['Chuttamalle', 'Peelings']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "extend.py with line numbers (deck slide 17), its list drawn as cells with the index under each, and an empty output box. Caption: <q>What will it print?</q>",
+       "say": "Ram has two songs. What does queue hold after line 3? And ram? Say both.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Copies of Ram's two songs slide one by one onto the end of queue. Ram's row keeps its own two cells, still lit. The output fills <q>['Naatu Naatu', 'Kissik', 'Chuttamalle', 'Peelings']\n['Chuttamalle', 'Peelings']</q>.",
+       "say": "extend takes each of Ram's songs and adds it."
+      },
+      {
+       "screen": "The shape arrives under the run: <q>list_a.extend(list_b)</q> with <q>Adds all the elements of a sequence to the end of the list.</q>",
+       "say": "append adds one item. extend adds every item of a list. Remember extend: Task 1 needs it."
+      }
+     ],
+     "answer": "['Naatu Naatu', 'Kissik', 'Chuttamalle', 'Peelings']\n['Chuttamalle', 'Peelings']",
+     "must": [
+      "A list is a row of cells with its index under each cell, from 0. When an item comes in or goes out, the cells after it slide one place and their index numbers change with them.",
+      "The output appears only after the room has said or voted it.",
+      "The shape and its meaning come last, after the run, never before.",
+      "ram stays as it was after extend: its songs are copied onto queue, never moved out.",
+      "While it moves, this stays exactly as it was: Ram's own list, both songs still in it.",
+      "Keep these exact values. Someone who thinks extend moves Ram's songs out of his list would say ['Naatu Naatu', 'Kissik', 'Chuttamalle', 'Peelings']\n[]; Python gives ['Naatu Naatu', 'Kissik', 'Chuttamalle', 'Peelings']\n['Chuttamalle', 'Peelings']. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show the deck slide's definition before the run.",
+      "Show append with a list inside it on this card. Task 1 lets the room find that one."
+     ],
+     "play": "The deck's code box and the cells. One method on screen at a time.",
+     "engage": "motion",
+     "ops": [
+      "extend()"
+     ],
+     "motion": "Copies of Ram's songs slide onto the end, one per press.",
+     "keeps": "Ram's own list, both songs still in it.",
+     "trap": {
+      "belief": "extend moves Ram's songs out of his list",
+      "wrong": "['Naatu Naatu', 'Kissik', 'Chuttamalle', 'Peelings']\n[]",
+      "code": 0
+     },
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "insert puts an item at a place",
+   "kind": "concept",
+   "mins": 3,
+   "start": 18,
+   "cards": [
+    {
+     "id": "C4",
+     "title": "insert",
+     "source": [
+      18
+     ],
+     "purpose": "insert(index, value) puts the value at that index. The songs from that index on move one place right.",
+     "heading": "Insert",
+     "show": [
+      "What will it print?",
+      "['Naatu Naatu', 'Chuttamalle', 'Kissik', 'Peelings']",
+      "['Chuttamalle', 'Naatu Naatu', 'Kissik', 'Peelings']",
+      "['Naatu Naatu', 'Kissik', 'Chuttamalle', 'Peelings']",
+      "list.insert(index,value)",
+      "Element is inserted to the list at specified index.",
+      "Play next is insert at 0."
+     ],
+     "code": [
+      {
+       "file": "insert.py",
+       "src": "queue = ['Naatu Naatu', 'Kissik', 'Peelings']\nqueue.insert(1, 'Chuttamalle')\nprint(queue)",
+       "output": "['Naatu Naatu', 'Chuttamalle', 'Kissik', 'Peelings']"
+      },
+      {
+       "file": "insert_0.py",
+       "src": "queue = ['Naatu Naatu', 'Kissik', 'Peelings']\nqueue.insert(0, 'Chuttamalle')\nprint(queue)",
+       "output": "['Chuttamalle', 'Naatu Naatu', 'Kissik', 'Peelings']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "insert.py with line numbers (deck slide 18), its list drawn as cells with the index under each, and an empty output box. Caption: <q>What will it print?</q> Choices <q>['Naatu Naatu', 'Chuttamalle', 'Kissik', 'Peelings']</q>, <q>['Chuttamalle', 'Naatu Naatu', 'Kissik', 'Peelings']</q>, <q>['Naatu Naatu', 'Kissik', 'Chuttamalle', 'Peelings']</q>.",
+       "say": "Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "The slide-along: Peelings, then Kissik, move one place right, Chuttamalle drops into index 1, and the index numbers under the cells become 0, 1, 2, 3. The output fills <q>['Naatu Naatu', 'Chuttamalle', 'Kissik', 'Peelings']</q>.",
+       "say": "Like Play next. The items after it moved."
+      },
+      {
+       "screen": "The shape arrives under the run: <q>list.insert(index,value)</q> with <q>Element is inserted to the list at specified index.</q>",
+       "say": "Index first, then the value."
+      },
+      {
+       "screen": "insert_0.py: the same with insert(0, 'Chuttamalle'), empty output. Caption: <q>What will it print?</q>",
+       "say": "Now index 0. Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Every cell moves right. The output fills <q>['Chuttamalle', 'Naatu Naatu', 'Kissik', 'Peelings']</q>. Caption: <q>Play next is insert at 0.</q>",
+       "say": "Index 0 is the front. That was Play next."
+      }
+     ],
+     "answer": "['Naatu Naatu', 'Chuttamalle', 'Kissik', 'Peelings'], then ['Chuttamalle', 'Naatu Naatu', 'Kissik', 'Peelings']",
+     "must": [
+      "A list is a row of cells with its index under each cell, from 0. When an item comes in or goes out, the cells after it slide one place and their index numbers change with them.",
+      "The output appears only after the room has said or voted it.",
+      "The shape and its meaning come last, after the run, never before.",
+      "The cells move one at a time, from the end first, so no two cells sit in one place.",
+      "While it moves, this stays exactly as it was: The songs before the place do not move.",
+      "Keep these exact values. Someone who thinks insert(1, x) puts x after the song at index 1 would say ['Naatu Naatu', 'Kissik', 'Chuttamalle', 'Peelings']; Python gives ['Naatu Naatu', 'Chuttamalle', 'Kissik', 'Peelings']. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show the deck slide's definition before the run."
+     ],
+     "play": "The deck's code box and the cells. One method on screen at a time.",
+     "data": {
+      "before": [
+       "Naatu Naatu",
+       "Kissik",
+       "Peelings"
+      ],
+      "after": [
+       "Naatu Naatu",
+       "Chuttamalle",
+       "Kissik",
+       "Peelings"
+      ]
+     },
+     "engage": "motion",
+     "ops": [
+      "insert()"
+     ],
+     "motion": "The songs after the place slide right, then the new song drops in.",
+     "keeps": "The songs before the place do not move.",
+     "trap": {
+      "belief": "insert(1, x) puts x after the song at index 1",
+      "wrong": "['Naatu Naatu', 'Kissik', 'Chuttamalle', 'Peelings']",
+      "code": 0
+     },
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Task 1: the party queue",
+   "kind": "activity",
+   "mins": 8,
+   "start": 21,
+   "cards": [
+    {
+     "id": "T1",
+     "title": "Task 1: the party queue",
+     "source": "new",
+     "handout": "Task 1",
+     "activity": 2,
+     "timer": 420,
+     "purpose": "Type a queue program, predict, run. Then use my notes' append(kiran) and find a list inside a list, with len 5 not 6. Then fix it with extend.",
+     "heading": "The party queue",
+     "show": [
+      "Worksheet · Task 1",
+      "Teja's party queue.",
+      "Type it. Predict both lines. Run.",
+      "Kiran wants her two songs at the end. My notes say queue.append(kiran). Predict. Run.",
+      "Change append to extend. Predict. Run.",
+      "append added one item: a whole list."
+     ],
+     "code": [
+      {
+       "file": "party_queue.py",
+       "src": "queue = ['Butta Bomma', 'Samajavaragamana']\nqueue.append('Chuttamalle')\nqueue.insert(0, 'Naatu Naatu')\nprint(queue)\nprint(len(queue))",
+       "output": "['Naatu Naatu', 'Butta Bomma', 'Samajavaragamana', 'Chuttamalle']\n4"
+      },
+      {
+       "file": "party_queue_b.py",
+       "src": "kiran = ['Oo Antava', 'Kissik']\nqueue = ['Butta Bomma', 'Samajavaragamana']\nqueue.append('Chuttamalle')\nqueue.insert(0, 'Naatu Naatu')\nqueue.append(kiran)\nprint(queue)\nprint(len(queue))",
+       "output": "['Naatu Naatu', 'Butta Bomma', 'Samajavaragamana', 'Chuttamalle', ['Oo Antava', 'Kissik']]\n5"
+      },
+      {
+       "file": "party_queue_c.py",
+       "src": "kiran = ['Oo Antava', 'Kissik']\nqueue = ['Butta Bomma', 'Samajavaragamana']\nqueue.append('Chuttamalle')\nqueue.insert(0, 'Naatu Naatu')\nqueue.extend(kiran)\nprint(queue)\nprint(len(queue))",
+       "output": "['Naatu Naatu', 'Butta Bomma', 'Samajavaragamana', 'Chuttamalle', 'Oo Antava', 'Kissik']\n6"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The story line, party_queue.py with line numbers, the three steps (only step 1 lit) and a 7 minute timer.",
+       "say": "Worksheet tab and playground. Type it, type your prediction, then run.",
+       "room": "Type, predict, run."
+      },
+      {
+       "screen": "Step 2 lights: <q>Kiran wants her two songs at the end. My notes say queue.append(kiran). Predict. Run.</q>",
+       "say": "This is how I wrote it in my notes. Predict the length before you run.",
+       "room": "Edit, predict, run."
+      },
+      {
+       "screen": "Step 3 lights: <q>Change append to extend. Predict. Run.</q>",
+       "say": "One word changes.",
+       "room": "Edit, predict, run."
+      },
+      {
+       "screen": "Step 1's output appears: <q>['Naatu Naatu', 'Butta Bomma', 'Samajavaragamana', 'Chuttamalle']</q> and <q>4</q>.",
+       "say": "insert(0, ...) put Naatu Naatu at the front."
+      },
+      {
+       "screen": "Step 2's output appears: <q>['Naatu Naatu', 'Butta Bomma', 'Samajavaragamana', 'Chuttamalle', ['Oo Antava', 'Kissik']]</q> and <q>5</q>. The last cell is drawn as a box holding two songs. Caption: <q>append added one item: a whole list.</q>",
+       "say": "Who predicted 6? Fair guess. append adds one item. Here the one item is Kiran's whole list."
+      },
+      {
+       "screen": "Step 3's output appears: <q>['Naatu Naatu', 'Butta Bomma', 'Samajavaragamana', 'Chuttamalle', 'Oo Antava', 'Kissik']</q> and <q>6</q>.",
+       "say": "extend adds each song. Six songs."
+      }
+     ],
+     "answer": "Step 1: ['Naatu Naatu', 'Butta Bomma', 'Samajavaragamana', 'Chuttamalle'] / 4. Step 2: ['Naatu Naatu', 'Butta Bomma', 'Samajavaragamana', 'Chuttamalle', ['Oo Antava', 'Kissik']] / 5. Step 3: ['Naatu Naatu', 'Butta Bomma', 'Samajavaragamana', 'Chuttamalle', 'Oo Antava', 'Kissik'] / 6.",
+     "must": [
+      "Step 2 is framed as the instructor's own notes, not a test.",
+      "No result shows until the timer has ended.",
+      "One step's result per press on the reveal."
+     ],
+     "must_not": [
+      "Show any output before the room has run it."
+     ],
+     "engage": "task",
+     "play": "The layout of steps, timer and code. The results can show on a small YouTube Music Up next screen.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Game G1: the DJ's desk",
+   "kind": "activity",
+   "mins": 5,
+   "start": 29,
+   "cards": [
+    {
+     "id": "G1",
+     "title": "The DJ's desk",
+     "game": "office-worker",
+     "purpose": "Song requests come in on a belt. The DJ adds each one to the queue with the line the code says: append, insert at 0, a mix of both, and insert at a place past the end. The room predicts the queue.",
+     "heading": "What does the queue look like?",
+     "data": {
+      "setup": {
+       "belt": "song requests from friends at the party, in the order they came; the out belt is what print(queue) shows"
+      },
+      "intro": "Three requests come in. Watch the line that adds each one.",
+      "rounds": [
+       {
+        "ask": "What does print(queue) show?",
+        "program": "queue = []\nfor song in ['Kissik', 'Peelings', 'Chuttamalle']:\n    queue.append(song)\nprint(queue)",
+        "inbox": [
+         "Kissik",
+         "Peelings",
+         "Chuttamalle"
+        ],
+        "options": [
+         "['Kissik', 'Peelings', 'Chuttamalle']",
+         "['Chuttamalle', 'Peelings', 'Kissik']",
+         "['Chuttamalle']",
+         "[['Kissik', 'Peelings', 'Chuttamalle']]"
+        ],
+        "answer": "['Kissik', 'Peelings', 'Chuttamalle']",
+        "because": "append adds each song at the end, so the queue keeps the belt's order.",
+        "why": {
+         "['Chuttamalle', 'Peelings', 'Kissik']": "append adds at the end, so the first request stays first.",
+         "['Chuttamalle']": "append adds. Nothing is replaced, so all three stay.",
+         "[['Kissik', 'Peelings', 'Chuttamalle']]": "append gets one song each time, not the whole belt."
+        },
+        "steps": [
+         {
+          "caption": "Kissik: the queue was empty, so it is the only song. queue is ['Kissik'].",
+          "carrying": "Kissik",
+          "slots": {
+           "queue": [
+            "Kissik"
+           ]
+          },
+          "outbox": []
+         },
+         {
+          "caption": "Peelings: it goes to the end. queue is ['Kissik', 'Peelings'].",
+          "carrying": "Peelings",
+          "slots": {
+           "queue": [
+            "Kissik",
+            "Peelings"
+           ]
+          },
+          "outbox": []
+         },
+         {
+          "caption": "Chuttamalle: it goes to the end. queue is ['Kissik', 'Peelings', 'Chuttamalle'].",
+          "carrying": "Chuttamalle",
+          "slots": {
+           "queue": [
+            "Kissik",
+            "Peelings",
+            "Chuttamalle"
+           ]
+          },
+          "outbox": []
+         },
+         {
+          "caption": "The belt is done. print(queue) shows ['Kissik', 'Peelings', 'Chuttamalle'].",
+          "carrying": null,
+          "slots": {
+           "queue": [
+            "Kissik",
+            "Peelings",
+            "Chuttamalle"
+           ]
+          },
+          "outbox": [
+           "['Kissik', 'Peelings', 'Chuttamalle']"
+          ]
+         }
+        ]
+       },
+       {
+        "ask": "What does print(queue) show?",
+        "program": "queue = []\nfor song in ['Kissik', 'Peelings', 'Chuttamalle']:\n    queue.insert(0, song)\nprint(queue)",
+        "inbox": [
+         "Kissik",
+         "Peelings",
+         "Chuttamalle"
+        ],
+        "options": [
+         "['Kissik', 'Peelings', 'Chuttamalle']",
+         "['Chuttamalle', 'Peelings', 'Kissik']",
+         "['Kissik']",
+         "['Peelings', 'Kissik', 'Chuttamalle']"
+        ],
+        "answer": "['Chuttamalle', 'Peelings', 'Kissik']",
+        "because": "insert(0, song) puts each song in front, so the last request plays first.",
+        "why": {
+         "['Kissik', 'Peelings', 'Chuttamalle']": "insert(0, song) puts each new song in front of the others.",
+         "['Kissik']": "Nothing is replaced. All three songs are in the queue.",
+         "['Peelings', 'Kissik', 'Chuttamalle']": "That is the birthday rule. Here every song goes to place 0."
+        },
+        "steps": [
+         {
+          "caption": "Kissik: the queue was empty, so it is the only song. queue is ['Kissik'].",
+          "carrying": "Kissik",
+          "slots": {
+           "queue": [
+            "Kissik"
+           ]
+          },
+          "outbox": []
+         },
+         {
+          "caption": "Peelings: it goes to place 0. The others move one place right. queue is ['Peelings', 'Kissik'].",
+          "carrying": "Peelings",
+          "slots": {
+           "queue": [
+            "Peelings",
+            "Kissik"
+           ]
+          },
+          "outbox": []
+         },
+         {
+          "caption": "Chuttamalle: it goes to place 0. The others move one place right. queue is ['Chuttamalle', 'Peelings', 'Kissik'].",
+          "carrying": "Chuttamalle",
+          "slots": {
+           "queue": [
+            "Chuttamalle",
+            "Peelings",
+            "Kissik"
+           ]
+          },
+          "outbox": []
+         },
+         {
+          "caption": "The belt is done. print(queue) shows ['Chuttamalle', 'Peelings', 'Kissik'].",
+          "carrying": null,
+          "slots": {
+           "queue": [
+            "Chuttamalle",
+            "Peelings",
+            "Kissik"
+           ]
+          },
+          "outbox": [
+           "['Chuttamalle', 'Peelings', 'Kissik']"
+          ]
+         }
+        ]
+       },
+       {
+        "ask": "What does print(queue) show?",
+        "program": "queue = []\nfor song in ['Kissik', 'Peelings', 'Chuttamalle']:\n    if song == 'Peelings':\n        queue.insert(0, song)\n    else:\n        queue.append(song)\nprint(queue)",
+        "inbox": [
+         "Kissik",
+         "Peelings",
+         "Chuttamalle"
+        ],
+        "options": [
+         "['Peelings', 'Kissik', 'Chuttamalle']",
+         "['Kissik', 'Peelings', 'Chuttamalle']",
+         "['Chuttamalle', 'Peelings', 'Kissik']",
+         "['Peelings']"
+        ],
+        "answer": "['Peelings', 'Kissik', 'Chuttamalle']",
+        "because": "Peelings goes to place 0. The other two join at the end.",
+        "why": {
+         "['Kissik', 'Peelings', 'Chuttamalle']": "Peelings jumps to place 0, in front of Kissik.",
+         "['Chuttamalle', 'Peelings', 'Kissik']": "Only Peelings goes to place 0. The others go to the end.",
+         "['Peelings']": "The else part runs too. The other two songs join at the end."
+        },
+        "steps": [
+         {
+          "caption": "Kissik: the queue was empty, so it is the only song. queue is ['Kissik'].",
+          "carrying": "Kissik",
+          "slots": {
+           "queue": [
+            "Kissik"
+           ]
+          },
+          "outbox": []
+         },
+         {
+          "caption": "Peelings: it goes to place 0. The others move one place right. queue is ['Peelings', 'Kissik'].",
+          "carrying": "Peelings",
+          "slots": {
+           "queue": [
+            "Peelings",
+            "Kissik"
+           ]
+          },
+          "outbox": []
+         },
+         {
+          "caption": "Chuttamalle: it goes to the end. queue is ['Peelings', 'Kissik', 'Chuttamalle'].",
+          "carrying": "Chuttamalle",
+          "slots": {
+           "queue": [
+            "Peelings",
+            "Kissik",
+            "Chuttamalle"
+           ]
+          },
+          "outbox": []
+         },
+         {
+          "caption": "The belt is done. print(queue) shows ['Peelings', 'Kissik', 'Chuttamalle'].",
+          "carrying": null,
+          "slots": {
+           "queue": [
+            "Peelings",
+            "Kissik",
+            "Chuttamalle"
+           ]
+          },
+          "outbox": [
+           "['Peelings', 'Kissik', 'Chuttamalle']"
+          ]
+         }
+        ]
+       },
+       {
+        "ask": "What does print(queue) show?",
+        "program": "queue = []\nfor song in ['Kissik', 'Peelings', 'Chuttamalle']:\n    queue.insert(5, song)\nprint(queue)",
+        "inbox": [
+         "Kissik",
+         "Peelings",
+         "Chuttamalle"
+        ],
+        "options": [
+         "['Kissik', 'Peelings', 'Chuttamalle']",
+         "['Chuttamalle', 'Peelings', 'Kissik']",
+         "IndexError",
+         "['Kissik']"
+        ],
+        "answer": "['Kissik', 'Peelings', 'Chuttamalle']",
+        "because": "There is no place 5 in a short queue, so insert adds each song at the end.",
+        "why": {
+         "['Chuttamalle', 'Peelings', 'Kissik']": "There is no place 5, so insert puts each song at the end.",
+         "IndexError": "insert never gives this error. A place past the end means the end.",
+         "['Kissik']": "Each song is added. A place past the end means the end."
+        },
+        "steps": [
+         {
+          "caption": "Kissik: the queue was empty, so it is the only song. queue is ['Kissik'].",
+          "carrying": "Kissik",
+          "slots": {
+           "queue": [
+            "Kissik"
+           ]
+          },
+          "outbox": []
+         },
+         {
+          "caption": "Peelings: there is no place 5, so it goes to the end. queue is ['Kissik', 'Peelings'].",
+          "carrying": "Peelings",
+          "slots": {
+           "queue": [
+            "Kissik",
+            "Peelings"
+           ]
+          },
+          "outbox": []
+         },
+         {
+          "caption": "Chuttamalle: there is no place 5, so it goes to the end. queue is ['Kissik', 'Peelings', 'Chuttamalle'].",
+          "carrying": "Chuttamalle",
+          "slots": {
+           "queue": [
+            "Kissik",
+            "Peelings",
+            "Chuttamalle"
+           ]
+          },
+          "outbox": []
+         },
+         {
+          "caption": "The belt is done. print(queue) shows ['Kissik', 'Peelings', 'Chuttamalle'].",
+          "carrying": null,
+          "slots": {
+           "queue": [
+            "Kissik",
+            "Peelings",
+            "Chuttamalle"
+           ]
+          },
+          "outbox": [
+           "['Kissik', 'Peelings', 'Chuttamalle']"
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     "say": {
+      "ask": "Read the code. Option A, hands up. B. C. D.",
+      "step": "Say where this song goes before I press.",
+      "verdict": "Read the why line. Which line in the code decided it?"
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "The slot keeps its old value readable, crossed out, when it changes.",
+      "The desk slot is the queue, drawn as a row of cells with index numbers, the same row as the hook.",
+      "Round 1 is Task 1's append; round 2 is Play next for every song.",
+      "When a song goes to place 0, the cells already there slide right in the same press.",
+      "Round 4 has no error: a place past the end puts the song at the end."
+     ],
+     "ops": [
+      "append()",
+      "insert()"
+     ],
+     "play": "The worker can be the DJ with headphones at a party table. The belt, the desk and the queue row are yours.",
+     "presses": [
+      {
+       "screen": "Before round 1: <q>Three requests come in. Watch the line that adds each one.</q>",
+       "say": "Read it out. Say how a round works: you answer first, then it runs.",
+       "room": "Listen."
+      },
+      {
+       "screen": "Round 1 of 4. The round's setup, as in the data. The question: <q>What does print(queue) show?</q> Options: A <q>['Kissik', 'Peelings', 'Chuttamalle']</q>, B <q>['Chuttamalle', 'Peelings', 'Kissik']</q>, C <q>['Chuttamalle']</q>, D <q>[['Kissik', 'Peelings', 'Chuttamalle']]</q>. Nothing runs yet.",
+       "say": "Read the code. Option A, hands up. B. C. D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Kissik: the queue was empty, so it is the only song. queue is ['Kissik'].</q> In the data: slots = {\"queue\": [\"Kissik\"]}; outbox = [].",
+       "say": "Say where this song goes before I press."
+      },
+      {
+       "screen": "<q>Peelings: it goes to the end. queue is ['Kissik', 'Peelings'].</q> In the data: slots = {\"queue\": [\"Kissik\", \"Peelings\"]}; outbox = [].",
+       "say": "Say where this song goes before I press."
+      },
+      {
+       "screen": "<q>Chuttamalle: it goes to the end. queue is ['Kissik', 'Peelings', 'Chuttamalle'].</q> In the data: slots = {\"queue\": [\"Kissik\", \"Peelings\", \"Chuttamalle\"]}; outbox = [].",
+       "say": "Say where this song goes before I press."
+      },
+      {
+       "screen": "<q>The belt is done. print(queue) shows ['Kissik', 'Peelings', 'Chuttamalle'].</q> In the data: carrying = null; slots = {\"queue\": [\"Kissik\", \"Peelings\", \"Chuttamalle\"]}; outbox = [\"['Kissik', 'Peelings', 'Chuttamalle']\"].",
+       "say": "Say where this song goes before I press."
+      },
+      {
+       "screen": "The answer: <q>['Kissik', 'Peelings', 'Chuttamalle']</q>. <q>append adds each song at the end, so the queue keeps the belt's order.</q> Then a line for every other option: <q>['Chuttamalle', 'Peelings', 'Kissik']</q> <q>append adds at the end, so the first request stays first.</q>; <q>['Chuttamalle']</q> <q>append adds. Nothing is replaced, so all three stay.</q>; <q>[['Kissik', 'Peelings', 'Chuttamalle']]</q> <q>append gets one song each time, not the whole belt.</q>.",
+       "say": "Read the why line. Which line in the code decided it?"
+      },
+      {
+       "screen": "Round 2 of 4. The round's setup, as in the data. The question: <q>What does print(queue) show?</q> Options: A <q>['Kissik', 'Peelings', 'Chuttamalle']</q>, B <q>['Chuttamalle', 'Peelings', 'Kissik']</q>, C <q>['Kissik']</q>, D <q>['Peelings', 'Kissik', 'Chuttamalle']</q>. Nothing runs yet.",
+       "say": "Read the code. Option A, hands up. B. C. D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Kissik: the queue was empty, so it is the only song. queue is ['Kissik'].</q> In the data: slots = {\"queue\": [\"Kissik\"]}; outbox = [].",
+       "say": "Say where this song goes before I press."
+      },
+      {
+       "screen": "<q>Peelings: it goes to place 0. The others move one place right. queue is ['Peelings', 'Kissik'].</q> In the data: slots = {\"queue\": [\"Peelings\", \"Kissik\"]}; outbox = [].",
+       "say": "Say where this song goes before I press."
+      },
+      {
+       "screen": "<q>Chuttamalle: it goes to place 0. The others move one place right. queue is ['Chuttamalle', 'Peelings', 'Kissik'].</q> In the data: slots = {\"queue\": [\"Chuttamalle\", \"Peelings\", \"Kissik\"]}; outbox = [].",
+       "say": "Say where this song goes before I press."
+      },
+      {
+       "screen": "<q>The belt is done. print(queue) shows ['Chuttamalle', 'Peelings', 'Kissik'].</q> In the data: carrying = null; slots = {\"queue\": [\"Chuttamalle\", \"Peelings\", \"Kissik\"]}; outbox = [\"['Chuttamalle', 'Peelings', 'Kissik']\"].",
+       "say": "Say where this song goes before I press."
+      },
+      {
+       "screen": "The answer: <q>['Chuttamalle', 'Peelings', 'Kissik']</q>. <q>insert(0, song) puts each song in front, so the last request plays first.</q> Then a line for every other option: <q>['Kissik', 'Peelings', 'Chuttamalle']</q> <q>insert(0, song) puts each new song in front of the others.</q>; <q>['Kissik']</q> <q>Nothing is replaced. All three songs are in the queue.</q>; <q>['Peelings', 'Kissik', 'Chuttamalle']</q> <q>That is the birthday rule. Here every song goes to place 0.</q>.",
+       "say": "Read the why line. Which line in the code decided it?"
+      },
+      {
+       "screen": "Round 3 of 4. The round's setup, as in the data. The question: <q>What does print(queue) show?</q> Options: A <q>['Peelings', 'Kissik', 'Chuttamalle']</q>, B <q>['Kissik', 'Peelings', 'Chuttamalle']</q>, C <q>['Chuttamalle', 'Peelings', 'Kissik']</q>, D <q>['Peelings']</q>. Nothing runs yet.",
+       "say": "Read the code. Option A, hands up. B. C. D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Kissik: the queue was empty, so it is the only song. queue is ['Kissik'].</q> In the data: slots = {\"queue\": [\"Kissik\"]}; outbox = [].",
+       "say": "Say where this song goes before I press."
+      },
+      {
+       "screen": "<q>Peelings: it goes to place 0. The others move one place right. queue is ['Peelings', 'Kissik'].</q> In the data: slots = {\"queue\": [\"Peelings\", \"Kissik\"]}; outbox = [].",
+       "say": "Say where this song goes before I press."
+      },
+      {
+       "screen": "<q>Chuttamalle: it goes to the end. queue is ['Peelings', 'Kissik', 'Chuttamalle'].</q> In the data: slots = {\"queue\": [\"Peelings\", \"Kissik\", \"Chuttamalle\"]}; outbox = [].",
+       "say": "Say where this song goes before I press."
+      },
+      {
+       "screen": "<q>The belt is done. print(queue) shows ['Peelings', 'Kissik', 'Chuttamalle'].</q> In the data: carrying = null; slots = {\"queue\": [\"Peelings\", \"Kissik\", \"Chuttamalle\"]}; outbox = [\"['Peelings', 'Kissik', 'Chuttamalle']\"].",
+       "say": "Say where this song goes before I press."
+      },
+      {
+       "screen": "The answer: <q>['Peelings', 'Kissik', 'Chuttamalle']</q>. <q>Peelings goes to place 0. The other two join at the end.</q> Then a line for every other option: <q>['Kissik', 'Peelings', 'Chuttamalle']</q> <q>Peelings jumps to place 0, in front of Kissik.</q>; <q>['Chuttamalle', 'Peelings', 'Kissik']</q> <q>Only Peelings goes to place 0. The others go to the end.</q>; <q>['Peelings']</q> <q>The else part runs too. The other two songs join at the end.</q>.",
+       "say": "Read the why line. Which line in the code decided it?"
+      },
+      {
+       "screen": "Round 4 of 4. The round's setup, as in the data. The question: <q>What does print(queue) show?</q> Options: A <q>['Kissik', 'Peelings', 'Chuttamalle']</q>, B <q>['Chuttamalle', 'Peelings', 'Kissik']</q>, C <q>IndexError</q>, D <q>['Kissik']</q>. Nothing runs yet.",
+       "say": "Read the code. Option A, hands up. B. C. D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Kissik: the queue was empty, so it is the only song. queue is ['Kissik'].</q> In the data: slots = {\"queue\": [\"Kissik\"]}; outbox = [].",
+       "say": "Say where this song goes before I press."
+      },
+      {
+       "screen": "<q>Peelings: there is no place 5, so it goes to the end. queue is ['Kissik', 'Peelings'].</q> In the data: slots = {\"queue\": [\"Kissik\", \"Peelings\"]}; outbox = [].",
+       "say": "Say where this song goes before I press."
+      },
+      {
+       "screen": "<q>Chuttamalle: there is no place 5, so it goes to the end. queue is ['Kissik', 'Peelings', 'Chuttamalle'].</q> In the data: slots = {\"queue\": [\"Kissik\", \"Peelings\", \"Chuttamalle\"]}; outbox = [].",
+       "say": "Say where this song goes before I press."
+      },
+      {
+       "screen": "<q>The belt is done. print(queue) shows ['Kissik', 'Peelings', 'Chuttamalle'].</q> In the data: carrying = null; slots = {\"queue\": [\"Kissik\", \"Peelings\", \"Chuttamalle\"]}; outbox = [\"['Kissik', 'Peelings', 'Chuttamalle']\"].",
+       "say": "Say where this song goes before I press."
+      },
+      {
+       "screen": "The answer: <q>['Kissik', 'Peelings', 'Chuttamalle']</q>. <q>There is no place 5 in a short queue, so insert adds each song at the end.</q> Then a line for every other option: <q>['Chuttamalle', 'Peelings', 'Kissik']</q> <q>There is no place 5, so insert puts each song at the end.</q>; <q>IndexError</q> <q>insert never gives this error. A place past the end means the end.</q>; <q>['Kissik']</q> <q>Each song is added. A place past the end means the end.</q>.",
+       "say": "Read the why line. Which line in the code decided it?"
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Move two boxes in one press."
+     ],
+     "interaction": "Boxes come in on a belt. A worker picks up each box, does what the code says, and drops results on the out belt. The room predicts what comes out.",
+     "game_def": {
+      "id": "office-worker",
+      "name": "The office worker",
+      "one_line": "Boxes come in on a belt. A worker picks up each box, does what the code says, and drops results on the out belt. The room predicts what comes out.",
+      "how": [
+       "An in belt with numbered boxes, a worker, a desk with one labelled slot per variable, an out belt.",
+       "The code is a for loop over the boxes. The loop variable is the box in the worker's hands.",
+       "The room votes what ends up on the out belt, or in a slot.",
+       "Each press is one box: the worker picks it up, checks it, updates a slot, maybe drops a box out.",
+       "break stops the belt; continue sends the box past the desk. Both are visible."
+      ],
+      "setup": {
+       "belt": "what the boxes stand for, in one line: 'orders', 'marks'"
+      },
+      "round": {
+       "program": "the code, exact",
+       "inbox": "the box values, in order"
+      },
+      "step": {
+       "carrying": "the box in the worker's hands",
+       "slots": "every variable's value after this box",
+       "outbox": "the out belt so far"
+      }
+     },
+     "press_count": 25
+    }
+   ]
+  },
+  {
+   "name": "Taking items out: pop, remove, clear",
+   "kind": "concept",
+   "mins": 5,
+   "start": 34,
+   "cards": [
+    {
+     "id": "C5",
+     "title": "pop",
+     "source": [
+      19
+     ],
+     "purpose": "pop() takes the last item off the same list. Nothing else moves.",
+     "heading": "Pop",
+     "show": [
+      "What will it print?",
+      "list.pop()",
+      "Removes the last element"
+     ],
+     "code": [
+      {
+       "file": "pop.py",
+       "src": "queue = ['Naatu Naatu', 'Kissik', 'Peelings']\nqueue.pop()\nprint(queue)",
+       "output": "['Naatu Naatu', 'Kissik']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "pop.py with line numbers (deck slide 19), its list drawn as cells with the index under each, and an empty output box. Caption: <q>What will it print?</q>",
+       "say": "Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "The last cell, Peelings, vanishes. The other cells stay where they are. The output fills <q>['Naatu Naatu', 'Kissik']</q>.",
+       "say": "The last one goes. Naatu Naatu and Kissik do not move."
+      },
+      {
+       "screen": "The shape arrives under the run: <q>list.pop()</q> with <q>Removes the last element</q>",
+       "say": "pop: the last item, gone."
+      }
+     ],
+     "answer": "['Naatu Naatu', 'Kissik']",
+     "must": [
+      "A list is a row of cells with its index under each cell, from 0. When an item comes in or goes out, the cells after it slide one place and their index numbers change with them.",
+      "The output appears only after the room has said or voted it.",
+      "The shape and its meaning come last, after the run, never before.",
+      "A removed item vanishes. No grey ghost, no strikethrough. The cells close the gap.",
+      "While it moves, this stays exactly as it was: The other songs, at the same index.",
+      "Keep these exact values. Someone who thinks pop() takes the first song would say ['Kissik', 'Peelings']; Python gives ['Naatu Naatu', 'Kissik']. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show the deck slide's definition before the run."
+     ],
+     "play": "The deck's code box and the cells. One method on screen at a time.",
+     "engage": "motion",
+     "ops": [
+      "pop()"
+     ],
+     "motion": "The last cell vanishes.",
+     "keeps": "The other songs, at the same index.",
+     "trap": {
+      "belief": "pop() takes the first song",
+      "wrong": "['Kissik', 'Peelings']",
+      "code": 0
+     },
+     "press_count": 3
+    },
+    {
+     "id": "E1",
+     "title": "remove, watched",
+     "source": [
+      20
+     ],
+     "purpose": "remove(value) looks from index 0 and takes the first match only; the cells after it slide left. A value that is not there is an error.",
+     "heading": "Remove",
+     "show": [
+      "What will it print?",
+      "['Kissik', 'Naatu Naatu', 'Peelings']",
+      "['Kissik', 'Peelings', 'Naatu Naatu']",
+      "['Kissik', 'Naatu Naatu']",
+      "list.remove(value)",
+      "Removes the first matching element from the list.",
+      "remove looks from the left and takes the first match only.",
+      "What if Chuttamalle is not in the list?"
+     ],
+     "code": [
+      {
+       "file": "remove.py",
+       "src": "queue = ['Kissik', 'Peelings', 'Naatu Naatu', 'Peelings']\nqueue.remove('Peelings')\nprint(queue)",
+       "output": "['Kissik', 'Naatu Naatu', 'Peelings']"
+      },
+      {
+       "file": "remove_missing.py",
+       "src": "queue = ['Kissik', 'Peelings']\nqueue.remove('Chuttamalle')\nprint(queue)",
+       "output": "ValueError: list.remove(x): x not in list"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "remove.py with line numbers (deck slide 20), its list drawn as cells with the index under each, and an empty output box. Caption: <q>What will it print?</q> Choices <q>['Kissik', 'Naatu Naatu', 'Peelings']</q>, <q>['Kissik', 'Peelings', 'Naatu Naatu']</q>, <q>['Kissik', 'Naatu Naatu']</q>.",
+       "say": "There are two Peelings. Which one goes? Option A, hands up. B. C.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "One step per press, following data.steps: the line lights; remove's finger looks at one cell per press; the matched cell vanishes and the cells after it slide left with new index numbers. Caption from the data. The output fills <q>['Kissik', 'Naatu Naatu', 'Peelings']</q>.",
+       "say": "Before each press: does the finger stop here?",
+       "n": 5
+      },
+      {
+       "screen": "The shape arrives under the run: <q>list.remove(value)</q> with <q>Removes the first matching element from the list.</q>",
+       "say": "remove looks from the left and takes the first match only. Who voted B? It never looked at the last Peelings."
+      },
+      {
+       "screen": "remove_missing.py, empty output. Caption: <q>What if Chuttamalle is not in the list?</q>",
+       "say": "Say what you think happens.",
+       "room": "Say it."
+      },
+      {
+       "screen": "The finger looks at each cell, finds no Chuttamalle, and the output shows only <q>ValueError: list.remove(x): x not in list</q>.",
+       "say": "No Chuttamalle, no remove. Python stops with an error, and line 3 never prints."
+      }
+     ],
+     "answer": "A. ['Kissik', 'Naatu Naatu', 'Peelings']. remove('Chuttamalle') on ['Kissik', 'Peelings']: ValueError: list.remove(x): x not in list",
+     "must": [
+      "A list is a row of cells with its index under each cell, from 0. When an item comes in or goes out, the cells after it slide one place and their index numbers change with them.",
+      "The output appears only after the room has said or voted it.",
+      "The shape and its meaning come last, after the run, never before.",
+      "A removed item vanishes. No grey ghost, no strikethrough. The cells close the gap.",
+      "remove's finger starts at index 0 and moves one cell per press.",
+      "One step per press.",
+      "While it moves, this stays exactly as it was: The second Peelings, still in the list.",
+      "Keep these exact values. Someone who thinks remove takes the last match would say ['Kissik', 'Peelings', 'Naatu Naatu']; Python gives ['Kissik', 'Naatu Naatu', 'Peelings']. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show the deck slide's definition before the run.",
+      "Show a free code box, a picker or an input field. It runs these programs only.",
+      "Grey out or strike through a removed item. It is gone.",
+      "Move by itself."
+     ],
+     "play": "The finger, the cells, the slide. Session 11's Follow the Dot is the bar: one thing moves at a time.",
+     "data": {
+      "steps": [
+       {
+        "line": 1,
+        "cells": [
+         "Kissik",
+         "Peelings",
+         "Naatu Naatu",
+         "Peelings"
+        ],
+        "look": null,
+        "gone": [],
+        "printed": [],
+        "caption": "Line 1: queue holds ['Kissik', 'Peelings', 'Naatu Naatu', 'Peelings']. Index under each cell."
+       },
+       {
+        "line": 2,
+        "cells": [
+         "Kissik",
+         "Peelings",
+         "Naatu Naatu",
+         "Peelings"
+        ],
+        "look": 0,
+        "gone": [],
+        "printed": [],
+        "caption": "Line 2: index 0 holds Kissik. Not Peelings. Look at the next one."
+       },
+       {
+        "line": 2,
+        "cells": [
+         "Kissik",
+         "Peelings",
+         "Naatu Naatu",
+         "Peelings"
+        ],
+        "look": 1,
+        "gone": [],
+        "printed": [],
+        "caption": "Line 2: index 1 holds Peelings. A match. Found."
+       },
+       {
+        "line": 2,
+        "cells": [
+         "Kissik",
+         "Naatu Naatu",
+         "Peelings"
+        ],
+        "look": null,
+        "gone": [
+         1
+        ],
+        "printed": [],
+        "caption": "The Peelings at index 1 vanishes. Naatu Naatu, Peelings slide left one place. The other Peelings stays. remove stops at the first one."
+       },
+       {
+        "line": 3,
+        "cells": [
+         "Kissik",
+         "Naatu Naatu",
+         "Peelings"
+        ],
+        "look": null,
+        "gone": [],
+        "printed": [
+         "['Kissik', 'Naatu Naatu', 'Peelings']"
+        ],
+        "caption": "Line 3: it prints ['Kissik', 'Naatu Naatu', 'Peelings']."
+       }
+      ],
+      "output": [
+       "['Kissik', 'Naatu Naatu', 'Peelings']"
+      ],
+      "missing_output": "ValueError: list.remove(x): x not in list"
+     },
+     "animated": "explainer",
+     "engage": "motion",
+     "ops": [
+      "remove()"
+     ],
+     "motion": "A finger looks from index 0, one cell per press; the first match vanishes and the rest slide left.",
+     "keeps": "The second Peelings, still in the list.",
+     "trap": {
+      "belief": "remove takes the last match",
+      "wrong": "['Kissik', 'Peelings', 'Naatu Naatu']",
+      "code": 0
+     },
+     "press_count": 9
+    },
+    {
+     "id": "C6",
+     "title": "clear",
+     "source": [
+      21
+     ],
+     "purpose": "clear() takes every item. The list is still there, empty.",
+     "heading": "Clear",
+     "show": [
+      "What will it print?",
+      "list.clear()",
+      "Removes all the items from the list.",
+      "pop: the last. remove: one value. clear: all of them."
+     ],
+     "code": [
+      {
+       "file": "clear.py",
+       "src": "queue = ['Naatu Naatu', 'Kissik', 'Peelings']\nqueue.clear()\nprint(queue)",
+       "output": "[]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "clear.py with line numbers (deck slide 21), its list drawn as cells with the index under each, and an empty output box. Caption: <q>What will it print?</q>",
+       "say": "Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "All three cells vanish together. The empty brackets stay, and queue still points at them. The output fills <q>[]</q>.",
+       "say": "Empty, but still a list."
+      },
+      {
+       "screen": "The shape arrives under the run: <q>list.clear()</q> with <q>Removes all the items from the list.</q>",
+       "say": "pop: the last. remove: one value. clear: all of them."
+      }
+     ],
+     "answer": "[]",
+     "must": [
+      "A list is a row of cells with its index under each cell, from 0. When an item comes in or goes out, the cells after it slide one place and their index numbers change with them.",
+      "The output appears only after the room has said or voted it.",
+      "The shape and its meaning come last, after the run, never before.",
+      "A removed item vanishes. No grey ghost, no strikethrough. The cells close the gap.",
+      "While it moves, this stays exactly as it was: The empty brackets and the name queue: the list is still there.",
+      "Keep these exact values. Someone who thinks clear deletes the list itself would say NameError: name 'queue' is not defined; Python gives []. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show the deck slide's definition before the run."
+     ],
+     "play": "The deck's code box and the cells. One method on screen at a time.",
+     "engage": "motion",
+     "ops": [
+      "clear()"
+     ],
+     "motion": "Every cell vanishes together.",
+     "keeps": "The empty brackets and the name queue: the list is still there.",
+     "trap": {
+      "belief": "clear deletes the list itself",
+      "wrong": "NameError: name 'queue' is not defined",
+      "code": 0
+     },
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "Classroom quiz",
+   "kind": "quiz",
+   "mins": 6,
+   "start": 39,
+   "cards": [
+    {
+     "id": "S-QUIZ",
+     "title": "Quiz",
+     "source": "spine:quiz",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Hook 2: counting plays the long way",
+   "kind": "hook",
+   "mins": 3,
+   "start": 45,
+   "cards": [
+    {
+     "id": "H2",
+     "title": "Counting plays, the long way",
+     "source": "new",
+     "purpose": "Feel why count is worth having: counting how many times Teja played one song takes a loop of 5 lines. The list already has a tool for it.",
+     "heading": "Teja's listening history",
+     "show": [
+      "How many times did Teja play Kissik today?",
+      "How did your eyes count?",
+      "5 lines to count one song.",
+      "The list has a tool for this."
+     ],
+     "code": [
+      {
+       "file": "count_long.py",
+       "src": "history = ['Kissik', 'Naatu Naatu', 'Kissik', 'Peelings', 'Kissik', 'Butta Bomma', 'Kissik']\ncount = 0\nfor song in history:\n    if song == 'Kissik':\n        count = count + 1\nprint(count)",
+       "output": "4"
+      },
+      {
+       "file": "count_short.py",
+       "src": "history = ['Kissik', 'Naatu Naatu', 'Kissik', 'Peelings', 'Kissik', 'Butta Bomma', 'Kissik']\nprint(history.count('Kissik'))",
+       "output": "4"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Teja's YouTube Music history for today, one row per play, top to bottom: Kissik, Naatu Naatu, Kissik, Peelings, Kissik, Butta Bomma, Kissik. Caption: <q>How many times did Teja play Kissik today?</q>",
+       "say": "Count with your eyes. Say the number.",
+       "room": "Say: 4."
+      },
+      {
+       "screen": "A finger runs down the rows; each Kissik row lights and a counter ticks. Caption: <q>How did your eyes count?</q>",
+       "say": "You looked at each row and added one when it matched.",
+       "room": "Say how."
+      },
+      {
+       "screen": "The long way, written out: count_long.py. Its lines light in order: the counter, the loop, the check, the add, the print. The output shows <q>4</q>. Caption: <q>5 lines to count one song.</q>",
+       "say": "This is what your eyes did, as a loop. You have written loops like this."
+      },
+      {
+       "screen": "The turn, one movement: the loop collapses into one line, print(history.count('Kissik')), count_short.py. The output is the same <q>4</q>. Caption: <q>The list has a tool for this.</q>",
+       "say": "Same answer. One line. The list counts for us."
+      }
+     ],
+     "answer": "4. The long way and history.count('Kissik') both print 4.",
+     "must": [
+      "Both programs are real and run; the outputs shown are theirs.",
+      "The collapse is one movement and the output does not change.",
+      "While it moves, this stays exactly as it was: The history list and the answer 4: the program shrinks, the list and the output do not change.",
+      "Keep these exact values. Someone who thinks count stops at the first match would say 1; Python gives 4. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Animate by itself."
+     ],
+     "data": {
+      "history": [
+       "Kissik",
+       "Naatu Naatu",
+       "Kissik",
+       "Peelings",
+       "Kissik",
+       "Butta Bomma",
+       "Kissik"
+      ],
+      "song": "Kissik"
+     },
+     "engage": "motion",
+     "ops": [
+      "count()"
+     ],
+     "motion": "A finger runs down the history and a counter ticks on each Kissik; then the five-line loop collapses into one line. It proves count does the loop's job.",
+     "keeps": "The history list and the answer 4: the program shrinks, the list and the output do not change.",
+     "trap": {
+      "belief": "count stops at the first match",
+      "wrong": "1",
+      "code": 1
+     },
+     "play": "The history page: wear YouTube Music's look again. How the long program collapses is yours.",
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Asking the list: index and count",
+   "kind": "concept",
+   "mins": 3,
+   "start": 48,
+   "cards": [
+    {
+     "id": "C7",
+     "title": "index",
+     "source": [
+      22
+     ],
+     "purpose": "index(value) gives back the index of the first match. The list does not change.",
+     "heading": "Finding index",
+     "show": [
+      "What will it print?",
+      "1",
+      "3",
+      "[1, 3]",
+      "list.index(value)",
+      "Returns the index at the first occurrence of the specified value."
+     ],
+     "code": [
+      {
+       "file": "index.py",
+       "src": "queue = ['Kissik', 'Peelings', 'Naatu Naatu', 'Peelings']\nplace = queue.index('Peelings')\nprint(place)",
+       "output": "1"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "index.py with line numbers (deck slide 22), its list drawn as cells with the index under each, and an empty output box. Caption: <q>What will it print?</q> Choices <q>1</q>, <q>3</q>, <q>[1, 3]</q>.",
+       "say": "Two Peelings again. Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "A finger looks from index 0 and stops on the first Peelings. The cells stay as they were. The output fills <q>1</q>.",
+       "say": "Like remove: from the left, first match, stop. But nothing is taken out."
+      },
+      {
+       "screen": "The shape arrives under the run: <q>list.index(value)</q> with <q>Returns the index at the first occurrence of the specified value.</q>",
+       "say": "index gives back a number."
+      }
+     ],
+     "answer": "1",
+     "must": [
+      "A list is a row of cells with its index under each cell, from 0. When an item comes in or goes out, the cells after it slide one place and their index numbers change with them.",
+      "The output appears only after the room has said or voted it.",
+      "The shape and its meaning come last, after the run, never before.",
+      "While it moves, this stays exactly as it was: Every cell: index takes nothing out.",
+      "Keep these exact values. Someone who thinks index gives the place of the last match would say 3; Python gives 1. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show the deck slide's definition before the run."
+     ],
+     "play": "The deck's code box and the cells. One method on screen at a time.",
+     "engage": "motion",
+     "ops": [
+      "index()"
+     ],
+     "motion": "A finger looks from index 0 and stops on the first match.",
+     "keeps": "Every cell: index takes nothing out.",
+     "trap": {
+      "belief": "index gives the place of the last match",
+      "wrong": "3",
+      "code": 0
+     },
+     "press_count": 3
+    },
+    {
+     "id": "C8",
+     "title": "count",
+     "source": [
+      23
+     ],
+     "purpose": "count(value) gives back how many times the value is there. A missing value: count gives 0, index is an error.",
+     "heading": "Count",
+     "show": [
+      "What will it print?",
+      "list.count(value)",
+      "Returns the number of elements with the specified value.",
+      "count gives back a number. The list does not change.",
+      "And for a value that is not there?"
+     ],
+     "code": [
+      {
+       "file": "count.py",
+       "src": "queue = ['Kissik', 'Peelings', 'Naatu Naatu', 'Peelings']\ncount = queue.count('Peelings')\nprint(count)",
+       "output": "2"
+      },
+      {
+       "file": "count_missing.py",
+       "src": "queue = ['Kissik', 'Peelings', 'Naatu Naatu', 'Peelings']\nprint(queue.count('Chuttamalle'))",
+       "output": "0"
+      },
+      {
+       "file": "index_missing.py",
+       "src": "queue = ['Kissik', 'Peelings', 'Naatu Naatu', 'Peelings']\nprint(queue.index('Chuttamalle'))",
+       "output": "ValueError: 'Chuttamalle' is not in list"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "count.py with line numbers (deck slide 23), its list drawn as cells with the index under each, and an empty output box. Caption: <q>What will it print?</q>",
+       "say": "Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Each Peelings lights as it is counted: one, two. The cells stay as they were. The output fills <q>2</q>.",
+       "say": "Teja's history.count gave 4."
+      },
+      {
+       "screen": "The shape arrives under the run: <q>list.count(value)</q> with <q>Returns the number of elements with the specified value.</q>",
+       "say": "count gives back a number. The list does not change."
+      },
+      {
+       "screen": "count_missing.py and index_missing.py side by side, both asking for Chuttamalle, empty outputs. Caption: <q>And for a value that is not there?</q>",
+       "say": "Say both.",
+       "room": "Say both outputs."
+      },
+      {
+       "screen": "The outputs fill <q>0</q> and <q>ValueError: 'Chuttamalle' is not in list</q>.",
+       "say": "count can say zero. index has no place to give, so it stops with an error."
+      }
+     ],
+     "answer": "count('Peelings'): 2. count('Chuttamalle'): 0. index('Chuttamalle'): ValueError: 'Chuttamalle' is not in list",
+     "must": [
+      "A list is a row of cells with its index under each cell, from 0. When an item comes in or goes out, the cells after it slide one place and their index numbers change with them.",
+      "The output appears only after the room has said or voted it.",
+      "The shape and its meaning come last, after the run, never before.",
+      "The index error text is what the class playground prints.",
+      "While it moves, this stays exactly as it was: Every cell: count takes nothing out.",
+      "Keep these exact values. Someone who thinks count gives the place of the song would say 1; Python gives 2. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show the deck slide's definition before the run."
+     ],
+     "play": "The deck's code box and the cells. One method on screen at a time.",
+     "engage": "motion",
+     "ops": [
+      "count()"
+     ],
+     "motion": "Each match lights as it is counted.",
+     "keeps": "Every cell: count takes nothing out.",
+     "trap": {
+      "belief": "count gives the place of the song",
+      "wrong": "1",
+      "code": 0
+     },
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "sort changes the list; sorted makes a new one",
+   "kind": "concept",
+   "mins": 3,
+   "start": 51,
+   "cards": [
+    {
+     "id": "C9",
+     "title": "sort",
+     "source": [
+      24
+     ],
+     "purpose": "plays.sort() puts the same list in order, smallest first. Teja's play counts this month.",
+     "heading": "Sort",
+     "show": [
+      "What will it print?",
+      "list.sort()",
+      "Sorts the list"
+     ],
+     "code": [
+      {
+       "file": "sort.py",
+       "src": "plays = [40, 12, 75]\nplays.sort()\nprint(plays)",
+       "output": "[12, 40, 75]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "sort.py with line numbers (deck slide 24), its list drawn as cells with the index under each, and an empty output box. Caption: <q>What will it print?</q>",
+       "say": "Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "The cells reorder: 40 and 12 swap places. It is still the same row. The output fills <q>[12, 40, 75]</q>.",
+       "say": "The same list, now in order."
+      },
+      {
+       "screen": "The shape arrives under the run: <q>list.sort()</q> with <q>Sorts the list</q>",
+       "say": "sort changes the list itself."
+      }
+     ],
+     "answer": "[12, 40, 75]",
+     "must": [
+      "A list is a row of cells with its index under each cell, from 0. When an item comes in or goes out, the cells after it slide one place and their index numbers change with them.",
+      "The output appears only after the room has said or voted it.",
+      "The shape and its meaning come last, after the run, never before.",
+      "While it moves, this stays exactly as it was: The same row: no new list appears.",
+      "Keep these exact values. Someone who thinks sort() gives back a new list and plays stays as it was would say [40, 12, 75]; Python gives [12, 40, 75]. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show the deck slide's definition before the run."
+     ],
+     "play": "The deck's code box and the cells. One method on screen at a time.",
+     "engage": "motion",
+     "ops": [
+      "sort()"
+     ],
+     "motion": "The cells swap into order.",
+     "keeps": "The same row: no new list appears.",
+     "trap": {
+      "belief": "sort() gives back a new list and plays stays as it was",
+      "wrong": "[40, 12, 75]",
+      "code": 0
+     },
+     "press_count": 3
+    },
+    {
+     "id": "C10",
+     "title": "sort or sorted",
+     "source": [
+      25,
+      26
+     ],
+     "purpose": "sorted(plays) makes a new list and leaves plays alone; plays.sort() changes plays. sort gives back nothing, so new_plays = plays.sort() makes new_plays None.",
+     "heading": "Sort and sorted",
+     "show": [
+      "What will it print?",
+      "Modifies the list",
+      "Creates a new sorted list",
+      "What does line 3 print?",
+      "[12, 40, 75]",
+      "[40, 12, 75]",
+      "None",
+      "sort changes the list and gives back nothing: None."
+     ],
+     "code": [
+      {
+       "file": "sort.py",
+       "src": "plays = [40, 12, 75]\nplays.sort()\nprint(plays)",
+       "output": "[12, 40, 75]"
+      },
+      {
+       "file": "sorted.py",
+       "src": "plays = [40, 12, 75]\nsorted(plays)\nprint(plays)",
+       "output": "[40, 12, 75]"
+      },
+      {
+       "file": "sort_none.py",
+       "src": "plays = [40, 12, 75]\nnew_plays = plays.sort()\nprint(new_plays)\nprint(plays)",
+       "output": "None\n[12, 40, 75]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "sort.py and sorted.py side by side (deck slide 25), sorted.py's output empty. Caption: <q>What will it print?</q>",
+       "say": "This is the recap's line 2. Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "sorted.py's output fills <q>[40, 12, 75]</q>. Under the two: <q>Modifies the list</q> and <q>Creates a new sorted list</q> (deck slide 26).",
+       "say": "So the recap had two fixes: minutes = sorted(minutes), or minutes.sort()."
+      },
+      {
+       "screen": "sort_none.py, empty output. Caption: <q>What does line 3 print?</q> Choices <q>[12, 40, 75]</q>, <q>[40, 12, 75]</q>, <q>None</q>.",
+       "say": "new_plays is what sort gives back. Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "The output fills <q>None</q> then <q>[12, 40, 75]</q>. Caption: <q>sort changes the list and gives back nothing: None.</q>",
+       "say": "None is Python's word for nothing. sort did its job on plays and handed back nothing."
+      }
+     ],
+     "answer": "sorted alone: [40, 12, 75]; list_b = list_a.sort(): None / [12, 40, 75]",
+     "must": [
+      "Each output appears only after the room has answered.",
+      "On the last press plays is drawn sorted and new_plays points at nothing, labelled None.",
+      "Keep these exact values. Someone who thinks sorted(plays) changes plays would say [12, 40, 75]; Python gives [40, 12, 75]. New values could hide that mistake.",
+      "Keep these exact values. Someone who thinks sort gives back the sorted list would say [12, 40, 75]\n[12, 40, 75]; Python gives None\n[12, 40, 75]. New values could hide that mistake."
+     ],
+     "engage": "play",
+     "interaction": "The room says sorted.py's output, then votes on what new_plays holds, hands per option, before each run.",
+     "trap": [
+      {
+       "belief": "sorted(plays) changes plays",
+       "wrong": "[12, 40, 75]",
+       "code": 1
+      },
+      {
+       "belief": "sort gives back the sorted list",
+       "wrong": "[12, 40, 75]\n[12, 40, 75]",
+       "code": 2
+      }
+     ],
+     "play": "Deck slides 25 and 26 as one card. The two code boxes side by side are a fine start.",
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Game G2: does Ram see it?",
+   "kind": "activity",
+   "mins": 4,
+   "start": 54,
+   "cards": [
+    {
+     "id": "G2",
+     "title": "Does Ram see it?",
+     "game": "change-or-move",
+     "ops": [
+      "sort()"
+     ],
+     "purpose": "Teja and Ram open the same party queue on two phones. Some lines change that one list; sorted makes a new one. The room decides, line by line, whether Ram's phone shows the change.",
+     "heading": "Does Ram see it?",
+     "data": {
+      "setup": {
+       "world": "Teja's party queue open on two phones: teja is his phone, ram is Ram's"
+      },
+      "intro": "ram = teja means two phones, one queue. Watch line 3.",
+      "rounds": [
+       {
+        "ask": "What does print(ram) show?",
+        "program": "teja = ['Peelings', 'Kissik', 'Chuttamalle']\nram = teja\nteja.sort()\nprint(ram)",
+        "output": "['Chuttamalle', 'Kissik', 'Peelings']",
+        "options": [
+         "['Chuttamalle', 'Kissik', 'Peelings']",
+         "['Peelings', 'Kissik', 'Chuttamalle']"
+        ],
+        "answer": "['Chuttamalle', 'Kissik', 'Peelings']",
+        "because": "sort changes the same list, so Ram sees it in order.",
+        "why": {
+         "['Peelings', 'Kissik', 'Chuttamalle']": "The method changed the one list both phones share. Ram cannot miss it."
+        },
+        "steps": [
+         {
+          "caption": "Line 1: teja is the party queue, ['Peelings', 'Kissik', 'Chuttamalle'].",
+          "line": 1,
+          "a": [
+           "Peelings",
+           "Kissik",
+           "Chuttamalle"
+          ],
+          "b": null,
+          "same": false
+         },
+         {
+          "caption": "Line 2: ram is the same queue. Two phones, one list.",
+          "line": 2,
+          "a": [
+           "Peelings",
+           "Kissik",
+           "Chuttamalle"
+          ],
+          "b": [
+           "Peelings",
+           "Kissik",
+           "Chuttamalle"
+          ],
+          "same": true
+         },
+         {
+          "caption": "Line 3 changes the same list. Both phones see ['Chuttamalle', 'Kissik', 'Peelings'].",
+          "line": 3,
+          "a": [
+           "Chuttamalle",
+           "Kissik",
+           "Peelings"
+          ],
+          "b": [
+           "Chuttamalle",
+           "Kissik",
+           "Peelings"
+          ],
+          "same": true
+         }
+        ]
+       },
+       {
+        "ask": "What does print(ram) show?",
+        "program": "teja = ['Peelings', 'Kissik', 'Chuttamalle']\nram = teja\nteja = sorted(teja)\nprint(ram)",
+        "output": "['Peelings', 'Kissik', 'Chuttamalle']",
+        "options": [
+         "['Chuttamalle', 'Kissik', 'Peelings']",
+         "['Peelings', 'Kissik', 'Chuttamalle']"
+        ],
+        "answer": "['Peelings', 'Kissik', 'Chuttamalle']",
+        "because": "sorted makes a new list. Only teja moves to it; Ram keeps the old order.",
+        "why": {
+         "['Chuttamalle', 'Kissik', 'Peelings']": "sorted(teja) gives back a new list. Line 3 moves only the name teja."
+        },
+        "steps": [
+         {
+          "caption": "Line 1: teja is the party queue, ['Peelings', 'Kissik', 'Chuttamalle'].",
+          "line": 1,
+          "a": [
+           "Peelings",
+           "Kissik",
+           "Chuttamalle"
+          ],
+          "b": null,
+          "same": false
+         },
+         {
+          "caption": "Line 2: ram is the same queue. Two phones, one list.",
+          "line": 2,
+          "a": [
+           "Peelings",
+           "Kissik",
+           "Chuttamalle"
+          ],
+          "b": [
+           "Peelings",
+           "Kissik",
+           "Chuttamalle"
+          ],
+          "same": true
+         },
+         {
+          "caption": "Line 3 makes a new list. Only teja moves to it. ram still has ['Peelings', 'Kissik', 'Chuttamalle'].",
+          "line": 3,
+          "a": [
+           "Chuttamalle",
+           "Kissik",
+           "Peelings"
+          ],
+          "b": [
+           "Peelings",
+           "Kissik",
+           "Chuttamalle"
+          ],
+          "same": false
+         }
+        ]
+       },
+       {
+        "ask": "What does print(ram) show?",
+        "program": "teja = ['Peelings', 'Kissik', 'Chuttamalle']\nram = teja\nteja.pop()\nprint(ram)",
+        "output": "['Peelings', 'Kissik']",
+        "options": [
+         "['Peelings', 'Kissik']",
+         "['Peelings', 'Kissik', 'Chuttamalle']"
+        ],
+        "answer": "['Peelings', 'Kissik']",
+        "because": "pop changes the same list, so Ram loses the last song too.",
+        "why": {
+         "['Peelings', 'Kissik', 'Chuttamalle']": "The method changed the one list both phones share. Ram cannot miss it."
+        },
+        "steps": [
+         {
+          "caption": "Line 1: teja is the party queue, ['Peelings', 'Kissik', 'Chuttamalle'].",
+          "line": 1,
+          "a": [
+           "Peelings",
+           "Kissik",
+           "Chuttamalle"
+          ],
+          "b": null,
+          "same": false
+         },
+         {
+          "caption": "Line 2: ram is the same queue. Two phones, one list.",
+          "line": 2,
+          "a": [
+           "Peelings",
+           "Kissik",
+           "Chuttamalle"
+          ],
+          "b": [
+           "Peelings",
+           "Kissik",
+           "Chuttamalle"
+          ],
+          "same": true
+         },
+         {
+          "caption": "Line 3 changes the same list. Both phones see ['Peelings', 'Kissik'].",
+          "line": 3,
+          "a": [
+           "Peelings",
+           "Kissik"
+          ],
+          "b": [
+           "Peelings",
+           "Kissik"
+          ],
+          "same": true
+         }
+        ]
+       },
+       {
+        "ask": "What does print(ram) show?",
+        "program": "teja = ['Peelings', 'Kissik', 'Chuttamalle']\nram = teja\nteja.clear()\nprint(ram)",
+        "output": "[]",
+        "options": [
+         "[]",
+         "['Peelings', 'Kissik', 'Chuttamalle']"
+        ],
+        "answer": "[]",
+        "because": "clear empties the same list. Ram's phone shows it empty too.",
+        "why": {
+         "['Peelings', 'Kissik', 'Chuttamalle']": "clear does not make a new list. It empties the one both phones share."
+        },
+        "steps": [
+         {
+          "caption": "Line 1: teja is the party queue, ['Peelings', 'Kissik', 'Chuttamalle'].",
+          "line": 1,
+          "a": [
+           "Peelings",
+           "Kissik",
+           "Chuttamalle"
+          ],
+          "b": null,
+          "same": false
+         },
+         {
+          "caption": "Line 2: ram is the same queue. Two phones, one list.",
+          "line": 2,
+          "a": [
+           "Peelings",
+           "Kissik",
+           "Chuttamalle"
+          ],
+          "b": [
+           "Peelings",
+           "Kissik",
+           "Chuttamalle"
+          ],
+          "same": true
+         },
+         {
+          "caption": "Line 3 changes the same list. Both phones see [].",
+          "line": 3,
+          "a": [],
+          "b": [],
+          "same": true
+         }
+        ]
+       }
+      ]
+     },
+     "say": {
+      "ask": "Does Ram see the change? Option A, hands up. B.",
+      "step": "Did that line change the list, or move a name?",
+      "verdict": "Which line decided it? Change or move?"
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "When a line changes the object in place, the object changes where it stands and no arrow moves.",
+      "When a line makes a new object, the new object is drawn new and the old one stays on screen, unchanged, for as long as a name points at it.",
+      "An object no name points at fades, and stays faded.",
+      "teja and ram are drawn as two phones showing one queue, with an arrow from each name to the queue.",
+      "Round 2 (sorted) draws a new sorted queue for teja; ram's queue stays on screen, in the old order."
+     ],
+     "play": "The two phones, the queue and the arrows. Wear YouTube Music's look.",
+     "presses": [
+      {
+       "screen": "Before round 1: <q>ram = teja means two phones, one queue. Watch line 3.</q>",
+       "say": "Read it out. Say how a round works: you answer first, then it runs.",
+       "room": "Listen."
+      },
+      {
+       "screen": "Round 1 of 4. The round's setup, as in the data. The question: <q>What does print(ram) show?</q> Options: A <q>['Chuttamalle', 'Kissik', 'Peelings']</q>, B <q>['Peelings', 'Kissik', 'Chuttamalle']</q>. Nothing runs yet.",
+       "say": "Does Ram see the change? Option A, hands up. B.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 1: teja is the party queue, ['Peelings', 'Kissik', 'Chuttamalle'].</q> In the data: line = 1; a = [\"Peelings\", \"Kissik\", \"Chuttamalle\"]; b = null; same = false.",
+       "say": "Did that line change the list, or move a name?"
+      },
+      {
+       "screen": "<q>Line 2: ram is the same queue. Two phones, one list.</q> In the data: line = 2; a = [\"Peelings\", \"Kissik\", \"Chuttamalle\"]; b = [\"Peelings\", \"Kissik\", \"Chuttamalle\"]; same = true.",
+       "say": "Did that line change the list, or move a name?"
+      },
+      {
+       "screen": "<q>Line 3 changes the same list. Both phones see ['Chuttamalle', 'Kissik', 'Peelings'].</q> In the data: line = 3; a = [\"Chuttamalle\", \"Kissik\", \"Peelings\"]; b = [\"Chuttamalle\", \"Kissik\", \"Peelings\"]; same = true.",
+       "say": "Did that line change the list, or move a name?"
+      },
+      {
+       "screen": "The answer: <q>['Chuttamalle', 'Kissik', 'Peelings']</q>. <q>sort changes the same list, so Ram sees it in order.</q> Then a line for every other option: <q>['Peelings', 'Kissik', 'Chuttamalle']</q> <q>The method changed the one list both phones share. Ram cannot miss it.</q>.",
+       "say": "Which line decided it? Change or move?"
+      },
+      {
+       "screen": "Round 2 of 4. The round's setup, as in the data. The question: <q>What does print(ram) show?</q> Options: A <q>['Chuttamalle', 'Kissik', 'Peelings']</q>, B <q>['Peelings', 'Kissik', 'Chuttamalle']</q>. Nothing runs yet.",
+       "say": "Does Ram see the change? Option A, hands up. B.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 1: teja is the party queue, ['Peelings', 'Kissik', 'Chuttamalle'].</q> In the data: line = 1; a = [\"Peelings\", \"Kissik\", \"Chuttamalle\"]; b = null; same = false.",
+       "say": "Did that line change the list, or move a name?"
+      },
+      {
+       "screen": "<q>Line 2: ram is the same queue. Two phones, one list.</q> In the data: line = 2; a = [\"Peelings\", \"Kissik\", \"Chuttamalle\"]; b = [\"Peelings\", \"Kissik\", \"Chuttamalle\"]; same = true.",
+       "say": "Did that line change the list, or move a name?"
+      },
+      {
+       "screen": "<q>Line 3 makes a new list. Only teja moves to it. ram still has ['Peelings', 'Kissik', 'Chuttamalle'].</q> In the data: line = 3; a = [\"Chuttamalle\", \"Kissik\", \"Peelings\"]; b = [\"Peelings\", \"Kissik\", \"Chuttamalle\"]; same = false.",
+       "say": "Did that line change the list, or move a name?"
+      },
+      {
+       "screen": "The answer: <q>['Peelings', 'Kissik', 'Chuttamalle']</q>. <q>sorted makes a new list. Only teja moves to it; Ram keeps the old order.</q> Then a line for every other option: <q>['Chuttamalle', 'Kissik', 'Peelings']</q> <q>sorted(teja) gives back a new list. Line 3 moves only the name teja.</q>.",
+       "say": "Which line decided it? Change or move?"
+      },
+      {
+       "screen": "Round 3 of 4. The round's setup, as in the data. The question: <q>What does print(ram) show?</q> Options: A <q>['Peelings', 'Kissik']</q>, B <q>['Peelings', 'Kissik', 'Chuttamalle']</q>. Nothing runs yet.",
+       "say": "Does Ram see the change? Option A, hands up. B.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 1: teja is the party queue, ['Peelings', 'Kissik', 'Chuttamalle'].</q> In the data: line = 1; a = [\"Peelings\", \"Kissik\", \"Chuttamalle\"]; b = null; same = false.",
+       "say": "Did that line change the list, or move a name?"
+      },
+      {
+       "screen": "<q>Line 2: ram is the same queue. Two phones, one list.</q> In the data: line = 2; a = [\"Peelings\", \"Kissik\", \"Chuttamalle\"]; b = [\"Peelings\", \"Kissik\", \"Chuttamalle\"]; same = true.",
+       "say": "Did that line change the list, or move a name?"
+      },
+      {
+       "screen": "<q>Line 3 changes the same list. Both phones see ['Peelings', 'Kissik'].</q> In the data: line = 3; a = [\"Peelings\", \"Kissik\"]; b = [\"Peelings\", \"Kissik\"]; same = true.",
+       "say": "Did that line change the list, or move a name?"
+      },
+      {
+       "screen": "The answer: <q>['Peelings', 'Kissik']</q>. <q>pop changes the same list, so Ram loses the last song too.</q> Then a line for every other option: <q>['Peelings', 'Kissik', 'Chuttamalle']</q> <q>The method changed the one list both phones share. Ram cannot miss it.</q>.",
+       "say": "Which line decided it? Change or move?"
+      },
+      {
+       "screen": "Round 4 of 4. The round's setup, as in the data. The question: <q>What does print(ram) show?</q> Options: A <q>[]</q>, B <q>['Peelings', 'Kissik', 'Chuttamalle']</q>. Nothing runs yet.",
+       "say": "Does Ram see the change? Option A, hands up. B.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 1: teja is the party queue, ['Peelings', 'Kissik', 'Chuttamalle'].</q> In the data: line = 1; a = [\"Peelings\", \"Kissik\", \"Chuttamalle\"]; b = null; same = false.",
+       "say": "Did that line change the list, or move a name?"
+      },
+      {
+       "screen": "<q>Line 2: ram is the same queue. Two phones, one list.</q> In the data: line = 2; a = [\"Peelings\", \"Kissik\", \"Chuttamalle\"]; b = [\"Peelings\", \"Kissik\", \"Chuttamalle\"]; same = true.",
+       "say": "Did that line change the list, or move a name?"
+      },
+      {
+       "screen": "<q>Line 3 changes the same list. Both phones see [].</q> In the data: line = 3; a = []; b = []; same = true.",
+       "say": "Did that line change the list, or move a name?"
+      },
+      {
+       "screen": "The answer: <q>[]</q>. <q>clear empties the same list. Ram's phone shows it empty too.</q> Then a line for every other option: <q>['Peelings', 'Kissik', 'Chuttamalle']</q> <q>clear does not make a new list. It empties the one both phones share.</q>.",
+       "say": "Which line decided it? Change or move?"
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Animate anything that suggests the old object was edited when a new one was made.",
+      "Move both arrows when only one name was assigned."
+     ],
+     "interaction": "Two name tags, a and b, and the objects they point at. Each round runs a short program; the room decides whether b sees the change or a's tag just moved. Then each line runs, one press per line, with the arrows redrawn.",
+     "game_def": {
+      "id": "change-or-move",
+      "name": "Change or move?",
+      "one_line": "Two name tags, a and b, and the objects they point at. Each round runs a short program; the room decides whether b sees the change or a's tag just moved. Then each line runs, one press per line, with the arrows redrawn.",
+      "how": [
+       "The program on the left. On the right, the name tags a and b, each with an arrow to its object, drawn in the setup's world (a playlist, a cart).",
+       "The question is always what print(b) shows. Options are the concrete outputs.",
+       "Each press runs one line. If the line changes the object, the object changes and both arrows stay. If the line makes a new object, a new object appears and only one arrow moves.",
+       "The verdict prints b."
+      ],
+      "setup": {
+       "world": "what the objects are drawn as, the same world as the hook if it fits"
+      },
+      "round": {
+       "program": "the code, exact, ending in print(b)",
+       "output": "what print(b) shows, computed"
+      },
+      "step": {
+       "line": "the line number just run",
+       "a": "a's value after the line, or null before it exists",
+       "b": "b's value after the line, or null before it exists",
+       "same": "true when a and b point at the same object after the line"
+      }
+     },
+     "press_count": 21
+    }
+   ]
+  },
+  {
+   "name": "Task 2: Fibonacci with append",
+   "kind": "activity",
+   "mins": 9,
+   "start": 58,
+   "cards": [
+    {
+     "id": "T2",
+     "title": "Task 2: the Fibonacci series",
+     "source": [
+      27,
+      28,
+      29,
+      31,
+      32
+     ],
+     "handout": "Task 2",
+     "activity": 19,
+     "timer": 480,
+     "purpose": "Build the Fibonacci series in a list: start from [0, 1] and append the sum of the last two, then print the Nth term. Then use my notes' range(2, n) and find that fib[n] does not exist yet.",
+     "heading": "Nth term in the Fibonacci series",
+     "show": [
+      "Worksheet · Task 2",
+      "Given an integer N, print the Nth Fibonacci number.",
+      "0, 1, 1, 2, 3, 5, 8 ...",
+      "The first two terms are 0 and 1.",
+      "Every other term adds the two before it.",
+      "Write line 4. Predict for 7. Run. Then 3 and 9.",
+      "My notes say range(2, n). Change it. Run with 5.",
+      "fib[5] was never added."
+     ],
+     "code": [
+      {
+       "file": "fibonacci.py",
+       "src": "n = int(input())\nfib = [0, 1]\nfor i in range(2, n + 1):\n    fib.append(fib[i - 1] + fib[i - 2])\nprint(fib[n])",
+       "output": "13",
+       "input": "7"
+      },
+      {
+       "file": "fibonacci_3.py",
+       "src": "n = int(input())\nfib = [0, 1]\nfor i in range(2, n + 1):\n    fib.append(fib[i - 1] + fib[i - 2])\nprint(fib[n])",
+       "output": "2",
+       "input": "3"
+      },
+      {
+       "file": "fibonacci_9.py",
+       "src": "n = int(input())\nfib = [0, 1]\nfor i in range(2, n + 1):\n    fib.append(fib[i - 1] + fib[i - 2])\nprint(fib[n])",
+       "output": "34",
+       "input": "9"
+      },
+      {
+       "file": "fibonacci_my_notes.py",
+       "src": "n = int(input())\nfib = [0, 1]\nfor i in range(2, n):\n    fib.append(fib[i - 1] + fib[i - 2])\nprint(fib[n])",
+       "output": "IndexError: list index out of range",
+       "input": "5"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slides 27 and 28: the question <q>Given an integer N, print the Nth Fibonacci number.</q>, the series <q>0, 1, 1, 2, 3, 5, 8 ...</q> with <q>The first two terms are 0 and 1.</q> and <q>Every other term adds the two before it.</q> The 0+1, 1+1, 1+2 arrows draw in one per press of the voice.",
+       "say": "What comes after 8? Say it.",
+       "room": "Say: 13."
+      },
+      {
+       "screen": "Deck slide 29's line, Nth term = (N - 1)th term + (N - 2)th term, beside a list of cells 0 | 1 with index 0 and 1 under them. Slides 31 and 32's examples: 3 gives 2, 9 gives 34.",
+       "say": "Our list is the series. Each new term goes at the end. Which method adds at the end?",
+       "room": "Say: append."
+      },
+      {
+       "screen": "fibonacci.py with line numbers and line 4 as one empty dashed line, the steps and an 8 minute timer. Caption: <q>Write line 4. Predict for 7. Run. Then 3 and 9.</q>",
+       "say": "Worksheet and playground. Type lines 1 to 3 and 5, write line 4 yourself, predict for 7, run.",
+       "room": "Type, write, predict, run."
+      },
+      {
+       "screen": "Step 2 lights: <q>My notes say range(2, n). Change it. Run with 5.</q>",
+       "say": "This is how I wrote it in my notes. Change it and run. Let them react first.",
+       "room": "Change line 3, run."
+      },
+      {
+       "screen": "Line 4 fills in: fib.append(fib[i - 1] + fib[i - 2]).",
+       "say": "The two before it, added, at the end."
+      },
+      {
+       "screen": "For input 7, one pass per press, following data.trace: the new cell drops in at the end with its sum.",
+       "n": 6,
+       "say": "Say the next term before I press.",
+       "room": "Say it."
+      },
+      {
+       "screen": "fibonacci.py runs with 7, 3 and 9: <q>13</q>, <q>2</q>, <q>34</q>.",
+       "say": "3 and 9 match the deck's examples."
+      },
+      {
+       "screen": "My notes' version runs with 5: the terminal shows only <q>IndexError: list index out of range</q>. The cells stop at index 4. Caption: <q>fib[5] was never added.</q>",
+       "say": "range(2, n) stops one pass early. The list has no index 5 yet. That is why it is n + 1."
+      }
+     ],
+     "answer": "Line 4: fib.append(fib[i - 1] + fib[i - 2]). 7: 13, 3: 2, 9: 34. My notes: IndexError: list index out of range",
+     "must": [
+      "Step 2 is framed as the instructor's own notes, not a test.",
+      "No result shows until the timer has ended.",
+      "On the last press the terminal shows only the error: nothing printed before it."
+     ],
+     "must_not": [
+      "Show line 4 before the timer has ended.",
+      "Mention recursion. This course solves it with a list."
+     ],
+     "data": {
+      "trace": [
+       {
+        "i": 2,
+        "adds": "fib[1] + fib[0] = 1 + 0",
+        "value": 1,
+        "fib": [
+         0,
+         1,
+         1
+        ]
+       },
+       {
+        "i": 3,
+        "adds": "fib[2] + fib[1] = 1 + 1",
+        "value": 2,
+        "fib": [
+         0,
+         1,
+         1,
+         2
+        ]
+       },
+       {
+        "i": 4,
+        "adds": "fib[3] + fib[2] = 2 + 1",
+        "value": 3,
+        "fib": [
+         0,
+         1,
+         1,
+         2,
+         3
+        ]
+       },
+       {
+        "i": 5,
+        "adds": "fib[4] + fib[3] = 3 + 2",
+        "value": 5,
+        "fib": [
+         0,
+         1,
+         1,
+         2,
+         3,
+         5
+        ]
+       },
+       {
+        "i": 6,
+        "adds": "fib[5] + fib[4] = 5 + 3",
+        "value": 8,
+        "fib": [
+         0,
+         1,
+         1,
+         2,
+         3,
+         5,
+         8
+        ]
+       },
+       {
+        "i": 7,
+        "adds": "fib[6] + fib[5] = 8 + 5",
+        "value": 13,
+        "fib": [
+         0,
+         1,
+         1,
+         2,
+         3,
+         5,
+         8,
+         13
+        ]
+       }
+      ],
+      "series": "[0, 1, 1, 2, 3, 5, 8, 13, 21, 34]"
+     },
+     "engage": "task",
+     "play": "The series with its arrows (deck slide 28) and the list of cells growing. The timer and steps layout is yours.",
+     "press_count": 13
+    }
+   ]
+  },
+  {
+   "name": "Exit: keep Kissik at 2",
+   "kind": "exit",
+   "mins": 4,
+   "start": 67,
+   "cards": [
+    {
+     "id": "X1",
+     "title": "Exit: keep Kissik at 2",
+     "source": "new",
+     "activity": 1,
+     "timer": 150,
+     "purpose": "Check remove, insert and index together: the room must work out which Kissik remove takes and which items an insert pushes right, before index can answer.",
+     "heading": "Teja fixes the queue",
+     "show": [
+      "Teja takes out one Kissik and adds Butta Bomma.",
+      "Which number on line 3 makes it print 2?"
+     ],
+     "code": [
+      {
+       "file": "fix_queue.py",
+       "src": "queue = ['Naatu Naatu', 'Kissik', 'Peelings', 'Kissik']\nqueue.remove('Kissik')\nqueue.insert(___, 'Butta Bomma')\nprint(queue.index('Kissik'))"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Story line, fix_queue.py with line numbers and line 3's index blank, the question, and options: A <q>0</q>, B <q>1</q>, C <q>2</q>, D <q>3</q>. A 2:30 timer.",
+       "say": "Everyone answers alone. Then option A, hands up. B. C. D.",
+       "room": "Hands up per option."
+      },
+      {
+       "screen": "The right option marks, and every option shows what it prints and its why line, as in data.",
+       "say": "Go through every option, not only the right one."
+      }
+     ],
+     "answer": "D, 3. 0: prints 3. 1: prints 3. 2: prints 3. 3: prints 2.",
+     "must_not": [
+      "Show any output before the second press."
+     ],
+     "data": {
+      "options": [
+       {
+        "line3_index": "0",
+        "prints": "3",
+        "why": "remove took the first Kissik, so the one left is at index 2. Butta Bomma at place 0 pushes it to 3."
+       },
+       {
+        "line3_index": "1",
+        "prints": "3",
+        "why": "If you thought remove takes the last Kissik, the one left is at 1. It takes the first. Kissik ends at 3."
+       },
+       {
+        "line3_index": "2",
+        "prints": "3",
+        "why": "Butta Bomma takes place 2 and Kissik slides right, to 3."
+       },
+       {
+        "line3_index": "3",
+        "prints": "2",
+        "why": "Kissik is at index 2 after line 2. Butta Bomma goes after it, so Kissik stays at 2."
+       }
+      ],
+      "right": "D",
+      "after_line_2": "['Naatu Naatu', 'Peelings', 'Kissik']"
+     },
+     "engage": "task",
+     "play": "Layout. It can sit on the YouTube Music Up next screen.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Key takeaways: the example board",
+   "kind": "buffer",
+   "mins": 2,
+   "start": 71,
+   "cards": [
+    {
+     "id": "K1",
+     "title": "Today in six examples",
+     "source": "new",
+     "purpose": "Six real programs from today, each with what it prints and the rule it shows.",
+     "heading": "Today, in six examples",
+     "show": [
+      "append adds one item at the end",
+      "Add to queue.",
+      "extend adds every item of a list",
+      "append(['Peelings', 'Oo Antava']) would add one box.",
+      "insert puts an item at a place",
+      "Play next. The others move right.",
+      "remove takes the first match",
+      "pop takes the last; clear takes all.",
+      "index and count give back a number",
+      "The list does not change.",
+      "sort changes the list itself",
+      "sorted(plays) makes a new list."
+     ],
+     "code": [
+      {
+       "file": "append adds one item at the end",
+       "src": "queue = ['Naatu Naatu', 'Kissik']\nqueue.append('Peelings')\nprint(queue)",
+       "output": "['Naatu Naatu', 'Kissik', 'Peelings']"
+      },
+      {
+       "file": "extend adds every item of a list",
+       "src": "queue = ['Kissik']\nqueue.extend(['Peelings', 'Oo Antava'])\nprint(queue)",
+       "output": "['Kissik', 'Peelings', 'Oo Antava']"
+      },
+      {
+       "file": "insert puts an item at a place",
+       "src": "queue = ['Kissik', 'Peelings']\nqueue.insert(0, 'Chuttamalle')\nprint(queue)",
+       "output": "['Chuttamalle', 'Kissik', 'Peelings']"
+      },
+      {
+       "file": "remove takes the first match",
+       "src": "queue = ['Kissik', 'Peelings', 'Kissik']\nqueue.remove('Kissik')\nprint(queue)",
+       "output": "['Peelings', 'Kissik']"
+      },
+      {
+       "file": "index and count give back a number",
+       "src": "queue = ['Kissik', 'Peelings', 'Kissik']\nprint(queue.index('Kissik'))\nprint(queue.count('Kissik'))",
+       "output": "0\n2"
+      },
+      {
+       "file": "sort changes the list itself",
+       "src": "plays = [40, 12, 75]\nplays.sort()\nprint(plays)",
+       "output": "[12, 40, 75]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Example 1's heading and code show; its result and sentence fill on the press after the shout.",
+       "say": "Read the code. Everyone, shout what it prints. Then press.",
+       "room": "Shout the output."
+      },
+      {
+       "screen": "Example 2's heading and code show; its result and sentence fill on the press after the shout.",
+       "say": "Read the code. Everyone, shout what it prints. Then press.",
+       "room": "Shout the output."
+      },
+      {
+       "screen": "Example 3's heading and code show; its result and sentence fill on the press after the shout.",
+       "say": "Read the code. Everyone, shout what it prints. Then press.",
+       "room": "Shout the output."
+      },
+      {
+       "screen": "Example 4's heading and code show; its result and sentence fill on the press after the shout.",
+       "say": "Read the code. Everyone, shout what it prints. Then press.",
+       "room": "Shout the output."
+      },
+      {
+       "screen": "Example 5's heading and code show; its result and sentence fill on the press after the shout.",
+       "say": "Read the code. Everyone, shout what it prints. Then press.",
+       "room": "Shout the output."
+      },
+      {
+       "screen": "Example 6's heading and code show; its result and sentence fill on the press after the shout.",
+       "say": "Read the code. Everyone, shout what it prints. Then press.",
+       "room": "Shout the output."
+      }
+     ],
+     "must": [
+      "All six slots are there from press 1, empty.",
+      "Examples, not a concept map.",
+      "A result shows only after the room has shouted it.",
+      "Keep these exact values. Someone who thinks append puts the new song at the front would say ['Peelings', 'Naatu Naatu', 'Kissik']; Python gives ['Naatu Naatu', 'Kissik', 'Peelings']. New values could hide that mistake."
+     ],
+     "engage": "play",
+     "interaction": "Output shout: the room shouts each example's output before its result fills.",
+     "trap": {
+      "belief": "append puts the new song at the front",
+      "wrong": "['Peelings', 'Naatu Naatu', 'Kissik']",
+      "code": 0
+     },
+     "play": "The grid, and the row of cells from the hook under each result.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Feedback",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 73,
+   "cards": [
+    {
+     "id": "S-FEEDBACK",
+     "title": "Feedback",
+     "source": "spine:feedback",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Thank you",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 74,
+   "cards": [
+    {
+     "id": "S-THANKYOU",
+     "title": "Thankyou",
+     "source": "spine:thankyou",
+     "press_count": 0
+    }
+   ]
+  }
+ ]
+}

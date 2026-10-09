@@ -1,0 +1,323 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>28 Set Operations: recall what a set is</title>
+<style>
+:root{--ink:#14213d;--mut:#5b6475;--line:#dfe4ee;--bg:#f6f8fc;--card:#fff;--acc:#2f5bea;--add:#e9f7ef;--addb:#2e9d5b;--was:#9a3b3b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,Segoe UI,Arial,sans-serif}
+main{max-width:980px;margin:0 auto;padding:32px 16px 64px}
+header{margin-bottom:20px}.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);font-weight:700}
+h1{margin:.2em 0;font-size:28px}h2{font-size:20px;margin:28px 0 10px}h3{margin:0;font-size:18px}
+.sub{color:var(--mut);margin:.2em 0}.why{background:#fff8e6;border:1px solid #f1d38a;border-radius:10px;padding:10px 14px}
+.box,.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin:14px 0}
+.box h2{margin-top:0}.card.new{border-left:5px solid var(--addb)}.card.chg{border-left:5px solid var(--acc)}
+.ch{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.id{background:var(--acc);color:#fff;border-radius:6px;padding:2px 8px;font-weight:700;font-size:13px}
+.tag{background:var(--add);color:var(--addb);border-radius:999px;padding:1px 9px;font-size:12px;font-weight:700}
+.words{border:1px dashed #b9c4dc;border-radius:10px;padding:8px 14px;margin:10px 0}.lbl{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
+.hd{font-weight:700;font-size:18px;margin:.3em 0}
+.hd2{font-weight:600;margin:0 0 8px}.note{font-size:13px;color:var(--mut);margin:6px 0 0}
+table.dsw{width:auto}table.dsw th{background:#f0f3fa}table.dsw .tdy{background:var(--add)}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}th,td{border:1px solid var(--line);padding:6px 8px;vertical-align:top;text-align:left}
+th{background:#f0f3fa}td.was{color:var(--was)}q{color:var(--acc);font-weight:600}
+ol.order li.add{background:var(--add);border-radius:6px}pre{white-space:pre-wrap;font-size:12px;background:#f3f5fa;padding:10px;border-radius:8px;overflow:auto}
+details summary{cursor:pointer;font-weight:600}code{background:#eef1f8;padding:1px 5px;border-radius:4px}
+@media (max-width:600px){table{display:block;overflow-x:auto}}
+</style></head><body><main><header><div class="eyebrow">Change spec for the design team</div><h1>28 Set Operations: recall what a set is</h1><p class="sub">File to change: <code>python-session-28-set-operations.html</code>. Everything not listed here stays exactly as it is.</p><p class="why">Before working with two sets, the room says from memory what a set is, on the same grid card that Session 27 builds. Every set operation leans on one fact from that grid: a set has no repeats.</p></header><section class="box"><h2>What to do</h2><ol><li>Add 1 new card: <b>DS3</b> (What a set is, from last class). Where they go is in the card order below.</li><li>Update the minutes on the beats listed below, if the view shows them.</li><li>Give each new card its id (DS3) the same way the view names its other cards, so it can be checked against the spec.</li></ol></section><section class="box"><h2>Card order</h2><p>New cards are marked. The cards around them do not move.</p><ol class="order"><li class=""><b>H1</b> 8 plus 7 is 12</li><li class=""><b>S-TITLE</b> Title</li><li class=""><b>S-AGENDA</b> Agenda</li><li class="add"><b>DS3</b> What a set is, from last class <span class="tag">new</span></li><li class=""><b>C1</b> Two groups, three places</li><li class=""><b>C2</b> Union</li><li class=""><b>C3</b> union() takes a list, | does not</li><li class=""><b>C4</b> Intersection</li></ol></section><h2>New cards</h2><section class="card new"><div class="ch"><span class="id">DS3</span><h3>What a set is, from last class</h3><span class="tag">New card</span></div><p><b>Purpose.</b> Pull back what a set is before today builds on it: the same five rows as last class, said from memory.</p><div class="words"><p class="lbl">Exact words on the card</p><p class="hd">What is a set?</p><table class="dsw"><tr><th></th><th>list</th><th>tuple</th><th class=tdy>set</th></tr><tr><th>Written with</th><td>[ ]</td><td>( )</td><td class=tdy>{ }</td></tr><tr><th>Keeps the order?</th><td>Yes</td><td>Yes</td><td class=tdy>No</td></tr><tr><th>Same item twice?</th><td>Yes</td><td>Yes</td><td class=tdy>No</td></tr><tr><th>Reach one item by</th><td>Position, from 0</td><td>Position, from 0</td><td class=tdy>No position. Ask with in</td></tr><tr><th>Can you change it?</th><td>Yes</td><td>No</td><td class=tdy>Yes</td></tr></table><p class="note">The grid as it ends. The shaded set column starts as empty dashed cells and fills one row per press.</p></div><table><tr><th>Press</th><th>On screen</th><th>Instructor</th><th>Room</th></tr><tr><td>1</td><td>A grid. Rows: <q>Written with</q>, <q>Keeps the order?</q>, <q>Same item twice?</q>, <q>Reach one item by</q>, <q>Can you change it?</q>. Columns: <q>list</q>, <q>tuple</q>, <q>set</q>. The earlier columns are filled; the set column is empty dashed cells.</td><td>Last class we filled this set column. Say each cell before it shows.</td><td>Say what goes in row 1.</td></tr><tr><td>2</td><td>Row 1, <q>Written with</q>: the set cell fills <q>{ }</q>. Beside it, small, the code that proves it and its output: <q>&lt;class 'set'&gt;</q>.</td><td>Next row.</td><td>Say the next cell from memory.</td></tr><tr><td>3</td><td>Row 2, <q>Keeps the order?</q>: the set cell fills <q>No</q>. Beside it, small, the code that proves it and its output: <q>{'Ravi', 'Sneha', 'Teja', 'Anu', 'Kiran'} / (run it again) / {'Teja', 'Kiran', 'Sneha', 'Anu', 'Ravi'}</q>.</td><td>Next row.</td><td>Say the next cell from memory.</td></tr><tr><td>4</td><td>Row 3, <q>Same item twice?</q>: the set cell fills <q>No</q>. Beside it, small, the code that proves it and its output: <q>2</q>.</td><td>Next row.</td><td>Say the next cell from memory.</td></tr><tr><td>5</td><td>Row 4, <q>Reach one item by</q>: the set cell fills <q>No position. Ask with in</q>. Beside it, small, the code that proves it and its output: <q>True / TypeError: 'set' object is not subscriptable</q>.</td><td>Next row.</td><td>Say the next cell from memory.</td></tr><tr><td>6</td><td>Row 5, <q>Can you change it?</q>: the set cell fills <q>Yes</q>. Beside it, small, the code that proves it and its output: <q>3</q>.</td><td>That is a set. Today we use it.</td><td></td></tr></table><p><b>The room commits.</b> The room says each set cell from memory before it fills.</p><p><b>Must.</b></p><ul><li>The whole grid, row labels and empty cells, is on the card from press 1. One cell of today's column fills per press.</li><li>Earlier columns never change. The room reads today's cell against them.</li><li>Each filled cell keeps its proof beside it: the code and its exact output from data.proofs.</li></ul><p><b>Must not.</b></p><ul><li>Fill a cell before the room has said it.</li></ul><p><b>Yours to design.</b> The same grid component as last class, so the room knows it on sight.</p><details><summary>Data for this card (JSON)</summary><pre>{
+ "rows": [
+  {
+   "key": "written",
+   "label": "Written with"
+  },
+  {
+   "key": "order",
+   "label": "Keeps the order?"
+  },
+  {
+   "key": "twice",
+   "label": "Same item twice?"
+  },
+  {
+   "key": "reach",
+   "label": "Reach one item by"
+  },
+  {
+   "key": "change",
+   "label": "Can you change it?"
+  }
+ ],
+ "grid": {
+  "list": {
+   "written": "[ ]",
+   "order": "Yes",
+   "twice": "Yes",
+   "reach": "Position, from 0",
+   "change": "Yes"
+  },
+  "tuple": {
+   "written": "( )",
+   "order": "Yes",
+   "twice": "Yes",
+   "reach": "Position, from 0",
+   "change": "No"
+  },
+  "set": {
+   "written": "{ }",
+   "order": "No",
+   "twice": "No",
+   "reach": "No position. Ask with in",
+   "change": "Yes"
+  }
+ },
+ "proofs": {
+  "list": {
+   "written": {
+    "code": "songs = [\"Kesariya\", \"Naatu Naatu\"]\nprint(type(songs))",
+    "output": "&lt;class 'list'&gt;"
+   },
+   "order": {
+    "code": "print([\"Kesariya\", \"Naatu Naatu\", \"Jhoome\"])",
+    "output": "['Kesariya', 'Naatu Naatu', 'Jhoome']"
+   },
+   "twice": {
+    "code": "print([\"Kesariya\", \"Kesariya\"])",
+    "output": "['Kesariya', 'Kesariya']"
+   },
+   "reach": {
+    "code": "songs = [\"Kesariya\", \"Naatu Naatu\"]\nprint(songs[0])",
+    "output": "Kesariya"
+   },
+   "change": {
+    "code": "songs = [\"Kesariya\", \"Naatu Naatu\"]\nsongs[1] = \"Jhoome\"\nprint(songs)",
+    "output": "['Kesariya', 'Jhoome']"
+   }
+  },
+  "tuple": {
+   "written": {
+    "code": "dob = (12, 3, 2007)\nprint(type(dob))",
+    "output": "&lt;class 'tuple'&gt;"
+   },
+   "order": {
+    "code": "print((12, 3, 2007))",
+    "output": "(12, 3, 2007)"
+   },
+   "twice": {
+    "code": "print((12, 12, 2007))",
+    "output": "(12, 12, 2007)"
+   },
+   "reach": {
+    "code": "dob = (12, 3, 2007)\nprint(dob[0])",
+    "output": "12"
+   },
+   "change": {
+    "code": "dob = (12, 3, 2007)\ndob[0] = 13",
+    "output": "TypeError: 'tuple' object does not support item assignment"
+   }
+  },
+  "set": {
+   "written": {
+    "code": "seen = {\"Ravi\", \"Anu\"}\nprint(type(seen))",
+    "output": "&lt;class 'set'&gt;"
+   },
+   "order": {
+    "code": "print({\"Ravi\", \"Anu\", \"Kiran\", \"Sneha\", \"Teja\"})",
+    "output": "{'Ravi', 'Sneha', 'Teja', 'Anu', 'Kiran'}\n(run it again)\n{'Teja', 'Kiran', 'Sneha', 'Anu', 'Ravi'}"
+   },
+   "twice": {
+    "code": "print(len({\"Ravi\", \"Ravi\", \"Anu\"}))",
+    "output": "2"
+   },
+   "reach": {
+    "code": "seen = {\"Ravi\", \"Anu\"}\nprint(\"Ravi\" in seen)\nprint(seen[0])",
+    "output": "True\nTypeError: 'set' object is not subscriptable"
+   },
+   "change": {
+    "code": "seen = {\"Ravi\", \"Anu\"}\nseen.add(\"Kiran\")\nprint(len(seen))",
+    "output": "3"
+   }
+  }
+ }
+}</pre></details></section><section class="box"><h2>Minutes</h2><table><tr><th>Beat</th><th>Was</th><th>Now</th></tr><tr><td>Recall: what a set is</td><td>new</td><td>2</td></tr><tr><td>Classroom quiz</td><td>6</td><td>5</td></tr><tr><td>Subset and superset: one circle inside another</td><td>6</td><td>5</td></tr></table><p>The session still adds up to 75 minutes.</p></section><details class="box"><summary>All new cards as JSON, to build from</summary><pre>[
+ {
+  "id": "DS3",
+  "title": "What a set is, from last class",
+  "source": "new",
+  "ds": "recall",
+  "ds_today": "set",
+  "purpose": "Pull back what a set is before today builds on it: the same five rows as last class, said from memory.",
+  "heading": "What is a set?",
+  "show": [
+   "Written with",
+   "Keeps the order?",
+   "Same item twice?",
+   "Reach one item by",
+   "Can you change it?",
+   "list",
+   "tuple",
+   "set",
+   "[ ]",
+   "Yes",
+   "Position, from 0",
+   "( )",
+   "No",
+   "{ }",
+   "No position. Ask with in"
+  ],
+  "presses": [
+   {
+    "screen": "A grid. Rows: &lt;q&gt;Written with&lt;/q&gt;, &lt;q&gt;Keeps the order?&lt;/q&gt;, &lt;q&gt;Same item twice?&lt;/q&gt;, &lt;q&gt;Reach one item by&lt;/q&gt;, &lt;q&gt;Can you change it?&lt;/q&gt;. Columns: &lt;q&gt;list&lt;/q&gt;, &lt;q&gt;tuple&lt;/q&gt;, &lt;q&gt;set&lt;/q&gt;. The earlier columns are filled; the set column is empty dashed cells.",
+    "say": "Last class we filled this set column. Say each cell before it shows.",
+    "room": "Say what goes in row 1."
+   },
+   {
+    "screen": "Row 1, &lt;q&gt;Written with&lt;/q&gt;: the set cell fills &lt;q&gt;{ }&lt;/q&gt;. Beside it, small, the code that proves it and its output: &lt;q&gt;&amp;lt;class 'set'&amp;gt;&lt;/q&gt;.",
+    "say": "Next row.",
+    "room": "Say the next cell from memory."
+   },
+   {
+    "screen": "Row 2, &lt;q&gt;Keeps the order?&lt;/q&gt;: the set cell fills &lt;q&gt;No&lt;/q&gt;. Beside it, small, the code that proves it and its output: &lt;q&gt;{'Ravi', 'Sneha', 'Teja', 'Anu', 'Kiran'} / (run it again) / {'Teja', 'Kiran', 'Sneha', 'Anu', 'Ravi'}&lt;/q&gt;.",
+    "say": "Next row.",
+    "room": "Say the next cell from memory."
+   },
+   {
+    "screen": "Row 3, &lt;q&gt;Same item twice?&lt;/q&gt;: the set cell fills &lt;q&gt;No&lt;/q&gt;. Beside it, small, the code that proves it and its output: &lt;q&gt;2&lt;/q&gt;.",
+    "say": "Next row.",
+    "room": "Say the next cell from memory."
+   },
+   {
+    "screen": "Row 4, &lt;q&gt;Reach one item by&lt;/q&gt;: the set cell fills &lt;q&gt;No position. Ask with in&lt;/q&gt;. Beside it, small, the code that proves it and its output: &lt;q&gt;True / TypeError: 'set' object is not subscriptable&lt;/q&gt;.",
+    "say": "Next row.",
+    "room": "Say the next cell from memory."
+   },
+   {
+    "screen": "Row 5, &lt;q&gt;Can you change it?&lt;/q&gt;: the set cell fills &lt;q&gt;Yes&lt;/q&gt;. Beside it, small, the code that proves it and its output: &lt;q&gt;3&lt;/q&gt;.",
+    "say": "That is a set. Today we use it."
+   }
+  ],
+  "interaction": "The room says each set cell from memory before it fills.",
+  "must": [
+   "The whole grid, row labels and empty cells, is on the card from press 1. One cell of today's column fills per press.",
+   "Earlier columns never change. The room reads today's cell against them.",
+   "Each filled cell keeps its proof beside it: the code and its exact output from data.proofs."
+  ],
+  "must_not": [
+   "Fill a cell before the room has said it."
+  ],
+  "data": {
+   "rows": [
+    {
+     "key": "written",
+     "label": "Written with"
+    },
+    {
+     "key": "order",
+     "label": "Keeps the order?"
+    },
+    {
+     "key": "twice",
+     "label": "Same item twice?"
+    },
+    {
+     "key": "reach",
+     "label": "Reach one item by"
+    },
+    {
+     "key": "change",
+     "label": "Can you change it?"
+    }
+   ],
+   "grid": {
+    "list": {
+     "written": "[ ]",
+     "order": "Yes",
+     "twice": "Yes",
+     "reach": "Position, from 0",
+     "change": "Yes"
+    },
+    "tuple": {
+     "written": "( )",
+     "order": "Yes",
+     "twice": "Yes",
+     "reach": "Position, from 0",
+     "change": "No"
+    },
+    "set": {
+     "written": "{ }",
+     "order": "No",
+     "twice": "No",
+     "reach": "No position. Ask with in",
+     "change": "Yes"
+    }
+   },
+   "proofs": {
+    "list": {
+     "written": {
+      "code": "songs = [\"Kesariya\", \"Naatu Naatu\"]\nprint(type(songs))",
+      "output": "&lt;class 'list'&gt;"
+     },
+     "order": {
+      "code": "print([\"Kesariya\", \"Naatu Naatu\", \"Jhoome\"])",
+      "output": "['Kesariya', 'Naatu Naatu', 'Jhoome']"
+     },
+     "twice": {
+      "code": "print([\"Kesariya\", \"Kesariya\"])",
+      "output": "['Kesariya', 'Kesariya']"
+     },
+     "reach": {
+      "code": "songs = [\"Kesariya\", \"Naatu Naatu\"]\nprint(songs[0])",
+      "output": "Kesariya"
+     },
+     "change": {
+      "code": "songs = [\"Kesariya\", \"Naatu Naatu\"]\nsongs[1] = \"Jhoome\"\nprint(songs)",
+      "output": "['Kesariya', 'Jhoome']"
+     }
+    },
+    "tuple": {
+     "written": {
+      "code": "dob = (12, 3, 2007)\nprint(type(dob))",
+      "output": "&lt;class 'tuple'&gt;"
+     },
+     "order": {
+      "code": "print((12, 3, 2007))",
+      "output": "(12, 3, 2007)"
+     },
+     "twice": {
+      "code": "print((12, 12, 2007))",
+      "output": "(12, 12, 2007)"
+     },
+     "reach": {
+      "code": "dob = (12, 3, 2007)\nprint(dob[0])",
+      "output": "12"
+     },
+     "change": {
+      "code": "dob = (12, 3, 2007)\ndob[0] = 13",
+      "output": "TypeError: 'tuple' object does not support item assignment"
+     }
+    },
+    "set": {
+     "written": {
+      "code": "seen = {\"Ravi\", \"Anu\"}\nprint(type(seen))",
+      "output": "&lt;class 'set'&gt;"
+     },
+     "order": {
+      "code": "print({\"Ravi\", \"Anu\", \"Kiran\", \"Sneha\", \"Teja\"})",
+      "output": "{'Ravi', 'Sneha', 'Teja', 'Anu', 'Kiran'}\n(run it again)\n{'Teja', 'Kiran', 'Sneha', 'Anu', 'Ravi'}"
+     },
+     "twice": {
+      "code": "print(len({\"Ravi\", \"Ravi\", \"Anu\"}))",
+      "output": "2"
+     },
+     "reach": {
+      "code": "seen = {\"Ravi\", \"Anu\"}\nprint(\"Ravi\" in seen)\nprint(seen[0])",
+      "output": "True\nTypeError: 'set' object is not subscriptable"
+     },
+     "change": {
+      "code": "seen = {\"Ravi\", \"Anu\"}\nseen.add(\"Kiran\")\nprint(len(seen))",
+      "output": "3"
+     }
+    }
+   }
+  },
+  "play": "The same grid component as last class, so the room knows it on sight.",
+  "engage": "play",
+  "press_count": 6
+ }
+]</pre></details></main></body></html>

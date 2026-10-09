@@ -1,0 +1,2256 @@
+{
+ "meta": {
+  "session": "23 - Function Arguments",
+  "course": "Programming Foundations",
+  "one_idea": "A call fills a function's arguments by position unless we name them. A default fills the ones we leave out. An argument is the function's own box, so changing it does not change the variable outside.",
+  "outcomes": [
+   "Write a function with two arguments and call it by name, in either order.",
+   "Call it by position, and say which value lands in which argument.",
+   "Predict the output when positional values are swapped, with no error to warn you.",
+   "Read the TypeError when a call leaves an argument empty, and name the empty one.",
+   "Give an argument a default value, and predict which value each call uses.",
+   "Say why a default argument cannot come before one without a default.",
+   "Explain why increment(a) leaves a outside unchanged."
+  ],
+  "previous": "22 - Functions",
+  "slides_dir": "C:\\Lesson Plans New\\builds\\build-23-function-arguments\\work\\slides",
+  "deck_total": 52,
+  "kept": [
+   8,
+   10,
+   13,
+   16,
+   18,
+   19,
+   23,
+   25,
+   28,
+   30,
+   34,
+   36,
+   38,
+   41,
+   42,
+   44,
+   45,
+   47
+  ],
+  "cuts": [
+   [
+    "1-2",
+    "Welcome and deck title. The fixed spine cards replace them."
+   ],
+   [
+    "3-5",
+    "A recap that lists what session 22 covered. Reading is not remembering; S-RECAP is a sort instead."
+   ],
+   [
+    "6-7",
+    "Daily challenge, a squares bug in get_list. Session 22's recap was already a bug format, the bug has nothing to do with arguments, and its call get_list(string_a) is positional before slide 17 teaches it."
+   ],
+   [
+    "9",
+    "Session 22's greet(word=name). Slide 10 makes the same point and goes further."
+   ],
+   [
+    "11-12",
+    "Build-up of slide 13. C1 steps it."
+   ],
+   [
+    "14-15",
+    "Build-up of slide 16. C2 steps it."
+   ],
+   [
+    "17",
+    "Build-up of slide 18. C3 steps it."
+   ],
+   [
+    "20-22",
+    "Build-up of slides 18 and 23. C3 and C5 step them; slide 22's line is C5's caption."
+   ],
+   [
+    "24, 27",
+    "Build-up of slides 25 and 28. C6 steps them."
+   ],
+   [
+    "26",
+    "greet() with nothing. One press on C6."
+   ],
+   [
+    "29",
+    "Repeats slide 19. The example board K1 carries both calls."
+   ],
+   [
+    "31-33, 35, 37",
+    "Build-up and the greet() output of the default calls. C7 steps all four calls on one card."
+   ],
+   [
+    "39-40",
+    "Build-up and error of slide 41. The room makes this error themselves in T2 first; C8 then names it."
+   ],
+   [
+    "43, 46",
+    "Build-up of slide 44, and a near copy of slide 45. E2 walks the program and carries slide 46's line."
+   ],
+   [
+    "48",
+    "Bullet takeaways. Replaced by K1, the example board."
+   ],
+   [
+    "49-50",
+    "Practice picture and next-session slide. One spoken line each in the guide."
+   ],
+   [
+    "51-52",
+    "Thank you and all the best. The fixed spine cards replace them."
+   ]
+  ],
+  "defects": [
+   [
+    "slide 26",
+    "The error box reads TypeError: greet() missing 2 required positional arguments. Python adds : 'arg_1' and 'arg_2'.",
+    "C6 shows the full line Python prints: TypeError: greet() missing 2 required positional arguments: 'arg_1' and 'arg_2'"
+   ],
+   [
+    "slides 40, 41",
+    "The SyntaxError text is the wording of Python 3.11 and older. Python 3.12 and newer say: parameter without a default follows parameter with a default.",
+    "The transcript shows the playground prints the old wording, so the spec keeps it. The guide tells the instructor about the new wording in case a laptop runs a newer Python."
+   ],
+   [
+    "slides 6-7",
+    "The daily challenge calls get_list(string_a), a positional call, before slide 17 teaches positional calls. Session 22's deck had the same challenge on its slide 53.",
+    "Not projected. Move it after this session, or make the call get_list(string_a=string_a)."
+   ],
+   [
+    "slide 28",
+    "The error says missing 1 required positional argument: 'arg_1', though the call used a name. Correct Python, but the word positional confuses the room here.",
+    "C6 keeps the exact text and the guide gives one line on it: positional is Python's word for an argument that has no default."
+   ]
+  ],
+  "notes": [
+   "The room is 50 to 60 first-year students on laptops. Laptops stay shut except on T1, T2 and the classroom quiz, where only the worksheet tab and the playground are open.",
+   "One world for the session: Google Maps on Teja's phone, going home from the college Main Gate to Ameerpet. The hook, Task 1, the game, Hook 2 and the exit all live there. Task 2 is a Rapido fare, the ride she books on the same trip.",
+   "Concept cards keep the deck's own greet program and its inputs (Good Morning, Ram; Hello, Teja), so the room can match them to the deck in their notes later.",
+   "Words: the names in the def's brackets are arguments, as the deck says. Never say parameter. A call passes values. By name is a keyword argument; by position is a positional argument.",
+   "One picture for the whole session: An argument is drawn as a slot in the def's header. A value travels from the call into its slot. Sent by name, the value carries its label (arg_1=) and lands on the slot with that label. Sent by position, it carries its number (1st, 2nd) and lands on the slot in that place.",
+   "Votes are taken option by option: the instructor reads each option and asks how many think it is that one. Hands up. Nobody is named.",
+   "Nothing before the title card may say the session's name. The hook shows a map app, never code words like argument.",
+   "The bar to beat is Plans/DSA/Module 3 - Stacks & Queues/01 - Introduction to Stacks/: a simulation the room drives, a picture that refuses to lie."
+  ],
+  "topics": [
+   "functions",
+   "debugging"
+  ]
+ },
+ "build_contract": [
+  "One self-contained HTML file. It opens offline from a USB stick and makes no network request.",
+  "It opens in presenter view. There is no sidebar, top bar or button the instructor has to use.",
+  "Right arrow or the clicker is one press. Left arrow goes back one press. F goes full screen, A shows all the cards, and End shows the whole card at once. The instructor guide tells the instructor these keys, so they must work.",
+  "Every card is its own screen, in the order of this spec. Press 1 is what shows when the card opens.",
+  "Every card's outer element carries data-spec=\"<card id>\" and data-presses=\"<number of presses>\". The review script reads both.",
+  "No link to any other file. The students' handout and the instructor guide are separate files, and a link from this file is how a class finds the answers."
+ ],
+ "rules": [
+  "No autoplay. Nothing moves on a timer. One press, one move, with a caption that says what just happened.",
+  "Commit, then reveal. Where a card asks a question, the answer shows only on the press after the room has answered.",
+  "Wrong answers stay private. No names, no per-student results on screen. Hands are counted out loud, never shown.",
+  "The topic is named once. Nothing before the title card says today's topic, not a heading, not a caption, not a file name on a code card.",
+  "Words are exact. Words in quotation marks, and every line under Exact words, are final. The rest of a press describes what happens, in your own design. If an exact line does not fit, ask for a new one; do not rewrite it.",
+  "Code is exact. Copy code and outputs from the JSON, never retype them. Every output here came from running the program.",
+  "Simple English. Short sentences, everyday words. No em-dashes anywhere, the page title included.",
+  "Every card moves. A card that introduces an idea steps; a static card is a picture of a lecture."
+ ],
+ "beats": [
+  {
+   "name": "Welcome",
+   "kind": "concept",
+   "mins": 1,
+   "start": 0,
+   "cards": [
+    {
+     "id": "S-WELCOME",
+     "title": "Welcome",
+     "source": "spine:welcome",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap",
+   "kind": "concept",
+   "mins": 1,
+   "start": 1,
+   "cards": [
+    {
+     "id": "S-RECAP-CARD",
+     "title": "Recap card",
+     "source": "spine:recap_card",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap sort: prints something, or nothing?",
+   "kind": "quiz",
+   "mins": 3,
+   "start": 2,
+   "cards": [
+    {
+     "id": "S-RECAP",
+     "title": "Recap: prints something, or nothing?",
+     "source": "spine:recap",
+     "purpose": "Pull back session 22: a def alone runs nothing, a call runs the block, return hands a value back without printing it, and a line after return never runs.",
+     "heading": "Prints something, or nothing?",
+     "show": [
+      "Five small programs from last class.",
+      "Does it print something, or nothing?",
+      "Prints something",
+      "Prints nothing",
+      "Only a def. Python learns the name, but nobody calls it.",
+      "hi() calls it. The block runs and prints Hi.",
+      "return hands Hi back, but nobody prints it. It is lost.",
+      "hi() hands back Hi, and print shows it.",
+      "return ends the call. The print after it never runs."
+     ],
+     "presses": [
+      {
+       "screen": "Two bins: <q>Prints something</q> and <q>Prints nothing</q>. Five numbered code chips in a tray, each a whole small program (data.chips). Caption: <q>Does it print something, or nothing?</q>",
+       "say": "Five programs from last class. Decide each one in your head first.",
+       "room": "Decide all five, silently."
+      },
+      {
+       "screen": "Chip 1 flies into the bin <q>Prints nothing</q>. Under it: what it prints, <q>(nothing)</q>, and its line <q>Only a def. Python learns the name, but nobody calls it.</q>",
+       "say": "Chip 1: how many think prints something? Hands down. Prints nothing? Then press.",
+       "room": "Hands up for a bin."
+      },
+      {
+       "screen": "Chip 2 flies into the bin <q>Prints something</q>. Under it: what it prints, <q>Hi</q>, and its line <q>hi() calls it. The block runs and prints Hi.</q>",
+       "say": "Chip 2: how many think prints something? Hands down. Prints nothing? Then press.",
+       "room": "Hands up for a bin."
+      },
+      {
+       "screen": "Chip 3 flies into the bin <q>Prints nothing</q>. Under it: what it prints, <q>(nothing)</q>, and its line <q>return hands Hi back, but nobody prints it. It is lost.</q>",
+       "say": "Chip 3: how many think prints something? Hands down. Prints nothing? Then press.",
+       "room": "Hands up for a bin."
+      },
+      {
+       "screen": "Chip 4 flies into the bin <q>Prints something</q>. Under it: what it prints, <q>Hi</q>, and its line <q>hi() hands back Hi, and print shows it.</q>",
+       "say": "Chip 4: how many think prints something? Hands down. Prints nothing? Then press.",
+       "room": "Hands up for a bin."
+      },
+      {
+       "screen": "Chip 5 flies into the bin <q>Prints nothing</q>. Under it: what it prints, <q>(nothing)</q>, and its line <q>return ends the call. The print after it never runs.</q>",
+       "say": "Chip 5: how many think prints something? Hands down. Prints nothing? Then press.",
+       "room": "Hands up for a bin."
+      }
+     ],
+     "code": [
+      {
+       "file": "chip1.py",
+       "src": "def hi():\n    print(\"Hi\")",
+       "output": "(nothing)"
+      },
+      {
+       "file": "chip2.py",
+       "src": "def hi():\n    print(\"Hi\")\n\nhi()",
+       "output": "Hi"
+      },
+      {
+       "file": "chip3.py",
+       "src": "def hi():\n    return \"Hi\"\n\nhi()",
+       "output": "(nothing)"
+      },
+      {
+       "file": "chip4.py",
+       "src": "def hi():\n    return \"Hi\"\n\nprint(hi())",
+       "output": "Hi"
+      },
+      {
+       "file": "chip5.py",
+       "src": "def hi():\n    return \"Hi\"\n    print(\"Hi\")\n\nhi()",
+       "output": "(nothing)"
+      }
+     ],
+     "interaction": "Format: sort. The room votes a bin for each chip by hands before the press that files it. Nobody is named.",
+     "must": [
+      "All five chips and both bins are on screen from press 1.",
+      "One chip per press, in order 1 to 5. A chip's result shows only when it lands."
+     ],
+     "must_not": [
+      "Show any result before its press."
+     ],
+     "data": {
+      "bins": [
+       "Prints something",
+       "Prints nothing"
+      ],
+      "chips": [
+       {
+        "code": "def hi():\n    print(\"Hi\")",
+        "prints": "(nothing)",
+        "bin": "Prints nothing",
+        "why": "Only a def. Python learns the name, but nobody calls it."
+       },
+       {
+        "code": "def hi():\n    print(\"Hi\")\n\nhi()",
+        "prints": "Hi",
+        "bin": "Prints something",
+        "why": "hi() calls it. The block runs and prints Hi."
+       },
+       {
+        "code": "def hi():\n    return \"Hi\"\n\nhi()",
+        "prints": "(nothing)",
+        "bin": "Prints nothing",
+        "why": "return hands Hi back, but nobody prints it. It is lost."
+       },
+       {
+        "code": "def hi():\n    return \"Hi\"\n\nprint(hi())",
+        "prints": "Hi",
+        "bin": "Prints something",
+        "why": "hi() hands back Hi, and print shows it."
+       },
+       {
+        "code": "def hi():\n    return \"Hi\"\n    print(\"Hi\")\n\nhi()",
+        "prints": "(nothing)",
+        "bin": "Prints nothing",
+        "why": "return ends the call. The print after it never runs."
+       }
+      ]
+     },
+     "play": "How chips fly and how a bin fills. The chips are code, so they need to stay readable at the back of the room.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Hook: the swap button on Google Maps",
+   "kind": "hook",
+   "mins": 5,
+   "start": 5,
+   "cards": [
+    {
+     "id": "H1",
+     "title": "The swap button",
+     "source": "new",
+     "animated": "hook",
+     "purpose": "Feel, from an app they open every day, that the same two values in two different places make a different result, with no warning. Each box has a label, and what fills it decides the trip. The last press draws the shape of today's idea: two slots, filled in order.",
+     "heading": "5:30 PM. Class is over.",
+     "show": [
+      "5:30 PM. Class is over. Teja is going home.",
+      "Which way will the route go?",
+      "She typed Ameerpet first. Does the trip change?",
+      "What does this button do?",
+      "Same two places. Opposite trip.",
+      "How does Maps know which one is the start?",
+      "1st",
+      "2nd",
+      "The 1st place is the start. The 2nd place is the end."
+     ],
+     "presses": [
+      {
+       "screen": "Teja's phone, Google Maps directions. Top box with a hollow circle: <q>Main Gate</q>. Bottom box with a red pin: <q>Ameerpet</q>. Between them, at the right edge, the swap button with two arrows. The blue route runs on the map from the college gate to Ameerpet, with a bike mode chip. Caption: <q>5:30 PM. Class is over. Teja is going home.</q> then <q>Which way will the route go?</q>",
+       "say": "Everyone has used this. Two places typed in. Which way does the route go?",
+       "room": "Say it: from the gate to Ameerpet."
+      },
+      {
+       "screen": "A replay of the typing: the bottom box fills with Ameerpet first, then the top box with Main Gate. The route stays the same. Caption: <q>She typed Ameerpet first. Does the trip change?</q>",
+       "say": "She filled the bottom box first. Does the order she typed change the trip?",
+       "room": "Say: no. Each box has a label."
+      },
+      {
+       "screen": "A finger hovers on the swap button, which pulses once. Caption: <q>What does this button do?</q>",
+       "say": "Teja taps this by mistake. Same two places. What happens? Take three answers. Correct nobody.",
+       "room": "Guess out loud."
+      },
+      {
+       "screen": "The turn, one movement: the two names trade boxes. Ameerpet rises to the top box, Main Gate drops to the bottom. The route redraws the other way, the arrow now pointing from Ameerpet to the college. Caption: <q>Same two places. Opposite trip.</q>",
+       "say": "Nothing was deleted. Nothing new was typed. The app did not warn her. Yet the trip is wrong."
+      },
+      {
+       "screen": "Caption: <q>How does Maps know which one is the start?</q>",
+       "say": "Not by the name of the place. Then by what?",
+       "room": "Say: by which box it is in. The top one."
+      },
+      {
+       "screen": "The two boxes slide into one row, side by side, as two slots. Under the first: <q>1st</q>. Under the second: <q>2nd</q>. The values sit in them: Main Gate, Ameerpet. Caption: <q>The 1st place is the start. The 2nd place is the end.</q>",
+       "say": "Hold this picture: two slots, filled in order. What do you think today is about?",
+       "room": "Guess the topic."
+      }
+     ],
+     "must": [
+      "The swap button is the real Google Maps one: it trades the two places and nothing else.",
+      "The turn is one movement: the two names trade boxes and the route redraws reversed.",
+      "The app shows no warning on the swap. The trip is simply the other way.",
+      "The last press is two slots in a row, marked 1st and 2nd."
+     ],
+     "must_not": [
+      "Say the session name, or any code word (argument, def, call), anywhere on this card.",
+      "Show any code on this card.",
+      "Animate by itself. Every change waits for a press."
+     ],
+     "data": {
+      "start": "Main Gate",
+      "end": "Ameerpet",
+      "time": "5:30 PM",
+      "code_for_guide": "def directions(start, end):\n    print(start + \" to \" + end)\n\ndirections(\"Main Gate\", \"Ameerpet\")\ndirections(\"Ameerpet\", \"Main Gate\")",
+      "code_output_for_guide": [
+       "Main Gate to Ameerpet",
+       "Ameerpet to Main Gate"
+      ]
+     },
+     "play": "The phone, the map, the route line, the bike chip, the time in the status bar: yours to make real. Wear Google Maps' own look, the white boxes and the blue route. How the names trade places and how the boxes become slots is yours.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Today's topic",
+   "kind": "concept",
+   "mins": 1,
+   "start": 10,
+   "cards": [
+    {
+     "id": "S-TITLE",
+     "title": "Title",
+     "source": "spine:title",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Agenda",
+   "kind": "concept",
+   "mins": 1,
+   "start": 11,
+   "cards": [
+    {
+     "id": "S-AGENDA",
+     "title": "Agenda",
+     "source": "spine:agenda",
+     "purpose": "Name the four stops of today, so the room knows where the session goes. Deck slide 8's stops, with immutable objects put in plain words.",
+     "play": "How the stops sit and light. The deck's arrow of three steps on slide 8 is a fine start.",
+     "show": [
+      "By name",
+      "arg_1=greeting, in any order",
+      "By position",
+      "the 1st value goes to the 1st argument",
+      "Default values",
+      "leave one out, the def fills it",
+      "Same name, two boxes",
+      "a inside is not a outside"
+     ],
+     "presses": [
+      {
+       "screen": "Stop 1 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 2 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 3 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 4 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      }
+     ],
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Two arguments, passed by name, in any order",
+   "kind": "concept",
+   "mins": 4,
+   "start": 12,
+   "cards": [
+    {
+     "id": "C1",
+     "title": "More than one argument",
+     "source": [
+      10,
+      13
+     ],
+     "purpose": "A def can take two arguments. Last class we passed a value by its name; with two, we name each one.",
+     "heading": "More than one argument",
+     "show": [
+      "def function_name(arg_1, arg_2):",
+      "A function can have more than one argument.",
+      "What will it print?",
+      "We pass each value by its argument's name."
+     ],
+     "code": [
+      {
+       "file": "greet_by_name.py",
+       "src": "def greet(arg_1, arg_2):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet(arg_1=greeting, arg_2=name)",
+       "output": "Good Morning Ram",
+       "input": "Good Morning\nRam"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "<q>def function_name(arg_1, arg_2):</q> as the biggest text, with two empty slots after the name, and <q>A function can have more than one argument.</q>",
+       "say": "Last class: greet(word). Today: two slots."
+      },
+      {
+       "screen": "greet_by_name.py with line numbers (deck slide 13), the input <q>Good Morning</q> and <q>Ram</q>, an empty output box. Caption: <q>What will it print?</q>",
+       "say": "Say it out loud.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "One move: greeting travels with the label arg_1= into the arg_1 slot, name with arg_2= into arg_2. The output fills <q>Good Morning Ram</q>. Caption: <q>We pass each value by its argument's name.</q>",
+       "say": "arg_1=greeting: the value of greeting goes into arg_1."
+      }
+     ],
+     "answer": "Good Morning Ram",
+     "must": [
+      "An argument is drawn as a slot in the def's header. A value travels from the call into its slot. Sent by name, the value carries its label (arg_1=) and lands on the slot with that label. Sent by position, it carries its number (1st, 2nd) and lands on the slot in that place."
+     ],
+     "play": "The deck's orange dashed labels are a fine start.",
+     "press_count": 3
+    },
+    {
+     "id": "C2",
+     "title": "By name, any order",
+     "source": [
+      16
+     ],
+     "purpose": "With names in the call, the order we write them in does not matter: each value finds its label.",
+     "heading": "Change the order?",
+     "show": [
+      "Same output, or different?",
+      "Same",
+      "Different",
+      "By name, the order does not matter."
+     ],
+     "code": [
+      {
+       "file": "greet_both.py",
+       "src": "def greet(arg_1, arg_2):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet(arg_1=greeting, arg_2=name)\ngreet(arg_2=name, arg_1=greeting)",
+       "output": "Good Morning Ram\nGood Morning Ram",
+       "input": "Good Morning\nRam"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "greet_both.py: line 7 <q>greet(arg_2=name, arg_1=greeting)</q> added under line 6, lit. Caption: <q>Same output, or different?</q> with two choices <q>Same</q> and <q>Different</q>.",
+       "say": "Same? Hands up. Different? Hands up.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "Line 7's values travel by label: name to arg_2, greeting to arg_1, the same slots as line 6. The output now shows <q>Good Morning Ram / Good Morning Ram</q>, two equal lines. Caption: <q>By name, the order does not matter.</q>",
+       "say": "Like Teja typing Ameerpet first in the hook. The box has a label."
+      }
+     ],
+     "answer": "Good Morning Ram / Good Morning Ram",
+     "must": [
+      "The two output lines are equal and sit one under the other, so the room sees they match."
+     ],
+     "play": "Layout.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Passed by position: the order decides",
+   "kind": "concept",
+   "mins": 4,
+   "start": 16,
+   "cards": [
+    {
+     "id": "C3",
+     "title": "No names: by position",
+     "source": [
+      18
+     ],
+     "purpose": "Values can be passed without names. Then Python fills the arguments in order: 1st value to the 1st argument.",
+     "heading": "Without the names",
+     "show": [
+      "No names in the call. Where does each value go?",
+      "These values get assigned according to their position."
+     ],
+     "code": [
+      {
+       "file": "greet_by_position.py",
+       "src": "def greet(arg_1, arg_2):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet(greeting, name)",
+       "output": "Good Morning Ram",
+       "input": "Good Morning\nRam"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "greet_by_position.py with line 6 <q>greet(greeting, name)</q> lit. Caption: <q>No names in the call. Where does each value go?</q>",
+       "say": "No labels this time. How does Python know?",
+       "room": "Say ideas."
+      },
+      {
+       "screen": "The two values get number tags 1st and 2nd and travel in order to the 1st and 2nd slots. The output fills <q>Good Morning Ram</q>. Caption: <q>These values get assigned according to their position.</q>",
+       "say": "Like the two slots at the end of the hook."
+      }
+     ],
+     "answer": "Good Morning Ram",
+     "must": [
+      "An argument is drawn as a slot in the def's header. A value travels from the call into its slot. Sent by name, the value carries its label (arg_1=) and lands on the slot with that label. Sent by position, it carries its number (1st, 2nd) and lands on the slot in that place."
+     ],
+     "play": "The deck's dashed callout on slide 18 is a fine start.",
+     "press_count": 2
+    },
+    {
+     "id": "C4",
+     "title": "Two names for two ways",
+     "source": [
+      19
+     ],
+     "purpose": "Name the two ways: positional arguments go by place, keyword arguments go by name.",
+     "heading": "Two ways to pass values",
+     "show": [
+      "greet(greeting, name)",
+      "Positional arguments",
+      "greet(arg_1=greeting, arg_2=name)",
+      "Keyword arguments"
+     ],
+     "presses": [
+      {
+       "screen": "The header def greet(arg_1, arg_2): on top, and the two calls under it, <q>greet(greeting, name)</q> and <q>greet(arg_1=greeting, arg_2=name)</q>.",
+       "say": "Two calls you have seen. What is different?",
+       "room": "Say: one has names."
+      },
+      {
+       "screen": "An arrow under the first call, labelled <q>Positional arguments</q>.",
+       "say": "By position."
+      },
+      {
+       "screen": "An arrow under the second call, labelled <q>Keyword arguments</q>.",
+       "say": "By name. The name is the keyword."
+      }
+     ],
+     "play": "Deck slide 19's red arrows are a fine start.",
+     "press_count": 3
+    },
+    {
+     "id": "C5",
+     "title": "Swap them",
+     "source": [
+      23
+     ],
+     "purpose": "By position, the order decides. Swap the two values and the output swaps, with no error to warn us.",
+     "heading": "Now swap them",
+     "show": [
+      "What will it print?",
+      "A  Good Morning Ram",
+      "B  Ram Good Morning",
+      "C  TypeError",
+      "Order of the arguments matters here.",
+      "No error. Just the wrong output."
+     ],
+     "code": [
+      {
+       "file": "greet_swap.py",
+       "src": "def greet(arg_1, arg_2):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet(name, greeting)",
+       "output": "Ram Good Morning",
+       "input": "Good Morning\nRam"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "greet_swap.py with line 6 <q>greet(name, greeting)</q> lit, input <q>Good Morning</q> and <q>Ram</q>. Caption: <q>What will it print?</q> Options: A <q>Good Morning Ram</q>, B <q>Ram Good Morning</q>, C <q>TypeError</q>.",
+       "say": "Option A, hands up. B. C.",
+       "room": "Hands up per option."
+      },
+      {
+       "screen": "name takes the 1st tag and lands in arg_1; greeting takes the 2nd and lands in arg_2. The output fills <q>Ram Good Morning</q>. Caption: <q>Order of the arguments matters here.</q> then <q>No error. Just the wrong output.</q>",
+       "say": "The swap button from the hook. Python did what we wrote, not what we meant."
+      }
+     ],
+     "answer": "B. Ram Good Morning",
+     "must": [
+      "No error appears. The output is simply the other way round."
+     ],
+     "must_not": [
+      "Show the output before the vote."
+     ],
+     "play": "Layout. A small swap icon tying back to the hook is welcome.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Fill the slots: watch values land",
+   "kind": "concept",
+   "mins": 3,
+   "start": 20,
+   "cards": [
+    {
+     "id": "E1",
+     "title": "Fill the slots",
+     "source": "new",
+     "animated": "explainer",
+     "purpose": "Watch four calls fill the same two slots. Three put Good Morning in arg_1; only the positional swap does not. By name the label decides; by position the order decides.",
+     "heading": "Fill the slots",
+     "show": [
+      "Will all four calls print the same line?",
+      "Yes",
+      "No",
+      "By name: the label decides. By position: the order decides."
+     ],
+     "code": [
+      {
+       "file": "fill_the_slots.py",
+       "src": "def greet(arg_1, arg_2):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet(arg_1=greeting, arg_2=name)\ngreet(arg_2=name, arg_1=greeting)\ngreet(greeting, name)\ngreet(name, greeting)",
+       "output": "Good Morning Ram\nGood Morning Ram\nGood Morning Ram\nRam Good Morning",
+       "input": "Good Morning\nRam"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "fill_the_slots.py with line numbers; calls on lines 6 to 9. Above it, the header with two empty slots arg_1 and arg_2. The input <q>Good Morning</q> and <q>Ram</q>, an empty output box. Caption: <q>Will all four calls print the same line?</q> <q>Yes</q> <q>No</q>",
+       "say": "Yes, hands up. No, hands up.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "One move per press, following data.steps, caption from the data. A call line lights; then each value travels to its slot, one per press, wearing its label (by name) or its number tag (by position); then line 2 prints and the line drops into the output box. The slots empty before the next call.",
+       "n": 16,
+       "say": "Before each value moves: which slot will it land in?",
+       "room": "Say the slot."
+      },
+      {
+       "screen": "The output box holds four lines; the odd one, <q>Ram Good Morning</q>, is ringed. Caption: <q>By name: the label decides. By position: the order decides.</q>",
+       "say": "Who said yes? Three lines match. Line 9 is the swap."
+      }
+     ],
+     "answer": "No. It prints Good Morning Ram / Good Morning Ram / Good Morning Ram / Ram Good Morning.",
+     "must": [
+      "An argument is drawn as a slot in the def's header. A value travels from the call into its slot. Sent by name, the value carries its label (arg_1=) and lands on the slot with that label. Sent by position, it carries its number (1st, 2nd) and lands on the slot in that place.",
+      "Output lines stay in the box as the walk goes on. They are the finding.",
+      "The slots are empty at the start of each call.",
+      "One move per press."
+     ],
+     "must_not": [
+      "Show a free code box, a picker or an input field. It runs this one program with these inputs.",
+      "Move by itself."
+     ],
+     "data": {
+      "steps": [
+       {
+        "kind": "call",
+        "call": "greet(arg_1=greeting, arg_2=name)",
+        "caption": "The call: greet(arg_1=greeting, arg_2=name).",
+        "slots": {
+         "arg_1": null,
+         "arg_2": null
+        },
+        "call_no": 1,
+        "line": 6
+       },
+       {
+        "kind": "fill",
+        "var": "greeting",
+        "slot": "arg_1",
+        "value": "Good Morning",
+        "by": "name",
+        "caption": "greeting carries the label arg_1. It goes to arg_1, wherever it sits.",
+        "slots": {
+         "arg_1": "Good Morning",
+         "arg_2": null
+        },
+        "call_no": 1,
+        "line": 6
+       },
+       {
+        "kind": "fill",
+        "var": "name",
+        "slot": "arg_2",
+        "value": "Ram",
+        "by": "name",
+        "caption": "name carries the label arg_2. It goes to arg_2, wherever it sits.",
+        "slots": {
+         "arg_1": "Good Morning",
+         "arg_2": "Ram"
+        },
+        "call_no": 1,
+        "line": 6
+       },
+       {
+        "kind": "print",
+        "caption": "Line 2 prints Good Morning Ram.",
+        "printed": "Good Morning Ram",
+        "slots": {
+         "arg_1": "Good Morning",
+         "arg_2": "Ram"
+        },
+        "call_no": 1,
+        "line": 6
+       },
+       {
+        "kind": "call",
+        "call": "greet(arg_2=name, arg_1=greeting)",
+        "caption": "The call: greet(arg_2=name, arg_1=greeting).",
+        "slots": {
+         "arg_1": null,
+         "arg_2": null
+        },
+        "call_no": 2,
+        "line": 7
+       },
+       {
+        "kind": "fill",
+        "var": "name",
+        "slot": "arg_2",
+        "value": "Ram",
+        "by": "name",
+        "caption": "name carries the label arg_2. It goes to arg_2, wherever it sits.",
+        "slots": {
+         "arg_1": null,
+         "arg_2": "Ram"
+        },
+        "call_no": 2,
+        "line": 7
+       },
+       {
+        "kind": "fill",
+        "var": "greeting",
+        "slot": "arg_1",
+        "value": "Good Morning",
+        "by": "name",
+        "caption": "greeting carries the label arg_1. It goes to arg_1, wherever it sits.",
+        "slots": {
+         "arg_1": "Good Morning",
+         "arg_2": "Ram"
+        },
+        "call_no": 2,
+        "line": 7
+       },
+       {
+        "kind": "print",
+        "caption": "Line 2 prints Good Morning Ram.",
+        "printed": "Good Morning Ram",
+        "slots": {
+         "arg_1": "Good Morning",
+         "arg_2": "Ram"
+        },
+        "call_no": 2,
+        "line": 7
+       },
+       {
+        "kind": "call",
+        "call": "greet(greeting, name)",
+        "caption": "The call: greet(greeting, name).",
+        "slots": {
+         "arg_1": null,
+         "arg_2": null
+        },
+        "call_no": 3,
+        "line": 8
+       },
+       {
+        "kind": "fill",
+        "var": "greeting",
+        "slot": "arg_1",
+        "value": "Good Morning",
+        "by": "position",
+        "caption": "greeting is value number 1. It goes to argument number 1, arg_1.",
+        "slots": {
+         "arg_1": "Good Morning",
+         "arg_2": null
+        },
+        "call_no": 3,
+        "line": 8
+       },
+       {
+        "kind": "fill",
+        "var": "name",
+        "slot": "arg_2",
+        "value": "Ram",
+        "by": "position",
+        "caption": "name is value number 2. It goes to argument number 2, arg_2.",
+        "slots": {
+         "arg_1": "Good Morning",
+         "arg_2": "Ram"
+        },
+        "call_no": 3,
+        "line": 8
+       },
+       {
+        "kind": "print",
+        "caption": "Line 2 prints Good Morning Ram.",
+        "printed": "Good Morning Ram",
+        "slots": {
+         "arg_1": "Good Morning",
+         "arg_2": "Ram"
+        },
+        "call_no": 3,
+        "line": 8
+       },
+       {
+        "kind": "call",
+        "call": "greet(name, greeting)",
+        "caption": "The call: greet(name, greeting).",
+        "slots": {
+         "arg_1": null,
+         "arg_2": null
+        },
+        "call_no": 4,
+        "line": 9
+       },
+       {
+        "kind": "fill",
+        "var": "name",
+        "slot": "arg_1",
+        "value": "Ram",
+        "by": "position",
+        "caption": "name is value number 1. It goes to argument number 1, arg_1.",
+        "slots": {
+         "arg_1": "Ram",
+         "arg_2": null
+        },
+        "call_no": 4,
+        "line": 9
+       },
+       {
+        "kind": "fill",
+        "var": "greeting",
+        "slot": "arg_2",
+        "value": "Good Morning",
+        "by": "position",
+        "caption": "greeting is value number 2. It goes to argument number 2, arg_2.",
+        "slots": {
+         "arg_1": "Ram",
+         "arg_2": "Good Morning"
+        },
+        "call_no": 4,
+        "line": 9
+       },
+       {
+        "kind": "print",
+        "caption": "Line 2 prints Ram Good Morning.",
+        "printed": "Ram Good Morning",
+        "slots": {
+         "arg_1": "Ram",
+         "arg_2": "Good Morning"
+        },
+        "call_no": 4,
+        "line": 9
+       }
+      ],
+      "calls": [
+       "greet(arg_1=greeting, arg_2=name)",
+       "greet(arg_2=name, arg_1=greeting)",
+       "greet(greeting, name)",
+       "greet(name, greeting)"
+      ],
+      "output": [
+       "Good Morning Ram",
+       "Good Morning Ram",
+       "Good Morning Ram",
+       "Ram Good Morning"
+      ]
+     },
+     "play": "The slots, the travelling values and their tags. Session 11's Follow the Dot is the bar: one thing moves at a time.",
+     "press_count": 18
+    }
+   ]
+  },
+  {
+   "name": "Leave one out: TypeError",
+   "kind": "concept",
+   "mins": 3,
+   "start": 23,
+   "cards": [
+    {
+     "id": "C6",
+     "title": "Leave one out",
+     "source": [
+      25,
+      28
+     ],
+     "purpose": "Every argument in the def needs a value. Leave one empty and Python stops with a TypeError that names the empty one.",
+     "heading": "Leave one out",
+     "show": [
+      "What happens?",
+      "Every argument needs a value.",
+      "Now we name arg_2. What happens?"
+     ],
+     "code": [
+      {
+       "file": "greet_one.py",
+       "src": "def greet(arg_1, arg_2):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet(greeting)",
+       "output": "TypeError: greet() missing 1 required positional argument: 'arg_2'",
+       "input": "Good Morning\nRam"
+      },
+      {
+       "file": "greet_none.py",
+       "src": "def greet(arg_1, arg_2):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet()",
+       "output": "TypeError: greet() missing 2 required positional arguments: 'arg_1' and 'arg_2'",
+       "input": "Good Morning\nRam"
+      },
+      {
+       "file": "greet_only_2.py",
+       "src": "def greet(arg_1, arg_2):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet(arg_2=name)",
+       "output": "TypeError: greet() missing 1 required positional argument: 'arg_1'",
+       "input": "Good Morning\nRam"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "greet_one.py with line 6 <q>greet(greeting)</q> lit. Caption: <q>What happens?</q>",
+       "say": "Will it print Good Morning? Or something else?",
+       "room": "Say it."
+      },
+      {
+       "screen": "greeting fills arg_1. arg_2 stays empty and turns red. The output: <q>TypeError: greet() missing 1 required positional argument: 'arg_2'</q>.",
+       "say": "Read the end of the error: it names the empty slot, arg_2."
+      },
+      {
+       "screen": "Line 6 becomes <q>greet()</q>. Both slots red. The output: <q>TypeError: greet() missing 2 required positional arguments: 'arg_1' and 'arg_2'</q>.",
+       "say": "Two empty slots, two names in the error."
+      },
+      {
+       "screen": "Line 6 becomes <q>greet(arg_2=name)</q>. Caption: <q>Now we name arg_2. What happens?</q>",
+       "say": "arg_2 has a value now. Is that enough?",
+       "room": "Say it."
+      },
+      {
+       "screen": "arg_2 fills, arg_1 turns red. The output: <q>TypeError: greet() missing 1 required positional argument: 'arg_1'</q>. Caption: <q>Every argument needs a value.</q>",
+       "say": "It says positional even though we used a name. That is Python's word for an argument with no default. Every one needs a value."
+      }
+     ],
+     "answer": "TypeError: greet() missing 1 required positional argument: 'arg_2'. Then TypeError: greet() missing 2 required positional arguments: 'arg_1' and 'arg_2'. Then TypeError: greet() missing 1 required positional argument: 'arg_1'.",
+     "must": [
+      "The error text is exactly what Python prints.",
+      "The empty slot is the one marked red, and it is the one the error names."
+     ],
+     "play": "The red empty slot and the error box.",
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Task 1: the trip program",
+   "kind": "activity",
+   "mins": 7,
+   "start": 26,
+   "cards": [
+    {
+     "id": "T1",
+     "title": "Task 1: the trip program",
+     "source": "new",
+     "handout": "Task 1",
+     "activity": 2,
+     "timer": 300,
+     "purpose": "Predict four calls of one function: by position, swapped, by name, and one value missing. Then run, compare, and fix the swapped call using names.",
+     "heading": "The trip program",
+     "show": [
+      "Worksheet · Task 1",
+      "Teja writes a tiny Maps program.",
+      "Type it. Predict lines 6 to 9. Run.",
+      "Line 7 shows the trip the wrong way. Fix it with names. Keep home written first."
+     ],
+     "code": [
+      {
+       "file": "trip.py",
+       "src": "def trip(start, end):\n    print(start + \" to \" + end)\n\ngate = \"Main Gate\"\nhome = \"Ameerpet\"\ntrip(gate, home)\ntrip(home, gate)\ntrip(end=home, start=gate)\ntrip(home)",
+       "output": "Main Gate to Ameerpet\nAmeerpet to Main Gate\nMain Gate to Ameerpet\nTypeError: trip() missing 1 required positional argument: 'end'"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The story line, trip.py with line numbers, the steps <q>Type it. Predict lines 6 to 9. Run.</q> and a 5 minute timer.",
+       "say": "Worksheet tab and playground. Type it, type your four predictions, then run.",
+       "room": "Type, predict, run."
+      },
+      {
+       "screen": "Line 6 lights and its result appears: <q>Main Gate to Ameerpet</q>.",
+       "say": "By position: gate first."
+      },
+      {
+       "screen": "Line 7 lights and its result appears: <q>Ameerpet to Main Gate</q>.",
+       "say": "Swapped. No error, wrong trip."
+      },
+      {
+       "screen": "Line 8 lights and its result appears: <q>Main Gate to Ameerpet</q>.",
+       "say": "By name: order does not matter."
+      },
+      {
+       "screen": "Line 9 lights and its result appears: <q>TypeError: trip() missing 1 required positional argument: 'end'</q>.",
+       "say": "Three lines printed, then Python stopped at line 9. end is empty."
+      },
+      {
+       "screen": "Caption: <q>Line 7 shows the trip the wrong way. Fix it with names. Keep home written first.</q> Then line 7 becomes <q>trip(end=home, start=gate)</q> and shows <q>Main Gate to Ameerpet</q>.",
+       "say": "Names, so the order we write does not matter.",
+       "room": "Type the fix, run."
+      }
+     ],
+     "answer": "Main Gate to Ameerpet / Ameerpet to Main Gate / Main Gate to Ameerpet / TypeError: trip() missing 1 required positional argument: 'end'. Fixed line 7: trip(end=home, start=gate).",
+     "must": [
+      "No result shows until the timer has ended.",
+      "One call line per press on the reveal.",
+      "The three printed lines appear before the error, as Python shows them."
+     ],
+     "must_not": [
+      "Show any output before the room has run it."
+     ],
+     "play": "The layout of steps, timer and code. The results can appear in a small Maps-style route card.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Game G1: the app is broken",
+   "kind": "activity",
+   "mins": 5,
+   "start": 33,
+   "cards": [
+    {
+     "id": "G1",
+     "title": "The app is broken",
+     "game": "app-broken",
+     "purpose": "Trace a wrong trip on the Maps screen back to the line that caused it: a swapped call, a def in the wrong order, a missing value.",
+     "heading": "Why is the trip wrong?",
+     "data": {
+      "setup": {
+       "app": "the H1 Google Maps directions screen: the Start box, the End box and the route arrow, beside the program with a marker on the line Python is running",
+       "wrong": "Start: Ameerpet, End: Main Gate (rounds 1 and 2); a red crash screen (round 3)"
+      },
+      "rounds": [
+       {
+        "ask": "Teja is at Main Gate. Which line makes the app start at Ameerpet?",
+        "shown": "The app: Start box Ameerpet, End box Main Gate, the route arrow pointing away from home.",
+        "program": "def directions(start, end):\n    print(\"Start: \" + start)\n    print(\"End: \" + end)\n\nhere = \"Main Gate\"\nhome = \"Ameerpet\"\ndirections(home, here)",
+        "fix": "directions(here, home)",
+        "options": [
+         "Line 1",
+         "Line 2",
+         "Line 7"
+        ],
+        "answer": "Line 7",
+        "because": "By position, the first value goes to the first argument. home went into start.",
+        "why": {
+         "Line 1": "The def says start comes first, then end. That is right.",
+         "Line 2": "Line 2 prints whatever is in start. The wrong value got into start at line 7."
+        },
+        "commit": "hands",
+        "steps": [
+         {
+          "caption": "Line 5: here = 'Main Gate'.",
+          "line": 5,
+          "app": "Start: (empty) · End: (empty)"
+         },
+         {
+          "caption": "Line 6: home = 'Ameerpet'.",
+          "line": 6,
+          "app": "Start: (empty) · End: (empty)"
+         },
+         {
+          "caption": "Line 7 calls directions.",
+          "line": 7,
+          "app": "Start: (empty) · End: (empty)"
+         },
+         {
+          "caption": "Python jumps to line 1, into directions. A new box: start = 'Ameerpet', end = 'Main Gate'.",
+          "line": 1,
+          "app": "Start: (empty) · End: (empty)"
+         },
+         {
+          "caption": "Line 2: prints Start: Ameerpet. The app starts at Ameerpet. Teja is at Main Gate.",
+          "line": 2,
+          "app": "Start: Ameerpet · End: (empty)"
+         }
+        ]
+       },
+       {
+        "ask": "The call looks right. Which line still flips the trip?",
+        "shown": "The same wrong app: Start box Ameerpet, End box Main Gate.",
+        "program": "def directions(end, start):\n    print(\"Start: \" + start)\n    print(\"End: \" + end)\n\nhere = \"Main Gate\"\nhome = \"Ameerpet\"\ndirections(here, home)",
+        "fix": "def directions(start, end):",
+        "options": [
+         "Line 1",
+         "Line 2",
+         "Line 7"
+        ],
+        "answer": "Line 1",
+        "because": "The call gives here first. The def says the first argument is end, so here becomes the end.",
+        "why": {
+         "Line 2": "Line 2 prints start. start got the wrong value because of the def's order.",
+         "Line 7": "here comes first in the call. It is right for a def that says start first."
+        },
+        "commit": "hands",
+        "steps": [
+         {
+          "caption": "Line 5: here = 'Main Gate'.",
+          "line": 5,
+          "app": "Start: (empty) · End: (empty)"
+         },
+         {
+          "caption": "Line 6: home = 'Ameerpet'.",
+          "line": 6,
+          "app": "Start: (empty) · End: (empty)"
+         },
+         {
+          "caption": "Line 7 calls directions.",
+          "line": 7,
+          "app": "Start: (empty) · End: (empty)"
+         },
+         {
+          "caption": "Python jumps to line 1, into directions. A new box: end = 'Main Gate', start = 'Ameerpet'.",
+          "line": 1,
+          "app": "Start: (empty) · End: (empty)"
+         },
+         {
+          "caption": "Line 2: prints Start: Ameerpet. The app starts at Ameerpet. Teja is at Main Gate.",
+          "line": 2,
+          "app": "Start: Ameerpet · End: (empty)"
+         }
+        ]
+       },
+       {
+        "ask": "The app crashed. Which line is to blame?",
+        "shown": "The app shows a red crash screen instead of a route.",
+        "program": "def directions(start, end):\n    print(\"Start: \" + start)\n    print(\"End: \" + end)\n\nhome = \"Ameerpet\"\ndirections(end=home)",
+        "fix": "directions(start=\"Main Gate\", end=home)",
+        "options": [
+         "Line 1",
+         "Line 2",
+         "Line 6"
+        ],
+        "answer": "Line 6",
+        "because": "start has no value. Every argument in the def needs one, so Python stops.",
+        "why": {
+         "Line 1": "The def is fine. It asks for two values.",
+         "Line 2": "Line 2 never runs. Python stops at the call."
+        },
+        "commit": "hands",
+        "steps": [
+         {
+          "caption": "Line 5: home = 'Ameerpet'.",
+          "line": 5,
+          "app": "Start: (empty) · End: (empty)"
+         },
+         {
+          "caption": "Line 6: TypeError: directions() missing 1 required positional argument: 'start'. Python stops.",
+          "line": 6,
+          "app": "crashed: TypeError: directions() missing 1 required positional argument: 'start'"
+         }
+        ]
+       }
+      ]
+     },
+     "say": {
+      "ask": "Read each option. How many think Line 1? Hands up. Then the next.",
+      "step": "Read the caption. What does the app show now?",
+      "verdict": "Read the line for the most popular wrong option, then the fix."
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "The app looks exactly like the hook's app.",
+      "Round 1 is Task 1's line 7, and round 3 is Task 1's line 9, in the app's world.",
+      "The app's boxes fill only on the print presses.",
+      "Round 2's call is the right one; the def's order is what flips it. The verdict press says so.",
+      "Round 3's crash names start, the empty argument."
+     ],
+     "play": "The app and the code share the screen. The crash screen can be Maps' own sad face.",
+     "presses": [
+      {
+       "screen": "Round 1 of 3. The app: Start box Ameerpet, End box Main Gate, the route arrow pointing away from home. The question: <q>Teja is at Main Gate. Which line makes the app start at Ameerpet?</q> Options: A <q>Line 1</q>, B <q>Line 2</q>, C <q>Line 7</q>. Nothing runs yet.",
+       "say": "Read each option. How many think Line 1? Hands up. Then the next.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 5: here = 'Main Gate'.</q> In the data: line = 5; app = Start: (empty) · End: (empty).",
+       "say": "Read the caption. What does the app show now?"
+      },
+      {
+       "screen": "<q>Line 6: home = 'Ameerpet'.</q> In the data: line = 6; app = Start: (empty) · End: (empty).",
+       "say": "Read the caption. What does the app show now?"
+      },
+      {
+       "screen": "<q>Line 7 calls directions.</q> In the data: line = 7; app = Start: (empty) · End: (empty).",
+       "say": "Read the caption. What does the app show now?"
+      },
+      {
+       "screen": "<q>Python jumps to line 1, into directions. A new box: start = 'Ameerpet', end = 'Main Gate'.</q> In the data: line = 1; app = Start: (empty) · End: (empty).",
+       "say": "Read the caption. What does the app show now?"
+      },
+      {
+       "screen": "<q>Line 2: prints Start: Ameerpet. The app starts at Ameerpet. Teja is at Main Gate.</q> In the data: line = 2; app = Start: Ameerpet · End: (empty).",
+       "say": "Read the caption. What does the app show now?"
+      },
+      {
+       "screen": "The answer: <q>Line 7</q>. <q>By position, the first value goes to the first argument. home went into start.</q> Then a line for every other option: <q>Line 1</q> <q>The def says start comes first, then end. That is right.</q>; <q>Line 2</q> <q>Line 2 prints whatever is in start. The wrong value got into start at line 7.</q>.",
+       "say": "Read the line for the most popular wrong option, then the fix."
+      },
+      {
+       "screen": "Round 2 of 3. The same wrong app: Start box Ameerpet, End box Main Gate. The question: <q>The call looks right. Which line still flips the trip?</q> Options: A <q>Line 1</q>, B <q>Line 2</q>, C <q>Line 7</q>. Nothing runs yet.",
+       "say": "Read each option. How many think Line 1? Hands up. Then the next.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 5: here = 'Main Gate'.</q> In the data: line = 5; app = Start: (empty) · End: (empty).",
+       "say": "Read the caption. What does the app show now?"
+      },
+      {
+       "screen": "<q>Line 6: home = 'Ameerpet'.</q> In the data: line = 6; app = Start: (empty) · End: (empty).",
+       "say": "Read the caption. What does the app show now?"
+      },
+      {
+       "screen": "<q>Line 7 calls directions.</q> In the data: line = 7; app = Start: (empty) · End: (empty).",
+       "say": "Read the caption. What does the app show now?"
+      },
+      {
+       "screen": "<q>Python jumps to line 1, into directions. A new box: end = 'Main Gate', start = 'Ameerpet'.</q> In the data: line = 1; app = Start: (empty) · End: (empty).",
+       "say": "Read the caption. What does the app show now?"
+      },
+      {
+       "screen": "<q>Line 2: prints Start: Ameerpet. The app starts at Ameerpet. Teja is at Main Gate.</q> In the data: line = 2; app = Start: Ameerpet · End: (empty).",
+       "say": "Read the caption. What does the app show now?"
+      },
+      {
+       "screen": "The answer: <q>Line 1</q>. <q>The call gives here first. The def says the first argument is end, so here becomes the end.</q> Then a line for every other option: <q>Line 2</q> <q>Line 2 prints start. start got the wrong value because of the def's order.</q>; <q>Line 7</q> <q>here comes first in the call. It is right for a def that says start first.</q>.",
+       "say": "Read the line for the most popular wrong option, then the fix."
+      },
+      {
+       "screen": "Round 3 of 3. The app shows a red crash screen instead of a route. The question: <q>The app crashed. Which line is to blame?</q> Options: A <q>Line 1</q>, B <q>Line 2</q>, C <q>Line 6</q>. Nothing runs yet.",
+       "say": "Read each option. How many think Line 1? Hands up. Then the next.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 5: home = 'Ameerpet'.</q> In the data: line = 5; app = Start: (empty) · End: (empty).",
+       "say": "Read the caption. What does the app show now?"
+      },
+      {
+       "screen": "<q>Line 6: TypeError: directions() missing 1 required positional argument: 'start'. Python stops.</q> In the data: line = 6; app = crashed: TypeError: directions() missing 1 required positional argument: 'start'.",
+       "say": "Read the caption. What does the app show now?"
+      },
+      {
+       "screen": "The answer: <q>Line 6</q>. <q>start has no value. Every argument in the def needs one, so Python stops.</q> Then a line for every other option: <q>Line 1</q> <q>The def is fine. It asks for two values.</q>; <q>Line 2</q> <q>Line 2 never runs. Python stops at the call.</q>.",
+       "say": "Read the line for the most popular wrong option, then the fix."
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Use a different world from the hook."
+     ],
+     "interaction": "The hook's app shows something wrong (the scorecard says 0.7). The room votes which code line caused it; then the app and the code run side by side until the wrong thing appears.",
+     "game_def": {
+      "id": "app-broken",
+      "name": "The app is broken",
+      "one_line": "The hook's app shows something wrong (the scorecard says 0.7). The room votes which code line caused it; then the app and the code run side by side until the wrong thing appears.",
+      "how": [
+       "The same mock app as the hook, showing one wrong thing, circled.",
+       "The code behind it, with line numbers. Options are line numbers.",
+       "Each press runs one line: the app updates beside the code.",
+       "The verdict fixes the line and the app shows the right thing."
+      ],
+      "setup": {
+       "app": "which app, as drawn in the hook (card id)",
+       "wrong": "what the app shows that is wrong, exact"
+      },
+      "round": {
+       "program": "the buggy code, exact",
+       "fix": "the fixed line, exact"
+      },
+      "step": {
+       "line": "the line that ran",
+       "app": "what the app shows after it"
+      }
+     },
+     "press_count": 18
+    }
+   ]
+  },
+  {
+   "name": "Classroom quiz",
+   "kind": "quiz",
+   "mins": 6,
+   "start": 38,
+   "cards": [
+    {
+     "id": "S-QUIZ",
+     "title": "Quiz",
+     "source": "spine:quiz",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Hook 2: Your location, every time?",
+   "kind": "hook",
+   "mins": 4,
+   "start": 44,
+   "cards": [
+    {
+     "id": "H2",
+     "title": "Your location, every time?",
+     "source": "new",
+     "purpose": "Feel why a default is worth having: the long way writes the same start in every call. Maps fills it for us; a def can too.",
+     "heading": "Does she type her start every time?",
+     "show": [
+      "Does she type her start every time?",
+      "\"Main Gate\" written 3 times.",
+      "What if the def could fill it for us?",
+      "A value written in the def is a default value."
+     ],
+     "code": [
+      {
+       "file": "directions_long.py",
+       "src": "def directions(start, end):\n    print(start + \" to \" + end)\n\ndirections(\"Main Gate\", \"Ameerpet\")\ndirections(\"Main Gate\", \"Kukatpally\")\ndirections(\"Main Gate\", \"Charminar\")",
+       "output": "Main Gate to Ameerpet\nMain Gate to Kukatpally\nMain Gate to Charminar"
+      },
+      {
+       "file": "directions_default.py",
+       "src": "def directions(start=\"Your location\", end=\"Home\"):\n    print(start + \" to \" + end)\n\ndirections(end=\"Ameerpet\")\ndirections(end=\"Kukatpally\")\ndirections()",
+       "output": "Your location to Ameerpet\nYour location to Kukatpally\nYour location to Home"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Maps again. The top box already says <q>Your location</q> in blue, before she types anything. She types only Ameerpet in the bottom box. Caption: <q>Does she type her start every time?</q>",
+       "say": "Who fills the top box?",
+       "room": "Say: the app. My location."
+      },
+      {
+       "screen": "The long way, written out: directions_long.py, three calls each starting with <q>\"Main Gate\"</q>. Each \"Main Gate\" lights in turn. A counter: <q>\"Main Gate\" written 3 times.</q>",
+       "say": "Three trips, the same start typed three times."
+      },
+      {
+       "screen": "Caption: <q>What if the def could fill it for us?</q>",
+       "say": "Any idea how?",
+       "room": "Say ideas."
+      },
+      {
+       "screen": "The short way: directions_default.py. In the header, start=\"Your location\" and end=\"Home\" are ringed. The calls give only end, and the last gives nothing. The output shows <q>Your location to Ameerpet / Your location to Kukatpally / Your location to Home</q>. Caption: <q>A value written in the def is a default value.</q>",
+       "say": "Leave it out, and the def fills it. Like Maps."
+      }
+     ],
+     "answer": "Long: Main Gate to Ameerpet / Main Gate to Kukatpally / Main Gate to Charminar. Short: Your location to Ameerpet / Your location to Kukatpally / Your location to Home.",
+     "must": [
+      "Both programs are real and run; the outputs shown are theirs.",
+      "The last call directions() shows both defaults at work."
+     ],
+     "must_not": [
+      "Animate by itself."
+     ],
+     "data": {
+      "repeats": 3,
+      "long_output": [
+       "Main Gate to Ameerpet",
+       "Main Gate to Kukatpally",
+       "Main Gate to Charminar"
+      ],
+      "short_output": [
+       "Your location to Ameerpet",
+       "Your location to Kukatpally",
+       "Your location to Home"
+      ]
+     },
+     "play": "The Maps screen from H1, now with Your location. How the repeated start lights up and how the long program shrinks is yours.",
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Default values: leave it out, the def fills it",
+   "kind": "concept",
+   "mins": 5,
+   "start": 48,
+   "cards": [
+    {
+     "id": "C7",
+     "title": "Default values, four calls",
+     "source": [
+      30,
+      34,
+      36,
+      38
+     ],
+     "purpose": "A default fills any argument the call leaves out. A value passed by position still goes to the 1st slot first, so greet(name) prints Teja Ram.",
+     "heading": "Default values",
+     "show": [
+      "Function arguments can have default values.",
+      "Default arguments",
+      "What will it print?",
+      "default"
+     ],
+     "code": [
+      {
+       "file": "default_1.py",
+       "src": "def greet(arg_1=\"Hi\", arg_2=\"Ram\"):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet()",
+       "output": "Hi Ram",
+       "input": "Hello\nTeja"
+      },
+      {
+       "file": "default_2.py",
+       "src": "def greet(arg_1=\"Hi\", arg_2=\"Ram\"):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet(greeting)",
+       "output": "Hello Ram",
+       "input": "Hello\nTeja"
+      },
+      {
+       "file": "default_3.py",
+       "src": "def greet(arg_1=\"Hi\", arg_2=\"Ram\"):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet(name)",
+       "output": "Teja Ram",
+       "input": "Hello\nTeja"
+      },
+      {
+       "file": "default_4.py",
+       "src": "def greet(arg_1=\"Hi\", arg_2=\"Ram\"):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet(arg_2=name)",
+       "output": "Hi Teja",
+       "input": "Hello\nTeja"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The header def greet(arg_1=\"Hi\", arg_2=\"Ram\"): with <q>Function arguments can have default values.</q> and the label <q>Default arguments</q> (deck slide 30). The two slots show Hi and Ram faintly, as defaults. Input <q>Hello</q> and <q>Teja</q>.",
+       "say": "Hi and Ram are written in the def."
+      },
+      {
+       "screen": "Call 1: line 6 becomes <q>greet()</q>. Caption: <q>What will it print?</q>",
+       "say": "Nothing passed. What fills the slots?",
+       "room": "Say it."
+      },
+      {
+       "screen": "Passed values land in their slots; arg_1, arg_2 takes its default, with a small tag <q>default</q>. The output: <q>Hi Ram</q>.",
+       "say": "Read the slots, then the output."
+      },
+      {
+       "screen": "Call 2: line 6 becomes <q>greet(greeting)</q>. Caption: <q>What will it print?</q>",
+       "say": "One value, by position. Which slot?",
+       "room": "Say it."
+      },
+      {
+       "screen": "Passed values land in their slots; arg_2 takes its default, with a small tag <q>default</q>. The output: <q>Hello Ram</q>.",
+       "say": "Read the slots, then the output."
+      },
+      {
+       "screen": "Call 3: line 6 becomes <q>greet(name)</q>. Caption: <q>What will it print?</q>",
+       "say": "One value again, name this time. Which slot does it go to?",
+       "room": "Say it."
+      },
+      {
+       "screen": "Passed values land in their slots; arg_2 takes its default, with a small tag <q>default</q>. The output: <q>Teja Ram</q>.",
+       "say": "Read the slots, then the output."
+      },
+      {
+       "screen": "Call 4: line 6 becomes <q>greet(arg_2=name)</q>. Caption: <q>What will it print?</q>",
+       "say": "By name: arg_2. What does arg_1 get?",
+       "room": "Say it."
+      },
+      {
+       "screen": "Passed values land in their slots; arg_1 takes its default, with a small tag <q>default</q>. The output: <q>Hi Teja</q>.",
+       "say": "Read the slots, then the output."
+      }
+     ],
+     "answer": "greet() prints Hi Ram / greet(greeting) prints Hello Ram / greet(name) prints Teja Ram / greet(arg_2=name) prints Hi Teja",
+     "must": [
+      "Each call is asked before it is shown.",
+      "A slot filled by its default carries the default tag; a passed value does not.",
+      "Call 3, greet(name), prints Teja Ram: name goes to arg_1 by position. Leave the surprise to the press."
+     ],
+     "data": {
+      "calls": [
+       "greet()",
+       "greet(greeting)",
+       "greet(name)",
+       "greet(arg_2=name)"
+      ],
+      "outputs": [
+       "Hi Ram",
+       "Hello Ram",
+       "Teja Ram",
+       "Hi Teja"
+      ],
+      "defaults_used": [
+       [
+        "arg_1",
+        "arg_2"
+       ],
+       [
+        "arg_2"
+       ],
+       [
+        "arg_2"
+       ],
+       [
+        "arg_1"
+       ]
+      ],
+      "steps": [
+       [
+        {
+         "kind": "call",
+         "call": "greet()",
+         "caption": "The call: greet().",
+         "slots": {
+          "arg_1": null,
+          "arg_2": null
+         }
+        },
+        {
+         "kind": "fill",
+         "var": null,
+         "slot": "arg_1",
+         "value": "Hi",
+         "by": "default",
+         "caption": "Nothing came for arg_1. The def gives it 'Hi'.",
+         "slots": {
+          "arg_1": "Hi",
+          "arg_2": null
+         }
+        },
+        {
+         "kind": "fill",
+         "var": null,
+         "slot": "arg_2",
+         "value": "Ram",
+         "by": "default",
+         "caption": "Nothing came for arg_2. The def gives it 'Ram'.",
+         "slots": {
+          "arg_1": "Hi",
+          "arg_2": "Ram"
+         }
+        },
+        {
+         "kind": "print",
+         "caption": "Line 2 prints Hi Ram.",
+         "printed": "Hi Ram",
+         "slots": {
+          "arg_1": "Hi",
+          "arg_2": "Ram"
+         }
+        }
+       ],
+       [
+        {
+         "kind": "call",
+         "call": "greet(greeting)",
+         "caption": "The call: greet(greeting).",
+         "slots": {
+          "arg_1": null,
+          "arg_2": null
+         }
+        },
+        {
+         "kind": "fill",
+         "var": "greeting",
+         "slot": "arg_1",
+         "value": "Hello",
+         "by": "position",
+         "caption": "greeting is value number 1. It goes to argument number 1, arg_1.",
+         "slots": {
+          "arg_1": "Hello",
+          "arg_2": null
+         }
+        },
+        {
+         "kind": "fill",
+         "var": null,
+         "slot": "arg_2",
+         "value": "Ram",
+         "by": "default",
+         "caption": "Nothing came for arg_2. The def gives it 'Ram'.",
+         "slots": {
+          "arg_1": "Hello",
+          "arg_2": "Ram"
+         }
+        },
+        {
+         "kind": "print",
+         "caption": "Line 2 prints Hello Ram.",
+         "printed": "Hello Ram",
+         "slots": {
+          "arg_1": "Hello",
+          "arg_2": "Ram"
+         }
+        }
+       ],
+       [
+        {
+         "kind": "call",
+         "call": "greet(name)",
+         "caption": "The call: greet(name).",
+         "slots": {
+          "arg_1": null,
+          "arg_2": null
+         }
+        },
+        {
+         "kind": "fill",
+         "var": "name",
+         "slot": "arg_1",
+         "value": "Teja",
+         "by": "position",
+         "caption": "name is value number 1. It goes to argument number 1, arg_1.",
+         "slots": {
+          "arg_1": "Teja",
+          "arg_2": null
+         }
+        },
+        {
+         "kind": "fill",
+         "var": null,
+         "slot": "arg_2",
+         "value": "Ram",
+         "by": "default",
+         "caption": "Nothing came for arg_2. The def gives it 'Ram'.",
+         "slots": {
+          "arg_1": "Teja",
+          "arg_2": "Ram"
+         }
+        },
+        {
+         "kind": "print",
+         "caption": "Line 2 prints Teja Ram.",
+         "printed": "Teja Ram",
+         "slots": {
+          "arg_1": "Teja",
+          "arg_2": "Ram"
+         }
+        }
+       ],
+       [
+        {
+         "kind": "call",
+         "call": "greet(arg_2=name)",
+         "caption": "The call: greet(arg_2=name).",
+         "slots": {
+          "arg_1": null,
+          "arg_2": null
+         }
+        },
+        {
+         "kind": "fill",
+         "var": "name",
+         "slot": "arg_2",
+         "value": "Teja",
+         "by": "name",
+         "caption": "name carries the label arg_2. It goes to arg_2, wherever it sits.",
+         "slots": {
+          "arg_1": null,
+          "arg_2": "Teja"
+         }
+        },
+        {
+         "kind": "fill",
+         "var": null,
+         "slot": "arg_1",
+         "value": "Hi",
+         "by": "default",
+         "caption": "Nothing came for arg_1. The def gives it 'Hi'.",
+         "slots": {
+          "arg_1": "Hi",
+          "arg_2": "Teja"
+         }
+        },
+        {
+         "kind": "print",
+         "caption": "Line 2 prints Hi Teja.",
+         "printed": "Hi Teja",
+         "slots": {
+          "arg_1": "Hi",
+          "arg_2": "Teja"
+         }
+        }
+       ]
+      ]
+     },
+     "play": "The deck's slides 34 to 38 are one picture changing; one card stepping is fine.",
+     "press_count": 9
+    }
+   ]
+  },
+  {
+   "name": "Task 2: add a default, then break the order",
+   "kind": "activity",
+   "mins": 7,
+   "start": 53,
+   "cards": [
+    {
+     "id": "T2",
+     "title": "Task 2: Rapido fares",
+     "source": "new",
+     "handout": "Task 2",
+     "activity": 19,
+     "timer": 360,
+     "purpose": "Give rate a default so day trips need only the km; see the output stay the same; then put the default first, as in my notes, and find that nothing prints at all.",
+     "heading": "Rapido fares",
+     "show": [
+      "Worksheet · Task 2",
+      "Rapido: Rs 12 a km by day, Rs 15 a km at night.",
+      "Type it. Predict. Run.",
+      "12 is typed again and again. Make it the default for rate.",
+      "My notes had rate first. Change line 2 to my line. Run.",
+      "Nothing printed. Not even Rapido fares."
+     ],
+     "code": [
+      {
+       "file": "fares.py",
+       "src": "print(\"Rapido fares\")\ndef fare(km, rate):\n    print(km * rate)\n\nfare(9, 12)\nfare(6, 12)\nfare(8, 15)",
+       "output": "Rapido fares\n108\n72\n120"
+      },
+      {
+       "file": "fares_default.py",
+       "src": "print(\"Rapido fares\")\ndef fare(km, rate=12):\n    print(km * rate)\n\nfare(9)\nfare(6)\nfare(8, 15)",
+       "output": "Rapido fares\n108\n72\n120"
+      },
+      {
+       "file": "fares_my_notes.py",
+       "src": "print(\"Rapido fares\")\ndef fare(rate=12, km):\n    print(km * rate)\n\nfare(9)\nfare(6)\nfare(8, 15)",
+       "output": "SyntaxError: non-default argument follows default argument"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The story line, fares.py with line numbers, the steps <q>Type it. Predict. Run.</q> and a 6 minute timer.",
+       "say": "Worksheet tab and playground. Type, predict, run.",
+       "room": "Type, predict, run."
+      },
+      {
+       "screen": "Step 2 appears: <q>12 is typed again and again. Make it the default for rate.</q>",
+       "say": "Change line 2, and remove 12 from the day trips. Predict. Run.",
+       "room": "Edit, predict, run."
+      },
+      {
+       "screen": "Step 3 appears: <q>My notes had rate first. Change line 2 to my line. Run.</q> with my line <q>def fare(rate=12, km):</q>",
+       "say": "This is how I wrote it in my notes. Change it and run. Let them react first.",
+       "room": "Change line 2, run."
+      },
+      {
+       "screen": "fares.py runs: <q>Rapido fares / 108 / 72 / 120</q>.",
+       "say": "108, 72, 120."
+      },
+      {
+       "screen": "fares_default.py: line 2 is <q>def fare(km, rate=12):</q>, the day calls are <q>fare(9)</q>, <q>fare(6)</q>. It prints the same: <q>Rapido fares / 108 / 72 / 120</q>.",
+       "say": "Same fares, less typing."
+      },
+      {
+       "screen": "fares_my_notes.py: the terminal shows only <q>SyntaxError: non-default argument follows default argument</q>. Caption: <q>Nothing printed. Not even Rapido fares.</q>",
+       "say": "Line 1 is a plain print and it still did not run. Python checks the whole file before it runs any line."
+      }
+     ],
+     "answer": "Rapido fares / 108 / 72 / 120, the same with the default; my notes: SyntaxError: non-default argument follows default argument, and nothing prints.",
+     "must": [
+      "The change in step 3 is framed as the instructor's own notes, not a test.",
+      "On the last press the terminal shows only the error: no Rapido fares line."
+     ],
+     "must_not": [
+      "Show any output before the timer has ended."
+     ],
+     "play": "A Rapido fare card can hold the outputs. The timer and steps layout is yours.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Defaults go last",
+   "kind": "concept",
+   "mins": 2,
+   "start": 60,
+   "cards": [
+    {
+     "id": "C8",
+     "title": "Defaults go last",
+     "source": [
+      41,
+      42
+     ],
+     "purpose": "Name the rule they just hit: an argument without a default cannot come after one with a default. Put defaults last.",
+     "heading": "Default values go last",
+     "show": [
+      "Default argument",
+      "Non-default argument",
+      "Non-default arguments cannot follow default arguments.",
+      "Put the non-default argument first."
+     ],
+     "code": [
+      {
+       "file": "order_bad.py",
+       "src": "def greet(arg_1=\"Hi\", arg_2):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet(arg_2=name)",
+       "output": "SyntaxError: non-default argument follows default argument",
+       "input": "Hello\nTeja"
+      },
+      {
+       "file": "order_good.py",
+       "src": "def greet(arg_2, arg_1=\"Hi\"):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet(arg_2=name)",
+       "output": "Hi Teja",
+       "input": "Hello\nTeja"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "order_bad.py, line 1 red. arg_1=\"Hi\" labelled <q>Default argument</q>, arg_2 labelled <q>Non-default argument</q>. The output: <q>SyntaxError: non-default argument follows default argument</q>. Caption: <q>Non-default arguments cannot follow default arguments.</q>",
+       "say": "The error you got in Task 2."
+      },
+      {
+       "screen": "order_good.py (deck slide 42): arg_2 moves first, arg_1=\"Hi\" last. The output: <q>Hi Teja</q>. Caption: <q>Put the non-default argument first.</q>",
+       "say": "And the fare: def fare(km, rate=12):"
+      }
+     ],
+     "answer": "Hi Teja",
+     "play": "The deck's dashed labels on slide 41 are a fine start.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Same name, two boxes: increment(a)",
+   "kind": "concept",
+   "mins": 5,
+   "start": 62,
+   "cards": [
+    {
+     "id": "E2",
+     "title": "Same name, two boxes",
+     "source": [
+      44,
+      45,
+      47
+     ],
+     "purpose": "increment(a) makes its own box named a. It changes that box to 6 and the box vanishes when the call ends, so print(a) outside shows 5.",
+     "heading": "Passing immutable objects",
+     "show": [
+      "What will it print?",
+      "5",
+      "6",
+      "Same name, two different boxes.",
+      "Changing the value of the variable inside the function will not affect the variable outside.",
+      "Want the 6 outside? Hand it back with return."
+     ],
+     "code": [
+      {
+       "file": "increment.py",
+       "src": "def increment(a):\n    a += 1\n\na = int(input())\nincrement(a)\nprint(a)",
+       "output": "5",
+       "input": "5"
+      },
+      {
+       "file": "increment_return.py",
+       "src": "def increment(a):\n    a += 1\n    return a\n\na = int(input())\na = increment(a)\nprint(a)",
+       "output": "6",
+       "input": "5"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "increment.py with line numbers (deck slide 44), input <q>5</q>, empty output. Caption: <q>What will it print?</q> Choices <q>5</q> <q>6</q>.",
+       "say": "5, hands up. 6, hands up.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "One move per press, following data.steps, caption from the data. Outside, a box a holds 5. The call opens increment's area with its own box a holding 5. a += 1 changes that inside box to 6. The call ends: the inside box and its 6 vanish. print(a) reads the outside box.",
+       "n": 7,
+       "say": "Which a is Python looking at now?",
+       "room": "Say: inside or outside."
+      },
+      {
+       "screen": "Deck slide 45 and 47's picture: the outside box 5 ringed, the output <q>5</q>. Caption: <q>Same name, two different boxes.</q> then <q>Changing the value of the variable inside the function will not affect the variable outside.</q>",
+       "say": "Numbers and strings are immutable: a += 1 makes a new 6 for the inside box. The outside 5 is untouched."
+      },
+      {
+       "screen": "increment_return.py: line 3 return a, line 6 a = increment(a). It prints <q>6</q>. Caption: <q>Want the 6 outside? Hand it back with return.</q>",
+       "say": "Last class's return. The function hands the 6 back and we store it."
+      }
+     ],
+     "answer": "5. With return: 6.",
+     "must": [
+      "A call opens the function's own area beside its block. Its argument boxes live there and vanish the moment the call ends. No grey ghost is left behind.",
+      "The two boxes both read a. Their places (inside the function, outside) tell them apart.",
+      "The 6 vanishes with the inside box; it never reaches the outside box."
+     ],
+     "must_not": [
+      "Draw an arrow from the inside box to the outside box.",
+      "Move by itself."
+     ],
+     "data": {
+      "steps": [
+       {
+        "line": 1,
+        "where": "main",
+        "kind": "def",
+        "caption": "Line 1: Python learns the name increment. The block is skipped for now.",
+        "screen": [],
+        "main": {},
+        "local": {}
+       },
+       {
+        "line": 4,
+        "where": "main",
+        "kind": "input",
+        "caption": "Line 4: input() reads 5 into a.",
+        "screen": [],
+        "main": {
+         "a": 5
+        },
+        "local": {}
+       },
+       {
+        "line": 5,
+        "where": "main",
+        "kind": "call",
+        "caption": "Line 5 calls increment.",
+        "screen": [],
+        "main": {
+         "a": 5
+        },
+        "local": {}
+       },
+       {
+        "line": 1,
+        "where": "increment",
+        "kind": "jump-in",
+        "caption": "Python jumps to line 1, into increment. A new box: a = 5.",
+        "screen": [],
+        "main": {
+         "a": 5
+        },
+        "local": {
+         "a": 5
+        }
+       },
+       {
+        "line": 2,
+        "where": "increment",
+        "kind": "line",
+        "caption": "Line 2: a += 1. The a in this box is now 6.",
+        "screen": [],
+        "main": {
+         "a": 5
+        },
+        "local": {
+         "a": 6
+        }
+       },
+       {
+        "line": 5,
+        "where": "main",
+        "kind": "jump-back",
+        "caption": "increment is done. Its box is gone. Python jumps back to line 5.",
+        "screen": [],
+        "main": {
+         "a": 5
+        },
+        "local": {}
+       },
+       {
+        "line": 6,
+        "where": "main",
+        "kind": "print",
+        "caption": "Line 6: prints 5.",
+        "screen": [
+         "5"
+        ],
+        "main": {
+         "a": 5
+        },
+        "local": {}
+       }
+      ]
+     },
+     "play": "The deck's pink and green boxes (slide 45) are a fine start. How the inside area opens and closes is yours.",
+     "press_count": 10
+    }
+   ]
+  },
+  {
+   "name": "Exit: which call shows the right trip",
+   "kind": "exit",
+   "mins": 4,
+   "start": 67,
+   "cards": [
+    {
+     "id": "X1",
+     "title": "Exit: the right trip",
+     "source": "new",
+     "activity": 1,
+     "timer": 150,
+     "purpose": "Check the ideas together: position, name in any order, a default, and an empty argument. The right call is the one that looks backwards.",
+     "heading": "Teja is at Ameerpet",
+     "show": [
+      "Teja is at Ameerpet. She wants to go to Main Gate.",
+      "Which call shows Ameerpet to Main Gate?"
+     ],
+     "code": [
+      {
+       "file": "trip_default.py",
+       "src": "def trip(start, end=\"Home\"):\n    print(start + \" to \" + end)\n"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Story line, trip_default.py with line numbers, the question, and options: A <q>trip(\"Main Gate\", \"Ameerpet\")</q>, B <q>trip(end=\"Main Gate\")</q>, C <q>trip(end=\"Main Gate\", start=\"Ameerpet\")</q>, D <q>trip(\"Ameerpet\")</q>. A 2:30 timer.",
+       "say": "Everyone answers alone. Then option A, hands up. B. C. D.",
+       "room": "Hands up per option."
+      },
+      {
+       "screen": "The right option marks, and every option shows what it prints and its why line, as in data.",
+       "say": "Go through every option, not only the right one."
+      }
+     ],
+     "answer": "C, trip(end=\"Main Gate\", start=\"Ameerpet\"). trip(\"Main Gate\", \"Ameerpet\"): Main Gate to Ameerpet. trip(end=\"Main Gate\"): TypeError: trip() missing 1 required positional argument: 'start'. trip(end=\"Main Gate\", start=\"Ameerpet\"): Ameerpet to Main Gate. trip(\"Ameerpet\"): Ameerpet to Home.",
+     "must_not": [
+      "Show any output before the second press."
+     ],
+     "data": {
+      "options": [
+       {
+        "call": "trip(\"Main Gate\", \"Ameerpet\")",
+        "shows": "Main Gate to Ameerpet",
+        "why": "By position the first value is the start. This shows Main Gate to Ameerpet, the other way."
+       },
+       {
+        "call": "trip(end=\"Main Gate\")",
+        "shows": "TypeError: trip() missing 1 required positional argument: 'start'",
+        "why": "end has a default, start does not. start is empty, so Python stops with a TypeError."
+       },
+       {
+        "call": "trip(end=\"Main Gate\", start=\"Ameerpet\")",
+        "shows": "Ameerpet to Main Gate",
+        "why": "By name, the order does not matter. start gets Ameerpet, end gets Main Gate."
+       },
+       {
+        "call": "trip(\"Ameerpet\")",
+        "shows": "Ameerpet to Home",
+        "why": "end is left out, so the default fills it. This shows Ameerpet to Home."
+       }
+      ],
+      "right": "C"
+     },
+     "play": "Layout. It can sit on the Maps screen.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Key takeaways: the example board",
+   "kind": "buffer",
+   "mins": 2,
+   "start": 71,
+   "cards": [
+    {
+     "id": "K1",
+     "title": "Arguments in six examples",
+     "source": "new",
+     "purpose": "Six real programs from today, each with what it prints and the rule it shows.",
+     "heading": "Today, in six examples",
+     "show": [
+      "By name",
+      "By name, the order does not matter.",
+      "By position",
+      "By position, the first value goes to the first argument.",
+      "Leave one out",
+      "Every argument needs a value from the call or a default.",
+      "Default value",
+      "A default fills the argument we leave out.",
+      "Defaults go last",
+      "An argument without a default cannot come after one with a default.",
+      "Same name, two boxes",
+      "Changing a inside the function does not change a outside."
+     ],
+     "code": [
+      {
+       "file": "By name",
+       "src": "def greet(arg_1, arg_2):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet(arg_1=greeting, arg_2=name)\ngreet(arg_2=name, arg_1=greeting)",
+       "input": "Good Morning\nRam",
+       "output": "Good Morning Ram\nGood Morning Ram"
+      },
+      {
+       "file": "By position",
+       "src": "def greet(arg_1, arg_2):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet(name, greeting)",
+       "input": "Good Morning\nRam",
+       "output": "Ram Good Morning"
+      },
+      {
+       "file": "Leave one out",
+       "src": "def greet(arg_1, arg_2):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet(greeting)",
+       "input": "Good Morning\nRam",
+       "output": "TypeError: greet() missing 1 required positional argument: 'arg_2'"
+      },
+      {
+       "file": "Default value",
+       "src": "def greet(arg_1=\"Hi\", arg_2=\"Ram\"):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet(arg_2=name)",
+       "input": "Hello\nTeja",
+       "output": "Hi Teja"
+      },
+      {
+       "file": "Defaults go last",
+       "src": "def greet(arg_1=\"Hi\", arg_2):\n    print(arg_1 + \" \" + arg_2)\n\ngreeting = input()\nname = input()\ngreet(arg_2=name)",
+       "input": "Hello\nTeja",
+       "output": "SyntaxError: non-default argument follows default argument"
+      },
+      {
+       "file": "Same name, two boxes",
+       "src": "def increment(a):\n    a += 1\n\na = int(input())\nincrement(a)\nprint(a)",
+       "input": "5",
+       "output": "5"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Example 1 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 2 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 3 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 4 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 5 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 6 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      }
+     ],
+     "must": [
+      "All six slots are there from press 1, empty.",
+      "Examples, not a concept map."
+     ],
+     "play": "The grid, and the slot picture from E1 on each example.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Feedback",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 73,
+   "cards": [
+    {
+     "id": "S-FEEDBACK",
+     "title": "Feedback",
+     "source": "spine:feedback",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Thank you",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 74,
+   "cards": [
+    {
+     "id": "S-THANKYOU",
+     "title": "Thankyou",
+     "source": "spine:thankyou",
+     "press_count": 0
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,445 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>27 Sets: add what a data structure is</title>
+<style>
+:root{--ink:#14213d;--mut:#5b6475;--line:#dfe4ee;--bg:#f6f8fc;--card:#fff;--acc:#2f5bea;--add:#e9f7ef;--addb:#2e9d5b;--was:#9a3b3b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,Segoe UI,Arial,sans-serif}
+main{max-width:980px;margin:0 auto;padding:32px 16px 64px}
+header{margin-bottom:20px}.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);font-weight:700}
+h1{margin:.2em 0;font-size:28px}h2{font-size:20px;margin:28px 0 10px}h3{margin:0;font-size:18px}
+.sub{color:var(--mut);margin:.2em 0}.why{background:#fff8e6;border:1px solid #f1d38a;border-radius:10px;padding:10px 14px}
+.box,.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin:14px 0}
+.box h2{margin-top:0}.card.new{border-left:5px solid var(--addb)}.card.chg{border-left:5px solid var(--acc)}
+.ch{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.id{background:var(--acc);color:#fff;border-radius:6px;padding:2px 8px;font-weight:700;font-size:13px}
+.tag{background:var(--add);color:var(--addb);border-radius:999px;padding:1px 9px;font-size:12px;font-weight:700}
+.words{border:1px dashed #b9c4dc;border-radius:10px;padding:8px 14px;margin:10px 0}.lbl{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
+.hd{font-weight:700;font-size:18px;margin:.3em 0}
+.hd2{font-weight:600;margin:0 0 8px}.note{font-size:13px;color:var(--mut);margin:6px 0 0}
+table.dsw{width:auto}table.dsw th{background:#f0f3fa}table.dsw .tdy{background:var(--add)}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}th,td{border:1px solid var(--line);padding:6px 8px;vertical-align:top;text-align:left}
+th{background:#f0f3fa}td.was{color:var(--was)}q{color:var(--acc);font-weight:600}
+ol.order li.add{background:var(--add);border-radius:6px}pre{white-space:pre-wrap;font-size:12px;background:#f3f5fa;padding:10px;border-radius:8px;overflow:auto}
+details summary{cursor:pointer;font-weight:600}code{background:#eef1f8;padding:1px 5px;border-radius:4px}
+@media (max-width:600px){table{display:block;overflow-x:auto}}
+</style></head><body><main><header><div class="eyebrow">Change spec for the design team</div><h1>27 Sets: add what a data structure is</h1><p class="sub">File to change: <code>python-session-27-sets.html</code>. Everything not listed here stays exactly as it is.</p><p class="why">An instructor asked that every data structure session first says what a data structure is, and what today's one is, before any code. This adds two standard cards before the set's code. The same cards are going into Lists, Tuples and Dictionaries, so the grid card is one component that gains a column each session.</p></header><section class="box"><h2>What to do</h2><ol><li>Add 2 new cards: <b>DS2</b> (Python's four data structures), <b>DS3</b> (What a set is). Where they go is in the card order below.</li><li>Change <b>C1</b>: only the lines shown below.</li><li>Update the minutes on the beats listed below, if the view shows them.</li><li>Give each new card its id (DS2, DS3) the same way the view names its other cards, so it can be checked against the spec.</li></ol></section><section class="box"><h2>Card order</h2><p>New cards are marked. The cards around them do not move.</p><ol class="order"><li class=""><b>H1</b> Seen by 3</li><li class=""><b>S-TITLE</b> Title</li><li class=""><b>S-AGENDA</b> Agenda</li><li class="add"><b>DS2</b> Python's four data structures <span class="tag">new</span></li><li class=""><b>C1</b> A set</li><li class="add"><b>DS3</b> What a set is <span class="tag">new</span></li><li class=""><b>C2</b> Creating a set</li><li class=""><b>C3</b> No order</li><li class=""><b>C4</b> No repeats</li></ol></section><h2>New cards</h2><section class="card new"><div class="ch"><span class="id">DS2</span><h3>Python's four data structures</h3><span class="tag">New card</span></div><p><b>Purpose.</b> Python has four built-in data structures. Today's is the set; the room has already met the list and the tuple.</p><div class="words"><p class="lbl">Exact words on the card</p><p class="hd">Four data structures in Python</p><p class="hd2">A data structure holds many values under one name.</p><table class="dsw"><tr><th></th><th>Tile 1</th><th>Tile 2</th><th>Tile 3</th><th>Tile 4</th></tr><tr><th>Picture</th><td>A playlist</td><td>Your date of birth</td><td>Seen by, on your story</td><td>Contacts</td></tr><tr><th>Name</th><td><b>list</b></td><td><b>tuple</b></td><td><b>set</b></td><td><b>dictionary</b></td></tr><tr><th>Line</th><td>Songs in order. A song can come twice.</td><td>Fixed. Nobody edits it.</td><td>Each name once. No order.</td><td>Look up a name, get the number.</td></tr><tr><th>Mark</th><td>&#10003; learnt</td><td>&#10003; learnt</td><td><b>Today</b> (lit)</td><td>Later (dim)</td></tr></table><p class="note">Four tiles side by side, one per data structure.</p></div><table><tr><th>Press</th><th>On screen</th><th>Instructor</th><th>Room</th></tr><tr><td>1</td><td>The line <q>A data structure holds many values under one name.</q> over four face-down tiles.</td><td>We have met this word before. What is a data structure?</td><td>Say it in your own words.</td></tr><tr><td>2</td><td>Tile 1 turns over: the picture <q>A playlist</q>, the name <q>list</q>, and the line <q>Songs in order. A song can come twice.</q> It gets a small tick: already learnt.</td><td>We know this one. Ask the room for its line before you press.</td><td>Say the line.</td></tr><tr><td>3</td><td>Tile 2 turns over: the picture <q>Your date of birth</q>, the name <q>tuple</q>, and the line <q>Fixed. Nobody edits it.</q> It gets a small tick: already learnt.</td><td>We know this one. Ask the room for its line before you press.</td><td>Say the line.</td></tr><tr><td>4</td><td>Tile 3 turns over: the picture <q>Seen by, on your story</q>, the name <q>set</q>, and the line <q>Each name once. No order.</q> It lights up and stays lit, marked <q>Today</q>.</td><td>Before this tile turns: does the order matter here? Can one thing come twice? Then press.</td><td>Hands up for yes, then for no, on each question.</td></tr><tr><td>5</td><td>Tile 4 turns over: the picture <q>Contacts</q>, the name <q>dictionary</q>, and the line <q>Look up a name, get the number.</q> It stays dim, marked <q>Later</q>.</td><td>Name it only. It comes later.</td><td></td></tr></table><p><b>Must.</b></p><ul><li>All four tiles are on the card from press 1, face down, so nothing jumps.</li><li>Only the names and the everyday pictures. No code and no brackets for a structure not yet taught.</li><li>The set tile ends lit; earlier tiles keep their tick.</li><li>Draw it in the phone world: a playlist is a list, a date of birth is a tuple, Seen by is a set, Contacts is a dictionary. Do not take the picture further than this: the apps do far more than keep values; only the shape of the data carries over</li></ul><p><b>Yours to design.</b> The four phone screens are yours: a playlist, a date of birth on an ID card, a story's Seen by sheet, a Contacts list.</p><details><summary>Data for this card (JSON)</summary><pre>{
+ "tiles": [
+  {
+   "name": "list",
+   "picture": "A playlist",
+   "line": "Songs in order. A song can come twice.",
+   "state": "done"
+  },
+  {
+   "name": "tuple",
+   "picture": "Your date of birth",
+   "line": "Fixed. Nobody edits it.",
+   "state": "done"
+  },
+  {
+   "name": "set",
+   "picture": "Seen by, on your story",
+   "line": "Each name once. No order.",
+   "state": "today"
+  },
+  {
+   "name": "dictionary",
+   "picture": "Contacts",
+   "line": "Look up a name, get the number.",
+   "state": "later"
+  }
+ ]
+}</pre></details></section><section class="card new"><div class="ch"><span class="id">DS3</span><h3>What a set is</h3><span class="tag">New card</span></div><p><b>Purpose.</b> A set, in five lines: how it is written, whether it keeps order, whether it allows repeats, how you reach one item, and whether it can change. Set beside the ones already learnt.</p><div class="words"><p class="lbl">Exact words on the card</p><p class="hd">What is a set?</p><table class="dsw"><tr><th></th><th>list</th><th>tuple</th><th class=tdy>set</th></tr><tr><th>Written with</th><td>[ ]</td><td>( )</td><td class=tdy>{ }</td></tr><tr><th>Keeps the order?</th><td>Yes</td><td>Yes</td><td class=tdy>No</td></tr><tr><th>Same item twice?</th><td>Yes</td><td>Yes</td><td class=tdy>No</td></tr><tr><th>Reach one item by</th><td>Position, from 0</td><td>Position, from 0</td><td class=tdy>No position. Ask with in</td></tr><tr><th>Can you change it?</th><td>Yes</td><td>No</td><td class=tdy>Yes</td></tr></table><p class="note">The grid as it ends. The shaded set column starts as empty dashed cells and fills one row per press.</p></div><table><tr><th>Press</th><th>On screen</th><th>Instructor</th><th>Room</th></tr><tr><td>1</td><td>A grid. Rows: <q>Written with</q>, <q>Keeps the order?</q>, <q>Same item twice?</q>, <q>Reach one item by</q>, <q>Can you change it?</q>. Columns: <q>list</q>, <q>tuple</q>, <q>set</q>. The earlier columns are filled; the set column is empty dashed cells.</td><td>Here is what makes a set a set. One row at a time. Row 1 first.</td><td>Say what goes in row 1.</td></tr><tr><td>2</td><td>Row 1, <q>Written with</q>: the set cell fills <q>{ }</q>. Beside it, small, the code that proves it and its output: <q>&lt;class 'set'&gt;</q>.</td><td>Read the proof's output. Compare it with the tuple column. Next row: ask first.</td><td>Hands up for yes, then for no, on the next row.</td></tr><tr><td>3</td><td>Row 2, <q>Keeps the order?</q>: the set cell fills <q>No</q>. Beside it, small, the code that proves it and its output: <q>{'Teja', 'Ravi', 'Sneha', 'Kiran', 'Anu'} / (run it again) / {'Anu', 'Kiran', 'Teja', 'Ravi', 'Sneha'}</q>.</td><td>Read the proof's output. Compare it with the tuple column. Next row: ask first.</td><td>Hands up for yes, then for no, on the next row.</td></tr><tr><td>4</td><td>Row 3, <q>Same item twice?</q>: the set cell fills <q>No</q>. Beside it, small, the code that proves it and its output: <q>2</q>.</td><td>Read the proof's output. Compare it with the tuple column. Next row: ask first.</td><td>Say the answer for the next row.</td></tr><tr><td>5</td><td>Row 4, <q>Reach one item by</q>: the set cell fills <q>No position. Ask with in</q>. Beside it, small, the code that proves it and its output: <q>True / TypeError: 'set' object is not subscriptable</q>.</td><td>Read the proof's output. Compare it with the tuple column. Next row: ask first.</td><td>Hands up for yes, then for no, on the next row.</td></tr><tr><td>6</td><td>Row 5, <q>Can you change it?</q>: the set cell fills <q>Yes</q>. Beside it, small, the code that proves it and its output: <q>3</q>.</td><td>Read the proof's output. Compare it with the tuple column. That is a set.</td><td></td></tr></table><p><b>The room commits.</b> Before each row of today's column fills, the room says it or votes with hands. The proof's output decides.</p><p><b>Must.</b></p><ul><li>The whole grid, row labels and empty cells, is on the card from press 1. One cell of today's column fills per press.</li><li>Earlier columns never change. The room reads today's cell against them.</li><li>Each filled cell keeps its proof beside it: the code and its exact output from data.proofs.</li></ul><p><b>Must not.</b></p><ul><li>Fill a cell before the room has voted on it.</li></ul><p><b>Yours to design.</b> How the grid looks and how a cell fills. The same grid comes back in every data structure session, one column wider each time, so build it once as a component.</p><details><summary>Data for this card (JSON)</summary><pre>{
+ "rows": [
+  {
+   "key": "written",
+   "label": "Written with"
+  },
+  {
+   "key": "order",
+   "label": "Keeps the order?"
+  },
+  {
+   "key": "twice",
+   "label": "Same item twice?"
+  },
+  {
+   "key": "reach",
+   "label": "Reach one item by"
+  },
+  {
+   "key": "change",
+   "label": "Can you change it?"
+  }
+ ],
+ "grid": {
+  "list": {
+   "written": "[ ]",
+   "order": "Yes",
+   "twice": "Yes",
+   "reach": "Position, from 0",
+   "change": "Yes"
+  },
+  "tuple": {
+   "written": "( )",
+   "order": "Yes",
+   "twice": "Yes",
+   "reach": "Position, from 0",
+   "change": "No"
+  },
+  "set": {
+   "written": "{ }",
+   "order": "No",
+   "twice": "No",
+   "reach": "No position. Ask with in",
+   "change": "Yes"
+  }
+ },
+ "proofs": {
+  "list": {
+   "written": {
+    "code": "songs = [\"Kesariya\", \"Naatu Naatu\"]\nprint(type(songs))",
+    "output": "&lt;class 'list'&gt;"
+   },
+   "order": {
+    "code": "print([\"Kesariya\", \"Naatu Naatu\", \"Jhoome\"])",
+    "output": "['Kesariya', 'Naatu Naatu', 'Jhoome']"
+   },
+   "twice": {
+    "code": "print([\"Kesariya\", \"Kesariya\"])",
+    "output": "['Kesariya', 'Kesariya']"
+   },
+   "reach": {
+    "code": "songs = [\"Kesariya\", \"Naatu Naatu\"]\nprint(songs[0])",
+    "output": "Kesariya"
+   },
+   "change": {
+    "code": "songs = [\"Kesariya\", \"Naatu Naatu\"]\nsongs[1] = \"Jhoome\"\nprint(songs)",
+    "output": "['Kesariya', 'Jhoome']"
+   }
+  },
+  "tuple": {
+   "written": {
+    "code": "dob = (12, 3, 2007)\nprint(type(dob))",
+    "output": "&lt;class 'tuple'&gt;"
+   },
+   "order": {
+    "code": "print((12, 3, 2007))",
+    "output": "(12, 3, 2007)"
+   },
+   "twice": {
+    "code": "print((12, 12, 2007))",
+    "output": "(12, 12, 2007)"
+   },
+   "reach": {
+    "code": "dob = (12, 3, 2007)\nprint(dob[0])",
+    "output": "12"
+   },
+   "change": {
+    "code": "dob = (12, 3, 2007)\ndob[0] = 13",
+    "output": "TypeError: 'tuple' object does not support item assignment"
+   }
+  },
+  "set": {
+   "written": {
+    "code": "seen = {\"Ravi\", \"Anu\"}\nprint(type(seen))",
+    "output": "&lt;class 'set'&gt;"
+   },
+   "order": {
+    "code": "print({\"Ravi\", \"Anu\", \"Kiran\", \"Sneha\", \"Teja\"})",
+    "output": "{'Teja', 'Ravi', 'Sneha', 'Kiran', 'Anu'}\n(run it again)\n{'Anu', 'Kiran', 'Teja', 'Ravi', 'Sneha'}"
+   },
+   "twice": {
+    "code": "print(len({\"Ravi\", \"Ravi\", \"Anu\"}))",
+    "output": "2"
+   },
+   "reach": {
+    "code": "seen = {\"Ravi\", \"Anu\"}\nprint(\"Ravi\" in seen)\nprint(seen[0])",
+    "output": "True\nTypeError: 'set' object is not subscriptable"
+   },
+   "change": {
+    "code": "seen = {\"Ravi\", \"Anu\"}\nseen.add(\"Kiran\")\nprint(len(seen))",
+    "output": "3"
+   }
+  }
+ }
+}</pre></details></section><h2>Changed cards</h2><section class="card chg"><div class="ch"><span class="id">C1</span><h3>A set</h3><span class="tag">Changed</span></div><table><tr><th>Where</th><th>Was</th><th>Now</th></tr><tr><td>press 1 say</td><td class='was'>Data structures so far: list, tuple. Today: set. Dictionary comes later. A set is the bag.</td><td>The Seen by sheet from the hook. A set is this bag.</td></tr></table></section><section class="box"><h2>Minutes</h2><table><tr><th>Beat</th><th>Was</th><th>Now</th></tr><tr><td>What a set is: a bag of items with no order (was "A set is a bag of items with no order")</td><td>5</td><td>8</td></tr><tr><td>Task 1: Teja's story stats</td><td>6</td><td>5</td></tr><tr><td>Classroom quiz</td><td>6</td><td>5</td></tr><tr><td>Adding: add one, update many</td><td>5</td><td>4</td></tr></table><p>The session still adds up to 75 minutes.</p></section><details class="box"><summary>All new cards as JSON, to build from</summary><pre>[
+ {
+  "id": "DS2",
+  "title": "Python's four data structures",
+  "source": [
+   15
+  ],
+  "ds": "family",
+  "purpose": "Python has four built-in data structures. Today's is the set; the room has already met the list and the tuple.",
+  "heading": "Four data structures in Python",
+  "show": [
+   "A data structure holds many values under one name.",
+   "A playlist",
+   "list",
+   "Songs in order. A song can come twice.",
+   "Your date of birth",
+   "tuple",
+   "Fixed. Nobody edits it.",
+   "Seen by, on your story",
+   "set",
+   "Each name once. No order.",
+   "Contacts",
+   "dictionary",
+   "Look up a name, get the number.",
+   "Today",
+   "Later"
+  ],
+  "presses": [
+   {
+    "screen": "The line &lt;q&gt;A data structure holds many values under one name.&lt;/q&gt; over four face-down tiles.",
+    "say": "We have met this word before. What is a data structure?",
+    "room": "Say it in your own words."
+   },
+   {
+    "screen": "Tile 1 turns over: the picture &lt;q&gt;A playlist&lt;/q&gt;, the name &lt;q&gt;list&lt;/q&gt;, and the line &lt;q&gt;Songs in order. A song can come twice.&lt;/q&gt; It gets a small tick: already learnt.",
+    "say": "We know this one. Ask the room for its line before you press.",
+    "room": "Say the line."
+   },
+   {
+    "screen": "Tile 2 turns over: the picture &lt;q&gt;Your date of birth&lt;/q&gt;, the name &lt;q&gt;tuple&lt;/q&gt;, and the line &lt;q&gt;Fixed. Nobody edits it.&lt;/q&gt; It gets a small tick: already learnt.",
+    "say": "We know this one. Ask the room for its line before you press.",
+    "room": "Say the line."
+   },
+   {
+    "screen": "Tile 3 turns over: the picture &lt;q&gt;Seen by, on your story&lt;/q&gt;, the name &lt;q&gt;set&lt;/q&gt;, and the line &lt;q&gt;Each name once. No order.&lt;/q&gt; It lights up and stays lit, marked &lt;q&gt;Today&lt;/q&gt;.",
+    "say": "Before this tile turns: does the order matter here? Can one thing come twice? Then press.",
+    "room": "Hands up for yes, then for no, on each question."
+   },
+   {
+    "screen": "Tile 4 turns over: the picture &lt;q&gt;Contacts&lt;/q&gt;, the name &lt;q&gt;dictionary&lt;/q&gt;, and the line &lt;q&gt;Look up a name, get the number.&lt;/q&gt; It stays dim, marked &lt;q&gt;Later&lt;/q&gt;.",
+    "say": "Name it only. It comes later."
+   }
+  ],
+  "must": [
+   "All four tiles are on the card from press 1, face down, so nothing jumps.",
+   "Only the names and the everyday pictures. No code and no brackets for a structure not yet taught.",
+   "The set tile ends lit; earlier tiles keep their tick.",
+   "Draw it in the phone world: a playlist is a list, a date of birth is a tuple, Seen by is a set, Contacts is a dictionary. Do not take the picture further than this: the apps do far more than keep values; only the shape of the data carries over"
+  ],
+  "data": {
+   "tiles": [
+    {
+     "name": "list",
+     "picture": "A playlist",
+     "line": "Songs in order. A song can come twice.",
+     "state": "done"
+    },
+    {
+     "name": "tuple",
+     "picture": "Your date of birth",
+     "line": "Fixed. Nobody edits it.",
+     "state": "done"
+    },
+    {
+     "name": "set",
+     "picture": "Seen by, on your story",
+     "line": "Each name once. No order.",
+     "state": "today"
+    },
+    {
+     "name": "dictionary",
+     "picture": "Contacts",
+     "line": "Look up a name, get the number.",
+     "state": "later"
+    }
+   ]
+  },
+  "play": "The four phone screens are yours: a playlist, a date of birth on an ID card, a story's Seen by sheet, a Contacts list.",
+  "engage": "analogy",
+  "analogy": {
+   "world": "phone",
+   "maps": "a playlist is a list, a date of birth is a tuple, Seen by is a set, Contacts is a dictionary",
+   "breaks": "the apps do far more than keep values; only the shape of the data carries over"
+  },
+  "press_count": 5
+ },
+ {
+  "id": "DS3",
+  "title": "What a set is",
+  "source": "new",
+  "ds": "grid",
+  "ds_today": "set",
+  "purpose": "A set, in five lines: how it is written, whether it keeps order, whether it allows repeats, how you reach one item, and whether it can change. Set beside the ones already learnt.",
+  "heading": "What is a set?",
+  "show": [
+   "Written with",
+   "Keeps the order?",
+   "Same item twice?",
+   "Reach one item by",
+   "Can you change it?",
+   "list",
+   "tuple",
+   "set",
+   "[ ]",
+   "Yes",
+   "Position, from 0",
+   "( )",
+   "No",
+   "{ }",
+   "No position. Ask with in"
+  ],
+  "presses": [
+   {
+    "screen": "A grid. Rows: &lt;q&gt;Written with&lt;/q&gt;, &lt;q&gt;Keeps the order?&lt;/q&gt;, &lt;q&gt;Same item twice?&lt;/q&gt;, &lt;q&gt;Reach one item by&lt;/q&gt;, &lt;q&gt;Can you change it?&lt;/q&gt;. Columns: &lt;q&gt;list&lt;/q&gt;, &lt;q&gt;tuple&lt;/q&gt;, &lt;q&gt;set&lt;/q&gt;. The earlier columns are filled; the set column is empty dashed cells.",
+    "say": "Here is what makes a set a set. One row at a time. Row 1 first.",
+    "room": "Say what goes in row 1."
+   },
+   {
+    "screen": "Row 1, &lt;q&gt;Written with&lt;/q&gt;: the set cell fills &lt;q&gt;{ }&lt;/q&gt;. Beside it, small, the code that proves it and its output: &lt;q&gt;&amp;lt;class 'set'&amp;gt;&lt;/q&gt;.",
+    "say": "Read the proof's output. Compare it with the tuple column. Next row: ask first.",
+    "room": "Hands up for yes, then for no, on the next row."
+   },
+   {
+    "screen": "Row 2, &lt;q&gt;Keeps the order?&lt;/q&gt;: the set cell fills &lt;q&gt;No&lt;/q&gt;. Beside it, small, the code that proves it and its output: &lt;q&gt;{'Teja', 'Ravi', 'Sneha', 'Kiran', 'Anu'} / (run it again) / {'Anu', 'Kiran', 'Teja', 'Ravi', 'Sneha'}&lt;/q&gt;.",
+    "say": "Read the proof's output. Compare it with the tuple column. Next row: ask first.",
+    "room": "Hands up for yes, then for no, on the next row."
+   },
+   {
+    "screen": "Row 3, &lt;q&gt;Same item twice?&lt;/q&gt;: the set cell fills &lt;q&gt;No&lt;/q&gt;. Beside it, small, the code that proves it and its output: &lt;q&gt;2&lt;/q&gt;.",
+    "say": "Read the proof's output. Compare it with the tuple column. Next row: ask first.",
+    "room": "Say the answer for the next row."
+   },
+   {
+    "screen": "Row 4, &lt;q&gt;Reach one item by&lt;/q&gt;: the set cell fills &lt;q&gt;No position. Ask with in&lt;/q&gt;. Beside it, small, the code that proves it and its output: &lt;q&gt;True / TypeError: 'set' object is not subscriptable&lt;/q&gt;.",
+    "say": "Read the proof's output. Compare it with the tuple column. Next row: ask first.",
+    "room": "Hands up for yes, then for no, on the next row."
+   },
+   {
+    "screen": "Row 5, &lt;q&gt;Can you change it?&lt;/q&gt;: the set cell fills &lt;q&gt;Yes&lt;/q&gt;. Beside it, small, the code that proves it and its output: &lt;q&gt;3&lt;/q&gt;.",
+    "say": "Read the proof's output. Compare it with the tuple column. That is a set."
+   }
+  ],
+  "interaction": "Before each row of today's column fills, the room says it or votes with hands. The proof's output decides.",
+  "must": [
+   "The whole grid, row labels and empty cells, is on the card from press 1. One cell of today's column fills per press.",
+   "Earlier columns never change. The room reads today's cell against them.",
+   "Each filled cell keeps its proof beside it: the code and its exact output from data.proofs."
+  ],
+  "must_not": [
+   "Fill a cell before the room has voted on it."
+  ],
+  "data": {
+   "rows": [
+    {
+     "key": "written",
+     "label": "Written with"
+    },
+    {
+     "key": "order",
+     "label": "Keeps the order?"
+    },
+    {
+     "key": "twice",
+     "label": "Same item twice?"
+    },
+    {
+     "key": "reach",
+     "label": "Reach one item by"
+    },
+    {
+     "key": "change",
+     "label": "Can you change it?"
+    }
+   ],
+   "grid": {
+    "list": {
+     "written": "[ ]",
+     "order": "Yes",
+     "twice": "Yes",
+     "reach": "Position, from 0",
+     "change": "Yes"
+    },
+    "tuple": {
+     "written": "( )",
+     "order": "Yes",
+     "twice": "Yes",
+     "reach": "Position, from 0",
+     "change": "No"
+    },
+    "set": {
+     "written": "{ }",
+     "order": "No",
+     "twice": "No",
+     "reach": "No position. Ask with in",
+     "change": "Yes"
+    }
+   },
+   "proofs": {
+    "list": {
+     "written": {
+      "code": "songs = [\"Kesariya\", \"Naatu Naatu\"]\nprint(type(songs))",
+      "output": "&lt;class 'list'&gt;"
+     },
+     "order": {
+      "code": "print([\"Kesariya\", \"Naatu Naatu\", \"Jhoome\"])",
+      "output": "['Kesariya', 'Naatu Naatu', 'Jhoome']"
+     },
+     "twice": {
+      "code": "print([\"Kesariya\", \"Kesariya\"])",
+      "output": "['Kesariya', 'Kesariya']"
+     },
+     "reach": {
+      "code": "songs = [\"Kesariya\", \"Naatu Naatu\"]\nprint(songs[0])",
+      "output": "Kesariya"
+     },
+     "change": {
+      "code": "songs = [\"Kesariya\", \"Naatu Naatu\"]\nsongs[1] = \"Jhoome\"\nprint(songs)",
+      "output": "['Kesariya', 'Jhoome']"
+     }
+    },
+    "tuple": {
+     "written": {
+      "code": "dob = (12, 3, 2007)\nprint(type(dob))",
+      "output": "&lt;class 'tuple'&gt;"
+     },
+     "order": {
+      "code": "print((12, 3, 2007))",
+      "output": "(12, 3, 2007)"
+     },
+     "twice": {
+      "code": "print((12, 12, 2007))",
+      "output": "(12, 12, 2007)"
+     },
+     "reach": {
+      "code": "dob = (12, 3, 2007)\nprint(dob[0])",
+      "output": "12"
+     },
+     "change": {
+      "code": "dob = (12, 3, 2007)\ndob[0] = 13",
+      "output": "TypeError: 'tuple' object does not support item assignment"
+     }
+    },
+    "set": {
+     "written": {
+      "code": "seen = {\"Ravi\", \"Anu\"}\nprint(type(seen))",
+      "output": "&lt;class 'set'&gt;"
+     },
+     "order": {
+      "code": "print({\"Ravi\", \"Anu\", \"Kiran\", \"Sneha\", \"Teja\"})",
+      "output": "{'Teja', 'Ravi', 'Sneha', 'Kiran', 'Anu'}\n(run it again)\n{'Anu', 'Kiran', 'Teja', 'Ravi', 'Sneha'}"
+     },
+     "twice": {
+      "code": "print(len({\"Ravi\", \"Ravi\", \"Anu\"}))",
+      "output": "2"
+     },
+     "reach": {
+      "code": "seen = {\"Ravi\", \"Anu\"}\nprint(\"Ravi\" in seen)\nprint(seen[0])",
+      "output": "True\nTypeError: 'set' object is not subscriptable"
+     },
+     "change": {
+      "code": "seen = {\"Ravi\", \"Anu\"}\nseen.add(\"Kiran\")\nprint(len(seen))",
+      "output": "3"
+     }
+    }
+   }
+  },
+  "play": "How the grid looks and how a cell fills. The same grid comes back in every data structure session, one column wider each time, so build it once as a component.",
+  "engage": "play",
+  "press_count": 6
+ }
+]</pre></details></main></body></html>

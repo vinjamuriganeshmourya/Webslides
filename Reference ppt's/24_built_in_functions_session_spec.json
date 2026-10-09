@@ -1,0 +1,2140 @@
+{
+ "meta": {
+  "session": "24 - Built-in Functions",
+  "course": "Programming Foundations",
+  "one_idea": "A function handed a list works on that same list, so += inside changes yours. Python's ready-made functions min, max, sum and sorted give back a new answer and leave your list alone.",
+  "outcomes": [
+   "Predict what a list prints after a function changes it with +=.",
+   "Explain why list_x = list_x + [3] inside a function leaves the caller's list unchanged.",
+   "Predict the output when a function with a list default is called three times.",
+   "Use min and max on separate values, on a list, and on strings.",
+   "Use sum on a list, and say why sum(3, 5, 4) fails.",
+   "Use sorted, with and without reverse=True, and say that the old list is unchanged.",
+   "Write a program that collects the digits of a string and prints their sum, smallest and largest."
+  ],
+  "previous": "23 - Function Arguments",
+  "slides_dir": "C:\\Lesson Plans New\\builds\\build-24-builtin-functions\\work\\slides",
+  "deck_total": 53,
+  "kept": [
+   8,
+   9,
+   12,
+   15,
+   26,
+   29,
+   31,
+   32,
+   33,
+   34,
+   35,
+   37,
+   39,
+   41,
+   42,
+   44,
+   45
+  ],
+  "cuts": [
+   [
+    "1-2",
+    "Welcome and deck title. The fixed spine cards replace them."
+   ],
+   [
+    "3-7",
+    "A recap that lists what session 23 covered. Reading is not remembering; S-RECAP is a rapid recap instead."
+   ],
+   [
+    "10-11",
+    "Build-up of slide 12. C1 steps it."
+   ],
+   [
+    "13-14",
+    "Build-up of slide 15. C2 steps it."
+   ],
+   [
+    "16-25, 27-28",
+    "Build-up of slides 26 and 29. E1 walks every step from the program itself."
+   ],
+   [
+    "30",
+    "One-word divider. H2 opens the second half instead."
+   ],
+   [
+    "36",
+    "max's two forms repeat min's on slide 33. One press on C4 says max works the same way."
+   ],
+   [
+    "38",
+    "sum's syntax line. It sits on C5 above the example from slide 39."
+   ],
+   [
+    "40, 43",
+    "Pictures of slides 41 and 44. C6 steps the code and its output."
+   ],
+   [
+    "46-47",
+    "Input and output format of the deck question. T2 carries its own plates and says the format in one line."
+   ],
+   [
+    "48",
+    "Bullet takeaways. Replaced by K1, the example board."
+   ],
+   [
+    "49-50",
+    "Practice picture and next session (Function Call Stack and Recursion). One spoken line each in the guide."
+   ],
+   [
+    "51",
+    "Daily challenge: the squares program needs sorted. One spoken line in the guide as homework."
+   ],
+   [
+    "52-53",
+    "Thank you and all the best. The fixed spine cards replace them."
+   ]
+  ],
+  "defects": [
+   [
+    "slide 50",
+    "It names the next session as Function Call Stack & Recursion. The course outline has no session of that name; the session after this one there is List Methods.",
+    "Not projected. The guide does not name the next session. Fix the slide to match the timetable."
+   ]
+  ],
+  "notes": [
+   "The room is 50 to 60 first-year students on laptops. Laptops stay shut except on T1, the game G1, T2 and the classroom quiz, where only the worksheet tab and the playground are open.",
+   "One world for the session: Teja's phone. In the first half Ram saves his number on it (H1, T1, G1). In the second half it shows Teja's screen time (H2, C5, C6, the exit). T2 is the number plate of his uncle's new bike.",
+   "Concept cards keep the deck's own programs (add_item, list_a, list_x, the 3, 5, 4 examples), so the room can match them to the deck in their notes later.",
+   "Words: a variable points at a list. Two names can point at one list. Never say reference or object on screen; the deck's word mutable is said once, on C1, as: a list can change in place.",
+   "One picture for the first half: A variable is a name tag with an arrow to a list. Two arrows can point at one list. A list that no arrow points at vanishes at once: no grey ghost. A function's default list sits beside its def, from the press the def runs, and stays there. A call opens the function's own area beside its block. Its names (list_x) live there and vanish when the call ends. The lists they point at sit in one shared place, outside both areas.",
+   "Votes are taken option by option: the instructor reads each option and asks how many think it is that one. Hands up. Nobody is named.",
+   "Nothing before the title card may say the session's name. The hook shows a phone, never code.",
+   "The bar to beat is Plans/DSA/Module 3 - Stacks & Queues/01 - Introduction to Stacks/: a simulation the room drives, a picture that refuses to lie."
+  ],
+  "topics": [
+   "functions",
+   "built-ins",
+   "lists"
+  ]
+ },
+ "build_contract": [
+  "One self-contained HTML file. It opens offline from a USB stick and makes no network request.",
+  "It opens in presenter view. There is no sidebar, top bar or button the instructor has to use.",
+  "Right arrow or the clicker is one press. Left arrow goes back one press. F goes full screen, A shows all the cards, and End shows the whole card at once. The instructor guide tells the instructor these keys, so they must work.",
+  "Every card is its own screen, in the order of this spec. Press 1 is what shows when the card opens.",
+  "Every card's outer element carries data-spec=\"<card id>\" and data-presses=\"<number of presses>\". The review script reads both.",
+  "No link to any other file. The students' handout and the instructor guide are separate files, and a link from this file is how a class finds the answers."
+ ],
+ "rules": [
+  "No autoplay. Nothing moves on a timer. One press, one move, with a caption that says what just happened.",
+  "Commit, then reveal. Where a card asks a question, the answer shows only on the press after the room has answered.",
+  "Wrong answers stay private. No names, no per-student results on screen. Hands are counted out loud, never shown.",
+  "The topic is named once. Nothing before the title card says today's topic, not a heading, not a caption, not a file name on a code card.",
+  "Words are exact. Words in quotation marks, and every line under Exact words, are final. The rest of a press describes what happens, in your own design. If an exact line does not fit, ask for a new one; do not rewrite it.",
+  "Code is exact. Copy code and outputs from the JSON, never retype them. Every output here came from running the program.",
+  "Simple English. Short sentences, everyday words. No em-dashes anywhere, the page title included.",
+  "Every card moves. A card that introduces an idea steps; a static card is a picture of a lecture."
+ ],
+ "beats": [
+  {
+   "name": "Welcome",
+   "kind": "concept",
+   "mins": 1,
+   "start": 0,
+   "cards": [
+    {
+     "id": "S-WELCOME",
+     "title": "Welcome",
+     "source": "spine:welcome",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap",
+   "kind": "concept",
+   "mins": 1,
+   "start": 1,
+   "cards": [
+    {
+     "id": "S-RECAP-CARD",
+     "title": "Recap card",
+     "source": "spine:recap_card",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap rapid: three calls from last class",
+   "kind": "quiz",
+   "mins": 3,
+   "start": 2,
+   "cards": [
+    {
+     "id": "S-RECAP",
+     "title": "Recap: three calls from last class",
+     "source": "spine:recap",
+     "purpose": "Pull back session 23: a default fills an argument we leave out, one value by position goes to arg_1, and increment(a) leaves the a outside unchanged. The last one sets up today.",
+     "heading": "What will it print?",
+     "show": [
+      "Say the output out loud before I show it.",
+      "arg_2 gets Teja by name. arg_1 takes its default, Hi.",
+      "One value, by position, goes to arg_1. arg_2 takes its default, Ram.",
+      "The a inside is its own box. The 6 stays inside and never reaches the a outside."
+     ],
+     "presses": [
+      {
+       "screen": "Three face-down tiles. Tiles 1 and 2 share one program, <q>def greet(arg_1=\"Hi\", arg_2=\"Ram\"):</q>, whose last line is a blank. Tile 3 holds increment.py. Caption: <q>Say the output out loud before I show it.</q>",
+       "say": "Three quick ones from last class.",
+       "room": "Listen."
+      },
+      {
+       "screen": "Tile 1: the line <q>greet(arg_2=\"Teja\")</q> lights in its program. Its output box is empty.",
+       "say": "What does it print? Say it together.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Tile 1 turns over: <q>Hi Teja</q>, with the line <q>arg_2 gets Teja by name. arg_1 takes its default, Hi.</q>",
+       "say": "Read the why line.",
+       "room": "Check."
+      },
+      {
+       "screen": "Tile 2: the line <q>greet(\"Teja\")</q> lights in its program. Its output box is empty.",
+       "say": "What does it print? Say it together.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Tile 2 turns over: <q>Teja Ram</q>, with the line <q>One value, by position, goes to arg_1. arg_2 takes its default, Ram.</q>",
+       "say": "Read the why line.",
+       "room": "Check."
+      },
+      {
+       "screen": "Tile 3: the line <q>print(a)</q> lights in its program. Its output box is empty.",
+       "say": "What does it print? Say it together.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Tile 3 turns over: <q>5</q>, with the line <q>The a inside is its own box. The 6 stays inside and never reaches the a outside.</q>",
+       "say": "Read the why line. Hold on to this one. Today we hand in a list.",
+       "room": "Check."
+      }
+     ],
+     "code": [
+      {
+       "file": "tile1.py",
+       "src": "def greet(arg_1=\"Hi\", arg_2=\"Ram\"):\n    print(arg_1 + \" \" + arg_2)\n\ngreet(arg_2=\"Teja\")",
+       "output": "Hi Teja"
+      },
+      {
+       "file": "tile2.py",
+       "src": "def greet(arg_1=\"Hi\", arg_2=\"Ram\"):\n    print(arg_1 + \" \" + arg_2)\n\ngreet(\"Teja\")",
+       "output": "Teja Ram"
+      },
+      {
+       "file": "tile3.py",
+       "src": "def increment(a):\n    a += 1\n\na = 5\nincrement(a)\nprint(a)",
+       "output": "5"
+      }
+     ],
+     "interaction": "Format: rapid. The room says each output out loud together before its tile turns. No hands counted.",
+     "must": [
+      "One tile per pair of presses: the line lights, then the tile turns.",
+      "Tile 3 is last, so the session starts from a value that did not change outside."
+     ],
+     "must_not": [
+      "Show an output before its press."
+     ],
+     "data": {
+      "tiles": [
+       {
+        "code": "def greet(arg_1=\"Hi\", arg_2=\"Ram\"):\n    print(arg_1 + \" \" + arg_2)\n\ngreet(arg_2=\"Teja\")",
+        "line": "greet(arg_2=\"Teja\")",
+        "prints": "Hi Teja",
+        "why": "arg_2 gets Teja by name. arg_1 takes its default, Hi."
+       },
+       {
+        "code": "def greet(arg_1=\"Hi\", arg_2=\"Ram\"):\n    print(arg_1 + \" \" + arg_2)\n\ngreet(\"Teja\")",
+        "line": "greet(\"Teja\")",
+        "prints": "Teja Ram",
+        "why": "One value, by position, goes to arg_1. arg_2 takes its default, Ram."
+       },
+       {
+        "code": "def increment(a):\n    a += 1\n\na = 5\nincrement(a)\nprint(a)",
+        "line": "print(a)",
+        "prints": "5",
+        "why": "The a inside is its own box. The 6 stays inside and never reaches the a outside."
+       }
+      ]
+     },
+     "play": "How tiles sit and turn. They carry code, so keep it readable at the back of the room.",
+     "press_count": 7
+    }
+   ]
+  },
+  {
+   "name": "Hook: hand your phone to a friend",
+   "kind": "hook",
+   "mins": 4,
+   "start": 5,
+   "cards": [
+    {
+     "id": "H1",
+     "title": "Save your number",
+     "source": "new",
+     "animated": "hook",
+     "purpose": "Feel, from something they do every week, that when Teja hands over his phone, Ram's change comes back with it, and that a copy is a different thing. The last press draws today's first picture: two names, one thing.",
+     "heading": "Give me your phone.",
+     "show": [
+      "Ram: give me your phone. I will save my number.",
+      "Teja gets his phone back. Is Ram's number in it?",
+      "Ram changed the phone. Teja sees the change.",
+      "Now Ram copies the contacts to his own phone.",
+      "Is Ram's number on Teja's phone now?",
+      "A copy changed. Teja's phone did not.",
+      "Teja's phone",
+      "the phone in Ram's hand",
+      "One phone. Two hands on it."
+     ],
+     "presses": [
+      {
+       "screen": "Teja's phone, the Contacts app open, three contacts: Amma, Appa, Kiran. Ram's hand reaches in. Caption: <q>Ram: give me your phone. I will save my number.</q> then <q>Teja gets his phone back. Is Ram's number in it?</q>",
+       "say": "Everyone has done this. When the phone comes back, is the number there?",
+       "room": "Say: yes."
+      },
+      {
+       "screen": "The turn, one movement: the phone slides to Ram's hand, a new contact row <q>Ram</q> drops into the list, and the phone slides back to Teja with four contacts. Caption: <q>Ram changed the phone. Teja sees the change.</q>",
+       "say": "Why is it there? He handed over the phone itself. Not a photo of it."
+      },
+      {
+       "screen": "The phone resets to three contacts. Ram's own phone appears beside it. Caption: <q>Now Ram copies the contacts to his own phone.</q> then <q>Is Ram's number on Teja's phone now?</q>",
+       "say": "He shares all your contacts to his phone, then saves his number there. Is it on Teja's phone?",
+       "room": "Say: no."
+      },
+      {
+       "screen": "The three contacts fly across to Ram's phone. Ram adds himself there: four contacts on his phone, still three on Teja's. Caption: <q>A copy changed. Teja's phone did not.</q>",
+       "say": "Two different phones now. A change on one does not show on the other."
+      },
+      {
+       "screen": "Back to the first case. One phone in the middle with four contacts. Two labels with arrows point at it: <q>Teja's phone</q> from the left, <q>the phone in Ram's hand</q> from the right. Caption: <q>One phone. Two hands on it.</q>",
+       "say": "Hold this picture: one thing, two names pointing at it. What do you think today is about?",
+       "room": "Guess the topic."
+      }
+     ],
+     "must": [
+      "The phone that goes to Ram is the same phone that comes back: same case, same wallpaper.",
+      "The turn on press 2 is one movement: across, the new row, back.",
+      "On press 4 Teja's phone keeps exactly three contacts.",
+      "The last press is one phone with two labelled arrows on it."
+     ],
+     "must_not": [
+      "Say the session name, or any code word (list, function, def, variable), anywhere on this card.",
+      "Show any code on this card.",
+      "Animate by itself. Every change waits for a press."
+     ],
+     "data": {
+      "contacts": [
+       "Amma",
+       "Appa",
+       "Kiran"
+      ],
+      "added": "Ram",
+      "code_for_guide": "def save_number(contacts):\n    contacts += [\"Ram\"]\n\nteja_phone = ['Amma', 'Appa', 'Kiran']\nsave_number(teja_phone)\nprint(teja_phone)",
+      "code_output_for_guide": "['Amma', 'Appa', 'Kiran', 'Ram']",
+      "copy_code_for_guide": "def save_number(contacts):\n    contacts = contacts + [\"Ram\"]\n\nteja_phone = ['Amma', 'Appa', 'Kiran']\nsave_number(teja_phone)\nprint(teja_phone)",
+      "copy_output_for_guide": "['Amma', 'Appa', 'Kiran']"
+     },
+     "play": "The phones, the hands, the Contacts app, the share sheet: yours to make real. Wear the look of a real phone's Contacts app (Android or iPhone, white rows, round letter avatars). How the phone travels and how the arrows appear on the last press is yours.",
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Today's topic",
+   "kind": "concept",
+   "mins": 1,
+   "start": 9,
+   "cards": [
+    {
+     "id": "S-TITLE",
+     "title": "Title",
+     "source": "spine:title",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Agenda",
+   "kind": "concept",
+   "mins": 1,
+   "start": 10,
+   "cards": [
+    {
+     "id": "S-AGENDA",
+     "title": "Agenda",
+     "source": "spine:agenda",
+     "purpose": "Name the three stops of today, from deck slide 8, in plain words.",
+     "play": "How the stops sit and light. The deck's arrow of three steps on slide 8 is a fine start.",
+     "show": [
+      "Passing a list",
+      "the function gets your list, not a copy",
+      "Built-in functions",
+      "min, max, sum, sorted",
+      "Code walkthrough",
+      "the lucky number plate"
+     ],
+     "presses": [
+      {
+       "screen": "Stop 1 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 2 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 3 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      }
+     ],
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "A list handed in: += changes the caller's list",
+   "kind": "concept",
+   "mins": 4,
+   "start": 11,
+   "cards": [
+    {
+     "id": "C1",
+     "title": "One list, two names",
+     "source": [
+      9,
+      12
+     ],
+     "purpose": "When we pass a list, list_x inside the function points at the caller's own list. So list_x += [3] changes list_a too. A list can change in place: it is mutable.",
+     "heading": "Passing a list",
+     "show": [
+      "Both names point at the same list.",
+      "What will it print?",
+      "[1, 2]",
+      "[1, 2, 3]",
+      "A change inside the function shows outside too."
+     ],
+     "code": [
+      {
+       "file": "add_item.py",
+       "src": "def add_item(list_x):\n    list_x += [3]\n\nlist_a = [1,2]\nadd_item(list_a)\nprint(list_a)",
+       "output": "[1, 2, 3]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 9's picture: <q>def add_item(list_x):</q> and <q>add_item(list_a)</q>, with list_a and list_x both pointing at one list 1 | 2. Caption: <q>Both names point at the same list.</q>",
+       "say": "Like Teja's phone in Ram's hand. One list, two names."
+      },
+      {
+       "screen": "add_item.py with line numbers (deck slide 10), an empty output box. Caption: <q>What will it print?</q> Choices <q>[1, 2]</q> and <q>[1, 2, 3]</q>.",
+       "say": "[1, 2], hands up. [1, 2, 3], hands up.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "One step per press, following data.steps: the line lights, the arrows and the list change, caption from the data.",
+       "n": 6,
+       "say": "Before each press: which list does this name point at?",
+       "room": "Say it."
+      },
+      {
+       "screen": "The output box holds <q>[1, 2, 3]</q>. Caption: <q>A change inside the function shows outside too.</q>",
+       "say": "Last class a += 1 did not reach outside. A list is mutable: += changes it in place, and list_a sees it."
+      }
+     ],
+     "answer": "[1, 2, 3]",
+     "must": [
+      "A variable is a name tag with an arrow to a list. Two arrows can point at one list. A list that no arrow points at vanishes at once: no grey ghost. A function's default list sits beside its def, from the press the def runs, and stays there.",
+      "A call opens the function's own area beside its block. Its names (list_x) live there and vanish when the call ends. The lists they point at sit in one shared place, outside both areas.",
+      "The 3 joins the same list box that list_a points at. No second list appears."
+     ],
+     "must_not": [
+      "Show the output before the vote."
+     ],
+     "data": {
+      "steps": [
+       {
+        "caption": "Line 1: the def runs. Nothing runs inside it yet.",
+        "line": 1,
+        "event": "line",
+        "where": "main",
+        "names": {},
+        "lists": {},
+        "defaults": [],
+        "printed": []
+       },
+       {
+        "caption": "Line 4: list_a = [1,2]. list_a points at a new list [1, 2].",
+        "line": 4,
+        "event": "line",
+        "where": "main",
+        "names": {
+         "list_a": "L1"
+        },
+        "lists": {
+         "L1": [
+          1,
+          2
+         ]
+        },
+        "defaults": [],
+        "printed": []
+       },
+       {
+        "caption": "Line 5: add_item(list_a). list_x points at the same list as list_a.",
+        "line": 5,
+        "event": "line",
+        "where": "add_item",
+        "names": {
+         "list_a": "L1",
+         "list_x (inside add_item)": "L1"
+        },
+        "lists": {
+         "L1": [
+          1,
+          2
+         ]
+        },
+        "defaults": [],
+        "printed": []
+       },
+       {
+        "caption": "Line 2: list_x += [3]. The list is now [1, 2, 3]. list_a and list_x both see it.",
+        "line": 2,
+        "event": "line",
+        "where": "add_item",
+        "names": {
+         "list_a": "L1",
+         "list_x (inside add_item)": "L1"
+        },
+        "lists": {
+         "L1": [
+          1,
+          2,
+          3
+         ]
+        },
+        "defaults": [],
+        "printed": []
+       },
+       {
+        "caption": "The call ends. list_x goes.",
+        "line": 2,
+        "event": "end",
+        "where": "main",
+        "names": {
+         "list_a": "L1"
+        },
+        "lists": {
+         "L1": [
+          1,
+          2,
+          3
+         ]
+        },
+        "defaults": [],
+        "printed": []
+       },
+       {
+        "caption": "Line 6: print(list_a). It prints [1, 2, 3].",
+        "line": 6,
+        "event": "line",
+        "where": "main",
+        "names": {
+         "list_a": "L1"
+        },
+        "lists": {
+         "L1": [
+          1,
+          2,
+          3
+         ]
+        },
+        "defaults": [],
+        "printed": [
+         "[1, 2, 3]"
+        ]
+       }
+      ]
+     },
+     "play": "The deck's dashed list cells and red arrows (slides 9 to 12) are a fine start.",
+     "press_count": 9
+    }
+   ]
+  },
+  {
+   "name": "list_x = list_x + [3]: a new list, the caller's stays",
+   "kind": "concept",
+   "mins": 3,
+   "start": 15,
+   "cards": [
+    {
+     "id": "C2",
+     "title": "A new list inside",
+     "source": [
+      15
+     ],
+     "purpose": "list_x = list_x + [3] builds a new list and moves only list_x to it. list_a still points at [1, 2].",
+     "heading": "One change on line 2",
+     "show": [
+      "One change on line 2. What will it print now?",
+      "[1, 2]",
+      "[1, 2, 3]",
+      "list_x + [3] makes a new list. list_a still has [1, 2]."
+     ],
+     "code": [
+      {
+       "file": "add_item_new.py",
+       "src": "def add_item(list_x):\n    list_x = list_x + [3]\n\nlist_a = [1,2]\nadd_item(list_a)\nprint(list_a)",
+       "output": "[1, 2]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "add_item_new.py (deck slide 13), line 2 <q>list_x = list_x + [3]</q> lit, empty output. Caption: <q>One change on line 2. What will it print now?</q> Choices <q>[1, 2]</q> and <q>[1, 2, 3]</q>.",
+       "say": "Only line 2 changed. Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "One step per press, following data.steps, caption from the data.",
+       "n": 6,
+       "say": "Watch line 2. Does list_x's arrow move?",
+       "room": "Say it."
+      },
+      {
+       "screen": "The output box holds <q>[1, 2]</q>. Caption: <q>list_x + [3] makes a new list. list_a still has [1, 2].</q>",
+       "say": "Like Ram copying the contacts to his own phone. You saw this in session 20: + builds a new list."
+      }
+     ],
+     "answer": "[1, 2]",
+     "must": [
+      "A variable is a name tag with an arrow to a list. Two arrows can point at one list. A list that no arrow points at vanishes at once: no grey ghost. A function's default list sits beside its def, from the press the def runs, and stays there.",
+      "A call opens the function's own area beside its block. Its names (list_x) live there and vanish when the call ends. The lists they point at sit in one shared place, outside both areas.",
+      "On line 2 a second list appears and only list_x's arrow moves to it.",
+      "When the call ends, the new list 1 | 2 | 3 vanishes with list_x."
+     ],
+     "must_not": [
+      "Show the output before the vote."
+     ],
+     "data": {
+      "steps": [
+       {
+        "caption": "Line 1: the def runs. Nothing runs inside it yet.",
+        "line": 1,
+        "event": "line",
+        "where": "main",
+        "names": {},
+        "lists": {},
+        "defaults": [],
+        "printed": []
+       },
+       {
+        "caption": "Line 4: list_a = [1,2]. list_a points at a new list [1, 2].",
+        "line": 4,
+        "event": "line",
+        "where": "main",
+        "names": {
+         "list_a": "L1"
+        },
+        "lists": {
+         "L1": [
+          1,
+          2
+         ]
+        },
+        "defaults": [],
+        "printed": []
+       },
+       {
+        "caption": "Line 5: add_item(list_a). list_x points at the same list as list_a.",
+        "line": 5,
+        "event": "line",
+        "where": "add_item",
+        "names": {
+         "list_a": "L1",
+         "list_x (inside add_item)": "L1"
+        },
+        "lists": {
+         "L1": [
+          1,
+          2
+         ]
+        },
+        "defaults": [],
+        "printed": []
+       },
+       {
+        "caption": "Line 2: list_x = list_x + [3]. list_x now points at a new list [1, 2, 3]. list_a still points at [1, 2].",
+        "line": 2,
+        "event": "line",
+        "where": "add_item",
+        "names": {
+         "list_a": "L1",
+         "list_x (inside add_item)": "L2"
+        },
+        "lists": {
+         "L1": [
+          1,
+          2
+         ],
+         "L2": [
+          1,
+          2,
+          3
+         ]
+        },
+        "defaults": [],
+        "printed": []
+       },
+       {
+        "caption": "The call ends. list_x goes. No name points at [1, 2, 3] now, so it goes too.",
+        "line": 2,
+        "event": "end",
+        "where": "main",
+        "names": {
+         "list_a": "L1"
+        },
+        "lists": {
+         "L1": [
+          1,
+          2
+         ]
+        },
+        "defaults": [],
+        "printed": []
+       },
+       {
+        "caption": "Line 6: print(list_a). It prints [1, 2].",
+        "line": 6,
+        "event": "line",
+        "where": "main",
+        "names": {
+         "list_a": "L1"
+        },
+        "lists": {
+         "L1": [
+          1,
+          2
+         ]
+        },
+        "defaults": [],
+        "printed": [
+         "[1, 2]"
+        ]
+       }
+      ]
+     },
+     "play": "Deck slide 14's faded arrow is a fine start. The two lists side by side, then one gone.",
+     "press_count": 8
+    }
+   ]
+  },
+  {
+   "name": "Task 1: Ram saves his number",
+   "kind": "activity",
+   "mins": 7,
+   "start": 18,
+   "cards": [
+    {
+     "id": "T1",
+     "title": "Task 1: Ram saves his number",
+     "source": "new",
+     "handout": "Task 1",
+     "activity": 2,
+     "timer": 360,
+     "purpose": "Type the phone program, predict, run. Then change line 2 to the + form and predict again. Then print inside and outside and see two different lists.",
+     "heading": "Ram saves his number",
+     "show": [
+      "Worksheet · Task 1",
+      "Ram saves his number on Teja's phone.",
+      "Type it. Predict line 6. Run.",
+      "Change line 2 to contacts = contacts + [\"Ram\"]. Predict. Run.",
+      "Add print(contacts) under line 2. Predict both lines. Run."
+     ],
+     "code": [
+      {
+       "file": "save_number.py",
+       "src": "def save_number(contacts):\n    contacts += [\"Ram\"]\n\nteja = ['Amma', 'Kiran']\nsave_number(teja)\nprint(teja)",
+       "output": "['Amma', 'Kiran', 'Ram']"
+      },
+      {
+       "file": "save_number_b.py",
+       "src": "def save_number(contacts):\n    contacts = contacts + [\"Ram\"]\n\nteja = ['Amma', 'Kiran']\nsave_number(teja)\nprint(teja)",
+       "output": "['Amma', 'Kiran']"
+      },
+      {
+       "file": "save_number_c.py",
+       "src": "def save_number(contacts):\n    contacts = contacts + [\"Ram\"]\n    print(contacts)\n\nteja = ['Amma', 'Kiran']\nsave_number(teja)\nprint(teja)",
+       "output": "['Amma', 'Kiran', 'Ram']\n['Amma', 'Kiran']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The story line, save_number.py with line numbers, the three steps (only step 1 lit) and a 6 minute timer.",
+       "say": "Worksheet tab and playground. Type it, type your prediction, then run.",
+       "room": "Type, predict, run."
+      },
+      {
+       "screen": "Step 2 lights: <q>Change line 2 to contacts = contacts + [\"Ram\"]. Predict. Run.</q>",
+       "say": "Only line 2. Predict before you run.",
+       "room": "Edit, predict, run."
+      },
+      {
+       "screen": "Step 3 lights: <q>Add print(contacts) under line 2. Predict both lines. Run.</q>",
+       "say": "Now print inside the function and outside.",
+       "room": "Edit, predict, run."
+      },
+      {
+       "screen": "Step 1's output appears: <q>['Amma', 'Kiran', 'Ram']</q>.",
+       "say": "+= : the same phone. Ram is in it."
+      },
+      {
+       "screen": "Step 2's output appears: <q>['Amma', 'Kiran']</q>.",
+       "say": "+ : a copy. Teja's list is as it was."
+      },
+      {
+       "screen": "Step 3's two lines appear: <q>['Amma', 'Kiran', 'Ram']</q> then <q>['Amma', 'Kiran']</q>.",
+       "say": "Inside, contacts points at the new list with Ram. Outside, teja never moved."
+      }
+     ],
+     "answer": "Step 1: ['Amma', 'Kiran', 'Ram']. Step 2: ['Amma', 'Kiran']. Step 3: ['Amma', 'Kiran', 'Ram'] / ['Amma', 'Kiran'].",
+     "must": [
+      "No result shows until the timer has ended.",
+      "One step's result per press on the reveal."
+     ],
+     "must_not": [
+      "Show any output before the room has run it."
+     ],
+     "play": "The layout of steps, timer and code. The results can show on a small Contacts screen.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Game G1: does Teja's list change?",
+   "kind": "activity",
+   "mins": 5,
+   "start": 25,
+   "cards": [
+    {
+     "id": "G1",
+     "title": "Does Teja's list change?",
+     "game": "tap-to-classify",
+     "purpose": "Sort six one-line changes inside save_number: which ones change Teja's own list and which only move the name contacts. += and *= change it, so does a change to one box; + , * and a plain = do not.",
+     "heading": "Does Teja's list change?",
+     "code": [
+      {
+       "file": "save_number_blank.py",
+       "src": "def save_number(contacts):\n    ________\n\nteja = ['Amma', 'Kiran']\nsave_number(teja)\nprint(teja)",
+       "output": ""
+      }
+     ],
+     "data": {
+      "setup": {
+       "bins": [
+        "It changes",
+        "It stays the same"
+       ],
+       "cases": [
+        "contacts += [\"Ram\"]",
+        "contacts = contacts + [\"Ram\"]",
+        "contacts *= 2",
+        "contacts = [\"Ram\"]",
+        "contacts[0] = \"Ram\"",
+        "contacts = contacts * 2"
+       ]
+      },
+      "intro": "Line 2 changes six times. Type a bin for each in the worksheet first.",
+      "rounds": [
+       {
+        "ask": "Does Teja's list change?",
+        "case": "contacts += [\"Ram\"]",
+        "options": [
+         "It changes",
+         "It stays the same"
+        ],
+        "answer": "It changes",
+        "because": "+= grows the same list that teja points at.",
+        "why": {
+         "It stays the same": "Last class's a += 1 made a new number. A list is changed in place, so teja sees it."
+        },
+        "steps": [
+         {
+          "caption": "It changes. print(teja) shows ['Amma', 'Kiran', 'Ram'].",
+          "bin": "It changes"
+         }
+        ]
+       },
+       {
+        "ask": "Does Teja's list change?",
+        "case": "contacts = contacts + [\"Ram\"]",
+        "options": [
+         "It changes",
+         "It stays the same"
+        ],
+        "answer": "It stays the same",
+        "because": "contacts + [\"Ram\"] makes a new list. Only contacts moves to it.",
+        "why": {
+         "It changes": "It looks like +=, but + builds a new list first. teja still points at the old one."
+        },
+        "steps": [
+         {
+          "caption": "It stays the same. print(teja) shows ['Amma', 'Kiran'].",
+          "bin": "It stays the same"
+         }
+        ]
+       },
+       {
+        "ask": "Does Teja's list change?",
+        "case": "contacts *= 2",
+        "options": [
+         "It changes",
+         "It stays the same"
+        ],
+        "answer": "It changes",
+        "because": "*= grows the same list, like +=.",
+        "why": {
+         "It stays the same": "Like +=, *= changes the list in place. teja shows every name twice."
+        },
+        "steps": [
+         {
+          "caption": "It changes. print(teja) shows ['Amma', 'Kiran', 'Amma', 'Kiran'].",
+          "bin": "It changes"
+         }
+        ]
+       },
+       {
+        "ask": "Does Teja's list change?",
+        "case": "contacts = [\"Ram\"]",
+        "options": [
+         "It changes",
+         "It stays the same"
+        ],
+        "answer": "It stays the same",
+        "because": "= points contacts at a new list. teja keeps the old one.",
+        "why": {
+         "It changes": "A plain = only moves the name contacts. teja's list is not touched."
+        },
+        "steps": [
+         {
+          "caption": "It stays the same. print(teja) shows ['Amma', 'Kiran'].",
+          "bin": "It stays the same"
+         }
+        ]
+       },
+       {
+        "ask": "Does Teja's list change?",
+        "case": "contacts[0] = \"Ram\"",
+        "options": [
+         "It changes",
+         "It stays the same"
+        ],
+        "answer": "It changes",
+        "because": "It changes a box inside the same list. teja sees it.",
+        "why": {
+         "It stays the same": "No new list here. Box 0 of the same list changes, and teja sees Ram first."
+        },
+        "steps": [
+         {
+          "caption": "It changes. print(teja) shows ['Ram', 'Kiran'].",
+          "bin": "It changes"
+         }
+        ]
+       },
+       {
+        "ask": "Does Teja's list change?",
+        "case": "contacts = contacts * 2",
+        "options": [
+         "It changes",
+         "It stays the same"
+        ],
+        "answer": "It stays the same",
+        "because": "contacts * 2 makes a new list, like contacts + [...].",
+        "why": {
+         "It changes": "* builds a new list first, then = moves contacts to it. teja is not touched."
+        },
+        "steps": [
+         {
+          "caption": "It stays the same. print(teja) shows ['Amma', 'Kiran'].",
+          "bin": "It stays the same"
+         }
+        ]
+       }
+      ]
+     },
+     "say": {
+      "ask": "Read the case. How many think it changes Teja's list? Hands up. Stays the same? Hands up.",
+      "step": "Tap it into the bin the room chose.",
+      "verdict": "Read the why line. Point at the list arrows: did teja's list change, or did contacts move?"
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "Every case is on screen from press 1, waiting to be sorted.",
+      "Keep to three bins at most.",
+      "save_number.py is on screen the whole game, with line 2 blank; each case drops into line 2 when it is sorted.",
+      "Cases 1 and 2 are Task 1's own line 2s.",
+      "Each case's caption shows what print(teja) prints with that line 2."
+     ],
+     "play": "The bins, the case chips and the snap and bounce. A small Contacts screen beside each bin is welcome.",
+     "presses": [
+      {
+       "screen": "Before round 1: <q>Line 2 changes six times. Type a bin for each in the worksheet first.</q>",
+       "say": "Read it out. Say how a round works: you answer first, then it runs.",
+       "room": "Listen."
+      },
+      {
+       "screen": "Round 1 of 6. The round's setup, as in the data. The question: <q>Does Teja's list change?</q> Options: A <q>It changes</q>, B <q>It stays the same</q>. Nothing runs yet.",
+       "say": "Read the case. How many think it changes Teja's list? Hands up. Stays the same? Hands up.",
+       "room": "Type the answer in the worksheet."
+      },
+      {
+       "screen": "<q>It changes. print(teja) shows ['Amma', 'Kiran', 'Ram'].</q>",
+       "say": "Tap it into the bin the room chose."
+      },
+      {
+       "screen": "The answer: <q>It changes</q>. <q>+= grows the same list that teja points at.</q> Then a line for every other option: <q>It stays the same</q> <q>Last class's a += 1 made a new number. A list is changed in place, so teja sees it.</q>.",
+       "say": "Read the why line. Point at the list arrows: did teja's list change, or did contacts move?"
+      },
+      {
+       "screen": "Round 2 of 6. The round's setup, as in the data. The question: <q>Does Teja's list change?</q> Options: A <q>It changes</q>, B <q>It stays the same</q>. Nothing runs yet.",
+       "say": "Read the case. How many think it changes Teja's list? Hands up. Stays the same? Hands up.",
+       "room": "Type the answer in the worksheet."
+      },
+      {
+       "screen": "<q>It stays the same. print(teja) shows ['Amma', 'Kiran'].</q>",
+       "say": "Tap it into the bin the room chose."
+      },
+      {
+       "screen": "The answer: <q>It stays the same</q>. <q>contacts + [\"Ram\"] makes a new list. Only contacts moves to it.</q> Then a line for every other option: <q>It changes</q> <q>It looks like +=, but + builds a new list first. teja still points at the old one.</q>.",
+       "say": "Read the why line. Point at the list arrows: did teja's list change, or did contacts move?"
+      },
+      {
+       "screen": "Round 3 of 6. The round's setup, as in the data. The question: <q>Does Teja's list change?</q> Options: A <q>It changes</q>, B <q>It stays the same</q>. Nothing runs yet.",
+       "say": "Read the case. How many think it changes Teja's list? Hands up. Stays the same? Hands up.",
+       "room": "Type the answer in the worksheet."
+      },
+      {
+       "screen": "<q>It changes. print(teja) shows ['Amma', 'Kiran', 'Amma', 'Kiran'].</q>",
+       "say": "Tap it into the bin the room chose."
+      },
+      {
+       "screen": "The answer: <q>It changes</q>. <q>*= grows the same list, like +=.</q> Then a line for every other option: <q>It stays the same</q> <q>Like +=, *= changes the list in place. teja shows every name twice.</q>.",
+       "say": "Read the why line. Point at the list arrows: did teja's list change, or did contacts move?"
+      },
+      {
+       "screen": "Round 4 of 6. The round's setup, as in the data. The question: <q>Does Teja's list change?</q> Options: A <q>It changes</q>, B <q>It stays the same</q>. Nothing runs yet.",
+       "say": "Read the case. How many think it changes Teja's list? Hands up. Stays the same? Hands up.",
+       "room": "Type the answer in the worksheet."
+      },
+      {
+       "screen": "<q>It stays the same. print(teja) shows ['Amma', 'Kiran'].</q>",
+       "say": "Tap it into the bin the room chose."
+      },
+      {
+       "screen": "The answer: <q>It stays the same</q>. <q>= points contacts at a new list. teja keeps the old one.</q> Then a line for every other option: <q>It changes</q> <q>A plain = only moves the name contacts. teja's list is not touched.</q>.",
+       "say": "Read the why line. Point at the list arrows: did teja's list change, or did contacts move?"
+      },
+      {
+       "screen": "Round 5 of 6. The round's setup, as in the data. The question: <q>Does Teja's list change?</q> Options: A <q>It changes</q>, B <q>It stays the same</q>. Nothing runs yet.",
+       "say": "Read the case. How many think it changes Teja's list? Hands up. Stays the same? Hands up.",
+       "room": "Type the answer in the worksheet."
+      },
+      {
+       "screen": "<q>It changes. print(teja) shows ['Ram', 'Kiran'].</q>",
+       "say": "Tap it into the bin the room chose."
+      },
+      {
+       "screen": "The answer: <q>It changes</q>. <q>It changes a box inside the same list. teja sees it.</q> Then a line for every other option: <q>It stays the same</q> <q>No new list here. Box 0 of the same list changes, and teja sees Ram first.</q>.",
+       "say": "Read the why line. Point at the list arrows: did teja's list change, or did contacts move?"
+      },
+      {
+       "screen": "Round 6 of 6. The round's setup, as in the data. The question: <q>Does Teja's list change?</q> Options: A <q>It changes</q>, B <q>It stays the same</q>. Nothing runs yet.",
+       "say": "Read the case. How many think it changes Teja's list? Hands up. Stays the same? Hands up.",
+       "room": "Type the answer in the worksheet."
+      },
+      {
+       "screen": "<q>It stays the same. print(teja) shows ['Amma', 'Kiran'].</q>",
+       "say": "Tap it into the bin the room chose."
+      },
+      {
+       "screen": "The answer: <q>It stays the same</q>. <q>contacts * 2 makes a new list, like contacts + [...].</q> Then a line for every other option: <q>It changes</q> <q>* builds a new list first, then = moves contacts to it. teja is not touched.</q>.",
+       "say": "Read the why line. Point at the list arrows: did teja's list change, or did contacts move?"
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Sort a case before the room has voted on it."
+     ],
+     "interaction": "Six to eight concrete cases and two or three bins. The room types a bin per case first; then each case is tapped into the bin the room voted, and it snaps home or bounces out.",
+     "game_def": {
+      "id": "tap-to-classify",
+      "name": "Tap to classify",
+      "one_line": "Six to eight concrete cases and two or three bins. The room types a bin per case first; then each case is tapped into the bin the room voted, and it snaps home or bounces out.",
+      "how": [
+       "Two or three bins, named plainly. Every case (a line of code, a value, a name) is one round.",
+       "The room types a bin for every case in the worksheet before any tap. That is the commitment.",
+       "Per case: a show of hands, then the case moves into the bin the room voted for.",
+       "It snaps home if right. If wrong it bounces out to the right bin, and one short line says why.",
+       "The cases that bounced are the ones worth the next two minutes."
+      ],
+      "setup": {
+       "bins": "the two or three bin names, exact; every round's options are these names",
+       "cases": "every case, in round order, exact"
+      },
+      "round": {
+       "case": "this round's case, exact"
+      },
+      "step": {
+       "bin": "the bin the case ends in"
+      }
+     },
+     "press_count": 19
+    }
+   ]
+  },
+  {
+   "name": "One default list for every call",
+   "kind": "concept",
+   "mins": 4,
+   "start": 30,
+   "cards": [
+    {
+     "id": "E1",
+     "title": "One default list",
+     "source": [
+      26,
+      29
+     ],
+     "animated": "explainer",
+     "purpose": "A default list is made once, when the def runs. Every call that leaves list_x out points at that same list, so the third call finds the 3 from the first. Watch the default list sit there between calls.",
+     "heading": "A list as a default value",
+     "show": [
+      "What does line 7 print?",
+      "A  [3]",
+      "B  [3, 3]",
+      "C  []",
+      "D  [1, 2, 3, 3]",
+      "The default list is made once, when the def runs. Not every time the function is called."
+     ],
+     "code": [
+      {
+       "file": "add_item_default.py",
+       "src": "def add_item(list_x=[]):\n    list_x += [3]\n    print(list_x)\n\nadd_item()\nadd_item([1,2])\nadd_item()",
+       "output": "[3]\n[1, 2, 3]\n[3, 3]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "add_item_default.py with line numbers (deck slide 16), an empty output box, and an empty space for lists. Caption: <q>What does line 7 print?</q> Options: A <q>[3]</q>, B <q>[3, 3]</q>, C <q>[]</q>, D <q>[1, 2, 3, 3]</q>.",
+       "say": "Last class: a default fills what we leave out. Option A, hands up. B. C. D.",
+       "room": "Hands up per option."
+      },
+      {
+       "screen": "One step per press, following data.steps, caption from the data. Press 1 of the walk: the def runs and the default list appears beside it, empty. Then each call: list_x's arrow, the change, the print, and the call ending.",
+       "n": 13,
+       "say": "Before each call: which list will list_x point at?",
+       "room": "Say it."
+      },
+      {
+       "screen": "The output box holds <q>[3]</q>, <q>[1, 2, 3]</q>, <q>[3, 3]</q>. The default list, holding [3, 3], is ringed. Caption: <q>The default list is made once, when the def runs. Not every time the function is called.</q>",
+       "say": "Made once, when the def ran. Who voted B? The 3 from line 5 was still there."
+      }
+     ],
+     "answer": "B. [3, 3]. The output is [3] / [1, 2, 3] / [3, 3].",
+     "must": [
+      "A variable is a name tag with an arrow to a list. Two arrows can point at one list. A list that no arrow points at vanishes at once: no grey ghost. A function's default list sits beside its def, from the press the def runs, and stays there.",
+      "A call opens the function's own area beside its block. Its names (list_x) live there and vanish when the call ends. The lists they point at sit in one shared place, outside both areas.",
+      "The default list appears on the def press, before any call, and never leaves the screen.",
+      "The list [1, 2] from line 6 vanishes when that call ends. The default list does not.",
+      "Output lines stay in the box as the walk goes on. They are the finding.",
+      "One step per press."
+     ],
+     "must_not": [
+      "Show a free code box, a picker or an input field. It runs this one program.",
+      "Draw the default list inside the call's area. It belongs to the def.",
+      "Move by itself."
+     ],
+     "data": {
+      "steps": [
+       {
+        "caption": "Line 1: the def runs. The default list is made now, once: [].",
+        "line": 1,
+        "event": "line",
+        "where": "main",
+        "names": {},
+        "lists": {
+         "L1": []
+        },
+        "defaults": [
+         "L1"
+        ],
+        "printed": []
+       },
+       {
+        "caption": "Line 5: add_item(). list_x points at the default list. It holds [].",
+        "line": 5,
+        "event": "line",
+        "where": "add_item",
+        "names": {
+         "list_x (inside add_item)": "L1"
+        },
+        "lists": {
+         "L1": []
+        },
+        "defaults": [
+         "L1"
+        ],
+        "printed": []
+       },
+       {
+        "caption": "Line 2: list_x += [3]. The list is now [3].",
+        "line": 2,
+        "event": "line",
+        "where": "add_item",
+        "names": {
+         "list_x (inside add_item)": "L1"
+        },
+        "lists": {
+         "L1": [
+          3
+         ]
+        },
+        "defaults": [
+         "L1"
+        ],
+        "printed": []
+       },
+       {
+        "caption": "Line 3: print(list_x). It prints [3].",
+        "line": 3,
+        "event": "line",
+        "where": "add_item",
+        "names": {
+         "list_x (inside add_item)": "L1"
+        },
+        "lists": {
+         "L1": [
+          3
+         ]
+        },
+        "defaults": [
+         "L1"
+        ],
+        "printed": [
+         "[3]"
+        ]
+       },
+       {
+        "caption": "The call ends. list_x goes. The default list stays. It still holds [3].",
+        "line": 3,
+        "event": "end",
+        "where": "main",
+        "names": {},
+        "lists": {
+         "L1": [
+          3
+         ]
+        },
+        "defaults": [
+         "L1"
+        ],
+        "printed": [
+         "[3]"
+        ]
+       },
+       {
+        "caption": "Line 6: add_item([1,2]). list_x points at a new list [1, 2].",
+        "line": 6,
+        "event": "line",
+        "where": "add_item",
+        "names": {
+         "list_x (inside add_item)": "L2"
+        },
+        "lists": {
+         "L1": [
+          3
+         ],
+         "L2": [
+          1,
+          2
+         ]
+        },
+        "defaults": [
+         "L1"
+        ],
+        "printed": [
+         "[3]"
+        ]
+       },
+       {
+        "caption": "Line 2: list_x += [3]. The list is now [1, 2, 3].",
+        "line": 2,
+        "event": "line",
+        "where": "add_item",
+        "names": {
+         "list_x (inside add_item)": "L2"
+        },
+        "lists": {
+         "L1": [
+          3
+         ],
+         "L2": [
+          1,
+          2,
+          3
+         ]
+        },
+        "defaults": [
+         "L1"
+        ],
+        "printed": [
+         "[3]"
+        ]
+       },
+       {
+        "caption": "Line 3: print(list_x). It prints [1, 2, 3].",
+        "line": 3,
+        "event": "line",
+        "where": "add_item",
+        "names": {
+         "list_x (inside add_item)": "L2"
+        },
+        "lists": {
+         "L1": [
+          3
+         ],
+         "L2": [
+          1,
+          2,
+          3
+         ]
+        },
+        "defaults": [
+         "L1"
+        ],
+        "printed": [
+         "[3]",
+         "[1, 2, 3]"
+        ]
+       },
+       {
+        "caption": "The call ends. list_x goes. The default list stays. It still holds [3]. No name points at [1, 2, 3] now, so it goes too.",
+        "line": 3,
+        "event": "end",
+        "where": "main",
+        "names": {},
+        "lists": {
+         "L1": [
+          3
+         ]
+        },
+        "defaults": [
+         "L1"
+        ],
+        "printed": [
+         "[3]",
+         "[1, 2, 3]"
+        ]
+       },
+       {
+        "caption": "Line 7: add_item(). list_x points at the default list. It holds [3].",
+        "line": 7,
+        "event": "line",
+        "where": "add_item",
+        "names": {
+         "list_x (inside add_item)": "L1"
+        },
+        "lists": {
+         "L1": [
+          3
+         ]
+        },
+        "defaults": [
+         "L1"
+        ],
+        "printed": [
+         "[3]",
+         "[1, 2, 3]"
+        ]
+       },
+       {
+        "caption": "Line 2: list_x += [3]. The list is now [3, 3].",
+        "line": 2,
+        "event": "line",
+        "where": "add_item",
+        "names": {
+         "list_x (inside add_item)": "L1"
+        },
+        "lists": {
+         "L1": [
+          3,
+          3
+         ]
+        },
+        "defaults": [
+         "L1"
+        ],
+        "printed": [
+         "[3]",
+         "[1, 2, 3]"
+        ]
+       },
+       {
+        "caption": "Line 3: print(list_x). It prints [3, 3].",
+        "line": 3,
+        "event": "line",
+        "where": "add_item",
+        "names": {
+         "list_x (inside add_item)": "L1"
+        },
+        "lists": {
+         "L1": [
+          3,
+          3
+         ]
+        },
+        "defaults": [
+         "L1"
+        ],
+        "printed": [
+         "[3]",
+         "[1, 2, 3]",
+         "[3, 3]"
+        ]
+       },
+       {
+        "caption": "The call ends. list_x goes. The default list stays. It still holds [3, 3].",
+        "line": 3,
+        "event": "end",
+        "where": "main",
+        "names": {},
+        "lists": {
+         "L1": [
+          3,
+          3
+         ]
+        },
+        "defaults": [
+         "L1"
+        ],
+        "printed": [
+         "[3]",
+         "[1, 2, 3]",
+         "[3, 3]"
+        ]
+       }
+      ],
+      "output": [
+       "[3]",
+       "[1, 2, 3]",
+       "[3, 3]"
+      ]
+     },
+     "play": "The lists, the arrows and the def's own shelf for its default. Session 11's Follow the Dot is the bar: one thing moves at a time.",
+     "press_count": 15
+    }
+   ]
+  },
+  {
+   "name": "Classroom quiz",
+   "kind": "quiz",
+   "mins": 6,
+   "start": 34,
+   "cards": [
+    {
+     "id": "S-QUIZ",
+     "title": "Quiz",
+     "source": "spine:quiz",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Hook 2: screen time, the long way",
+   "kind": "hook",
+   "mins": 4,
+   "start": 40,
+   "cards": [
+    {
+     "id": "H2",
+     "title": "Screen time, the long way",
+     "source": "new",
+     "purpose": "Feel why a built-in is worth having: finding the busiest day the long way takes a loop of 5 lines, and the least day and the total would take more. Python has max ready.",
+     "heading": "Teja's screen time",
+     "show": [
+      "Which day did Teja use his phone the most?",
+      "How did your eyes find it?",
+      "5 lines to find one number.",
+      "And the least day? The total? More loops.",
+      "Python already has this function."
+     ],
+     "code": [
+      {
+       "file": "busiest_long.py",
+       "src": "minutes = [95, 140, 60, 210, 120, 75, 180]\nmost = minutes[0]\nfor m in minutes:\n    if m > most:\n        most = m\nprint(most)",
+       "output": "210"
+      },
+      {
+       "file": "busiest_short.py",
+       "src": "minutes = [95, 140, 60, 210, 120, 75, 180]\nprint(max(minutes))",
+       "output": "210"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Teja's phone, the screen time page: a bar for each day Mon, Tue, Wed, Thu, Fri, Sat, Sun with its minutes from data.minutes. Caption: <q>Which day did Teja use his phone the most?</q>",
+       "say": "Everyone has seen this screen. Which day?",
+       "room": "Say: Thu, 210 minutes."
+      },
+      {
+       "screen": "A finger runs along the bars, left to right, keeping the tallest so far. Caption: <q>How did your eyes find it?</q>",
+       "say": "You looked at each bar and kept the biggest so far.",
+       "room": "Say how."
+      },
+      {
+       "screen": "The long way, written out: busiest_long.py. Its lines light one per press of the instructor's voice, no auto-play: the first value, the loop, the check, the swap, the print. The output shows <q>210</q>. Caption: <q>5 lines to find one number.</q> then <q>And the least day? The total? More loops.</q>",
+       "say": "This is what your eyes did. Now the least day, and the week's total. Two more loops."
+      },
+      {
+       "screen": "The turn, one movement: the long program collapses into one line, print(max(minutes)), busiest_short.py. The output is the same <q>210</q>. Caption: <q>Python already has this function.</q>",
+       "say": "Same answer. One line. Python wrote the loop for us."
+      }
+     ],
+     "answer": "Thu, 210 minutes. The long way and max(minutes) both print 210.",
+     "must": [
+      "Both programs are real and run; the outputs shown are theirs.",
+      "The collapse is one movement and the output does not change."
+     ],
+     "must_not": [
+      "Animate by itself."
+     ],
+     "data": {
+      "days": [
+       "Mon",
+       "Tue",
+       "Wed",
+       "Thu",
+       "Fri",
+       "Sat",
+       "Sun"
+      ],
+      "minutes": [
+       95,
+       140,
+       60,
+       210,
+       120,
+       75,
+       180
+      ],
+      "busiest": "Thu"
+     },
+     "play": "The screen time page: wear a real phone's weekly bar chart. How the long program collapses is yours.",
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Functions Python already gives us",
+   "kind": "concept",
+   "mins": 2,
+   "start": 44,
+   "cards": [
+    {
+     "id": "C3",
+     "title": "Functions Python gives us",
+     "source": [
+      31,
+      32
+     ],
+     "purpose": "print, int, str and len are functions Python already wrote. They are called built-in functions. Today, four more.",
+     "heading": "Built-in functions",
+     "show": [
+      "You already use these.",
+      "print()",
+      "int()",
+      "str()",
+      "len()",
+      "Built-in functions",
+      "Ready in Python. Just call them.",
+      "Today: four more.",
+      "min()",
+      "max()",
+      "sum()",
+      "sorted()"
+     ],
+     "presses": [
+      {
+       "screen": "The four you know, one under another: <q>print()</q>, <q>int()</q>, <q>str()</q>, <q>len()</q>. Caption: <q>You already use these.</q>",
+       "say": "Did you ever write the def for print? No. Python gives it.",
+       "room": "Say: no."
+      },
+      {
+       "screen": "A label joins them: <q>Built-in functions</q> and <q>Ready in Python. Just call them.</q>",
+       "say": "Built in: already inside Python."
+      },
+      {
+       "screen": "Beside them, four new ones: <q>min()</q>, <q>max()</q>, <q>sum()</q>, <q>sorted()</q>. Caption: <q>Today: four more.</q>",
+       "say": "max we just met. Three more."
+      }
+     ],
+     "play": "Deck slides 31 and 32 as one card. The green arrows are a fine start.",
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "min and max: separate values or one list, and strings",
+   "kind": "concept",
+   "mins": 5,
+   "start": 46,
+   "cards": [
+    {
+     "id": "C4",
+     "title": "min and max",
+     "source": [
+      33,
+      34,
+      35,
+      37
+     ],
+     "purpose": "min gives the smallest of separate values or of a list; max gives the largest. On strings, min compares letter by letter by Unicode value, so Java beats Python and Teja beats ravi.",
+     "heading": "Finding the smallest",
+     "show": [
+      "min(sequence)",
+      "min(arg1, arg2, arg3 ...)",
+      "Gives the smallest item in a list, or the smallest of the values.",
+      "What will it print?",
+      "Strings are compared letter by letter, by Unicode value.",
+      "Capital letters come before small letters.",
+      "max works the same way, for the largest."
+     ],
+     "code": [
+      {
+       "file": "min_values.py",
+       "src": "smallest = min(3,5,4)\nprint(smallest)",
+       "output": "3"
+      },
+      {
+       "file": "min_list.py",
+       "src": "smallest = min([1,-2,4,2])\nprint(smallest)",
+       "output": "-2"
+      },
+      {
+       "file": "min_strings.py",
+       "src": "smallest = min(\"Python\", \"Java\")\nprint(smallest)",
+       "output": "Java"
+      },
+      {
+       "file": "min_names.py",
+       "src": "smallest = min(\"ravi\", \"Teja\")\nprint(smallest)",
+       "output": "Teja"
+      },
+      {
+       "file": "max_values.py",
+       "src": "largest = max(3,5,4)\nprint(largest)",
+       "output": "5"
+      },
+      {
+       "file": "max_list.py",
+       "src": "largest = max([1,-2,4,2])\nprint(largest)",
+       "output": "4"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 33: <q>min(sequence)</q> and <q>min(arg1, arg2, arg3 ...)</q> with <q>Gives the smallest item in a list, or the smallest of the values.</q>",
+       "say": "Two ways to call it: one list, or separate values."
+      },
+      {
+       "screen": "min_values.py, empty output. Caption: <q>What will it print?</q>",
+       "say": "Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "The output fills <q>3</q>. Beside it, min_list.py with an empty output.",
+       "say": "Now a list, with a minus in it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "min_list.py's output fills <q>-2</q>.",
+       "say": "Smallest, not the first, not the one with the most digits."
+      },
+      {
+       "screen": "min_strings.py (deck slide 35), empty output. Caption: <q>What will it print?</q> Choices <q>Python</q> and <q>Java</q>.",
+       "say": "Python, hands up. Java, hands up.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "The output fills <q>Java</q>. The first letters light: P 80, J 74. Caption: <q>Strings are compared letter by letter, by Unicode value.</q>",
+       "say": "Session 18: ord. 74 is smaller than 80."
+      },
+      {
+       "screen": "min_names.py, empty output. Caption: <q>What will it print?</q> Choices <q>ravi</q> and <q>Teja</q>.",
+       "say": "ravi, hands up. Teja, hands up.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "The output fills <q>Teja</q>. T 84, r 114. Caption: <q>Capital letters come before small letters.</q>",
+       "say": "Not the alphabet. Unicode."
+      },
+      {
+       "screen": "max_values.py and max_list.py side by side (deck slide 37), empty outputs.",
+       "say": "Same calls, max this time. Say both.",
+       "room": "Say both outputs."
+      },
+      {
+       "screen": "The outputs fill <q>5</q> and <q>4</q>. Caption: <q>max works the same way, for the largest.</q>",
+       "say": "And Teja's busiest day was max(minutes)."
+      }
+     ],
+     "answer": "min(3,5,4) 3, min([1,-2,4,2]) -2, min(\"Python\", \"Java\") Java, min(\"ravi\", \"Teja\") Teja, max(3,5,4) 5, max([1,-2,4,2]) 4",
+     "must": [
+      "Each output appears only after the room has said or voted it.",
+      "The Unicode numbers are the real ord values."
+     ],
+     "play": "The deck's code and output boxes on slides 34 to 37 are a fine start. Four small programs can share one card in turns.",
+     "press_count": 10
+    }
+   ]
+  },
+  {
+   "name": "sum adds up a list",
+   "kind": "concept",
+   "mins": 2,
+   "start": 51,
+   "cards": [
+    {
+     "id": "C5",
+     "title": "sum",
+     "source": [
+      39
+     ],
+     "purpose": "sum adds up every item of one list. It needs a list: sum(3, 5, 4) is a TypeError.",
+     "heading": "Finding the total",
+     "show": [
+      "sum(sequence)",
+      "Gives the total of all items in a list.",
+      "What will it print?",
+      "sum needs one list, not separate values.",
+      "Teja's week, in minutes"
+     ],
+     "code": [
+      {
+       "file": "sum_list.py",
+       "src": "sum_of_numbers = sum([1,-2,4,2])\nprint(sum_of_numbers)",
+       "output": "5"
+      },
+      {
+       "file": "sum_values.py",
+       "src": "print(sum(3,5,4))",
+       "output": "TypeError: sum() takes at most 2 arguments (3 given)"
+      },
+      {
+       "file": "screen_time.py",
+       "src": "minutes = [95, 140, 60, 210, 120, 75, 180]\nprint(max(minutes))\nprint(min(minutes))\nprint(sum(minutes))",
+       "output": "210\n60\n880"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "<q>sum(sequence)</q> with <q>Gives the total of all items in a list.</q> and sum_list.py (deck slide 39), empty output. Caption: <q>What will it print?</q> Choices <q>5</q>, <q>9</q>, <q>-2</q>.",
+       "say": "5, hands up. 9, hands up. -2, hands up.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "The output fills <q>5</q>.",
+       "say": "1 minus 2 plus 4 plus 2."
+      },
+      {
+       "screen": "sum_values.py: <q>print(sum(3,5,4))</q>, empty output. Caption: <q>What will it print?</q>",
+       "say": "min took separate values. Will sum?",
+       "room": "Say it."
+      },
+      {
+       "screen": "The output: <q>TypeError: sum() takes at most 2 arguments (3 given)</q>. Caption: <q>sum needs one list, not separate values.</q>",
+       "say": "Put them in a list: sum([3, 5, 4])."
+      },
+      {
+       "screen": "screen_time.py: max, min and sum of Teja's minutes. The output fills <q>210 / 60 / 880</q> under the label <q>Teja's week, in minutes</q>",
+       "say": "The two loops from the hook, gone. Three lines."
+      }
+     ],
+     "answer": "5. sum(3,5,4): TypeError: sum() takes at most 2 arguments (3 given). Teja's week: 210 / 60 / 880.",
+     "must": [
+      "The TypeError text is exactly what Python prints."
+     ],
+     "must_not": [
+      "Show an output before the room has said or voted it."
+     ],
+     "play": "Layout. The screen time bars from H2 can come back on the last press.",
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "sorted gives a new list; reverse=True flips it",
+   "kind": "concept",
+   "mins": 6,
+   "start": 53,
+   "cards": [
+    {
+     "id": "C6",
+     "title": "sorted",
+     "source": [
+      41,
+      42,
+      44
+     ],
+     "purpose": "sorted gives a new list in increasing order and leaves the old list as it was. reverse is a default argument, False; reverse=True gives the biggest first.",
+     "heading": "Ordering list items",
+     "show": [
+      "sorted(sequence)",
+      "Gives a new list with the items in increasing order.",
+      "What does print(list_a) show?",
+      "[1, 2, 3, 4, 5, 6]",
+      "[3, 5, 2, 1, 4, 6]",
+      "sorted gives a new list. list_a stays as it was.",
+      "Default value",
+      "What will it print?",
+      "reverse=True sorts from biggest to smallest."
+     ],
+     "code": [
+      {
+       "file": "sorted.py",
+       "src": "list_a = [3, 5, 2, 1, 4, 6]\nlist_x = sorted(list_a)\nprint(list_x)\nprint(list_a)",
+       "output": "[1, 2, 3, 4, 5, 6]\n[3, 5, 2, 1, 4, 6]"
+      },
+      {
+       "file": "sorted_reverse.py",
+       "src": "list_a = [3, 5, 2, 1, 4, 6]\nlist_x = sorted(list_a, reverse=True)\nprint(list_x)",
+       "output": "[6, 5, 4, 3, 2, 1]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "<q>sorted(sequence)</q> with <q>Gives a new list with the items in increasing order.</q> and sorted.py: deck slide 41's program with one more line, print(list_a). Empty output. Caption: <q>What does print(list_a) show?</q> Choices <q>[1, 2, 3, 4, 5, 6]</q> and <q>[3, 5, 2, 1, 4, 6]</q>.",
+       "say": "Line 3 is easy. Line 4 is the question. Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "The output fills <q>[1, 2, 3, 4, 5, 6]</q> then <q>[3, 5, 2, 1, 4, 6]</q>. Two lists on screen: list_a unchanged, list_x the new one. Caption: <q>sorted gives a new list. list_a stays as it was.</q>",
+       "say": "Like list_x + [3] this morning: a new list. Your list is safe."
+      },
+      {
+       "screen": "Deck slide 42: <q>sorted(sequence, reverse=False)</q> with reverse=False labelled <q>Default value</q>.",
+       "say": "Last class: default arguments. sorted has one. What would True do?",
+       "room": "Guess."
+      },
+      {
+       "screen": "sorted_reverse.py (deck slide 44), empty output. Caption: <q>What will it print?</q>",
+       "say": "Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "The output fills <q>[6, 5, 4, 3, 2, 1]</q>. Caption: <q>reverse=True sorts from biggest to smallest.</q>",
+       "say": "Teja's busiest days first: sorted(minutes, reverse=True)."
+      }
+     ],
+     "answer": "[1, 2, 3, 4, 5, 6] / [3, 5, 2, 1, 4, 6]. With reverse=True: [6, 5, 4, 3, 2, 1].",
+     "must": [
+      "list_a stays on screen, unchanged, next to the new list.",
+      "Each output appears only after the room has answered."
+     ],
+     "play": "Deck slides 40 and 43's dashed cells with the red arrow are a fine start.",
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Task 2: the lucky number plate",
+   "kind": "activity",
+   "mins": 8,
+   "start": 59,
+   "cards": [
+    {
+     "id": "T2",
+     "title": "Task 2: the lucky number plate",
+     "source": [
+      45
+     ],
+     "handout": "Task 2",
+     "activity": 19,
+     "timer": 420,
+     "purpose": "Collect the digits of a string into a list, then print their sum, smallest and largest with three built-ins. Then use my notes' line 5 without int() and find that sum cannot add strings.",
+     "heading": "The lucky number plate",
+     "show": [
+      "Worksheet · Task 2",
+      "Teja's uncle buys a bike. He adds up the plate's digits for luck.",
+      "Lines 1 to 5 collect the digits. Write lines 6 to 8.",
+      "Print the sum, the smallest digit and the largest digit.",
+      "Predict for TS09EA4521. Run. Then run AP39CQ1234.",
+      "My notes had line 5 as digits += [ch]. Change it. Run.",
+      "The digits were strings. sum cannot add strings."
+     ],
+     "code": [
+      {
+       "file": "plate.py",
+       "src": "plate = input()\ndigits = []\nfor ch in plate:\n    if ch.isdigit():\n        digits += [int(ch)]\nprint(sum(digits))\nprint(min(digits))\nprint(max(digits))",
+       "output": "21\n0\n9",
+       "input": "TS09EA4521"
+      },
+      {
+       "file": "plate_2.py",
+       "src": "plate = input()\ndigits = []\nfor ch in plate:\n    if ch.isdigit():\n        digits += [int(ch)]\nprint(sum(digits))\nprint(min(digits))\nprint(max(digits))",
+       "output": "22\n1\n9",
+       "input": "AP39CQ1234"
+      },
+      {
+       "file": "plate_my_notes.py",
+       "src": "plate = input()\ndigits = []\nfor ch in plate:\n    if ch.isdigit():\n        digits += [ch]\nprint(sum(digits))\nprint(min(digits))\nprint(max(digits))",
+       "output": "TypeError: unsupported operand type(s) for +: 'int' and 'str'",
+       "input": "TS09EA4521"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The story line, the first 5 lines of plate.py with line numbers, lines 6 to 8 as three empty dashed lines, the steps and a 7 minute timer. Caption: <q>Lines 1 to 5 collect the digits. Write lines 6 to 8.</q>",
+       "say": "Worksheet and playground. Type lines 1 to 5, write 6 to 8 yourself, predict, run.",
+       "room": "Type, write, predict, run."
+      },
+      {
+       "screen": "Step 2 lights: <q>My notes had line 5 as digits += [ch]. Change it. Run.</q>",
+       "say": "This is how I wrote it in my notes. Change it and run. Let them react first.",
+       "room": "Change line 5, run."
+      },
+      {
+       "screen": "Lines 6 to 8 fill in: print(sum(digits)), print(min(digits)), print(max(digits)).",
+       "say": "Three built-ins. No loops."
+      },
+      {
+       "screen": "plate.py runs with TS09EA4521: <q>21 / 0 / 9</q>.",
+       "say": "Digits 0, 9, 4, 5, 2, 1."
+      },
+      {
+       "screen": "plate.py runs with AP39CQ1234: <q>22 / 1 / 9</q>.",
+       "say": "Smallest is 1 this time: no 0 on this plate."
+      },
+      {
+       "screen": "My notes' version runs: the terminal shows only <q>TypeError: unsupported operand type(s) for +: 'int' and 'str'</q>. Caption: <q>The digits were strings. sum cannot add strings.</q>",
+       "say": "ch is the string '0', not the number 0. int(ch) turns it into a number. That is why line 5 has int."
+      }
+     ],
+     "answer": "TS09EA4521: 21 / 0 / 9. AP39CQ1234: 22 / 1 / 9. My notes: TypeError: unsupported operand type(s) for +: 'int' and 'str'",
+     "must": [
+      "Step 2 is framed as the instructor's own notes, not a test.",
+      "No result shows until the timer has ended.",
+      "On the last press the terminal shows only the error: no digit line printed before it."
+     ],
+     "must_not": [
+      "Show lines 6 to 8 before the timer has ended."
+     ],
+     "play": "An Indian number plate (white, black letters) can hold the plate value. The timer and steps layout is yours.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Exit: keep his list safe",
+   "kind": "exit",
+   "mins": 4,
+   "start": 67,
+   "cards": [
+    {
+     "id": "X1",
+     "title": "Exit: keep his list safe",
+     "source": "new",
+     "activity": 1,
+     "timer": 150,
+     "purpose": "Check both halves together: which changes inside a function reach the caller's list, and that sorted's new list is lost if nothing keeps it.",
+     "heading": "Teja plans a no-phone day",
+     "show": [
+      "Teja plans one no-phone day: 0 minutes.",
+      "His real days list must not change.",
+      "Which line 2 makes it print 0 30?"
+     ],
+     "code": [
+      {
+       "file": "plan.py",
+       "src": "def plan(week):\n    ________\n    return min(week)\n\ndays = [45, 90, 30]\nlow = plan(days)\nprint(low, min(days))"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Story lines, plan.py with line numbers and line 2 blank, the question, and options: A <q>week += [0]</q>, B <q>week = week + [0]</q>, C <q>week[2] = 0</q>, D <q>sorted(week + [0])</q>. A 2:30 timer.",
+       "say": "Everyone answers alone. Then option A, hands up. B. C. D.",
+       "room": "Hands up per option."
+      },
+      {
+       "screen": "The right option marks, and every option shows what it prints and its why line, as in data.",
+       "say": "Go through every option, not only the right one."
+      }
+     ],
+     "answer": "B, week = week + [0]. week += [0]: 0 0. week = week + [0]: 0 30. week[2] = 0: 0 0. sorted(week + [0]): 30 30.",
+     "must_not": [
+      "Show any output before the second press."
+     ],
+     "data": {
+      "options": [
+       {
+        "line2": "week += [0]",
+        "prints": "0 0",
+        "why": "+= grows the same list. Teja's days get the 0 too, so min(days) is 0."
+       },
+       {
+        "line2": "week = week + [0]",
+        "prints": "0 30",
+        "why": "week + [0] is a new list. week moves to it; days is not touched."
+       },
+       {
+        "line2": "week[2] = 0",
+        "prints": "0 0",
+        "why": "It changes box 2 of the same list. days now holds 0 as well."
+       },
+       {
+        "line2": "sorted(week + [0])",
+        "prints": "30 30",
+        "why": "sorted makes a new list, but nothing keeps it. week never gets the 0."
+       }
+      ],
+      "right": "B"
+     },
+     "play": "Layout. It can sit on the screen time page.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Key takeaways: the example board",
+   "kind": "buffer",
+   "mins": 2,
+   "start": 71,
+   "cards": [
+    {
+     "id": "K1",
+     "title": "Today in six examples",
+     "source": "new",
+     "purpose": "Six real programs from today, each with what it prints and the rule it shows.",
+     "heading": "Today, in six examples",
+     "show": [
+      "A list handed in",
+      "+= inside the function changes the caller's list.",
+      "A new list inside",
+      "list_x + [3] makes a new list. list_a is not touched.",
+      "One default list",
+      "The default list is made once, when the def runs.",
+      "min and max",
+      "Give separate values, or one list.",
+      "sum",
+      "sum needs one list.",
+      "sorted",
+      "sorted gives a new list. list_a stays as it was."
+     ],
+     "code": [
+      {
+       "file": "A list handed in",
+       "src": "def add_item(list_x):\n    list_x += [3]\n\nlist_a = [1,2]\nadd_item(list_a)\nprint(list_a)",
+       "output": "[1, 2, 3]"
+      },
+      {
+       "file": "A new list inside",
+       "src": "def add_item(list_x):\n    list_x = list_x + [3]\n\nlist_a = [1,2]\nadd_item(list_a)\nprint(list_a)",
+       "output": "[1, 2]"
+      },
+      {
+       "file": "One default list",
+       "src": "def add_item(list_x=[]):\n    list_x += [3]\n    print(list_x)\n\nadd_item()\nadd_item([1,2])\nadd_item()",
+       "output": "[3]\n[1, 2, 3]\n[3, 3]"
+      },
+      {
+       "file": "min and max",
+       "src": "print(min(3,5,4))\nprint(max([1,-2,4,2]))",
+       "output": "3\n4"
+      },
+      {
+       "file": "sum",
+       "src": "print(sum([1,-2,4,2]))",
+       "output": "5"
+      },
+      {
+       "file": "sorted",
+       "src": "list_a = [3, 5, 2, 1, 4, 6]\nlist_x = sorted(list_a)\nprint(list_x)\nprint(list_a)",
+       "output": "[1, 2, 3, 4, 5, 6]\n[3, 5, 2, 1, 4, 6]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Example 1 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 2 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 3 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 4 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 5 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      },
+      {
+       "screen": "Example 6 fills its slot: heading, code, result, sentence.",
+       "say": "Read heading, code, result, sentence."
+      }
+     ],
+     "must": [
+      "All six slots are there from press 1, empty.",
+      "Examples, not a concept map."
+     ],
+     "play": "The grid, and the arrow picture from C1 on the first three examples.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Feedback",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 73,
+   "cards": [
+    {
+     "id": "S-FEEDBACK",
+     "title": "Feedback",
+     "source": "spine:feedback",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Thank you",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 74,
+   "cards": [
+    {
+     "id": "S-THANKYOU",
+     "title": "Thankyou",
+     "source": "spine:thankyou",
+     "press_count": 0
+    }
+   ]
+  }
+ ]
+}

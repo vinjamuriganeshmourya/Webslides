@@ -1,0 +1,318 @@
+{
+ "source": "Reference ppt's/27_sets_change_spec_data_structures 1.html",
+ "after": {
+  "DS2": "S-AGENDA",
+  "DS3": "C1"
+ },
+ "cards": [
+  {
+   "id": "DS2",
+   "title": "Python's four data structures",
+   "source": [
+    15
+   ],
+   "ds": "family",
+   "purpose": "Python has four built-in data structures. Today's is the set; the room has already met the list and the tuple.",
+   "heading": "Four data structures in Python",
+   "show": [
+    "A data structure holds many values under one name.",
+    "A playlist",
+    "list",
+    "Songs in order. A song can come twice.",
+    "Your date of birth",
+    "tuple",
+    "Fixed. Nobody edits it.",
+    "Seen by, on your story",
+    "set",
+    "Each name once. No order.",
+    "Contacts",
+    "dictionary",
+    "Look up a name, get the number.",
+    "Today",
+    "Later"
+   ],
+   "presses": [
+    {
+     "screen": "The line <q>A data structure holds many values under one name.</q> over four face-down tiles.",
+     "say": "We have met this word before. What is a data structure?",
+     "room": "Say it in your own words."
+    },
+    {
+     "screen": "Tile 1 turns over: the picture <q>A playlist</q>, the name <q>list</q>, and the line <q>Songs in order. A song can come twice.</q> It gets a small tick: already learnt.",
+     "say": "We know this one. Ask the room for its line before you press.",
+     "room": "Say the line."
+    },
+    {
+     "screen": "Tile 2 turns over: the picture <q>Your date of birth</q>, the name <q>tuple</q>, and the line <q>Fixed. Nobody edits it.</q> It gets a small tick: already learnt.",
+     "say": "We know this one. Ask the room for its line before you press.",
+     "room": "Say the line."
+    },
+    {
+     "screen": "Tile 3 turns over: the picture <q>Seen by, on your story</q>, the name <q>set</q>, and the line <q>Each name once. No order.</q> It lights up and stays lit, marked <q>Today</q>.",
+     "say": "Before this tile turns: does the order matter here? Can one thing come twice? Then press.",
+     "room": "Hands up for yes, then for no, on each question."
+    },
+    {
+     "screen": "Tile 4 turns over: the picture <q>Contacts</q>, the name <q>dictionary</q>, and the line <q>Look up a name, get the number.</q> It stays dim, marked <q>Later</q>.",
+     "say": "Name it only. It comes later."
+    }
+   ],
+   "must": [
+    "All four tiles are on the card from press 1, face down, so nothing jumps.",
+    "Only the names and the everyday pictures. No code and no brackets for a structure not yet taught.",
+    "The set tile ends lit; earlier tiles keep their tick.",
+    "Draw it in the phone world: a playlist is a list, a date of birth is a tuple, Seen by is a set, Contacts is a dictionary. Do not take the picture further than this: the apps do far more than keep values; only the shape of the data carries over"
+   ],
+   "data": {
+    "tiles": [
+     {
+      "name": "list",
+      "picture": "A playlist",
+      "line": "Songs in order. A song can come twice.",
+      "state": "done"
+     },
+     {
+      "name": "tuple",
+      "picture": "Your date of birth",
+      "line": "Fixed. Nobody edits it.",
+      "state": "done"
+     },
+     {
+      "name": "set",
+      "picture": "Seen by, on your story",
+      "line": "Each name once. No order.",
+      "state": "today"
+     },
+     {
+      "name": "dictionary",
+      "picture": "Contacts",
+      "line": "Look up a name, get the number.",
+      "state": "later"
+     }
+    ]
+   },
+   "play": "The four phone screens are yours: a playlist, a date of birth on an ID card, a story's Seen by sheet, a Contacts list.",
+   "engage": "analogy",
+   "analogy": {
+    "world": "phone",
+    "maps": "a playlist is a list, a date of birth is a tuple, Seen by is a set, Contacts is a dictionary",
+    "breaks": "the apps do far more than keep values; only the shape of the data carries over"
+   },
+   "press_count": 5
+  },
+  {
+   "id": "DS3",
+   "title": "What a set is",
+   "source": "new",
+   "ds": "grid",
+   "ds_today": "set",
+   "purpose": "A set, in five lines: how it is written, whether it keeps order, whether it allows repeats, how you reach one item, and whether it can change. Set beside the ones already learnt.",
+   "heading": "What is a set?",
+   "show": [
+    "Written with",
+    "Keeps the order?",
+    "Same item twice?",
+    "Reach one item by",
+    "Can you change it?",
+    "list",
+    "tuple",
+    "set",
+    "[ ]",
+    "Yes",
+    "Position, from 0",
+    "( )",
+    "No",
+    "{ }",
+    "No position. Ask with in"
+   ],
+   "presses": [
+    {
+     "screen": "A grid. Rows: <q>Written with</q>, <q>Keeps the order?</q>, <q>Same item twice?</q>, <q>Reach one item by</q>, <q>Can you change it?</q>. Columns: <q>list</q>, <q>tuple</q>, <q>set</q>. The earlier columns are filled; the set column is empty dashed cells.",
+     "say": "Here is what makes a set a set. One row at a time. Row 1 first.",
+     "room": "Say what goes in row 1."
+    },
+    {
+     "screen": "Row 1, <q>Written with</q>: the set cell fills <q>{ }</q>. Beside it, small, the code that proves it and its output: <q>&lt;class 'set'&gt;</q>.",
+     "say": "Read the proof's output. Compare it with the tuple column. Next row: ask first.",
+     "room": "Hands up for yes, then for no, on the next row."
+    },
+    {
+     "screen": "Row 2, <q>Keeps the order?</q>: the set cell fills <q>No</q>. Beside it, small, the code that proves it and its output: <q>{'Teja', 'Ravi', 'Sneha', 'Kiran', 'Anu'} / (run it again) / {'Anu', 'Kiran', 'Teja', 'Ravi', 'Sneha'}</q>.",
+     "say": "Read the proof's output. Compare it with the tuple column. Next row: ask first.",
+     "room": "Hands up for yes, then for no, on the next row."
+    },
+    {
+     "screen": "Row 3, <q>Same item twice?</q>: the set cell fills <q>No</q>. Beside it, small, the code that proves it and its output: <q>2</q>.",
+     "say": "Read the proof's output. Compare it with the tuple column. Next row: ask first.",
+     "room": "Say the answer for the next row."
+    },
+    {
+     "screen": "Row 4, <q>Reach one item by</q>: the set cell fills <q>No position. Ask with in</q>. Beside it, small, the code that proves it and its output: <q>True / TypeError: 'set' object is not subscriptable</q>.",
+     "say": "Read the proof's output. Compare it with the tuple column. Next row: ask first.",
+     "room": "Hands up for yes, then for no, on the next row."
+    },
+    {
+     "screen": "Row 5, <q>Can you change it?</q>: the set cell fills <q>Yes</q>. Beside it, small, the code that proves it and its output: <q>3</q>.",
+     "say": "Read the proof's output. Compare it with the tuple column. That is a set."
+    }
+   ],
+   "interaction": "Before each row of today's column fills, the room says it or votes with hands. The proof's output decides.",
+   "must": [
+    "The whole grid, row labels and empty cells, is on the card from press 1. One cell of today's column fills per press.",
+    "Earlier columns never change. The room reads today's cell against them.",
+    "Each filled cell keeps its proof beside it: the code and its exact output from data.proofs."
+   ],
+   "must_not": [
+    "Fill a cell before the room has voted on it."
+   ],
+   "data": {
+    "rows": [
+     {
+      "key": "written",
+      "label": "Written with"
+     },
+     {
+      "key": "order",
+      "label": "Keeps the order?"
+     },
+     {
+      "key": "twice",
+      "label": "Same item twice?"
+     },
+     {
+      "key": "reach",
+      "label": "Reach one item by"
+     },
+     {
+      "key": "change",
+      "label": "Can you change it?"
+     }
+    ],
+    "grid": {
+     "list": {
+      "written": "[ ]",
+      "order": "Yes",
+      "twice": "Yes",
+      "reach": "Position, from 0",
+      "change": "Yes"
+     },
+     "tuple": {
+      "written": "( )",
+      "order": "Yes",
+      "twice": "Yes",
+      "reach": "Position, from 0",
+      "change": "No"
+     },
+     "set": {
+      "written": "{ }",
+      "order": "No",
+      "twice": "No",
+      "reach": "No position. Ask with in",
+      "change": "Yes"
+     }
+    },
+    "proofs": {
+     "list": {
+      "written": {
+       "code": "songs = [\"Kesariya\", \"Naatu Naatu\"]\nprint(type(songs))",
+       "output": "<class 'list'>"
+      },
+      "order": {
+       "code": "print([\"Kesariya\", \"Naatu Naatu\", \"Jhoome\"])",
+       "output": "['Kesariya', 'Naatu Naatu', 'Jhoome']"
+      },
+      "twice": {
+       "code": "print([\"Kesariya\", \"Kesariya\"])",
+       "output": "['Kesariya', 'Kesariya']"
+      },
+      "reach": {
+       "code": "songs = [\"Kesariya\", \"Naatu Naatu\"]\nprint(songs[0])",
+       "output": "Kesariya"
+      },
+      "change": {
+       "code": "songs = [\"Kesariya\", \"Naatu Naatu\"]\nsongs[1] = \"Jhoome\"\nprint(songs)",
+       "output": "['Kesariya', 'Jhoome']"
+      }
+     },
+     "tuple": {
+      "written": {
+       "code": "dob = (12, 3, 2007)\nprint(type(dob))",
+       "output": "<class 'tuple'>"
+      },
+      "order": {
+       "code": "print((12, 3, 2007))",
+       "output": "(12, 3, 2007)"
+      },
+      "twice": {
+       "code": "print((12, 12, 2007))",
+       "output": "(12, 12, 2007)"
+      },
+      "reach": {
+       "code": "dob = (12, 3, 2007)\nprint(dob[0])",
+       "output": "12"
+      },
+      "change": {
+       "code": "dob = (12, 3, 2007)\ndob[0] = 13",
+       "output": "TypeError: 'tuple' object does not support item assignment"
+      }
+     },
+     "set": {
+      "written": {
+       "code": "seen = {\"Ravi\", \"Anu\"}\nprint(type(seen))",
+       "output": "<class 'set'>"
+      },
+      "order": {
+       "code": "print({\"Ravi\", \"Anu\", \"Kiran\", \"Sneha\", \"Teja\"})",
+       "output": "{'Teja', 'Ravi', 'Sneha', 'Kiran', 'Anu'}\n(run it again)\n{'Anu', 'Kiran', 'Teja', 'Ravi', 'Sneha'}"
+      },
+      "twice": {
+       "code": "print(len({\"Ravi\", \"Ravi\", \"Anu\"}))",
+       "output": "2"
+      },
+      "reach": {
+       "code": "seen = {\"Ravi\", \"Anu\"}\nprint(\"Ravi\" in seen)\nprint(seen[0])",
+       "output": "True\nTypeError: 'set' object is not subscriptable"
+      },
+      "change": {
+       "code": "seen = {\"Ravi\", \"Anu\"}\nseen.add(\"Kiran\")\nprint(len(seen))",
+       "output": "3"
+      }
+     }
+    }
+   },
+   "play": "How the grid looks and how a cell fills. The same grid comes back in every data structure session, one column wider each time, so build it once as a component.",
+   "engage": "play",
+   "press_count": 6
+  }
+ ],
+ "changed": {
+  "C1": {
+   "press": 1,
+   "field": "say",
+   "was": "Data structures so far: list, tuple. Today: set. Dictionary comes later. A set is the bag.",
+   "now": "The Seen by sheet from the hook. A set is this bag."
+  }
+ },
+ "minutes": [
+  [
+   "What a set is: a bag of items with no order",
+   5,
+   8
+  ],
+  [
+   "Task 1: Teja's story stats",
+   6,
+   5
+  ],
+  [
+   "Classroom quiz",
+   6,
+   5
+  ],
+  [
+   "Adding: add one, update many",
+   5,
+   4
+  ]
+ ]
+}
