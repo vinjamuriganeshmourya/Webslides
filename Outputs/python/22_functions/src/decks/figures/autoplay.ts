@@ -1,13 +1,15 @@
 /**
  * AUTOPLAY FOR THIS DECK'S BUILT CARDS (user, 2026-10-07, for session 21;
- * carried to 22 so the control bar matches, and OFF ON EVERY SLIDE: the
- * session 22 spec's rule 1 is "No autoplay. Nothing moves on a timer").
+ * carried to 22 and 23; this file is session 23's, copied unchanged except
+ * for this deck's list). In session 22 it is ON when slides 3, 4, 7, 8, 10,
+ * 16, 18, 24 and 26 open (user, 2026-10-07, over the spec's rule 1), and it
+ * paces at 2.5s per step (generate-slides section 2, every deck).
  *
  * Extends the archived Auto Play (`Outputs/python/workflow/archive/autoplay-player/`)
  * from a player-wide mode to a per-slide switch that lives in each card's own
  * `StepControls`, in the slot Replay had:
  *
- *   - ON BY DEFAULT on slides 3, 4, 14, 18, 20, 21, 22, 23, 24, 26 and 29 only;
+ *   - ON BY DEFAULT on the slides in AUTOPLAY_ON_BY_DEFAULT only;
  *     every other slide opens off, in step-wise mode, and the student can turn
  *     it on with the button.
  *   - A switch the student presses is remembered for that slide while the
@@ -16,18 +18,16 @@
  *   - Off means step-wise: one step per Next or arrow press. A manual press
  *     while it runs pauses it on that slide; turning it back on resumes from
  *     the step on screen.
- *   - DYNAMIC TIMING: after each step the engine waits for the slide to settle
- *     (its visible text stops changing, so a step that animates inside itself
- *     finishes first), then holds the step on screen for a reading time made
- *     from how much new text the step showed: code counts 1.3 times, because
- *     it is read character by character.
+ *   - PACE: each step holds 2.5s from the moment it starts (STEP_MS); a step
+ *     whose own motion runs longer holds until its visible text stops
+ *     changing, plus HOLD_AFTER_MOTION_MS.
  *   - It never crosses to the next slide.
  *   - `?all` (every harness) and `?noauto` turn it off entirely, so nothing
  *     that counts presses or measures a frame sees a step it did not ask for.
  */
 
 /** Slides (1-based, deck order) whose autoplay is on when they open. */
-export const AUTOPLAY_ON_BY_DEFAULT = new Set<number>([])
+export const AUTOPLAY_ON_BY_DEFAULT = new Set<number>([3, 4, 7, 8, 10, 16, 18, 24, 26])
 
 /** The student's own switches, per slide, for as long as the deck is open. */
 const chosen = new Map<number, boolean>()
@@ -51,20 +51,19 @@ export function rememberAutoplay(slide: number, on: boolean) {
 
 /** The first step waits for the slide's entrance; later steps for the step's own motion to start. */
 export const ENTRANCE_MS = 1500
-export const STEP_START_MS = 700
+export const STEP_START_MS = 400
+/**
+ * PACE (user, 2026-10-07, generate-slides section 2, every deck from then on):
+ * a step stays on screen 2.5s from the moment it starts. A step whose own
+ * motion runs longer is held until the motion settles, plus a short beat.
+ */
+export const STEP_MS = 2500
+export const HOLD_AFTER_MOTION_MS = 500
+/** The step buttons' bottom edge above the frame's foot, px: low, clear of the player bar's row. */
+export const CONTROLS_BOTTOM = 14
 /** Polled until the visible text holds still for three polls, or this long. */
 export const SETTLE_POLL_MS = 250
 export const SETTLE_MAX_MS = 7000
-/** Reading time: a base, plus per weighted character, clamped. */
-export const READ_BASE_MS = 1400
-export const READ_PER_CHAR_MS = 40
-export const READ_MIN_MS = 2200
-export const READ_MAX_MS = 9000
-
-export function readingTime(weightedChars: number) {
-  return Math.min(READ_MAX_MS, Math.max(READ_MIN_MS, READ_BASE_MS + weightedChars * READ_PER_CHAR_MS))
-}
-
 /**
  * How much text a reader can see inside `root` right now. A text node counts
  * when every element above it, up to `root`, is at least half opaque and it

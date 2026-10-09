@@ -208,3 +208,19 @@ None blocks generation.
 | `nav-stress-check.mjs` | clean in Chromium and Firefox at 4 sizes; WebKit not run |
 | reveal-step map | every card's steps = its press count minus 1 (G1: 34) |
 | every card | screenshots looked at, at its key presses; fixed on the way: the hook's lyrics over the candles, its three-line caption under Next and its tag arrows starting short of the tags, figure labels wrapping, C4's caption under Next, G1's verdict lines under Next, T1's and T2's columns under Next, H2's clipped line 3 and counters, the variable boxes overflowing the call area, the token ring missing on first mount and across highlighter spans, C11's labels under the call area, C12's exit arrow over the call area, C10's bubble over Rahul, slide 8's clipped code, K1's sentence overflow, `!` splitting a sentence |
+
+## Revision, 2026-10-07 (user corrections)
+
+| Slide | Change |
+|---|---|
+| 3, 4, 7, 8, 10, 16, 18, 24, 26 | Autoplay on by default (decision 14 superseded for these slides) |
+| 4 | Room and phone people replaced with Character Lab characters, same role same character in both boxes (Teja in the room and on the self tile) |
+| 20 | People replaced with Character Lab characters; step 1 to 2 is a cross-dissolve with one easing and timing |
+
+Verified: autoplay on and advancing by itself on all nine slides (dev server and
+built file), off on every other stepped slide; a re-shot of slides 1 to 27 in
+their final state against the earlier sweep differs only on slide 20 (slide 4's
+people are not in its final, folded frame; slides 1 and 16 differ by under
+170 px of sparkle and antialiasing); typecheck, `video-safe`, `align-check`,
+`mixed-align-check` (0 of 26), `spec-check`, `gesture-check`, `feedback-check`
+and `overlap-check` (slide 1 baseline only) all as before.

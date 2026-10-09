@@ -35,9 +35,10 @@ kit's `vite.config.ts` says 5173). Deck file `src/decks/functionsDeck.tsx`.
    cake box, speech bubbles), `figures/Hooks.tsx` (H1 hostel room, phone lock
    screen and video call; H2; C10 bakery), `figures/Game.tsx` (G1's party TV;
    each option is drawn as a small TV screen, its must line).
-5. **Autoplay is off on every slide.** Session 21's switch stays in the control
-   bar so the decks match, with `AUTOPLAY_ON_BY_DEFAULT` empty: the spec's rule
-   1 is "No autoplay".
+5. **Autoplay** (session 21's switch, `figures/autoplay.ts`): first shipped
+   off everywhere (the spec's rule 1), then turned ON by default on slides 3,
+   4, 7, 8, 10, 16, 18, 24 and 26 at the user's request (2026-10-07). Every
+   other slide opens off.
 6. **The quiz slide** is session 21's `figures/ClassroomQuiz.tsx` (the lesson
    plan's card 17), unchanged. `video-safe.mjs` reports its tilted quiz card
    inside the instructor-video rectangle (slide 15): that is the reference's
@@ -54,3 +55,35 @@ kit's `vite.config.ts` says 5173). Deck file `src/decks/functionsDeck.tsx`.
     steps) and a hash check that accepts `#/n-slug`; slide 28's 0 appended.
 11. **Git is not touched**: the shared checkout is mid-merge on another
     branch; this folder and its plan folder stay untracked until the user says.
+12. **The people on slides 4 and 20 come from the Character Lab** (user,
+    2026-10-07). `figures/cast/` is the lab's `rig/`, `skins/` and `actions/`
+    vendored unchanged (its README says how); `figures/Cast.tsx` holds the
+    cast (Rahul = the lab's Arjun, Riya, and lab configs for Teja, Amma and
+    the baker, whose cap and apron are added props) and `Posed`, which plays
+    a lab gesture once on the press and holds one frame, cropped to half body.
+    Slide 4: Rahul, Teja, Riya in the room (they clap and sing on the song),
+    Amma waving on the call, Teja on the self tile. Slide 20: Rahul and the
+    baker at the counter, then shouting / shrugging (way A) and handing over
+    / carrying the cake box (way B). The old drawn `Person` is no longer used.
+13. **Slide 20's step change** is one cross-dissolve: the counter scene fades
+    out over 420ms while the two ways fade up over 520ms from 120ms in, both on
+    `easing.soft`; way B and the question use the same 520ms curve.
+14. **Slide 4's birthday-scene people idle** (user, 2026-10-07): Rahul, Teja
+    and Riya are `Idling` (`figures/Cast.tsx`), one base pose (the lab's rest
+    pose, `happy`) for the whole slide, no gesture and no pose change between
+    presses. They move only by the lab's idle layer (breathing, blinks, eye
+    movement, a slow weight-shift sway, liveliness 0.7) and `handDrift`, a
+    seamless 6 to 8 s loop of in-out keys around rest. Measured over 20 s at
+    20 Hz: shoulders 8 +/- 2 deg, elbows 4.5 to 8.4 deg (bending only the
+    natural way), wrists +/- 3 deg, body sway +/- 2.4 px, head tilt +/- 1.3
+    deg, no step over 1 deg per 50 ms. They register as `scene-<name>` in
+    `window.__actors` for that measurement. The phone's Amma and Teja are
+    still `Posed` and unchanged (0 differing pixels).
+15. **Step controls and pace follow the global rule** (generate-slides section
+    2, user 2026-10-07): `figures/controls.tsx` is Python 23's, copied
+    unchanged (small Next, round icon-only Autoplay with ▶ / ⏸, 34px high, at
+    `CONTROLS_BOTTOM` 14px); `figures/autoplay.ts` is Python 23's with only
+    this deck's on-by-default list (3, 4, 7, 8, 10, 16, 18, 24, 26). Autoplay
+    holds each step 2.5s (`STEP_MS`), longer only while a step's own motion
+    runs. Checked on every press of every stepped card: the buttons touch no
+    content, the player bar or the logo.

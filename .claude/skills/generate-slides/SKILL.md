@@ -156,7 +156,105 @@ and 2026-10-06, for every deck from then on; none is a choice the plan makes):
   18's built file, and `feedback-check.mjs` (from Python 19's root) must
   report an exact copy on the built deck.
 
+**On every built card, the step controls and autoplay pacing are fixed too**
+(user, 2026-10-07, on Python session 23, "global rules … including slides
+created in future"):
+
+- **Next and an icon-only Autoplay button, small, low, overlapping nothing.**
+  Autoplay is a round Play button (▶) with no label: a click toggles it, and
+  the icon shows the state, Play (▶) while off and Pause (⏸) while running.
+  It carries `aria-label` and a tooltip, `Autoplay`. Both buttons are smaller
+  than the old pill pair and sit lower on the frame, and neither may touch the
+  slide's content, the player's control bar or the logo. When a card's content
+  reaches the buttons, move the content up, never the buttons. The source is
+  Python 23's `src/decks/figures/controls.tsx` (`StepControls`); copy it
+  unchanged.
+- **Autoplay paces at 2.5 seconds per step on average.** With Autoplay on, a
+  step stays on screen 2.5s from the moment it starts, longer only when the
+  step's own motion is still running (then it waits for the motion to settle
+  and holds a short beat). The source is Python 23's
+  `src/decks/figures/autoplay.ts` (`STEP_MS`). Which slides open with
+  Autoplay on is the plan's call, per deck.
+
+Why: Python 22 and 23 shipped a labelled `Autoplay Off` pill and a full-size
+Next that sat close to the cards' content, and an autoplay paced by reading
+time that held some steps up to nine seconds. The user found the labelled pill
+too big and the pacing uneven.
+
 ---
+
+## 2b. The carry-forward standard: apply it to every deck
+
+User, 2026-10-08, after Python sessions 24 and 25: *"save the improvements and
+use them in further slides, all the changes and improvements, use them
+accordingly."* Every new deck (and every fix pass on an older one) gets all of
+the following without being asked. The working copies are in
+`Outputs/python/25_list_methods/src/decks/figures/`, which carries session 24's
+versions merged with session 25's. Copy them with the scaffold; they live
+under `src/decks/`, so `sync-kit.mjs` never touches them. Say in the plan which
+items each card uses.
+
+**Grouping and focus** (session 24's review, its rule G3)
+1. **One cluster, one container.** Things that belong to one concept, one
+   exercise or one worksheet sit in one `Group` (`common.tsx`): a near-white
+   wash, a 1px rim, a soft shadow, one padding. A program with its output is a
+   cluster; a question with its vote and picture is a cluster.
+2. **`Group active`** lights the cluster the room is working on: the vote on an
+   ask press, the desk or picture on a step press, the brief while the timer
+   runs, the result once it shows. A group that never lights has no transition.
+3. **`Focus`** (`common.tsx`) rings the one program the room is asked about,
+   until the answer shows.
+
+**Code, captions, options** (session 24's rules G1, G2, G4)
+4. **`Code.tsx`** draws code (a session-local override of the kit's
+   `CodeBlock`): three or more underscores are a fill-in blank, a dashed amber
+   slot with a pencil; a line whose text changes fades up into place; line
+   tints ease over 420ms.
+5. **`StepCaption`** (`trace.tsx`) centres its text, and a new caption fades the
+   old one out before it rises in.
+6. **`Option` / `Vote`**: the letter and the text share one centre line with
+   equal padding above and below; `nowrap` keeps an option on one line,
+   `template` gives unequal columns.
+7. One size per role: `CODE_FS` 15 and `OUT_FS` 16 on every content card, chosen
+   so the longest spec line fits its column. Never a per-call font size.
+8. Task briefs: short actions (`Predict`, `Run`) are chips inline on the text
+   line, in the spec's order.
+
+**Motion** (session 25's G1 to G3)
+9. Nothing pops. A swapped program or option set eases in (`Fresh`,
+   `pieces.tsx`); a swapped layout eases in (`Appear`); a cursor, an empty
+   placeholder or a marker fades in; anything that leaves fades out.
+10. Every motion has a job: guide the eye, show a process, reveal an answer.
+    Arrows have clean filled heads and draw themselves along their path in
+    reading order (`SumArrow`, `Tasks.tsx`); a mark on a token is a rectangle
+    that path-draws (`DotMark`, `Hooks.tsx`).
+11. Autoplay and step-wise give the same result: movement inside a press runs
+    through `usePhase`, and autoplay waits for it to settle.
+
+**Pictures** (session 25's G4 and slide fixes)
+12. Every person is a character-lab character (`cast/` and `Cast.tsx`, copied
+    from session 22): `Idling` for a living, subtle idle; a head-local prop
+    (headphones) via `head`. A beard is round or oval, or none.
+13. Phones at real proportions, 1 : 2.06 (for example 209 x 430), with
+    `LiveClock` in the status bar; no `truncate` in a row, every name whole.
+
+**Never**
+14. No text outside its box, at any step (section 7, `box-overflow-check.mjs`).
+15. No drag-to-move content unless the user asks for it (archived in
+    `Outputs/python/workflow/archive/movable-content/`).
+
+**The gate**, before a deck is reported done: typecheck, `qa`, `video-safe`,
+`align-check`, `mixed-align-check`, `overlap-check`, `controls-clear-check`,
+`box-overflow-check`, `spec-check`, `feedback-check`, `gesture-check`,
+`agenda-check`, `ligature-check`, `autoplay-check`, then the screenshots read
+by eye at step 0, mid-run and fully revealed. Adding groups makes cards taller:
+when a card then reaches the controls, restack it (side by side, a row of
+options, a shape that mounts when it arrives), never shrink the buttons.
+
+Why: session 24's review produced these as its rules G1 to G4, and session 25
+needed three fix passes to reach the same standard (characters, ease-ins,
+phones, arrows, overflow, groups), because none of it was written where the
+next deck would read it.
 
 ## 3. Illustrations and figures
 
@@ -505,7 +603,7 @@ centred itself under the kit's left lead. Fix the component, not the slide.
 42 and 43):
 
 ```bash
-node overlap-check.mjs        # no arrow over a box, every highlight on its own bounds
+node overlap-check.mjs        # no arrow over a box, every highlight on its own bounds, no label on a box (rule 47)
 ```
 
 It drives the built file through every build step of every slide and names
@@ -514,6 +612,44 @@ or taller than the element it highlights. None of the harnesses above can see
 either: both sit inside the frame and inside their zone. Python session 19
 shipped a cursor inside its boxes on slide 12 and a column-wide glow on six
 slides past all four of them. Copy the script from Python 19's root.
+
+**Then check that nothing touches the step controls, at any step** (user,
+2026-10-07, on Python session 24, "make sure this overlap issue does not occur
+again on other slides"):
+
+```bash
+node controls-clear-check.mjs http://localhost:<devPort> <count>   # must print CLEAR
+```
+
+It drives the dev server through every build step of every card with
+Autoplay off and names any text or box within 6px of the Next button, the
+Autoplay button or the player's control bar. Fix a hit by moving or resizing
+the content, never the buttons (section 2). Copy the script from Python 24's
+root. Why: on Python session 24, E1's step captions and H2's output ran
+behind Next and Play, and overlap-check, qa, video-safe and align-check all
+passed, because none of them looks at the buttons.
+
+**Then check that no text runs out of its box, at any step** (user,
+2026-10-08, on Python session 25, "make sure no overflow happens, it is a
+global rule … follow this in the future decks"):
+
+```bash
+node box-overflow-check.mjs http://localhost:<devPort> <count>   # must print NO OVERFLOW
+```
+
+It drives every build step of every card and measures each piece of text
+(as drawn, line by line) against the nearest box around it: a card, a
+panel, an option, a pill, a phone row, anything with a background, border,
+ring or shadow, and every clipping ancestor. It also names any element that
+cuts its own text (`truncate`, an ellipsis, a fixed height). Fix a hit by
+giving the text room: a shorter line, a smaller block beside it, a taller
+box, or removing a decoration that takes the space. Never by clipping,
+`truncate` or an ellipsis, which hide text instead of fitting it. Copy the
+script from Python 25's root. Why: Python 25's takeaway cards let their
+sentences run below the card, the card headings clipped their descenders,
+and the phone rows cut song names to `Samajavaragam…`; qa, align-check,
+overlap-check and controls-clear all passed, because none of them measures
+text against its own box.
 
 **Then check every heading is on one line.** On the screenshots, look at each
 slide title and each card, step or panel title. Any heading that wraps gets
@@ -640,7 +776,7 @@ Hard rule 9. Changing content changes more than one file. After edits, check:
 ## The short version
 
 Plan at `<course>/session_plans/<session_name>/plan.md`, signed off → read the
-hard rules and the guidelines → compose kit components, never new markup →
+hard rules and the guidelines → apply the carry-forward standard (section 2b) → compose kit components, never new markup →
 figures that argue, icons from the house set, motion from presets at the
 explanatory tier → build → render and sweep all four harnesses → anything new and
 reusable goes back into the kit, into the gallery, into the registry, and out as

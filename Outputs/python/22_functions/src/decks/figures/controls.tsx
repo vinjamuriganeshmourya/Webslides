@@ -4,6 +4,7 @@ import { useDeck } from '@/deck/DeckContext'
 import { Press } from './motion'
 import { keyFree } from './keys'
 import {
+  CONTROLS_BOTTOM,
   ENTRANCE_MS,
   SETTLE_MAX_MS,
   SETTLE_POLL_MS,
@@ -11,7 +12,8 @@ import {
   autoplayDefault,
   autoplayDisabled,
   ensureStepMode,
-  readingTime,
+  HOLD_AFTER_MOTION_MS,
+  STEP_MS,
   rememberAutoplay,
   visibleText,
 } from './autoplay'
@@ -38,11 +40,14 @@ export function PanelButton({
   ghost = false,
   on,
   label,
+  round = false,
 }: {
   children: ReactNode
   onClick: () => void
   disabled?: boolean
   ghost?: boolean
+  /** an icon-only round button (Autoplay) */
+  round?: boolean
   /** A switch: `true` draws it lit (brand tint and ring), `false` as the ghost. */
   on?: boolean
   label?: string
@@ -62,9 +67,10 @@ export function PanelButton({
         disabled={disabled}
         aria-pressed={on}
         aria-label={label}
+        title={label ? 'Autoplay' : undefined}
         /* the deck's arrow keys must not also fire a focused button */
         onKeyDown={(e) => e.key !== 'Enter' && e.key !== ' ' && e.currentTarget.blur()}
-        className="inline-flex items-center gap-2 rounded-pill px-5 py-2.5 font-body text-body-sm font-semibold disabled:cursor-default"
+        className={`inline-flex items-center justify-center rounded-pill font-body text-[14px] font-semibold leading-none disabled:cursor-default ${round ? 'h-[34px] w-[34px]' : 'h-[34px] gap-1.5 px-4'}`}
         style={{ ...look, transition: `background-color 300ms ${HOUSE}, color 300ms ${HOUSE}, box-shadow 300ms ${HOUSE}` }}
       >
         {children}
@@ -76,7 +82,7 @@ export function PanelButton({
 /** The switch's glyph: a play triangle while off (press to play), two bars while on (press to pause). */
 function AutoGlyph({ on }: { on: boolean }) {
   return (
-    <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden>
+    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden>
       {on ? (
         <g fill="currentColor">
           <rect x="5" y="4" width="5" height="16" rx="1.5" />
@@ -167,25 +173,29 @@ export function StepControls({
     const timers: number[] = []
     const wait = (ms: number) => new Promise<void>((res) => timers.push(window.setTimeout(res, ms)))
     const run = async () => {
+      /* PACE (generate-slides section 2): a step holds 2.5s from the moment it
+         starts; a step whose own motion runs longer holds until its visible
+         text has stopped changing, plus a short beat. */
+      const began = Date.now()
       await wait(fresh.current && at === first ? ENTRANCE_MS : STEP_START_MS)
       fresh.current = false
-      /* let the step finish its own movement: the visible text holds still for three polls */
       let last = measure()
+      let lastChange = Date.now()
       let still = 0
-      const t0 = Date.now()
-      while (!cancelled && still < 3 && Date.now() - t0 < SETTLE_MAX_MS) {
+      while (!cancelled && still < 3 && Date.now() - began < SETTLE_MAX_MS) {
         await wait(SETTLE_POLL_MS)
         const now = measure()
         if (now.weighted === last.weighted) still++
         else {
           still = 0
           last = now
+          lastChange = Date.now()
         }
       }
       if (cancelled) return
-      const newText = Math.max(0, last.weighted - baseline.current)
       baseline.current = last.weighted
-      await wait(readingTime(newText))
+      const until = Math.max(began + STEP_MS, lastChange + HOLD_AFTER_MOTION_MS)
+      await wait(Math.max(0, until - Date.now()))
       if (cancelled) return
       expected.current = at + 1
       deckRef.current.next()
@@ -209,16 +219,12 @@ export function StepControls({
   }
 
   return (
-    <div ref={rootRef} data-autoplay-ignore className="absolute inset-x-0 z-20 flex justify-center gap-2" style={{ bottom: 29 }}>
+    <div ref={rootRef} data-autoplay-ignore className="absolute inset-x-0 z-20 flex justify-center gap-2" style={{ bottom: CONTROLS_BOTTOM }}>
       <PanelButton onClick={deck.next} disabled={done}>
         {nextLabel}
       </PanelButton>
-      <PanelButton on={on} onClick={toggle} label={on ? 'Autoplay is on: the steps play by themselves. Press to turn it off and go step by step' : 'Autoplay is off: one step per press. Press to play the steps by themselves'}>
+      <PanelButton round on={on} onClick={toggle} label={on ? 'Autoplay: on. Press to pause and go step by step' : 'Autoplay: off. Press to play the steps by themselves'}>
         <AutoGlyph on={on} />
-        Autoplay
-        <span className="rounded-pill px-1.5 py-px text-[11px] font-bold uppercase tracking-wider" style={on ? { background: colors.brand, color: colors.white } : { background: colors.surface2, color: colors.muted }}>
-          {on ? 'On' : 'Off'}
-        </span>
       </PanelButton>
     </div>
   )
