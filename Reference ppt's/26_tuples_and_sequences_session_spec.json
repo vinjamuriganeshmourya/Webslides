@@ -1,0 +1,2900 @@
+{
+ "meta": {
+  "session": "26 - Tuples and Sequences",
+  "course": "Programming Foundations",
+  "one_idea": "A tuple is a row of values that can be read but never changed. The comma makes it, not the brackets. Commas pack values into one tuple, and one name per value unpacks it.",
+  "outcomes": [
+   "Say what None is, and that a function with no return gives back None.",
+   "Make a tuple, and make a tuple with one item using a comma.",
+   "Read a tuple by index, len, a loop and slicing, and say why changing an item gives a TypeError.",
+   "Turn a string, a range or a list into a tuple with tuple().",
+   "Check whether a value is in a tuple, a list or a string with in and not in.",
+   "Unpack a sequence into names, and say what happens when the counts do not match.",
+   "Return two values from a function and unpack them into two names."
+  ],
+  "previous": "25 - List Methods",
+  "slides_dir": "C:\\Lesson Plans New\\builds\\build-26-tuples-sequences\\work\\slides",
+  "deck_total": 50,
+  "kept": [
+   10,
+   11,
+   12,
+   15,
+   16,
+   20,
+   22,
+   27,
+   28,
+   29,
+   31,
+   32,
+   35,
+   37,
+   39,
+   41,
+   44
+  ],
+  "cuts": [
+   [
+    "1-2",
+    "Welcome and deck title. The fixed spine cards replace them."
+   ],
+   [
+    "3-8",
+    "The deck's list-methods recap. Its content becomes S-RECAP, a sort recap the room commits to."
+   ],
+   [
+    "13-14",
+    "Folded into C3 as presses: return alone and return None, beside no return."
+   ],
+   [
+    "17",
+    "Data structures list. One spoken line on C6."
+   ],
+   [
+    "18",
+    "Folded into C6: the tuple's row of cells and immutable."
+   ],
+   [
+    "19",
+    "Same code as slide 20 without the output. C7 carries 20."
+   ],
+   [
+    "21, 23",
+    "Same code as slide 22. C8 carries 22."
+   ],
+   [
+    "24",
+    "Folded into C8 as its last presses: (1,) is a tuple."
+   ],
+   [
+    "25",
+    "Folded into C9 as its first press: read by index."
+   ],
+   [
+    "26",
+    "Same code as slide 27 without the output. C9 carries 27."
+   ],
+   [
+    "30",
+    "Folded into C11 as presses: tuple(range(4)) and tuple(list_a)."
+   ],
+   [
+    "33-34",
+    "Folded into C13 as presses: not in, and in on a list and a string."
+   ],
+   [
+    "36",
+    "Same code as slide 37 without the output. C15 carries 37."
+   ],
+   [
+    "38",
+    "Folded into C15 as presses: unpacking a list and a string."
+   ],
+   [
+    "40",
+    "Folded into E1: four names against three values."
+   ],
+   [
+    "42",
+    "a = 1, repeats slide 24's comma rule. a, = 1, is a puzzle, not a use. Cut."
+   ],
+   [
+    "43",
+    "Folded into C16 as its last presses: pack, then unpack, in one line."
+   ],
+   [
+    "45",
+    "Bullet takeaways. Replaced by K1, the example board."
+   ],
+   [
+    "46-47",
+    "Practice picture and the next session's name. One spoken line in the guide."
+   ],
+   [
+    "48",
+    "Daily challenge. Homework, not class time."
+   ],
+   [
+    "49-50",
+    "Thank you and all the best. The fixed spine cards replace them."
+   ]
+  ],
+  "defects": [
+   [
+    "slide 9",
+    "The agenda's last stop is called Sequences, but Packing and Unpacking is what it covers; the divider on slide 35 calls it Packing & Unpacking.",
+    "S-AGENDA names the stop Packing and unpacking."
+   ],
+   [
+    "slide 39",
+    "The deck prints ValueError: too many values to unpack (expected 2). Python 3.12 and later add , got 3 to the end.",
+    "The spec keeps the deck's wording, which matches the class playground. If the playground is upgraded, the error will carry the extra words."
+   ],
+   [
+    "slide 43",
+    "a,b,c = 1, 2, \"Hi\" has no spaces after the commas on the left, unlike every other slide.",
+    "C16 uses its own canteen values, written with the usual spaces."
+   ],
+   [
+    "slides 20 to 44",
+    "The concept slides teach on made-up data: (5, \"Six\", 2, 8.2), (1, 2, 3, 5), R e d, 1, 2, 3. A student who has a rule wrong still gets several of them right.",
+    "Every concept card uses the canteen world instead (2026-10-07). Each card names the wrong idea it catches, and the build checks that the wrong idea gives a different answer."
+   ]
+  ],
+  "notes": [
+   "The room is 50 to 60 first-year students on laptops. Laptops stay shut except on T1, the game G1, T2 and the classroom quiz, where only the worksheet tab and the playground are open.",
+   "One world for the session: Teja's PhonePe payment at the Sri Sai Canteen near the hostel. The hook (H1), Task 1, the game, Hook 2, Task 2 and the exit all live there. Teja is the same student as last session's party queue.",
+   "Concept cards use the canteen too: the payment, the menu, the prices, an order of Maggi, a cart. The deck's slides still show as thumbnails, so the room can match their notes to the deck later.",
+   "Two games: G1 (find the impostor, from the library) before the quiz, and G2 (fill the boxes, a concept game for unpacking) straight after the explainer E1.",
+   "One picture for the whole session: A tuple is drawn as a row of cells with its index under each cell, from 0, the same as a list. A list's row has round handles you can grab; a tuple's row has a small lock and no handles.",
+   "Words on screen: say tuple, and say it cannot change. The deck's word immutable appears once, on C6, glossed. Say packing and unpacking. Never say object, NoneType object or sequence protocol in a sentence.",
+   "Votes are taken option by option: the instructor reads each option and asks how many think it is that one. Hands up. Nobody is named.",
+   "Nothing before the title card may say the session's name or the word tuple. The hook shows phones, never code.",
+   "The bar to beat is Plans/DSA/Module 3 - Stacks & Queues/01 - Introduction to Stacks/: a simulation the room drives, a picture that refuses to lie."
+  ],
+  "topics": [
+   "tuples",
+   "lists",
+   "functions"
+  ],
+  "engagement": true,
+  "world": "Teja's PhonePe payments at the Sri Sai Canteen",
+  "new_ops": [
+   "None",
+   "(x,)",
+   "t[i] = x",
+   "tuple()",
+   "in",
+   "not in",
+   "a, b = t",
+   "t = a, b",
+   "return a, b"
+  ]
+ },
+ "build_contract": [
+  "One self-contained HTML file. It opens offline from a USB stick and makes no network request.",
+  "It opens in presenter view. There is no sidebar, top bar or button the instructor has to use.",
+  "Right arrow or the clicker is one press. Left arrow goes back one press. F goes full screen, A shows all the cards, and End shows the whole card at once. The instructor guide tells the instructor these keys, so they must work.",
+  "Every card is its own screen, in the order of this spec. Press 1 is what shows when the card opens.",
+  "Every card's outer element carries data-spec=\"<card id>\" and data-presses=\"<number of presses>\". The review script reads both.",
+  "No link to any other file. The students' handout and the instructor guide are separate files, and a link from this file is how a class finds the answers."
+ ],
+ "rules": [
+  "No autoplay. Nothing moves on a timer. One press, one move, with a caption that says what just happened.",
+  "Commit, then reveal. Where a card asks a question, the answer shows only on the press after the room has answered.",
+  "Wrong answers stay private. No names, no per-student results on screen. Hands are counted out loud, never shown.",
+  "The topic is named once. Nothing before the title card says today's topic, not a heading, not a caption, not a file name on a code card.",
+  "Words are exact. Words in quotation marks, and every line under Exact words, are final. The rest of a press describes what happens, in your own design. If an exact line does not fit, ask for a new one; do not rewrite it.",
+  "Code is exact. Copy code and outputs from the JSON, never retype them. Every output here came from running the program.",
+  "Simple English. Short sentences, everyday words. No em-dashes anywhere, the page title included.",
+  "Every card moves. A card that introduces an idea steps; a static card is a picture of a lecture."
+ ],
+ "beats": [
+  {
+   "name": "Welcome",
+   "kind": "concept",
+   "mins": 1,
+   "start": 0,
+   "cards": [
+    {
+     "id": "S-WELCOME",
+     "title": "Welcome",
+     "source": "spine:welcome",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap",
+   "kind": "concept",
+   "mins": 1,
+   "start": 1,
+   "cards": [
+    {
+     "id": "S-RECAP-CARD",
+     "title": "Recap card",
+     "source": "spine:recap_card",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap sort: changes the list, or gives back an answer?",
+   "kind": "quiz",
+   "mins": 3,
+   "start": 2,
+   "cards": [
+    {
+     "id": "S-RECAP",
+     "title": "Recap: changes the list, or gives back an answer?",
+     "source": "spine:recap",
+     "purpose": "Pull back session 25: some list methods change the list, some give back an answer and leave it. The last chip, sort, gives back None, which today's first block explains.",
+     "heading": "Changes the list, or gives back an answer?",
+     "show": [
+      "Teja's party queue from last class.",
+      "Does it change the queue, or give back an answer?",
+      "Changes the list",
+      "Gives back an answer",
+      "append adds at the end of the same list. It gives back nothing.",
+      "count gives back a number. The queue stays as it was.",
+      "insert puts it at place 0. The others move right.",
+      "sorted gives back a new list. The queue stays as it was.",
+      "index gives back a place. The queue stays as it was.",
+      "sort changes the same list. What it gives back is None."
+     ],
+     "presses": [
+      {
+       "screen": "Teja's party queue as a row of cells: <q>Naatu Naatu</q>, <q>Kissik</q>, <q>Peelings</q>. Two bins: <q>Changes the list</q> and <q>Gives back an answer</q>. Six code chips in a tray (data.chips). Caption: <q>Does it change the queue, or give back an answer?</q>",
+       "say": "Last class's queue. Decide all six in your head first.",
+       "room": "Decide all six, silently."
+      },
+      {
+       "screen": "Chip 1, <q>queue.append('Kissik')</q>, flies into <q>Changes the list</q>. The queue row shows what it is after the chip (data.chips.queue_after), and the why line: <q>append adds at the end of the same list. It gives back nothing.</q>",
+       "say": "Chip 1: how many think it changes the list? Hands down. Gives back an answer? Then press.",
+       "room": "Hands up for a bin."
+      },
+      {
+       "screen": "Chip 2, <q>queue.count('Kissik')</q>, flies into <q>Gives back an answer</q>. The queue row shows what it is after the chip (data.chips.queue_after), and the why line: <q>count gives back a number. The queue stays as it was.</q>",
+       "say": "Chip 2: how many think it changes the list? Hands down. Gives back an answer? Then press.",
+       "room": "Hands up for a bin."
+      },
+      {
+       "screen": "Chip 3, <q>queue.insert(0, 'Peelings')</q>, flies into <q>Changes the list</q>. The queue row shows what it is after the chip (data.chips.queue_after), and the why line: <q>insert puts it at place 0. The others move right.</q>",
+       "say": "Chip 3: how many think it changes the list? Hands down. Gives back an answer? Then press.",
+       "room": "Hands up for a bin."
+      },
+      {
+       "screen": "Chip 4, <q>sorted(queue)</q>, flies into <q>Gives back an answer</q>. The queue row shows what it is after the chip (data.chips.queue_after), and the why line: <q>sorted gives back a new list. The queue stays as it was.</q>",
+       "say": "Chip 4: how many think it changes the list? Hands down. Gives back an answer? Then press.",
+       "room": "Hands up for a bin."
+      },
+      {
+       "screen": "Chip 5, <q>queue.index('Peelings')</q>, flies into <q>Gives back an answer</q>. The queue row shows what it is after the chip (data.chips.queue_after), and the why line: <q>index gives back a place. The queue stays as it was.</q>",
+       "say": "Chip 5: how many think it changes the list? Hands down. Gives back an answer? Then press.",
+       "room": "Hands up for a bin."
+      },
+      {
+       "screen": "Chip 6, <q>queue.sort()</q>, flies into <q>Changes the list</q>. The queue row shows what it is after the chip (data.chips.queue_after), and the why line: <q>sort changes the same list. What it gives back is None.</q>",
+       "say": "Chip 6: how many think it changes the list? Hands down. Gives back an answer? Then press.",
+       "room": "Hands up for a bin."
+      }
+     ],
+     "code": [
+      {
+       "file": "sort_gives_back.py",
+       "src": "queue = ['Naatu Naatu', 'Kissik', 'Peelings']\nx = queue.sort()\nprint(x)",
+       "output": "None"
+      }
+     ],
+     "interaction": "Format: sort. The room votes a bin for each chip by hands before the press that files it. Nobody is named.",
+     "must": [
+      "Each chip runs on the queue as it was at the start; the queue row resets between chips.",
+      "sorted(queue) lands in Gives back an answer, and the queue row stays unsorted beside it."
+     ],
+     "must_not": [
+      "File a chip before the vote."
+     ],
+     "data": {
+      "queue": [
+       "Naatu Naatu",
+       "Kissik",
+       "Peelings"
+      ],
+      "bins": [
+       "Changes the list",
+       "Gives back an answer"
+      ],
+      "chips": [
+       {
+        "chip": "queue.append('Kissik')",
+        "bin": "Changes the list",
+        "gives_back": "None",
+        "queue_after": "['Naatu Naatu', 'Kissik', 'Peelings', 'Kissik']",
+        "why": "append adds at the end of the same list. It gives back nothing."
+       },
+       {
+        "chip": "queue.count('Kissik')",
+        "bin": "Gives back an answer",
+        "gives_back": "1",
+        "queue_after": "['Naatu Naatu', 'Kissik', 'Peelings']",
+        "why": "count gives back a number. The queue stays as it was."
+       },
+       {
+        "chip": "queue.insert(0, 'Peelings')",
+        "bin": "Changes the list",
+        "gives_back": "None",
+        "queue_after": "['Peelings', 'Naatu Naatu', 'Kissik', 'Peelings']",
+        "why": "insert puts it at place 0. The others move right."
+       },
+       {
+        "chip": "sorted(queue)",
+        "bin": "Gives back an answer",
+        "gives_back": "['Kissik', 'Naatu Naatu', 'Peelings']",
+        "queue_after": "['Naatu Naatu', 'Kissik', 'Peelings']",
+        "why": "sorted gives back a new list. The queue stays as it was."
+       },
+       {
+        "chip": "queue.index('Peelings')",
+        "bin": "Gives back an answer",
+        "gives_back": "2",
+        "queue_after": "['Naatu Naatu', 'Kissik', 'Peelings']",
+        "why": "index gives back a place. The queue stays as it was."
+       },
+       {
+        "chip": "queue.sort()",
+        "bin": "Changes the list",
+        "gives_back": "None",
+        "queue_after": "['Kissik', 'Naatu Naatu', 'Peelings']",
+        "why": "sort changes the same list. What it gives back is None."
+       }
+      ]
+     },
+     "play": "The bins, the tray and how a chip flies. The party queue can wear last session's YouTube Music look.",
+     "press_count": 7
+    }
+   ]
+  },
+  {
+   "name": "Hook: the payment Teja cannot edit",
+   "kind": "hook",
+   "mins": 4,
+   "start": 5,
+   "cards": [
+    {
+     "id": "H1",
+     "title": "The payment Teja cannot edit",
+     "source": "new",
+     "animated": "hook",
+     "engage": "motion",
+     "motion": "A refund arrives as a new History row on top; then the paid row lifts out of the app into three locked cells beside last class's queue row. It proves a fix is a new record, never an edit.",
+     "keeps": "The ₹500 payment row: same amount, same time, under the new refund row, the whole card.",
+     "purpose": "Feel, from a canteen payment they have all made, that some records must never change: a paid amount cannot be edited, only a new payment can fix it. The last press draws a locked row of values beside last class's changeable queue, without naming it.",
+     "heading": "One extra zero",
+     "show": [
+      "Teja pays for his evening snack.",
+      "The bill was ₹50. He paid ₹500.",
+      "Where is the Edit button?",
+      "The same payment is on two phones.",
+      "The fix is a new payment. The old one stays.",
+      "A row you can change. A row you cannot."
+     ],
+     "presses": [
+      {
+       "screen": "Evening at the Sri Sai Canteen counter. Teja's phone on PhonePe: he has scanned the canteen's QR, the amount pad shows 500 and his thumb is on Pay. On the counter, the bill: ₹50. Caption: <q>Teja pays for his evening snack.</q>",
+       "say": "Who paid somebody with UPI this week? Hands up. Look at the bill, then the phone.",
+       "room": "Hands up, then spot the mistake."
+      },
+      {
+       "screen": "PhonePe's Payment Successful screen with the tick: ₹500 to Sri Sai Canteen, 7:42 PM. Caption: <q>The bill was ₹50. He paid ₹500.</q>",
+       "say": "One extra zero. What can Teja do now? Take three answers.",
+       "room": "Say ideas."
+      },
+      {
+       "screen": "He opens the payment in History. The details screen: Paid to Sri Sai Canteen, ₹500, 7:42 PM, the UPI transaction ID. At the bottom only Share and Help. Caption: <q>Where is the Edit button?</q>",
+       "say": "Find the Edit button.",
+       "room": "Say: there is none."
+      },
+      {
+       "screen": "The turn, part one: a second phone slides in beside his, the canteen owner's, showing the same record from the other side: Received ₹500 from Teja, 7:42 PM. Caption: <q>The same payment is on two phones.</q>",
+       "say": "Why would the app not let him fix his own mistake? If he could edit it on his phone, which phone is right?",
+       "room": "Say why."
+      },
+      {
+       "screen": "The owner sends ₹450 back. Teja's History gets a new row on top: Received ₹450 from Sri Sai Canteen, 7:45 PM. The ₹500 row stays under it, exactly as it was. Caption: <q>The fix is a new payment. The old one stays.</q>",
+       "say": "Nobody edited anything. A new record was made, and the old one still says ₹500."
+      },
+      {
+       "screen": "The turn, part two, one movement: the ₹500 payment row lifts out of the app and becomes a row of three cells, Sri Sai Canteen | 500 | 7:42 PM, numbers 0, 1, 2 under them and a small lock on the row. Beside it, faded in from last class, the party queue's row with its handles. Caption: <q>A row you can change. A row you cannot.</q>",
+       "say": "Last class we changed a row all day. This one is locked. Python has the locked kind too. Guess today's topic.",
+       "room": "Guess the topic."
+      }
+     ],
+     "must": [
+      "PhonePe shows no Edit and no Cancel for a finished payment, as in the real app.",
+      "On press 5 the ₹500 row is unchanged: same amount, same time, under the new row.",
+      "On the last press the locked row has the numbers 0, 1, 2 under its cells, like the queue's row.",
+      "While it moves, this stays exactly as it was: The ₹500 payment row: same amount, same time, under the new refund row, the whole card."
+     ],
+     "must_not": [
+      "Say the session name, tuple, immutable or any code word anywhere on this card.",
+      "Show any code on this card.",
+      "Show a made-up Edit button, even greyed out. The point is that the real app has none.",
+      "Animate by itself. Every change waits for a press."
+     ],
+     "data": {
+      "record": [
+       "Sri Sai Canteen",
+       500,
+       "7:42 PM"
+      ],
+      "refund": [
+       "Sri Sai Canteen",
+       450,
+       "7:45 PM"
+      ],
+      "queue": [
+       "Naatu Naatu",
+       "Kissik",
+       "Peelings"
+      ],
+      "code_for_guide": "payment = ('Sri Sai Canteen', 500, '7:42 PM')\npayment[1] = 50",
+      "code_output_for_guide": "TypeError: 'tuple' object does not support item assignment"
+     },
+     "play": "The canteen, the QR stand, both phones and the History list: yours to make real. Wear PhonePe's look: purple header, the green tick screen, the transaction details layout. How the row lifts out of the app and locks is yours.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Today's topic",
+   "kind": "concept",
+   "mins": 1,
+   "start": 9,
+   "cards": [
+    {
+     "id": "S-TITLE",
+     "title": "Title",
+     "source": "spine:title",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Agenda",
+   "kind": "concept",
+   "mins": 1,
+   "start": 10,
+   "cards": [
+    {
+     "id": "S-AGENDA",
+     "title": "Agenda",
+     "source": "spine:agenda",
+     "purpose": "Name the four stops of today in plain words. Deck slide 9's stops, with the last one named as slide 35 names it.",
+     "play": "How the stops sit and light. The deck's arrow on slide 9 is a fine start. No code on this card.",
+     "show": [
+      "None",
+      "Python's value for nothing",
+      "Tuples",
+      "a row of values that cannot change",
+      "Membership check",
+      "is this value in it?",
+      "Packing and unpacking",
+      "many values in, many names out"
+     ],
+     "presses": [
+      {
+       "screen": "Stop 1 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 2 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 3 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 4 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      }
+     ],
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "None is a value that means nothing",
+   "kind": "concept",
+   "mins": 4,
+   "start": 11,
+   "cards": [
+    {
+     "id": "C1",
+     "title": "NoneType Object",
+     "source": [
+      10
+     ],
+     "purpose": "Mark the start of a new construct.",
+     "heading": "NoneType Object",
+     "presses": [
+      {
+       "screen": "The recap's sort chip slides in with its output <q>None</q>. The None grows into the deck's one-word divider: <q>NoneType Object</q>.",
+       "say": "First, the None we met at the end of the recap."
+      }
+     ],
+     "play": "Keep the deck's divider look.",
+     "engage": "motion",
+     "motion": "The recap's last chip, x = queue.sort(), slides in with its output None. The None grows and settles as the deck's divider word. It ties today's first word to the recap.",
+     "keeps": "The chip's code and its output None, exactly as the recap showed them.",
+     "must": [
+      "While it moves, this stays exactly as it was: The chip's code and its output None, exactly as the recap showed them."
+     ],
+     "press_count": 1
+    },
+    {
+     "id": "C2",
+     "title": "None is a value",
+     "source": [
+      11
+     ],
+     "purpose": "None is Python's value for nothing. It has its own type, NoneType.",
+     "heading": "None",
+     "show": [
+      "What will it print?",
+      "None is an object, a datatype of its own (NoneType).",
+      "Used to define no value or nothing."
+     ],
+     "code": [
+      {
+       "file": "token.py",
+       "src": "token = None\nprint(token)\nprint(type(token))",
+       "output": "None\n<class 'NoneType'>"
+      },
+      {
+       "file": "sort_gives_back.py",
+       "src": "queue = ['Naatu Naatu', 'Kissik', 'Peelings']\nx = queue.sort()\nprint(x)",
+       "output": "None"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "token.py with line numbers, and an empty output box. Caption: <q>What will it print?</q>",
+       "say": "Before Teja orders, he has no token yet. Here None is put in a box on purpose. What do the two lines print?",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Both lines print together. Teja's token slot on the counter shows the word None. The output fills <q>None / <class 'NoneType'></q>.",
+       "say": "None is a value. Its type is NoneType: a type of its own."
+      },
+      {
+       "screen": "Under the run, deck slide 11's two lines: <q>None is an object, a datatype of its own (NoneType).</q> and <q>Used to define no value or nothing.</q>",
+       "say": "Not zero, not an empty string. Nothing."
+      }
+     ],
+     "answer": "None / <class 'NoneType'>",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "Press 1 shows sort_gives_back.py small in a corner, with its None, as the reason for the question.",
+      "Draw it in the the Sri Sai Canteen counter world: before Teja orders, his token slot is there but empty; token = None is that empty slot. Do not take the picture further than this: an empty slot is just a gap; in Python None is a real value you can print and pass around",
+      "Keep these exact values. Someone who thinks None is just another way to write 0 would say 0\n<class 'int'>; Python gives None\n<class 'NoneType'>. New values could hide that mistake."
+     ],
+     "must_not": [],
+     "play": "The deck's code box beside the output. One program on screen at a time.",
+     "engage": "analogy",
+     "analogy": {
+      "world": "the Sri Sai Canteen counter",
+      "maps": "before Teja orders, his token slot is there but empty; token = None is that empty slot",
+      "breaks": "an empty slot is just a gap; in Python None is a real value you can print and pass around"
+     },
+     "trap": {
+      "belief": "None is just another way to write 0",
+      "wrong": "0\n<class 'int'>",
+      "code": 0
+     },
+     "press_count": 3
+    },
+    {
+     "id": "C3",
+     "title": "No return gives back None",
+     "source": [
+      12,
+      13,
+      14
+     ],
+     "purpose": "A function with no return, a return alone, or return None all give back None.",
+     "heading": "Function without return",
+     "show": [
+      "Input 5. What will it print?",
+      "6",
+      "5",
+      "None",
+      "Now with return alone.",
+      "Now with return None.",
+      "No value after return: Python gives back None."
+     ],
+     "code": [
+      {
+       "file": "increment_1.py",
+       "src": "def increment(a):\n    a += 1\n\na = int(input())\nresult = increment(a)\nprint(result)",
+       "output": "None",
+       "input": "5"
+      },
+      {
+       "file": "increment_2.py",
+       "src": "def increment(a):\n    a += 1\n    return\n\na = int(input())\nresult = increment(a)\nprint(result)",
+       "output": "None",
+       "input": "5"
+      },
+      {
+       "file": "increment_3.py",
+       "src": "def increment(a):\n    a += 1\n    return None\n\na = int(input())\nresult = increment(a)\nprint(result)",
+       "output": "None",
+       "input": "5"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "increment_1.py (deck slide 12) with line numbers, input box <q>5</q>, empty output. Caption: <q>Input 5. What will it print?</q> Choices <q>6</q>, <q>5</q>, <q>None</q>.",
+       "say": "Hands up per choice. Most will say 6.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "The output fills <q>None</q>. The function's box is drawn handing back nothing.",
+       "say": "a became 6 inside the function. Nothing carried it out. No return, so None."
+      },
+      {
+       "screen": "Line 3 becomes <q>return</q> (deck slide 13). Output empties. Caption: <q>Now with return alone.</q>",
+       "say": "Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "The output fills <q>None</q>.",
+       "say": "return with nothing after it."
+      },
+      {
+       "screen": "Line 3 becomes <q>return None</q> (deck slide 14). Output empties. Caption: <q>Now with return None.</q>",
+       "say": "Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "The output fills <q>None</q>. Under it: <q>No value after return: Python gives back None.</q>",
+       "say": "Three ways to say the same nothing."
+      }
+     ],
+     "answer": "None, None, None",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "Only line 3 changes between the three versions; it is highlighted as the deck highlights it.",
+      "While it moves, this stays exactly as it was: The input 5, and every line but line 3.",
+      "Keep these exact values. Someone who thinks a became 6 inside the function, so 6 comes back would say 6; Python gives None. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show return a. That fix is for the guide, if a student asks."
+     ],
+     "play": "One code box whose line 3 changes, or three side by side. The input box is the deck's green one.",
+     "engage": "motion",
+     "ops": [
+      "None"
+     ],
+     "motion": "Line 3 changes three times. On each run the function's box hands back an empty parcel marked None to result. It proves a function with no value after return gives back None.",
+     "keeps": "The input 5, and every line but line 3.",
+     "trap": {
+      "belief": "a became 6 inside the function, so 6 comes back",
+      "wrong": "6",
+      "code": 0
+     },
+     "press_count": 6
+    },
+    {
+     "id": "C4",
+     "title": "print gives back None",
+     "source": [
+      15
+     ],
+     "purpose": "print shows text on the screen and gives back nothing, so result holds None.",
+     "heading": "Function with no return",
+     "show": [
+      "What will it print?",
+      "Hi",
+      "Hi / None",
+      "None"
+     ],
+     "code": [
+      {
+       "file": "print_result.py",
+       "src": "result = print(\"Hi\")\nprint(result)",
+       "output": "Hi\nNone"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "print_result.py with line numbers, and an empty output box. Caption: <q>What will it print?</q> Choices <q>Hi</q>, <q>Hi / None</q>, <q>None</q>.",
+       "say": "print is a function too. Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "Line 1 prints Hi. Then line 2 prints what print gave back. The output fills <q>Hi / None</q>.",
+       "say": "print shows Hi. What it gives back is None."
+      }
+     ],
+     "answer": "Hi / None",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "The output fills one line per press of the voice: Hi first, then None.",
+      "Keep these exact values. Someone who thinks result holds what print showed would say Hi\nHi; Python gives Hi\nNone. New values could hide that mistake."
+     ],
+     "must_not": [],
+     "play": "The deck's code box beside the output. One program on screen at a time.",
+     "engage": "play",
+     "interaction": "Hands up per choice: Hi, Hi / None, None. The output fills only after the vote.",
+     "trap": {
+      "belief": "result holds what print showed",
+      "wrong": "Hi\nHi",
+      "code": 0
+     },
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "A tuple: a row of values made with commas",
+   "kind": "concept",
+   "mins": 5,
+   "start": 15,
+   "cards": [
+    {
+     "id": "C5",
+     "title": "Tuples",
+     "source": [
+      16
+     ],
+     "purpose": "Mark the start of a new construct.",
+     "heading": "Tuples",
+     "presses": [
+      {
+       "screen": "The deck's one-word divider: <q>Tuples</q>.",
+       "say": "Now the locked row from the hook."
+      }
+     ],
+     "play": "Keep the deck's divider look.",
+     "engage": "plain",
+     "press_count": 1
+    },
+    {
+     "id": "C6",
+     "title": "A tuple",
+     "source": [
+      17,
+      18
+     ],
+     "purpose": "A tuple holds an ordered row of items, like a list. A list can change; a tuple cannot.",
+     "heading": "Tuple",
+     "show": [
+      "Holds an ordered sequence of items",
+      "List: you can change it.",
+      "Tuple: you cannot change it.",
+      "The deck's word: immutable."
+     ],
+     "presses": [
+      {
+       "screen": "Teja's payment from the hook as a row: \"Sri Sai Canteen\" | 50 | \"7:42 PM\" with 0, 1, 2 under the cells, and <q>Holds an ordered sequence of items</q>",
+       "say": "Like a list: a row, in order, with places from 0. Data structures: list, tuple, set, dictionary. Tuple is next."
+      },
+      {
+       "screen": "Beside it last class's party queue as a list row, with handles, and <q>List: you can change it.</q> The payment row gets its lock and <q>Tuple: you cannot change it.</q>",
+       "say": "The only difference. A queue changes all evening. A payment never does."
+      },
+      {
+       "screen": "Under the payment: <q>The deck's word: immutable.</q>",
+       "say": "Immutable means cannot change."
+      }
+     ],
+     "must": [
+      "A tuple is drawn as a row of cells with its index under each cell, from 0, the same as a list. A list's row has round handles you can grab; a tuple's row has a small lock and no handles.",
+      "Draw it in the PhonePe world: a finished payment is a tuple: shop, amount and time in one row that nobody can edit. Do not take the picture further than this: the app hides the numbers 0, 1, 2; and a tuple can hold any values, not only payment details"
+     ],
+     "play": "Deck slide 18's dashed cells are a fine start. The lock and the handles are yours; the payment row can wear PhonePe's look.",
+     "engage": "analogy",
+     "analogy": {
+      "world": "PhonePe",
+      "maps": "a finished payment is a tuple: shop, amount and time in one row that nobody can edit",
+      "breaks": "the app hides the numbers 0, 1, 2; and a tuple can hold any values, not only payment details"
+     },
+     "press_count": 3
+    },
+    {
+     "id": "C7",
+     "title": "Creating a tuple",
+     "source": [
+      19,
+      20
+     ],
+     "purpose": "A tuple is made with round brackets and commas. type() says tuple; print shows round brackets.",
+     "heading": "Creating a tuple",
+     "show": [
+      "What will it print?",
+      "Round brackets. A comma between items."
+     ],
+     "code": [
+      {
+       "file": "create.py",
+       "src": "amount = 50\npayment = (\"Sri Sai Canteen\", amount, \"7:42 PM\")\nprint(type(payment))\nprint(payment)",
+       "output": "<class 'tuple'>\n('Sri Sai Canteen', 50, '7:42 PM')"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "create.py with line numbers, and an empty output box. Caption: <q>What will it print?</q>",
+       "say": "Round brackets, commas between. Look at amount on line 2. Will print show the word amount or its value?",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Both lines print together. The cell for amount shows 50. The output fills <q><class 'tuple'> / ('Sri Sai Canteen', 50, '7:42 PM')</q>.",
+       "say": "type says tuple. And amount was 50 when the tuple was made."
+      },
+      {
+       "screen": "Under the run: <q>Round brackets. A comma between items.</q>",
+       "say": "Square brackets for a list, round for a tuple."
+      }
+     ],
+     "answer": "<class 'tuple'> / ('Sri Sai Canteen', 50, '7:42 PM')",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "Keep these exact values. Someone who thinks print shows the name amount, not its value would say <class 'tuple'>\n('Sri Sai Canteen', amount, '7:42 PM'); Python gives <class 'tuple'>\n('Sri Sai Canteen', 50, '7:42 PM'). New values could hide that mistake."
+     ],
+     "must_not": [],
+     "play": "The deck's code box beside the output. One program on screen at a time.",
+     "engage": "play",
+     "interaction": "The room says both output lines out loud before the run press.",
+     "trap": {
+      "belief": "print shows the name amount, not its value",
+      "wrong": "<class 'tuple'>\n('Sri Sai Canteen', amount, '7:42 PM')",
+      "code": 0
+     },
+     "press_count": 3
+    },
+    {
+     "id": "C8",
+     "title": "One item needs a comma",
+     "source": [
+      21,
+      22,
+      23,
+      24
+     ],
+     "purpose": "(5) is just the number 5. A tuple with one item needs a comma: (1,). The comma makes the tuple.",
+     "heading": "Creating a tuple",
+     "show": [
+      "What is the type of amount?",
+      "tuple",
+      "int",
+      "amount = (50) is an integer.",
+      "So how do we make a tuple with one item?",
+      "The comma makes a tuple. Brackets alone do not."
+     ],
+     "code": [
+      {
+       "file": "types.py",
+       "src": "empty = ()\namount = (50)\nhalves = (25, 25)\nprint(type(empty))\nprint(type(amount))\nprint(type(halves))",
+       "output": "<class 'tuple'>\n<class 'int'>\n<class 'tuple'>"
+      },
+      {
+       "file": "one_item.py",
+       "src": "amount = (50,)\nprint(type(amount))\nprint(amount)",
+       "output": "<class 'tuple'>\n(50,)"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "types.py (the program of deck slide 22, with canteen names) with line numbers, three empty output lines. Caption: <q>What is the type of amount?</q> Choices <q>tuple</q>, <q>int</q>.",
+       "say": "empty has no items, halves has two. amount has one. Hands up: tuple? int?",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "The three output lines fill <q><class 'tuple'> / <class 'int'> / <class 'tuple'></q>. Line 2 lights with <q>amount = (50) is an integer.</q>",
+       "say": "Brackets around a number are maths brackets. (50) is 50."
+      },
+      {
+       "screen": "one_item.py appears with its line 1 as an empty dashed box. Caption: <q>So how do we make a tuple with one item?</q>",
+       "say": "Take two answers before the press.",
+       "room": "Say a way."
+      },
+      {
+       "screen": "Line 1 fills <q>amount = (50,)</q> (deck slide 24's comma), the comma ringed. The plain 50 snaps into a locked row of one cell. The output fills <q><class 'tuple'> / (50,)</q>. Caption: <q>The comma makes a tuple. Brackets alone do not.</q>",
+       "say": "The comma makes the tuple. Remember it for the game."
+      }
+     ],
+     "answer": "<class 'tuple'> / <class 'int'> / <class 'tuple'>; then <class 'tuple'> / (50,)",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "The comma in (50,) is ringed: it is the whole lesson of the card.",
+      "On press 4 the line amount = (50,) is the biggest text on the card.",
+      "While it moves, this stays exactly as it was: The brackets: they stay exactly where they were. Only the comma is added.",
+      "Keep these exact values. Someone who thinks round brackets always make a tuple would say <class 'tuple'>\n<class 'tuple'>\n<class 'tuple'>; Python gives <class 'tuple'>\n<class 'int'>\n<class 'tuple'>. New values could hide that mistake.",
+      "Keep these exact values. Someone who thinks (50,) is the same as (50) would say <class 'int'>\n50; Python gives <class 'tuple'>\n(50,). New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show (50,) before press 4."
+     ],
+     "play": "The ring on the comma, and how amount's cell is drawn as a plain number, not a row.",
+     "engage": "motion",
+     "ops": [
+      "(x,)"
+     ],
+     "motion": "amount = (50) is drawn as a plain number with no lock. When the comma appears, the 50 snaps into a locked row of one cell. It proves the comma, not the bracket, makes the tuple.",
+     "keeps": "The brackets: they stay exactly where they were. Only the comma is added.",
+     "trap": [
+      {
+       "belief": "round brackets always make a tuple",
+       "wrong": "<class 'tuple'>\n<class 'tuple'>\n<class 'tuple'>",
+       "code": 0
+      },
+      {
+       "belief": "(50,) is the same as (50)",
+       "wrong": "<class 'int'>\n50",
+       "code": 1
+      }
+     ],
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "A tuple can be read, never changed",
+   "kind": "concept",
+   "mins": 4,
+   "start": 20,
+   "cards": [
+    {
+     "id": "C9",
+     "title": "Read it, never change it",
+     "source": [
+      25,
+      26,
+      27
+     ],
+     "purpose": "Reading a tuple works like a list. Changing an item is a TypeError. A tuple keeps only the two tools that give back an answer, count and index. To change it, make a new tuple.",
+     "heading": "Tuples are immutable",
+     "show": [
+      "What will it print?",
+      "Now change item 3.",
+      "Line 3 never runs.",
+      "A tuple has two tools: count and index.",
+      "Cannot change it? Make a new one."
+     ],
+     "code": [
+      {
+       "file": "access.py",
+       "src": "prices = (20, 15, 30, 15)\nprint(prices[1])",
+       "output": "15"
+      },
+      {
+       "file": "change.py",
+       "src": "prices = (20, 15, 30, 15)\nprices[2] = 35\nprint(prices)",
+       "output": "TypeError: 'tuple' object does not support item assignment"
+      },
+      {
+       "file": "tools.py",
+       "src": "prices = (20, 15, 30, 15)\nprint(prices.count(15))\nprint(prices.index(15))\nprices.append(25)",
+       "output": "2\n1\nAttributeError: 'tuple' object has no attribute 'append'"
+      },
+      {
+       "file": "new_tuple.py",
+       "src": "prices = (20, 15, 30, 15)\nprices = (20, 15, 35, 15)\nprint(prices)",
+       "output": "(20, 15, 35, 15)"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The canteen's price board as one locked row, prices = (20, 15, 30, 15) (Tea, Samosa, Maggi, Vada). access.py (deck slide 25's program, with the prices), empty output. Caption: <q>What will it print?</q>",
+       "say": "Index 1. Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "The pointer lands on cell 1 and the output fills <q>15</q>.",
+       "say": "Reading works like a list. Index 1 is the second price, Samosa."
+      },
+      {
+       "screen": "change.py (deck slide 27's program) with line 2 highlighted: the owner wants Maggi at 35. Empty output. Caption: <q>Now change item 3.</q>",
+       "say": "Say what happens.",
+       "room": "Say it."
+      },
+      {
+       "screen": "Cell 2 shakes against the lock and stays 30. The output fills only <q>TypeError: 'tuple' object does not support item assignment</q>. Caption: <q>Line 3 never runs.</q>",
+       "say": "Like Teja's payment. Python stops at line 2, so line 3 never prints."
+      },
+      {
+       "screen": "The recap's two bins come back. tools.py: count and index slide into <q>Gives back an answer</q>; append bounces off the locked row. Output: <q>2 / 1 / AttributeError: 'tuple' object has no attribute 'append'</q>. Caption: <q>A tuple has two tools: count and index.</q>",
+       "say": "count(15) finds two 15s. index(15) gives the first place, 1. The tools that change a row are not there."
+      },
+      {
+       "screen": "new_tuple.py: the name prices moves from the old row to a new row 20 | 15 | 35 | 15. The old row stays, faded, with 30 in it. The output fills <q>(20, 15, 35, 15)</q>. Caption: <q>Cannot change it? Make a new one.</q>",
+       "say": "The refund: a new payment, not an edit. The owner writes a new board."
+      }
+     ],
+     "answer": "15; TypeError: 'tuple' object does not support item assignment; 2 / 1 / AttributeError: 'tuple' object has no attribute 'append'; (20, 15, 35, 15)",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A tuple is drawn as a row of cells with its index under each cell, from 0, the same as a list. A list's row has round handles you can grab; a tuple's row has a small lock and no handles.",
+      "On press 4 nothing in the row changes: the 30 stays 30.",
+      "On press 6 the old row is not edited. The name moves to a new row.",
+      "While it moves, this stays exactly as it was: The old row (20, 15, 30, 15), unchanged, on screen and faded after the name moves away.",
+      "Keep these exact values. Someone who thinks counting starts at 1, so prices[1] is the first price would say 20; Python gives 15. New values could hide that mistake.",
+      "Keep these exact values. Someone who thinks the item changes, as in a list would say (20, 15, 35, 15); Python gives TypeError: 'tuple' object does not support item assignment. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show the output of line 3 of change.py. It never runs."
+     ],
+     "data": {
+      "tools": [
+       "count",
+       "index"
+      ],
+      "prices": [
+       20,
+       15,
+       30,
+       15
+      ]
+     },
+     "play": "The shake, the bounce and the name tag moving. One idea per press. The price board can be the canteen's own.",
+     "engage": "motion",
+     "ops": [
+      "t[i] = x"
+     ],
+     "motion": "Cell 2 shakes against the lock and stays 30; append bounces off; then the name prices moves from the old row to a new one. It proves a tuple is never edited: you make a new one.",
+     "keeps": "The old row (20, 15, 30, 15), unchanged, on screen and faded after the name moves away.",
+     "trap": [
+      {
+       "belief": "counting starts at 1, so prices[1] is the first price",
+       "wrong": "20",
+       "code": 0
+      },
+      {
+       "belief": "the item changes, as in a list",
+       "wrong": "(20, 15, 35, 15)",
+       "code": 1
+      }
+     ],
+     "press_count": 6
+    },
+    {
+     "id": "C10",
+     "title": "Operations on tuples",
+     "source": [
+      28
+     ],
+     "purpose": "len, a for loop, slicing and extended slicing work on a tuple exactly as on a list or a string.",
+     "heading": "Operations on tuples",
+     "show": [
+      "len()",
+      "Iterating",
+      "Slicing",
+      "Extended Slicing",
+      "Say it before I press."
+     ],
+     "code": [
+      {
+       "file": "ops_1.py",
+       "src": "menu = ('Tea', 'Samosa', 'Maggi', 'Vada')\nprint(len(menu))",
+       "output": "4"
+      },
+      {
+       "file": "ops_2.py",
+       "src": "menu = ('Tea', 'Samosa', 'Maggi', 'Vada')\nfor item in menu:\n    print(item)",
+       "output": "Tea\nSamosa\nMaggi\nVada"
+      },
+      {
+       "file": "ops_3.py",
+       "src": "menu = ('Tea', 'Samosa', 'Maggi', 'Vada')\nprint(menu[1:3])",
+       "output": "('Samosa', 'Maggi')"
+      },
+      {
+       "file": "ops_4.py",
+       "src": "menu = ('Tea', 'Samosa', 'Maggi', 'Vada')\nprint(menu[0:3:2])",
+       "output": "('Tea', 'Maggi')"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 28's four operations on the canteen menu, menu = ('Tea', 'Samosa', 'Maggi', 'Vada'), as cells: <q>len()</q>, <q>Iterating</q>, <q>Slicing</q>, <q>Extended Slicing</q>. Caption: <q>Say it before I press.</q>",
+       "say": "You did all four on lists and strings. Same on a tuple."
+      },
+      {
+       "screen": "<q>len()</q> lights. The line 'print(len(menu))' appears under the cells and the room says it; then the output fills <q>4</q>.",
+       "say": "Say it first.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "<q>Iterating</q> lights. The line 'for item in menu:\\n    print(item)' appears under the cells and the room says it; then the output fills <q>Tea / Samosa / Maggi / Vada</q>.",
+       "say": "Say it first.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "<q>Slicing</q> lights. The line 'print(menu[1:3])' appears under the cells and the room says it; then the output fills <q>('Samosa', 'Maggi')</q>.",
+       "say": "Say it first.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "<q>Extended Slicing</q> lights. The line 'print(menu[0:3:2])' appears under the cells and the room says it; then the output fills <q>('Tea', 'Maggi')</q>.",
+       "say": "Say it first.",
+       "room": "Say the output."
+      }
+     ],
+     "answer": "len(): 4; Iterating: Tea / Samosa / Maggi / Vada; Slicing: ('Samosa', 'Maggi'); Extended Slicing: ('Tea', 'Maggi')",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "The cells a slice takes light up as the output fills.",
+      "Keep these exact values. Someone who thinks a slice keeps the stop item too would say ('Samosa', 'Maggi', 'Vada'); Python gives ('Samosa', 'Maggi'). New values could hide that mistake."
+     ],
+     "data": {
+      "outputs": {
+       "len()": "4",
+       "Iterating": "Tea\nSamosa\nMaggi\nVada",
+       "Slicing": "('Samosa', 'Maggi')",
+       "Extended Slicing": "('Tea', 'Maggi')"
+      },
+      "menu": [
+       "Tea",
+       "Samosa",
+       "Maggi",
+       "Vada"
+      ]
+     },
+     "play": "Deck slide 28 with its green arrows. Each operation lighting its own arrow is a fine start.",
+     "engage": "play",
+     "interaction": "The room says each output out loud before its press.",
+     "trap": {
+      "belief": "a slice keeps the stop item too",
+      "wrong": "('Samosa', 'Maggi', 'Vada')",
+      "code": 2
+     },
+     "press_count": 5
+    },
+    {
+     "id": "C11",
+     "title": "Converting to tuple",
+     "source": [
+      29,
+      30
+     ],
+     "purpose": "tuple() takes a sequence (a string, a range, a list) and gives back a tuple of its items.",
+     "heading": "Converting to tuple",
+     "show": [
+      "tuple(sequence)",
+      "Takes a sequence and converts it into tuple",
+      "What will it print?"
+     ],
+     "code": [
+      {
+       "file": "tuple_str.py",
+       "src": "item = \"Tea\"\nletters = tuple(item)\nprint(letters)",
+       "output": "('T', 'e', 'a')"
+      },
+      {
+       "file": "tuple_range.py",
+       "src": "tokens = tuple(range(1, 5))\nprint(tokens)",
+       "output": "(1, 2, 3, 4)"
+      },
+      {
+       "file": "tuple_list.py",
+       "src": "cart = [\"Tea\", \"Samosa\"]\norder = tuple(cart)\nprint(order)",
+       "output": "('Tea', 'Samosa')"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 29: <q>tuple(sequence)</q> with <q>Takes a sequence and converts it into tuple</q>, and tuple_str.py with empty output. Caption: <q>What will it print?</q>",
+       "say": "Tea is a string. What is in the tuple?",
+       "room": "Say the output."
+      },
+      {
+       "screen": "tuple_str.py: the items fly from the string, one letter per cell, into a locked row. Output: <q>('T', 'e', 'a')</q>.",
+       "say": "Each letter is an item."
+      },
+      {
+       "screen": "tuple_range.py: the items fly from the range of token numbers into a locked row. Output: <q>(1, 2, 3, 4)</q>.",
+       "say": "range(1, 5) is 1, 2, 3, 4: today's tokens.",
+       "room": "Say the output before the press."
+      },
+      {
+       "screen": "tuple_list.py: the items fly from the cart list into a locked row. Output: <q>('Tea', 'Samosa')</q>.",
+       "say": "The cart's items, now a locked order.",
+       "room": "Say the output before the press."
+      }
+     ],
+     "answer": "('T', 'e', 'a'); (1, 2, 3, 4); ('Tea', 'Samosa')",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "While it moves, this stays exactly as it was: The string Tea, the range and the cart list: they stay as they were; tuple() makes a new row.",
+      "Keep these exact values. Someone who thinks tuple(\"Tea\") makes one item, the whole word would say ('Tea',); Python gives ('T', 'e', 'a'). New values could hide that mistake."
+     ],
+     "play": "How items fly from the string, the range and the list into the locked row.",
+     "engage": "motion",
+     "ops": [
+      "tuple()"
+     ],
+     "motion": "The items fly one by one from the string, then the range, then the cart, into a new locked row. It proves tuple() takes any sequence apart, item by item.",
+     "keeps": "The string Tea, the range and the cart list: they stay as they were; tuple() makes a new row.",
+     "trap": {
+      "belief": "tuple(\"Tea\") makes one item, the whole word",
+      "wrong": "('Tea',)",
+      "code": 0
+     },
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "in and not in ask if a value is there",
+   "kind": "concept",
+   "mins": 3,
+   "start": 24,
+   "cards": [
+    {
+     "id": "C12",
+     "title": "Membership Check",
+     "source": [
+      31
+     ],
+     "purpose": "Mark the start of a new construct.",
+     "heading": "Membership Check",
+     "presses": [
+      {
+       "screen": "The deck's one-word divider: <q>Membership Check</q>.",
+       "say": "Teja asks: is Dosa on the menu today? Python can ask that."
+      }
+     ],
+     "play": "Keep the deck's divider look.",
+     "engage": "plain",
+     "press_count": 1
+    },
+    {
+     "id": "C13",
+     "title": "in and not in",
+     "source": [
+      32,
+      33,
+      34
+     ],
+     "purpose": "in gives True when the value is an item of the sequence; not in gives the opposite. They work on tuples, lists and strings.",
+     "heading": "Membership check",
+     "show": [
+      "Check if given data element is part of a sequence or not",
+      "True or False?"
+     ],
+     "code": [
+      {
+       "file": "in_tuple.py",
+       "src": "menu = (\"Tea\", \"Samosa\", \"Maggi\")\nis_part = \"Dosa\" in menu\nprint(is_part)",
+       "output": "False"
+      },
+      {
+       "file": "not_in_tuple.py",
+       "src": "menu = (\"Tea\", \"Samosa\", \"Maggi\")\nis_part = \"Tea\" not in menu\nprint(is_part)",
+       "output": "False"
+      },
+      {
+       "file": "in_list.py",
+       "src": "cart = [\"Tea\", \"Samosa\"]\nis_part = \"Tea\" in cart\nprint(is_part)",
+       "output": "True"
+      },
+      {
+       "file": "in_string.py",
+       "src": "upi = \"teja@ybl\"\nis_part = \"ybl\" in upi\nprint(is_part)",
+       "output": "True"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 32: <q>Check if given data element is part of a sequence or not</q>, in and not in, and in_tuple.py with empty output. Caption: <q>True or False?</q>",
+       "say": "Is Dosa on the menu? Say it.",
+       "room": "Say True or False."
+      },
+      {
+       "screen": "in_tuple.py: each cell is checked in turn, left to right, and the output fills <q>False</q>. Then not_in_tuple.py appears with empty output.",
+       "say": "No Dosa today. False.",
+       "room": "Say True or False for the next one."
+      },
+      {
+       "screen": "not_in_tuple.py: each cell is checked in turn, left to right, and the output fills <q>False</q>. Then in_list.py appears with empty output.",
+       "say": "Tea is there, so not in is False.",
+       "room": "Say True or False for the next one."
+      },
+      {
+       "screen": "in_list.py: each cell is checked in turn, left to right, and the output fills <q>True</q>. Then in_string.py appears with empty output.",
+       "say": "A list works the same.",
+       "room": "Say True or False for the next one."
+      },
+      {
+       "screen": "in_string.py: each cell is checked in turn, left to right, and the output fills <q>True</q>.",
+       "say": "In a string, in looks for the letters together: y, b, l side by side.",
+       "room": "Listen."
+      }
+     ],
+     "answer": "False; False; True; True",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "On the string, the letters y, b and l light together, side by side.",
+      "While it moves, this stays exactly as it was: The menu, the cart and the UPI id: in and not in only read, nothing moves out of its cell.",
+      "Keep these exact values. Someone who thinks not in asks the same thing as in would say True; Python gives False. New values could hide that mistake."
+     ],
+     "play": "The checking finger across the cells. Deck slides 32 to 34's code boxes, with the canteen's menu and Teja's UPI id.",
+     "engage": "motion",
+     "ops": [
+      "in",
+      "not in"
+     ],
+     "motion": "A finger checks the cells one by one, left to right, and stops at a match or at the end. It proves in looks at whole items in a tuple or list, and at letters side by side in a string.",
+     "keeps": "The menu, the cart and the UPI id: in and not in only read, nothing moves out of its cell.",
+     "trap": {
+      "belief": "not in asks the same thing as in",
+      "wrong": "True",
+      "code": 1
+     },
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Task 1: Teja's canteen payment",
+   "kind": "activity",
+   "mins": 6,
+   "start": 27,
+   "cards": [
+    {
+     "id": "T1",
+     "title": "Task 1: Teja's canteen payment",
+     "source": "new",
+     "handout": "Task 1",
+     "activity": 19,
+     "timer": 360,
+     "engage": "task",
+     "purpose": "Type the canteen payment as a tuple, predict, run. Then use my notes' fix, payment[1] = 50, and meet the TypeError. Fix it with a new tuple. Then make a one-item tuple.",
+     "heading": "Teja's canteen payment",
+     "show": [
+      "Worksheet · Task 1",
+      "Teja's payment, as Python keeps it.",
+      "Type it. Predict. Run.",
+      "My notes fixed the amount with line 5. Run it.",
+      "Make line 5 a new payment with 50.",
+      "A tip with one item."
+     ],
+     "code": [
+      {
+       "file": "payment.py",
+       "src": "payment = ('Sri Sai Canteen', 500, '7:42 PM')\nprint(payment[0])\nprint(len(payment))\nprint(50 in payment)\npayment[1] = 50\nprint(payment)",
+       "output": "Sri Sai Canteen\n3\nFalse\nTypeError: 'tuple' object does not support item assignment"
+      },
+      {
+       "file": "payment_fixed.py",
+       "src": "payment = ('Sri Sai Canteen', 500, '7:42 PM')\nprint(payment[0])\nprint(len(payment))\nprint(50 in payment)\npayment = ('Sri Sai Canteen', 50, '7:42 PM')\nprint(payment)",
+       "output": "Sri Sai Canteen\n3\nFalse\n('Sri Sai Canteen', 50, '7:42 PM')"
+      },
+      {
+       "file": "tip.py",
+       "src": "tip = (10)\nprint(type(tip))",
+       "output": "<class 'int'>"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The story line, payment.py with line numbers, the three steps (only step 1 lit) and a 6 minute timer.",
+       "say": "Worksheet tab and playground. Type it, type your prediction, then run.",
+       "room": "Type, predict, run."
+      },
+      {
+       "screen": "Step 2 lights: <q>Make line 5 a new payment with 50.</q>",
+       "say": "You cannot change it. Make a new one, like the refund.",
+       "room": "Edit, run."
+      },
+      {
+       "screen": "Step 3 lights: <q>A tip with one item.</q>",
+       "say": "Run it. Then make it a tuple.",
+       "room": "Run, fix, run."
+      },
+      {
+       "screen": "Step 1's terminal appears: <q>Sri Sai Canteen / 3 / False / TypeError: 'tuple' object does not support item assignment</q>. Line 5 lights red, line 6 grey. Caption: <q>My notes fixed the amount with line 5. Run it.</q>",
+       "say": "Who predicted it would print the new payment? Fair. The row is locked. And 50 is not in it: 500 is."
+      },
+      {
+       "screen": "Step 2's line 5, <q>payment = ('Sri Sai Canteen', 50, '7:42 PM')</q>, and the last line of the output: <q>('Sri Sai Canteen', 50, '7:42 PM')</q>.",
+       "say": "A new tuple with the same name. The old one was never edited."
+      },
+      {
+       "screen": "Step 3: <q><class 'int'></q>, then line 1 becomes <q>tip = (10,)</q>.",
+       "say": "The comma makes the tuple. tip = 10, works too."
+      }
+     ],
+     "answer": "Step 1: Sri Sai Canteen / 3 / False / TypeError: 'tuple' object does not support item assignment. Step 2: line 5 is payment = ('Sri Sai Canteen', 50, '7:42 PM'); last line ('Sri Sai Canteen', 50, '7:42 PM'). Step 3: <class 'int'>; fix tip = (10,)",
+     "must": [
+      "Line 5 is framed as the instructor's own notes, not a test.",
+      "No result shows until the timer has ended.",
+      "One step's result per press on the reveal."
+     ],
+     "must_not": [
+      "Show any output before the room has run it."
+     ],
+     "play": "The layout of steps, timer and code. The results can sit on the PhonePe details screen from the hook.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Game G1: find the impostor",
+   "kind": "activity",
+   "mins": 5,
+   "start": 33,
+   "cards": [
+    {
+     "id": "G1",
+     "title": "Find the impostor",
+     "game": "find-impostor",
+     "purpose": "Four order tokens look alike. Three print the same; one does not. The comma, a string in brackets, and a tuple that checks whole items decide each round.",
+     "heading": "Find the impostor",
+     "data": {
+      "setup": {
+       "suspects": "four order tokens on the Sri Sai Canteen counter, A to D, each with one short program printed on it; the impostor token flips to show a red back"
+      },
+      "intro": "Three tokens print the same thing. One is lying.",
+      "rounds": [
+       {
+        "ask": "Which token is the impostor?",
+        "programs": {
+         "A": "t = (50,)\nprint(t)",
+         "B": "t = tuple([50])\nprint(t)",
+         "C": "t = (50)\nprint(t)",
+         "D": "t = tuple(range(50, 51))\nprint(t)"
+        },
+        "outputs": {
+         "A": "(50,)",
+         "B": "(50,)",
+         "C": "50",
+         "D": "(50,)"
+        },
+        "options": [
+         "A",
+         "B",
+         "C",
+         "D"
+        ],
+        "answer": "C",
+        "because": "(50) is just the number 50 in brackets. No comma, no tuple.",
+        "why": {
+         "A": "The comma after 50 makes a tuple with one item.",
+         "B": "tuple() turns the list [50] into a tuple with one item.",
+         "D": "range(50, 51) holds only 50, so tuple() gives a tuple with one item."
+        },
+        "steps": [
+         {
+          "caption": "A prints (50,).",
+          "program": "A",
+          "output": "(50,)"
+         },
+         {
+          "caption": "B prints (50,).",
+          "program": "B",
+          "output": "(50,)"
+         },
+         {
+          "caption": "C prints 50.",
+          "program": "C",
+          "output": "50"
+         },
+         {
+          "caption": "D prints (50,).",
+          "program": "D",
+          "output": "(50,)"
+         }
+        ]
+       },
+       {
+        "ask": "Which token is the impostor?",
+        "programs": {
+         "A": "x = (\"Tea, 20\")\nprint(len(x))",
+         "B": "x = (\"Tea\", 20)\nprint(len(x))",
+         "C": "x = tuple([\"Tea\", 20])\nprint(len(x))",
+         "D": "x = (\"Tea\", \"20\")\nprint(len(x))"
+        },
+        "outputs": {
+         "A": "7",
+         "B": "2",
+         "C": "2",
+         "D": "2"
+        },
+        "options": [
+         "A",
+         "B",
+         "C",
+         "D"
+        ],
+        "answer": "A",
+        "because": "The comma is inside the quotes, so A is one string. len counts its 7 characters.",
+        "why": {
+         "B": "Two items, Tea and 20.",
+         "C": "tuple() keeps both items of the list.",
+         "D": "Two items. 20 in quotes is still one item."
+        },
+        "steps": [
+         {
+          "caption": "A prints 7.",
+          "program": "A",
+          "output": "7"
+         },
+         {
+          "caption": "B prints 2.",
+          "program": "B",
+          "output": "2"
+         },
+         {
+          "caption": "C prints 2.",
+          "program": "C",
+          "output": "2"
+         },
+         {
+          "caption": "D prints 2.",
+          "program": "D",
+          "output": "2"
+         }
+        ]
+       },
+       {
+        "ask": "Which token is the impostor?",
+        "programs": {
+         "A": "print(\"Tea\" in (\"Tea\", 20))",
+         "B": "print(\"Tea\" in [\"Tea\", 20])",
+         "C": "print(\"Tea\" in \"Tea, 20\")",
+         "D": "print(\"Tea\" in (\"Tea, 20\",))"
+        },
+        "outputs": {
+         "A": "True",
+         "B": "True",
+         "C": "True",
+         "D": "False"
+        },
+        "options": [
+         "A",
+         "B",
+         "C",
+         "D"
+        ],
+        "answer": "D",
+        "because": "D is a tuple with one item, the whole string \"Tea, 20\". A tuple checks whole items.",
+        "why": {
+         "A": "Tea is the first item of the tuple.",
+         "B": "Tea is the first item of the list.",
+         "C": "In a string, in looks for the letters. Tea is there."
+        },
+        "steps": [
+         {
+          "caption": "A prints True.",
+          "program": "A",
+          "output": "True"
+         },
+         {
+          "caption": "B prints True.",
+          "program": "B",
+          "output": "True"
+         },
+         {
+          "caption": "C prints True.",
+          "program": "C",
+          "output": "True"
+         },
+         {
+          "caption": "D prints False.",
+          "program": "D",
+          "output": "False"
+         }
+        ]
+       }
+      ]
+     },
+     "say": {
+      "ask": "Read all four. Option A, hands up. B. C. D.",
+      "step": "Same as the others, or not? Say it before I press.",
+      "verdict": "Read the why line. What made it different?"
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "Exactly one output differs.",
+      "Each token shows its whole program from the ask press; only the outputs wait.",
+      "Round 1 is Task 1's tip again: the comma decides.",
+      "Round 3 is the edge: only a tuple of one whole string says False."
+     ],
+     "play": "The counter, the tokens and the flip are yours. The canteen from the hook is the world.",
+     "presses": [
+      {
+       "screen": "Before round 1: <q>Three tokens print the same thing. One is lying.</q>",
+       "say": "Read it out. Say how a round works: you answer first, then it runs.",
+       "room": "Listen."
+      },
+      {
+       "screen": "Round 1 of 3. The round's setup, as in the data. The question: <q>Which token is the impostor?</q> Options: A <q>A</q>, B <q>B</q>, C <q>C</q>, D <q>D</q>. Nothing runs yet.",
+       "say": "Read all four. Option A, hands up. B. C. D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>A prints (50,).</q>",
+       "say": "Same as the others, or not? Say it before I press."
+      },
+      {
+       "screen": "<q>B prints (50,).</q>",
+       "say": "Same as the others, or not? Say it before I press."
+      },
+      {
+       "screen": "<q>C prints 50.</q>",
+       "say": "Same as the others, or not? Say it before I press."
+      },
+      {
+       "screen": "<q>D prints (50,).</q>",
+       "say": "Same as the others, or not? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>C</q>. <q>(50) is just the number 50 in brackets. No comma, no tuple.</q> Then a line for every other option: <q>A</q> <q>The comma after 50 makes a tuple with one item.</q>; <q>B</q> <q>tuple() turns the list [50] into a tuple with one item.</q>; <q>D</q> <q>range(50, 51) holds only 50, so tuple() gives a tuple with one item.</q>.",
+       "say": "Read the why line. What made it different?"
+      },
+      {
+       "screen": "Round 2 of 3. The round's setup, as in the data. The question: <q>Which token is the impostor?</q> Options: A <q>A</q>, B <q>B</q>, C <q>C</q>, D <q>D</q>. Nothing runs yet.",
+       "say": "Read all four. Option A, hands up. B. C. D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>A prints 7.</q>",
+       "say": "Same as the others, or not? Say it before I press."
+      },
+      {
+       "screen": "<q>B prints 2.</q>",
+       "say": "Same as the others, or not? Say it before I press."
+      },
+      {
+       "screen": "<q>C prints 2.</q>",
+       "say": "Same as the others, or not? Say it before I press."
+      },
+      {
+       "screen": "<q>D prints 2.</q>",
+       "say": "Same as the others, or not? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>A</q>. <q>The comma is inside the quotes, so A is one string. len counts its 7 characters.</q> Then a line for every other option: <q>B</q> <q>Two items, Tea and 20.</q>; <q>C</q> <q>tuple() keeps both items of the list.</q>; <q>D</q> <q>Two items. 20 in quotes is still one item.</q>.",
+       "say": "Read the why line. What made it different?"
+      },
+      {
+       "screen": "Round 3 of 3. The round's setup, as in the data. The question: <q>Which token is the impostor?</q> Options: A <q>A</q>, B <q>B</q>, C <q>C</q>, D <q>D</q>. Nothing runs yet.",
+       "say": "Read all four. Option A, hands up. B. C. D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>A prints True.</q>",
+       "say": "Same as the others, or not? Say it before I press."
+      },
+      {
+       "screen": "<q>B prints True.</q>",
+       "say": "Same as the others, or not? Say it before I press."
+      },
+      {
+       "screen": "<q>C prints True.</q>",
+       "say": "Same as the others, or not? Say it before I press."
+      },
+      {
+       "screen": "<q>D prints False.</q>",
+       "say": "Same as the others, or not? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>D</q>. <q>D is a tuple with one item, the whole string \"Tea, 20\". A tuple checks whole items.</q> Then a line for every other option: <q>A</q> <q>Tea is the first item of the tuple.</q>; <q>B</q> <q>Tea is the first item of the list.</q>; <q>C</q> <q>In a string, in looks for the letters. Tea is there.</q>.",
+       "say": "Read the why line. What made it different?"
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Show any output before its program's press."
+     ],
+     "interaction": "Four programs. Three print the same thing; one does not. The room votes the impostor; then each program runs, one per press.",
+     "game_def": {
+      "id": "find-impostor",
+      "name": "Find the impostor",
+      "one_line": "Four programs. Three print the same thing; one does not. The room votes the impostor; then each program runs, one per press.",
+      "how": [
+       "Four short programs labelled A to D, as four suspects.",
+       "Options are the four letters.",
+       "Each press runs one program and shows its output under it.",
+       "The odd output is unmasked on the verdict press."
+      ],
+      "setup": {
+       "suspects": "what the four programs are drawn as (four crew members, four phones)"
+      },
+      "round": {
+       "programs": "the four programs, A to D, exact",
+       "outputs": "what each one prints, computed"
+      },
+      "step": {
+       "program": "which letter ran",
+       "output": "what it printed"
+      }
+     },
+     "press_count": 19
+    }
+   ]
+  },
+  {
+   "name": "Classroom quiz",
+   "kind": "quiz",
+   "mins": 6,
+   "start": 38,
+   "cards": [
+    {
+     "id": "S-QUIZ",
+     "title": "Quiz",
+     "source": "spine:quiz",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Hook 2: reading the receipt the long way",
+   "kind": "hook",
+   "mins": 2,
+   "start": 44,
+   "cards": [
+    {
+     "id": "H2",
+     "title": "Reading the receipt, the long way",
+     "source": "new",
+     "purpose": "Feel why unpacking is worth having: taking three details out of a payment takes one line each. A real PhonePe receipt has 6. Then the same output in one line, not yet named.",
+     "heading": "Read the receipt",
+     "show": [
+      "Teja's receipt says: Paid 50 to Sri Sai Canteen at 7:42 PM",
+      "One line for each detail.",
+      "A real receipt has 6 details.",
+      "Same output. One line."
+     ],
+     "code": [
+      {
+       "file": "receipt_long.py",
+       "src": "payment = ('Sri Sai Canteen', 50, '7:42 PM')\nshop = payment[0]\namount = payment[1]\ntime = payment[2]\nprint(\"Paid\", amount, \"to\", shop, \"at\", time)",
+       "output": "Paid 50 to Sri Sai Canteen at 7:42 PM"
+      },
+      {
+       "file": "receipt_short.py",
+       "src": "payment = ('Sri Sai Canteen', 50, '7:42 PM')\nshop, amount, time = payment\nprint(\"Paid\", amount, \"to\", shop, \"at\", time)",
+       "output": "Paid 50 to Sri Sai Canteen at 7:42 PM"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The PhonePe receipt for the right payment, ₹50. receipt_long.py beside it with line 2 to 4 hidden. Caption: <q>Teja's receipt says: Paid 50 to Sri Sai Canteen at 7:42 PM</q>",
+       "say": "The payment is a tuple. We want three names: shop, amount, time. How do we take them out?",
+       "room": "Say a way."
+      },
+      {
+       "screen": "Lines 2 to 4 appear one per press of the voice, each pulling one cell into a name. The output fills <q>Paid 50 to Sri Sai Canteen at 7:42 PM</q>. Caption: <q>One line for each detail.</q>",
+       "say": "One line per detail. It works."
+      },
+      {
+       "screen": "The real receipt's 6 details light one by one: <q>Paid to</q>, <q>Amount</q>, <q>Date</q>, <q>Time</q>, <q>UPI ID</q>, <q>Transaction ID</q>. Caption: <q>A real receipt has 6 details.</q>",
+       "say": "How many lines now? 6. Can Python do it in one?",
+       "room": "Say yes or no."
+      },
+      {
+       "screen": "The turn, one movement: lines 2 to 4 fold into one line, receipt_short.py's line 2. The output does not change. Caption: <q>Same output. One line.</q>",
+       "say": "Three names on the left, one tuple on the right. The next card names it."
+      }
+     ],
+     "answer": "Paid 50 to Sri Sai Canteen at 7:42 PM, from 3 lines and from 1",
+     "must": [
+      "Both programs are real and run; the output shown is theirs.",
+      "The fold is one movement and the output does not change.",
+      "While it moves, this stays exactly as it was: The output line, word for word, and the payment row: the fold changes nothing they show."
+     ],
+     "must_not": [
+      "Say unpacking on this card. C14 names it.",
+      "Animate by itself."
+     ],
+     "data": {
+      "receipt": [
+       "Paid to",
+       "Amount",
+       "Date",
+       "Time",
+       "UPI ID",
+       "Transaction ID"
+      ],
+      "payment": [
+       "Sri Sai Canteen",
+       50,
+       "7:42 PM"
+      ]
+     },
+     "play": "The receipt can wear PhonePe's look again. How three lines fold into one is yours.",
+     "engage": "motion",
+     "ops": [
+      "a, b = t"
+     ],
+     "motion": "Lines 2 to 4 appear one at a time, each pulling one cell into a name; then they fold into one line. It proves one line can do the work of three.",
+     "keeps": "The output line, word for word, and the payment row: the fold changes nothing they show.",
+     "no_trap": "A hook: both programs print the same line on purpose, so there is no wrong idea to catch yet.",
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Unpacking: one name per value",
+   "kind": "concept",
+   "mins": 3,
+   "start": 46,
+   "cards": [
+    {
+     "id": "C14",
+     "title": "Packing & Unpacking",
+     "source": [
+      35
+     ],
+     "purpose": "Mark the start of a new construct.",
+     "heading": "Packing & Unpacking",
+     "presses": [
+      {
+       "screen": "The deck's one-word divider: <q>Packing & Unpacking</q>.",
+       "say": "That one line has a name."
+      }
+     ],
+     "play": "Keep the deck's divider look.",
+     "engage": "plain",
+     "press_count": 1
+    },
+    {
+     "id": "C15",
+     "title": "Unpacking",
+     "source": [
+      36,
+      37,
+      38
+     ],
+     "purpose": "Unpacking puts each value of a sequence into its own name, left to right. It works on a tuple, a list and a string.",
+     "heading": "Unpacking",
+     "show": [
+      "Values of any sequence can be directly assigned to variables",
+      "Number of variables in the left should match the length of sequence",
+      "What will it print?",
+      "One name for each value. The counts must match."
+     ],
+     "code": [
+      {
+       "file": "unpack.py",
+       "src": "order = ('Maggi', 2, 60)\n(item, qty, price) = order\nprint(item)\nprint(qty)\nprint(price)",
+       "output": "Maggi\n2\n60"
+      },
+      {
+       "file": "unpack_list.py",
+       "src": "cart = [\"Tea\", \"Samosa\", \"Maggi\"]\nfirst, second, third = cart\nprint(first)",
+       "output": "Tea"
+      },
+      {
+       "file": "unpack_string.py",
+       "src": "upi = \"ybl\"\nb_1, b_2, b_3 = upi\nprint(b_2)",
+       "output": "b"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "unpack.py (deck slide 37's program, on one canteen order), the order as cells Maggi | 2 | 60 and three empty name boxes item, qty, price. Caption: <q>What will it print?</q>",
+       "say": "One order: Maggi, 2 plates, 60 rupees. Three names, three values. Say the three lines.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Maggi, 2 and 60 each fly into their box, left to right, one movement. The output fills <q>Maggi / 2 / 60</q>.",
+       "say": "First value, first name. That is unpacking."
+      },
+      {
+       "screen": "Deck slide 36's two lines: <q>Values of any sequence can be directly assigned to variables</q> and <q>Number of variables in the left should match the length of sequence</q>",
+       "say": "Any sequence. Say what the list version prints, then the string version.",
+       "room": "Say both."
+      },
+      {
+       "screen": "Deck slide 38: unpack_list.py prints <q>Tea</q> and unpack_string.py prints <q>b</q>. Caption: <q>One name for each value. The counts must match.</q>",
+       "say": "The cart gives its first item. Teja's UPI handle ybl gives one letter per name. What if the counts do not match? Next card."
+      }
+     ],
+     "answer": "Maggi / 2 / 60; list: Tea; string: b",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A tuple is drawn as a row of cells with its index under each cell, from 0, the same as a list. A list's row has round handles you can grab; a tuple's row has a small lock and no handles.",
+      "While it moves, this stays exactly as it was: The order row: after unpacking, Maggi, 2 and 60 are still in it.",
+      "Keep these exact values. Someone who thinks the values fill the names from the right would say 60\n2\nMaggi; Python gives Maggi\n2\n60. New values could hide that mistake."
+     ],
+     "play": "The name boxes and the values flying in. Keep them the same as E1's, which comes next.",
+     "engage": "motion",
+     "ops": [
+      "a, b = t"
+     ],
+     "motion": "Each value flies into its own name box, left to right. It proves first value, first name.",
+     "keeps": "The order row: after unpacking, Maggi, 2 and 60 are still in it.",
+     "trap": {
+      "belief": "the values fill the names from the right",
+      "wrong": "60\n2\nMaggi",
+      "code": 0
+     },
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Explainer: Python counts before it unpacks",
+   "kind": "hook",
+   "mins": 3,
+   "start": 49,
+   "cards": [
+    {
+     "id": "E1",
+     "title": "Python counts before it unpacks",
+     "source": [
+      39,
+      40
+     ],
+     "animated": "explainer",
+     "purpose": "Python counts the values and the names first. If they differ, it stops with a ValueError and no name gets a value. If they match, one value goes into one name, left to right.",
+     "heading": "Unpacking",
+     "show": [
+      "How many names on the left?",
+      "Two names, three values. What happens?",
+      "item is Maggi, qty is 2",
+      "An error",
+      "item is Maggi, qty is 2 and 60",
+      "Python counts first.",
+      "No name gets a value."
+     ],
+     "code": [
+      {
+       "file": "unpack_2.py",
+       "src": "order = ('Maggi', 2, 60)\nitem, qty = order\nprint(item)",
+       "output": "ValueError: too many values to unpack (expected 2)"
+      },
+      {
+       "file": "unpack_3.py",
+       "src": "order = ('Maggi', 2, 60)\nitem, qty, price = order\nprint(item)",
+       "output": "Maggi"
+      },
+      {
+       "file": "unpack_4.py",
+       "src": "order = ('Maggi', 2, 60)\nitem, qty, price, tip = order\nprint(item)",
+       "output": "ValueError: not enough values to unpack (expected 4, got 3)"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The order Maggi | 2 | 60 as cells, and a slider <q>How many names on the left?</q> set to 2. unpack_2.py above it with two empty name boxes and an empty output. Caption: <q>Two names, three values. What happens?</q> Choices <q>item is Maggi, qty is 2</q>, <q>An error</q>, <q>item is Maggi, qty is 2 and 60</q>.",
+       "say": "Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "One step per press, following data.walks['2']: a counter shows 3 values against 2 names, then the output fills <q>ValueError: too many values to unpack (expected 2)</q> and both boxes stay empty. Caption: <q>Python counts first.</q>",
+       "n": 2,
+       "say": "Who said Maggi and 2? Fair guess. Python never put Maggi anywhere. It counted first."
+      },
+      {
+       "screen": "The slider moves to 4. Four empty boxes. Empty output.",
+       "say": "Four names now. Say it.",
+       "room": "Say what happens."
+      },
+      {
+       "screen": "One step per press, following data.walks['4']: 3 values against 4 names, then <q>ValueError: not enough values to unpack (expected 4, got 3)</q>. All four boxes stay empty. Caption: <q>No name gets a value.</q>",
+       "n": 2,
+       "say": "Not tip left empty, not tip set to None. Nothing at all."
+      },
+      {
+       "screen": "The slider moves to 3. Three empty boxes.",
+       "say": "And three?",
+       "room": "Say it."
+      },
+      {
+       "screen": "One step per press, following data.walks['3']: 3 against 3, then Maggi, 2 and 60 go in one per press, then the output <q>Maggi</q>.",
+       "n": 5,
+       "say": "Count, then fill. Left to right."
+      }
+     ],
+     "answer": "2 names: ValueError: too many values to unpack (expected 2). 4 names: ValueError: not enough values to unpack (expected 4, got 3). 3 names: Maggi",
+     "must": [
+      "The count always comes first, on its own press, before any value moves.",
+      "On a mismatch every name box stays empty. No value is placed and then taken back.",
+      "One step per press.",
+      "While it moves, this stays exactly as it was: The order row, Maggi | 2 | 60, the whole card; on a mismatch every name box stays empty.",
+      "Keep these exact values. Someone who thinks Python fills the names it has and drops the extra value would say Maggi; Python gives ValueError: too many values to unpack (expected 2). New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show a free code box, a picker or an input field. The slider has only 2, 3 and 4.",
+      "Fill item and qty before the error on the 2-name walk. Python does not.",
+      "Move by itself."
+     ],
+     "data": {
+      "values": [
+       "Maggi",
+       2,
+       60
+      ],
+      "start": 2,
+      "options": [
+       "item is Maggi, qty is 2",
+       "An error",
+       "item is Maggi, qty is 2 and 60"
+      ],
+      "right": "B",
+      "walks": {
+       "2": {
+        "src": "order = ('Maggi', 2, 60)\nitem, qty = order\nprint(item)",
+        "output": "ValueError: too many values to unpack (expected 2)",
+        "steps": [
+         {
+          "caption": "Python counts first: 3 values, 2 names.",
+          "values": 3,
+          "names": 2,
+          "boxes": {
+           "item": null,
+           "qty": null
+          }
+         },
+         {
+          "caption": "3 is not 2. Python stops. No name gets a value.",
+          "error": "ValueError: too many values to unpack (expected 2)",
+          "boxes": {
+           "item": null,
+           "qty": null
+          }
+         }
+        ]
+       },
+       "3": {
+        "src": "order = ('Maggi', 2, 60)\nitem, qty, price = order\nprint(item)",
+        "output": "Maggi",
+        "steps": [
+         {
+          "caption": "Python counts first: 3 values, 3 names.",
+          "values": 3,
+          "names": 3,
+          "boxes": {
+           "item": null,
+           "qty": null,
+           "price": null
+          }
+         },
+         {
+          "caption": "'Maggi' goes into item.",
+          "boxes": {
+           "item": "Maggi",
+           "qty": null,
+           "price": null
+          }
+         },
+         {
+          "caption": "2 goes into qty.",
+          "boxes": {
+           "item": "Maggi",
+           "qty": 2,
+           "price": null
+          }
+         },
+         {
+          "caption": "60 goes into price.",
+          "boxes": {
+           "item": "Maggi",
+           "qty": 2,
+           "price": 60
+          }
+         },
+         {
+          "caption": "print(item) shows Maggi.",
+          "printed": "Maggi",
+          "boxes": {
+           "item": "Maggi",
+           "qty": 2,
+           "price": 60
+          }
+         }
+        ]
+       },
+       "4": {
+        "src": "order = ('Maggi', 2, 60)\nitem, qty, price, tip = order\nprint(item)",
+        "output": "ValueError: not enough values to unpack (expected 4, got 3)",
+        "steps": [
+         {
+          "caption": "Python counts first: 3 values, 4 names.",
+          "values": 3,
+          "names": 4,
+          "boxes": {
+           "item": null,
+           "qty": null,
+           "price": null,
+           "tip": null
+          }
+         },
+         {
+          "caption": "3 is not 4. Python stops. No name gets a value.",
+          "error": "ValueError: not enough values to unpack (expected 4, got 3)",
+          "boxes": {
+           "item": null,
+           "qty": null,
+           "price": null,
+           "tip": null
+          }
+         }
+        ]
+       }
+      },
+      "proof_for_guide": "item = 'x'\ntry:\n    item, qty = ('Maggi', 2, 60)\nexcept ValueError:\n    pass\nprint(item)"
+     },
+     "play": "The counter, the boxes, the slider. Session 11's Follow the Dot is the bar: one thing moves at a time.",
+     "engage": "motion",
+     "ops": [
+      "a, b = t"
+     ],
+     "motion": "A counter compares values with names on its own press; then the values fill the boxes one per press, or Python stops. It proves Python counts before it fills.",
+     "keeps": "The order row, Maggi | 2 | 60, the whole card; on a mismatch every name box stays empty.",
+     "trap": {
+      "belief": "Python fills the names it has and drops the extra value",
+      "wrong": "Maggi",
+      "code": 0
+     },
+     "press_count": 12
+    }
+   ]
+  },
+  {
+   "name": "Game G2: fill the boxes",
+   "kind": "activity",
+   "mins": 3,
+   "start": 52,
+   "cards": [
+    {
+     "id": "G2",
+     "title": "Fill the boxes",
+     "game": "fill-the-boxes",
+     "ops": [
+      "a, b = t"
+     ],
+     "purpose": "Unpack a payment, a cart and a string in the canteen world, and see each time that Python counts the values and the names before it fills a single box.",
+     "heading": "Fill the boxes",
+     "data": {
+      "setup": {
+       "world": "Teja's receipts and cart at the Sri Sai Canteen, drawn as PhonePe rows"
+      },
+      "intro": "Count first. Then fill.",
+      "rounds": [
+       {
+        "ask": "What does print(time) show?",
+        "program": "payment = ('Sri Sai Canteen', 50, '7:42 PM')\nshop, amount, time = payment\nprint(time)",
+        "output": "7:42 PM",
+        "options": [
+         "7:42 PM",
+         "Sri Sai Canteen",
+         "50"
+        ],
+        "answer": "7:42 PM",
+        "because": "It shows 7:42 PM.",
+        "why": {
+         "Sri Sai Canteen": "shop gets the first value. time is the third name, so it gets the third.",
+         "50": "50 goes into amount, the second name."
+        },
+        "steps": [
+         {
+          "caption": "Python counts first: 3 values, 3 names.",
+          "boxes": {
+           "shop": null,
+           "amount": null,
+           "time": null
+          },
+          "printed": ""
+         },
+         {
+          "caption": "'Sri Sai Canteen' goes into shop.",
+          "boxes": {
+           "shop": "Sri Sai Canteen",
+           "amount": null,
+           "time": null
+          },
+          "printed": ""
+         },
+         {
+          "caption": "50 goes into amount.",
+          "boxes": {
+           "shop": "Sri Sai Canteen",
+           "amount": 50,
+           "time": null
+          },
+          "printed": ""
+         },
+         {
+          "caption": "'7:42 PM' goes into time.",
+          "boxes": {
+           "shop": "Sri Sai Canteen",
+           "amount": 50,
+           "time": "7:42 PM"
+          },
+          "printed": ""
+         },
+         {
+          "caption": "print(time) shows 7:42 PM.",
+          "boxes": {
+           "shop": "Sri Sai Canteen",
+           "amount": 50,
+           "time": "7:42 PM"
+          },
+          "printed": "7:42 PM"
+         }
+        ]
+       },
+       {
+        "ask": "What does print(first) show?",
+        "program": "cart = ['Tea', 'Samosa']\nfirst, second, third = cart\nprint(first)",
+        "output": "ValueError: not enough values to unpack (expected 3, got 2)",
+        "options": [
+         "Tea",
+         "None",
+         "ValueError"
+        ],
+        "answer": "ValueError",
+        "because": "It shows ValueError: not enough values to unpack (expected 3, got 2).",
+        "why": {
+         "Tea": "Python counts first: 2 values, 3 names. It stops before Tea goes anywhere.",
+         "None": "A missing value does not become None. The counts differ, so it is an error."
+        },
+        "steps": [
+         {
+          "caption": "Python counts first: 2 values, 3 names.",
+          "boxes": {
+           "first": null,
+           "second": null,
+           "third": null
+          },
+          "printed": ""
+         },
+         {
+          "caption": "2 is not 3. Python stops. No box gets a value.",
+          "boxes": {
+           "first": null,
+           "second": null,
+           "third": null
+          },
+          "printed": "ValueError: not enough values to unpack (expected 3, got 2)"
+         }
+        ]
+       },
+       {
+        "ask": "What does print(d_1) show?",
+        "program": "amount = '50'\nd_1, d_2 = amount\nprint(d_1)",
+        "output": "5",
+        "options": [
+         "5",
+         "50",
+         "ValueError"
+        ],
+        "answer": "5",
+        "because": "It shows 5.",
+        "why": {
+         "50": "A string gives one letter per name, even a number in quotes.",
+         "ValueError": "Two letters, two names. The counts match."
+        },
+        "steps": [
+         {
+          "caption": "Python counts first: 2 values, 2 names.",
+          "boxes": {
+           "d_1": null,
+           "d_2": null
+          },
+          "printed": ""
+         },
+         {
+          "caption": "'5' goes into d_1.",
+          "boxes": {
+           "d_1": "5",
+           "d_2": null
+          },
+          "printed": ""
+         },
+         {
+          "caption": "'0' goes into d_2.",
+          "boxes": {
+           "d_1": "5",
+           "d_2": "0"
+          },
+          "printed": ""
+         },
+         {
+          "caption": "print(d_1) shows 5.",
+          "boxes": {
+           "d_1": "5",
+           "d_2": "0"
+          },
+          "printed": "5"
+         }
+        ]
+       }
+      ]
+     },
+     "say": {
+      "ask": "Read the left side and the right side. Option A, hands up. B. C.",
+      "step": "Count first. Do the numbers match?",
+      "verdict": "Which count decided it?"
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "The count is its own press and always comes before any value moves.",
+      "On a mismatch no box gets a value, not even the first one. Python counts before it fills.",
+      "A string's letters are drawn as separate cells, one per letter, so the count is visible.",
+      "Round 1 is Hook 2's own payment, so the first round is a win.",
+      "Round 2 is the None trap: a missing value is an error, never None.",
+      "Round 3 is the edge: a number in quotes is a string, one letter per name."
+     ],
+     "play": "The receipt cells, the name boxes and the counter. PhonePe's look, as in the hook.",
+     "presses": [
+      {
+       "screen": "Before round 1: <q>Count first. Then fill.</q>",
+       "say": "Read it out. Say how a round works: you answer first, then it runs.",
+       "room": "Listen."
+      },
+      {
+       "screen": "Round 1 of 3. The round's setup, as in the data. The question: <q>What does print(time) show?</q> Options: A <q>7:42 PM</q>, B <q>Sri Sai Canteen</q>, C <q>50</q>. Nothing runs yet.",
+       "say": "Read the left side and the right side. Option A, hands up. B. C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Python counts first: 3 values, 3 names.</q> In the data: boxes = {\"shop\": null, \"amount\": null, \"time\": null}; printed = .",
+       "say": "Count first. Do the numbers match?"
+      },
+      {
+       "screen": "<q>'Sri Sai Canteen' goes into shop.</q> In the data: boxes = {\"shop\": \"Sri Sai Canteen\", \"amount\": null, \"time\": null}; printed = .",
+       "say": "Count first. Do the numbers match?"
+      },
+      {
+       "screen": "<q>50 goes into amount.</q> In the data: boxes = {\"shop\": \"Sri Sai Canteen\", \"amount\": 50, \"time\": null}; printed = .",
+       "say": "Count first. Do the numbers match?"
+      },
+      {
+       "screen": "<q>'7:42 PM' goes into time.</q> In the data: boxes = {\"shop\": \"Sri Sai Canteen\", \"amount\": 50, \"time\": \"7:42 PM\"}; printed = .",
+       "say": "Count first. Do the numbers match?"
+      },
+      {
+       "screen": "<q>print(time) shows 7:42 PM.</q> In the data: boxes = {\"shop\": \"Sri Sai Canteen\", \"amount\": 50, \"time\": \"7:42 PM\"}.",
+       "say": "Count first. Do the numbers match?"
+      },
+      {
+       "screen": "The answer: <q>7:42 PM</q>. <q>It shows 7:42 PM.</q> Then a line for every other option: <q>Sri Sai Canteen</q> <q>shop gets the first value. time is the third name, so it gets the third.</q>; <q>50</q> <q>50 goes into amount, the second name.</q>.",
+       "say": "Which count decided it?"
+      },
+      {
+       "screen": "Round 2 of 3. The round's setup, as in the data. The question: <q>What does print(first) show?</q> Options: A <q>Tea</q>, B <q>None</q>, C <q>ValueError</q>. Nothing runs yet.",
+       "say": "Read the left side and the right side. Option A, hands up. B. C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Python counts first: 2 values, 3 names.</q> In the data: boxes = {\"first\": null, \"second\": null, \"third\": null}; printed = .",
+       "say": "Count first. Do the numbers match?"
+      },
+      {
+       "screen": "<q>2 is not 3. Python stops. No box gets a value.</q> In the data: boxes = {\"first\": null, \"second\": null, \"third\": null}; printed = ValueError: not enough values to unpack (expected 3, got 2).",
+       "say": "Count first. Do the numbers match?"
+      },
+      {
+       "screen": "The answer: <q>ValueError</q>. <q>It shows ValueError: not enough values to unpack (expected 3, got 2).</q> Then a line for every other option: <q>Tea</q> <q>Python counts first: 2 values, 3 names. It stops before Tea goes anywhere.</q>; <q>None</q> <q>A missing value does not become None. The counts differ, so it is an error.</q>.",
+       "say": "Which count decided it?"
+      },
+      {
+       "screen": "Round 3 of 3. The round's setup, as in the data. The question: <q>What does print(d_1) show?</q> Options: A <q>5</q>, B <q>50</q>, C <q>ValueError</q>. Nothing runs yet.",
+       "say": "Read the left side and the right side. Option A, hands up. B. C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Python counts first: 2 values, 2 names.</q> In the data: boxes = {\"d_1\": null, \"d_2\": null}; printed = .",
+       "say": "Count first. Do the numbers match?"
+      },
+      {
+       "screen": "<q>'5' goes into d_1.</q> In the data: boxes = {\"d_1\": \"5\", \"d_2\": null}; printed = .",
+       "say": "Count first. Do the numbers match?"
+      },
+      {
+       "screen": "<q>'0' goes into d_2.</q> In the data: boxes = {\"d_1\": \"5\", \"d_2\": \"0\"}; printed = .",
+       "say": "Count first. Do the numbers match?"
+      },
+      {
+       "screen": "<q>print(d_1) shows 5.</q> In the data: boxes = {\"d_1\": \"5\", \"d_2\": \"0\"}.",
+       "say": "Count first. Do the numbers match?"
+      },
+      {
+       "screen": "The answer: <q>5</q>. <q>It shows 5.</q> Then a line for every other option: <q>50</q> <q>A string gives one letter per name, even a number in quotes.</q>; <q>ValueError</q> <q>Two letters, two names. The counts match.</q>.",
+       "say": "Which count decided it?"
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Fill a box and then empty it again on a mismatch.",
+      "Give a missing value the word None. A missing value is an error, not None."
+     ],
+     "interaction": "A row of values from the session's world and a row of empty name boxes. The room votes on what one name will print; then Python counts first, and either fills the boxes one value per press or stops with every box still empty.",
+     "game_def": {
+      "id": "fill-the-boxes",
+      "name": "Fill the boxes",
+      "one_line": "A row of values from the session's world and a row of empty name boxes. The room votes on what one name will print; then Python counts first, and either fills the boxes one value per press or stops with every box still empty.",
+      "how": [
+       "The program on the left. On the right, the values as cells and the names as empty boxes.",
+       "The room votes on what the print line shows. Options are concrete values, or ValueError.",
+       "Press 1 of the run: a counter shows the number of values against the number of names.",
+       "If they match, one value drops into one box per press, left to right, then the print line runs.",
+       "If they differ, Python stops with the error, and every box stays empty."
+      ],
+      "setup": {
+       "world": "where the values come from, the same world as the hook if it fits"
+      },
+      "round": {
+       "program": "the code, exact",
+       "output": "what it prints, or the error line, computed"
+      },
+      "step": {
+       "boxes": "every name with its value after this press; null for an empty box",
+       "printed": "what the terminal shows after this press, '' for nothing yet"
+      }
+     },
+     "press_count": 18
+    }
+   ]
+  },
+  {
+   "name": "Packing: commas make a tuple, even in return",
+   "kind": "concept",
+   "mins": 5,
+   "start": 55,
+   "cards": [
+    {
+     "id": "C16",
+     "title": "Tuple packing",
+     "source": [
+      41,
+      43
+     ],
+     "purpose": "Values with commas between them are packed into one tuple, brackets or not. item, qty, price = \"Samosa\", 3, 45 packs then unpacks in one line.",
+     "heading": "Tuple packing",
+     "show": [
+      "No brackets. What will it print?",
+      "An error",
+      "<class 'tuple'>",
+      "() brackets are optional while creating tuples.",
+      "Pack on the right. Unpack on the left."
+     ],
+     "code": [
+      {
+       "file": "pack.py",
+       "src": "order = \"Maggi\", 2, 60\nprint(type(order))\nprint(order)",
+       "output": "<class 'tuple'>\n('Maggi', 2, 60)"
+      },
+      {
+       "file": "pack_unpack.py",
+       "src": "item, qty, price = \"Samosa\", 3, 45\nprint(item)\nprint(qty)\nprint(price)",
+       "output": "Samosa\n3\n45"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "pack.py (deck slide 41's program, on the Maggi order), empty output. Caption: <q>No brackets. What will it print?</q> Choices <q>An error</q>, <q><class 'tuple'></q>.",
+       "say": "Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "Maggi, 2 and 60 are packed into one locked row, which goes into order. The output fills <q><class 'tuple'> / ('Maggi', 2, 60)</q>. Under it: <q>() brackets are optional while creating tuples.</q>",
+       "say": "The commas pack it. That is why the comma, not the bracket, makes a tuple."
+      },
+      {
+       "screen": "pack_unpack.py (deck slide 43's idea), three empty boxes item, qty, price, empty output.",
+       "say": "Teja orders 3 samosas for 45. Say the three lines.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "\"Samosa\", 3, 45 pack into a row on the right, then the row unpacks into item, qty, price. Output <q>Samosa / 3 / 45</q>. Caption: <q>Pack on the right. Unpack on the left.</q>",
+       "say": "Two moves in one line: pack, then unpack."
+      }
+     ],
+     "answer": "<class 'tuple'> / ('Maggi', 2, 60); Samosa / 3 / 45",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A tuple is drawn as a row of cells with its index under each cell, from 0, the same as a list. A list's row has round handles you can grab; a tuple's row has a small lock and no handles.",
+      "On press 4 the packing happens first and the unpacking second, as two movements.",
+      "While it moves, this stays exactly as it was: Each value: packing copies nothing away and changes no value; the same three sit in the row.",
+      "Keep these exact values. Someone who thinks without brackets, commas give an error would say An error; Python gives <class 'tuple'>\n('Maggi', 2, 60). New values could hide that mistake."
+     ],
+     "play": "The pack and unpack movements. Same boxes as C15, E1 and G2.",
+     "engage": "motion",
+     "ops": [
+      "t = a, b"
+     ],
+     "motion": "Values joined by commas slide together into one locked row; on press 4 that row then splits into the name boxes. It proves the commas make the tuple, and one line can pack and unpack.",
+     "keeps": "Each value: packing copies nothing away and changes no value; the same three sit in the row.",
+     "trap": {
+      "belief": "without brackets, commas give an error",
+      "wrong": "An error",
+      "code": 0
+     },
+     "press_count": 4
+    },
+    {
+     "id": "C17",
+     "title": "Returning multiple values",
+     "source": [
+      44
+     ],
+     "purpose": "return each, left packs two values into one tuple; each, left = ... unpacks it. That is how a function gives back two values.",
+     "heading": "Returning multiple values",
+     "show": [
+      "Teja and two friends split the ₹50 bill.",
+      "What does result hold?",
+      "16",
+      "(16, 2)",
+      "An error",
+      "return packs. The left side unpacks."
+     ],
+     "code": [
+      {
+       "file": "return_one.py",
+       "src": "def split_bill(total, people):\n    each = total // people\n    left = total % people\n    return each, left\n\nresult = split_bill(50, 3)\nprint(result)",
+       "output": "(16, 2)"
+      },
+      {
+       "file": "return_two.py",
+       "src": "def split_bill(total, people):\n    each = total // people\n    left = total % people\n    return each, left\n\neach, left = split_bill(50, 3)\nprint(each)\nprint(left)",
+       "output": "16\n2"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Caption: <q>Teja and two friends split the ₹50 bill.</q> return_one.py: deck slide 44's idea, a function that gives back two values, called with result = ... and print(result). Empty output. <q>What does result hold?</q> Choices <q>16</q>, <q>(16, 2)</q>, <q>An error</q>.",
+       "say": "Each friend pays 16, and 2 rupees are left over. The function returns two things. One name catches it. Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "16 and 2 leave the function packed in one row. The output fills <q>(16, 2)</q>.",
+       "say": "return packed them into one tuple."
+      },
+      {
+       "screen": "Line 6 becomes each, left = ... (deck slide 44's way). Two empty boxes each and left. Empty output.",
+       "say": "Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "The row comes out of the function and unpacks into each and left. Output <q>16 / 2</q>. Caption: <q>return packs. The left side unpacks.</q>",
+       "say": "That is how one function gives back two values. Task 2 needs it."
+      }
+     ],
+     "answer": "(16, 2); then 16 / 2",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "The packed row is drawn travelling from the return line to the call line.",
+      "While it moves, this stays exactly as it was: The bill, ₹50, and the function's lines: only line 6 changes between the two runs.",
+      "Keep these exact values. Someone who thinks return each, left gives back only the first value would say 16; Python gives (16, 2). New values could hide that mistake."
+     ],
+     "play": "The function as a box with its return door; the row travels out of it. The bill can be the canteen's.",
+     "engage": "motion",
+     "ops": [
+      "return a, b"
+     ],
+     "motion": "A packed row of two cells travels from the return line to the call line, then splits into two boxes. It proves return gives back one tuple, and the left side unpacks it.",
+     "keeps": "The bill, ₹50, and the function's lines: only line 6 changes between the two runs.",
+     "trap": {
+      "belief": "return each, left gives back only the first value",
+      "wrong": "16",
+      "code": 0
+     },
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Task 2: Teja's week of payments",
+   "kind": "activity",
+   "mins": 7,
+   "start": 60,
+   "cards": [
+    {
+     "id": "T2",
+     "title": "Task 2: Teja's week of payments",
+     "source": "new",
+     "handout": "Task 2",
+     "activity": 11,
+     "timer": 420,
+     "engage": "task",
+     "purpose": "Finish a function that adds up a week of payments and counts the big ones, and give both back with one return. Unpack them into two names. Then use my notes' one name and find the tuple.",
+     "heading": "Teja's week",
+     "show": [
+      "Worksheet · Task 2",
+      "How much did Teja spend this week, and how many payments were over ₹100?",
+      "Write line 8 and line 11. Predict. Run.",
+      "My notes say spent = week_report(week). Change line 11. Run."
+     ],
+     "code": [
+      {
+       "file": "week.py",
+       "src": "def week_report(payments):\n    total = 0\n    big = 0\n    for amount in payments:\n        total += amount\n        if amount > 100:\n            big += 1\n    return total, big\n\nweek = (40, 120, 35, 250, 60)\nspent, count = week_report(week)\nprint(\"Spent\", spent)\nprint(\"Big payments\", count)",
+       "output": "Spent 505\nBig payments 2"
+      },
+      {
+       "file": "week_b.py",
+       "src": "def week_report(payments):\n    total = 0\n    big = 0\n    for amount in payments:\n        total += amount\n        if amount > 100:\n            big += 1\n    return total, big\n\nweek = (150, 20, 300, 110)\nspent, count = week_report(week)\nprint(\"Spent\", spent)\nprint(\"Big payments\", count)",
+       "output": "Spent 580\nBig payments 3"
+      },
+      {
+       "file": "week_my_notes.py",
+       "src": "def week_report(payments):\n    total = 0\n    big = 0\n    for amount in payments:\n        total += amount\n        if amount > 100:\n            big += 1\n    return total, big\n\nweek = (40, 120, 35, 250, 60)\nspent = week_report(week)\nprint(\"Spent\", spent)\nprint(\"Big payments\", count)",
+       "output": "Spent (505, 2)\nNameError: name 'count' is not defined"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The question <q>How much did Teja spend this week, and how many payments were over ₹100?</q> and Teja's week as five PhonePe rows.",
+       "say": "Two answers from one function. Which card showed us how?",
+       "room": "Say: return two values."
+      },
+      {
+       "screen": "week.py with lines 8 and 11 as empty dashed lines, the steps and a 7 minute timer. Caption: <q>Write line 8 and line 11. Predict. Run.</q>",
+       "say": "Worksheet and playground. Type it, write the two lines, predict, run.",
+       "room": "Type, write, predict, run."
+      },
+      {
+       "screen": "Step 2 lights: <q>My notes say spent = week_report(week). Change line 11. Run.</q>",
+       "say": "This is how I wrote it in my notes. Let them react first.",
+       "room": "Change, run."
+      },
+      {
+       "screen": "Line 8 fills <q>return total, big</q> and line 11 fills <q>spent, count = week_report(week)</q>.",
+       "say": "Pack on return, unpack on the call."
+      },
+      {
+       "screen": "The output: <q>Spent 505 / Big payments 2</q>. Then with a second week: <q>Spent 580 / Big payments 3</q>.",
+       "say": "The function works for any week."
+      },
+      {
+       "screen": "My notes' version: <q>Spent (505, 2) / NameError: name 'count' is not defined</q>. spent is drawn holding a row of two cells.",
+       "say": "One name caught the whole tuple. And count was never made."
+      }
+     ],
+     "answer": "Line 8: return total, big. Line 11: spent, count = week_report(week). Spent 505 / Big payments 2. Second week: Spent 580 / Big payments 3. My notes: Spent (505, 2) / NameError: name 'count' is not defined",
+     "must": [
+      "Step 2 is framed as the instructor's own notes, not a test.",
+      "No result shows until the timer has ended."
+     ],
+     "must_not": [
+      "Show line 8 or 11 before the timer has ended."
+     ],
+     "data": {
+      "week": [
+       40,
+       120,
+       35,
+       250,
+       60
+      ],
+      "week_b": [
+       150,
+       20,
+       300,
+       110
+      ],
+      "limit": 100
+     },
+     "play": "The week as PhonePe History rows beside the code. The timer and steps layout is yours.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Exit: which order prints nothing?",
+   "kind": "exit",
+   "mins": 4,
+   "start": 67,
+   "cards": [
+    {
+     "id": "X1",
+     "title": "Exit: which order prints nothing?",
+     "source": "new",
+     "activity": 1,
+     "timer": 150,
+     "engage": "task",
+     "purpose": "Check packing, unpacking and the comma together: the room must try each line 1 and find the only one that runs to the end with no output.",
+     "heading": "Which order prints nothing?",
+     "show": [
+      "The canteen app prints an order's item only if its price is over ₹100.",
+      "Which line 1 runs to the end and prints nothing at all?"
+     ],
+     "code": [
+      {
+       "file": "order.py",
+       "src": "order = ___\nitem, price = order\nif price > 100:\n    print(item)"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Story line, order.py with line numbers and line 1's blank, the question, and options: A <q>(\"Tea, 20\")</q>, B <q>(\"Tea\", \"20\")</q>, C <q>\"Tea\", 20</q>, D <q>(\"Tea\", 20, 0)</q>. A 2:30 timer.",
+       "say": "Everyone answers alone. Then option A, hands up. B. C. D.",
+       "room": "Hands up per option."
+      },
+      {
+       "screen": "The right option marks, and every option shows what it prints (or its error) and its why line, as in data.",
+       "say": "Go through every option, not only the right one."
+      }
+     ],
+     "answer": "C, \"Tea\", 20. (\"Tea, 20\"): ValueError: too many values to unpack (expected 2). (\"Tea\", \"20\"): TypeError: '>' not supported between instances of 'str' and 'int'. \"Tea\", 20: prints nothing. (\"Tea\", 20, 0): ValueError: too many values to unpack (expected 2).",
+     "must_not": [
+      "Show any output before the second press."
+     ],
+     "data": {
+      "options": [
+       {
+        "line1": "(\"Tea, 20\")",
+        "prints": "ValueError: too many values to unpack (expected 2)",
+        "why": "The comma is inside the quotes: one string of 7 letters. Two names cannot take 7 values: ValueError."
+       },
+       {
+        "line1": "(\"Tea\", \"20\")",
+        "prints": "TypeError: '>' not supported between instances of 'str' and 'int'",
+        "why": "Unpacking works, but price is the text \"20\". Text cannot be compared with 100: TypeError."
+       },
+       {
+        "line1": "\"Tea\", 20",
+        "prints": "",
+        "why": "No brackets, but the comma packs a tuple. item is Tea, price is 20. 20 is not over 100, so nothing prints."
+       },
+       {
+        "line1": "(\"Tea\", 20, 0)",
+        "prints": "ValueError: too many values to unpack (expected 2)",
+        "why": "Three values, two names. Python counts first: ValueError. The extra 0 is not ignored."
+       }
+      ],
+      "right": "C"
+     },
+     "play": "Layout. It can sit on a canteen order screen.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Key takeaways: the example board",
+   "kind": "buffer",
+   "mins": 2,
+   "start": 71,
+   "cards": [
+    {
+     "id": "K1",
+     "title": "Today in six examples",
+     "source": "new",
+     "purpose": "Six real programs from today, each with what it prints and the rule it shows.",
+     "heading": "Today, in six examples",
+     "show": [
+      "No return gives back None",
+      "Python's value for nothing.",
+      "The comma makes a tuple",
+      "(10) is just the number 10.",
+      "Read it, never change it",
+      "To change it, make a new tuple.",
+      "in checks whole items",
+      "not in asks the opposite.",
+      "One name per value",
+      "The counts must match.",
+      "return packs, the left side unpacks",
+      "Two values out of one function."
+     ],
+     "code": [
+      {
+       "file": "No return gives back None",
+       "src": "def add_tip(bill):\n    bill += 10\n\nprint(add_tip(50))",
+       "output": "None"
+      },
+      {
+       "file": "The comma makes a tuple",
+       "src": "tip = (10,)\nprint(type(tip))",
+       "output": "<class 'tuple'>"
+      },
+      {
+       "file": "Read it, never change it",
+       "src": "prices = (20, 15, 30)\nprint(prices[0])\nprices[0] = 25",
+       "output": "20\nTypeError: 'tuple' object does not support item assignment"
+      },
+      {
+       "file": "in checks whole items",
+       "src": "print(\"Tea\" in (\"Tea\", 20))",
+       "output": "True"
+      },
+      {
+       "file": "One name per value",
+       "src": "item, price = (\"Tea\", 20)\nprint(price)",
+       "output": "20"
+      },
+      {
+       "file": "return packs, the left side unpacks",
+       "src": "def split_bill(total, people):\n    each = total // people\n    left = total % people\n    return each, left\n\neach, left = split_bill(50, 3)\nprint(each)",
+       "output": "16"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Example 1's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 2's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 3's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 4's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 5's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 6's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      }
+     ],
+     "must": [
+      "All six slots are there from press 1, empty.",
+      "Examples, not a concept map.",
+      "Each result shows only after the room has said it.",
+      "Keep these exact values. Someone who thinks (10,) is just the number 10 would say <class 'int'>; Python gives <class 'tuple'>. New values could hide that mistake."
+     ],
+     "play": "The grid, and the locked row from the hook under the tuple examples.",
+     "engage": "play",
+     "interaction": "For each example the room says the output together before its result fills.",
+     "trap": {
+      "belief": "(10,) is just the number 10",
+      "wrong": "<class 'int'>",
+      "code": 1
+     },
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Feedback",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 73,
+   "cards": [
+    {
+     "id": "S-FEEDBACK",
+     "title": "Feedback",
+     "source": "spine:feedback",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Thank you",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 74,
+   "cards": [
+    {
+     "id": "S-THANKYOU",
+     "title": "Thankyou",
+     "source": "spine:thankyou",
+     "press_count": 0
+    }
+   ]
+  }
+ ]
+}

@@ -1508,11 +1508,59 @@ the box edge it points at, rule 42) and straighten the line's end, never
 the other way round. Build it into the path every arrow uses (in PF 20,
 `M · C · L`: the curve, then a straight `L` into the tip), not slide by slide.
 
+**The joint, exactly** (user, 2026-10-08, Python session 27, "apply to every
+slide, and add as a permanent rule"): the line ends at the centre of the
+head's base. No gap between them, and no overlap: the line's end is a butt
+cap at the base, never a round cap or a stretch of line running on under the
+head. The head is a separate small triangle (about 9px long and 9px wide on a
+3px line) whose base centre is the line's last point, so line and head share
+one axis. A head that draws itself in appears once the line has reached it.
+
 **Check:** zoom into every arrow at every build step: converging arrows, a
 re-pointed arrow after it moves, and arrows that come in at an angle.
+
+Why (the joint): user, 2026-10-08, on Python session 27
+(`Outputs/python/27_sets`), slide 3's join lines and every other arrow:
+*"Arrowheads must be smaller than the current size. The base of each
+arrowhead must connect to the end of its connecting line with no gap and no
+overlap. The line must meet the arrowhead at the center of the arrowhead's
+base."* The recap drew its heads as SVG markers in stroke units (too big),
+with round line caps running into the head.
 
 Why: user, 2026-10-06, on Python session 20 (`Outputs/python/20_working_with_lists`),
 slide 22: *"The arrow head is already centred on the box. The problem is
 that the orange connecting line is not centred on the arrow head."* Two
 arrows converging on one row landed 12px apart, and with only 26px of run
 the curve was still turning under the head.
+
+## 47. A label, annotation or callout never sits on a code box or any other box
+
+**Hard rule.** Text placed on a slide to point at something (a callout, an
+annotation, the label of a ring or highlight, a tag joined by a line) has
+space of its own. It never sits on top of a code block, a terminal, a card, a
+panel or any other element, at any build step. Its connector line may reach
+into the box to the thing it names; the words stay outside, with a visible
+gap.
+
+When space is tight, change the layout: move the label to clear space, grow
+the lane it sits in, shift or resize the box. Never let the two overlap, and
+never shrink the label's type to squeeze it in.
+
+Fix it where the label is placed (for a ring label, the `lift` that sets how
+far above the ring it sits), and check the step where the label first
+appears, because that is often the step where the box also moves.
+
+**Check, on the built file, before a deck is delivered:** `node
+overlap-check.mjs` (Python 22 carries the version that tests this; copy it to
+the session root). It tests every absolutely placed piece of text against
+every box it is not inside (bordered, ringed, a code block, any opaque
+panel) at every build step, and reports any overlap above 2px. Text set
+wholly inside an empty shape, such as the agenda mark, is that shape's own
+label and is not flagged.
+
+Why: user, 2026-10-07, on Python session 22 (`Outputs/python/22_functions`),
+slide 16: the sentence *"This slot is called an argument"* sat on the top
+edge of the code box (12px into the title bar). It was the label of a
+`TokenRing` lifted 44px above `friend`, which is less than the distance to
+the box's top edge. Fixed by lifting it to 74px, an 18px gap. Rule 42's check
+covered arrows only, so no harness saw it.

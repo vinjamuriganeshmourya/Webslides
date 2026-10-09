@@ -4,11 +4,13 @@ import { colors, easing } from '@/design/tokens'
 import { useBeats, useTween } from '@/ui'
 import { useInstant } from '@/motion/instant'
 import { StepControls } from './controls'
-import { Ask, Show, sentences } from './pieces'
+import { Ask, sentences } from './pieces'
 import { StepCaption } from './trace'
 import { CallCode } from './call'
 import { Phone, CHAT } from './Phone'
-import { Bubble, Cake, CakeBox, Person } from './People'
+import { AnimatePresence } from 'framer-motion'
+import { Bubble, Cake, CakeBox } from './People'
+import { AMMA, BAKER, Idling, Posed, RAHUL, RIYA, TEJA } from './Cast'
 import { PartyTV } from './Game'
 import { TokenRing } from './call'
 import { useRef } from 'react'
@@ -122,14 +124,14 @@ function PartyPhone({ call }: { call: boolean }) {
             {/* Amma's tile */}
             <div className="absolute inset-x-2.5 top-2.5 bottom-[66px] overflow-hidden rounded-2xl" style={{ background: 'linear-gradient(180deg,#3E5F55,#24413A)' }}>
               <div className="absolute inset-x-0 bottom-0 flex justify-center">
-                <Person shirt="#B24A7A" skin={1} height={150} hair="long" mouth="open" />
+                <Posed cfg={AMMA} expression="happy" gesture="wave" at={0.9} scale={0.46} crop={{ x0: 60, y0: 10, x1: 340, y1: 392 }} />
               </div>
               <span className="absolute left-2 top-2 rounded-md bg-black/35 px-1.5 py-0.5 text-[11px] font-semibold text-white">Amma</span>
             </div>
             {/* the room's own small tile */}
             <div className="absolute right-4 top-4 h-[66px] w-[48px] overflow-hidden rounded-lg ring-2 ring-white/70" style={{ background: colors.night2 }}>
-              <div className="absolute inset-x-0 bottom-0 flex justify-center">
-                <Person shirt={colors.accent} skin={0} height={52} />
+              <div className="absolute inset-0 flex justify-center">
+                <Posed cfg={TEJA} expression="grin" scale={0.3} crop={{ x0: 120, y0: 40, x1: 280, y1: 260 }} />
               </div>
             </div>
             {/* call buttons */}
@@ -160,7 +162,7 @@ function PartyPhone({ call }: { call: boolean }) {
 }
 
 /** The hostel room at night: window, string lights, friends, the cake on a table. */
-function Room({ sung }: { sung: boolean }) {
+function Room() {
   return (
     <div className="relative h-full w-full overflow-hidden rounded-[22px]" style={{ background: `linear-gradient(180deg, ${colors.night2} 0%, ${colors.night3} 100%)` }}>
       <svg className="absolute inset-0" width="100%" height="100%" viewBox="0 0 528 300" preserveAspectRatio="xMidYMax slice" aria-hidden>
@@ -185,12 +187,14 @@ function Room({ sung }: { sung: boolean }) {
         <rect x={10} y={264} width={508} height={40} fill="#4E3524" />
       </svg>
       {/* friends behind the table */}
+      {/* friends behind the table, from the Character Lab: Rahul left, Teja and Riya right. Each holds one
+          base pose for the whole slide, alive with breathing, a slow sway and a small hand drift (user, 2026-10-07) */}
       <div className="absolute bottom-[50px] left-[4px] flex items-end gap-0">
-        <Person shirt={colors.teal} skin={2} height={140} mouth={sung ? 'open' : 'smile'} arms={sung ? 'up' : 'down'} />
+        <Idling cfg={RAHUL} expression="happy" seed={5} scale={0.41} />
       </div>
-      <div className="absolute bottom-[50px] right-[4px] flex items-end">
-        <Person shirt={colors.accent} skin={0} height={146} mouth={sung ? 'open' : 'smile'} />
-        <Person shirt={colors.brand} skin={1} height={140} hair="long" mouth={sung ? 'open' : 'smile'} arms={sung ? 'up' : 'down'} />
+      <div className="absolute bottom-[50px] right-[4px] flex items-end gap-1.5">
+        <Idling cfg={TEJA} expression="happy" seed={7} scale={0.43} />
+        <Idling cfg={RIYA} expression="happy" seed={9} scale={0.41} crop={{ x0: 90, y0: 0, x1: 310, y1: 392 }} />
       </div>
       {/* the cake */}
       <div className="absolute bottom-[50px] left-1/2 -translate-x-1/2">
@@ -285,7 +289,7 @@ export function SongHook() {
           {/* the scene */}
           <div className="absolute inset-0 flex gap-3" style={{ opacity: folded ? 0 : 1, transition: tween }}>
             <div className="relative h-full min-w-0 flex-1">
-              <Room sung={beat >= 2} />
+              <Room />
               <div className="absolute left-1/2 top-[20px] -translate-x-1/2 rounded-xl px-4 py-1.5" style={{ background: beat >= 2 && !folded ? 'rgba(8,16,38,0.55)' : 'transparent', transition: tween }}>
                 <SongLines on={beat >= 2 && !folded} light size={16} />
               </div>
@@ -351,7 +355,7 @@ export function OneSongHook() {
       <div className="flex items-start gap-7">
         <div ref={host} className="relative shrink-0" style={{ width: 486, marginTop: beat >= 5 ? 52 : 0 }}>
           <CallCode key={prog.src} code={prog.src} fs={fs} />
-          <TokenRing host={host} line={1} token="friend" on={beat >= 5} label={beat >= 5 ? sentences(H2.show[6])[0] : null} side="above" lift={44} />
+          <TokenRing host={host} line={1} token="friend" on={beat >= 5} label={beat >= 5 ? sentences(H2.show[6])[0] : null} side="above" lift={74} />
         </div>
         <div className="flex min-w-0 flex-1 flex-col items-center gap-3">
           <PartyTV lines={shownLines} w={420} h={beat >= 3 ? 190 : 160} red={red} label="Rahul's party" />
@@ -373,6 +377,7 @@ const C10 = SPEC.C10
 
 /** The bakery's front: an awning, a counter, the shop sign. */
 function Shop({ children, width = 520, height = 226 }: { children: ReactNode; width?: number; height?: number }) {
+  /* the counter sits in front of the people, so a half-body figure stands behind it */
   return (
     <div className="relative overflow-hidden rounded-[20px]" style={{ width, height, background: '#FFF8F0', boxShadow: `inset 0 0 0 1.5px ${colors.line}` }}>
       <svg className="absolute inset-x-0 top-0" width={width} height={34} aria-hidden>
@@ -380,8 +385,8 @@ function Shop({ children, width = 520, height = 226 }: { children: ReactNode; wi
           <path key={i} d={`M ${i * 40} 0 H ${i * 40 + 40} V 22 Q ${i * 40 + 20} 36 ${i * 40} 22 Z`} fill={i % 2 ? '#FFFFFF' : colors.accent} />
         ))}
       </svg>
-      <div className="absolute inset-x-0 bottom-0 h-[64px]" style={{ background: '#C9935F', boxShadow: 'inset 0 6px 0 #DDAA75' }} />
       {children}
+      <div className="absolute inset-x-0 bottom-0 z-10 h-[64px]" style={{ background: '#C9935F', boxShadow: 'inset 0 6px 0 #DDAA75' }} />
     </div>
   )
 }
@@ -394,69 +399,97 @@ function Shop({ children, width = 520, height = 226 }: { children: ReactNode; wi
  */
 export function Bakery() {
   const beat = useBeats(4)
-  const tween = useTween(520)
+  const instant = useInstant()
+  /* One house curve and one duration for every change on this card: the
+     scene leaves, the two ways arrive, way B and the question reveal, all at
+     520ms on easing.soft, transform and opacity only (generate-slides 4b). */
+  const T = { duration: instant ? 0 : 0.52, ease: easing.soft }
+  /* The two stages cross-dissolve in place: the counter scene fades out over
+     420ms while the two ways fade up over 520ms starting 120ms in, so there
+     is never an empty frame between them and nothing jumps. */
+  const enter = () => ({
+    initial: instant ? false : ({ opacity: 0, y: 12 } as const),
+    animate: { opacity: 1, y: 0, transition: { ...T, delay: instant ? 0 : 0.12 } },
+    exit: { opacity: 0, y: -6, transition: { duration: instant ? 0 : 0.42, ease: easing.soft } },
+  })
   return (
     <>
-      {beat === 1 ? (
-        <div className="flex justify-center">
-          <Shop width={760} height={400}>
-            <div className="absolute bottom-[40px] left-[120px]">
-              <Person shirt={colors.brand} skin={0} height={230} />
+      <div className="relative" style={{ height: 410 }}>
+      <AnimatePresence initial={false}>
+        {beat === 1 ? (
+          <motion.div key="counter" className="absolute inset-x-0 top-0 flex justify-center" {...enter()}>
+            <Shop width={760} height={400}>
+              <div className="absolute bottom-[40px] left-[96px]">
+                <Posed key="rahul-ask" cfg={RAHUL} expression="happy" gesture="presentRight" amplitude={0.72} at={1.0} say="Write Happy Birthday Teja on the cake" scale={0.66} crop={{ x0: 60, y0: 30, x1: 400, y1: 392 }} />
+              </div>
+              <div className="absolute bottom-[40px] right-[120px]">
+                <Posed key="baker-listen" cfg={BAKER} props expression="listening" scale={0.66} crop={{ x0: 90, y0: 0, x1: 310, y1: 392 }} />
+              </div>
+              <div className="absolute left-[300px] top-[64px] w-[250px]">
+                <Bubble tail="left" size={20}>
+                  {C10.show[0].replace(/\.$/, '')}
+                </Bubble>
+              </div>
+            </Shop>
+          </motion.div>
+        ) : (
+          <motion.div key="ways" className="absolute inset-x-0 top-0 flex flex-col gap-3" {...enter()}>
+            <div className="flex justify-center gap-6">
+              {/* way A: print */}
+              <div className="flex flex-col gap-2.5">
+                <span className="text-[15px] font-bold uppercase tracking-wider" style={{ color: colors.accentDark }}>
+                  Way A
+                </span>
+                <Shop>
+                  <div className="absolute bottom-[40px] right-[30px]">
+                    <Posed key="baker-shout" cfg={BAKER} props expression="excited" gesture="handsSpread" at={1.0} say="Happy Birthday Teja" scale={0.45} crop={{ x0: 60, y0: 0, x1: 340, y1: 392 }} />
+                  </div>
+                  <div className="absolute right-[150px] top-[34px]">
+                    <Bubble tone="shout" tail="right" size={19}>
+                      {C10.show[1]}
+                    </Bubble>
+                  </div>
+                  <div className="absolute bottom-[40px] left-[22px]">
+                    <Posed key="rahul-empty" cfg={RAHUL} expression="sad" gesture="shrug" at={1.0} scale={0.42} crop={{ x0: 40, y0: 30, x1: 360, y1: 392 }} />
+                  </div>
+                </Shop>
+                <StepCaption text={C10.show[2]} size={17} minH={52} />
+              </div>
+              {/* way B: return */}
+              <motion.div
+                className="flex flex-col gap-2.5"
+                initial={false}
+                animate={{ opacity: beat >= 3 ? 1 : 0, y: beat >= 3 ? 0 : 14 }}
+                transition={T}
+              >
+                <span className="text-[15px] font-bold uppercase tracking-wider" style={{ color: colors.success }}>
+                  Way B
+                </span>
+                <Shop>
+                  <div className="absolute bottom-[40px] right-[22px]">
+                    {beat >= 3 && <Posed key="baker-hand" cfg={BAKER} props expression="happy" gesture="presentLeft" amplitude={0.72} at={1.0} scale={0.45} crop={{ x0: 0, y0: 0, x1: 310, y1: 392 }} />}
+                  </div>
+                  <div className="absolute bottom-[40px] left-[40px]">
+                    {beat >= 3 && (
+                      <Posed key="rahul-carry" cfg={RAHUL} expression="happy" gesture="namaste" at={1.0} scale={0.45}>
+                        {/* the cake box, held in both hands at the chest */}
+                        <div className="absolute" style={{ left: (200 - 76 - 90) * 0.45, top: (226 - 30) * 0.45 }}>
+                          <CakeBox width={152 * 0.45} />
+                        </div>
+                      </Posed>
+                    )}
+                  </div>
+                </Shop>
+                <StepCaption text={beat >= 3 ? C10.show[3] : null} size={17} minH={52} />
+              </motion.div>
             </div>
-            <div className="absolute bottom-[40px] right-[150px]">
-              <Person shirt="#E8E2D6" skin={1} height={240} hat apron flip />
-            </div>
-            <div className="absolute left-[270px] top-[70px] w-[260px]">
-              <Bubble tail="left" size={20}>
-                {C10.show[0].replace(/\.$/, '')}
-              </Bubble>
-            </div>
-          </Shop>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-3">
-          <div className="flex justify-center gap-6">
-            {/* way A: print */}
-            <div className="flex flex-col gap-2.5">
-              <span className="text-[15px] font-bold uppercase tracking-wider" style={{ color: colors.accentDark }}>
-                Way A
-              </span>
-              <Shop>
-                <div className="absolute bottom-[40px] right-[40px]">
-                  <Person shirt="#E8E2D6" skin={1} height={168} hat apron mouth="open" flip />
-                </div>
-                <div className="absolute right-[150px] top-[34px]">
-                  <Bubble tone="shout" tail="right" size={19}>
-                    {C10.show[1]}
-                  </Bubble>
-                </div>
-                <div className="absolute bottom-[40px] left-[40px]">
-                  <Person shirt={colors.brand} skin={0} height={156} mouth="flat" arms="out" />
-                </div>
-              </Shop>
-              <StepCaption text={C10.show[2]} size={17} minH={52} />
-            </div>
-            {/* way B: return */}
-            <div className="flex flex-col gap-2.5" style={{ opacity: beat >= 3 ? 1 : 0.0, transform: beat >= 3 ? 'none' : 'translateY(8px)', transition: tween }}>
-              <span className="text-[15px] font-bold uppercase tracking-wider" style={{ color: colors.success }}>
-                Way B
-              </span>
-              <Shop>
-                <div className="absolute bottom-[40px] right-[40px]">
-                  <Person shirt="#E8E2D6" skin={1} height={168} hat apron flip />
-                </div>
-                <div className="absolute bottom-[40px] left-[40px]">
-                  <Person shirt={colors.brand} skin={0} height={168} arms="out" hold={<CakeBox width={80} />} />
-                </div>
-              </Shop>
-              <StepCaption text={beat >= 3 ? C10.show[3] : null} size={17} minH={52} />
-            </div>
-          </div>
-          <Show on={beat >= 4} className="flex justify-center">
-            <Ask size={26}>{C10.show[4]}</Ask>
-          </Show>
-        </div>
-      )}
+            <motion.div className="flex justify-center" initial={false} animate={{ opacity: beat >= 4 ? 1 : 0, y: beat >= 4 ? 0 : 10 }} transition={T}>
+              <Ask size={26}>{C10.show[4]}</Ask>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      </div>
       <StepControls at={beat} total={4} />
     </>
   )

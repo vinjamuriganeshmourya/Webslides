@@ -1,0 +1,2948 @@
+{
+ "meta": {
+  "session": "27 - Sets",
+  "course": "Programming Foundations",
+  "one_idea": "A set keeps each value once and in no order, so you ask it whether a value is there and how many there are, never where. add and update put values in once; discard and remove take them out.",
+  "outcomes": [
+   "Make a set with curly brackets, and an empty set with set().",
+   "Say why a set prints in a different order, and why it has no index.",
+   "Predict the length of a set made from values with repeats.",
+   "Say which values can go in a set (a string, a number, a tuple) and which cannot (a list).",
+   "Turn a list or a string into a set with set().",
+   "Change a set with add, update, discard and remove, and say when remove gives a KeyError.",
+   "Use len, in, a for loop and clear on a set."
+  ],
+  "previous": "26 - Tuples and Sequences",
+  "slides_dir": "C:\\Lesson Plans New\\builds\\build-27-sets\\work\\slides",
+  "deck_total": 39,
+  "kept": [
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   26,
+   27,
+   28,
+   29,
+   30,
+   31
+  ],
+  "cuts": [
+   [
+    "1-2",
+    "Welcome and deck title. The fixed spine cards replace them."
+   ],
+   [
+    "3-11",
+    "The deck's tuple recap. Its content becomes S-RECAP, a match recap the room commits to."
+   ],
+   [
+    "12-13",
+    "Last session's daily challenge and its fix, tuple(a). One spoken line in the guide."
+   ],
+   [
+    "14",
+    "Agenda. Its three stops become S-AGENDA."
+   ],
+   [
+    "15",
+    "Data structures list. One spoken line on C1."
+   ],
+   [
+    "25",
+    "Same error as slide 24. Its line \"But, sets are mutable\" opens Hook 2 (H2)."
+   ],
+   [
+    "32-33",
+    "Bullet takeaways. Replaced by K1, the example board."
+   ],
+   [
+    "34, 36",
+    "Practice picture and the next session's name. One spoken line in the guide."
+   ],
+   [
+    "35, 38-39",
+    "Feedback, thank you, all the best. The fixed spine cards replace them."
+   ],
+   [
+    "37",
+    "Daily challenge: update(\"pen\") adds the letters p, e and n. Its idea is the trap on C9, in G2's round 3, on K1 and in the exit, so the slide itself is not shown."
+   ]
+  ],
+  "defects": [
+   [
+    "slide 28",
+    "The output is typed as {2, 1, 3, 9}. Python prints {1, 2, 3, 9}.",
+    "C9 uses names and its output comes from running the code."
+   ],
+   [
+    "slides 26 to 29",
+    "The code uses small whole numbers, {1, 3, 6, 2, 9}. Python prints small whole numbers in sorted order, so the room learns that a set sorts its items, the opposite of slide 18.",
+    "Every card uses the Instagram names instead. C3 shows {40, 15, 120} printing as {40, 120, 15}: not sorted, not the typed order."
+   ],
+   [
+    "slide 20",
+    "The deck prints TypeError: unhashable type: 'list'. Python 3.14 prints cannot use 'list' as a set element (unhashable type: 'list').",
+    "The spec keeps the deck's wording, which matches the class playground. If the playground is upgraded, the error will carry the extra words."
+   ],
+   [
+    "slide 21",
+    "It says set() makes an empty set but never says what {} makes, which is what students type.",
+    "C6 asks it: {} is a dictionary, not a set."
+   ],
+   [
+    "slide 31",
+    "It names clear(), len(), iterating and membership check but shows no code for any of them.",
+    "C12 runs all four on the Close Friends list, and the room says each output first."
+   ],
+   [
+    "slides 16 to 31",
+    "The concept slides teach on made-up data: (5, \"Six\", a, 8.2), \"a\", \"b\", \"c\", \"apple\", 1, 2, 3. A student who has a rule wrong still gets several of them right.",
+    "Every concept card uses Teja's Instagram story instead. Each card names the wrong idea it catches, and the build checks that the wrong idea gives a different answer."
+   ]
+  ],
+  "notes": [
+   "The room is 50 to 60 first-year students on laptops. Laptops stay shut except on T1, the game G1, T2 and the classroom quiz, where only the worksheet tab and the playground are open.",
+   "One world for the session: Teja's Instagram story, a photo of a plate of Maggi at the Sri Sai Canteen. The hook (H1), the explainer (E1), Task 1, Hook 2 and the exit use the story's viewers. The second half uses Teja's Close Friends list, also on Instagram. Teja is the same student as last session's canteen payment.",
+   "The story was opened 7 times: Ravi 4 times, Anu twice, Kiran once. Instagram's viewer sheet shows 3 names. These numbers are the same on every card that uses them.",
+   "Two games: G1 (tap to classify, from the library) before the quiz, and G2 (who gets in, a new concept game for add, update, discard, remove and clear) after the removing cards.",
+   "One picture for the whole session: A set is drawn as a round bag of chips, the way deck slide 16 draws it: no numbers under the chips, no first and no last. A list or a tuple stays a row of cells with 0, 1, 2 under them.",
+   "A printed set may show its items in another order on a student's laptop. The outputs here were printed with one fixed run. Never mark an answer wrong for its order. So no question in this session asks for an order: only a count, True or False, or an error.",
+   "Words on screen: say set, say each item once, say no order. The deck's words immutable and unhashable appear once each, glossed in plain words. Never say hash, object or data type in a sentence.",
+   "Votes are taken option by option: the instructor reads each option and asks how many think it is that one. Hands up. Nobody is named.",
+   "Nothing before the title card may say the session's name. The hook shows phones, never code.",
+   "The bar to beat is Plans/DSA/Module 3 - Stacks & Queues/01 - Introduction to Stacks/: a simulation the room drives, a picture that refuses to lie."
+  ],
+  "topics": [
+   "sets",
+   "lists",
+   "tuples"
+  ],
+  "world": "Teja's Instagram story and his Close Friends list",
+  "new_ops": [
+   "{}",
+   "set()",
+   "add()",
+   "update()",
+   "discard()",
+   "remove()",
+   "clear()"
+  ]
+ },
+ "build_contract": [
+  "One self-contained HTML file. It opens offline from a USB stick and makes no network request.",
+  "It opens in presenter view. There is no sidebar, top bar or button the instructor has to use.",
+  "Right arrow or the clicker is one press. Left arrow goes back one press. F goes full screen, A shows all the cards, and End shows the whole card at once. The instructor guide tells the instructor these keys, so they must work.",
+  "Every card is its own screen, in the order of this spec. Press 1 is what shows when the card opens.",
+  "Every card's outer element carries data-spec=\"<card id>\" and data-presses=\"<number of presses>\". The review script reads both.",
+  "No link to any other file. The students' handout and the instructor guide are separate files, and a link from this file is how a class finds the answers."
+ ],
+ "rules": [
+  "No autoplay. Nothing moves on a timer. One press, one move, with a caption that says what just happened.",
+  "Commit, then reveal. Where a card asks a question, the answer shows only on the press after the room has answered.",
+  "Wrong answers stay private. No names, no per-student results on screen. Hands are counted out loud, never shown.",
+  "The topic is named once. Nothing before the title card says today's topic, not a heading, not a caption, not a file name on a code card.",
+  "Words are exact. Words in quotation marks, and every line under Exact words, are final. The rest of a press describes what happens, in your own design. If an exact line does not fit, ask for a new one; do not rewrite it.",
+  "Code is exact. Copy code and outputs from the JSON, never retype them. Every output here came from running the program.",
+  "Simple English. Short sentences, everyday words. No em-dashes anywhere, the page title included.",
+  "Every card moves. A card that introduces an idea steps; a static card is a picture of a lecture."
+ ],
+ "beats": [
+  {
+   "name": "Welcome",
+   "kind": "concept",
+   "mins": 1,
+   "start": 0,
+   "cards": [
+    {
+     "id": "S-WELCOME",
+     "title": "Welcome",
+     "source": "spine:welcome",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap",
+   "kind": "concept",
+   "mins": 1,
+   "start": 1,
+   "cards": [
+    {
+     "id": "S-RECAP-CARD",
+     "title": "Recap card",
+     "source": "spine:recap_card",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap match: tuple code and what it gives",
+   "kind": "quiz",
+   "mins": 3,
+   "start": 2,
+   "cards": [
+    {
+     "id": "S-RECAP",
+     "title": "Recap: match the program to what it gives",
+     "source": "spine:recap",
+     "purpose": "Pull back session 26: (10) is an int, a tuple cannot change, and unpacking puts one value in one name. The TypeError chip sets up today's rule that only things that cannot change go in a set.",
+     "heading": "Match each program to what it gives",
+     "show": [
+      "Teja's canteen from last class.",
+      "Match each program to what it gives.",
+      "20",
+      "TypeError",
+      "<class 'int'>",
+      "Brackets round one number are maths brackets. (10) is 10, an int. A tuple needs the comma.",
+      "A tuple cannot change. Python stops at line 2 with a TypeError.",
+      "Two names, two values. Tea goes to item, 20 goes to price."
+     ],
+     "code": [
+      {
+       "file": "program_a.py",
+       "src": "tip = (10)\nprint(type(tip))",
+       "output": "<class 'int'>"
+      },
+      {
+       "file": "program_b.py",
+       "src": "order = (\"Maggi\", 40)\norder[1] = 35",
+       "output": "TypeError: 'tuple' object does not support item assignment"
+      },
+      {
+       "file": "program_c.py",
+       "src": "item, price = (\"Tea\", 20)\nprint(price)",
+       "output": "20"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Three program tiles on the left, A, B and C, from Teja's canteen (data.programs). Three result tiles on the right, numbered 1 to 3: <q>20</q>, <q>TypeError</q>, <q><class 'int'></q>. Caption: <q>Match each program to what it gives.</q>",
+       "say": "Last class's canteen. Match all three in your notebook first. Then hands.",
+       "room": "Write three pairs, like A-2, in the notebook."
+      },
+      {
+       "screen": "Tile A joins tile 3, <q><class 'int'></q>, with a line. Under the pair: <q>Brackets round one number are maths brackets. (10) is 10, an int. A tuple needs the comma.</q>",
+       "say": "Program A: tile 1, hands up. Tile 2. Tile 3. Then press.",
+       "room": "Hands up for a tile."
+      },
+      {
+       "screen": "Tile B joins tile 2, <q>TypeError</q>, with a line. Under the pair: <q>A tuple cannot change. Python stops at line 2 with a TypeError.</q>",
+       "say": "Program B: tile 1, hands up. Tile 2. Tile 3. Then press.",
+       "room": "Hands up for a tile."
+      },
+      {
+       "screen": "Tile C joins tile 1, <q>20</q>, with a line. Under the pair: <q>Two names, two values. Tea goes to item, 20 goes to price.</q>",
+       "say": "Program C: tile 1, hands up. Tile 2. Tile 3. Then press.",
+       "room": "Hands up for a tile."
+      }
+     ],
+     "interaction": "Format: match. The room writes all three pairs in the notebook, then votes each pair by hands before the press that joins it. Nobody is named.",
+     "must": [
+      "All six tiles are on screen from press 1. The joins happen one per press, in the order A, B, C.",
+      "Tile B's full error line shows under the pair: TypeError: 'tuple' object does not support item assignment"
+     ],
+     "must_not": [
+      "Join a pair before the vote."
+     ],
+     "data": {
+      "programs": {
+       "A": "tip = (10)\nprint(type(tip))",
+       "B": "order = (\"Maggi\", 40)\norder[1] = 35",
+       "C": "item, price = (\"Tea\", 20)\nprint(price)"
+      },
+      "right_tiles": [
+       "20",
+       "TypeError",
+       "<class 'int'>"
+      ],
+      "pairs": [
+       [
+        "A",
+        3
+       ],
+       [
+        "B",
+        2
+       ],
+       [
+        "C",
+        1
+       ]
+      ],
+      "full_outputs": {
+       "A": "<class 'int'>",
+       "B": "TypeError: 'tuple' object does not support item assignment",
+       "C": "20"
+      }
+     },
+     "play": "The tiles and the joining line. The tiles can wear last session's canteen and PhonePe look.",
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Hook: Ravi opened it 4 times, Seen by says 3",
+   "kind": "hook",
+   "mins": 4,
+   "start": 5,
+   "cards": [
+    {
+     "id": "H1",
+     "title": "Seen by 3",
+     "source": "new",
+     "animated": "hook",
+     "engage": "motion",
+     "motion": "A log of opens grows beside the phone, 7 rows; the viewer sheet shows 3 names; Ravi opens it again and only the log grows. Then the three names lift into a round bag. It proves the sheet keeps each person once, however many times they open it.",
+     "keeps": "The log: every open stays in it, in the order it came, 7 and then 8 rows. And the sheet's 3 names, which do not change when Ravi opens it again.",
+     "purpose": "Feel, from a story they post and check every day, that one list keeps every open and another keeps each person once. The last press draws a round bag of names beside the log, without naming it.",
+     "heading": "Seen by",
+     "show": [
+      "Teja posts a story.",
+      "It was opened 7 times.",
+      "How many names will Teja see?",
+      "Ravi opened it 4 times. He is there once.",
+      "Ravi opens it again.",
+      "Every open. Each person once."
+     ],
+     "presses": [
+      {
+       "screen": "Evening. Teja's phone on Instagram: he posts a story, a photo of a plate of Maggi at the Sri Sai Canteen. His story ring lights up at the top of the feed. Caption: <q>Teja posts a story.</q>",
+       "say": "Who posted a story this week? Hands up. Who checked who saw it? Hands up.",
+       "room": "Hands up, twice."
+      },
+      {
+       "screen": "Beside the phone, a log card: one row per open, with a small face and a time, in the order they came: Ravi, Anu, Ravi, Kiran, Ravi, Anu, Ravi. It fills in one movement. Caption: <q>It was opened 7 times.</q>",
+       "say": "Ravi is in the photo. He keeps opening it. Read the log with me."
+      },
+      {
+       "screen": "Teja's thumb on Seen by at the bottom of his story; the viewer sheet is still closed. Caption: <q>How many names will Teja see?</q>",
+       "say": "Swipe up. How many names in the list? Take four answers. Correct nobody.",
+       "room": "Call out a number."
+      },
+      {
+       "screen": "The viewer sheet slides up: the eye icon with 3, and the names Ravi, Anu, Kiran, each once. In the log, Ravi's four rows light together. Caption: <q>Ravi opened it 4 times. He is there once.</q>",
+       "say": "Who said 3? Who said 7? Both are real numbers. The log has 7. The sheet has 3."
+      },
+      {
+       "screen": "Ravi's phone opens the story again. The log gets an eighth row, Ravi. The viewer sheet does not move: still 3, same names. Caption: <q>Ravi opens it again.</q>",
+       "say": "What changes on Teja's sheet? Say it before I press... nothing. Only the log grows.",
+       "room": "Say what changes."
+      },
+      {
+       "screen": "The turn, one movement: the three names lift off the sheet into a round bag, with no numbers and no order. The log stays beside it as a row of eight cells with 0 to 7 under them, like last week's lists. Caption: <q>Every open. Each person once.</q>",
+       "say": "The log is a list. You know it. The bag keeps each person once. Python has the bag too. Guess today's topic.",
+       "room": "Guess the topic."
+      }
+     ],
+     "must": [
+      "Instagram's viewer sheet looks as it does in the real app: the eye icon with the count, one row per person.",
+      "The log is a card beside the phone, not part of the app. The app never shows a count of opens.",
+      "On press 5 the viewer sheet does not change at all.",
+      "On the last press the bag has no numbers under its names; the log keeps its 0 to 7.",
+      "While it moves, this stays exactly as it was: The log: every open stays in it, in the order it came, 7 and then 8 rows. And the sheet's 3 names, which do not change when Ravi opens it again."
+     ],
+     "must_not": [
+      "Say the session's name or any code word anywhere on this card.",
+      "Show any code on this card.",
+      "Invent a count of opens inside the app, like 7 views. Instagram does not show one.",
+      "Order the names in the bag or number them.",
+      "Animate by itself. Every change waits for a press."
+     ],
+     "data": {
+      "opens": [
+       "Ravi",
+       "Anu",
+       "Ravi",
+       "Kiran",
+       "Ravi",
+       "Anu",
+       "Ravi"
+      ],
+      "seen_by": [
+       "Ravi",
+       "Anu",
+       "Kiran"
+      ],
+      "extra_open": "Ravi",
+      "code_for_guide": "views = [\"Ravi\", \"Anu\", \"Ravi\", \"Kiran\", \"Ravi\", \"Anu\", \"Ravi\"]\nprint(len(views))\nprint(len(set(views)))",
+      "code_output_for_guide": "7\n3"
+     },
+     "play": "The phone, the story, the viewer sheet and the log: yours to make real. Wear Instagram's look: the gradient story ring, the dark story screen, the white viewer sheet. How the names lift into the bag is yours.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Today's topic",
+   "kind": "concept",
+   "mins": 1,
+   "start": 9,
+   "cards": [
+    {
+     "id": "S-TITLE",
+     "title": "Title",
+     "source": "spine:title",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Agenda",
+   "kind": "concept",
+   "mins": 1,
+   "start": 10,
+   "cards": [
+    {
+     "id": "S-AGENDA",
+     "title": "Agenda",
+     "source": "spine:agenda",
+     "purpose": "Name the three stops of today in plain words. Deck slide 14's three stops.",
+     "play": "How the stops sit and light. The deck's arrow on slide 14 is a fine start. No code on this card.",
+     "show": [
+      "Sets",
+      "each item once, no order",
+      "Changing a set",
+      "add, update, discard, remove",
+      "Operations on sets",
+      "len, in, a loop, clear"
+     ],
+     "presses": [
+      {
+       "screen": "Stop 1 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 2 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 3 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      }
+     ],
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "A set is a bag of items with no order",
+   "kind": "concept",
+   "mins": 5,
+   "start": 11,
+   "cards": [
+    {
+     "id": "C1",
+     "title": "A set",
+     "source": [
+      15,
+      16
+     ],
+     "purpose": "A set holds items with no order. Each item is in it once. Only items that cannot change go in.",
+     "heading": "Sets",
+     "show": [
+      "Unordered collection of items",
+      "Each item once. No repeats.",
+      "No first, no last.",
+      "Only items that cannot change."
+     ],
+     "presses": [
+      {
+       "screen": "The bag from the hook with Ravi, Anu, Kiran inside, and deck slide 16's line <q>Unordered collection of items</q>",
+       "say": "Data structures so far: list, tuple. Today: set. Dictionary comes later. A set is the bag."
+      },
+      {
+       "screen": "Point 1 lights, and Ravi's chip pulses: <q>Each item once. No repeats.</q>",
+       "say": "Ravi opened it four times. He is in the bag once."
+      },
+      {
+       "screen": "Point 2 lights, and the chips drift to new places in the bag: <q>No first, no last.</q>",
+       "say": "The sheet in the app draws names in a row. The bag has no row."
+      },
+      {
+       "screen": "Point 3 lights: <q>Only items that cannot change.</q> A small lock appears beside each chip.",
+       "say": "Last class: a tuple cannot change. That kind can go in. We test it in a minute."
+      }
+     ],
+     "must": [
+      "A set is drawn as a round bag of chips, the way deck slide 16 draws it: no numbers under the chips, no first and no last. A list or a tuple stays a row of cells with 0, 1, 2 under them.",
+      "Draw it in the Instagram's story viewer sheet world: the viewer sheet is a set: each person is on it once, however many times they open the story. Do not take the picture further than this: Instagram draws the names in a row, in its own order; a set has no first, no last and no index"
+     ],
+     "play": "Deck slide 16's circle is a fine start. The chips can wear the viewer sheet's faces.",
+     "engage": "analogy",
+     "analogy": {
+      "world": "Instagram's story viewer sheet",
+      "maps": "the viewer sheet is a set: each person is on it once, however many times they open the story",
+      "breaks": "Instagram draws the names in a row, in its own order; a set has no first, no last and no index"
+     },
+     "press_count": 4
+    },
+    {
+     "id": "C2",
+     "title": "Creating a set",
+     "source": [
+      17
+     ],
+     "purpose": "Curly brackets with commas between the items make a set. type() says set.",
+     "heading": "Creating a set",
+     "show": [
+      "A list uses [ ]. A tuple uses ( ). A set?",
+      "What will it print?",
+      "Curly brackets. A comma between items."
+     ],
+     "code": [
+      {
+       "file": "create.py",
+       "src": "viewers = {\"Ravi\", \"Anu\", \"Kiran\"}\nprint(type(viewers))",
+       "output": "<class 'set'>"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Two lines from the last two weeks, a list in [ ] and a tuple in ( ), and under them create.py with its brackets as two empty dashed slots. Caption: <q>A list uses [ ]. A tuple uses ( ). A set?</q>",
+       "say": "Which brackets are left? Take two answers.",
+       "room": "Say a bracket."
+      },
+      {
+       "screen": "The slots fill with { and }. As the closing } lands, the three names drop into a bag beside the code. Caption: <q>What will it print?</q>",
+       "say": "Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "The output fills <q><class 'set'></q>. Under it: <q>Curly brackets. A comma between items.</q>",
+       "say": "Curly brackets, some call them flower brackets."
+      }
+     ],
+     "answer": "<class 'set'>",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A set is drawn as a round bag of chips, the way deck slide 16 draws it: no numbers under the chips, no first and no last. A list or a tuple stays a row of cells with 0, 1, 2 under them.",
+      "On press 2 the line viewers = {...} is the biggest text on the card.",
+      "While it moves, this stays exactly as it was: The names, exactly as typed: only the brackets are new.",
+      "Keep these exact values. Someone who thinks curly brackets make a list would say <class 'list'>; Python gives <class 'set'>. New values could hide that mistake."
+     ],
+     "play": "The dashed slots and how the names drop into the bag.",
+     "engage": "motion",
+     "ops": [
+      "{}"
+     ],
+     "motion": "As the curly brackets close, the three names drop into a bag. It proves { } makes the bag, not a row.",
+     "keeps": "The names, exactly as typed: only the brackets are new.",
+     "trap": {
+      "belief": "curly brackets make a list",
+      "wrong": "<class 'list'>",
+      "code": 0
+     },
+     "press_count": 3
+    },
+    {
+     "id": "C3",
+     "title": "No order",
+     "source": [
+      18
+     ],
+     "purpose": "A set prints its items in no fixed order. Run the same program again and the order can change; the items do not. It does not sort them either.",
+     "heading": "Unordered collection",
+     "show": [
+      "What will it print?",
+      "Run it again.",
+      "Same names. A new order.",
+      "Need not be in the same order as defined",
+      "Does a set sort numbers?"
+     ],
+     "code": [
+      {
+       "file": "order.py",
+       "src": "viewers = {\"Ravi\", \"Anu\", \"Kiran\", \"Sneha\"}\nprint(viewers)",
+       "output": "{'Sneha', 'Ravi', 'Anu', 'Kiran'}"
+      },
+      {
+       "file": "order.py",
+       "src": "viewers = {\"Ravi\", \"Anu\", \"Kiran\", \"Sneha\"}\nprint(viewers)",
+       "output": "{'Ravi', 'Kiran', 'Anu', 'Sneha'}"
+      },
+      {
+       "file": "order.py",
+       "src": "viewers = {\"Ravi\", \"Anu\", \"Kiran\", \"Sneha\"}\nprint(viewers)",
+       "output": "{'Sneha', 'Kiran', 'Ravi', 'Anu'}"
+      },
+      {
+       "file": "likes.py",
+       "src": "likes = {40, 15, 120}\nprint(likes)",
+       "output": "{40, 120, 15}"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "order.py with four names and an empty output box. Caption: <q>What will it print?</q>",
+       "say": "Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Run 1: the output fills <q>{'Sneha', 'Ravi', 'Anu', 'Kiran'}</q>.",
+       "say": "Who said Ravi, Anu, Kiran, Sneha? That is how we typed it. Python did not keep it."
+      },
+      {
+       "screen": "Run 2: the same program again. The output fills <q>{'Ravi', 'Kiran', 'Anu', 'Sneha'}</q>. Caption: <q>Run it again.</q>",
+       "say": "Nothing in the code changed."
+      },
+      {
+       "screen": "Run 3: <q>{'Sneha', 'Kiran', 'Ravi', 'Anu'}</q>. The three outputs stand one above the other, the same four names lit in each. Caption: <q>Same names. A new order.</q> Under it, deck slide 18's line: <q>Need not be in the same order as defined</q>",
+       "say": "Run it on your laptop tonight. Your order may be different again."
+      },
+      {
+       "screen": "likes.py: the likes on Teja's last three posts, [40, 15, 120], and an empty output. Caption: <q>Does a set sort numbers?</q>",
+       "say": "Will Python sort them? Hands up for yes. No.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "The output fills <q>{40, 120, 15}</q>: not sorted, and not the typed order.",
+       "say": "No order means no order. Not sorted, not typed."
+      }
+     ],
+     "answer": "{'Sneha', 'Ravi', 'Anu', 'Kiran'} then {'Ravi', 'Kiran', 'Anu', 'Sneha'} then {'Sneha', 'Kiran', 'Ravi', 'Anu'}; likes: {40, 120, 15}",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A printed set may show its items in another order on a student's laptop. The outputs here were printed with one fixed run. Never mark an answer wrong for its order.",
+      "The three runs are three real runs of one program; the outputs are the data's, exactly. They stay on screen together on press 4.",
+      "While it moves, this stays exactly as it was: The program, word for word, and the four names: only their places in the output change.",
+      "Keep these exact values. Someone who thinks a set prints in the order it was typed would say {'Ravi', 'Anu', 'Kiran', 'Sneha'}; Python gives {'Sneha', 'Ravi', 'Anu', 'Kiran'}. New values could hide that mistake.",
+      "Keep these exact values. Someone who thinks a set sorts its items would say {15, 40, 120}; Python gives {40, 120, 15}. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Ask the room which order is right."
+     ],
+     "data": {
+      "runs": [
+       {
+        "run": 1,
+        "seed": "0",
+        "output": "{'Sneha', 'Ravi', 'Anu', 'Kiran'}"
+       },
+       {
+        "run": 2,
+        "seed": "1",
+        "output": "{'Ravi', 'Kiran', 'Anu', 'Sneha'}"
+       },
+       {
+        "run": 3,
+        "seed": "2",
+        "output": "{'Sneha', 'Kiran', 'Ravi', 'Anu'}"
+       }
+      ],
+      "typed_order": "{'Ravi', 'Anu', 'Kiran', 'Sneha'}"
+     },
+     "play": "The three stacked outputs and how the names shuffle between runs. The likes can sit on three post tiles.",
+     "engage": "motion",
+     "motion": "The same program runs three times and the four names land in a new order each time, lit as the same four. It proves a set keeps the items, not their order.",
+     "keeps": "The program, word for word, and the four names: only their places in the output change.",
+     "trap": [
+      {
+       "belief": "a set prints in the order it was typed",
+       "wrong": "{'Ravi', 'Anu', 'Kiran', 'Sneha'}",
+       "code": 0
+      },
+      {
+       "belief": "a set sorts its items",
+       "wrong": "{15, 40, 120}",
+       "code": 3
+      }
+     ],
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "What a set lets in: each item once, only fixed items",
+   "kind": "concept",
+   "mins": 5,
+   "start": 16,
+   "cards": [
+    {
+     "id": "C4",
+     "title": "No repeats",
+     "source": [
+      19
+     ],
+     "purpose": "A repeated item is kept once. len counts the items the set really has. Ravi and ravi are two items.",
+     "heading": "No duplicate items",
+     "show": [
+      "How many items?",
+      "5",
+      "3",
+      "Error",
+      "Repeats are kept once.",
+      "Ravi and ravi?"
+     ],
+     "code": [
+      {
+       "file": "repeats.py",
+       "src": "viewers = {\"Ravi\", \"Anu\", \"Ravi\", \"Kiran\", \"Ravi\"}\nprint(len(viewers))",
+       "output": "3"
+      },
+      {
+       "file": "repeats_print.py",
+       "src": "viewers = {\"Ravi\", \"Anu\", \"Ravi\", \"Kiran\", \"Ravi\"}\nprint(viewers)",
+       "output": "{'Ravi', 'Anu', 'Kiran'}"
+      },
+      {
+       "file": "case.py",
+       "src": "viewers = {\"Ravi\", \"ravi\"}\nprint(len(viewers))",
+       "output": "2"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "repeats.py: five names typed, Ravi three times, and an empty output. Caption: <q>How many items?</q> Choices A <q>5</q>, B <q>3</q>, C <q>Error</q>.",
+       "say": "Option A, 5, hands up. B, 3. C, an error.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "The output fills <q>3</q>. Beside it repeats_print.py's output, <q>{'Ravi', 'Anu', 'Kiran'}</q>. Caption: <q>Repeats are kept once.</q>",
+       "say": "Five typed, three kept. No error: Python just keeps one Ravi."
+      },
+      {
+       "screen": "case.py: Ravi and ravi, small r. Empty output. Caption: <q>Ravi and ravi?</q>",
+       "say": "One person. How many items for Python?",
+       "room": "Say a number."
+      },
+      {
+       "screen": "The output fills <q>2</q>. The R and the r light.",
+       "say": "For Python a capital R is a different letter. Two strings, two items."
+      }
+     ],
+     "answer": "3; then 2",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A printed set may show its items in another order on a student's laptop. The outputs here were printed with one fixed run. Never mark an answer wrong for its order.",
+      "Keep these exact values. Someone who thinks a set keeps repeats like a list would say 5; Python gives 3. New values could hide that mistake.",
+      "Keep these exact values. Someone who thinks Ravi and ravi are the same item would say 1; Python gives 2. New values could hide that mistake."
+     ],
+     "play": "The five typed names and how three of them settle in the bag.",
+     "engage": "play",
+     "interaction": "Hands up per choice on the count, then a number called out for Ravi and ravi.",
+     "trap": [
+      {
+       "belief": "a set keeps repeats like a list",
+       "wrong": "5",
+       "code": 0
+      },
+      {
+       "belief": "Ravi and ravi are the same item",
+       "wrong": "1",
+       "code": 2
+      }
+     ],
+     "press_count": 4
+    },
+    {
+     "id": "C5",
+     "title": "Only items that cannot change",
+     "source": [
+      20
+     ],
+     "purpose": "A tuple can go in a set because it cannot change. A list cannot, because it can: Python stops with a TypeError.",
+     "heading": "Immutable items",
+     "show": [
+      "Kiran, and Ravi with his 4 opens.",
+      "Now with a list.",
+      "2",
+      "3",
+      "TypeError",
+      "Set items must be immutable.",
+      "Immutable: cannot change."
+     ],
+     "code": [
+      {
+       "file": "tuple_in.py",
+       "src": "opens = {\"Kiran\", (\"Ravi\", 4)}\nprint(len(opens))",
+       "output": "2"
+      },
+      {
+       "file": "list_in.py",
+       "src": "opens = {\"Kiran\", [\"Ravi\", 4]}\nprint(len(opens))",
+       "output": "TypeError: unhashable type: 'list'"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "tuple_in.py: a tuple chip, (\"Ravi\", 4) with a lock, and Kiran. Empty output. Caption: <q>Kiran, and Ravi with his 4 opens.</q>",
+       "say": "Last class: can a tuple change? Then can it go in?",
+       "room": "Say the output."
+      },
+      {
+       "screen": "The tuple chip slides into the bag beside Kiran. The output fills <q>2</q>.",
+       "say": "Two items: Kiran, and one tuple."
+      },
+      {
+       "screen": "list_in.py: the same, with square brackets: a list chip with handles. Empty output. Caption: <q>Now with a list.</q> Choices A <q>2</q>, B <q>3</q>, C <q>TypeError</q>.",
+       "say": "Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "The list chip slides up to the bag and bounces off. The output fills <q>TypeError: unhashable type: 'list'</q>. Under it: <q>Set items must be immutable.</q> and <q>Immutable: cannot change.</q>",
+       "say": "A list can change, so a set will not take it. Unhashable is Python's word for that."
+      }
+     ],
+     "answer": "2; then TypeError: unhashable type: 'list'",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A set is drawn as a round bag of chips, the way deck slide 16 draws it: no numbers under the chips, no first and no last. A list or a tuple stays a row of cells with 0, 1, 2 under them.",
+      "On press 4 the bag does not change: the list never gets in.",
+      "While it moves, this stays exactly as it was: The bag: it is empty when the list bounces, because Python stops on that line.",
+      "Keep these exact values. Someone who thinks anything can go in a set, a list too would say 2; Python gives TypeError: unhashable type: 'list'. New values could hide that mistake."
+     ],
+     "play": "The lock on the tuple chip, the handles on the list chip, and the bounce.",
+     "engage": "motion",
+     "motion": "A locked tuple chip slides into the bag; a list chip with handles bounces off it. It proves only items that cannot change go in.",
+     "keeps": "The bag: it is empty when the list bounces, because Python stops on that line.",
+     "trap": {
+      "belief": "anything can go in a set, a list too",
+      "wrong": "2",
+      "code": 1
+     },
+     "press_count": 4
+    },
+    {
+     "id": "C6",
+     "title": "An empty set",
+     "source": [
+      21
+     ],
+     "purpose": "set() makes an empty set. Empty curly brackets {} make something else, a dictionary.",
+     "heading": "Creating an empty set",
+     "show": [
+      "Which one is an empty set?",
+      "a",
+      "b",
+      "Both",
+      "We use set() to create an empty set.",
+      "{} is a dictionary. You meet it later."
+     ],
+     "code": [
+      {
+       "file": "empty.py",
+       "src": "a = {}\nb = set()\nprint(type(a))\nprint(type(b))\nprint(b)",
+       "output": "<class 'dict'>\n<class 'set'>\nset()"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "empty.py, two lines of it lit: a = {} and b = set(). Empty output. Caption: <q>Which one is an empty set?</q> Choices A <q>a</q>, B <q>b</q>, C <q>Both</q>.",
+       "say": "An empty list is [ ]. So an empty set is... Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "The output fills <q><class 'dict'> / <class 'set'> / set()</q>. Line 1 lights with <q>{} is a dictionary. You meet it later.</q> Line 2 lights with <q>We use set() to create an empty set.</q>",
+       "say": "Curly brackets with nothing in them belong to another type. An empty set is set(), and it prints as set()."
+      }
+     ],
+     "answer": "b. <class 'dict'> / <class 'set'> / set()",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "Keep these exact values. Someone who thinks {} is an empty set would say <class 'set'>\n<class 'set'>\nset(); Python gives <class 'dict'>\n<class 'set'>\nset(). New values could hide that mistake."
+     ],
+     "must_not": [
+      "Teach dictionaries here. One line names it, nothing more."
+     ],
+     "play": "Deck slide 21's code box. a and b can be two empty bags, one with a different label.",
+     "engage": "play",
+     "interaction": "Hands up per choice: a, b, or both, before the output fills.",
+     "trap": {
+      "belief": "{} is an empty set",
+      "wrong": "<class 'set'>\n<class 'set'>\nset()",
+      "code": 0
+     },
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Explainer: set() lets each value in once",
+   "kind": "hook",
+   "mins": 4,
+   "start": 21,
+   "cards": [
+    {
+     "id": "E1",
+     "title": "set() lets each value in once",
+     "source": [
+      22,
+      23
+     ],
+     "animated": "explainer",
+     "purpose": "set() takes a list, a string or a tuple and lets each value in once. A repeat is turned away at the bag. The list it read stays as it was.",
+     "heading": "Converting to set",
+     "show": [
+      "set(sequence)",
+      "What do the two lines print?",
+      "7 and 7",
+      "7 and 3",
+      "3 and 3",
+      "Every open is still in views.",
+      "Now a name: Anna.",
+      "A tuple works the same."
+     ],
+     "code": [
+      {
+       "file": "views_to_set.py",
+       "src": "views = [\"Ravi\", \"Anu\", \"Ravi\", \"Kiran\", \"Ravi\", \"Anu\", \"Ravi\"]\nviewers = set(views)\nprint(len(views))\nprint(len(viewers))",
+       "output": "7\n3"
+      },
+      {
+       "file": "name_to_set.py",
+       "src": "name = \"Anna\"\nletters = set(name)\nprint(len(letters))",
+       "output": "3"
+      },
+      {
+       "file": "tuple_to_set.py",
+       "src": "opens = (\"Ravi\", \"Anu\", \"Ravi\")\nprint(len(set(opens)))",
+       "output": "2"
+      },
+      {
+       "file": "views_kept.py",
+       "src": "views = [\"Ravi\", \"Anu\", \"Ravi\", \"Kiran\", \"Ravi\", \"Anu\", \"Ravi\"]\nviewers = set(views)\nprint(len(views))\nprint(len(viewers))\nprint(views)",
+       "output": "7\n3\n['Ravi', 'Anu', 'Ravi', 'Kiran', 'Ravi', 'Anu', 'Ravi']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The hook's log as a list row, views, 7 cells with 0 to 6 under them; an empty bag beside it; views_to_set.py above with an empty output. A switch with three positions: list, string, tuple, set to list. Caption: <q>What do the two lines print?</q> Choices A <q>7 and 7</q>, B <q>7 and 3</q>, C <q>3 and 3</q>.",
+       "say": "Deck slide 22: set of a sequence. Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "One step per press, following data.walks.list: a cell's value walks to the bag. It joins, or it bounces off as already in, and that cell turns grey in views and stays grey.",
+       "n": 7,
+       "say": "Joins or already in? Say it before each press.",
+       "room": "Call it for each one."
+      },
+      {
+       "screen": "The output fills <q>7 / 3</q>. Four grey cells and three lit ones in views; three chips in the bag. Under views: <q>Every open is still in views.</q>",
+       "say": "set() read the list. It did not change it. views still has all seven."
+      },
+      {
+       "screen": "The switch moves to string. name_to_set.py: the name Anna as four letter cells, an empty bag. Caption: <q>Now a name: Anna.</q> Choices A <q>1</q>, B <q>2</q>, C <q>3</q>, D <q>4</q>.",
+       "say": "A string's items are its letters. Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "One step per press, following data.walks.string: A joins, n joins, the second n bounces and greys, a joins. The output fills <q>3</q>.",
+       "n": 4,
+       "say": "Capital A and small a are different letters. Deck slide 23 does it with apple."
+      },
+      {
+       "screen": "The switch moves to tuple. tuple_to_set.py runs in one press: <q>2</q>. Caption: <q>A tuple works the same.</q>",
+       "say": "Any sequence: a list, a string, a tuple."
+      }
+     ],
+     "answer": "7 / 3; Anna: 3; tuple: 2",
+     "must": [
+      "One value walks per press, in the order of the sequence.",
+      "A value that bounces turns grey in its row and stays grey to the end of the card. That grey is the finding.",
+      "The source row never loses a cell: set() reads it, it does not change it.",
+      "A set is drawn as a round bag of chips, the way deck slide 16 draws it: no numbers under the chips, no first and no last. A list or a tuple stays a row of cells with 0, 1, 2 under them.",
+      "While it moves, this stays exactly as it was: views: all 7 cells, in order, the whole card. Grey cells are still there, only grey.",
+      "Keep these exact values. Someone who thinks set() changes the list, or keeps every value would say 7\n7; Python gives 7\n3. New values could hide that mistake.",
+      "Keep these exact values. Someone who thinks set(\"Anna\") keeps the whole word as one item would say 1; Python gives 3. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show a free code box, a picker or an input field. The switch has only list, string and tuple.",
+      "Number the chips in the bag.",
+      "Move by itself."
+     ],
+     "data": {
+      "views": [
+       "Ravi",
+       "Anu",
+       "Ravi",
+       "Kiran",
+       "Ravi",
+       "Anu",
+       "Ravi"
+      ],
+      "word": "Anna",
+      "options": [
+       "7 and 7",
+       "7 and 3",
+       "3 and 3"
+      ],
+      "right": "B",
+      "walks": {
+       "list": [
+        {
+         "index": 0,
+         "item": "Ravi",
+         "result": "joins",
+         "bag": [
+          "Ravi"
+         ],
+         "caption": "\"Ravi\" is not in yet. It joins."
+        },
+        {
+         "index": 1,
+         "item": "Anu",
+         "result": "joins",
+         "bag": [
+          "Ravi",
+          "Anu"
+         ],
+         "caption": "\"Anu\" is not in yet. It joins."
+        },
+        {
+         "index": 2,
+         "item": "Ravi",
+         "result": "already in",
+         "bag": [
+          "Ravi",
+          "Anu"
+         ],
+         "caption": "\"Ravi\" is already in. It bounces off. It stays grey in views."
+        },
+        {
+         "index": 3,
+         "item": "Kiran",
+         "result": "joins",
+         "bag": [
+          "Ravi",
+          "Anu",
+          "Kiran"
+         ],
+         "caption": "\"Kiran\" is not in yet. It joins."
+        },
+        {
+         "index": 4,
+         "item": "Ravi",
+         "result": "already in",
+         "bag": [
+          "Ravi",
+          "Anu",
+          "Kiran"
+         ],
+         "caption": "\"Ravi\" is already in. It bounces off. It stays grey in views."
+        },
+        {
+         "index": 5,
+         "item": "Anu",
+         "result": "already in",
+         "bag": [
+          "Ravi",
+          "Anu",
+          "Kiran"
+         ],
+         "caption": "\"Anu\" is already in. It bounces off. It stays grey in views."
+        },
+        {
+         "index": 6,
+         "item": "Ravi",
+         "result": "already in",
+         "bag": [
+          "Ravi",
+          "Anu",
+          "Kiran"
+         ],
+         "caption": "\"Ravi\" is already in. It bounces off. It stays grey in views."
+        }
+       ],
+       "string": [
+        {
+         "index": 0,
+         "item": "A",
+         "result": "joins",
+         "bag": [
+          "A"
+         ],
+         "caption": "\"A\" is not in yet. It joins."
+        },
+        {
+         "index": 1,
+         "item": "n",
+         "result": "joins",
+         "bag": [
+          "A",
+          "n"
+         ],
+         "caption": "\"n\" is not in yet. It joins."
+        },
+        {
+         "index": 2,
+         "item": "n",
+         "result": "already in",
+         "bag": [
+          "A",
+          "n"
+         ],
+         "caption": "\"n\" is already in. It bounces off. It stays grey in the name."
+        },
+        {
+         "index": 3,
+         "item": "a",
+         "result": "joins",
+         "bag": [
+          "A",
+          "n",
+          "a"
+         ],
+         "caption": "\"a\" is not in yet. It joins."
+        }
+       ]
+      },
+      "views_after_for_guide": "['Ravi', 'Anu', 'Ravi', 'Kiran', 'Ravi', 'Anu', 'Ravi']"
+     },
+     "play": "The row, the bag, the walk and the bounce. Session 11's Follow the Dot is the bar: one thing moves at a time.",
+     "engage": "motion",
+     "ops": [
+      "set()"
+     ],
+     "motion": "Each value of the sequence walks to the bag, one per press; a repeat bounces off and its cell greys and stays grey. It proves set() lets each value in once and leaves the list as it was.",
+     "keeps": "views: all 7 cells, in order, the whole card. Grey cells are still there, only grey.",
+     "trap": [
+      {
+       "belief": "set() changes the list, or keeps every value",
+       "wrong": "7\n7",
+       "code": 0
+      },
+      {
+       "belief": "set(\"Anna\") keeps the whole word as one item",
+       "wrong": "1",
+       "code": 1
+      }
+     ],
+     "press_count": 15
+    }
+   ]
+  },
+  {
+   "name": "No order means no position",
+   "kind": "concept",
+   "mins": 2,
+   "start": 25,
+   "cards": [
+    {
+     "id": "C7",
+     "title": "No order, no position",
+     "source": [
+      24,
+      25
+     ],
+     "purpose": "A set has no order, so it has no position 0. Indexing or slicing a set is a TypeError. To ask if a name is there, use in.",
+     "heading": "Accessing items",
+     "show": [
+      "What will it print?",
+      "\"Ravi\"",
+      "\"Kiran\"",
+      "TypeError",
+      "No first item. No [0].",
+      "Ask with in instead."
+     ],
+     "code": [
+      {
+       "file": "first.py",
+       "src": "viewers = {\"Ravi\", \"Anu\", \"Kiran\"}\nprint(viewers[0])",
+       "output": "TypeError: 'set' object is not subscriptable"
+      },
+      {
+       "file": "slice.py",
+       "src": "viewers = {\"Ravi\", \"Anu\", \"Kiran\"}\nprint(viewers[0:2])",
+       "output": "TypeError: 'set' object is not subscriptable"
+      },
+      {
+       "file": "in_check.py",
+       "src": "viewers = {\"Ravi\", \"Anu\", \"Kiran\"}\nprint(\"Kiran\" in viewers)\nprint(\"Pooja\" in viewers)",
+       "output": "True\nFalse"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "first.py: the viewer bag and viewers[0], empty output. Caption: <q>What will it print?</q> Choices A <q>\"Ravi\"</q>, B <q>\"Kiran\"</q>, C <q>TypeError</q>.",
+       "say": "Ravi was typed first. Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "A [0] pointer hovers over the bag, looks for a number under the chips, finds none and shakes. The output fills <q>TypeError: 'set' object is not subscriptable</q>. Caption: <q>No first item. No [0].</q>",
+       "say": "Subscriptable means you can use [ ] on it. A set has no places, so no."
+      },
+      {
+       "screen": "slice.py: viewers[0:2]. The same pointer shakes. The output fills <q>TypeError: 'set' object is not subscriptable</q>.",
+       "say": "Slicing needs places too."
+      },
+      {
+       "screen": "in_check.py: a finger checks the chips for Kiran, then for Pooja. The output fills <q>True / False</q>. Caption: <q>Ask with in instead.</q>",
+       "say": "We do not ask a set where. We ask: is it there?"
+      }
+     ],
+     "answer": "TypeError: 'set' object is not subscriptable; TypeError: 'set' object is not subscriptable; True / False",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A set is drawn as a round bag of chips, the way deck slide 16 draws it: no numbers under the chips, no first and no last. A list or a tuple stays a row of cells with 0, 1, 2 under them.",
+      "While it moves, this stays exactly as it was: The bag and its three chips: neither the pointer nor the finger moves a chip.",
+      "Keep these exact values. Someone who thinks viewers[0] gives the first name typed would say Ravi; Python gives TypeError: 'set' object is not subscriptable. New values could hide that mistake."
+     ],
+     "play": "The pointer that finds no number, and the checking finger. Deck slide 24's red lines are a fine start.",
+     "engage": "motion",
+     "motion": "An index pointer looks for numbers under the chips and finds none; then an in finger checks the chips one by one. It proves a set answers is it there, never where.",
+     "keeps": "The bag and its three chips: neither the pointer nor the finger moves a chip.",
+     "trap": {
+      "belief": "viewers[0] gives the first name typed",
+      "wrong": "Ravi",
+      "code": 0
+     },
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Task 1: Teja's story stats",
+   "kind": "activity",
+   "mins": 6,
+   "start": 27,
+   "cards": [
+    {
+     "id": "T1",
+     "title": "Task 1: Teja's story stats",
+     "source": "new",
+     "handout": "Task 1",
+     "activity": 19,
+     "timer": 360,
+     "engage": "task",
+     "purpose": "Type a program that reads the story's opens and prints how many opens and how many people. Predict, run. Then add a line for the number of rewatches, and try a log with a small-letter name.",
+     "heading": "Teja's story stats",
+     "show": [
+      "Worksheet · Task 1",
+      "How many opens? How many people? Teja wants both.",
+      "Type it. Predict. Run.",
+      "Add one line: how many rewatches?",
+      "A new log. Predict all three."
+     ],
+     "code": [
+      {
+       "file": "story_stats.py",
+       "src": "log = input()\nviews = log.split(\",\")\nviewers = set(views)\nprint(len(views))\nprint(len(viewers))",
+       "output": "7\n3",
+       "input": "Ravi,Anu,Ravi,Kiran,Ravi,Anu,Ravi"
+      },
+      {
+       "file": "story_stats_2.py",
+       "src": "log = input()\nviews = log.split(\",\")\nviewers = set(views)\nprint(len(views))\nprint(len(viewers))\nprint(len(views) - len(viewers))",
+       "output": "7\n3\n4",
+       "input": "Ravi,Anu,Ravi,Kiran,Ravi,Anu,Ravi"
+      },
+      {
+       "file": "story_stats_3.py",
+       "src": "log = input()\nviews = log.split(\",\")\nviewers = set(views)\nprint(len(views))\nprint(len(viewers))\nprint(len(views) - len(viewers))",
+       "output": "4\n3\n1",
+       "input": "Sneha,sneha,Vamsi,Sneha"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The story line, story_stats.py with line numbers, the input, the three steps (only step 1 lit) and a 6 minute timer.",
+       "say": "Worksheet tab and playground. Type it, type your prediction, then run.",
+       "room": "Type, predict, run."
+      },
+      {
+       "screen": "Step 2 lights: <q>Add one line: how many rewatches?</q>",
+       "say": "A rewatch is an open by someone already counted. Which two numbers do you need?",
+       "room": "Write, run."
+      },
+      {
+       "screen": "Step 3 lights: <q>A new log. Predict all three.</q> The new input: <q>Sneha,sneha,Vamsi,Sneha</q>",
+       "say": "Look closely at the names.",
+       "room": "Predict, run."
+      },
+      {
+       "screen": "Step 1's terminal appears: <q>7 / 3</q>.",
+       "say": "Seven opens, three people. The hook, in five lines."
+      },
+      {
+       "screen": "Step 2's line 6, <q>print(len(views) - len(viewers))</q>, and its output <q>4</q>.",
+       "say": "Opens minus people. Ravi's three extra opens and Anu's one."
+      },
+      {
+       "screen": "Step 3: <q>4 / 3 / 1</q>. Sneha and sneha light.",
+       "say": "Who predicted 2 people? Fair. For Python, small s is another letter."
+      }
+     ],
+     "answer": "Step 1: 7 / 3. Step 2: print(len(views) - len(viewers)) prints 4. Step 3 with Sneha,sneha,Vamsi,Sneha: 4 / 3 / 1",
+     "must": [
+      "No result shows until the timer has ended.",
+      "One step's result per press on the reveal."
+     ],
+     "must_not": [
+      "Show any output before the room has run it."
+     ],
+     "data": {
+      "input": "Ravi,Anu,Ravi,Kiran,Ravi,Anu,Ravi",
+      "input_b": "Sneha,sneha,Vamsi,Sneha"
+     },
+     "play": "The layout of steps, timer and code. The results can sit on Teja's story screen from the hook.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Game G1: set, something else, or error?",
+   "kind": "activity",
+   "mins": 5,
+   "start": 33,
+   "cards": [
+    {
+     "id": "G1",
+     "title": "Set, something else, or error?",
+     "game": "tap-to-classify",
+     "purpose": "Sort seven lines by what they make: a set, something else, or an error. It checks the whole first half: set() of a list and of a string, {}, a tuple inside, a list inside, and [0].",
+     "heading": "A set, something else, or an error?",
+     "data": {
+      "setup": {
+       "bins": [
+        "A set",
+        "Something else",
+        "Error"
+       ],
+       "cases": [
+        "set([\"Ravi\", \"Anu\", \"Ravi\"])",
+        "{}",
+        "set(\"Ravi\")",
+        "{\"Ravi\", [\"Anu\"]}",
+        "{(\"Ravi\", 4)}",
+        "(\"Ravi\")",
+        "{\"Ravi\", \"Anu\"}[0]"
+       ]
+      },
+      "intro": "Type a bin for each line on your worksheet first.",
+      "rounds": [
+       {
+        "ask": "Which bin?",
+        "case": "set([\"Ravi\", \"Anu\", \"Ravi\"])",
+        "options": [
+         "A set",
+         "Something else",
+         "Error"
+        ],
+        "answer": "A set",
+        "because": "Task 1's line. set() of a list is a set. Ravi is in it once.",
+        "why": {
+         "Something else": "type() says set. Task 1's line. set() of a list is a set. Ravi is in it once.",
+         "Error": "It runs with no error. Task 1's line. set() of a list is a set. Ravi is in it once."
+        },
+        "steps": [
+         {
+          "caption": "type is set. A set.",
+          "bin": "A set"
+         }
+        ]
+       },
+       {
+        "ask": "Which bin?",
+        "case": "{}",
+        "options": [
+         "A set",
+         "Something else",
+         "Error"
+        ],
+        "answer": "Something else",
+        "because": "Empty curly brackets make a dictionary, not a set. An empty set is set().",
+        "why": {
+         "A set": "type() does not say set. Empty curly brackets make a dictionary, not a set. An empty set is set().",
+         "Error": "It runs with no error. Empty curly brackets make a dictionary, not a set. An empty set is set()."
+        },
+        "steps": [
+         {
+          "caption": "type is dict. Something else.",
+          "bin": "Something else"
+         }
+        ]
+       },
+       {
+        "ask": "Which bin?",
+        "case": "set(\"Ravi\")",
+        "options": [
+         "A set",
+         "Something else",
+         "Error"
+        ],
+        "answer": "A set",
+        "because": "A set of the letters R, a, v and i. Still a set.",
+        "why": {
+         "Something else": "type() says set. A set of the letters R, a, v and i. Still a set.",
+         "Error": "It runs with no error. A set of the letters R, a, v and i. Still a set."
+        },
+        "steps": [
+         {
+          "caption": "type is set. A set.",
+          "bin": "A set"
+         }
+        ]
+       },
+       {
+        "ask": "Which bin?",
+        "case": "{\"Ravi\", [\"Anu\"]}",
+        "options": [
+         "A set",
+         "Something else",
+         "Error"
+        ],
+        "answer": "Error",
+        "because": "A list can change, so it cannot go in a set.",
+        "why": {
+         "A set": "Python stops before any set is made. A list can change, so it cannot go in a set.",
+         "Something else": "Python stops with an error. A list can change, so it cannot go in a set."
+        },
+        "steps": [
+         {
+          "caption": "TypeError: unhashable type: 'list'. Error.",
+          "bin": "Error"
+         }
+        ]
+       },
+       {
+        "ask": "Which bin?",
+        "case": "{(\"Ravi\", 4)}",
+        "options": [
+         "A set",
+         "Something else",
+         "Error"
+        ],
+        "answer": "A set",
+        "because": "A tuple cannot change, so it can go in a set.",
+        "why": {
+         "Something else": "type() says set. A tuple cannot change, so it can go in a set.",
+         "Error": "It runs with no error. A tuple cannot change, so it can go in a set."
+        },
+        "steps": [
+         {
+          "caption": "type is set. A set.",
+          "bin": "A set"
+         }
+        ]
+       },
+       {
+        "ask": "Which bin?",
+        "case": "(\"Ravi\")",
+        "options": [
+         "A set",
+         "Something else",
+         "Error"
+        ],
+        "answer": "Something else",
+        "because": "Round brackets round one string are just brackets. It is the string Ravi.",
+        "why": {
+         "A set": "type() does not say set. Round brackets round one string are just brackets. It is the string Ravi.",
+         "Error": "It runs with no error. Round brackets round one string are just brackets. It is the string Ravi."
+        },
+        "steps": [
+         {
+          "caption": "type is str. Something else.",
+          "bin": "Something else"
+         }
+        ]
+       },
+       {
+        "ask": "Which bin?",
+        "case": "{\"Ravi\", \"Anu\"}[0]",
+        "options": [
+         "A set",
+         "Something else",
+         "Error"
+        ],
+        "answer": "Error",
+        "because": "A set has no first item. [0] gives an error.",
+        "why": {
+         "A set": "Python stops before any set is made. A set has no first item. [0] gives an error.",
+         "Something else": "Python stops with an error. A set has no first item. [0] gives an error."
+        },
+        "steps": [
+         {
+          "caption": "TypeError: 'set' object is not subscriptable. Error.",
+          "bin": "Error"
+         }
+        ]
+       }
+      ]
+     },
+     "say": {
+      "ask": "Bin 1, a set, hands up. Something else. Error.",
+      "step": "Tap it into the bin the room chose.",
+      "verdict": "Read the why line. What decided it?"
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "Every case is on screen from press 1, waiting to be sorted.",
+      "Keep to three bins at most.",
+      "Round 1 is Task 1's own line, so the first round is a win.",
+      "Each line is run as x = <the line>; print(type(x)), and the step shows what type() said or the error.",
+      "The last round, [0] on a set, is the edge: it looks like a list but gives an error."
+     ],
+     "play": "The bins and the chips. The chips can be Instagram story stickers. The snap and the bounce are yours.",
+     "presses": [
+      {
+       "screen": "Before round 1: <q>Type a bin for each line on your worksheet first.</q>",
+       "say": "Read it out. Say how a round works: you answer first, then it runs.",
+       "room": "Listen."
+      },
+      {
+       "screen": "Round 1 of 7. The round's setup, as in the data. The question: <q>Which bin?</q> Options: A <q>A set</q>, B <q>Something else</q>, C <q>Error</q>. Nothing runs yet.",
+       "say": "Bin 1, a set, hands up. Something else. Error.",
+       "room": "Type the answer in the worksheet."
+      },
+      {
+       "screen": "<q>type is set. A set.</q>",
+       "say": "Tap it into the bin the room chose."
+      },
+      {
+       "screen": "The answer: <q>A set</q>. <q>Task 1's line. set() of a list is a set. Ravi is in it once.</q> Then a line for every other option: <q>Something else</q> <q>type() says set. Task 1's line. set() of a list is a set. Ravi is in it once.</q>; <q>Error</q> <q>It runs with no error. Task 1's line. set() of a list is a set. Ravi is in it once.</q>.",
+       "say": "Read the why line. What decided it?"
+      },
+      {
+       "screen": "Round 2 of 7. The round's setup, as in the data. The question: <q>Which bin?</q> Options: A <q>A set</q>, B <q>Something else</q>, C <q>Error</q>. Nothing runs yet.",
+       "say": "Bin 1, a set, hands up. Something else. Error.",
+       "room": "Type the answer in the worksheet."
+      },
+      {
+       "screen": "<q>type is dict. Something else.</q>",
+       "say": "Tap it into the bin the room chose."
+      },
+      {
+       "screen": "The answer: <q>Something else</q>. <q>Empty curly brackets make a dictionary, not a set. An empty set is set().</q> Then a line for every other option: <q>A set</q> <q>type() does not say set. Empty curly brackets make a dictionary, not a set. An empty set is set().</q>; <q>Error</q> <q>It runs with no error. Empty curly brackets make a dictionary, not a set. An empty set is set().</q>.",
+       "say": "Read the why line. What decided it?"
+      },
+      {
+       "screen": "Round 3 of 7. The round's setup, as in the data. The question: <q>Which bin?</q> Options: A <q>A set</q>, B <q>Something else</q>, C <q>Error</q>. Nothing runs yet.",
+       "say": "Bin 1, a set, hands up. Something else. Error.",
+       "room": "Type the answer in the worksheet."
+      },
+      {
+       "screen": "<q>type is set. A set.</q>",
+       "say": "Tap it into the bin the room chose."
+      },
+      {
+       "screen": "The answer: <q>A set</q>. <q>A set of the letters R, a, v and i. Still a set.</q> Then a line for every other option: <q>Something else</q> <q>type() says set. A set of the letters R, a, v and i. Still a set.</q>; <q>Error</q> <q>It runs with no error. A set of the letters R, a, v and i. Still a set.</q>.",
+       "say": "Read the why line. What decided it?"
+      },
+      {
+       "screen": "Round 4 of 7. The round's setup, as in the data. The question: <q>Which bin?</q> Options: A <q>A set</q>, B <q>Something else</q>, C <q>Error</q>. Nothing runs yet.",
+       "say": "Bin 1, a set, hands up. Something else. Error.",
+       "room": "Type the answer in the worksheet."
+      },
+      {
+       "screen": "<q>TypeError: unhashable type: 'list'. Error.</q>",
+       "say": "Tap it into the bin the room chose."
+      },
+      {
+       "screen": "The answer: <q>Error</q>. <q>A list can change, so it cannot go in a set.</q> Then a line for every other option: <q>A set</q> <q>Python stops before any set is made. A list can change, so it cannot go in a set.</q>; <q>Something else</q> <q>Python stops with an error. A list can change, so it cannot go in a set.</q>.",
+       "say": "Read the why line. What decided it?"
+      },
+      {
+       "screen": "Round 5 of 7. The round's setup, as in the data. The question: <q>Which bin?</q> Options: A <q>A set</q>, B <q>Something else</q>, C <q>Error</q>. Nothing runs yet.",
+       "say": "Bin 1, a set, hands up. Something else. Error.",
+       "room": "Type the answer in the worksheet."
+      },
+      {
+       "screen": "<q>type is set. A set.</q>",
+       "say": "Tap it into the bin the room chose."
+      },
+      {
+       "screen": "The answer: <q>A set</q>. <q>A tuple cannot change, so it can go in a set.</q> Then a line for every other option: <q>Something else</q> <q>type() says set. A tuple cannot change, so it can go in a set.</q>; <q>Error</q> <q>It runs with no error. A tuple cannot change, so it can go in a set.</q>.",
+       "say": "Read the why line. What decided it?"
+      },
+      {
+       "screen": "Round 6 of 7. The round's setup, as in the data. The question: <q>Which bin?</q> Options: A <q>A set</q>, B <q>Something else</q>, C <q>Error</q>. Nothing runs yet.",
+       "say": "Bin 1, a set, hands up. Something else. Error.",
+       "room": "Type the answer in the worksheet."
+      },
+      {
+       "screen": "<q>type is str. Something else.</q>",
+       "say": "Tap it into the bin the room chose."
+      },
+      {
+       "screen": "The answer: <q>Something else</q>. <q>Round brackets round one string are just brackets. It is the string Ravi.</q> Then a line for every other option: <q>A set</q> <q>type() does not say set. Round brackets round one string are just brackets. It is the string Ravi.</q>; <q>Error</q> <q>It runs with no error. Round brackets round one string are just brackets. It is the string Ravi.</q>.",
+       "say": "Read the why line. What decided it?"
+      },
+      {
+       "screen": "Round 7 of 7. The round's setup, as in the data. The question: <q>Which bin?</q> Options: A <q>A set</q>, B <q>Something else</q>, C <q>Error</q>. Nothing runs yet.",
+       "say": "Bin 1, a set, hands up. Something else. Error.",
+       "room": "Type the answer in the worksheet."
+      },
+      {
+       "screen": "<q>TypeError: 'set' object is not subscriptable. Error.</q>",
+       "say": "Tap it into the bin the room chose."
+      },
+      {
+       "screen": "The answer: <q>Error</q>. <q>A set has no first item. [0] gives an error.</q> Then a line for every other option: <q>A set</q> <q>Python stops before any set is made. A set has no first item. [0] gives an error.</q>; <q>Something else</q> <q>Python stops with an error. A set has no first item. [0] gives an error.</q>.",
+       "say": "Read the why line. What decided it?"
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Sort a case before the room has voted on it."
+     ],
+     "interaction": "Six to eight concrete cases and two or three bins. The room types a bin per case first; then each case is tapped into the bin the room voted, and it snaps home or bounces out.",
+     "game_def": {
+      "id": "tap-to-classify",
+      "name": "Tap to classify",
+      "one_line": "Six to eight concrete cases and two or three bins. The room types a bin per case first; then each case is tapped into the bin the room voted, and it snaps home or bounces out.",
+      "how": [
+       "Two or three bins, named plainly. Every case (a line of code, a value, a name) is one round.",
+       "The room types a bin for every case in the worksheet before any tap. That is the commitment.",
+       "Per case: a show of hands, then the case moves into the bin the room voted for.",
+       "It snaps home if right. If wrong it bounces out to the right bin, and one short line says why.",
+       "The cases that bounced are the ones worth the next two minutes."
+      ],
+      "setup": {
+       "bins": "the two or three bin names, exact; every round's options are these names",
+       "cases": "every case, in round order, exact"
+      },
+      "round": {
+       "case": "this round's case, exact"
+      },
+      "step": {
+       "bin": "the bin the case ends in"
+      }
+     },
+     "press_count": 22
+    }
+   ]
+  },
+  {
+   "name": "Classroom quiz",
+   "kind": "quiz",
+   "mins": 6,
+   "start": 38,
+   "cards": [
+    {
+     "id": "S-QUIZ",
+     "title": "Quiz",
+     "source": "spine:quiz",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Hook 2: the viewer list the long way",
+   "kind": "hook",
+   "mins": 3,
+   "start": 44,
+   "cards": [
+    {
+     "id": "H2",
+     "title": "Our own Seen by",
+     "source": "new",
+     "purpose": "Feel why a set is worth having: a viewer list built with a list counts every open, so it says 7 when Instagram says 3. A list needs a check you can forget. add needs none.",
+     "heading": "Build Seen by",
+     "show": [
+      "Teja's story is live. Opens arrive one at a time.",
+      "What number does our app show?",
+      "Our app says 7. Instagram says 3.",
+      "With a list, you must write the check.",
+      "Same answer. No check to forget."
+     ],
+     "code": [
+      {
+       "file": "viewers_plain.py",
+       "src": "views = [\"Ravi\", \"Anu\", \"Ravi\", \"Kiran\", \"Ravi\", \"Anu\", \"Ravi\"]\nviewers = []\nfor name in views:\n    viewers.append(name)\nprint(len(viewers))",
+       "output": "7"
+      },
+      {
+       "file": "viewers_check.py",
+       "src": "views = [\"Ravi\", \"Anu\", \"Ravi\", \"Kiran\", \"Ravi\", \"Anu\", \"Ravi\"]\nviewers = []\nfor name in views:\n    if name not in viewers:\n        viewers.append(name)\nprint(len(viewers))",
+       "output": "3"
+      },
+      {
+       "file": "viewers_set.py",
+       "src": "views = [\"Ravi\", \"Anu\", \"Ravi\", \"Kiran\", \"Ravi\", \"Anu\", \"Ravi\"]\nviewers = set()\nfor name in views:\n    viewers.add(name)\nprint(len(viewers))",
+       "output": "3"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Teja's story, live. Opens arrive as small pop-ups, one per press of the voice, the same 7 as the hook. Caption: <q>Teja's story is live. Opens arrive one at a time.</q>",
+       "say": "We are building our own Seen by. The app gets one open at a time. With a list, how would you write it?",
+       "room": "Say a way."
+      },
+      {
+       "screen": "viewers_plain.py: an empty list, a loop, viewers.append(name), print(len(viewers)). The output is empty. Caption: <q>What number does our app show?</q>",
+       "say": "This is what most of us write first. What number does it print?",
+       "room": "Call out a number."
+      },
+      {
+       "screen": "The list fills one name per open: Ravi lands 4 times. The output fills <q>7</q>. Beside it, Instagram's real sheet from the hook: 3. Caption: <q>Our app says 7. Instagram says 3.</q>",
+       "say": "Ravi is counted 4 times. Our app is wrong. Every open became a viewer."
+      },
+      {
+       "screen": "viewers_check.py: one new line lights, if name not in viewers, above the append. The output fills <q>3</q>. Caption: <q>With a list, you must write the check.</q>",
+       "say": "Now it is right. But this one line is ours to remember, in every program like it. Forget it, and the app says 7 again."
+      },
+      {
+       "screen": "The turn, one movement: line 2 becomes viewers = set(), the if line disappears, and append becomes add. The output does not change: <q>3</q>. Caption: <q>Same answer. No check to forget.</q>",
+       "say": "A set can change: we can put things in. add does the check itself. The next card shows it."
+      }
+     ],
+     "answer": "viewers_plain.py prints 7; with the check, and with a set, 3",
+     "must": [
+      "All three programs are real and run; every output shown is theirs.",
+      "The room calls out viewers_plain.py's number before it prints.",
+      "The fold is one movement and the output does not change.",
+      "While it moves, this stays exactly as it was: The seven opens in their order, and Instagram's 3: only our program changes.",
+      "Keep these exact values. Someone who thinks appending every open gives the number of viewers would say 3; Python gives 7. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Animate by itself."
+     ],
+     "data": {
+      "opens": [
+       "Ravi",
+       "Anu",
+       "Ravi",
+       "Kiran",
+       "Ravi",
+       "Anu",
+       "Ravi"
+      ]
+     },
+     "play": "The live pop-ups and the real Seen by sheet can wear Instagram's look again. The 7 beside the 3 is the moment to make loud.",
+     "engage": "motion",
+     "ops": [
+      "add()"
+     ],
+     "motion": "Opens arrive one per press and drop into the list; Ravi piles up four times and the count reads 7 beside Instagram's 3. Then the check line, then the fold into add. It proves a set keeps each name once without a check.",
+     "keeps": "The seven opens in their order, and Instagram's 3: only our program changes.",
+     "trap": {
+      "belief": "appending every open gives the number of viewers",
+      "wrong": "3",
+      "code": 0
+     },
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Adding: add one, update many",
+   "kind": "concept",
+   "mins": 5,
+   "start": 47,
+   "cards": [
+    {
+     "id": "C8",
+     "title": "Adding an item",
+     "source": [
+      26,
+      27
+     ],
+     "purpose": "add puts one item in. If it is already there, nothing changes and there is no error.",
+     "heading": "Adding items",
+     "show": [
+      "Teja's Close Friends: Ravi, Anu, Sneha.",
+      "set.add(value)",
+      "adds the item to the set, if the item is not present already.",
+      "Now add Ravi.",
+      "4",
+      "3",
+      "Error"
+     ],
+     "code": [
+      {
+       "file": "add.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nclose.add(\"Kiran\")\nprint(len(close))",
+       "output": "4"
+      },
+      {
+       "file": "add_again.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nclose.add(\"Ravi\")\nprint(len(close))",
+       "output": "3"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Instagram's Close Friends screen: Ravi, Anu, Sneha with green stars, drawn as a bag. add.py beside it, empty output. Caption: <q>Teja's Close Friends: Ravi, Anu, Sneha.</q>",
+       "say": "Close Friends: the people who see your green-ring stories. Each friend once. A set. Kiran gets added. Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Kiran's chip walks in and joins. The output fills <q>4</q>. Deck slide 26's lines: <q>set.add(value)</q> and <q>adds the item to the set, if the item is not present already.</q>",
+       "say": "One item in."
+      },
+      {
+       "screen": "add_again.py: close.add(\"Ravi\"). Empty output. Caption: <q>Now add Ravi.</q> Choices A <q>4</q>, B <q>3</q>, C <q>Error</q>.",
+       "say": "Ravi is already a Close Friend. Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "Ravi's chip walks up and bounces off. The bag does not change. The output fills <q>3</q>.",
+       "say": "In the app the button already says Added. No error, nothing new."
+      }
+     ],
+     "answer": "4; then 3",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A set is drawn as a round bag of chips, the way deck slide 16 draws it: no numbers under the chips, no first and no last. A list or a tuple stays a row of cells with 0, 1, 2 under them.",
+      "While it moves, this stays exactly as it was: The three Close Friends already in: Ravi, Anu, Sneha. Nothing inside moves when Ravi bounces.",
+      "Keep these exact values. Someone who thinks add puts Ravi in a second time would say 4; Python gives 3. New values could hide that mistake."
+     ],
+     "play": "Instagram's Close Friends look: green stars, the round faces. The walk and the bounce are yours.",
+     "engage": "motion",
+     "ops": [
+      "add()"
+     ],
+     "motion": "Kiran's chip walks in and joins; Ravi's walks up and bounces off. It proves add keeps each item once.",
+     "keeps": "The three Close Friends already in: Ravi, Anu, Sneha. Nothing inside moves when Ravi bounces.",
+     "trap": {
+      "belief": "add puts Ravi in a second time",
+      "wrong": "4",
+      "code": 1
+     },
+     "press_count": 4
+    },
+    {
+     "id": "C9",
+     "title": "Adding many items",
+     "source": [
+      28
+     ],
+     "purpose": "update takes a sequence and adds each of its items, skipping repeats. A string is a sequence of letters, so update(\"Pooja\") adds letters. For one name, use add.",
+     "heading": "Adding multiple items",
+     "show": [
+      "set.update(sequence)",
+      "adds multiple items to the set, and duplicates are avoided.",
+      "Now update with one name: Pooja.",
+      "4",
+      "8",
+      "7",
+      "update takes the items of a sequence.",
+      "One name? Use add."
+     ],
+     "code": [
+      {
+       "file": "update.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nclose.update([\"Vamsi\", \"Ravi\", \"Pooja\"])\nprint(len(close))",
+       "output": "5"
+      },
+      {
+       "file": "update_name.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nclose.update(\"Pooja\")\nprint(len(close))",
+       "output": "7"
+      },
+      {
+       "file": "update_name_print.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nclose.update(\"Pooja\")\nprint(close)",
+       "output": "{'Anu', 'Sneha', 'Ravi', 'a', 'o', 'j', 'P'}"
+      },
+      {
+       "file": "add_name.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nclose.add(\"Pooja\")\nprint(len(close))",
+       "output": "4"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "update.py: three new chips wait at the door, Vamsi, Ravi, Pooja. Empty output. Deck slide 28's lines: <q>set.update(sequence)</q> and <q>adds multiple items to the set, and duplicates are avoided.</q>",
+       "say": "Three names at once. Ravi is already in. Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Vamsi joins, Ravi bounces, Pooja joins: one movement each. The output fills <q>5</q>.",
+       "say": "Many in one line. The repeat is skipped."
+      },
+      {
+       "screen": "update_name.py: close.update(\"Pooja\"). Empty output. Caption: <q>Now update with one name: Pooja.</q> Choices A <q>4</q>, B <q>8</q>, C <q>7</q>.",
+       "say": "Hands up per choice. This one surprises people.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "The name breaks into letter chips: P, o, o, j, a. They walk in one per movement; the second o bounces. The output fills <q>7</q>, and beside it update_name_print.py's <q>{'Anu', 'Sneha', 'Ravi', 'a', 'o', 'j', 'P'}</q>. Caption: <q>update takes the items of a sequence.</q>",
+       "say": "A string's items are its letters. Remember set(\"Anna\")? Same thing."
+      },
+      {
+       "screen": "add_name.py: update becomes add. The output fills <q>4</q>. Caption: <q>One name? Use add.</q>",
+       "say": "The deck's daily challenge is this same mistake, with pen and pencil."
+      }
+     ],
+     "answer": "5; update(\"Pooja\"): 7; add(\"Pooja\"): 4",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A set is drawn as a round bag of chips, the way deck slide 16 draws it: no numbers under the chips, no first and no last. A list or a tuple stays a row of cells with 0, 1, 2 under them.",
+      "A printed set may show its items in another order on a student's laptop. The outputs here were printed with one fixed run. Never mark an answer wrong for its order.",
+      "On press 4 each letter is its own chip, and the second o visibly bounces.",
+      "While it moves, this stays exactly as it was: The Close Friends already in, Ravi, Anu, Sneha: update only adds, it never takes anyone out.",
+      "Keep these exact values. Someone who thinks update adds the list as one item would say 4; Python gives 5. New values could hide that mistake.",
+      "Keep these exact values. Someone who thinks update with a name adds the name would say 4; Python gives 7. New values could hide that mistake."
+     ],
+     "play": "How the name breaks into letters. The letter chips can look odd among the face chips: that is the point.",
+     "engage": "motion",
+     "ops": [
+      "update()"
+     ],
+     "motion": "Three name chips walk in and the repeat bounces; then a name breaks into letter chips that walk in one by one. It proves update adds each item of a sequence, and a string's items are letters.",
+     "keeps": "The Close Friends already in, Ravi, Anu, Sneha: update only adds, it never takes anyone out.",
+     "trap": [
+      {
+       "belief": "update adds the list as one item",
+       "wrong": "4",
+       "code": 0
+      },
+      {
+       "belief": "update with a name adds the name",
+       "wrong": "4",
+       "code": 1
+      }
+     ],
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Removing: discard is quiet, remove complains",
+   "kind": "concept",
+   "mins": 4,
+   "start": 52,
+   "cards": [
+    {
+     "id": "C10",
+     "title": "Removing with discard",
+     "source": [
+      29
+     ],
+     "purpose": "discard takes one item out if it is there. If it is not there, discard does nothing, with no error.",
+     "heading": "Removing specific item",
+     "show": [
+      "set.discard(value)",
+      "Takes a single value and removes if present",
+      "Now discard Pooja.",
+      "Not there? Nothing happens."
+     ],
+     "code": [
+      {
+       "file": "discard.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nclose.discard(\"Anu\")\nprint(len(close))",
+       "output": "2"
+      },
+      {
+       "file": "discard_missing.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nclose.discard(\"Pooja\")\nprint(len(close))",
+       "output": "3"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The Close Friends bag, Ravi, Anu, Sneha. discard.py: close.discard(\"Anu\"). Empty output. Deck slide 29's lines: <q>set.discard(value)</q> and <q>Takes a single value and removes if present</q>",
+       "say": "Teja takes Anu off Close Friends. Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Anu's chip walks out of the bag. The output fills <q>2</q>.",
+       "say": "One out."
+      },
+      {
+       "screen": "discard_missing.py: close.discard(\"Pooja\"). Pooja was never in. Empty output. Caption: <q>Now discard Pooja.</q>",
+       "say": "Pooja is not a Close Friend. Say what happens.",
+       "room": "Say it."
+      },
+      {
+       "screen": "A finger checks the chips for Pooja and finds nothing. Nothing moves. The output fills <q>3</q>. Caption: <q>Not there? Nothing happens.</q>",
+       "say": "discard is quiet. Next: its loud cousin."
+      }
+     ],
+     "answer": "2; then 3",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A set is drawn as a round bag of chips, the way deck slide 16 draws it: no numbers under the chips, no first and no last. A list or a tuple stays a row of cells with 0, 1, 2 under them.",
+      "On press 4 nothing in the bag moves.",
+      "While it moves, this stays exactly as it was: Ravi and Sneha stay in through both runs; on the second run every chip stays.",
+      "Keep these exact values. Someone who thinks taking out a missing name gives an error would say KeyError: 'Pooja'; Python gives 3. New values could hide that mistake."
+     ],
+     "play": "How a chip leaves. The bag keeps Instagram's Close Friends look.",
+     "engage": "motion",
+     "ops": [
+      "discard()"
+     ],
+     "motion": "Anu's chip walks out; then a finger looks for Pooja and nothing moves. It proves discard never complains.",
+     "keeps": "Ravi and Sneha stay in through both runs; on the second run every chip stays.",
+     "trap": {
+      "belief": "taking out a missing name gives an error",
+      "wrong": "KeyError: 'Pooja'",
+      "code": 1
+     },
+     "press_count": 4
+    },
+    {
+     "id": "C11",
+     "title": "remove complains",
+     "source": [
+      30
+     ],
+     "purpose": "remove takes one item out too, but if the item is not there, Python stops with a KeyError.",
+     "heading": "Removing specific item",
+     "show": [
+      "Same line, with remove.",
+      "3",
+      "2",
+      "KeyError",
+      "Line 3 never runs.",
+      "discard is quiet. remove complains."
+     ],
+     "code": [
+      {
+       "file": "remove_missing.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nclose.remove(\"Pooja\")\nprint(len(close))",
+       "output": "KeyError: 'Pooja'"
+      },
+      {
+       "file": "remove.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nclose.remove(\"Anu\")\nprint(len(close))",
+       "output": "2"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "discard_missing.py and remove_missing.py side by side, as on deck slide 30. Only line 2 differs. Empty output on the right. Caption: <q>Same line, with remove.</q> Choices A <q>3</q>, B <q>2</q>, C <q>KeyError</q>.",
+       "say": "Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "Line 2 lights red. The output fills <q>KeyError: 'Pooja'</q>. Line 3 greys: <q>Line 3 never runs.</q>",
+       "say": "KeyError means: the item you named is not in it. And the program stops."
+      },
+      {
+       "screen": "remove.py: close.remove(\"Anu\"), Anu is there. Anu walks out; the output fills <q>2</q>. Caption: <q>discard is quiet. remove complains.</q>",
+       "say": "When the item is there, both do the same. The difference is only for a missing item."
+      }
+     ],
+     "answer": "KeyError: 'Pooja'; with Anu: 2",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "On press 2 the print line greys: it never runs, so nothing prints.",
+      "Keep these exact values. Someone who thinks remove works like discard and stays quiet would say 3; Python gives KeyError: 'Pooja'. New values could hide that mistake."
+     ],
+     "play": "Deck slide 30's two code boxes side by side. The red line and the grey line are yours.",
+     "engage": "play",
+     "interaction": "Hands up per choice on what remove does with a missing name, before the run.",
+     "trap": {
+      "belief": "remove works like discard and stays quiet",
+      "wrong": "3",
+      "code": 0
+     },
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "Game G2: who gets in?",
+   "kind": "activity",
+   "mins": 4,
+   "start": 56,
+   "cards": [
+    {
+     "id": "G2",
+     "title": "Who gets in?",
+     "game": "who-gets-in",
+     "ops": [
+      "add()",
+      "update()",
+      "discard()",
+      "remove()",
+      "clear()"
+     ],
+     "purpose": "Run five short programs on the Close Friends list and see each item walk to the bag: in once, bounced off, out, or stopped with a KeyError.",
+     "heading": "Who gets in?",
+     "data": {
+      "setup": {
+       "bag": "Teja's Instagram Close Friends list, as a bag of name chips with green stars"
+      },
+      "intro": "Count what is in the bag at the end. Or does the program stop?",
+      "rounds": [
+       {
+        "ask": "What does the last line print?",
+        "program": "close = {\"Ravi\", \"Anu\"}\nclose.add(\"Sneha\")\nclose.add(\"Ravi\")\nprint(len(close))",
+        "start": [
+         "Ravi",
+         "Anu"
+        ],
+        "output": "3",
+        "options": [
+         "3",
+         "4",
+         "2"
+        ],
+        "answer": "3",
+        "because": "It prints 3.",
+        "why": {
+         "4": "Ravi is already in. add does not put him in twice.",
+         "2": "Sneha is new, so she joins. Only Ravi bounces off."
+        },
+        "steps": [
+         {
+          "caption": "\"Sneha\" is not in yet. It joins.",
+          "line": 2,
+          "item": "Sneha",
+          "result": "joins",
+          "bag": [
+           "Anu",
+           "Ravi",
+           "Sneha"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "\"Ravi\" is already in. It bounces off. Nothing changes.",
+          "line": 3,
+          "item": "Ravi",
+          "result": "already in",
+          "bag": [
+           "Anu",
+           "Ravi",
+           "Sneha"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "print(len(close)) shows 3.",
+          "line": 4,
+          "item": null,
+          "result": "prints",
+          "bag": [
+           "Anu",
+           "Ravi",
+           "Sneha"
+          ],
+          "printed": "3"
+         }
+        ]
+       },
+       {
+        "ask": "What does the last line print?",
+        "program": "close = {\"Ravi\", \"Anu\"}\nclose.update([\"Kiran\", \"Anu\", \"Kiran\"])\nprint(len(close))",
+        "start": [
+         "Ravi",
+         "Anu"
+        ],
+        "output": "3",
+        "options": [
+         "3",
+         "5",
+         "4"
+        ],
+        "answer": "3",
+        "because": "It prints 3.",
+        "why": {
+         "5": "Anu is already in, and Kiran gets in once. update keeps no repeats.",
+         "4": "The second Kiran bounces off. Kiran is in once."
+        },
+        "steps": [
+         {
+          "caption": "update sends in \"Kiran\". It joins.",
+          "line": 2,
+          "item": "Kiran",
+          "result": "joins",
+          "bag": [
+           "Anu",
+           "Kiran",
+           "Ravi"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "update sends in \"Anu\". Already in. It bounces off.",
+          "line": 2,
+          "item": "Anu",
+          "result": "already in",
+          "bag": [
+           "Anu",
+           "Kiran",
+           "Ravi"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "update sends in \"Kiran\". Already in. It bounces off.",
+          "line": 2,
+          "item": "Kiran",
+          "result": "already in",
+          "bag": [
+           "Anu",
+           "Kiran",
+           "Ravi"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "print(len(close)) shows 3.",
+          "line": 3,
+          "item": null,
+          "result": "prints",
+          "bag": [
+           "Anu",
+           "Kiran",
+           "Ravi"
+          ],
+          "printed": "3"
+         }
+        ]
+       },
+       {
+        "ask": "What does the last line print?",
+        "program": "close = {\"Ravi\"}\nclose.update(\"Anu\")\nprint(len(close))",
+        "start": [
+         "Ravi"
+        ],
+        "output": "4",
+        "options": [
+         "2",
+         "4",
+         "3"
+        ],
+        "answer": "4",
+        "because": "It prints 4.",
+        "why": {
+         "2": "update reads a string one letter at a time: A, n and u. To add one name, use add.",
+         "3": "Ravi stays, and three letters join him: A, n and u. That is 4."
+        },
+        "steps": [
+         {
+          "caption": "update sends in \"A\". It joins.",
+          "line": 2,
+          "item": "A",
+          "result": "joins",
+          "bag": [
+           "A",
+           "Ravi"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "update sends in \"n\". It joins.",
+          "line": 2,
+          "item": "n",
+          "result": "joins",
+          "bag": [
+           "A",
+           "Ravi",
+           "n"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "update sends in \"u\". It joins.",
+          "line": 2,
+          "item": "u",
+          "result": "joins",
+          "bag": [
+           "A",
+           "Ravi",
+           "n",
+           "u"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "print(len(close)) shows 4.",
+          "line": 3,
+          "item": null,
+          "result": "prints",
+          "bag": [
+           "A",
+           "Ravi",
+           "n",
+           "u"
+          ],
+          "printed": "4"
+         }
+        ]
+       },
+       {
+        "ask": "What does the last line print?",
+        "program": "close = {\"Ravi\", \"Anu\", \"Kiran\"}\nclose.discard(\"Pooja\")\nclose.remove(\"Anu\")\nprint(len(close))",
+        "start": [
+         "Ravi",
+         "Anu",
+         "Kiran"
+        ],
+        "output": "2",
+        "options": [
+         "2",
+         "1",
+         "KeyError: 'Pooja'"
+        ],
+        "answer": "2",
+        "because": "It prints 2.",
+        "why": {
+         "1": "discard of Pooja does nothing, because she is not in. Only Anu leaves.",
+         "KeyError: 'Pooja'": "discard never gives an error. remove does, but Anu is in."
+        },
+        "steps": [
+         {
+          "caption": "\"Pooja\" is not in. discard does nothing. No error.",
+          "line": 2,
+          "item": "Pooja",
+          "result": "not there",
+          "bag": [
+           "Anu",
+           "Kiran",
+           "Ravi"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "\"Anu\" is in. It leaves.",
+          "line": 3,
+          "item": "Anu",
+          "result": "leaves",
+          "bag": [
+           "Kiran",
+           "Ravi"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "print(len(close)) shows 2.",
+          "line": 4,
+          "item": null,
+          "result": "prints",
+          "bag": [
+           "Kiran",
+           "Ravi"
+          ],
+          "printed": "2"
+         }
+        ]
+       },
+       {
+        "ask": "What does the last line print?",
+        "program": "close = {\"Ravi\", \"Anu\"}\nclose.clear()\nclose.remove(\"Ravi\")\nprint(len(close))",
+        "start": [
+         "Ravi",
+         "Anu"
+        ],
+        "output": "KeyError: 'Ravi'",
+        "options": [
+         "0",
+         "1",
+         "KeyError: 'Ravi'"
+        ],
+        "answer": "KeyError: 'Ravi'",
+        "because": "remove stops with KeyError: 'Ravi'. The print line never runs.",
+        "why": {
+         "0": "remove stops the program on a missing name, so print never runs.",
+         "1": "clear() empties the bag first. Ravi is gone before remove looks for him."
+        },
+        "steps": [
+         {
+          "caption": "clear() empties the bag. Everyone leaves.",
+          "line": 2,
+          "item": null,
+          "result": "everyone leaves",
+          "bag": [],
+          "printed": ""
+         },
+         {
+          "caption": "\"Ravi\" is not in. remove stops the program. The last line never runs.",
+          "line": 3,
+          "item": "Ravi",
+          "result": "KeyError",
+          "bag": [],
+          "printed": "KeyError: 'Ravi'"
+         }
+        ]
+       }
+      ]
+     },
+     "say": {
+      "ask": "Read the program. Option A, hands up. B. C.",
+      "step": "Joins, or already in? Say it before I press.",
+      "verdict": "Which line decided it?"
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "The bag holds each item once and has no first or last: never draw index numbers on it.",
+      "A repeat walks up to the bag and bounces off as already in. The bag does not change.",
+      "update with a string sends in one letter per press, each letter its own chip.",
+      "On remove of a missing item Python stops: no later line runs and nothing more prints.",
+      "Round 1 is C8's add again, so the first round is a win.",
+      "Round 3 is C9's trap: update(\"Anu\") sends in A, n and u.",
+      "Round 5 is the edge: clear() empties the bag, then remove stops the program and nothing prints."
+     ],
+     "play": "The bag, the chips and the door. Instagram's Close Friends look, as on C8 to C11.",
+     "presses": [
+      {
+       "screen": "Before round 1: <q>Count what is in the bag at the end. Or does the program stop?</q>",
+       "say": "Read it out. Say how a round works: you answer first, then it runs.",
+       "room": "Listen."
+      },
+      {
+       "screen": "Round 1 of 5. The round's setup, as in the data. The question: <q>What does the last line print?</q> Options: A <q>3</q>, B <q>4</q>, C <q>2</q>. Nothing runs yet.",
+       "say": "Read the program. Option A, hands up. B. C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>\"Sneha\" is not in yet. It joins.</q> In the data: line = 2; bag = [\"Anu\", \"Ravi\", \"Sneha\"]; printed = .",
+       "say": "Joins, or already in? Say it before I press."
+      },
+      {
+       "screen": "<q>\"Ravi\" is already in. It bounces off. Nothing changes.</q> In the data: line = 3; bag = [\"Anu\", \"Ravi\", \"Sneha\"]; printed = .",
+       "say": "Joins, or already in? Say it before I press."
+      },
+      {
+       "screen": "<q>print(len(close)) shows 3.</q> In the data: line = 4; item = null; result = prints; bag = [\"Anu\", \"Ravi\", \"Sneha\"].",
+       "say": "Joins, or already in? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>3</q>. <q>It prints 3.</q> Then a line for every other option: <q>4</q> <q>Ravi is already in. add does not put him in twice.</q>; <q>2</q> <q>Sneha is new, so she joins. Only Ravi bounces off.</q>.",
+       "say": "Which line decided it?"
+      },
+      {
+       "screen": "Round 2 of 5. The round's setup, as in the data. The question: <q>What does the last line print?</q> Options: A <q>3</q>, B <q>5</q>, C <q>4</q>. Nothing runs yet.",
+       "say": "Read the program. Option A, hands up. B. C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>update sends in \"Kiran\". It joins.</q> In the data: line = 2; bag = [\"Anu\", \"Kiran\", \"Ravi\"]; printed = .",
+       "say": "Joins, or already in? Say it before I press."
+      },
+      {
+       "screen": "<q>update sends in \"Anu\". Already in. It bounces off.</q> In the data: line = 2; result = already in; bag = [\"Anu\", \"Kiran\", \"Ravi\"]; printed = .",
+       "say": "Joins, or already in? Say it before I press."
+      },
+      {
+       "screen": "<q>update sends in \"Kiran\". Already in. It bounces off.</q> In the data: line = 2; result = already in; bag = [\"Anu\", \"Kiran\", \"Ravi\"]; printed = .",
+       "say": "Joins, or already in? Say it before I press."
+      },
+      {
+       "screen": "<q>print(len(close)) shows 3.</q> In the data: line = 3; item = null; result = prints; bag = [\"Anu\", \"Kiran\", \"Ravi\"].",
+       "say": "Joins, or already in? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>3</q>. <q>It prints 3.</q> Then a line for every other option: <q>5</q> <q>Anu is already in, and Kiran gets in once. update keeps no repeats.</q>; <q>4</q> <q>The second Kiran bounces off. Kiran is in once.</q>.",
+       "say": "Which line decided it?"
+      },
+      {
+       "screen": "Round 3 of 5. The round's setup, as in the data. The question: <q>What does the last line print?</q> Options: A <q>2</q>, B <q>4</q>, C <q>3</q>. Nothing runs yet.",
+       "say": "Read the program. Option A, hands up. B. C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>update sends in \"A\". It joins.</q> In the data: line = 2; bag = [\"A\", \"Ravi\"]; printed = .",
+       "say": "Joins, or already in? Say it before I press."
+      },
+      {
+       "screen": "<q>update sends in \"n\". It joins.</q> In the data: line = 2; bag = [\"A\", \"Ravi\", \"n\"]; printed = .",
+       "say": "Joins, or already in? Say it before I press."
+      },
+      {
+       "screen": "<q>update sends in \"u\". It joins.</q> In the data: line = 2; bag = [\"A\", \"Ravi\", \"n\", \"u\"]; printed = .",
+       "say": "Joins, or already in? Say it before I press."
+      },
+      {
+       "screen": "<q>print(len(close)) shows 4.</q> In the data: line = 3; item = null; result = prints; bag = [\"A\", \"Ravi\", \"n\", \"u\"].",
+       "say": "Joins, or already in? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>4</q>. <q>It prints 4.</q> Then a line for every other option: <q>2</q> <q>update reads a string one letter at a time: A, n and u. To add one name, use add.</q>; <q>3</q> <q>Ravi stays, and three letters join him: A, n and u. That is 4.</q>.",
+       "say": "Which line decided it?"
+      },
+      {
+       "screen": "Round 4 of 5. The round's setup, as in the data. The question: <q>What does the last line print?</q> Options: A <q>2</q>, B <q>1</q>, C <q>KeyError: 'Pooja'</q>. Nothing runs yet.",
+       "say": "Read the program. Option A, hands up. B. C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>\"Pooja\" is not in. discard does nothing. No error.</q> In the data: line = 2; result = not there; bag = [\"Anu\", \"Kiran\", \"Ravi\"]; printed = .",
+       "say": "Joins, or already in? Say it before I press."
+      },
+      {
+       "screen": "<q>\"Anu\" is in. It leaves.</q> In the data: line = 3; bag = [\"Kiran\", \"Ravi\"]; printed = .",
+       "say": "Joins, or already in? Say it before I press."
+      },
+      {
+       "screen": "<q>print(len(close)) shows 2.</q> In the data: line = 4; item = null; result = prints; bag = [\"Kiran\", \"Ravi\"].",
+       "say": "Joins, or already in? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>2</q>. <q>It prints 2.</q> Then a line for every other option: <q>1</q> <q>discard of Pooja does nothing, because she is not in. Only Anu leaves.</q>; <q>KeyError: 'Pooja'</q> <q>discard never gives an error. remove does, but Anu is in.</q>.",
+       "say": "Which line decided it?"
+      },
+      {
+       "screen": "Round 5 of 5. The round's setup, as in the data. The question: <q>What does the last line print?</q> Options: A <q>0</q>, B <q>1</q>, C <q>KeyError: 'Ravi'</q>. Nothing runs yet.",
+       "say": "Read the program. Option A, hands up. B. C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>clear() empties the bag. Everyone leaves.</q> In the data: line = 2; item = null; result = everyone leaves; bag = []; printed = .",
+       "say": "Joins, or already in? Say it before I press."
+      },
+      {
+       "screen": "<q>\"Ravi\" is not in. remove stops the program. The last line never runs.</q> In the data: line = 3; result = KeyError; bag = []; printed = KeyError: 'Ravi'.",
+       "say": "Joins, or already in? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>KeyError: 'Ravi'</q>. <q>remove stops with KeyError: 'Ravi'. The print line never runs.</q> Then a line for every other option: <q>0</q> <q>remove stops the program on a missing name, so print never runs.</q>; <q>1</q> <q>clear() empties the bag first. Ravi is gone before remove looks for him.</q>.",
+       "say": "Which line decided it?"
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Ask the room what order the bag prints in. The answer is always a count, True or False, or an error.",
+      "Show the count before the last item has walked."
+     ],
+     "interaction": "A set from the session's world is drawn as a bag of name chips. A short program adds, updates and removes; the room votes on the count it prints, then every item walks to the bag one press at a time and joins, bounces off as already in, leaves, or stops the program.",
+     "game_def": {
+      "id": "who-gets-in",
+      "name": "Who gets in?",
+      "one_line": "A set from the session's world is drawn as a bag of name chips. A short program adds, updates and removes; the room votes on the count it prints, then every item walks to the bag one press at a time and joins, bounces off as already in, leaves, or stops the program.",
+      "how": [
+       "The program on one side. On the other, the bag with the starting items as chips, in no order.",
+       "The room votes on what the last line prints: a count, or KeyError. Options are concrete values.",
+       "One press per item at the door: it joins, or bounces off as already in. update sends in each item of its sequence, a string one letter at a time.",
+       "discard of a missing item does nothing. remove of a missing item stops the program with KeyError, and no later line runs.",
+       "The last press runs the print line, or shows that it never ran."
+      ],
+      "setup": {
+       "bag": "what the set is drawn as, in the session's world (a Close Friends list, a story's viewer sheet)"
+      },
+      "round": {
+       "program": "the code, exact",
+       "start": "the items in the set before line 2, as a list; the bag starts with these",
+       "output": "what the program prints, or the error line, computed"
+      },
+      "step": {
+       "line": "the program line this press runs",
+       "item": "the item at the door on this press, or null for clear and print",
+       "result": "joins | already in | leaves | not there | KeyError | everyone leaves | prints",
+       "bag": "the items in the set after this press, sorted only so the data is stable; draw them in any order",
+       "printed": "what the terminal shows after this press, '' for nothing yet"
+      }
+     },
+     "press_count": 27
+    }
+   ]
+  },
+  {
+   "name": "len, in, for and clear on a set",
+   "kind": "concept",
+   "mins": 2,
+   "start": 60,
+   "cards": [
+    {
+     "id": "C12",
+     "title": "Operations on sets",
+     "source": [
+      31
+     ],
+     "purpose": "len counts the items, in checks for one, a for loop visits each once in no fixed order, clear empties it.",
+     "heading": "Operations on sets",
+     "show": [
+      "clear()",
+      "len()",
+      "Iterating",
+      "Membership Check",
+      "Say it before I press.",
+      "How many lines does the loop print?"
+     ],
+     "code": [
+      {
+       "file": "ops_len.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nprint(len(close))",
+       "output": "3"
+      },
+      {
+       "file": "ops_in.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nprint(\"Kiran\" in close)",
+       "output": "False"
+      },
+      {
+       "file": "ops_for.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nfor name in close:\n    print(\"Star for\", name)",
+       "output": "Star for Sneha\nStar for Ravi\nStar for Anu"
+      },
+      {
+       "file": "ops_clear.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nclose.clear()\nprint(close)",
+       "output": "set()"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 31's four operations beside the Close Friends bag, Ravi, Anu, Sneha: <q>clear()</q>, <q>len()</q>, <q>Iterating</q>, <q>Membership Check</q>. Caption: <q>Say it before I press.</q>",
+       "say": "You did all four on lists. Same on a set."
+      },
+      {
+       "screen": "len lights. The chips are counted one by one. The output fills <q>3</q>.",
+       "say": "Say it first.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Membership lights. A finger checks for Kiran. The output fills <q>False</q>.",
+       "say": "Is Kiran a Close Friend here? Say it first.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Iterating lights. Caption: <q>How many lines does the loop print?</q> Each chip lights once, one per line. The output fills <q>Star for Sneha / Star for Ravi / Star for Anu</q>.",
+       "say": "How many lines, not which order. 3: one per friend.",
+       "room": "Say a number."
+      },
+      {
+       "screen": "clear() lights. Every chip leaves at once. The output fills <q>set()</q>.",
+       "say": "An empty set prints as set(). Remember C6.",
+       "room": "Say the output."
+      }
+     ],
+     "answer": "len: 3; in: False; for: Star for Sneha / Star for Ravi / Star for Anu; clear: set()",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A printed set may show its items in another order on a student's laptop. The outputs here were printed with one fixed run. Never mark an answer wrong for its order.",
+      "On the loop, the question is the number of lines, never their order.",
+      "While it moves, this stays exactly as it was: The bag's three chips through len, in and the loop; only clear empties it.",
+      "Keep these exact values. Someone who thinks in finds Kiran because he was added on C8 would say True; Python gives False. New values could hide that mistake."
+     ],
+     "data": {
+      "outputs": {
+       "len": "3",
+       "in": "False",
+       "for": "Star for Sneha\nStar for Ravi\nStar for Anu",
+       "clear": "set()"
+      },
+      "close": [
+       "Ravi",
+       "Anu",
+       "Sneha"
+      ]
+     },
+     "play": "Deck slide 31 with its green arrows. Each operation acting on the bag is yours to draw.",
+     "engage": "motion",
+     "ops": [
+      "clear()"
+     ],
+     "motion": "Each operation acts on the bag: chips counted, one checked, each lit once, then all leave. It proves the list tools you know work on a set, without positions.",
+     "keeps": "The bag's three chips through len, in and the loop; only clear empties it.",
+     "interaction": "The room says each output out loud before its press.",
+     "trap": {
+      "belief": "in finds Kiran because he was added on C8",
+      "wrong": "True",
+      "code": 1
+     },
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Task 2: who is not on Close Friends?",
+   "kind": "activity",
+   "mins": 6,
+   "start": 62,
+   "cards": [
+    {
+     "id": "T2",
+     "title": "Task 2: who is not on Close Friends?",
+     "source": "new",
+     "handout": "Task 2",
+     "activity": 11,
+     "timer": 360,
+     "engage": "task",
+     "purpose": "Finish a program that counts the people who viewed the story but are not Close Friends. Write the if line, predict, run. Then use my notes' loop over views, and see a person counted twice. Then add Kiran to Close Friends.",
+     "heading": "Who is not on Close Friends?",
+     "show": [
+      "Worksheet · Task 2",
+      "How many people saw Teja's story but are not his Close Friends?",
+      "Write line 6. Predict. Run.",
+      "My notes loop over views. Change line 5. Run.",
+      "Teja adds Kiran. Add one line after line 1. Run."
+     ],
+     "code": [
+      {
+       "file": "not_close.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nviews = input().split(\",\")\nviewers = set(views)\ncount = 0\nfor name in viewers:\n    if name not in close:\n        count = count + 1\nprint(count)",
+       "output": "2",
+       "input": "Ravi,Kiran,Ravi,Vamsi,Kiran,Anu"
+      },
+      {
+       "file": "not_close_my_notes.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nviews = input().split(\",\")\nviewers = set(views)\ncount = 0\nfor name in views:\n    if name not in close:\n        count = count + 1\nprint(count)",
+       "output": "3",
+       "input": "Ravi,Kiran,Ravi,Vamsi,Kiran,Anu"
+      },
+      {
+       "file": "not_close_kiran.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nclose.add(\"Kiran\")\nviews = input().split(\",\")\nviewers = set(views)\ncount = 0\nfor name in viewers:\n    if name not in close:\n        count = count + 1\nprint(count)",
+       "output": "1",
+       "input": "Ravi,Kiran,Ravi,Vamsi,Kiran,Anu"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The question <q>How many people saw Teja's story but are not his Close Friends?</q> and the input: Ravi,Kiran,Ravi,Vamsi,Kiran,Anu.",
+       "say": "People, not opens. Which card showed us how to get people from opens?",
+       "room": "Say: set()."
+      },
+      {
+       "screen": "not_close.py with line 6 as an empty dashed line, the steps and a 6 minute timer. Caption: <q>Write line 6. Predict. Run.</q>",
+       "say": "Worksheet and playground. Type it, write the line, predict, run.",
+       "room": "Type, write, predict, run."
+      },
+      {
+       "screen": "Step 2 lights: <q>My notes loop over views. Change line 5. Run.</q>",
+       "say": "This is how I wrote it in my notes. Let them react first.",
+       "room": "Change, run."
+      },
+      {
+       "screen": "Step 3 lights: <q>Teja adds Kiran. Add one line after line 1. Run.</q>",
+       "say": "Which method puts one name in?",
+       "room": "Add, run."
+      },
+      {
+       "screen": "Line 6 fills <q>if name not in close:</q> and the output <q>2</q>: Kiran and Vamsi.",
+       "say": "Two people, though they opened it four times between them."
+      },
+      {
+       "screen": "My notes' version prints <q>3</q>. Kiran's two opens light: he was counted twice.",
+       "say": "views has repeats. viewers does not. That one word was the bug."
+      },
+      {
+       "screen": "Step 3's new line 2, <q>close.add(\"Kiran\")</q>, and the output <q>1</q>.",
+       "say": "Only Vamsi is left outside Close Friends."
+      }
+     ],
+     "answer": "Line 6: if name not in close:. Prints 2. My notes: 3. With close.add(\"Kiran\"): 1",
+     "must": [
+      "Step 2 is framed as the instructor's own notes, not a test.",
+      "No result shows until the timer has ended."
+     ],
+     "must_not": [
+      "Show line 6 before the timer has ended."
+     ],
+     "data": {
+      "input": "Ravi,Kiran,Ravi,Vamsi,Kiran,Anu",
+      "close": [
+       "Ravi",
+       "Anu",
+       "Sneha"
+      ]
+     },
+     "play": "The viewer sheet and the Close Friends list side by side, beside the code. The layout is yours.",
+     "press_count": 7
+    }
+   ]
+  },
+  {
+   "name": "Exit: which one prints nothing?",
+   "kind": "exit",
+   "mins": 3,
+   "start": 68,
+   "cards": [
+    {
+     "id": "X1",
+     "title": "Exit: which list prints nothing?",
+     "source": "new",
+     "activity": 1,
+     "timer": 150,
+     "engage": "task",
+     "purpose": "Check update, repeats, capital letters and strings together: the room must try each blank and find the only one that leaves 3 or fewer items.",
+     "heading": "Which one prints nothing?",
+     "show": [
+      "Instagram marks a story Trending when it has more than 3 viewers.",
+      "Which blank runs and prints nothing at all?"
+     ],
+     "code": [
+      {
+       "file": "trending.py",
+       "src": "viewers = {\"Ravi\"}\nviewers.update(___)\nif len(viewers) > 3:\n    print(\"Trending\")"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Story line, trending.py with line numbers and line 2's blank, the question, and options: A <q>\"Anu\"</q>, B <q>[\"Anu\", \"Ravi\", \"Anu\", \"Ravi\"]</q>, C <q>(\"Sneha\", \"Kiran\", \"Anu\")</q>, D <q>[\"Anu\", \"anu\", \"ANU\"]</q>. A 2:30 timer.",
+       "say": "Everyone answers alone. Then option A, hands up. B. C. D.",
+       "room": "Hands up per option."
+      },
+      {
+       "screen": "The right option marks, and every option shows its count, what it prints and its why line, as in data.",
+       "say": "Go through every option, not only the right one."
+      }
+     ],
+     "answer": "B, [\"Anu\", \"Ravi\", \"Anu\", \"Ravi\"]. \"Anu\": 4 items, Trending. [\"Anu\", \"Ravi\", \"Anu\", \"Ravi\"]: 2 items, prints nothing. (\"Sneha\", \"Kiran\", \"Anu\"): 4 items, Trending. [\"Anu\", \"anu\", \"ANU\"]: 4 items, Trending.",
+     "must_not": [
+      "Show any output before the second press."
+     ],
+     "data": {
+      "options": [
+       {
+        "blank": "\"Anu\"",
+        "items": "4",
+        "prints": "Trending",
+        "why": "update reads a string one letter at a time. A, n and u join Ravi: 4 items, so it prints."
+       },
+       {
+        "blank": "[\"Anu\", \"Ravi\", \"Anu\", \"Ravi\"]",
+        "items": "2",
+        "prints": "",
+        "why": "Repeats bounce off. Only Anu joins Ravi: 2 items. 2 is not more than 3, so nothing prints."
+       },
+       {
+        "blank": "(\"Sneha\", \"Kiran\", \"Anu\")",
+        "items": "4",
+        "prints": "Trending",
+        "why": "update takes any sequence, a tuple too. Three new names: 4 items, so it prints."
+       },
+       {
+        "blank": "[\"Anu\", \"anu\", \"ANU\"]",
+        "items": "4",
+        "prints": "Trending",
+        "why": "Capital letters make different strings. Three new items: 4, so it prints."
+       }
+      ],
+      "right": "B"
+     },
+     "play": "Layout. It can sit on a story screen with a Trending badge that never appears for the right answer.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Key takeaways: the example board",
+   "kind": "buffer",
+   "mins": 2,
+   "start": 71,
+   "cards": [
+    {
+     "id": "K1",
+     "title": "Today in six examples",
+     "source": "new",
+     "purpose": "Six real programs from today, each with what it prints and the rule it shows.",
+     "heading": "Today, in six examples",
+     "show": [
+      "Each item once",
+      "Repeats are kept once.",
+      "Empty curly brackets",
+      "{} is not a set. An empty set is set().",
+      "set() of a string",
+      "A, n and a: capital A is a different letter.",
+      "add a repeat",
+      "add keeps each item once.",
+      "update with a string",
+      "update adds each letter. Use add for one name.",
+      "remove a missing name",
+      "remove gives a KeyError. discard would do nothing."
+     ],
+     "code": [
+      {
+       "file": "Each item once",
+       "src": "print(len({\"Ravi\", \"Anu\", \"Ravi\"}))",
+       "output": "2"
+      },
+      {
+       "file": "Empty curly brackets",
+       "src": "print(type({}))",
+       "output": "<class 'dict'>"
+      },
+      {
+       "file": "set() of a string",
+       "src": "print(len(set(\"Anna\")))",
+       "output": "3"
+      },
+      {
+       "file": "add a repeat",
+       "src": "s = {\"Ravi\"}\ns.add(\"Ravi\")\nprint(len(s))",
+       "output": "1"
+      },
+      {
+       "file": "update with a string",
+       "src": "s = {\"Ravi\"}\ns.update(\"Anu\")\nprint(len(s))",
+       "output": "4"
+      },
+      {
+       "file": "remove a missing name",
+       "src": "s = {\"Ravi\"}\ns.remove(\"Anu\")",
+       "output": "KeyError: 'Anu'"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Example 1's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 2's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 3's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 4's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 5's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 6's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      }
+     ],
+     "must": [
+      "All six slots are there from press 1, empty.",
+      "Examples, not a concept map.",
+      "Each result shows only after the room has said it.",
+      "Keep these exact values. Someone who thinks a set keeps repeats would say 3; Python gives 2. New values could hide that mistake."
+     ],
+     "play": "The grid, and the bag from the hook beside the examples.",
+     "engage": "play",
+     "interaction": "For each example the room says the output together before its result fills.",
+     "trap": {
+      "belief": "a set keeps repeats",
+      "wrong": "3",
+      "code": 0
+     },
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Feedback",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 73,
+   "cards": [
+    {
+     "id": "S-FEEDBACK",
+     "title": "Feedback",
+     "source": "spine:feedback",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Thank you",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 74,
+   "cards": [
+    {
+     "id": "S-THANKYOU",
+     "title": "Thankyou",
+     "source": "spine:thankyou",
+     "press_count": 0
+    }
+   ]
+  }
+ ]
+}

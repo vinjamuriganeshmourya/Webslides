@@ -1,0 +1,2949 @@
+{
+ "meta": {
+  "session": "28 - Set Operations",
+  "course": "Programming Foundations",
+  "one_idea": "Every set operation asks each person two questions, in the first set? in the second?, and keeps a different part: | everyone, & the middle, - the first only, ^ everyone but the middle. It builds a new set and never changes the two it reads. issubset, issuperset and isdisjoint ask whether one group sits inside, around or apart from the other.",
+  "outcomes": [
+   "Find who is in either group with | or union(), and say why the count is not the two counts added.",
+   "Find who is in both with & or intersection().",
+   "Find who is in one group and not the other with - or difference(), and say why the order matters.",
+   "Find who is in exactly one group with ^ or symmetric_difference().",
+   "Say that the operators need a set on both sides, and the methods also take a list or a tuple.",
+   "Check if one group is inside another with issubset() and issuperset(), reading the set before the dot first.",
+   "Check if two groups share nobody with isdisjoint()."
+  ],
+  "previous": "27 - Sets",
+  "slides_dir": "C:\\Lesson Plans New\\builds\\build-28-set-operations\\work\\slides",
+  "deck_total": 48,
+  "kept": [
+   14,
+   15,
+   17,
+   18,
+   19,
+   21,
+   23,
+   25,
+   27,
+   29,
+   31,
+   33,
+   34,
+   35,
+   37,
+   41,
+   42,
+   44
+  ],
+  "cuts": [
+   [
+    "1-2",
+    "Welcome and deck title. The fixed spine cards replace them."
+   ],
+   [
+    "3-10",
+    "The deck's sets recap. Its content becomes S-RECAP, a sort recap the room commits to."
+   ],
+   [
+    "11-12",
+    "Daily challenge: update(\"pen\"). It was last session's trap and game round. One spoken line in the guide."
+   ],
+   [
+    "13",
+    "Agenda. Its two stops become the four stops of S-AGENDA."
+   ],
+   [
+    "16, 20, 24, 28",
+    "Syntax slides. Each code card shows the operator and its method together, with the syntax line from the slide."
+   ],
+   [
+    "22, 26, 30",
+    "The method run on a sequence, the same pattern as slide 18. One line on C4, C5 and C6."
+   ],
+   [
+    "32",
+    "The list of three method names. H2 and the three comparison cards bring them in one by one."
+   ],
+   [
+    "36, 38-40, 43",
+    "Repeats of the True and False pictures and code. C7 to C9 run them on the session's own groups."
+   ],
+   [
+    "45",
+    "Bullet takeaways. Replaced by K1, the example board."
+   ],
+   [
+    "46",
+    "Practice picture. One spoken line in the guide."
+   ],
+   [
+    "47-48",
+    "Thank you and all the best. The fixed spine cards replace them."
+   ]
+  ],
+  "defects": [
+   [
+    "slides 15 to 30",
+    "Every example uses small whole numbers, {4, 2, 8} and {1, 2}. Python prints small whole numbers in sorted order ({1, 2, 4, 8} on slide 17), so the room learns that sets sort, and slide 15 writes the same set as {4,8,2,1}. The counts are also too small to catch a wrong rule: {4, 2, 8} - {1, 2} has 2 items and the reverse has 1.",
+    "Every card uses Teja's WhatsApp groups: 8 and 7 people sharing 3. Each operator gives a different count (12, 3, 5, 4, 9), so each wrong idea prints a wrong number. No question asks for an order."
+   ],
+   [
+    "slides 16, 20, 24, 28",
+    "They say the method converts a sequence to a set, but never say that the operators do not. {4, 2, 8} | [1, 2] is a TypeError: unsupported operand type(s) for |: 'set' and 'list'.",
+    "C3 runs | with a list and shows the error. G1's last round and the exit use it."
+   ],
+   [
+    "slides 33 and 37",
+    "set2.issubset(set1) is explained as \"Returns True if all elements of second set are in first set\". Which set is second? set2 is written first. The transcript's instructor says \"it might be a little bit confusing, go through the video again\".",
+    "C7 and C8 say \"the set before the dot\" and \"the set in the brackets\", never first and second."
+   ],
+   [
+    "slides 15 to 30",
+    "No slide says the operators leave both sets as they were. Right after update(), which does change a set, students assume | does too.",
+    "C2 prints len(cse) and len(cricket) after the union: 8 and 7, unchanged. Every motion keeps the circles."
+   ],
+   [
+    "slides 34, 38, 43",
+    "The same three pictures are used for subset, superset and disjoint, with set_1 and set_2 labels that do not match slide 42's set_a and set_b.",
+    "One picture per idea on the session's own groups."
+   ]
+  ],
+  "notes": [
+   "The room is 50 to 60 first-year students on laptops. Laptops stay shut except on T1, G1's worksheet line, T2 and the classroom quiz, where only the worksheet tab and the playground are open.",
+   "One world for the session: Teja's WhatsApp groups. CSE-A gang (8 members) and Hostel cricket (7) share 3: Teja, Ravi, Kiran. He makes Fest crew for the college fest trip, and books one bus seat per member. Later: the Fest dance team (5), a WhatsApp poll for stall volunteers, and the College bus group of day scholars. Teja is the same student as in the last two sessions.",
+   "These numbers are the same on every card that uses them: 8, 7, 3 in both, 12 in Fest crew.",
+   "Two games: G1 (Light the regions, a new concept game for | & - ^) after Task 1, before the quiz; G2 (Predict then run, from the library) on the comparisons, after the quiz.",
+   "One picture for the whole session: Every group is a circle of name chips with no numbers and no order, the way deck slides 15 to 30 draw sets. Two groups that share people overlap, and the shared chips sit in the middle. An operation builds a new set. The two circles it reads never lose a chip: copies fly out, the originals stay where they were.",
+   "A printed set may show its names in another order on a student's laptop. The outputs here were printed with one fixed run. Never mark an answer wrong for its order. So no question in this session asks for an order: only a count, True or False, or an error.",
+   "Key names on screen: | is the pipe (Shift and backslash), & is the ampersand (Shift and 7), ^ is the caret (Shift and 6). Say each once, on its card.",
+   "Words on screen: union, intersection, difference, symmetric difference, subset, superset, disjoint, each with a plain gloss on its card. Never say hash or object in a sentence.",
+   "Votes are taken option by option: the instructor reads each option and asks how many think it is that one. Hands up. Nobody is named.",
+   "Nothing before the title card may say the session's name. The hook shows phones, never code, and never the words union or set.",
+   "The bar to beat is Plans/DSA/Module 3 - Stacks & Queues/01 - Introduction to Stacks/: a simulation the room drives, a picture that refuses to lie."
+  ],
+  "topics": [
+   "set-operations",
+   "sets"
+  ],
+  "world": "Teja's WhatsApp groups: CSE-A gang, Hostel cricket, and the Fest crew group he makes from both",
+  "new_ops": [
+   "|",
+   "&",
+   "-",
+   "^",
+   "union()",
+   "intersection()",
+   "difference()",
+   "symmetric_difference()",
+   "issubset()",
+   "issuperset()",
+   "isdisjoint()"
+  ]
+ },
+ "build_contract": [
+  "One self-contained HTML file. It opens offline from a USB stick and makes no network request.",
+  "It opens in presenter view. There is no sidebar, top bar or button the instructor has to use.",
+  "Right arrow or the clicker is one press. Left arrow goes back one press. F goes full screen, A shows all the cards, and End shows the whole card at once. The instructor guide tells the instructor these keys, so they must work.",
+  "Every card is its own screen, in the order of this spec. Press 1 is what shows when the card opens.",
+  "Every card's outer element carries data-spec=\"<card id>\" and data-presses=\"<number of presses>\". The review script reads both.",
+  "No link to any other file. The students' handout and the instructor guide are separate files, and a link from this file is how a class finds the answers."
+ ],
+ "rules": [
+  "No autoplay. Nothing moves on a timer. One press, one move, with a caption that says what just happened.",
+  "Commit, then reveal. Where a card asks a question, the answer shows only on the press after the room has answered.",
+  "Wrong answers stay private. No names, no per-student results on screen. Hands are counted out loud, never shown.",
+  "The topic is named once. Nothing before the title card says today's topic, not a heading, not a caption, not a file name on a code card.",
+  "Words are exact. Words in quotation marks, and every line under Exact words, are final. The rest of a press describes what happens, in your own design. If an exact line does not fit, ask for a new one; do not rewrite it.",
+  "Code is exact. Copy code and outputs from the JSON, never retype them. Every output here came from running the program.",
+  "Simple English. Short sentences, everyday words. No em-dashes anywhere, the page title included.",
+  "Every card moves. A card that introduces an idea steps; a static card is a picture of a lecture."
+ ],
+ "beats": [
+  {
+   "name": "Welcome",
+   "kind": "concept",
+   "mins": 1,
+   "start": 0,
+   "cards": [
+    {
+     "id": "S-WELCOME",
+     "title": "Welcome",
+     "source": "spine:welcome",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap",
+   "kind": "concept",
+   "mins": 1,
+   "start": 1,
+   "cards": [
+    {
+     "id": "S-RECAP-CARD",
+     "title": "Recap card",
+     "source": "spine:recap_card",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap sort: error or runs fine",
+   "kind": "quiz",
+   "mins": 3,
+   "start": 2,
+   "cards": [
+    {
+     "id": "S-RECAP",
+     "title": "Recap: error, or runs fine?",
+     "source": "spine:recap",
+     "purpose": "Pull back session 27: remove complains and discard does not, a set has no [0], add keeps a repeat once, update with a string adds letters, and a list cannot go in a set.",
+     "heading": "Error, or runs fine?",
+     "show": [
+      "Teja's Close Friends from last class.",
+      "Error, or runs fine?",
+      "Python stops with an error",
+      "Runs, no error",
+      "close.remove(\"Pooja\")",
+      "close.discard(\"Pooja\")",
+      "print(close[0])",
+      "close.add(\"Ravi\")",
+      "close.update(\"Anu\")",
+      "friends = {\"Ravi\", [\"Anu\"]}",
+      "Pooja is not in. remove stops with a KeyError.",
+      "discard of a missing name does nothing. No error.",
+      "A set has no position 0. TypeError.",
+      "Ravi is already in. add keeps him once. No error.",
+      "It adds the letters A, n and u. Odd, but no error.",
+      "A list can change, so it cannot go in a set. TypeError."
+     ],
+     "code": [
+      {
+       "file": "line_1.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nclose.remove(\"Pooja\")",
+       "output": "KeyError: 'Pooja'"
+      },
+      {
+       "file": "line_2.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nclose.discard(\"Pooja\")",
+       "output": ""
+      },
+      {
+       "file": "line_3.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nprint(close[0])",
+       "output": "TypeError: 'set' object is not subscriptable"
+      },
+      {
+       "file": "line_4.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nclose.add(\"Ravi\")",
+       "output": ""
+      },
+      {
+       "file": "line_5.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nclose.update(\"Anu\")",
+       "output": ""
+      },
+      {
+       "file": "line_6.py",
+       "src": "close = {\"Ravi\", \"Anu\", \"Sneha\"}\nfriends = {\"Ravi\", [\"Anu\"]}",
+       "output": "TypeError: unhashable type: 'list'"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Two bins, <q>Python stops with an error</q> and <q>Runs, no error</q>. Above them the line <q>close = {\"Ravi\", \"Anu\", \"Sneha\"}</q> and six chips waiting, one line of code each (data.chips). Caption: <q>Error, or runs fine?</q>",
+       "say": "Last class's Close Friends. Write E or R for all six in your notebook first.",
+       "room": "Write six letters in the notebook."
+      },
+      {
+       "screen": "Chip 1, <q>close.remove(\"Pooja\")</q>, flies into the bin <q>Python stops with an error</q>. Under it: <q>Pooja is not in. remove stops with a KeyError.</q>",
+       "say": "Line 1: error, hands up. Runs fine, hands up. Then press.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Chip 2, <q>close.discard(\"Pooja\")</q>, flies into the bin <q>Runs, no error</q>. Under it: <q>discard of a missing name does nothing. No error.</q>",
+       "say": "Line 2: error, hands up. Runs fine, hands up. Then press.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Chip 3, <q>print(close[0])</q>, flies into the bin <q>Python stops with an error</q>. Under it: <q>A set has no position 0. TypeError.</q>",
+       "say": "Line 3: error, hands up. Runs fine, hands up. Then press.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Chip 4, <q>close.add(\"Ravi\")</q>, flies into the bin <q>Runs, no error</q>. Under it: <q>Ravi is already in. add keeps him once. No error.</q>",
+       "say": "Line 4: error, hands up. Runs fine, hands up. Then press.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Chip 5, <q>close.update(\"Anu\")</q>, flies into the bin <q>Runs, no error</q>. Under it: <q>It adds the letters A, n and u. Odd, but no error.</q>",
+       "say": "Line 5: error, hands up. Runs fine, hands up. Then press.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Chip 6, <q>friends = {\"Ravi\", [\"Anu\"]}</q>, flies into the bin <q>Python stops with an error</q>. Under it: <q>A list can change, so it cannot go in a set. TypeError.</q>",
+       "say": "Line 6: error, hands up. Runs fine, hands up. Then press.",
+       "room": "Hands up."
+      }
+     ],
+     "interaction": "Format: sort. The room writes E or R for all six in the notebook, then votes each chip by hands before the press that sorts it. Nobody is named.",
+     "must": [
+      "All six chips and both bins are on screen from press 1. One chip flies per press, in the order of data.chips.",
+      "Each error chip shows its full error line in the bin: KeyError: 'Pooja'; TypeError: 'set' object is not subscriptable; TypeError: unhashable type: 'list'"
+     ],
+     "must_not": [
+      "Sort a chip before the vote."
+     ],
+     "data": {
+      "base": "close = {\"Ravi\", \"Anu\", \"Sneha\"}",
+      "bins": [
+       "Python stops with an error",
+       "Runs, no error"
+      ],
+      "chips": [
+       {
+        "line": "close.remove(\"Pooja\")",
+        "bin": "Python stops with an error",
+        "output": "KeyError: 'Pooja'",
+        "why": "Pooja is not in. remove stops with a KeyError."
+       },
+       {
+        "line": "close.discard(\"Pooja\")",
+        "bin": "Runs, no error",
+        "output": "",
+        "why": "discard of a missing name does nothing. No error."
+       },
+       {
+        "line": "print(close[0])",
+        "bin": "Python stops with an error",
+        "output": "TypeError: 'set' object is not subscriptable",
+        "why": "A set has no position 0. TypeError."
+       },
+       {
+        "line": "close.add(\"Ravi\")",
+        "bin": "Runs, no error",
+        "output": "",
+        "why": "Ravi is already in. add keeps him once. No error."
+       },
+       {
+        "line": "close.update(\"Anu\")",
+        "bin": "Runs, no error",
+        "output": "",
+        "why": "It adds the letters A, n and u. Odd, but no error."
+       },
+       {
+        "line": "friends = {\"Ravi\", [\"Anu\"]}",
+        "bin": "Python stops with an error",
+        "output": "TypeError: unhashable type: 'list'",
+        "why": "A list can change, so it cannot go in a set. TypeError."
+       }
+      ]
+     },
+     "play": "The bins and the chips. They can wear last session's Close Friends look, the green stars.",
+     "press_count": 7
+    }
+   ]
+  },
+  {
+   "name": "Hook: 8 plus 7 people, the group says 12",
+   "kind": "hook",
+   "mins": 4,
+   "start": 5,
+   "cards": [
+    {
+     "id": "H1",
+     "title": "8 plus 7 is 12",
+     "source": "new",
+     "animated": "hook",
+     "engage": "motion",
+     "motion": "Teja adds the cricket team to a group that already has the class group. Two of them show Already added; the member count lands on 12, not 15. Then the two member lists lift into two circles that overlap, three people in the middle. It proves people in both groups are counted once.",
+     "keeps": "Both source groups: CSE-A gang keeps its 8 members and Hostel cricket its 7 the whole card. Adding people to Fest crew takes nobody out of the old groups.",
+     "purpose": "Feel, from a group they have made, that joining two groups does not add their sizes: whoever is in both is in once. The last press draws two overlapping circles beside the phone, without naming them.",
+     "heading": "Fest crew",
+     "show": [
+      "Teja plans the fest trip.",
+      "One bus seat per person in the new group.",
+      "Now he adds the cricket team. How many members?",
+      "Ravi and Kiran: Already added to the group.",
+      "8 + 7 is 15. The group has 12.",
+      "Two groups. Three people in both."
+     ],
+     "presses": [
+      {
+       "screen": "Teja's phone on WhatsApp's chat list. Near the top, two groups with unread badges: CSE-A gang and Hostel cricket. Caption: <q>Teja plans the fest trip.</q>",
+       "say": "How many of you are in more than ten WhatsApp groups? Hands up.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Beside the phone, the two group info cards slide out, as WhatsApp shows them: <q>CSE-A gang</q> with <q>8 members</q>, and <q>Hostel cricket</q> with <q>7 members</q>, each with its member list, You first. Caption: <q>One bus seat per person in the new group.</q>",
+       "say": "Teja makes a new group for the fest trip, with everyone from both. The bus is booked per seat."
+      },
+      {
+       "screen": "Teja makes <q>Fest crew</q> with everyone from CSE-A gang: its info shows <q>8 members</q>. He taps Add participants. Caption: <q>Now he adds the cricket team. How many members?</q>",
+       "say": "How many seats does he book? Take four answers. Correct nobody.",
+       "room": "Call out a number."
+      },
+      {
+       "screen": "The Add participants screen, Hostel cricket's people listed. Ravi and Kiran are grey with WhatsApp's own line <q>Already added to the group</q>. Arjun, Harsha, Manoj, Rahul get green ticks. Teja is not in the list: he is You. Caption: <q>Ravi and Kiran: Already added to the group.</q>",
+       "say": "Who said 15? Fair: 8 plus 7. Why can Ravi not be added again?"
+      },
+      {
+       "screen": "Tick. The group info: <q>Group · 12 members</q>. Caption: <q>8 + 7 is 15. The group has 12.</q>",
+       "say": "Teja, Ravi, Kiran are in both groups. Teja saves 3 bus seats.",
+       "room": "Say who is in both."
+      },
+      {
+       "screen": "The turn, one movement, beside the phone: the two member cards lift into two circles of name chips that slide together and overlap. Teja, Ravi, Kiran settle in the middle. Caption: <q>Two groups. Three people in both.</q>",
+       "say": "WhatsApp just did something Python does in one line. Guess today's topic.",
+       "room": "Guess the topic."
+      }
+     ],
+     "must": [
+      "WhatsApp's screens look as they do in the real app: the chat list, the group info with its member count, the Add participants list with grey Already added rows and green ticks.",
+      "The circles are drawn beside the phone, never inside the app. WhatsApp does not draw circles.",
+      "On the last press the two circles keep all 8 and 7 chips; the middle holds 3.",
+      "While it moves, this stays exactly as it was: Both source groups: CSE-A gang keeps its 8 members and Hostel cricket its 7 the whole card. Adding people to Fest crew takes nobody out of the old groups."
+     ],
+     "must_not": [
+      "Say the session's name, or the words union, set or operation, anywhere on this card.",
+      "Show any code on this card.",
+      "Invent an app feature, like a count of shared members on the group screen.",
+      "Number the chips or put them in order.",
+      "Animate by itself. Every change waits for a press."
+     ],
+     "data": {
+      "cse_group": [
+       "Teja",
+       "Ravi",
+       "Kiran",
+       "Anu",
+       "Sneha",
+       "Pooja",
+       "Divya",
+       "Vamsi"
+      ],
+      "cricket_group": [
+       "Teja",
+       "Ravi",
+       "Kiran",
+       "Arjun",
+       "Harsha",
+       "Manoj",
+       "Rahul"
+      ],
+      "already_added": [
+       "Ravi",
+       "Kiran"
+      ],
+      "newly_added": [
+       "Arjun",
+       "Harsha",
+       "Manoj",
+       "Rahul"
+      ],
+      "fest_members": 12,
+      "code_for_guide": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\ncricket = {\"Teja\", \"Ravi\", \"Kiran\", \"Arjun\", \"Harsha\", \"Manoj\", \"Rahul\"}\nprint(len(cse) + len(cricket))\nprint(len(cse | cricket))",
+      "code_output_for_guide": "15\n12"
+     },
+     "play": "The phone, the chat list, the group info and the Add participants screen: yours to make real. Wear WhatsApp's look: the green bar, the group icons, the grey Already added rows. How the two cards become circles is yours.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Today's topic",
+   "kind": "concept",
+   "mins": 1,
+   "start": 9,
+   "cards": [
+    {
+     "id": "S-TITLE",
+     "title": "Title",
+     "source": "spine:title",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Agenda",
+   "kind": "concept",
+   "mins": 1,
+   "start": 10,
+   "cards": [
+    {
+     "id": "S-AGENDA",
+     "title": "Agenda",
+     "source": "spine:agenda",
+     "purpose": "Name the four stops of today in plain words. Deck slide 13's two stops, split.",
+     "play": "How the stops sit and light. The two circles from the hook can shade a different part at each stop.",
+     "show": [
+      "Joining two groups",
+      "everyone from both, once",
+      "Who is in both",
+      "and who is in only one",
+      "In one, not the other",
+      "the order matters",
+      "Inside or apart",
+      "one group inside another, or nobody shared"
+     ],
+     "presses": [
+      {
+       "screen": "Stop 1 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 2 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 3 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 4 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      }
+     ],
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Union: everyone from both, once",
+   "kind": "concept",
+   "mins": 5,
+   "start": 11,
+   "cards": [
+    {
+     "id": "C1",
+     "title": "Two groups, three places",
+     "source": [
+      14
+     ],
+     "purpose": "Two groups that share people make three places: only the first, both, only the second. Each set operation keeps some of these places.",
+     "heading": "Set Operations",
+     "show": [
+      "Only CSE-A gang",
+      "In both",
+      "Only Hostel cricket",
+      "Union",
+      "Intersection",
+      "Difference",
+      "Symmetric Difference",
+      "Who is in the blue part?"
+     ],
+     "presses": [
+      {
+       "screen": "The two circles from the hook, big: CSE-A gang and Hostel cricket, with every name chip. Three labels point at the three places: <q>Only CSE-A gang</q>, <q>In both</q>, <q>Only Hostel cricket</q>.",
+       "say": "Every person in these two groups is in exactly one of three places."
+      },
+      {
+       "screen": "Deck slide 14's icon for <q>Union</q> lights, and the same parts of the big circles turn blue: all three places. Caption: <q>Who is in the blue part?</q>",
+       "say": "Say the names in the blue part.",
+       "room": "Say the names."
+      },
+      {
+       "screen": "Deck slide 14's icon for <q>Intersection</q> lights, and the same parts of the big circles turn blue: only the middle. Caption: <q>Who is in the blue part?</q>",
+       "say": "Say the names in the blue part.",
+       "room": "Say the names."
+      },
+      {
+       "screen": "Deck slide 14's icon for <q>Difference</q> lights, and the same parts of the big circles turn blue: only CSE-A gang's outer part. Caption: <q>Who is in the blue part?</q>",
+       "say": "Say the names in the blue part.",
+       "room": "Say the names."
+      },
+      {
+       "screen": "Deck slide 14's icon for <q>Symmetric Difference</q> lights, and the same parts of the big circles turn blue: both outer parts, not the middle. Caption: <q>Who is in the blue part?</q>",
+       "say": "Say the names in the blue part.",
+       "room": "Say the names."
+      }
+     ],
+     "must": [
+      "Every group is a circle of name chips with no numbers and no order, the way deck slides 15 to 30 draw sets. Two groups that share people overlap, and the shared chips sit in the middle.",
+      "The blue moves from place to place; the chips never move on this card.",
+      "Draw it in the WhatsApp groups world: a group's member list is a set: each person once; two groups that share people are two overlapping circles with the shared people in the middle. Do not take the picture further than this: WhatsApp lists members A to Z with You first; a set has no order and no first"
+     ],
+     "must_not": [
+      "Show code or counts on this card. The next cards do that."
+     ],
+     "play": "Deck slide 14's four icons beside the big circles. The groups can keep their WhatsApp icons.",
+     "engage": "analogy",
+     "analogy": {
+      "world": "WhatsApp groups",
+      "maps": "a group's member list is a set: each person once; two groups that share people are two overlapping circles with the shared people in the middle",
+      "breaks": "WhatsApp lists members A to Z with You first; a set has no order and no first"
+     },
+     "press_count": 5
+    },
+    {
+     "id": "C2",
+     "title": "Union",
+     "source": [
+      15,
+      17
+     ],
+     "purpose": "cse | cricket is a new set with everyone from both groups, each once. Its size is not the two sizes added, and cse and cricket do not change.",
+     "heading": "Union",
+     "show": [
+      "Union of two sets is a set containing all elements of both sets",
+      "cse | cricket",
+      "How many in fest?",
+      "15",
+      "12",
+      "3",
+      "cse and cricket did not change."
+     ],
+     "code": [
+      {
+       "file": "union.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\ncricket = {\"Teja\", \"Ravi\", \"Kiran\", \"Arjun\", \"Harsha\", \"Manoj\", \"Rahul\"}\nfest = cse | cricket\nprint(len(fest))",
+       "output": "12"
+      },
+      {
+       "file": "union_keep.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\ncricket = {\"Teja\", \"Ravi\", \"Kiran\", \"Arjun\", \"Harsha\", \"Manoj\", \"Rahul\"}\nfest = cse | cricket\nprint(len(fest))\nprint(len(cse), len(cricket))",
+       "output": "12\n8 7"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "union.py, with line 3 the biggest text, beside the two circles. Empty output. Caption: <q>How many in fest?</q> Choices A <q>15</q>, B <q>12</q>, C <q>3</q>.",
+       "say": "The | key is Shift and backslash. Option A, hands up. B. C.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "Copies of every chip fly from both circles into a third circle, fest. The three from the middle land once. The output fills <q>12</q>. Deck slide 15's line: <q>Union of two sets is a set containing all elements of both sets</q>",
+       "say": "The hook, in one line. Everyone from both, each once."
+      },
+      {
+       "screen": "union_keep.py adds one print line. Its last line fills <q>8 7</q>. Both circles light: still full. Caption: <q>cse and cricket did not change.</q>",
+       "say": "Last class, update changed the set. | makes a new set and leaves both alone.",
+       "room": "Say the output."
+      }
+     ],
+     "answer": "12; then 12 / 8 7",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "Every group is a circle of name chips with no numbers and no order, the way deck slides 15 to 30 draw sets. Two groups that share people overlap, and the shared chips sit in the middle.",
+      "While it moves, this stays exactly as it was: cse and cricket, all 8 and 7 chips, lit the whole card. Only copies move.",
+      "Keep these exact values. Someone who thinks | adds the two counts would say 15; Python gives 12. New values could hide that mistake.",
+      "Keep these exact values. Someone who thinks | changes cse, like update did would say 12\n12 7; Python gives 12\n8 7. New values could hide that mistake."
+     ],
+     "play": "How the copies fly and land. The fest circle can wear Fest crew's group icon.",
+     "engage": "motion",
+     "ops": [
+      "|"
+     ],
+     "motion": "Copies of every chip fly from both circles into fest; the middle three land once. It proves | keeps everyone once.",
+     "keeps": "cse and cricket, all 8 and 7 chips, lit the whole card. Only copies move.",
+     "trap": [
+      {
+       "belief": "| adds the two counts",
+       "wrong": "15",
+       "code": 0
+      },
+      {
+       "belief": "| changes cse, like update did",
+       "wrong": "12\n12 7",
+       "code": 1
+      }
+     ],
+     "press_count": 3
+    },
+    {
+     "id": "C3",
+     "title": "union() takes a list, | does not",
+     "source": [
+      18
+     ],
+     "purpose": "cse.union(a list) turns the list into a set and joins it. The | operator needs a set on both sides: with a list Python stops with a TypeError.",
+     "heading": "Union",
+     "show": [
+      "Two day scholars want to come. Teja has them in a list.",
+      "set_a.union(sequence)",
+      "union() converts the sequence to a set",
+      "Now with |.",
+      "9",
+      "10",
+      "TypeError",
+      "| needs two sets. union() takes a list."
+     ],
+     "code": [
+      {
+       "file": "union_list.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nday = [\"Meena\", \"Ravi\"]\nfest = cse.union(day)\nprint(len(fest))",
+       "output": "9"
+      },
+      {
+       "file": "pipe_list.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nday = [\"Meena\", \"Ravi\"]\nfest = cse | day\nprint(len(fest))",
+       "output": "TypeError: unsupported operand type(s) for |: 'set' and 'list'"
+      },
+      {
+       "file": "pipe_set.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nday = [\"Meena\", \"Ravi\"]\nfest = cse | set(day)\nprint(len(fest))",
+       "output": "9"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "union_list.py: day is a list in square brackets, ['Meena', 'Ravi'], copied from a message. Empty output. Caption: <q>Two day scholars want to come. Teja has them in a list.</q>",
+       "say": "Ravi is already in cse. Say it.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "The list's items turn into chips and walk in; Ravi lands on his own chip. The output fills <q>9</q>. Deck slide 16's lines: <q>set_a.union(sequence)</q> and <q>union() converts the sequence to a set</q>",
+       "say": "union() takes any sequence: a list, a tuple, a string."
+      },
+      {
+       "screen": "pipe_list.py: the same with | instead of union(). Empty output. Caption: <q>Now with |.</q> Choices A <q>9</q>, B <q>10</q>, C <q>TypeError</q>.",
+       "say": "Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "The list bounces off the |. Line 3 lights red. The output fills <q>TypeError: unsupported operand type(s) for |: 'set' and 'list'</q>. Caption: <q>| needs two sets. union() takes a list.</q>",
+       "say": "Unsupported operand: | does not work on a set and a list. Wrap it, cse | set(day), and you get 9 again."
+      }
+     ],
+     "answer": "9; with |: TypeError: unsupported operand type(s) for |: 'set' and 'list'; with set(day): 9",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "Every group is a circle of name chips with no numbers and no order, the way deck slides 15 to 30 draw sets. Two groups that share people overlap, and the shared chips sit in the middle.",
+      "On press 4 the cse circle does not change: the print line never runs.",
+      "While it moves, this stays exactly as it was: The list day, as typed, and cse: union() reads them, it never changes them.",
+      "Keep these exact values. Someone who thinks | works with a list, like union() would say 9; Python gives TypeError: unsupported operand type(s) for |: 'set' and 'list'. New values could hide that mistake."
+     ],
+     "play": "The square-bracket list and how it turns into chips. The bounce off the | is yours.",
+     "engage": "motion",
+     "ops": [
+      "union()"
+     ],
+     "motion": "A list's items turn into chips and walk in through union(); the same list bounces off |. It proves the method takes a list and the operator does not.",
+     "keeps": "The list day, as typed, and cse: union() reads them, it never changes them.",
+     "trap": {
+      "belief": "| works with a list, like union()",
+      "wrong": "9",
+      "code": 1
+     },
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Intersection: only who is in both",
+   "kind": "concept",
+   "mins": 3,
+   "start": 16,
+   "cards": [
+    {
+     "id": "C4",
+     "title": "Intersection",
+     "source": [
+      19,
+      21
+     ],
+     "purpose": "cse & cricket keeps only the people in both groups. intersection() does the same and takes a list.",
+     "heading": "Intersection",
+     "show": [
+      "Intersection of two sets is a set containing common elements of both sets",
+      "cse & cricket",
+      "Who is in both groups?",
+      "12",
+      "3",
+      "0",
+      "Only the middle.",
+      "intersection() takes a list too."
+     ],
+     "code": [
+      {
+       "file": "both.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\ncricket = {\"Teja\", \"Ravi\", \"Kiran\", \"Arjun\", \"Harsha\", \"Manoj\", \"Rahul\"}\nboth = cse & cricket\nprint(len(both))\nprint(both)",
+       "output": "3\n{'Ravi', 'Kiran', 'Teja'}"
+      },
+      {
+       "file": "both_list.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nprint(cse.intersection([\"Arjun\", \"Anu\", \"Meena\"]))",
+       "output": "{'Anu'}"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "both.py beside the two circles. Empty output. Caption: <q>Who is in both groups?</q> Choices for the first line A <q>12</q>, B <q>3</q>, C <q>0</q>.",
+       "say": "People in both get every fest message twice. The & key is Shift and 7. Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "Only the middle chips lift out into a new circle, both. The output fills <q>3 / {'Ravi', 'Kiran', 'Teja'}</q>. Caption: <q>Only the middle.</q> Deck slide 19's line under it.",
+       "say": "& is not the English and that joins things. It keeps only who is in both."
+      },
+      {
+       "screen": "both_list.py: cse.intersection(['Arjun', 'Anu', 'Meena']). Empty output, then <q>{'Anu'}</q>. Caption: <q>intersection() takes a list too.</q>",
+       "say": "Arjun plays cricket but is not in cse. Meena is in neither. Say it first.",
+       "room": "Say the output."
+      }
+     ],
+     "answer": "3 / {'Ravi', 'Kiran', 'Teja'}; with the list: {'Anu'}",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "Every group is a circle of name chips with no numbers and no order, the way deck slides 15 to 30 draw sets. Two groups that share people overlap, and the shared chips sit in the middle.",
+      "A printed set may show its names in another order on a student's laptop. The outputs here were printed with one fixed run. Never mark an answer wrong for its order.",
+      "While it moves, this stays exactly as it was: Both circles, every chip: the middle chips are copied out, not taken out.",
+      "Keep these exact values. Someone who thinks & joins both groups, like the word and would say 12\n{...}; Python gives 3\n{'Ravi', 'Kiran', 'Teja'}. New values could hide that mistake."
+     ],
+     "play": "How the middle lifts out. Deck slide 19's picture is a fine start.",
+     "engage": "motion",
+     "ops": [
+      "&",
+      "intersection()"
+     ],
+     "motion": "Only the middle chips lift out into a new circle. It proves & keeps who is in both and nobody else.",
+     "keeps": "Both circles, every chip: the middle chips are copied out, not taken out.",
+     "trap": {
+      "belief": "& joins both groups, like the word and",
+      "wrong": "12\n{...}",
+      "code": 0
+     },
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "Difference: in the first, not the second",
+   "kind": "concept",
+   "mins": 4,
+   "start": 19,
+   "cards": [
+    {
+     "id": "C5",
+     "title": "Difference, and the order",
+     "source": [
+      23,
+      25
+     ],
+     "purpose": "cse - cricket keeps the people in cse who are not in cricket. cricket - cse is a different set: the set before the minus is the one you keep from.",
+     "heading": "Difference",
+     "show": [
+      "Difference of two sets is a set containing all the elements in first set but not second",
+      "cse - cricket",
+      "Who in CSE-A gang does not play cricket?",
+      "Now swap them.",
+      "5",
+      "4",
+      "9",
+      "The order matters."
+     ],
+     "code": [
+      {
+       "file": "only_cse.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\ncricket = {\"Teja\", \"Ravi\", \"Kiran\", \"Arjun\", \"Harsha\", \"Manoj\", \"Rahul\"}\nonly_cse = cse - cricket\nprint(len(only_cse))",
+       "output": "5"
+      },
+      {
+       "file": "only_cricket.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\ncricket = {\"Teja\", \"Ravi\", \"Kiran\", \"Arjun\", \"Harsha\", \"Manoj\", \"Rahul\"}\nonly_cricket = cricket - cse\nprint(len(only_cricket))",
+       "output": "4"
+      },
+      {
+       "file": "difference_tuple.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nleft = cse.difference((\"Anu\", \"Sneha\"))\nprint(len(left))",
+       "output": "6"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "only_cse.py beside the two circles. Empty output. Caption: <q>Who in CSE-A gang does not play cricket?</q>",
+       "say": "Teja wants to invite them to the next match. Say how many.",
+       "room": "Say a number."
+      },
+      {
+       "screen": "The middle greys in the cse circle; the outer part of cse lifts out. The output fills <q>5</q>. Deck slide 23's line under it.",
+       "say": "In the first, not in the second."
+      },
+      {
+       "screen": "only_cricket.py: cricket - cse. Empty output. Caption: <q>Now swap them.</q> Choices A <q>5</q>, B <q>4</q>, C <q>9</q>.",
+       "say": "Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "This time the outer part of cricket lifts out. The output fills <q>4</q>. Caption: <q>The order matters.</q>",
+       "say": "With | and & the order does not matter. With minus it does. difference() takes a tuple too: cse.difference(('Anu', 'Sneha')) gives 6."
+      }
+     ],
+     "answer": "5; swapped: 4; with the tuple: 6",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "Every group is a circle of name chips with no numbers and no order, the way deck slides 15 to 30 draw sets. Two groups that share people overlap, and the shared chips sit in the middle.",
+      "On press 4 the part that lifts out is on the other side from press 2.",
+      "While it moves, this stays exactly as it was: Both circles, every chip. The grey on the middle is only a shade on the original.",
+      "Keep these exact values. Someone who thinks cse - cricket and cricket - cse give the same would say 5; Python gives 4. New values could hide that mistake."
+     ],
+     "play": "How a part greys and the rest lifts out. The swap of the two names can be a visible flip.",
+     "engage": "motion",
+     "ops": [
+      "-",
+      "difference()"
+     ],
+     "motion": "The middle greys and one outer part lifts out; after the swap the other outer part lifts out. It proves you keep from the set before the minus.",
+     "keeps": "Both circles, every chip. The grey on the middle is only a shade on the original.",
+     "trap": {
+      "belief": "cse - cricket and cricket - cse give the same",
+      "wrong": "5",
+      "code": 1
+     },
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Symmetric difference: in exactly one",
+   "kind": "concept",
+   "mins": 3,
+   "start": 23,
+   "cards": [
+    {
+     "id": "C6",
+     "title": "Symmetric difference",
+     "source": [
+      27,
+      29
+     ],
+     "purpose": "cse ^ cricket keeps everyone who is in exactly one group: both outer parts, never the middle.",
+     "heading": "Symmetric Difference",
+     "show": [
+      "Symmetric difference of two sets is a set containing all elements which are not common to both sets",
+      "cse ^ cricket",
+      "Who is in only one group?",
+      "12",
+      "9",
+      "3",
+      "Everyone except the middle."
+     ],
+     "code": [
+      {
+       "file": "one_group.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\ncricket = {\"Teja\", \"Ravi\", \"Kiran\", \"Arjun\", \"Harsha\", \"Manoj\", \"Rahul\"}\none_group = cse ^ cricket\nprint(len(one_group))",
+       "output": "9"
+      },
+      {
+       "file": "one_group_method.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\ncricket = {\"Teja\", \"Ravi\", \"Kiran\", \"Arjun\", \"Harsha\", \"Manoj\", \"Rahul\"}\none_group = cse.symmetric_difference(cricket)\nprint(len(one_group))",
+       "output": "9"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "one_group.py beside the two circles. Empty output. Caption: <q>Who is in only one group?</q> Choices A <q>12</q>, B <q>9</q>, C <q>3</q>.",
+       "say": "They have not met the other group yet. Teja gives each a name sticker. The ^ key is Shift and 6. Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "The middle greys; both outer parts lift out together into one circle. The output fills <q>9</q>. Caption: <q>Everyone except the middle.</q>",
+       "say": "Five from cse, four from cricket. The three in both are out."
+      },
+      {
+       "screen": "one_group_method.py: cse.symmetric_difference(cricket). The output fills <q>9</q>.",
+       "say": "The method gives the same set. It takes a list too.",
+       "room": "Say the output."
+      }
+     ],
+     "answer": "9; with the method: 9",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "Every group is a circle of name chips with no numbers and no order, the way deck slides 15 to 30 draw sets. Two groups that share people overlap, and the shared chips sit in the middle.",
+      "While it moves, this stays exactly as it was: Both circles, every chip, the middle included.",
+      "Keep these exact values. Someone who thinks ^ is the same as | would say 12; Python gives 9. New values could hide that mistake."
+     ],
+     "play": "The two outer parts lifting together. Deck slide 27's ring picture is a fine start.",
+     "engage": "motion",
+     "ops": [
+      "^",
+      "symmetric_difference()"
+     ],
+     "motion": "The middle greys and both outer parts lift out together. It proves ^ is everyone but the middle.",
+     "keeps": "Both circles, every chip, the middle included.",
+     "trap": {
+      "belief": "^ is the same as |",
+      "wrong": "12",
+      "code": 0
+     },
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "Explainer: in cse? in dance? four rules",
+   "kind": "hook",
+   "mins": 4,
+   "start": 26,
+   "cards": [
+    {
+     "id": "E1",
+     "title": "In cse? In dance?",
+     "source": "new",
+     "animated": "explainer",
+     "purpose": "Every operator asks each person the same two questions, in cse? in dance?, and keeps them by its own rule. One walk fills four result circles at once.",
+     "heading": "Two questions, four rules",
+     "show": [
+      "Write four numbers first.",
+      "In cse?",
+      "In dance?",
+      "Same two questions. Four rules.",
+      "|: any yes",
+      "&: two yes",
+      "-: yes, then no",
+      "^: exactly one yes"
+     ],
+     "code": [
+      {
+       "file": "four_rules.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\ndance = {\"Anu\", \"Sneha\", \"Arjun\", \"Meena\", \"Lakshmi\"}\nprint(len(cse | dance))\nprint(len(cse & dance))\nprint(len(cse - dance))\nprint(len(cse ^ dance))",
+       "output": "11\n2\n6\n9"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "four_rules.py with an empty output. The cse circle and the Fest dance team circle, dance. A gate with two lamps, In cse? and In dance?, and four empty result circles labelled with the four lines cse | dance, cse & dance, cse - dance, cse ^ dance. Caption: <q>Write four numbers first.</q>",
+       "say": "New group: the fest dance team. Write all four numbers in your notebook.",
+       "room": "Write four numbers."
+      },
+      {
+       "screen": "One step per press, following data.walk: one person walks through the gate, each lamp lights yes or no, and a copy lands in every result circle that keeps them. In the other circles a grey slot appears and stays grey.",
+       "n": 11,
+       "say": "Before each press: which circles keep this person?",
+       "room": "Call it for each one."
+      },
+      {
+       "screen": "The output fills <q>11 / 2 / 6 / 9</q>, one line under each result circle. Caption: <q>Same two questions. Four rules.</q>",
+       "say": "Who wrote 13 for the first? That is adding. Anu and Sneha came once."
+      },
+      {
+       "screen": "Under each result circle its rule lights: <q>|: any yes</q>, <q>&: two yes</q>, <q>-: yes, then no</q>, <q>^: exactly one yes</q>.",
+       "say": "Every set operation is these two questions and one rule."
+      }
+     ],
+     "answer": "11 / 2 / 6 / 9, from the four lines in order",
+     "must": [
+      "One person walks per press, in the order of data.walk.",
+      "A grey slot stays grey to the end of the card. That grey is the finding.",
+      "The cse and dance circles never lose a chip.",
+      "Every group is a circle of name chips with no numbers and no order, the way deck slides 15 to 30 draw sets. Two groups that share people overlap, and the shared chips sit in the middle.",
+      "While it moves, this stays exactly as it was: The cse and dance circles, every chip, the whole card. Greyed slots stay grey.",
+      "Keep these exact values. Someone who thinks | adds the two counts would say 13\n2\n6\n9; Python gives 11\n2\n6\n9. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show a free code box, a picker or an input field.",
+      "Move by itself.",
+      "Fill an output line before the walk has ended."
+     ],
+     "data": {
+      "cse": [
+       "Teja",
+       "Ravi",
+       "Kiran",
+       "Anu",
+       "Sneha",
+       "Pooja",
+       "Divya",
+       "Vamsi"
+      ],
+      "dance": [
+       "Anu",
+       "Sneha",
+       "Arjun",
+       "Meena",
+       "Lakshmi"
+      ],
+      "ops": [
+       "cse | dance",
+       "cse & dance",
+       "cse - dance",
+       "cse ^ dance"
+      ],
+      "walk": [
+       {
+        "person": "Teja",
+        "in_cse": true,
+        "in_dance": false,
+        "region": "only cse",
+        "kept_by": [
+         "cse | dance",
+         "cse - dance",
+         "cse ^ dance"
+        ],
+        "caption": "Teja: in cse? yes. In dance? no. Kept by |, -, ^."
+       },
+       {
+        "person": "Ravi",
+        "in_cse": true,
+        "in_dance": false,
+        "region": "only cse",
+        "kept_by": [
+         "cse | dance",
+         "cse - dance",
+         "cse ^ dance"
+        ],
+        "caption": "Ravi: in cse? yes. In dance? no. Kept by |, -, ^."
+       },
+       {
+        "person": "Kiran",
+        "in_cse": true,
+        "in_dance": false,
+        "region": "only cse",
+        "kept_by": [
+         "cse | dance",
+         "cse - dance",
+         "cse ^ dance"
+        ],
+        "caption": "Kiran: in cse? yes. In dance? no. Kept by |, -, ^."
+       },
+       {
+        "person": "Anu",
+        "in_cse": true,
+        "in_dance": true,
+        "region": "both",
+        "kept_by": [
+         "cse | dance",
+         "cse & dance"
+        ],
+        "caption": "Anu: in cse? yes. In dance? yes. Kept by |, &."
+       },
+       {
+        "person": "Sneha",
+        "in_cse": true,
+        "in_dance": true,
+        "region": "both",
+        "kept_by": [
+         "cse | dance",
+         "cse & dance"
+        ],
+        "caption": "Sneha: in cse? yes. In dance? yes. Kept by |, &."
+       },
+       {
+        "person": "Pooja",
+        "in_cse": true,
+        "in_dance": false,
+        "region": "only cse",
+        "kept_by": [
+         "cse | dance",
+         "cse - dance",
+         "cse ^ dance"
+        ],
+        "caption": "Pooja: in cse? yes. In dance? no. Kept by |, -, ^."
+       },
+       {
+        "person": "Divya",
+        "in_cse": true,
+        "in_dance": false,
+        "region": "only cse",
+        "kept_by": [
+         "cse | dance",
+         "cse - dance",
+         "cse ^ dance"
+        ],
+        "caption": "Divya: in cse? yes. In dance? no. Kept by |, -, ^."
+       },
+       {
+        "person": "Vamsi",
+        "in_cse": true,
+        "in_dance": false,
+        "region": "only cse",
+        "kept_by": [
+         "cse | dance",
+         "cse - dance",
+         "cse ^ dance"
+        ],
+        "caption": "Vamsi: in cse? yes. In dance? no. Kept by |, -, ^."
+       },
+       {
+        "person": "Arjun",
+        "in_cse": false,
+        "in_dance": true,
+        "region": "only dance",
+        "kept_by": [
+         "cse | dance",
+         "cse ^ dance"
+        ],
+        "caption": "Arjun: in cse? no. In dance? yes. Kept by |, ^."
+       },
+       {
+        "person": "Meena",
+        "in_cse": false,
+        "in_dance": true,
+        "region": "only dance",
+        "kept_by": [
+         "cse | dance",
+         "cse ^ dance"
+        ],
+        "caption": "Meena: in cse? no. In dance? yes. Kept by |, ^."
+       },
+       {
+        "person": "Lakshmi",
+        "in_cse": false,
+        "in_dance": true,
+        "region": "only dance",
+        "kept_by": [
+         "cse | dance",
+         "cse ^ dance"
+        ],
+        "caption": "Lakshmi: in cse? no. In dance? yes. Kept by |, ^."
+       }
+      ],
+      "kept": {
+       "cse | dance": [
+        "Teja",
+        "Ravi",
+        "Kiran",
+        "Anu",
+        "Sneha",
+        "Pooja",
+        "Divya",
+        "Vamsi",
+        "Arjun",
+        "Meena",
+        "Lakshmi"
+       ],
+       "cse & dance": [
+        "Anu",
+        "Sneha"
+       ],
+       "cse - dance": [
+        "Teja",
+        "Ravi",
+        "Kiran",
+        "Pooja",
+        "Divya",
+        "Vamsi"
+       ],
+       "cse ^ dance": [
+        "Teja",
+        "Ravi",
+        "Kiran",
+        "Pooja",
+        "Divya",
+        "Vamsi",
+        "Arjun",
+        "Meena",
+        "Lakshmi"
+       ]
+      },
+      "counts": {
+       "cse | dance": "11",
+       "cse & dance": "2",
+       "cse - dance": "6",
+       "cse ^ dance": "9"
+      }
+     },
+     "play": "The gate, the two lamps and the four result circles. Session 11's Follow the Dot is the bar: one thing moves at a time.",
+     "engage": "motion",
+     "ops": [
+      "|",
+      "&",
+      "-",
+      "^"
+     ],
+     "motion": "Each person walks through a gate with two lamps, in cse? in dance?, and a copy lands in every result circle whose rule keeps them; the rest grey and stay grey. It proves the four operators are the same two questions with four rules.",
+     "keeps": "The cse and dance circles, every chip, the whole card. Greyed slots stay grey.",
+     "trap": {
+      "belief": "| adds the two counts",
+      "wrong": "13\n2\n6\n9",
+      "code": 0
+     },
+     "press_count": 14
+    }
+   ]
+  },
+  {
+   "name": "Task 1: the dance team numbers",
+   "kind": "activity",
+   "mins": 6,
+   "start": 30,
+   "cards": [
+    {
+     "id": "T1",
+     "title": "Task 1: the dance team numbers",
+     "source": "new",
+     "handout": "Task 1",
+     "activity": 19,
+     "timer": 360,
+     "engage": "task",
+     "purpose": "Type a program that reads the dance team and prints how many people in cse or dance and how many in both. Then add a line for dancers who are not in CSE-A, and try an input with a small-letter name.",
+     "heading": "The dance team numbers",
+     "show": [
+      "Worksheet · Task 1",
+      "Teja needs numbers for the fest dance team.",
+      "Type it. Predict. Run.",
+      "Add line 5: how many dancers are not in CSE-A?",
+      "A new input. Predict all three."
+     ],
+     "code": [
+      {
+       "file": "dance.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\ndance = set(input().split(\",\"))\nprint(len(cse | dance))\nprint(len(cse & dance))",
+       "output": "11\n2",
+       "input": "Anu,Sneha,Arjun,Meena,Lakshmi"
+      },
+      {
+       "file": "dance_2.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\ndance = set(input().split(\",\"))\nprint(len(cse | dance))\nprint(len(cse & dance))\nprint(len(dance - cse))",
+       "output": "11\n2\n3",
+       "input": "Anu,Sneha,Arjun,Meena,Lakshmi"
+      },
+      {
+       "file": "dance_3.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\ndance = set(input().split(\",\"))\nprint(len(cse | dance))\nprint(len(cse & dance))\nprint(len(dance - cse))",
+       "output": "10\n2\n2",
+       "input": "Anu,anu,Meena,Meena,Ravi"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The story line, dance.py with line numbers, the input, the three steps (only step 1 lit) and a 6 minute timer.",
+       "say": "Worksheet tab and playground. Type it, type your prediction, then run.",
+       "room": "Type, predict, run."
+      },
+      {
+       "screen": "Step 2 lights: <q>Add line 5: how many dancers are not in CSE-A?</q>",
+       "say": "Which set comes before the minus?",
+       "room": "Write, run."
+      },
+      {
+       "screen": "Step 3 lights: <q>A new input. Predict all three.</q> The new input: <q>Anu,anu,Meena,Meena,Ravi</q>",
+       "say": "Look closely at the names.",
+       "room": "Predict, run."
+      },
+      {
+       "screen": "Step 1's terminal appears: <q>11 / 2</q>.",
+       "say": "The walk you just saw, in four lines."
+      },
+      {
+       "screen": "Step 2's line 5, <q>print(len(dance - cse))</q>, and its output <q>3</q>. Beside it, greyed, the other order and what it prints: cse - dance gives 6.",
+       "say": "Who got 6? You wrote cse first. The dancers are the ones we keep from."
+      },
+      {
+       "screen": "Step 3: <q>10 / 2 / 2</q>. Anu and anu light.",
+       "say": "Small a is another letter, so anu is a new person for Python. Meena came twice and counts once."
+      }
+     ],
+     "answer": "Step 1: 11 / 2. Step 2: print(len(dance - cse)) prints 3. Step 3 with Anu,anu,Meena,Meena,Ravi: 10 / 2 / 2",
+     "must": [
+      "No result shows until the timer has ended.",
+      "One step's result per press on the reveal."
+     ],
+     "must_not": [
+      "Show any output before the room has run it."
+     ],
+     "data": {
+      "input": "Anu,Sneha,Arjun,Meena,Lakshmi",
+      "input_b": "Anu,anu,Meena,Meena,Ravi"
+     },
+     "play": "The layout of steps, timer and code. The results can sit on the dance team's WhatsApp group info.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Game G1: light the regions",
+   "kind": "activity",
+   "mins": 4,
+   "start": 36,
+   "cards": [
+    {
+     "id": "G1",
+     "title": "Light the regions",
+     "game": "light-the-regions",
+     "ops": [
+      "|",
+      "-",
+      "^"
+     ],
+     "purpose": "Vote the count, then watch each operator keep its regions: Task 1's | and minus, then ^ on two other groups, then | with a list.",
+     "heading": "Light the regions",
+     "data": {
+      "setup": {
+       "circles": "Teja's WhatsApp groups as two overlapping circles of name chips, with the group icons: the first set on the left, the second on the right"
+      },
+      "intro": "Write your answer for each round on the worksheet first.",
+      "rounds": [
+       {
+        "ask": "What does the last line print?",
+        "program": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\ndance = {\"Anu\", \"Sneha\", \"Arjun\", \"Meena\", \"Lakshmi\"}\nresult = cse | dance\nprint(len(result))",
+        "left": [
+         "Teja",
+         "Ravi",
+         "Kiran",
+         "Anu",
+         "Sneha",
+         "Pooja",
+         "Divya",
+         "Vamsi"
+        ],
+        "right": [
+         "Anu",
+         "Sneha",
+         "Arjun",
+         "Meena",
+         "Lakshmi"
+        ],
+        "output": "11",
+        "options": [
+         "13",
+         "11",
+         "2"
+        ],
+        "answer": "11",
+        "because": "It prints 11.",
+        "why": {
+         "13": "Anu and Sneha are in both groups. | keeps each person once.",
+         "2": "That is only the middle, &. | keeps all three regions."
+        },
+        "steps": [
+         {
+          "caption": "Only in cse: Divya, Kiran, Pooja, Ravi, Teja, Vamsi. Kept.",
+          "region": "only-left",
+          "kept": true,
+          "items": [
+           "Divya",
+           "Kiran",
+           "Pooja",
+           "Ravi",
+           "Teja",
+           "Vamsi"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "In both: Anu, Sneha. Kept.",
+          "region": "both",
+          "kept": true,
+          "items": [
+           "Anu",
+           "Sneha"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "Only in dance: Arjun, Lakshmi, Meena. Kept.",
+          "region": "only-right",
+          "kept": true,
+          "items": [
+           "Arjun",
+           "Lakshmi",
+           "Meena"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "print(len(result)) shows 11.",
+          "region": "print",
+          "kept": null,
+          "items": [],
+          "printed": "11"
+         }
+        ]
+       },
+       {
+        "ask": "What does the last line print?",
+        "program": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\ndance = {\"Anu\", \"Sneha\", \"Arjun\", \"Meena\", \"Lakshmi\"}\nresult = dance - cse\nprint(len(result))",
+        "left": [
+         "Teja",
+         "Ravi",
+         "Kiran",
+         "Anu",
+         "Sneha",
+         "Pooja",
+         "Divya",
+         "Vamsi"
+        ],
+        "right": [
+         "Anu",
+         "Sneha",
+         "Arjun",
+         "Meena",
+         "Lakshmi"
+        ],
+        "output": "3",
+        "options": [
+         "6",
+         "3",
+         "9"
+        ],
+        "answer": "3",
+        "because": "It prints 3.",
+        "why": {
+         "6": "That is cse - dance. You keep from the set before the minus.",
+         "9": "That is ^, both outer regions. - keeps only one."
+        },
+        "steps": [
+         {
+          "caption": "Only in cse: Divya, Kiran, Pooja, Ravi, Teja, Vamsi. Dropped.",
+          "region": "only-left",
+          "kept": false,
+          "items": [
+           "Divya",
+           "Kiran",
+           "Pooja",
+           "Ravi",
+           "Teja",
+           "Vamsi"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "In both: Anu, Sneha. Dropped.",
+          "region": "both",
+          "kept": false,
+          "items": [
+           "Anu",
+           "Sneha"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "Only in dance: Arjun, Lakshmi, Meena. Kept.",
+          "region": "only-right",
+          "kept": true,
+          "items": [
+           "Arjun",
+           "Lakshmi",
+           "Meena"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "print(len(result)) shows 3.",
+          "region": "print",
+          "kept": null,
+          "items": [],
+          "printed": "3"
+         }
+        ]
+       },
+       {
+        "ask": "What does the last line print?",
+        "program": "cricket = {\"Teja\", \"Ravi\", \"Kiran\", \"Arjun\", \"Harsha\", \"Manoj\", \"Rahul\"}\ndance = {\"Anu\", \"Sneha\", \"Arjun\", \"Meena\", \"Lakshmi\"}\nresult = cricket ^ dance\nprint(len(result))",
+        "left": [
+         "Teja",
+         "Ravi",
+         "Kiran",
+         "Arjun",
+         "Harsha",
+         "Manoj",
+         "Rahul"
+        ],
+        "right": [
+         "Anu",
+         "Sneha",
+         "Arjun",
+         "Meena",
+         "Lakshmi"
+        ],
+        "output": "10",
+        "options": [
+         "11",
+         "10",
+         "1"
+        ],
+        "answer": "10",
+        "because": "It prints 10.",
+        "why": {
+         "11": "That is |. ^ drops the middle: Arjun is in both, so he is out.",
+         "1": "That is &, only Arjun. ^ keeps the two outer regions."
+        },
+        "steps": [
+         {
+          "caption": "Only in cricket: Harsha, Kiran, Manoj, Rahul, Ravi, Teja. Kept.",
+          "region": "only-left",
+          "kept": true,
+          "items": [
+           "Harsha",
+           "Kiran",
+           "Manoj",
+           "Rahul",
+           "Ravi",
+           "Teja"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "In both: Arjun. Dropped.",
+          "region": "both",
+          "kept": false,
+          "items": [
+           "Arjun"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "Only in dance: Anu, Lakshmi, Meena, Sneha. Kept.",
+          "region": "only-right",
+          "kept": true,
+          "items": [
+           "Anu",
+           "Lakshmi",
+           "Meena",
+           "Sneha"
+          ],
+          "printed": ""
+         },
+         {
+          "caption": "print(len(result)) shows 10.",
+          "region": "print",
+          "kept": null,
+          "items": [],
+          "printed": "10"
+         }
+        ]
+       },
+       {
+        "ask": "What does the last line print?",
+        "program": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nresult = cse | [\"Arjun\"]\nprint(len(result))",
+        "left": [
+         "Teja",
+         "Ravi",
+         "Kiran",
+         "Anu",
+         "Sneha",
+         "Pooja",
+         "Divya",
+         "Vamsi"
+        ],
+        "right": [
+         "Arjun"
+        ],
+        "output": "TypeError: unsupported operand type(s) for |: 'set' and 'list'",
+        "options": [
+         "9",
+         "8",
+         "TypeError"
+        ],
+        "answer": "TypeError",
+        "because": "| needs two sets. With a list, Python stops: TypeError: unsupported operand type(s) for |: 'set' and 'list'",
+        "why": {
+         "9": "| needs a set on both sides. cse.union([\"Arjun\"]) would give 9.",
+         "8": "Python never gets to count. The line with | stops with an error."
+        },
+        "steps": [
+         {
+          "caption": "Line 2 stops: TypeError: unsupported operand type(s) for |: 'set' and 'list'. No region lights.",
+          "region": "error",
+          "kept": null,
+          "items": [],
+          "printed": "TypeError: unsupported operand type(s) for |: 'set' and 'list'"
+         }
+        ]
+       }
+      ]
+     },
+     "say": {
+      "ask": "Read the line with the operator. Option A, hands up. B. C.",
+      "step": "Kept or dropped? Say it before I press.",
+      "verdict": "Which regions did that operator keep?"
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "Both circles keep every chip for the whole round: an operation builds a new set and never changes the two it reads.",
+      "A greyed region stays grey to the end of the round. A lit region stays lit.",
+      "The regions light in the same order every round: only the first, both, only the second.",
+      "Rounds 1 and 2 are Task 1's own lines, so the first rounds are a win.",
+      "Round 3 uses cricket and dance: Arjun is the only one in both.",
+      "The last round, | with a list, is the edge: no region lights and nothing prints."
+     ],
+     "play": "The circles and how a region lights. The groups wear WhatsApp's icons and colours, as on C1 to C6.",
+     "presses": [
+      {
+       "screen": "Before round 1: <q>Write your answer for each round on the worksheet first.</q>",
+       "say": "Read it out. Say how a round works: you answer first, then it runs.",
+       "room": "Listen."
+      },
+      {
+       "screen": "Round 1 of 4. The round's setup, as in the data. The question: <q>What does the last line print?</q> Options: A <q>13</q>, B <q>11</q>, C <q>2</q>. Nothing runs yet.",
+       "say": "Read the line with the operator. Option A, hands up. B. C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Only in cse: Divya, Kiran, Pooja, Ravi, Teja, Vamsi. Kept.</q> In the data: region = only-left; kept = true; items = [\"Divya\", \"Kiran\", \"Pooja\", \"Ravi\", \"Teja\", \"Vamsi\"]; printed = .",
+       "say": "Kept or dropped? Say it before I press."
+      },
+      {
+       "screen": "<q>In both: Anu, Sneha. Kept.</q> In the data: kept = true; items = [\"Anu\", \"Sneha\"]; printed = .",
+       "say": "Kept or dropped? Say it before I press."
+      },
+      {
+       "screen": "<q>Only in dance: Arjun, Lakshmi, Meena. Kept.</q> In the data: region = only-right; kept = true; items = [\"Arjun\", \"Lakshmi\", \"Meena\"]; printed = .",
+       "say": "Kept or dropped? Say it before I press."
+      },
+      {
+       "screen": "<q>print(len(result)) shows 11.</q> In the data: kept = null; items = [].",
+       "say": "Kept or dropped? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>11</q>. <q>It prints 11.</q> Then a line for every other option: <q>13</q> <q>Anu and Sneha are in both groups. | keeps each person once.</q>; <q>2</q> <q>That is only the middle, &. | keeps all three regions.</q>.",
+       "say": "Which regions did that operator keep?"
+      },
+      {
+       "screen": "Round 2 of 4. The round's setup, as in the data. The question: <q>What does the last line print?</q> Options: A <q>6</q>, B <q>3</q>, C <q>9</q>. Nothing runs yet.",
+       "say": "Read the line with the operator. Option A, hands up. B. C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Only in cse: Divya, Kiran, Pooja, Ravi, Teja, Vamsi. Dropped.</q> In the data: region = only-left; kept = false; items = [\"Divya\", \"Kiran\", \"Pooja\", \"Ravi\", \"Teja\", \"Vamsi\"]; printed = .",
+       "say": "Kept or dropped? Say it before I press."
+      },
+      {
+       "screen": "<q>In both: Anu, Sneha. Dropped.</q> In the data: kept = false; items = [\"Anu\", \"Sneha\"]; printed = .",
+       "say": "Kept or dropped? Say it before I press."
+      },
+      {
+       "screen": "<q>Only in dance: Arjun, Lakshmi, Meena. Kept.</q> In the data: region = only-right; kept = true; items = [\"Arjun\", \"Lakshmi\", \"Meena\"]; printed = .",
+       "say": "Kept or dropped? Say it before I press."
+      },
+      {
+       "screen": "<q>print(len(result)) shows 3.</q> In the data: kept = null; items = [].",
+       "say": "Kept or dropped? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>3</q>. <q>It prints 3.</q> Then a line for every other option: <q>6</q> <q>That is cse - dance. You keep from the set before the minus.</q>; <q>9</q> <q>That is ^, both outer regions. - keeps only one.</q>.",
+       "say": "Which regions did that operator keep?"
+      },
+      {
+       "screen": "Round 3 of 4. The round's setup, as in the data. The question: <q>What does the last line print?</q> Options: A <q>11</q>, B <q>10</q>, C <q>1</q>. Nothing runs yet.",
+       "say": "Read the line with the operator. Option A, hands up. B. C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Only in cricket: Harsha, Kiran, Manoj, Rahul, Ravi, Teja. Kept.</q> In the data: region = only-left; kept = true; items = [\"Harsha\", \"Kiran\", \"Manoj\", \"Rahul\", \"Ravi\", \"Teja\"]; printed = .",
+       "say": "Kept or dropped? Say it before I press."
+      },
+      {
+       "screen": "<q>In both: Arjun. Dropped.</q> In the data: kept = false; items = [\"Arjun\"]; printed = .",
+       "say": "Kept or dropped? Say it before I press."
+      },
+      {
+       "screen": "<q>Only in dance: Anu, Lakshmi, Meena, Sneha. Kept.</q> In the data: region = only-right; kept = true; items = [\"Anu\", \"Lakshmi\", \"Meena\", \"Sneha\"]; printed = .",
+       "say": "Kept or dropped? Say it before I press."
+      },
+      {
+       "screen": "<q>print(len(result)) shows 10.</q> In the data: kept = null; items = [].",
+       "say": "Kept or dropped? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>10</q>. <q>It prints 10.</q> Then a line for every other option: <q>11</q> <q>That is |. ^ drops the middle: Arjun is in both, so he is out.</q>; <q>1</q> <q>That is &, only Arjun. ^ keeps the two outer regions.</q>.",
+       "say": "Which regions did that operator keep?"
+      },
+      {
+       "screen": "Round 4 of 4. The round's setup, as in the data. The question: <q>What does the last line print?</q> Options: A <q>9</q>, B <q>8</q>, C <q>TypeError</q>. Nothing runs yet.",
+       "say": "Read the line with the operator. Option A, hands up. B. C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 2 stops: TypeError: unsupported operand type(s) for |: 'set' and 'list'. No region lights.</q> In the data: region = error; kept = null; items = [].",
+       "say": "Kept or dropped? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>TypeError</q>. <q>| needs two sets. With a list, Python stops: TypeError: unsupported operand type(s) for |: 'set' and 'list'</q> Then a line for every other option: <q>9</q> <q>| needs a set on both sides. cse.union([\"Arjun\"]) would give 9.</q>; <q>8</q> <q>Python never gets to count. The line with | stops with an error.</q>.",
+       "say": "Which regions did that operator keep?"
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Ask the room what order the result prints in. The answer is a count or an error.",
+      "Show the count before the last region has lit or greyed."
+     ],
+     "interaction": "Two groups from the session's world are drawn as two overlapping circles of name chips. A one-line set operation runs; the room votes on how many people the result holds, then each of the three regions (only the first, both, only the second) lights up or greys out, one press each.",
+     "game_def": {
+      "id": "light-the-regions",
+      "name": "Light the regions",
+      "one_line": "Two groups from the session's world are drawn as two overlapping circles of name chips. A one-line set operation runs; the room votes on how many people the result holds, then each of the three regions (only the first, both, only the second) lights up or greys out, one press each.",
+      "how": [
+       "The program on one side. On the other, two overlapping circles with every person as a chip in one of three regions: only the first set, in both, only the second set.",
+       "The room votes on what the last line prints: a count, or an error. Options are concrete values.",
+       "One press per region, always in the same order: only the first, both, only the second. Each region lights (kept) or greys (dropped), and stays that way.",
+       "The last press runs the print line, and the lit chips are the count.",
+       "An operator with a list on one side stops on its own line with a TypeError: no region lights. The methods (union, intersection, difference, symmetric_difference) take a list."
+      ],
+      "setup": {
+       "circles": "what the two sets are drawn as, in the session's world (two WhatsApp groups, two playlists)"
+      },
+      "round": {
+       "program": "the code, exact",
+       "left": "the items of the first set (the one before the operator or the dot), as a list",
+       "right": "the items of the second set, as a list, each once",
+       "output": "what the program prints, or the error line, computed"
+      },
+      "step": {
+       "region": "only-left | both | only-right | print | error",
+       "kept": "true if this region is in the result, false if it greys, null on print and error",
+       "items": "the people in this region, sorted only so the data is stable; draw them in any order",
+       "printed": "what the terminal shows after this press, '' for nothing yet"
+      }
+     },
+     "press_count": 22
+    }
+   ]
+  },
+  {
+   "name": "Classroom quiz",
+   "kind": "quiz",
+   "mins": 6,
+   "start": 40,
+   "cards": [
+    {
+     "id": "S-QUIZ",
+     "title": "Quiz",
+     "source": "spine:quiz",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Hook 2: the stall check the long way",
+   "kind": "hook",
+   "mins": 3,
+   "start": 46,
+   "cards": [
+    {
+     "id": "H2",
+     "title": "Harsha at the CSE stall",
+     "source": "new",
+     "purpose": "Feel why issubset is worth having: the check most of us write by hand looks only at the last vote, so it says True while Harsha, who is not in CSE-A, runs the stall. One line cannot make that mistake.",
+     "heading": "Every volunteer from CSE-A?",
+     "show": [
+      "Rule: only CSE-A students run the CSE stall.",
+      "What does it print?",
+      "True. But Harsha is not in CSE-A.",
+      "Start at True. One wrong name makes it False.",
+      "Harsha is left over: False."
+     ],
+     "code": [
+      {
+       "file": "stall_check.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nvotes = ['Harsha', 'Anu', 'Ravi', 'Sneha']\nfor name in votes:\n    if name in cse:\n        ok = True\n    else:\n        ok = False\nprint(ok)",
+       "output": "True"
+      },
+      {
+       "file": "stall_flag.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nvotes = ['Harsha', 'Anu', 'Ravi', 'Sneha']\nok = True\nfor name in votes:\n    if name not in cse:\n        ok = False\nprint(ok)",
+       "output": "False"
+      },
+      {
+       "file": "stall_short.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nvotes = ['Harsha', 'Anu', 'Ravi', 'Sneha']\nprint(set(votes).issubset(cse))",
+       "output": "False"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Fest crew on WhatsApp: a poll, <q>Who will run the CSE stall?</q>, View votes open: Harsha, Anu, Ravi, Sneha, in that order. Caption: <q>Rule: only CSE-A students run the CSE stall.</q>",
+       "say": "Is the rule kept? How would you check it in code?",
+       "room": "Say a way."
+      },
+      {
+       "screen": "stall_check.py: a loop over the votes, if name in cse then ok = True, else ok = False. The output is empty. Caption: <q>What does it print?</q>",
+       "say": "Most of us write this. Read it. True or False?",
+       "room": "Hands for True, then for False."
+      },
+      {
+       "screen": "One vote per press of the voice: a small ok box beside the code flips False for Harsha, then True, True, True. The output fills <q>True</q>. Harsha's chip glows red in the poll. Caption: <q>True. But Harsha is not in CSE-A.</q>",
+       "say": "Harsha said False first. Every vote after him wrote over it. ok only remembers the last vote."
+      },
+      {
+       "screen": "stall_flag.py: ok = True moves above the loop and the else goes. The ok box flips to False at Harsha and stays False. The output fills <q>False</q>. Caption: <q>Start at True. One wrong name makes it False.</q>",
+       "say": "Now it is right. But you have to put ok in the right place, every time you write a check like this."
+      },
+      {
+       "screen": "The turn, one movement: the loop folds into one line, print(set(votes).issubset(cse)). The votes circle slides into cse and Harsha's chip stays outside. The output does not change: <q>False</q>. Caption: <q>Harsha is left over: False.</q>",
+       "say": "Python has a word for every one of these is inside that. No flag to put in the wrong place. The next cards show it."
+      }
+     ],
+     "answer": "stall_check.py prints True; the flag fix and the one line both print False; set(votes) - cse is {'Harsha'}",
+     "must": [
+      "All three programs are real and run; every output shown is theirs.",
+      "The room votes True or False on stall_check.py before it runs.",
+      "The poll looks like WhatsApp's real poll: the question, the options, View votes.",
+      "The fold is one movement and the output does not change.",
+      "While it moves, this stays exactly as it was: The poll's four votes in their order, and the cse group: only the check changes.",
+      "Keep these exact values. Someone who thinks an if and else inside the loop checks every vote would say False; Python gives True. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Animate by itself."
+     ],
+     "data": {
+      "votes": [
+       "Harsha",
+       "Anu",
+       "Ravi",
+       "Sneha"
+      ],
+      "cse": [
+       "Teja",
+       "Ravi",
+       "Kiran",
+       "Anu",
+       "Sneha",
+       "Pooja",
+       "Divya",
+       "Vamsi"
+      ]
+     },
+     "play": "The poll in WhatsApp's look, the ok box and Harsha's chip are yours. The ok box flipping back to True is the moment to make loud.",
+     "engage": "motion",
+     "ops": [
+      "issubset()"
+     ],
+     "motion": "The ok box flips once per vote and ends on the last vote's answer; then the votes circle slides into cse with Harsha left outside. It proves issubset checks every vote, not the last one.",
+     "keeps": "The poll's four votes in their order, and the cse group: only the check changes.",
+     "trap": {
+      "belief": "an if and else inside the loop checks every vote",
+      "wrong": "False",
+      "code": 0
+     },
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Subset and superset: one circle inside another",
+   "kind": "concept",
+   "mins": 6,
+   "start": 49,
+   "cards": [
+    {
+     "id": "D1",
+     "title": "Set Comparisons",
+     "source": [
+      31
+     ],
+     "engage": "plain",
+     "purpose": "Mark the second half: comparing two groups, with True or False for an answer.",
+     "heading": "Set Comparisons",
+     "show": [
+      "Set Comparisons"
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 31's one line, <q>Set Comparisons</q>, on its own.",
+       "say": "First half: new groups. Second half: questions about two groups. Answers are True or False."
+      }
+     ],
+     "play": "Deck slide 31 as it is.",
+     "press_count": 1
+    },
+    {
+     "id": "C7",
+     "title": "Subset",
+     "source": [
+      33,
+      34,
+      35
+     ],
+     "purpose": "volunteers.issubset(cse) is True when everyone in volunteers is also in cse. The set before the dot is the one checked. One person outside is enough for False.",
+     "heading": "Subset",
+     "show": [
+      "volunteers.issubset(cse)",
+      "True if every item of the set before the dot is in the set in the brackets.",
+      "Harsha votes too.",
+      "True",
+      "False",
+      "One outside is enough.",
+      "Now the other way round."
+     ],
+     "code": [
+      {
+       "file": "subset.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nvolunteers = {\"Anu\", \"Ravi\", \"Divya\", \"Sneha\"}\nprint(volunteers.issubset(cse))",
+       "output": "True"
+      },
+      {
+       "file": "subset_harsha.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nvolunteers = {\"Anu\", \"Ravi\", \"Divya\", \"Sneha\", \"Harsha\"}\nprint(volunteers.issubset(cse))",
+       "output": "False"
+      },
+      {
+       "file": "subset_swap.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nvolunteers = {\"Anu\", \"Ravi\", \"Divya\", \"Sneha\"}\nprint(cse.issubset(volunteers))",
+       "output": "False"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The volunteers circle sits inside the cse circle. subset.py, output <q>True</q> from H2. The line <q>volunteers.issubset(cse)</q> and under it <q>True if every item of the set before the dot is in the set in the brackets.</q>",
+       "say": "Read it out loud: is volunteers inside cse?"
+      },
+      {
+       "screen": "subset_harsha.py: Harsha votes in the poll too. Empty output. Caption: <q>Harsha votes too.</q> Choices A <q>True</q>, B <q>False</q>.",
+       "say": "Harsha plays cricket. Is he in CSE-A gang? Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "Each volunteer chip is checked against cse, one movement each; Harsha's chip pokes out of the cse circle and lights red. The output fills <q>False</q>. Caption: <q>One outside is enough.</q>",
+       "say": "Every one must be inside. One outside, False."
+      },
+      {
+       "screen": "subset_swap.py: cse.issubset(volunteers), with the four volunteers again. Empty output, then <q>False</q>. Caption: <q>Now the other way round.</q>",
+       "say": "Is the big group inside the small one? Say it first.",
+       "room": "Say True or False."
+      }
+     ],
+     "answer": "True; with Harsha: False; swapped: False",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "Every group is a circle of name chips with no numbers and no order, the way deck slides 15 to 30 draw sets. Two groups that share people overlap, and the shared chips sit in the middle.",
+      "Never call the sets first and second on this card: say before the dot, and in the brackets.",
+      "While it moves, this stays exactly as it was: The cse circle and its eight chips; the volunteers only move to be checked and go back.",
+      "Keep these exact values. Someone who thinks issubset asks whether cse is inside volunteers would say False; Python gives True. New values could hide that mistake.",
+      "Keep these exact values. Someone who thinks the order around the dot does not matter would say True; Python gives False. New values could hide that mistake."
+     ],
+     "play": "Deck slide 34's circle inside a circle, with the session's names. The red poke-out is yours.",
+     "engage": "motion",
+     "ops": [
+      "issubset()"
+     ],
+     "motion": "Each volunteer chip is checked against cse; Harsha's pokes out of the circle. It proves one outside is enough for False.",
+     "keeps": "The cse circle and its eight chips; the volunteers only move to be checked and go back.",
+     "trap": [
+      {
+       "belief": "issubset asks whether cse is inside volunteers",
+       "wrong": "False",
+       "code": 0
+      },
+      {
+       "belief": "the order around the dot does not matter",
+       "wrong": "True",
+       "code": 2
+      }
+     ],
+     "press_count": 4
+    },
+    {
+     "id": "C8",
+     "title": "Superset",
+     "source": [
+      37,
+      41
+     ],
+     "purpose": "cse.issuperset(volunteers) asks the same question from the other side: is everyone in the brackets inside the set before the dot? Swap them and the answer changes.",
+     "heading": "Superset",
+     "show": [
+      "cse.issuperset(volunteers)",
+      "True if every item in the brackets is in the set before the dot.",
+      "Now swap them.",
+      "True",
+      "False",
+      "volunteers is a subset of cse",
+      "cse is a superset of volunteers"
+     ],
+     "code": [
+      {
+       "file": "superset.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nvolunteers = {\"Anu\", \"Ravi\", \"Divya\", \"Sneha\"}\nprint(cse.issuperset(volunteers))",
+       "output": "True"
+      },
+      {
+       "file": "superset_swap.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nvolunteers = {\"Anu\", \"Ravi\", \"Divya\", \"Sneha\"}\nprint(volunteers.issuperset(cse))",
+       "output": "False"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The same picture, read from the big circle. superset.py with an empty output, the line <q>cse.issuperset(volunteers)</q> and under it <q>True if every item in the brackets is in the set before the dot.</q>",
+       "say": "Does cse hold all four volunteers? Say it.",
+       "room": "Say True or False."
+      },
+      {
+       "screen": "The output fills <q>True</q>. superset_swap.py: volunteers.issuperset(cse). Empty output. Caption: <q>Now swap them.</q> Choices A <q>True</q>, B <q>False</q>.",
+       "say": "Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "The output fills <q>False</q>. Deck slide 41's two lines: <q>volunteers is a subset of cse</q> and <q>cse is a superset of volunteers</q>",
+       "say": "Small inside big: subset. Big around small: superset. Same picture, read from each side."
+      }
+     ],
+     "answer": "True; swapped: False",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "Every group is a circle of name chips with no numbers and no order, the way deck slides 15 to 30 draw sets. Two groups that share people overlap, and the shared chips sit in the middle.",
+      "Keep these exact values. Someone who thinks issuperset gives the same answer whichever way round would say True; Python gives False. New values could hide that mistake."
+     ],
+     "play": "Deck slide 41 with the session's names. An arrow can show which side the sentence is read from.",
+     "engage": "play",
+     "interaction": "The room says the first answer, then votes by hands on the swapped line.",
+     "trap": {
+      "belief": "issuperset gives the same answer whichever way round",
+      "wrong": "True",
+      "code": 1
+     },
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "Disjoint: nobody in common",
+   "kind": "concept",
+   "mins": 2,
+   "start": 55,
+   "cards": [
+    {
+     "id": "C9",
+     "title": "Disjoint",
+     "source": [
+      42,
+      44
+     ],
+     "purpose": "bus.isdisjoint(cricket) is True when the two groups share nobody. One shared person makes it False.",
+     "heading": "Disjoint Sets",
+     "show": [
+      "bus.isdisjoint(cricket)",
+      "True when they have no common elements. Else, False",
+      "Does anyone take the bus and live in the hostel?",
+      "Nobody in the middle.",
+      "Now the bus and CSE-A gang.",
+      "True",
+      "False"
+     ],
+     "code": [
+      {
+       "file": "disjoint.py",
+       "src": "bus = {\"Meena\", \"Lakshmi\", \"Pooja\", \"Divya\"}\ncricket = {\"Teja\", \"Ravi\", \"Kiran\", \"Arjun\", \"Harsha\", \"Manoj\", \"Rahul\"}\nprint(bus.isdisjoint(cricket))",
+       "output": "True"
+      },
+      {
+       "file": "disjoint_cse.py",
+       "src": "bus = {\"Meena\", \"Lakshmi\", \"Pooja\", \"Divya\"}\ncse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nprint(bus.isdisjoint(cse))",
+       "output": "False"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The College bus group, day scholars (Meena, Lakshmi, Pooja, Divya), and Hostel cricket, apart. disjoint.py, empty output. Caption: <q>Does anyone take the bus and live in the hostel?</q>",
+       "say": "Day scholars take the bus. Hostel students do not. Say it.",
+       "room": "Say True or False."
+      },
+      {
+       "screen": "The two circles slide toward each other and stop: nobody in the middle. The output fills <q>True</q>. Deck slide 42's line: <q>True when they have no common elements. Else, False</q> Caption: <q>Nobody in the middle.</q>",
+       "say": "Disjoint: nothing in common. True means they share nobody."
+      },
+      {
+       "screen": "disjoint_cse.py: bus.isdisjoint(cse). Empty output. Caption: <q>Now the bus and CSE-A gang.</q> Choices A <q>True</q>, B <q>False</q>.",
+       "say": "Hands up per choice.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "The circles overlap: Pooja and Divya sit in the middle. The output fills <q>False</q>.",
+       "say": "One person in both is enough for False. Here there are two."
+      }
+     ],
+     "answer": "True; with cse: False",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "Every group is a circle of name chips with no numbers and no order, the way deck slides 15 to 30 draw sets. Two groups that share people overlap, and the shared chips sit in the middle.",
+      "While it moves, this stays exactly as it was: Every chip in both circles; only the circles move.",
+      "Keep these exact values. Someone who thinks isdisjoint gives True when they share someone would say False; Python gives True. New values could hide that mistake."
+     ],
+     "play": "How the circles slide together and stop, or overlap. The bus group can wear a bus icon.",
+     "engage": "motion",
+     "ops": [
+      "isdisjoint()"
+     ],
+     "motion": "Two circles slide together: they stop with nobody in the middle, or overlap with shared chips. It proves isdisjoint is True only when the middle is empty.",
+     "keeps": "Every chip in both circles; only the circles move.",
+     "trap": {
+      "belief": "isdisjoint gives True when they share someone",
+      "wrong": "False",
+      "code": 0
+     },
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Game G2: inside, around or apart?",
+   "kind": "activity",
+   "mins": 5,
+   "start": 57,
+   "cards": [
+    {
+     "id": "G2",
+     "title": "Inside, around or apart?",
+     "game": "predict-run",
+     "ops": [
+      "issubset()",
+      "issuperset()",
+      "isdisjoint()"
+     ],
+     "purpose": "Vote True or False on five comparisons, then watch each person checked one at a time until the answer is known.",
+     "heading": "Inside, around or apart?",
+     "data": {
+      "setup": {
+       "object": "Teja's WhatsApp groups as circles of name chips: one inside the other for a subset, apart for disjoint; the person being checked lights and moves to the other circle",
+       "start": {
+        "cse": [
+         "Teja",
+         "Ravi",
+         "Kiran",
+         "Anu",
+         "Sneha",
+         "Pooja",
+         "Divya",
+         "Vamsi"
+        ],
+        "volunteers": [
+         "Anu",
+         "Ravi",
+         "Divya",
+         "Sneha"
+        ],
+        "bus": [
+         "Meena",
+         "Lakshmi",
+         "Pooja",
+         "Divya"
+        ],
+        "dance": [
+         "Anu",
+         "Sneha",
+         "Arjun",
+         "Meena",
+         "Lakshmi"
+        ]
+       }
+      },
+      "intro": "Say True or False for each one before it runs.",
+      "rounds": [
+       {
+        "ask": "What does it print?",
+        "program": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nvolunteers = {\"Anu\", \"Ravi\", \"Divya\", \"Sneha\"}\nprint(volunteers.issubset(cse))",
+        "options": [
+         "True",
+         "False"
+        ],
+        "answer": "True",
+        "because": "It prints True.",
+        "why": {
+         "False": "Anu, Ravi, Divya and Sneha are all in CSE-A gang. Every one checks out."
+        },
+        "steps": [
+         {
+          "caption": "Anu: in the other set? Yes",
+          "state": {
+           "checking": "Anu",
+           "inside": true,
+           "checked": [
+            "Anu"
+           ]
+          }
+         },
+         {
+          "caption": "Ravi: in the other set? Yes",
+          "state": {
+           "checking": "Ravi",
+           "inside": true,
+           "checked": [
+            "Anu",
+            "Ravi"
+           ]
+          }
+         },
+         {
+          "caption": "Divya: in the other set? Yes",
+          "state": {
+           "checking": "Divya",
+           "inside": true,
+           "checked": [
+            "Anu",
+            "Ravi",
+            "Divya"
+           ]
+          }
+         },
+         {
+          "caption": "Sneha: in the other set? Yes",
+          "state": {
+           "checking": "Sneha",
+           "inside": true,
+           "checked": [
+            "Anu",
+            "Ravi",
+            "Divya",
+            "Sneha"
+           ]
+          }
+         },
+         {
+          "caption": "print shows True.",
+          "state": {
+           "checking": null,
+           "inside": null,
+           "checked": [
+            "Anu",
+            "Ravi",
+            "Divya",
+            "Sneha"
+           ],
+           "printed": "True"
+          }
+         }
+        ]
+       },
+       {
+        "ask": "What does it print?",
+        "program": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nvolunteers = {\"Anu\", \"Ravi\", \"Divya\", \"Sneha\"}\nprint(cse.issubset(volunteers))",
+        "options": [
+         "True",
+         "False"
+        ],
+        "answer": "False",
+        "because": "It prints False.",
+        "why": {
+         "True": "The set before the dot is the one checked. Teja is in cse but did not volunteer."
+        },
+        "steps": [
+         {
+          "caption": "Teja: in the other set? No. One is enough: False.",
+          "state": {
+           "checking": "Teja",
+           "inside": false,
+           "checked": [
+            "Teja"
+           ]
+          }
+         },
+         {
+          "caption": "print shows False.",
+          "state": {
+           "checking": null,
+           "inside": null,
+           "checked": [
+            "Teja"
+           ],
+           "printed": "False"
+          }
+         }
+        ]
+       },
+       {
+        "ask": "What does it print?",
+        "program": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nprint(cse.issuperset({\"Anu\", \"Harsha\"}))",
+        "options": [
+         "True",
+         "False"
+        ],
+        "answer": "False",
+        "because": "It prints False.",
+        "why": {
+         "True": "issuperset asks: is everyone in the brackets inside cse? Harsha is not."
+        },
+        "steps": [
+         {
+          "caption": "Anu: in the other set? Yes",
+          "state": {
+           "checking": "Anu",
+           "inside": true,
+           "checked": [
+            "Anu"
+           ]
+          }
+         },
+         {
+          "caption": "Harsha: in the other set? No. One is enough: False.",
+          "state": {
+           "checking": "Harsha",
+           "inside": false,
+           "checked": [
+            "Anu",
+            "Harsha"
+           ]
+          }
+         },
+         {
+          "caption": "print shows False.",
+          "state": {
+           "checking": null,
+           "inside": null,
+           "checked": [
+            "Anu",
+            "Harsha"
+           ],
+           "printed": "False"
+          }
+         }
+        ]
+       },
+       {
+        "ask": "What does it print?",
+        "program": "bus = {\"Meena\", \"Lakshmi\", \"Pooja\", \"Divya\"}\ndance = {\"Anu\", \"Sneha\", \"Arjun\", \"Meena\", \"Lakshmi\"}\nprint(bus.isdisjoint(dance))",
+        "options": [
+         "True",
+         "False"
+        ],
+        "answer": "False",
+        "because": "It prints False.",
+        "why": {
+         "True": "Meena takes the bus and dances. One person in both is enough: not disjoint."
+        },
+        "steps": [
+         {
+          "caption": "Meena: in the other set? Yes. One is enough: False.",
+          "state": {
+           "checking": "Meena",
+           "inside": true,
+           "checked": [
+            "Meena"
+           ]
+          }
+         },
+         {
+          "caption": "print shows False.",
+          "state": {
+           "checking": null,
+           "inside": null,
+           "checked": [
+            "Meena"
+           ],
+           "printed": "False"
+          }
+         }
+        ]
+       },
+       {
+        "ask": "What does it print?",
+        "program": "team = {\"Teja\", \"Ravi\", \"Kiran\"}\nprint(team.issubset({\"Kiran\", \"Teja\", \"Ravi\"}))",
+        "options": [
+         "True",
+         "False"
+        ],
+        "answer": "True",
+        "because": "It prints True.",
+        "why": {
+         "False": "The same three people, typed in another order. Every one is inside, so it is True."
+        },
+        "steps": [
+         {
+          "caption": "Teja: in the other set? Yes",
+          "state": {
+           "checking": "Teja",
+           "inside": true,
+           "checked": [
+            "Teja"
+           ]
+          }
+         },
+         {
+          "caption": "Ravi: in the other set? Yes",
+          "state": {
+           "checking": "Ravi",
+           "inside": true,
+           "checked": [
+            "Teja",
+            "Ravi"
+           ]
+          }
+         },
+         {
+          "caption": "Kiran: in the other set? Yes",
+          "state": {
+           "checking": "Kiran",
+           "inside": true,
+           "checked": [
+            "Teja",
+            "Ravi",
+            "Kiran"
+           ]
+          }
+         },
+         {
+          "caption": "print shows True.",
+          "state": {
+           "checking": null,
+           "inside": null,
+           "checked": [
+            "Teja",
+            "Ravi",
+            "Kiran"
+           ],
+           "printed": "True"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     "say": {
+      "ask": "True, hands up. False, hands up.",
+      "step": "Inside or not? Say it before I press.",
+      "verdict": "Which person decided it?"
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "The answer appears on the object, not only as text.",
+      "Round 1 is H2's check again, so the first round is a win.",
+      "Round 2 swaps the sets: the set before the dot is the one checked.",
+      "The checking stops at the first person who decides the answer.",
+      "Round 5 is the edge: the same three people typed in another order. Still a subset, True."
+     ],
+     "play": "The circles and how a checked chip moves. WhatsApp group icons, as on C7 to C9.",
+     "presses": [
+      {
+       "screen": "Before round 1: <q>Say True or False for each one before it runs.</q>",
+       "say": "Read it out. Say how a round works: you answer first, then it runs.",
+       "room": "Listen."
+      },
+      {
+       "screen": "Round 1 of 5. The round's setup, as in the data. The question: <q>What does it print?</q> Options: A <q>True</q>, B <q>False</q>. Nothing runs yet.",
+       "say": "True, hands up. False, hands up.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Anu: in the other set? Yes</q> In the data: state = {\"checking\": \"Anu\", \"inside\": true, \"checked\": [\"Anu\"]}.",
+       "say": "Inside or not? Say it before I press."
+      },
+      {
+       "screen": "<q>Ravi: in the other set? Yes</q> In the data: state = {\"checking\": \"Ravi\", \"inside\": true, \"checked\": [\"Anu\", \"Ravi\"]}.",
+       "say": "Inside or not? Say it before I press."
+      },
+      {
+       "screen": "<q>Divya: in the other set? Yes</q> In the data: state = {\"checking\": \"Divya\", \"inside\": true, \"checked\": [\"Anu\", \"Ravi\", \"Divya\"]}.",
+       "say": "Inside or not? Say it before I press."
+      },
+      {
+       "screen": "<q>Sneha: in the other set? Yes</q> In the data: state = {\"checking\": \"Sneha\", \"inside\": true, \"checked\": [\"Anu\", \"Ravi\", \"Divya\", \"Sneha\"]}.",
+       "say": "Inside or not? Say it before I press."
+      },
+      {
+       "screen": "<q>print shows True.</q> In the data: state = {\"checking\": null, \"inside\": null, \"checked\": [\"Anu\", \"Ravi\", \"Divya\", \"Sneha\"], \"printed\": \"True\"}.",
+       "say": "Inside or not? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>True</q>. <q>It prints True.</q> Then a line for every other option: <q>False</q> <q>Anu, Ravi, Divya and Sneha are all in CSE-A gang. Every one checks out.</q>.",
+       "say": "Which person decided it?"
+      },
+      {
+       "screen": "Round 2 of 5. The round's setup, as in the data. The question: <q>What does it print?</q> Options: A <q>True</q>, B <q>False</q>. Nothing runs yet.",
+       "say": "True, hands up. False, hands up.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Teja: in the other set? No. One is enough: False.</q> In the data: state = {\"checking\": \"Teja\", \"inside\": false, \"checked\": [\"Teja\"]}.",
+       "say": "Inside or not? Say it before I press."
+      },
+      {
+       "screen": "<q>print shows False.</q> In the data: state = {\"checking\": null, \"inside\": null, \"checked\": [\"Teja\"], \"printed\": \"False\"}.",
+       "say": "Inside or not? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>False</q>. <q>It prints False.</q> Then a line for every other option: <q>True</q> <q>The set before the dot is the one checked. Teja is in cse but did not volunteer.</q>.",
+       "say": "Which person decided it?"
+      },
+      {
+       "screen": "Round 3 of 5. The round's setup, as in the data. The question: <q>What does it print?</q> Options: A <q>True</q>, B <q>False</q>. Nothing runs yet.",
+       "say": "True, hands up. False, hands up.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Anu: in the other set? Yes</q> In the data: state = {\"checking\": \"Anu\", \"inside\": true, \"checked\": [\"Anu\"]}.",
+       "say": "Inside or not? Say it before I press."
+      },
+      {
+       "screen": "<q>Harsha: in the other set? No. One is enough: False.</q> In the data: state = {\"checking\": \"Harsha\", \"inside\": false, \"checked\": [\"Anu\", \"Harsha\"]}.",
+       "say": "Inside or not? Say it before I press."
+      },
+      {
+       "screen": "<q>print shows False.</q> In the data: state = {\"checking\": null, \"inside\": null, \"checked\": [\"Anu\", \"Harsha\"], \"printed\": \"False\"}.",
+       "say": "Inside or not? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>False</q>. <q>It prints False.</q> Then a line for every other option: <q>True</q> <q>issuperset asks: is everyone in the brackets inside cse? Harsha is not.</q>.",
+       "say": "Which person decided it?"
+      },
+      {
+       "screen": "Round 4 of 5. The round's setup, as in the data. The question: <q>What does it print?</q> Options: A <q>True</q>, B <q>False</q>. Nothing runs yet.",
+       "say": "True, hands up. False, hands up.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Meena: in the other set? Yes. One is enough: False.</q> In the data: state = {\"checking\": \"Meena\", \"inside\": true, \"checked\": [\"Meena\"]}.",
+       "say": "Inside or not? Say it before I press."
+      },
+      {
+       "screen": "<q>print shows False.</q> In the data: state = {\"checking\": null, \"inside\": null, \"checked\": [\"Meena\"], \"printed\": \"False\"}.",
+       "say": "Inside or not? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>False</q>. <q>It prints False.</q> Then a line for every other option: <q>True</q> <q>Meena takes the bus and dances. One person in both is enough: not disjoint.</q>.",
+       "say": "Which person decided it?"
+      },
+      {
+       "screen": "Round 5 of 5. The round's setup, as in the data. The question: <q>What does it print?</q> Options: A <q>True</q>, B <q>False</q>. Nothing runs yet.",
+       "say": "True, hands up. False, hands up.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Teja: in the other set? Yes</q> In the data: state = {\"checking\": \"Teja\", \"inside\": true, \"checked\": [\"Teja\"]}.",
+       "say": "Inside or not? Say it before I press."
+      },
+      {
+       "screen": "<q>Ravi: in the other set? Yes</q> In the data: state = {\"checking\": \"Ravi\", \"inside\": true, \"checked\": [\"Teja\", \"Ravi\"]}.",
+       "say": "Inside or not? Say it before I press."
+      },
+      {
+       "screen": "<q>Kiran: in the other set? Yes</q> In the data: state = {\"checking\": \"Kiran\", \"inside\": true, \"checked\": [\"Teja\", \"Ravi\", \"Kiran\"]}.",
+       "say": "Inside or not? Say it before I press."
+      },
+      {
+       "screen": "<q>print shows True.</q> In the data: state = {\"checking\": null, \"inside\": null, \"checked\": [\"Teja\", \"Ravi\", \"Kiran\"], \"printed\": \"True\"}.",
+       "say": "Inside or not? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>True</q>. <q>It prints True.</q> Then a line for every other option: <q>False</q> <q>The same three people, typed in another order. Every one is inside, so it is True.</q>.",
+       "say": "Which person decided it?"
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Show the code's output in a console before the object has moved."
+     ],
+     "interaction": "A machine shows a starting state and the operation it is about to run. The room votes on the result; then it runs, one movement per press, on the object itself.",
+     "game_def": {
+      "id": "predict-run",
+      "name": "Predict-then-run machine",
+      "one_line": "A machine shows a starting state and the operation it is about to run. The room votes on the result; then it runs, one movement per press, on the object itself.",
+      "how": [
+       "The card shows the object (a row of letter tiles, a counter, a scoreboard) and the code that acts on it.",
+       "The room votes on concrete values, never English. 'abcd' is an option; 'it skips one' is not.",
+       "It runs one movement per press, on the object: the tile it lands on lights, the counter ticks.",
+       "The verdict says why the answer is right, and gives a line for every wrong option.",
+       "Rounds 1 to 3 are the worksheet task the room just did, so the machine is that task's check. The last round is an edge case (an empty result, a zero)."
+      ],
+      "setup": {
+       "object": "what the machine is drawn as, in one line: 'the string as a row of tiles with index numbers'",
+       "start": "the state on screen before round 1 runs, as data"
+      },
+      "round": {
+       "program": "the code this round runs, exact"
+      },
+      "step": {
+       "state": "what the object shows after this press, as data (the lit tile indexes, the counter value)"
+      }
+     },
+     "press_count": 27
+    }
+   ]
+  },
+  {
+   "name": "Task 2: the stall check",
+   "kind": "activity",
+   "mins": 6,
+   "start": 62,
+   "cards": [
+    {
+     "id": "T2",
+     "title": "Task 2: the stall check",
+     "source": "new",
+     "handout": "Task 2",
+     "activity": 11,
+     "timer": 360,
+     "engage": "task",
+     "purpose": "Finish a program that checks the poll's volunteers against CSE-A: write the if line, predict, run. Run it with a second poll. Then try my notes' line, written the other way round.",
+     "heading": "The stall check",
+     "show": [
+      "Worksheet · Task 2",
+      "Is every stall volunteer from CSE-A gang?",
+      "Write line 3. Predict. Run.",
+      "A second poll. Predict. Run.",
+      "My notes have a different line 3. Run it with the first poll."
+     ],
+     "code": [
+      {
+       "file": "stall.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nvolunteers = set(input().split(\",\"))\nif volunteers.issubset(cse):\n    print(\"Stall is OK\")\nelse:\n    print(\"Ask\", len(volunteers - cse), \"to swap\")",
+       "output": "Stall is OK",
+       "input": "Anu,Ravi,Divya,Sneha"
+      },
+      {
+       "file": "stall_poll2.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nvolunteers = set(input().split(\",\"))\nif volunteers.issubset(cse):\n    print(\"Stall is OK\")\nelse:\n    print(\"Ask\", len(volunteers - cse), \"to swap\")",
+       "output": "Ask 2 to swap",
+       "input": "Anu,Harsha,Meena,Ravi"
+      },
+      {
+       "file": "stall_my_notes.py",
+       "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nvolunteers = set(input().split(\",\"))\nif cse.issubset(volunteers):\n    print(\"Stall is OK\")\nelse:\n    print(\"Ask\", len(volunteers - cse), \"to swap\")",
+       "output": "Ask 0 to swap",
+       "input": "Anu,Ravi,Divya,Sneha"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "stall.py with line 3 as an empty dashed line, the steps, the input <q>Anu,Ravi,Divya,Sneha</q> and a 6 minute timer. Caption: <q>Write line 3. Predict. Run.</q>",
+       "say": "Worksheet and playground. Which method asks: is this group inside that one?",
+       "room": "Type, write, predict, run."
+      },
+      {
+       "screen": "Step 2 lights: <q>A second poll. Predict. Run.</q> The new input: <q>Anu,Harsha,Meena,Ravi</q>",
+       "say": "Two new names. Where are they from?",
+       "room": "Predict, run."
+      },
+      {
+       "screen": "Step 3 lights: <q>My notes have a different line 3. Run it with the first poll.</q> The line: <q>if cse.issubset(volunteers):</q>",
+       "say": "This is how I wrote it in my notes. Let them react first.",
+       "room": "Change, run."
+      },
+      {
+       "screen": "Line 3 fills <q>if volunteers.issubset(cse):</q> and the output <q>Stall is OK</q>.",
+       "say": "Also right: if cse.issuperset(volunteers): or if len(volunteers - cse) == 0:."
+      },
+      {
+       "screen": "Step 2's output: <q>Ask 2 to swap</q>. Harsha and Meena light outside cse.",
+       "say": "The else line uses minus to count who is outside."
+      },
+      {
+       "screen": "My notes' output: <q>Ask 0 to swap</q>. The two names in line 3 swap places.",
+       "say": "Nobody to swap, and still not OK? My notes asked if all of CSE-A volunteered. The set before the dot is checked."
+      }
+     ],
+     "answer": "Line 3: if volunteers.issubset(cse):. Poll 1: Stall is OK. Poll 2: Ask 2 to swap. My notes: Ask 0 to swap",
+     "must": [
+      "Step 3 is framed as the instructor's own notes, not a test.",
+      "No result shows until the timer has ended."
+     ],
+     "must_not": [
+      "Show line 3 before the timer has ended."
+     ],
+     "data": {
+      "input": "Anu,Ravi,Divya,Sneha",
+      "input_b": "Anu,Harsha,Meena,Ravi",
+      "cse": [
+       "Teja",
+       "Ravi",
+       "Kiran",
+       "Anu",
+       "Sneha",
+       "Pooja",
+       "Divya",
+       "Vamsi"
+      ]
+     },
+     "play": "The poll from H2 beside the code. The layout is yours.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Exit: which blank prints nothing?",
+   "kind": "exit",
+   "mins": 3,
+   "start": 68,
+   "cards": [
+    {
+     "id": "X1",
+     "title": "Exit: which blank prints nothing?",
+     "source": "new",
+     "activity": 1,
+     "timer": 150,
+     "engage": "task",
+     "purpose": "Check |, repeats, capital letters, set() of a string and | with a list together: the room must try each blank and find the only one that leaves the crew the same size.",
+     "heading": "Which one prints nothing?",
+     "show": [
+      "Fest crew's bot posts only when someone new joins.",
+      "Which blank runs and prints nothing at all?"
+     ],
+     "code": [
+      {
+       "file": "fest_bot.py",
+       "src": "crew = {\"Teja\", \"Ravi\", \"Anu\"}\nnew = ______\nfest = crew | new\nif len(fest) > len(crew):\n    print(\"Fest grew to\", len(fest))"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Story line, fest_bot.py with line numbers and line 2's blank, the question, and options: A <q>{\"Ravi\", \"Teja\"}</q>, B <q>{\"ravi\"}</q>, C <q>[\"Kiran\"]</q>, D <q>set(\"Anu\")</q>. A 2:30 timer.",
+       "say": "Everyone answers alone. Then option A, hands up. B. C. D.",
+       "room": "Hands up per option."
+      },
+      {
+       "screen": "The right option marks, and every option shows what it prints and its why line, as in data.",
+       "say": "Go through every option, not only the right one."
+      }
+     ],
+     "answer": "A, {\"Ravi\", \"Teja\"}. {\"Ravi\", \"Teja\"}: prints nothing. {\"ravi\"}: Fest grew to 4. [\"Kiran\"]: TypeError: unsupported operand type(s) for |: 'set' and 'list'. set(\"Anu\"): Fest grew to 6.",
+     "must_not": [
+      "Show any output before the second press."
+     ],
+     "data": {
+      "options": [
+       {
+        "blank": "{\"Ravi\", \"Teja\"}",
+        "prints": "",
+        "why": "Both are already in crew. | keeps each person once: still 3, so nothing prints."
+       },
+       {
+        "blank": "{\"ravi\"}",
+        "prints": "Fest grew to 4",
+        "why": "Small r makes a different string. fest has 4 people, so it prints."
+       },
+       {
+        "blank": "[\"Kiran\"]",
+        "prints": "TypeError: unsupported operand type(s) for |: 'set' and 'list'",
+        "why": "| needs a set on both sides. Line 3 stops with a TypeError: an error, not silence."
+       },
+       {
+        "blank": "set(\"Anu\")",
+        "prints": "Fest grew to 6",
+        "why": "set() of a string is its letters A, n and u. fest has 6 items, so it prints."
+       }
+      ],
+      "right": "A"
+     },
+     "play": "Layout. It can sit on a Fest crew chat where the bot's message never appears for the right answer.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Key takeaways: the example board",
+   "kind": "buffer",
+   "mins": 2,
+   "start": 71,
+   "cards": [
+    {
+     "id": "K1",
+     "title": "Today in six examples",
+     "source": "new",
+     "purpose": "Six real programs from today, each with what it prints and the rule it shows.",
+     "heading": "Today, in six examples",
+     "show": [
+      "Union keeps each person once",
+      "| keeps everyone from both. Ravi is counted once.",
+      "Intersection: only who is in both",
+      "& keeps the middle.",
+      "Difference: order matters",
+      "In the first, not the second. Swap them and you get Kiran.",
+      "Symmetric difference: in exactly one",
+      "^ drops the middle.",
+      "Subset: the set before the dot is checked",
+      "Everyone in it is inside the other.",
+      "Operators need two sets",
+      "Use union() for a list."
+     ],
+     "code": [
+      {
+       "file": "example_1.py",
+       "src": "print(len({\"Anu\", \"Ravi\"} | {\"Ravi\", \"Kiran\"}))",
+       "output": "3"
+      },
+      {
+       "file": "example_2.py",
+       "src": "print({\"Anu\", \"Ravi\"} & {\"Ravi\", \"Kiran\"})",
+       "output": "{'Ravi'}"
+      },
+      {
+       "file": "example_3.py",
+       "src": "print({\"Anu\", \"Ravi\"} - {\"Ravi\", \"Kiran\"})",
+       "output": "{'Anu'}"
+      },
+      {
+       "file": "example_4.py",
+       "src": "print(len({\"Anu\", \"Ravi\"} ^ {\"Ravi\", \"Kiran\"}))",
+       "output": "2"
+      },
+      {
+       "file": "example_5.py",
+       "src": "print({\"Anu\"}.issubset({\"Anu\", \"Ravi\"}))",
+       "output": "True"
+      },
+      {
+       "file": "example_6.py",
+       "src": "print({\"Anu\"} | [\"Ravi\"])",
+       "output": "TypeError: unsupported operand type(s) for |: 'set' and 'list'"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Example 1's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 2's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 3's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 4's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 5's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 6's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      }
+     ],
+     "must": [
+      "All six slots are there from press 1, empty.",
+      "Examples, not a concept map.",
+      "Each result shows only after the room has said it.",
+      "Keep these exact values. Someone who thinks | adds the two counts would say 4; Python gives 3. New values could hide that mistake."
+     ],
+     "play": "The grid, and the two circles from the hook beside the examples.",
+     "engage": "play",
+     "interaction": "For each example the room says the output together before its result fills.",
+     "trap": {
+      "belief": "| adds the two counts",
+      "wrong": "4",
+      "code": 0
+     },
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Feedback",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 73,
+   "cards": [
+    {
+     "id": "S-FEEDBACK",
+     "title": "Feedback",
+     "source": "spine:feedback",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Thank you",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 74,
+   "cards": [
+    {
+     "id": "S-THANKYOU",
+     "title": "Thankyou",
+     "source": "spine:thankyou",
+     "press_count": 0
+    }
+   ]
+  }
+ ]
+}
