@@ -1,0 +1,3167 @@
+{
+ "meta": {
+  "session": "30 - Working with Dictionaries",
+  "course": "Programming Foundations",
+  "one_idea": "b = a gives one dictionary a second name, so a change through either name is seen by both; copy() makes a second dictionary. A function with *args or **kwargs takes any number of arguments: values with no name pack into a tuple, name=value arguments pack into a dictionary.",
+  "outcomes": [
+   "Say what b = a does to a dictionary, and show it with id().",
+   "Make a separate dictionary with copy(), and say which name sees a change.",
+   "Empty a dictionary with clear(), count it with len(), check a key with in.",
+   "Explain why deleting keys inside a loop over the same dictionary stops with RuntimeError, and loop over a copy instead.",
+   "Write a function with *args, say it packs a tuple, and open a list with * at the call.",
+   "Write a function with **kwargs, say it packs a dictionary, and open a dictionary with ** at the call.",
+   "Say where each argument of a call lands, and when Python stops with TypeError."
+  ],
+  "previous": "29 - Dictionaries",
+  "slides_dir": "C:\\Lesson Plans New\\builds\\build-30-working-dictionaries\\work\\slides",
+  "deck_total": 36,
+  "kept": [
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   27,
+   28,
+   29,
+   30
+  ],
+  "cuts": [
+   [
+    "1-2",
+    "Welcome and deck title. The fixed spine cards replace them."
+   ],
+   [
+    "3-11",
+    "A recap that lists last session's points. S-RECAP asks the room to find a bug from session 29 instead."
+   ],
+   [
+    "12",
+    "Agenda. Its two stops become the four stops of S-AGENDA."
+   ],
+   [
+    "26",
+    "The build step before slide 27, the same code without the output. C7 carries slide 27."
+   ],
+   [
+    "31",
+    "Bullet takeaways. Replaced by K1, the example board."
+   ],
+   [
+    "32",
+    "Practice picture. One spoken line in the guide."
+   ],
+   [
+    "33",
+    "Next session's name. The guide does not promise a topic."
+   ],
+   [
+    "34",
+    "Daily Challenge. It is round 3 of G2, with its real output and the fix."
+   ],
+   [
+    "35-36",
+    "Thank you and all the best. The fixed spine cards replace them."
+   ]
+  ],
+  "defects": [
+   [
+    "slide 3",
+    "\"Unordered collection of items.\" Since Python 3.7 a dictionary keeps the order its keys were added, and prints in that order.",
+    "No card says unordered. The sheet keeps its rows in the order they were added."
+   ],
+   [
+    "slide 13",
+    "Lists get(), update() and fromkeys() as today's methods. Only copy() is taught; update() and fromkeys() never appear again.",
+    "C1 names only copy() and clear() as today's methods."
+   ],
+   [
+    "slide 18",
+    "Calls len() and the membership check dictionary methods, and shows no code. len() is a built-in function, in is an operator; only clear() is a method.",
+    "C3 runs all three on the trip sheet and says which is which in one line."
+   ],
+   [
+    "slide 19",
+    "Says keys cannot be added or removed while looping, but not what to do instead, and not that changing a value in the loop is fine.",
+    "E1 runs the loop, stops on RuntimeError, then loops over a copy and deletes from the original."
+   ],
+   [
+    "slides 14, 16, 17",
+    "The output shows id numbers like 140170705626624. Every laptop prints different numbers, so the room's run never matches the slide.",
+    "C1 and C2 print id(trip) == id(ravi), True or False, which is the same on every laptop."
+   ],
+   [
+    "slide 34",
+    "The Daily Challenge gives the expected output but not the real one or the fix. It really prints ('Math', 'Science', 'Rahul') and {'age': '15'}; the fix is name='Rahul'.",
+    "G2 round 3 runs it and shows the fix on its verdict press."
+   ],
+   [
+    "slides 4 to 29",
+    "Every example is {'name': 'Teja', 'age': 15}, more_args(1, 2, 3, 4) or a=1, b=2. With values like these, \"in checks the values\" and \"*args packs a list\" cannot be caught.",
+    "Every card uses the trip sheet: Teja 1500, Ravi 800, Kiran 0. 800 in trip is False, and every tuple prints with round brackets beside names, not numbers."
+   ]
+  ],
+  "notes": [
+   "The room is 50 to 60 first-year students on laptops. Laptops stay shut except on T1, T2 and the classroom quiz, where only the worksheet tab and the playground are open.",
+   "One world for the session: class CR Divya's Google Sheet <q>Ooty trip money</q> for the Ooty trip. Teja, Ravi and Kiran are the same students as in the last sessions. After the hook the sheet is Teja 1500, Ravi 800, Kiran 0. The second half stays on the trip: the dinner bill at a dhaba on the way, split among whoever is at the table, and hostel room cards.",
+   "These amounts are the same on every card that uses them.",
+   "Two games, both concept games: G1 (Change or move?, from the library) after Task 1, before the quiz; G2 (Where does it land?, new) after the ** cards.",
+   "One picture for the first half: A dictionary is drawn as Divya's Google Sheet from the hook: one row per key, the name on the left, the amount on the right, in the order the rows were added. A variable is a name tag with an arrow to a sheet. Two tags can point at one sheet. When a line gives an existing sheet a second name, only an arrow appears. No second sheet is drawn unless the line is copy().",
+   "One picture for the second half: A function's parameters are drawn as boxes: a plain box for each named parameter, a tuple box for *name (round brackets), a dictionary box for **name (curly brackets). The tuple and dictionary boxes start as () and {}.",
+   "Words on screen: name, sheet, copy, tuple, dictionary, argument, box. Never say reference, object, alias, pointer or memory address in a sentence; the deck's word \"object\" stays only in deck slide headings.",
+   "Votes are taken option by option: the instructor reads each option and asks how many think it is that one. Hands up. Nobody is named.",
+   "Nothing before the title card may say the session's name. The hook shows the sheet in Google Sheets and WhatsApp, never code, and never the word dictionary.",
+   "The bar to beat is Plans/DSA/Module 3 - Stacks & Queues/01 - Introduction to Stacks/: a simulation the room drives, a picture that refuses to lie."
+  ],
+  "topics": [
+   "dictionaries",
+   "args-kwargs",
+   "functions"
+  ],
+  "world": "CR Divya's Google Sheet for the Ooty trip money: a shared link is one sheet, Make a copy is a second one",
+  "new_ops": [
+   "id()",
+   "copy()",
+   "clear()",
+   "*args",
+   "*",
+   "**kwargs",
+   "**"
+  ]
+ },
+ "build_contract": [
+  "One self-contained HTML file. It opens offline from a USB stick and makes no network request.",
+  "It opens in presenter view. There is no sidebar, top bar or button the instructor has to use.",
+  "Right arrow or the clicker is one press. Left arrow goes back one press. F goes full screen, A shows all the cards, and End shows the whole card at once. The instructor guide tells the instructor these keys, so they must work.",
+  "Every card is its own screen, in the order of this spec. Press 1 is what shows when the card opens.",
+  "Every card's outer element carries data-spec=\"<card id>\" and data-presses=\"<number of presses>\". The review script reads both.",
+  "No link to any other file. The students' handout and the instructor guide are separate files, and a link from this file is how a class finds the answers."
+ ],
+ "rules": [
+  "No autoplay. Nothing moves on a timer. One press, one move, with a caption that says what just happened.",
+  "Commit, then reveal. Where a card asks a question, the answer shows only on the press after the room has answered.",
+  "Wrong answers stay private. No names, no per-student results on screen. Hands are counted out loud, never shown.",
+  "The topic is named once. Nothing before the title card says today's topic, not a heading, not a caption, not a file name on a code card.",
+  "Words are exact. Words in quotation marks, and every line under Exact words, are final. The rest of a press describes what happens, in your own design. If an exact line does not fit, ask for a new one; do not rewrite it.",
+  "Code is exact. Copy code and outputs from the JSON, never retype them. Every output here came from running the program.",
+  "Simple English. Short sentences, everyday words. No em-dashes anywhere, the page title included.",
+  "Every card moves. A card that introduces an idea steps; a static card is a picture of a lecture."
+ ],
+ "beats": [
+  {
+   "name": "Welcome",
+   "kind": "concept",
+   "mins": 1,
+   "start": 0,
+   "cards": [
+    {
+     "id": "S-WELCOME",
+     "title": "Welcome",
+     "source": "spine:welcome",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap",
+   "kind": "concept",
+   "mins": 1,
+   "start": 1,
+   "cards": [
+    {
+     "id": "S-RECAP-CARD",
+     "title": "Recap card",
+     "source": "spine:recap_card",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap bug: the samosa price that did not change",
+   "kind": "quiz",
+   "mins": 3,
+   "start": 2,
+   "cards": [
+    {
+     "id": "S-RECAP",
+     "title": "Recap: find the line",
+     "source": "spine:recap",
+     "purpose": "Pull back session 29: a key is found by its exact name, so a capital letter makes a new key and the old one keeps its value.",
+     "heading": "Which line is to blame?",
+     "show": [
+      "Anna puts samosa up to 20. The bill still says 15.",
+      "It prints:",
+      "We wanted:",
+      "Which line is to blame?",
+      "Samosa with a capital S is a new key. samosa still has 15."
+     ],
+     "presses": [
+      {
+       "screen": "Anna's canteen board from last class. The story line <q>Anna puts samosa up to 20. The bill still says 15.</q>, the four-line program with line numbers, and under it <q>It prints:</q> <q>15</q> beside <q>We wanted:</q> <q>20</q>. The question <q>Which line is to blame?</q>",
+       "say": "From last class. Line 1, hands up. Line 2. Line 3. Line 4.",
+       "room": "Hands up for a line number."
+      },
+      {
+       "screen": "Line 3 lights up as the culprit. The board grows a third row, Samosa 20, under samosa 15. The why line shows: <q>Samosa with a capital S is a new key. samosa still has 15.</q>",
+       "say": "How many rows does the board have now? Then: how do we fix line 3?",
+       "room": "Say the count, then the fix."
+      },
+      {
+       "screen": "Line 3 becomes <q>menu[\"samosa\"] = 20</q>, the extra row goes, samosa's 15 is covered by 20, and the output changes to <q>20</q>.",
+       "say": "Exact name, exact key. Keep this board in mind: today we give one board two names."
+      }
+     ],
+     "code": [
+      {
+       "file": "samosa.py",
+       "src": "menu = {\"tea\": 12, \"samosa\": 15}\nmenu[\"tea\"] = 14\nmenu[\"Samosa\"] = 20\nprint(menu[\"samosa\"])",
+       "output": "15"
+      },
+      {
+       "file": "samosa_fixed.py",
+       "src": "menu = {\"tea\": 12, \"samosa\": 15}\nmenu[\"tea\"] = 14\nmenu[\"samosa\"] = 20\nprint(menu[\"samosa\"])",
+       "output": "20"
+      }
+     ],
+     "interaction": "Format: bug. The room votes on the line by hands, option by option, before the culprit lights. Nobody is named.",
+     "must": [
+      "The wrong output and the wanted output are both on screen from press 1, so the room compares them.",
+      "On press 2 the board shows three rows (len would be 3): tea, samosa, Samosa."
+     ],
+     "must_not": [
+      "Show the culprit before the vote."
+     ],
+     "data": {
+      "lines": [
+       "menu = {\"tea\": 12, \"samosa\": 15}",
+       "menu[\"tea\"] = 14",
+       "menu[\"Samosa\"] = 20",
+       "print(menu[\"samosa\"])"
+      ],
+      "wrong": "15",
+      "right": "20",
+      "culprit": 3,
+      "fix": "menu[\"samosa\"] = 20",
+      "why": "Samosa with a capital S is a new key. samosa still has 15.",
+      "rows_after_line_3": "3"
+     },
+     "play": "How the culprit lights and how the extra row appears on Anna's board.",
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "Hook: the trip money sheet, link or copy",
+   "kind": "hook",
+   "mins": 4,
+   "start": 5,
+   "cards": [
+    {
+     "id": "H1",
+     "title": "The trip money sheet",
+     "source": "new",
+     "animated": "hook",
+     "engage": "motion",
+     "motion": "Ravi edits the sheet through the shared link and Divya's laptop changes too; Kiran's Make a copy is a new sheet that changes alone; Divya deletes everything and only the link shows empty. The last press draws three name tags and two sheets. It proves a link is the same sheet and a copy is a second one.",
+     "keeps": "Kiran's copy keeps every row through Divya's delete. Divya's sheet keeps its numbers while Kiran types in his copy.",
+     "purpose": "Feel, from a sheet the class shares every term, that a shared link is the same sheet and Make a copy is a second sheet. The last press draws name tags pointing at sheets, without naming them.",
+     "heading": "Ooty trip money",
+     "show": [
+      "Ravi pays 500 more and types 800 through the link.",
+      "What does Divya see on her laptop?",
+      "One sheet. Two people looking at it.",
+      "Kiran taps Make a copy and types 2000 everywhere.",
+      "What does Divya's sheet show?",
+      "Two sheets now.",
+      "The trip is over. Divya deletes everything.",
+      "What does Ravi see? What does Kiran see?",
+      "Same sheet, or a new sheet?"
+     ],
+     "presses": [
+      {
+       "screen": "The class WhatsApp group. Divya (CR) posts a Google Sheets link: <q>Ooty trip money</q>. The sheet opens on Divya's laptop: Name and Paid, <q>Teja 1500</q>, <q>Ravi 300</q>, <q>Kiran 0</q>. Beside it, Ravi's phone opens the same link. Caption: <q>Ravi pays 500 more and types 800 through the link.</q>",
+       "say": "Everyone has opened a sheet the CR shared. Ravi types 800 on his phone.",
+       "room": "Listen."
+      },
+      {
+       "screen": "Ravi's cell changes to 800 on his phone. Divya's laptop is still on screen, not yet changed. Caption: <q>What does Divya see on her laptop?</q>",
+       "say": "300 or 800? Say it.",
+       "room": "Call out 300 or 800."
+      },
+      {
+       "screen": "Divya's laptop cell changes to 800 too. One sheet glows behind both screens. Caption: <q>One sheet. Two people looking at it.</q>",
+       "say": "It is one sheet. The link just lets two people look at it."
+      },
+      {
+       "screen": "Kiran's phone. He taps the menu, then Make a copy. A new sheet opens: <q>Copy of Ooty trip money</q>. He types 2000 in every row, to plan the budget. Caption: <q>Kiran taps Make a copy and types 2000 everywhere.</q> Then: <q>What does Divya's sheet show?</q>",
+       "say": "Does Divya's sheet change? Hands up for yes. Hands up for no.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Divya's laptop: still 1500, 800, 0. Kiran's copy: 2000, 2000, 2000. Two sheets side by side. Caption: <q>Two sheets now.</q>",
+       "say": "Make a copy gave Kiran his own sheet. Divya's never moved."
+      },
+      {
+       "screen": "A week later. Divya selects all the rows and presses Delete, to use the sheet for the fest. Caption: <q>The trip is over. Divya deletes everything.</q> Then: <q>What does Ravi see? What does Kiran see?</q>",
+       "say": "Ravi opens his link. Kiran opens his copy. What does each one see?",
+       "room": "Say: empty or full, for each."
+      },
+      {
+       "screen": "Ravi's phone: an empty sheet. Kiran's copy: all three rows, 2000 each. The turn, one movement, beside the phones: Divya, Ravi and Kiran become three name tags. Divya's and Ravi's arrows point at one sheet; Kiran's arrow points at his own. Caption: <q>Same sheet, or a new sheet?</q>",
+       "say": "Python has the same two things: a second name, and a real copy. Guess what we are working with today.",
+       "room": "Guess the topic."
+      }
+     ],
+     "must": [
+      "The sheet looks like a real Google Sheet: the green header, cells, the Share button; the WhatsApp message looks like a real group message with the link preview.",
+      "On press 2 Divya's laptop has not changed yet; it changes only on press 3.",
+      "On press 5 Divya's numbers are exactly what they were before Kiran typed.",
+      "On press 7 Kiran's copy still has every row.",
+      "While it moves, this stays exactly as it was: Kiran's copy keeps every row through Divya's delete. Divya's sheet keeps its numbers while Kiran types in his copy."
+     ],
+     "must_not": [
+      "Say the session's name, or the word dictionary, anywhere on this card.",
+      "Show any code on this card.",
+      "Show Divya's sheet changing when Kiran types in his copy.",
+      "Animate by itself. Every change waits for a press."
+     ],
+     "data": {
+      "sheet_start": [
+       [
+        "Teja",
+        1500
+       ],
+       [
+        "Ravi",
+        300
+       ],
+       [
+        "Kiran",
+        0
+       ]
+      ],
+      "ravi_types": 800,
+      "kiran_types": 2000,
+      "code_for_guide": "divya = {\"Teja\": 1500, \"Ravi\": 300, \"Kiran\": 0}\nravi = divya\nravi[\"Ravi\"] = 800\nprint(divya)\nkiran = divya.copy()\nkiran[\"Teja\"] = 2000\nkiran[\"Ravi\"] = 2000\nkiran[\"Kiran\"] = 2000\nprint(divya)\ndivya.clear()\nprint(ravi)\nprint(kiran)",
+      "code_output_for_guide": "{'Teja': 1500, 'Ravi': 800, 'Kiran': 0}\n{'Teja': 1500, 'Ravi': 800, 'Kiran': 0}\n{}\n{'Teja': 2000, 'Ravi': 2000, 'Kiran': 2000}"
+     },
+     "play": "The WhatsApp group, Google Sheets on a laptop and two phones: yours to make real. How the screens turn into name tags and arrows on the last press is yours.",
+     "press_count": 7
+    }
+   ]
+  },
+  {
+   "name": "Today's topic",
+   "kind": "concept",
+   "mins": 1,
+   "start": 9,
+   "cards": [
+    {
+     "id": "S-TITLE",
+     "title": "Title",
+     "source": "spine:title",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Agenda",
+   "kind": "concept",
+   "mins": 1,
+   "start": 10,
+   "cards": [
+    {
+     "id": "S-AGENDA",
+     "title": "Agenda",
+     "source": "spine:agenda",
+     "purpose": "Name the four stops of today in plain words. Deck slide 12's two stops, each split in two.",
+     "play": "How the stops sit and light. The trip sheet can sit beside the first two, a dhaba bill beside the last two.",
+     "show": [
+      "Two names or two sheets",
+      "= and copy()",
+      "Empty it, count it, check it",
+      "clear(), len(), in",
+      "Any number of values",
+      "*args",
+      "Any number of names",
+      "**kwargs"
+     ],
+     "presses": [
+      {
+       "screen": "Stop 1 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 2 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 3 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 4 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      }
+     ],
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Two names, one sheet: = and id()",
+   "kind": "concept",
+   "mins": 4,
+   "start": 11,
+   "cards": [
+    {
+     "id": "C1",
+     "title": "Two names, one sheet",
+     "source": [
+      13,
+      14
+     ],
+     "purpose": "ravi = trip does not make a new dictionary. It gives the same dictionary a second name, so a change through ravi is seen through trip. id() shows they are one.",
+     "heading": "Referring Same Dictionary Object",
+     "show": [
+      "Today: two dictionary methods, copy() and clear().",
+      "Ravi changes his row through ravi.",
+      "{'Teja': 1500, 'Ravi': 800, 'Kiran': 0}",
+      "{'Teja': 1500, 'Ravi': 1000, 'Kiran': 0}",
+      "Same id. Same sheet.",
+      "Your numbers will be different. Both will match."
+     ],
+     "code": [
+      {
+       "file": "link.py",
+       "src": "trip = {\"Teja\": 1500, \"Ravi\": 800, \"Kiran\": 0}\nravi = trip\nravi[\"Ravi\"] = 1000\nprint(trip)\nprint(id(trip) == id(ravi))",
+       "output": "{'Teja': 1500, 'Ravi': 1000, 'Kiran': 0}\nTrue"
+      },
+      {
+       "file": "ids.py",
+       "src": "trip = {\"Teja\": 1500, \"Ravi\": 800, \"Kiran\": 0}\nravi = trip\nprint(id(trip))\nprint(id(ravi))",
+       "output": "1930569803200\n1930569803200"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 13's list, cut to the two taught today: <q>Today: two dictionary methods, copy() and clear().</q> Under it, the trip sheet with the tag trip and its arrow.",
+       "say": "Two methods today. First, what = does to a dictionary."
+      },
+      {
+       "screen": "link.py, lines 1 to 4, with empty output. Caption: <q>Ravi changes his row through ravi.</q> Choices A <q>{'Teja': 1500, 'Ravi': 800, 'Kiran': 0}</q>, B <q>{'Teja': 1500, 'Ravi': 1000, 'Kiran': 0}</q>.",
+       "say": "Line 4 prints trip, not ravi. Option A, hands up. B.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "Line 2 runs: a second tag, ravi, appears with an arrow to the same sheet. No new sheet. Line 3 runs: Ravi's cell becomes 1000 on that one sheet. The output fills <q>{'Teja': 1500, 'Ravi': 1000, 'Kiran': 0}</q>.",
+       "say": "One sheet, two tags. Like the shared link in the hook."
+      },
+      {
+       "screen": "Line 5 fills <q>True</q>. Beside it ids.py prints two equal numbers from data.id_example. Caption: <q>Same id. Same sheet.</q> Small print: <q>Your numbers will be different. Both will match.</q>",
+       "say": "id is the sheet's number. Same number, same sheet. Deck slide 14 shows it."
+      }
+     ],
+     "answer": "{'Teja': 1500, 'Ravi': 1000, 'Kiran': 0} / True; ids.py prints the same number twice",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A dictionary is drawn as Divya's Google Sheet from the hook: one row per key, the name on the left, the amount on the right, in the order the rows were added. A variable is a name tag with an arrow to a sheet. Two tags can point at one sheet.",
+      "When a line gives an existing sheet a second name, only an arrow appears. No second sheet is drawn unless the line is copy().",
+      "While it moves, this stays exactly as it was: The one sheet, its rows and their order. trip's arrow never moves.",
+      "Keep these exact values. Someone who thinks ravi = trip makes a copy, so trip is unchanged would say {'Teja': 1500, 'Ravi': 800, 'Kiran': 0}\nFalse; Python gives {'Teja': 1500, 'Ravi': 1000, 'Kiran': 0}\nTrue. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Draw a second sheet on line 2.",
+      "Use the words alias, reference or pointer."
+     ],
+     "data": {
+      "id_example": [
+       "1930569803200",
+       "1930569803200"
+      ]
+     },
+     "play": "The tags and arrows. The sheet can wear the hook's Google Sheets look.",
+     "engage": "motion",
+     "ops": [
+      "id()"
+     ],
+     "motion": "Line 2 adds a second tag with an arrow to the same sheet; line 3 changes a cell on that one sheet; id prints one number for both. It proves = gives a second name, not a second sheet.",
+     "keeps": "The one sheet, its rows and their order. trip's arrow never moves.",
+     "trap": {
+      "belief": "ravi = trip makes a copy, so trip is unchanged",
+      "wrong": "{'Teja': 1500, 'Ravi': 800, 'Kiran': 0}\nFalse",
+      "code": 0
+     },
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Make a copy: copy() on a dict and a list",
+   "kind": "concept",
+   "mins": 4,
+   "start": 15,
+   "cards": [
+    {
+     "id": "C2",
+     "title": "Make a copy",
+     "source": [
+      15,
+      16,
+      17
+     ],
+     "purpose": "trip.copy() makes a second dictionary with the same pairs. Changing the copy leaves trip as it was; the ids differ. A list has copy() too.",
+     "heading": "Copy of Dictionary",
+     "show": [
+      "dict.copy()",
+      "Returns copy of a dictionary.",
+      "Kiran changes his own copy.",
+      "Different id. Different sheets.",
+      "A list has copy() too."
+     ],
+     "code": [
+      {
+       "file": "make_a_copy.py",
+       "src": "trip = {\"Teja\": 1500, \"Ravi\": 800, \"Kiran\": 0}\nkiran = trip.copy()\nkiran[\"Kiran\"] = 2000\nprint(trip)\nprint(kiran)\nprint(id(trip) == id(kiran))",
+       "output": "{'Teja': 1500, 'Ravi': 800, 'Kiran': 0}\n{'Teja': 1500, 'Ravi': 800, 'Kiran': 2000}\nFalse"
+      },
+      {
+       "file": "bus.py",
+       "src": "bus = [\"Teja\", \"Ravi\"]\nseats = bus.copy()\nseats.append(\"Kiran\")\nprint(bus)\nprint(seats)",
+       "output": "['Teja', 'Ravi']\n['Teja', 'Ravi', 'Kiran']"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "make_a_copy.py, empty output. Deck slide 15's line <q>dict.copy()</q> and <q>Returns copy of a dictionary.</q> Caption: <q>Kiran changes his own copy.</q>",
+       "say": "What do lines 4 and 5 print? Write both in your notebook.",
+       "room": "Write two lines."
+      },
+      {
+       "screen": "Line 2 runs: a second sheet is drawn, row by row, with the same pairs. The tag kiran points at it. Line 3: Kiran's cell becomes 2000 on the copy only.",
+       "say": "Like Make a copy in the hook. Kiran types on his own sheet."
+      },
+      {
+       "screen": "The output fills <q>{'Teja': 1500, 'Ravi': 800, 'Kiran': 0} / {'Teja': 1500, 'Ravi': 800, 'Kiran': 2000} / False</q>. Caption: <q>Different id. Different sheets.</q>",
+       "say": "trip still has 0 for Kiran. id is False: two sheets. Deck slide 16."
+      },
+      {
+       "screen": "bus.py: a list of seats, bus.copy(), then one append. The output fills <q>['Teja', 'Ravi'] / ['Teja', 'Ravi', 'Kiran']</q>. Caption: <q>A list has copy() too.</q>",
+       "say": "Deck slide 17. Same method on a list: the bus list stays at two.",
+       "room": "Say the two lines first."
+      }
+     ],
+     "answer": "{'Teja': 1500, 'Ravi': 800, 'Kiran': 0} / {'Teja': 1500, 'Ravi': 800, 'Kiran': 2000} / False; list: ['Teja', 'Ravi'] / ['Teja', 'Ravi', 'Kiran']",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A dictionary is drawn as Divya's Google Sheet from the hook: one row per key, the name on the left, the amount on the right, in the order the rows were added. A variable is a name tag with an arrow to a sheet. Two tags can point at one sheet.",
+      "The copy is drawn as a second sheet next to the first; both stay on screen.",
+      "Draw it in the Google Sheets world: trip.copy() is Make a copy: a new sheet with the same rows, and changes to it stay on it. Do not take the picture further than this: if a cell held a list, Python's copy would still share that inner list; Make a copy would not",
+      "Keep these exact values. Someone who thinks copy() is the same as =, so trip changes too would say {'Teja': 1500, 'Ravi': 800, 'Kiran': 2000}\n{'Teja': 1500, 'Ravi': 800, 'Kiran': 2000}\nTrue; Python gives {'Teja': 1500, 'Ravi': 800, 'Kiran': 0}\n{'Teja': 1500, 'Ravi': 800, 'Kiran': 2000}\nFalse. New values could hide that mistake.",
+      "Keep these exact values. Someone who thinks the list copy changes bus too would say ['Teja', 'Ravi', 'Kiran']\n['Teja', 'Ravi', 'Kiran']; Python gives ['Teja', 'Ravi']\n['Teja', 'Ravi', 'Kiran']. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Move trip's arrow when kiran is made."
+     ],
+     "play": "How the second sheet is drawn. It can carry the title Copy of Ooty trip money, as in the hook.",
+     "engage": "analogy",
+     "analogy": {
+      "world": "Google Sheets",
+      "maps": "trip.copy() is Make a copy: a new sheet with the same rows, and changes to it stay on it",
+      "breaks": "if a cell held a list, Python's copy would still share that inner list; Make a copy would not"
+     },
+     "trap": [
+      {
+       "belief": "copy() is the same as =, so trip changes too",
+       "wrong": "{'Teja': 1500, 'Ravi': 800, 'Kiran': 2000}\n{'Teja': 1500, 'Ravi': 800, 'Kiran': 2000}\nTrue",
+       "code": 0
+      },
+      {
+       "belief": "the list copy changes bus too",
+       "wrong": "['Teja', 'Ravi', 'Kiran']\n['Teja', 'Ravi', 'Kiran']",
+       "code": 1
+      }
+     ],
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Empty it, count it, check it: clear, len, in",
+   "kind": "concept",
+   "mins": 3,
+   "start": 19,
+   "cards": [
+    {
+     "id": "C3",
+     "title": "Empty it, count it, check it",
+     "source": [
+      18
+     ],
+     "purpose": "len(trip) counts the pairs, key in trip checks the keys only, and trip.clear() removes every pair but keeps the dictionary, empty.",
+     "heading": "Operations on Dictionaries",
+     "show": [
+      "len()",
+      "clear()",
+      "Membership Check",
+      "in checks the names only.",
+      "{}",
+      "NameError",
+      "{'Teja': 0, 'Ravi': 0, 'Kiran': 0}",
+      "clear() empties the sheet. The sheet stays."
+     ],
+     "code": [
+      {
+       "file": "check.py",
+       "src": "trip = {\"Teja\": 1500, \"Ravi\": 800, \"Kiran\": 0}\nprint(len(trip))\nprint(800 in trip)\nprint(\"Ravi\" in trip)\ntrip.clear()\nprint(trip)\nprint(len(trip))",
+       "output": "3\nFalse\nTrue\n{}\n0"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 18's three words, <q>len()</q>, <q>clear()</q> and <q>Membership Check</q>, beside check.py with empty output, lines 2 to 4 lit.",
+       "say": "len and in, from last class. Say lines 2, 3 and 4.",
+       "room": "Say three answers."
+      },
+      {
+       "screen": "Line 2 fills <q>3</q>. Line 3: 800 walks down the name column only and finds no row; it fills <q>False</q>. Line 4 fills <q>True</q>. Caption: <q>in checks the names only.</q>",
+       "say": "800 is on the sheet as an amount. in never looks at amounts."
+      },
+      {
+       "screen": "Lines 5 to 7 light. Choices for line 6: A <q>{}</q>, B <q>NameError</q>, C <q>{'Teja': 0, 'Ravi': 0, 'Kiran': 0}</q>.",
+       "say": "What does clear do? Option A, hands up. B. C.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "Line 5 runs: every row is wiped, one press, and the empty sheet stays with its tag. Lines 6 and 7 fill <q>{}</q> and <q>0</q>. Caption: <q>clear() empties the sheet. The sheet stays.</q>",
+       "say": "The name trip is still there. It points at an empty sheet."
+      }
+     ],
+     "answer": "3 / False / True / {} / 0",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A dictionary is drawn as Divya's Google Sheet from the hook: one row per key, the name on the left, the amount on the right, in the order the rows were added. A variable is a name tag with an arrow to a sheet. Two tags can point at one sheet.",
+      "On press 2 the 800 search walks the name column only; the amounts stay dim.",
+      "On press 4 the sheet itself and the tag trip stay on screen, empty.",
+      "While it moves, this stays exactly as it was: The sheet's frame and the tag trip, through clear().",
+      "Keep these exact values. Someone who thinks in checks the amounts too would say 3\nTrue\nTrue\n{}\n0; Python gives 3\nFalse\nTrue\n{}\n0. New values could hide that mistake.",
+      "Keep these exact values. Someone who thinks clear() deletes trip itself would say 3\nFalse\nTrue\nNameError: name 'trip' is not defined; Python gives 3\nFalse\nTrue\n{}\n0. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Draw the sheet vanishing on clear().",
+      "Show 0 or None in the cells after clear(). The rows are gone."
+     ],
+     "play": "How the rows are wiped. Select all and Delete, as Divya did in the hook, is fine.",
+     "engage": "motion",
+     "ops": [
+      "clear()"
+     ],
+     "motion": "The search word walks the name column; then clear() wipes every row while the empty sheet and its tag stay. It proves clear() empties the dictionary and keeps it.",
+     "keeps": "The sheet's frame and the tag trip, through clear().",
+     "trap": [
+      {
+       "belief": "in checks the amounts too",
+       "wrong": "3\nTrue\nTrue\n{}\n0",
+       "code": 0
+      },
+      {
+       "belief": "clear() deletes trip itself",
+       "wrong": "3\nFalse\nTrue\nNameError: name 'trip' is not defined",
+       "code": 0
+      }
+     ],
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Explainer: remove the unpaid, loop over a copy",
+   "kind": "hook",
+   "mins": 4,
+   "start": 22,
+   "cards": [
+    {
+     "id": "E1",
+     "title": "Remove the unpaid",
+     "source": [
+      19
+     ],
+     "animated": "explainer",
+     "purpose": "Watch why deleting from a dictionary while looping over it stops with RuntimeError, then watch the loop walk a copy while rows are deleted from the real sheet.",
+     "heading": "Iterating",
+     "show": [
+      "Divya removes everyone who paid 0.",
+      "Write what it prints first.",
+      "Cannot add/remove dictionary keys while iterating the dictionary",
+      "Walk the copy. Delete from the sheet."
+     ],
+     "code": [
+      {
+       "file": "remove_unpaid.py",
+       "src": "trip = {\"Teja\": 1500, \"Kiran\": 0, \"Ravi\": 800, \"Sai\": 0}\nfor name in trip.keys():\n    if trip[name] == 0:\n        del trip[name]\nprint(trip)",
+       "output": "RuntimeError: dictionary changed size during iteration"
+      },
+      {
+       "file": "remove_unpaid_fixed.py",
+       "src": "trip = {\"Teja\": 1500, \"Kiran\": 0, \"Ravi\": 800, \"Sai\": 0}\nbackup = trip.copy()\nfor name in backup.keys():\n    if trip[name] == 0:\n        del trip[name]\nprint(trip)",
+       "output": "{'Teja': 1500, 'Ravi': 800}"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "remove_unpaid.py with line numbers and an empty output, and the sheet beside it: Teja 1500, Kiran 0, Ravi 800, Sai 0. Caption: <q>Divya removes everyone who paid 0.</q> Then <q>Write what it prints first.</q>",
+       "say": "Two people paid 0. Write what line 5 prints.",
+       "room": "Write the output."
+      },
+      {
+       "screen": "One step per press, following data.walk_v1: the line lights, a dot sits on the row the loop is at, and a deleted row vanishes from the sheet. The last step stops on line 2 with <q>RuntimeError: dictionary changed size during iteration</q>.",
+       "n": 6,
+       "say": "Before each press: which row is next?",
+       "room": "Say the next name."
+      },
+      {
+       "screen": "Deck slide 19's line: <q>Cannot add/remove dictionary keys while iterating the dictionary</q>. The loop was walking the sheet it was cutting.",
+       "say": "The loop walks the sheet. We cut the sheet under it. Python stops. What can the loop walk instead?",
+       "room": "Say an idea."
+      },
+      {
+       "screen": "remove_unpaid_fixed.py replaces it: line 2 makes backup = trip.copy(), line 3 loops over backup. The sheet and its copy side by side, and the dot on the copy.",
+       "say": "The copy from earlier. The loop walks the copy; we delete from the sheet."
+      },
+      {
+       "screen": "One step per press, following data.walk_v2: the dot walks backup row by row, and deletes happen on trip. backup keeps all four rows and stays lit. The last step fills <q>{'Teja': 1500, 'Ravi': 800}</q>. Caption: <q>Walk the copy. Delete from the sheet.</q>",
+       "n": 13,
+       "say": "Before each press: delete or skip?",
+       "room": "Say delete or skip."
+      }
+     ],
+     "answer": "first version: RuntimeError: dictionary changed size during iteration; with the copy: {'Teja': 1500, 'Ravi': 800}",
+     "must": [
+      "One line per press, in the order of data.walk_v1 and data.walk_v2.",
+      "A deleted row vanishes from trip at once: no grey ghost, no strikethrough.",
+      "In the fixed version backup keeps all four rows to the end of the card. The dot is always on backup.",
+      "A dictionary is drawn as Divya's Google Sheet from the hook: one row per key, the name on the left, the amount on the right, in the order the rows were added. A variable is a name tag with an arrow to a sheet. Two tags can point at one sheet.",
+      "While it moves, this stays exactly as it was: backup, every row, while trip loses Kiran and Sai.",
+      "Keep these exact values. Someone who thinks deleting inside the loop just works would say {'Teja': 1500, 'Ravi': 800}; Python gives RuntimeError: dictionary changed size during iteration. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show a free code box, a picker or an input field.",
+      "Move by itself.",
+      "Fill the output before its line's press."
+     ],
+     "data": {
+      "walk_v1": [
+       {
+        "line": 2,
+        "name": "Teja",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "backup": null,
+        "caption": "Line 2: the loop picks Teja.",
+        "printed": ""
+       },
+       {
+        "line": 3,
+        "name": "Teja",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "backup": null,
+        "caption": "Line 3: Teja paid 1500. Not zero. Skip.",
+        "printed": ""
+       },
+       {
+        "line": 2,
+        "name": "Kiran",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "backup": null,
+        "caption": "Line 2: the loop picks Kiran.",
+        "printed": ""
+       },
+       {
+        "line": 3,
+        "name": "Kiran",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "backup": null,
+        "caption": "Line 3: Kiran paid 0. Zero, so delete.",
+        "printed": ""
+       },
+       {
+        "line": 4,
+        "name": "Kiran",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "backup": null,
+        "caption": "Line 4: Kiran's row is deleted from trip.",
+        "printed": ""
+       },
+       {
+        "line": 2,
+        "name": "Kiran",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "backup": null,
+        "caption": "Line 2: the loop goes for the next name, but trip has changed size. Python stops.",
+        "printed": "RuntimeError: dictionary changed size during iteration"
+       }
+      ],
+      "walk_v2": [
+       {
+        "line": 2,
+        "name": null,
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "backup": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "caption": "Line 2: backup is a new sheet with the same rows.",
+        "printed": ""
+       },
+       {
+        "line": 3,
+        "name": "Teja",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "backup": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "caption": "Line 3: the loop picks Teja.",
+        "printed": ""
+       },
+       {
+        "line": 4,
+        "name": "Teja",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "backup": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "caption": "Line 4: Teja paid 1500. Not zero. Skip.",
+        "printed": ""
+       },
+       {
+        "line": 3,
+        "name": "Kiran",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "backup": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "caption": "Line 3: the loop picks Kiran.",
+        "printed": ""
+       },
+       {
+        "line": 4,
+        "name": "Kiran",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "backup": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "caption": "Line 4: Kiran paid 0. Zero, so delete.",
+        "printed": ""
+       },
+       {
+        "line": 5,
+        "name": "Kiran",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "backup": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "caption": "Line 5: Kiran's row is deleted from trip.",
+        "printed": ""
+       },
+       {
+        "line": 3,
+        "name": "Ravi",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "backup": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "caption": "Line 3: the loop picks Ravi.",
+        "printed": ""
+       },
+       {
+        "line": 4,
+        "name": "Ravi",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "backup": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "caption": "Line 4: Ravi paid 800. Not zero. Skip.",
+        "printed": ""
+       },
+       {
+        "line": 3,
+        "name": "Sai",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "backup": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "caption": "Line 3: the loop picks Sai.",
+        "printed": ""
+       },
+       {
+        "line": 4,
+        "name": "Sai",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "backup": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "caption": "Line 4: Sai paid 0. Zero, so delete.",
+        "printed": ""
+       },
+       {
+        "line": 5,
+        "name": "Sai",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Ravi",
+          800
+         ]
+        ],
+        "backup": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "caption": "Line 5: Sai's row is deleted from trip.",
+        "printed": ""
+       },
+       {
+        "line": 3,
+        "name": "Sai",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Ravi",
+          800
+         ]
+        ],
+        "backup": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "caption": "Line 3: no names left in backup. The loop ends.",
+        "printed": ""
+       },
+       {
+        "line": 6,
+        "name": "Sai",
+        "trip": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Ravi",
+          800
+         ]
+        ],
+        "backup": [
+         [
+          "Teja",
+          1500
+         ],
+         [
+          "Kiran",
+          0
+         ],
+         [
+          "Ravi",
+          800
+         ],
+         [
+          "Sai",
+          0
+         ]
+        ],
+        "caption": "Line 6: print the sheet.",
+        "printed": "{'Teja': 1500, 'Ravi': 800}"
+       }
+      ],
+      "deleted": [
+       "Kiran",
+       "Sai"
+      ]
+     },
+     "play": "The sheet, its copy, the dot and how a row vanishes. Session 11's Follow the Dot is the bar: one thing moves at a time.",
+     "engage": "motion",
+     "ops": [
+      "copy()"
+     ],
+     "motion": "The dot walks the sheet; a row vanishes under it and Python stops. Then the dot walks a copy while rows vanish from the real sheet. It proves the loop needs a sheet that does not change under it.",
+     "keeps": "backup, every row, while trip loses Kiran and Sai.",
+     "trap": {
+      "belief": "deleting inside the loop just works",
+      "wrong": "{'Teja': 1500, 'Ravi': 800}",
+      "code": 0
+     },
+     "press_count": 22
+    }
+   ]
+  },
+  {
+   "name": "Task 1: Divya's backup",
+   "kind": "activity",
+   "mins": 5,
+   "start": 26,
+   "cards": [
+    {
+     "id": "T1",
+     "title": "Task 1: Divya's backup",
+     "source": "new",
+     "handout": "Task 1",
+     "activity": 19,
+     "timer": 300,
+     "engage": "task",
+     "purpose": "Type a program that makes a backup with =, predict and run it. Change line 2 so the backup really keeps the old sheet. Then add clear() and predict again.",
+     "heading": "Divya's backup",
+     "show": [
+      "Worksheet · Task 1",
+      "Divya keeps a backup before Kiran pays.",
+      "Type it. Predict. Run.",
+      "Change line 2 so backup keeps Kiran's 0.",
+      "Add trip.clear() as line 4. Predict. Run."
+     ],
+     "code": [
+      {
+       "file": "backup.py",
+       "src": "trip = {\"Teja\": 1500, \"Ravi\": 800, \"Kiran\": 0}\nbackup = trip\ntrip[\"Kiran\"] = 500\nprint(backup[\"Kiran\"])\nprint(len(backup))",
+       "output": "500\n3"
+      },
+      {
+       "file": "backup_copy.py",
+       "src": "trip = {\"Teja\": 1500, \"Ravi\": 800, \"Kiran\": 0}\nbackup = trip.copy()\ntrip[\"Kiran\"] = 500\nprint(backup[\"Kiran\"])\nprint(len(backup))",
+       "output": "0\n3"
+      },
+      {
+       "file": "backup_clear.py",
+       "src": "trip = {\"Teja\": 1500, \"Ravi\": 800, \"Kiran\": 0}\nbackup = trip.copy()\ntrip[\"Kiran\"] = 500\ntrip.clear()\nprint(backup[\"Kiran\"])\nprint(len(backup))",
+       "output": "0\n3"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "backup.py with line numbers, the three steps (only step 1 lit) and a 5 minute timer. Caption: <q>Divya keeps a backup before Kiran pays.</q>",
+       "say": "Worksheet tab and playground. Type it, type your prediction, then run.",
+       "room": "Type, predict, run."
+      },
+      {
+       "screen": "Step 2 lights: <q>Change line 2 so backup keeps Kiran's 0.</q>",
+       "say": "Which line from today gives a second sheet?",
+       "room": "Change, predict, run."
+      },
+      {
+       "screen": "Step 3 lights: <q>Add trip.clear() as line 4. Predict. Run.</q>",
+       "say": "Does clearing trip touch backup now?",
+       "room": "Predict, run."
+      },
+      {
+       "screen": "Step 1's terminal: <q>500 / 3</q>.",
+       "say": "backup was never a backup. It is the same sheet."
+      },
+      {
+       "screen": "Step 2: line 2 becomes <q>backup = trip.copy()</q>, and the terminal shows <q>0 / 3</q>.",
+       "say": "Now backup is a second sheet. Kiran's 0 is safe."
+      },
+      {
+       "screen": "Step 3's terminal: <q>0 / 3</q>. Beside it, the same step with line 2 as backup = trip: <q>KeyError: 'Kiran'</q>.",
+       "say": "With the copy, clear only empties trip. Without it, backup is empty too and Kiran is gone."
+      }
+     ],
+     "answer": "Step 1: 500 / 3. Step 2: backup = trip.copy() gives 0 / 3. Step 3: 0 / 3 (with backup = trip it would be KeyError: 'Kiran')",
+     "must": [
+      "No result shows until the timer has ended.",
+      "One step's result per press on the reveal.",
+      "Keep these exact values. Someone who thinks backup = trip makes a backup would say 0\n3; Python gives 500\n3. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show line 2's new form before the timer has ended."
+     ],
+     "play": "The layout of steps, timer and code. The sheet and its backup can sit beside the code.",
+     "trap": {
+      "belief": "backup = trip makes a backup",
+      "wrong": "0\n3",
+      "code": 0
+     },
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Game G1: change or move",
+   "kind": "activity",
+   "mins": 4,
+   "start": 31,
+   "cards": [
+    {
+     "id": "G1",
+     "title": "Change or move?",
+     "game": "change-or-move",
+     "ops": [
+      "copy()",
+      "clear()"
+     ],
+     "purpose": "Vote what print(backup) shows, then watch each line either change the sheet both tags share or give one tag a new sheet. Round 4: trip = {} is not clear().",
+     "heading": "Change or move?",
+     "data": {
+      "setup": {
+       "world": "Divya's Google Sheet. a is the tag trip, b is the tag backup; each has an arrow to a sheet"
+      },
+      "intro": "Choose your answer for each round on the worksheet first.",
+      "rounds": [
+       {
+        "ask": "What does print(backup) show?",
+        "program": "trip = {\"Ravi\": 800, \"Kiran\": 0}\nbackup = trip\ntrip[\"Kiran\"] = 500\nprint(backup)",
+        "output": "{'Ravi': 800, 'Kiran': 500}",
+        "options": [
+         "{'Ravi': 800, 'Kiran': 500}",
+         "{'Ravi': 800, 'Kiran': 0}"
+        ],
+        "answer": "{'Ravi': 800, 'Kiran': 500}",
+        "because": "backup shares the sheet: {'Ravi': 800, 'Kiran': 500}.",
+        "why": {
+         "{'Ravi': 800, 'Kiran': 0}": "backup = trip gives the same sheet a second name. It sees the change."
+        },
+        "steps": [
+         {
+          "caption": "Line 1: trip points at Divya's sheet.",
+          "line": 1,
+          "a": {
+           "Ravi": 800,
+           "Kiran": 0
+          },
+          "b": null,
+          "same": false
+         },
+         {
+          "caption": "Line 2: backup points at the same sheet as trip.",
+          "line": 2,
+          "a": {
+           "Ravi": 800,
+           "Kiran": 0
+          },
+          "b": {
+           "Ravi": 800,
+           "Kiran": 0
+          },
+          "same": true
+         },
+         {
+          "caption": "Line 3 changes the sheet. trip and backup still share it.",
+          "line": 3,
+          "a": {
+           "Ravi": 800,
+           "Kiran": 500
+          },
+          "b": {
+           "Ravi": 800,
+           "Kiran": 500
+          },
+          "same": true
+         }
+        ]
+       },
+       {
+        "ask": "What does print(backup) show?",
+        "program": "trip = {\"Ravi\": 800, \"Kiran\": 0}\nbackup = trip.copy()\ntrip[\"Kiran\"] = 500\nprint(backup)",
+        "output": "{'Ravi': 800, 'Kiran': 0}",
+        "options": [
+         "{'Ravi': 800, 'Kiran': 500}",
+         "{'Ravi': 800, 'Kiran': 0}"
+        ],
+        "answer": "{'Ravi': 800, 'Kiran': 0}",
+        "because": "backup kept the sheet: {'Ravi': 800, 'Kiran': 0}.",
+        "why": {
+         "{'Ravi': 800, 'Kiran': 500}": "copy() made a second sheet. A change to trip stays on trip."
+        },
+        "steps": [
+         {
+          "caption": "Line 1: trip points at Divya's sheet.",
+          "line": 1,
+          "a": {
+           "Ravi": 800,
+           "Kiran": 0
+          },
+          "b": null,
+          "same": false
+         },
+         {
+          "caption": "Line 2: copy() makes a second sheet. backup points at it.",
+          "line": 2,
+          "a": {
+           "Ravi": 800,
+           "Kiran": 0
+          },
+          "b": {
+           "Ravi": 800,
+           "Kiran": 0
+          },
+          "same": false
+         },
+         {
+          "caption": "Line 3 changes trip's sheet. backup's sheet is not touched.",
+          "line": 3,
+          "a": {
+           "Ravi": 800,
+           "Kiran": 500
+          },
+          "b": {
+           "Ravi": 800,
+           "Kiran": 0
+          },
+          "same": false
+         }
+        ]
+       },
+       {
+        "ask": "What does print(backup) show?",
+        "program": "trip = {\"Ravi\": 800, \"Kiran\": 0}\nbackup = trip\ntrip.clear()\nprint(backup)",
+        "output": "{}",
+        "options": [
+         "{}",
+         "{'Ravi': 800, 'Kiran': 0}",
+         "NameError"
+        ],
+        "answer": "{}",
+        "because": "backup shares the sheet: {}.",
+        "why": {
+         "{'Ravi': 800, 'Kiran': 0}": "clear() empties the one sheet both names point at.",
+         "NameError": "clear() empties the sheet. Both names are still there, on an empty sheet."
+        },
+        "steps": [
+         {
+          "caption": "Line 1: trip points at Divya's sheet.",
+          "line": 1,
+          "a": {
+           "Ravi": 800,
+           "Kiran": 0
+          },
+          "b": null,
+          "same": false
+         },
+         {
+          "caption": "Line 2: backup points at the same sheet as trip.",
+          "line": 2,
+          "a": {
+           "Ravi": 800,
+           "Kiran": 0
+          },
+          "b": {
+           "Ravi": 800,
+           "Kiran": 0
+          },
+          "same": true
+         },
+         {
+          "caption": "Line 3 changes the sheet. trip and backup still share it.",
+          "line": 3,
+          "a": {},
+          "b": {},
+          "same": true
+         }
+        ]
+       },
+       {
+        "ask": "What does print(backup) show?",
+        "program": "trip = {\"Ravi\": 800, \"Kiran\": 0}\nbackup = trip\ntrip = {}\nprint(backup)",
+        "output": "{'Ravi': 800, 'Kiran': 0}",
+        "options": [
+         "{}",
+         "{'Ravi': 800, 'Kiran': 0}"
+        ],
+        "answer": "{'Ravi': 800, 'Kiran': 0}",
+        "because": "backup kept the sheet: {'Ravi': 800, 'Kiran': 0}.",
+        "why": {
+         "{}": "trip = {} makes a new, empty sheet and moves only trip's tag. backup keeps the old sheet."
+        },
+        "steps": [
+         {
+          "caption": "Line 1: trip points at Divya's sheet.",
+          "line": 1,
+          "a": {
+           "Ravi": 800,
+           "Kiran": 0
+          },
+          "b": null,
+          "same": false
+         },
+         {
+          "caption": "Line 2: backup points at the same sheet as trip.",
+          "line": 2,
+          "a": {
+           "Ravi": 800,
+           "Kiran": 0
+          },
+          "b": {
+           "Ravi": 800,
+           "Kiran": 0
+          },
+          "same": true
+         },
+         {
+          "caption": "Line 3 makes a new, empty sheet. Only trip moves to it.",
+          "line": 3,
+          "a": {},
+          "b": {
+           "Ravi": 800,
+           "Kiran": 0
+          },
+          "same": false
+         }
+        ]
+       }
+      ]
+     },
+     "say": {
+      "ask": "Does backup see it? Option A, hands up. B.",
+      "step": "Did that line change the sheet, or move a tag?",
+      "verdict": "Which line decided it?"
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "When a line changes the object in place, the object changes where it stands and no arrow moves.",
+      "When a line makes a new object, the new object is drawn new and the old one stays on screen, unchanged, for as long as a name points at it.",
+      "An object no name points at fades, and stays faded.",
+      "Round 1 is Task 1's step 1 on a two-row sheet, so the first round is a win.",
+      "Round 3 is clear() through a second name: both tags end on the one empty sheet.",
+      "Round 4 is the edge: trip = {} draws a new empty sheet and moves only trip's tag. backup keeps the full sheet."
+     ],
+     "play": "The sheets, the tags and the arrows, as on C1 and C2.",
+     "presses": [
+      {
+       "screen": "Before round 1: <q>Choose your answer for each round on the worksheet first.</q>",
+       "say": "Read it out. Say how a round works: you answer first, then it runs.",
+       "room": "Listen."
+      },
+      {
+       "screen": "Round 1 of 4. The round's setup, as in the data. The question: <q>What does print(backup) show?</q> Options: A <q>{'Ravi': 800, 'Kiran': 500}</q>, B <q>{'Ravi': 800, 'Kiran': 0}</q>. Nothing runs yet.",
+       "say": "Does backup see it? Option A, hands up. B.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 1: trip points at Divya's sheet.</q> In the data: line = 1; a = {\"Ravi\": 800, \"Kiran\": 0}; b = null; same = false.",
+       "say": "Did that line change the sheet, or move a tag?"
+      },
+      {
+       "screen": "<q>Line 2: backup points at the same sheet as trip.</q> In the data: line = 2; a = {\"Ravi\": 800, \"Kiran\": 0}; b = {\"Ravi\": 800, \"Kiran\": 0}; same = true.",
+       "say": "Did that line change the sheet, or move a tag?"
+      },
+      {
+       "screen": "<q>Line 3 changes the sheet. trip and backup still share it.</q> In the data: line = 3; a = {\"Ravi\": 800, \"Kiran\": 500}; b = {\"Ravi\": 800, \"Kiran\": 500}; same = true.",
+       "say": "Did that line change the sheet, or move a tag?"
+      },
+      {
+       "screen": "The answer: <q>{'Ravi': 800, 'Kiran': 500}</q>. <q>backup shares the sheet: {'Ravi': 800, 'Kiran': 500}.</q> Then a line for every other option: <q>{'Ravi': 800, 'Kiran': 0}</q> <q>backup = trip gives the same sheet a second name. It sees the change.</q>.",
+       "say": "Which line decided it?"
+      },
+      {
+       "screen": "Round 2 of 4. The round's setup, as in the data. The question: <q>What does print(backup) show?</q> Options: A <q>{'Ravi': 800, 'Kiran': 500}</q>, B <q>{'Ravi': 800, 'Kiran': 0}</q>. Nothing runs yet.",
+       "say": "Does backup see it? Option A, hands up. B.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 1: trip points at Divya's sheet.</q> In the data: line = 1; a = {\"Ravi\": 800, \"Kiran\": 0}; b = null; same = false.",
+       "say": "Did that line change the sheet, or move a tag?"
+      },
+      {
+       "screen": "<q>Line 2: copy() makes a second sheet. backup points at it.</q> In the data: line = 2; a = {\"Ravi\": 800, \"Kiran\": 0}; b = {\"Ravi\": 800, \"Kiran\": 0}; same = false.",
+       "say": "Did that line change the sheet, or move a tag?"
+      },
+      {
+       "screen": "<q>Line 3 changes trip's sheet. backup's sheet is not touched.</q> In the data: line = 3; a = {\"Ravi\": 800, \"Kiran\": 500}; b = {\"Ravi\": 800, \"Kiran\": 0}; same = false.",
+       "say": "Did that line change the sheet, or move a tag?"
+      },
+      {
+       "screen": "The answer: <q>{'Ravi': 800, 'Kiran': 0}</q>. <q>backup kept the sheet: {'Ravi': 800, 'Kiran': 0}.</q> Then a line for every other option: <q>{'Ravi': 800, 'Kiran': 500}</q> <q>copy() made a second sheet. A change to trip stays on trip.</q>.",
+       "say": "Which line decided it?"
+      },
+      {
+       "screen": "Round 3 of 4. The round's setup, as in the data. The question: <q>What does print(backup) show?</q> Options: A <q>{}</q>, B <q>{'Ravi': 800, 'Kiran': 0}</q>, C <q>NameError</q>. Nothing runs yet.",
+       "say": "Does backup see it? Option A, hands up. B.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 1: trip points at Divya's sheet.</q> In the data: line = 1; a = {\"Ravi\": 800, \"Kiran\": 0}; b = null; same = false.",
+       "say": "Did that line change the sheet, or move a tag?"
+      },
+      {
+       "screen": "<q>Line 2: backup points at the same sheet as trip.</q> In the data: line = 2; a = {\"Ravi\": 800, \"Kiran\": 0}; b = {\"Ravi\": 800, \"Kiran\": 0}; same = true.",
+       "say": "Did that line change the sheet, or move a tag?"
+      },
+      {
+       "screen": "<q>Line 3 changes the sheet. trip and backup still share it.</q> In the data: line = 3; a = {}; b = {}; same = true.",
+       "say": "Did that line change the sheet, or move a tag?"
+      },
+      {
+       "screen": "The answer: <q>{}</q>. <q>backup shares the sheet: {}.</q> Then a line for every other option: <q>{'Ravi': 800, 'Kiran': 0}</q> <q>clear() empties the one sheet both names point at.</q>; <q>NameError</q> <q>clear() empties the sheet. Both names are still there, on an empty sheet.</q>.",
+       "say": "Which line decided it?"
+      },
+      {
+       "screen": "Round 4 of 4. The round's setup, as in the data. The question: <q>What does print(backup) show?</q> Options: A <q>{}</q>, B <q>{'Ravi': 800, 'Kiran': 0}</q>. Nothing runs yet.",
+       "say": "Does backup see it? Option A, hands up. B.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Line 1: trip points at Divya's sheet.</q> In the data: line = 1; a = {\"Ravi\": 800, \"Kiran\": 0}; b = null; same = false.",
+       "say": "Did that line change the sheet, or move a tag?"
+      },
+      {
+       "screen": "<q>Line 2: backup points at the same sheet as trip.</q> In the data: line = 2; a = {\"Ravi\": 800, \"Kiran\": 0}; b = {\"Ravi\": 800, \"Kiran\": 0}; same = true.",
+       "say": "Did that line change the sheet, or move a tag?"
+      },
+      {
+       "screen": "<q>Line 3 makes a new, empty sheet. Only trip moves to it.</q> In the data: line = 3; a = {}; b = {\"Ravi\": 800, \"Kiran\": 0}; same = false.",
+       "say": "Did that line change the sheet, or move a tag?"
+      },
+      {
+       "screen": "The answer: <q>{'Ravi': 800, 'Kiran': 0}</q>. <q>backup kept the sheet: {'Ravi': 800, 'Kiran': 0}.</q> Then a line for every other option: <q>{}</q> <q>trip = {} makes a new, empty sheet and moves only trip's tag. backup keeps the old sheet.</q>.",
+       "say": "Which line decided it?"
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Animate anything that suggests the old object was edited when a new one was made.",
+      "Move both arrows when only one name was assigned."
+     ],
+     "interaction": "Two name tags, a and b, and the objects they point at. Each round runs a short program; the room decides whether b sees the change or a's tag just moved. Then each line runs, one press per line, with the arrows redrawn.",
+     "game_def": {
+      "id": "change-or-move",
+      "name": "Change or move?",
+      "one_line": "Two name tags, a and b, and the objects they point at. Each round runs a short program; the room decides whether b sees the change or a's tag just moved. Then each line runs, one press per line, with the arrows redrawn.",
+      "how": [
+       "The program on the left. On the right, the name tags a and b, each with an arrow to its object, drawn in the setup's world (a playlist, a cart).",
+       "The question is always what print(b) shows. Options are the concrete outputs.",
+       "Each press runs one line. If the line changes the object, the object changes and both arrows stay. If the line makes a new object, a new object appears and only one arrow moves.",
+       "The verdict prints b."
+      ],
+      "setup": {
+       "world": "what the objects are drawn as, the same world as the hook if it fits"
+      },
+      "round": {
+       "program": "the code, exact, ending in print(b)",
+       "output": "what print(b) shows, computed"
+      },
+      "step": {
+       "line": "the line number just run",
+       "a": "a's value after the line, or null before it exists",
+       "b": "b's value after the line, or null before it exists",
+       "same": "true when a and b point at the same object after the line"
+      }
+     },
+     "press_count": 21
+    }
+   ]
+  },
+  {
+   "name": "Classroom quiz",
+   "kind": "quiz",
+   "mins": 6,
+   "start": 35,
+   "cards": [
+    {
+     "id": "S-QUIZ",
+     "title": "Quiz",
+     "source": "spine:quiz",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Hook 2: split the dhaba bill, the long way",
+   "kind": "hook",
+   "mins": 3,
+   "start": 41,
+   "cards": [
+    {
+     "id": "H2",
+     "title": "Split the dhaba bill, the long way",
+     "source": "new",
+     "purpose": "Feel why a function that takes any number of values is worth having: split() written for three friends breaks when a fourth sits down, and writing a new function for every count is silly.",
+     "heading": "Dinner on the way to Ooty",
+     "show": [
+      "The bus stops at a dhaba. The bill is 1200.",
+      "Three friends at the table.",
+      "Sai sits down too.",
+      "split4? split5? split10?",
+      "One split for any number of friends."
+     ],
+     "code": [
+      {
+       "file": "split3.py",
+       "src": "def split(bill, a, b, c):\n    share = bill // 3\n    print(a, share)\n    print(b, share)\n    print(c, share)\n\nsplit(1200, \"Teja\", \"Ravi\", \"Kiran\")",
+       "output": "Teja 400\nRavi 400\nKiran 400"
+      },
+      {
+       "file": "split_sai.py",
+       "src": "def split(bill, a, b, c):\n    share = bill // 3\n    print(a, share)\n    print(b, share)\n    print(c, share)\n\nsplit(1200, \"Teja\", \"Ravi\", \"Kiran\", \"Sai\")",
+       "output": "TypeError: split() takes 4 positional arguments but 5 were given"
+      },
+      {
+       "file": "split_any.py",
+       "src": "def split(bill, *friends):\n    share = bill // len(friends)\n    for name in friends:\n        print(name, share)\n\nsplit(1200, \"Teja\", \"Ravi\", \"Kiran\", \"Sai\")",
+       "output": "Teja 300\nRavi 300\nKiran 300\nSai 300"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "A dhaba on the highway at night, the trip bus outside, a bill for <q>1200</q> on the table. Caption: <q>The bus stops at a dhaba. The bill is 1200.</q>",
+       "say": "We split it in GPay. In Python, last month, how would you write split?",
+       "room": "Say a way."
+      },
+      {
+       "screen": "split3.py: def split(bill, a, b, c), the share is bill // 3. The output fills <q>Teja 400 / Ravi 400 / Kiran 400</q>. Caption: <q>Three friends at the table.</q>",
+       "say": "It works for three."
+      },
+      {
+       "screen": "Sai pulls up a chair. split_sai.py adds \"Sai\" to the call. The output fills <q>TypeError: split() takes 4 positional arguments but 5 were given</q>. Caption: <q>Sai sits down too.</q>",
+       "say": "Four friends, four boxes? split has only three. What now?",
+       "room": "Say a fix."
+      },
+      {
+       "screen": "Three more function names stack up beside it, each longer than the last: split4, split5, split10. Caption: <q>split4? split5? split10?</q>",
+       "say": "A new function for every table? Nobody does that. max takes any number, so can we."
+      },
+      {
+       "screen": "The turn, one movement: a, b, c fold into one box marked *friends, and the three print lines fold into one loop. split_any.py runs with four names. The output fills <q>Teja 300 / Ravi 300 / Kiran 300 / Sai 300</q>. Caption: <q>One split for any number of friends.</q>",
+       "say": "One star, any number of friends. The next cards show how."
+      }
+     ],
+     "answer": "Teja 400 / Ravi 400 / Kiran 400; with Sai: TypeError: split() takes 4 positional arguments but 5 were given; with *friends: Teja 300 / Ravi 300 / Kiran 300 / Sai 300",
+     "must": [
+      "All three programs are real and run; the output shown is theirs.",
+      "The fold on press 5 is one movement: the three name boxes become one box, the three prints one loop.",
+      "While it moves, this stays exactly as it was: The bill, 1200, and the three friends' names in their order."
+     ],
+     "must_not": [
+      "Animate by itself."
+     ],
+     "data": {
+      "bill": 1200
+     },
+     "play": "The dhaba, the bill and how the boxes fold. A GPay split screen can sit in the corner.",
+     "engage": "motion",
+     "motion": "Sai's name has no box and the call stops; then a, b, c fold into one *friends box and the prints into one loop. It proves one starred name can take any number of values.",
+     "keeps": "The bill, 1200, and the three friends' names in their order.",
+     "no_trap": "A hook: the long way is meant to work and then break, so there is no wrong idea to catch yet.",
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "*args: any number of values, and * at the call",
+   "kind": "concept",
+   "mins": 6,
+   "start": 44,
+   "cards": [
+    {
+     "id": "D1",
+     "title": "Arbitrary Function Arguments",
+     "source": [
+      20
+     ],
+     "engage": "plain",
+     "purpose": "Mark the start of the second half: functions that take any number of arguments.",
+     "heading": "Arbitrary Function Arguments",
+     "show": [
+      "Arbitrary Function Arguments"
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 20's words, <q>Arbitrary Function Arguments</q>, on their own.",
+       "say": "Arbitrary means any number. That is what the star gave us."
+      }
+     ],
+     "play": "Deck slide 20 as it is.",
+     "press_count": 1
+    },
+    {
+     "id": "C4",
+     "title": "*friends packs a tuple",
+     "source": [
+      21,
+      22
+     ],
+     "purpose": "A parameter with * collects every value given to it into one tuple: three values, one value with its comma, or none at all, ().",
+     "heading": "Variable Length Arguments",
+     "show": [
+      "We can define a function to receive any number of arguments.",
+      "What does line 4 print?",
+      "('Teja', 'Ravi', 'Kiran')",
+      "['Teja', 'Ravi', 'Kiran']",
+      "Teja Ravi Kiran",
+      "Variable length arguments are packed as tuple"
+     ],
+     "code": [
+      {
+       "file": "show.py",
+       "src": "def show(*friends):\n    print(friends)\n\nshow(\"Teja\", \"Ravi\", \"Kiran\")\nshow(\"Sai\")\nshow()",
+       "output": "('Teja', 'Ravi', 'Kiran')\n('Sai',)\n()"
+      },
+      {
+       "file": "max.py",
+       "src": "print(max(1500, 800, 0))",
+       "output": "1500"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 21's line <q>We can define a function to receive any number of arguments.</q> max.py beside it: max(1500, 800, 0) prints <q>1500</q>.",
+       "say": "You have used one already. max takes any number of values."
+      },
+      {
+       "screen": "show.py with empty output, and the box friends drawn empty as (). Caption: <q>What does line 4 print?</q> Choices A <q>('Teja', 'Ravi', 'Kiran')</q>, B <q>['Teja', 'Ravi', 'Kiran']</q>, C <q>Teja Ravi Kiran</q>.",
+       "say": "Option A, hands up. B. C.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "Line 4's three names fly one by one into the tuple box, which grows. The output fills <q>('Teja', 'Ravi', 'Kiran')</q>.",
+       "say": "Round brackets. A tuple, packed in the order you gave them."
+      },
+      {
+       "screen": "Lines 5 and 6 run: one name fills <q>('Sai',)</q> with its comma, no name fills <q>()</q>. Deck slide 22's line: <q>Variable length arguments are packed as tuple</q>",
+       "say": "One value: the comma from the tuples class. None: an empty tuple, no error.",
+       "room": "Say lines 5 and 6 before the press."
+      }
+     ],
+     "answer": "('Teja', 'Ravi', 'Kiran') / ('Sai',) / ()",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A function's parameters are drawn as boxes: a plain box for each named parameter, a tuple box for *name (round brackets), a dictionary box for **name (curly brackets). The tuple and dictionary boxes start as () and {}.",
+      "The tuple prints with round brackets; ('Sai',) keeps its comma.",
+      "While it moves, this stays exactly as it was: The order of the names as written in the call.",
+      "Keep these exact values. Someone who thinks *friends packs a list would say ['Teja', 'Ravi', 'Kiran']\n['Sai']\n[]; Python gives ('Teja', 'Ravi', 'Kiran')\n('Sai',)\n(). New values could hide that mistake."
+     ],
+     "play": "How names fly into the tuple box. They can be friends sitting down at the dhaba table.",
+     "engage": "motion",
+     "ops": [
+      "*args"
+     ],
+     "motion": "Each value flies into one tuple box, which grows; with no values the box stays (). It proves *friends packs whatever is given into a tuple.",
+     "keeps": "The order of the names as written in the call.",
+     "trap": {
+      "belief": "*friends packs a list",
+      "wrong": "['Teja', 'Ravi', 'Kiran']\n['Sai']\n[]",
+      "code": 0
+     },
+     "press_count": 4
+    },
+    {
+     "id": "C5",
+     "title": "* at the call opens a list",
+     "source": [
+      23
+     ],
+     "purpose": "When the values are already in a list, * at the call opens it into separate values. Without the *, the whole list is one value.",
+     "heading": "Unpacking as Arguments",
+     "show": [
+      "The names are already in a list.",
+      "Teja 400 / Ravi 400 / Kiran 400",
+      "['Teja', 'Ravi', 'Kiran'] 1200",
+      "TypeError",
+      "* opens the list. Each name is its own value."
+     ],
+     "code": [
+      {
+       "file": "table.py",
+       "src": "def split(bill, *friends):\n    share = bill // len(friends)\n    for name in friends:\n        print(name, share)\n\ntable = [\"Teja\", \"Ravi\", \"Kiran\"]\nsplit(1200, *table)",
+       "output": "Teja 400\nRavi 400\nKiran 400"
+      },
+      {
+       "file": "table_no_star.py",
+       "src": "def split(bill, *friends):\n    share = bill // len(friends)\n    for name in friends:\n        print(name, share)\n\ntable = [\"Teja\", \"Ravi\", \"Kiran\"]\nsplit(1200, table)",
+       "output": "['Teja', 'Ravi', 'Kiran'] 1200"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "table.py: split from H2 and a list table of three names, then split(1200, *table). Empty output. Caption: <q>The names are already in a list.</q>",
+       "say": "Say what it prints.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "The list table bursts open into three separate names, which fly into the tuple box. The output fills <q>Teja 400 / Ravi 400 / Kiran 400</q>. Caption: <q>* opens the list. Each name is its own value.</q>",
+       "say": "Deck slide 23: if the data is already in a list, * unpacks it at the call."
+      },
+      {
+       "screen": "table_no_star.py: the same call without the star. Choices A <q>Teja 400 / Ravi 400 / Kiran 400</q>, B <q>['Teja', 'Ravi', 'Kiran'] 1200</q>, C <q>TypeError</q>.",
+       "say": "No star. Option A, hands up. B. C.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "The whole list flies in as one value: the tuple box holds one item, a list. len is 1, so the share is 1200. The output fills <q>['Teja', 'Ravi', 'Kiran'] 1200</q>.",
+       "say": "No error, just a wrong bill. One list, one friend. The star matters."
+      }
+     ],
+     "answer": "Teja 400 / Ravi 400 / Kiran 400; without *: ['Teja', 'Ravi', 'Kiran'] 1200",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A function's parameters are drawn as boxes: a plain box for each named parameter, a tuple box for *name (round brackets), a dictionary box for **name (curly brackets). The tuple and dictionary boxes start as () and {}.",
+      "On press 4 the list lands as one item inside the tuple box, brackets and all.",
+      "While it moves, this stays exactly as it was: The list table itself: opening it at the call does not change it.",
+      "Keep these exact values. Someone who thinks a list goes in as separate values even without * would say Teja 400\nRavi 400\nKiran 400; Python gives ['Teja', 'Ravi', 'Kiran'] 1200. New values could hide that mistake."
+     ],
+     "play": "How the list bursts open. It can be a WhatsApp list of names splitting into chairs.",
+     "engage": "motion",
+     "ops": [
+      "*"
+     ],
+     "motion": "With *, the list bursts into three names that land one by one; without it the whole list lands as one item. It proves * at the call opens a list into separate values.",
+     "keeps": "The list table itself: opening it at the call does not change it.",
+     "trap": {
+      "belief": "a list goes in as separate values even without *",
+      "wrong": "Teja 400\nRavi 400\nKiran 400",
+      "code": 1
+     },
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "**kwargs: any number of names, packed as a dictionary",
+   "kind": "concept",
+   "mins": 4,
+   "start": 50,
+   "cards": [
+    {
+     "id": "C6",
+     "title": "**paid packs a dictionary",
+     "source": [
+      24,
+      25
+     ],
+     "purpose": "A parameter with ** collects every name=value argument into one dictionary: the name is the key, the value is the value. No arguments give {}.",
+     "heading": "Variable Length Kwargs",
+     "show": [
+      "We can define a function to receive any number of keyword arguments.",
+      "What does line 4 print?",
+      "{'Teja': 1500, 'Ravi': 800}",
+      "(1500, 800)",
+      "('Teja', 'Ravi')",
+      "Variable length kwargs are packed as dictionary"
+     ],
+     "code": [
+      {
+       "file": "mark_paid.py",
+       "src": "def mark_paid(**paid):\n    print(paid)\n\nmark_paid(Teja=1500, Ravi=800)\nmark_paid()",
+       "output": "{'Teja': 1500, 'Ravi': 800}\n{}"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 24's line <q>We can define a function to receive any number of keyword arguments.</q> mark_paid.py with empty output, and the box paid drawn empty as {}. Caption: <q>What does line 4 print?</q> Choices A <q>{'Teja': 1500, 'Ravi': 800}</q>, B <q>(1500, 800)</q>, C <q>('Teja', 'Ravi')</q>.",
+       "say": "Two stars this time. Option A, hands up. B. C.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "Teja=1500 flies in and becomes a row: key Teja, value 1500. Then Ravi=800. The box looks like the trip sheet. The output fills <q>{'Teja': 1500, 'Ravi': 800}</q>.",
+       "say": "The name before = becomes the key. Curly brackets: a dictionary."
+      },
+      {
+       "screen": "Line 5, no arguments, fills <q>{}</q>. Deck slide 25's line: <q>Variable length kwargs are packed as dictionary</q>",
+       "say": "One star packs a tuple. Two stars pack a dictionary.",
+       "room": "Say line 5 before the press."
+      }
+     ],
+     "answer": "{'Teja': 1500, 'Ravi': 800} / {}",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A function's parameters are drawn as boxes: a plain box for each named parameter, a tuple box for *name (round brackets), a dictionary box for **name (curly brackets). The tuple and dictionary boxes start as () and {}.",
+      "Each name=value becomes one row of the dictionary box, in the order of the call.",
+      "While it moves, this stays exactly as it was: The order of the arguments as written.",
+      "Keep these exact values. Someone who thinks **paid packs a tuple, like *friends would say (1500, 800)\n(); Python gives {'Teja': 1500, 'Ravi': 800}\n{}. New values could hide that mistake."
+     ],
+     "play": "How a name=value becomes a row. The box can grow into a small copy of Divya's sheet.",
+     "engage": "motion",
+     "ops": [
+      "**kwargs"
+     ],
+     "motion": "Each name=value flies in and becomes a key-value row in one dictionary box. It proves **paid packs named arguments into a dictionary.",
+     "keeps": "The order of the arguments as written.",
+     "trap": {
+      "belief": "**paid packs a tuple, like *friends",
+      "wrong": "(1500, 800)\n()",
+      "code": 0
+     },
+     "press_count": 3
+    },
+    {
+     "id": "C7",
+     "title": "paid is a real dictionary",
+     "source": [
+      27
+     ],
+     "purpose": "kwargs is a dictionary, so everything from today and last class works on it: items() in a loop, in for a key.",
+     "heading": "Iterating",
+     "show": [
+      "kwargs is a dictionary.",
+      "We can iterate over them like any other dictionary.",
+      "What prints?"
+     ],
+     "code": [
+      {
+       "file": "paid_loop.py",
+       "src": "def mark_paid(**paid):\n    for name, amount in paid.items():\n        print(name, \"paid\", amount)\n    print(\"Ravi\" in paid)\n\nmark_paid(Teja=1500, Ravi=800)",
+       "output": "Teja paid 1500\nRavi paid 800\nTrue"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 27's lines <q>kwargs is a dictionary.</q> and <q>We can iterate over them like any other dictionary.</q> paid_loop.py with empty output. Caption: <q>What prints?</q>",
+       "say": "Three lines. Write them all in your notebook.",
+       "room": "Write three lines."
+      },
+      {
+       "screen": "One row of paid per press, two in all: the row splits into name and amount, and its line prints. Then line 4 fills <q>True</q>.",
+       "n": 3,
+       "say": "Next line. Say it before I press.",
+       "room": "Say the line."
+      }
+     ],
+     "answer": "Teja paid 1500 / Ravi paid 800 / True",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "One row per press, in the order of the call.",
+      "Keep these exact values. Someone who thinks paid is a tuple of values, so items() fails would say AttributeError: 'tuple' object has no attribute 'items'; Python gives Teja paid 1500\nRavi paid 800\nTrue. New values could hide that mistake."
+     ],
+     "play": "The dictionary box from C6, with each row lifting as the loop reaches it.",
+     "engage": "play",
+     "interaction": "The room writes all three lines, then says each line before it prints.",
+     "trap": {
+      "belief": "paid is a tuple of values, so items() fails",
+      "wrong": "AttributeError: 'tuple' object has no attribute 'items'",
+      "code": 0
+     },
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "** at the call, and the key that does not match",
+   "kind": "concept",
+   "mins": 3,
+   "start": 54,
+   "cards": [
+    {
+     "id": "C8",
+     "title": "** at the call opens a dictionary",
+     "source": [
+      28,
+      29
+     ],
+     "purpose": "** at the call opens a dictionary into name=value arguments. Each key must match a parameter's name; a key with no matching name stops with TypeError.",
+     "heading": "Unpacking as Arguments",
+     "show": [
+      "The room card is already a dictionary.",
+      "Each key finds the box with its name.",
+      "The keys spell student, not name.",
+      "Teja C",
+      "TypeError",
+      "Keys must match the names."
+     ],
+     "code": [
+      {
+       "file": "room_card.py",
+       "src": "def room(name, block):\n    print(name, block)\n\ndata = {\"name\": \"Teja\", \"block\": \"C\"}\nroom(**data)",
+       "output": "Teja C"
+      },
+      {
+       "file": "room_card_wrong.py",
+       "src": "def room(name, block):\n    print(name, block)\n\ndata = {\"student\": \"Teja\", \"block\": \"C\"}\nroom(**data)",
+       "output": "TypeError: room() got an unexpected keyword argument 'student'"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "room_card.py: room(name, block) and a dictionary data, called with room(**data). The boxes name and block, empty. Caption: <q>The room card is already a dictionary.</q>",
+       "say": "Say what it prints.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "data opens into name=\"Teja\" and block=\"C\"; each lands in the box with its name. The output fills <q>Teja C</q>. Caption: <q>Each key finds the box with its name.</q>",
+       "say": "Two stars open a dictionary. Deck slide 28."
+      },
+      {
+       "screen": "room_card_wrong.py: the key is student, not name. Caption: <q>The keys spell student, not name.</q> Choices A <q>Teja C</q>, B <q>TypeError</q>.",
+       "say": "Option A, hands up. B.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "student=\"Teja\" finds no box called student and stops. The output fills <q>TypeError: room() got an unexpected keyword argument 'student'</q>. Caption: <q>Keys must match the names.</q>",
+       "say": "Deck slide 29. Python never matches by place here, only by name."
+      }
+     ],
+     "answer": "Teja C; wrong key: TypeError: room() got an unexpected keyword argument 'student'",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "A function's parameters are drawn as boxes: a plain box for each named parameter, a tuple box for *name (round brackets), a dictionary box for **name (curly brackets). The tuple and dictionary boxes start as () and {}.",
+      "On press 4 the box name stays empty and nothing prints.",
+      "While it moves, this stays exactly as it was: The dictionary data, as written.",
+      "Keep these exact values. Someone who thinks ** fills the boxes by place, so the key names do not matter would say Teja C; Python gives TypeError: room() got an unexpected keyword argument 'student'. New values could hide that mistake."
+     ],
+     "play": "The hostel room card and how its rows fly to the boxes.",
+     "engage": "motion",
+     "ops": [
+      "**"
+     ],
+     "motion": "The dictionary opens into name=value pairs that fly to the boxes with the same names; a key with no box stops the call. It proves ** matches by name.",
+     "keeps": "The dictionary data, as written.",
+     "trap": {
+      "belief": "** fills the boxes by place, so the key names do not matter",
+      "wrong": "Teja C",
+      "code": 1
+     },
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Game G2: where does it land?",
+   "kind": "activity",
+   "mins": 4,
+   "start": 57,
+   "cards": [
+    {
+     "id": "G2",
+     "title": "Where does it land?",
+     "game": "where-it-lands",
+     "ops": [
+      "*args",
+      "**kwargs",
+      "*",
+      "**"
+     ],
+     "purpose": "Vote what prints, then watch each argument of the call fly to its box: a named box, the tuple, the dictionary, or nowhere, and then Python stops.",
+     "heading": "Where does it land?",
+     "data": {
+      "setup": {
+       "world": "the class trip: seats at the dhaba table and hostel room cards; each parameter is a seat card, the tuple and dictionary boxes are benches that take anyone left"
+      },
+      "rounds": [
+       {
+        "ask": "What does print(friends) show?",
+        "program": "def split(bill, *friends):\n    print(friends)\n\nsplit(1200, \"Teja\", \"Ravi\", \"Kiran\")",
+        "output": "('Teja', 'Ravi', 'Kiran')",
+        "params": [
+         [
+          "bill",
+          "named"
+         ],
+         [
+          "friends",
+          "*args"
+         ]
+        ],
+        "steps": [
+         {
+          "caption": "1200 has no name, so it takes the next empty box, bill.",
+          "arg": "1200",
+          "to": "bill",
+          "boxes": {
+           "bill": "1200",
+           "friends": "()"
+          },
+          "printed": ""
+         },
+         {
+          "caption": "The named boxes are full. 'Teja' joins the tuple friends.",
+          "arg": "'Teja'",
+          "to": "friends",
+          "boxes": {
+           "bill": "1200",
+           "friends": "('Teja',)"
+          },
+          "printed": ""
+         },
+         {
+          "caption": "The named boxes are full. 'Ravi' joins the tuple friends.",
+          "arg": "'Ravi'",
+          "to": "friends",
+          "boxes": {
+           "bill": "1200",
+           "friends": "('Teja', 'Ravi')"
+          },
+          "printed": ""
+         },
+         {
+          "caption": "The named boxes are full. 'Kiran' joins the tuple friends.",
+          "arg": "'Kiran'",
+          "to": "friends",
+          "boxes": {
+           "bill": "1200",
+           "friends": "('Teja', 'Ravi', 'Kiran')"
+          },
+          "printed": ""
+         },
+         {
+          "caption": "Every argument has a box. The body runs.",
+          "arg": null,
+          "to": null,
+          "boxes": {
+           "bill": "1200",
+           "friends": "('Teja', 'Ravi', 'Kiran')"
+          },
+          "printed": "('Teja', 'Ravi', 'Kiran')"
+         }
+        ],
+        "options": [
+         "('Teja', 'Ravi', 'Kiran')",
+         "(1200, 'Teja', 'Ravi', 'Kiran')",
+         "['Teja', 'Ravi', 'Kiran']"
+        ],
+        "answer": "('Teja', 'Ravi', 'Kiran')",
+        "why": {
+         "(1200, 'Teja', 'Ravi', 'Kiran')": "bill is a named box, so 1200 fills it first. Only the rest join friends.",
+         "['Teja', 'Ravi', 'Kiran']": "*friends packs a tuple, with round brackets, not a list."
+        },
+        "because": "Every argument found its box, so the body printed ('Teja', 'Ravi', 'Kiran')."
+       },
+       {
+        "ask": "What does it print?",
+        "program": "def room(name, block):\n    print(name, block)\n\ndata = {\"block\": \"C\", \"name\": \"Teja\"}\nroom(**data)",
+        "output": "Teja C",
+        "params": [
+         [
+          "name",
+          "named"
+         ],
+         [
+          "block",
+          "named"
+         ]
+        ],
+        "steps": [
+         {
+          "caption": "**data opens: block='C', name='Teja'.",
+          "arg": "**data",
+          "to": null,
+          "boxes": {
+           "name": null,
+           "block": null
+          },
+          "printed": ""
+         },
+         {
+          "caption": "block='C' has a name, so it goes to the box called block.",
+          "arg": "block='C'",
+          "to": "block",
+          "boxes": {
+           "name": null,
+           "block": "'C'"
+          },
+          "printed": ""
+         },
+         {
+          "caption": "name='Teja' has a name, so it goes to the box called name.",
+          "arg": "name='Teja'",
+          "to": "name",
+          "boxes": {
+           "name": "'Teja'",
+           "block": "'C'"
+          },
+          "printed": ""
+         },
+         {
+          "caption": "Every argument has a box. The body runs.",
+          "arg": null,
+          "to": null,
+          "boxes": {
+           "name": "'Teja'",
+           "block": "'C'"
+          },
+          "printed": "Teja C"
+         }
+        ],
+        "options": [
+         "Teja C",
+         "C Teja",
+         "TypeError"
+        ],
+        "answer": "Teja C",
+        "why": {
+         "C Teja": "** gives name=value arguments. They land by name, not by order.",
+         "TypeError": "room has a box called block, so block='C' lands there."
+        },
+        "because": "Every argument found its box, so the body printed Teja C."
+       },
+       {
+        "ask": "What does print(kwargs) show?",
+        "program": "def student_info(*args, **kwargs):\n    print(kwargs)\n\nstudent_info('Math', 'Science', 'Rahul', age='15')",
+        "output": "{'age': '15'}",
+        "params": [
+         [
+          "args",
+          "*args"
+         ],
+         [
+          "kwargs",
+          "**kwargs"
+         ]
+        ],
+        "steps": [
+         {
+          "caption": "There is no named box. 'Math' joins the tuple args.",
+          "arg": "'Math'",
+          "to": "args",
+          "boxes": {
+           "args": "('Math',)",
+           "kwargs": "{}"
+          },
+          "printed": ""
+         },
+         {
+          "caption": "There is no named box. 'Science' joins the tuple args.",
+          "arg": "'Science'",
+          "to": "args",
+          "boxes": {
+           "args": "('Math', 'Science')",
+           "kwargs": "{}"
+          },
+          "printed": ""
+         },
+         {
+          "caption": "There is no named box. 'Rahul' joins the tuple args.",
+          "arg": "'Rahul'",
+          "to": "args",
+          "boxes": {
+           "args": "('Math', 'Science', 'Rahul')",
+           "kwargs": "{}"
+          },
+          "printed": ""
+         },
+         {
+          "caption": "No box is called age, so age='15' joins the dictionary kwargs.",
+          "arg": "age='15'",
+          "to": "kwargs",
+          "boxes": {
+           "args": "('Math', 'Science', 'Rahul')",
+           "kwargs": "{'age': '15'}"
+          },
+          "printed": ""
+         },
+         {
+          "caption": "Every argument has a box. The body runs.",
+          "arg": null,
+          "to": null,
+          "boxes": {
+           "args": "('Math', 'Science', 'Rahul')",
+           "kwargs": "{'age': '15'}"
+          },
+          "printed": "{'age': '15'}"
+         }
+        ],
+        "options": [
+         "{'age': '15'}",
+         "{'name': 'Rahul', 'age': '15'}",
+         "{}"
+        ],
+        "answer": "{'age': '15'}",
+        "why": {
+         "{'name': 'Rahul', 'age': '15'}": "'Rahul' has no name=, so it joins args. Python never guesses a name.",
+         "{}": "age='15' has a name and there is no box called age, so it goes into kwargs."
+        },
+        "because": "Every argument found its box, so the body printed {'age': '15'}."
+       },
+       {
+        "ask": "What does it print?",
+        "program": "def mark_paid(**paid):\n    print(paid)\n\nmark_paid(\"Teja\", 1500)",
+        "output": "TypeError: mark_paid() takes 0 positional arguments but 2 were given",
+        "params": [
+         [
+          "paid",
+          "**kwargs"
+         ]
+        ],
+        "steps": [
+         {
+          "caption": "'Teja' has nowhere to go. Python stops before the body runs.",
+          "arg": "'Teja'",
+          "to": null,
+          "boxes": {
+           "paid": "{}"
+          },
+          "printed": "TypeError: mark_paid() takes 0 positional arguments but 2 were given"
+         }
+        ],
+        "options": [
+         "{'Teja': 1500}",
+         "{}",
+         "TypeError"
+        ],
+        "answer": "TypeError",
+        "why": {
+         "{'Teja': 1500}": "** packs only name=value arguments. Two plain values are not a pair.",
+         "{}": "The two values do not vanish. They have nowhere to go, so Python stops."
+        },
+        "because": "Python stopped before the body ran: TypeError: mark_paid() takes 0 positional arguments but 2 were given"
+       }
+      ]
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "Values with no name fill the named boxes left to right first. Only what is left over joins the tuple box.",
+      "A name=value lands by its name, never by its place in the call: the order of the keywords does not matter.",
+      "The tuple box prints with round brackets and the dictionary box with curly brackets, exactly as Python prints them, ('Sai',) with its comma.",
+      "On a TypeError the body does not run: nothing prints, and the error line is the whole terminal.",
+      "Round 1 is the split from C5, so the first round is a win.",
+      "Round 2's dictionary lists block before name: the values still land by name.",
+      "Round 3 is the deck's Daily Challenge (slide 34). Its verdict shows the fix, name='Rahul', printing {'name': 'Rahul', 'age': '15'}.",
+      "Round 4 is the edge: nothing lands and nothing prints."
+     ],
+     "play": "The seat cards, the benches and how an argument flies, as on C4 to C8.",
+     "presses": [
+      {
+       "screen": "Round 1 of 4. The round's setup, as in the data. The question: <q>What does print(friends) show?</q> Options: A <q>('Teja', 'Ravi', 'Kiran')</q>, B <q>(1200, 'Teja', 'Ravi', 'Kiran')</q>, C <q>['Teja', 'Ravi', 'Kiran']</q>. Nothing runs yet.",
+       "say": "Read the def and the call. Option A, hands up. B. C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>1200 has no name, so it takes the next empty box, bill.</q> In the data: boxes = {\"bill\": \"1200\", \"friends\": \"()\"}; printed = .",
+       "say": "Which box does this one go to? Say it before I press."
+      },
+      {
+       "screen": "<q>The named boxes are full. 'Teja' joins the tuple friends.</q> In the data: boxes = {\"bill\": \"1200\", \"friends\": \"('Teja',)\"}; printed = .",
+       "say": "Which box does this one go to? Say it before I press."
+      },
+      {
+       "screen": "<q>The named boxes are full. 'Ravi' joins the tuple friends.</q> In the data: boxes = {\"bill\": \"1200\", \"friends\": \"('Teja', 'Ravi')\"}; printed = .",
+       "say": "Which box does this one go to? Say it before I press."
+      },
+      {
+       "screen": "<q>The named boxes are full. 'Kiran' joins the tuple friends.</q> In the data: boxes = {\"bill\": \"1200\", \"friends\": \"('Teja', 'Ravi', 'Kiran')\"}; printed = .",
+       "say": "Which box does this one go to? Say it before I press."
+      },
+      {
+       "screen": "<q>Every argument has a box. The body runs.</q> In the data: arg = null; to = null; boxes = {\"bill\": \"1200\", \"friends\": \"('Teja', 'Ravi', 'Kiran')\"}; printed = ('Teja', 'Ravi', 'Kiran').",
+       "say": "Which box does this one go to? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>('Teja', 'Ravi', 'Kiran')</q>. <q>Every argument found its box, so the body printed ('Teja', 'Ravi', 'Kiran').</q> Then a line for every other option: <q>(1200, 'Teja', 'Ravi', 'Kiran')</q> <q>bill is a named box, so 1200 fills it first. Only the rest join friends.</q>; <q>['Teja', 'Ravi', 'Kiran']</q> <q>*friends packs a tuple, with round brackets, not a list.</q>.",
+       "say": "Which argument decided it?"
+      },
+      {
+       "screen": "Round 2 of 4. The round's setup, as in the data. The question: <q>What does it print?</q> Options: A <q>Teja C</q>, B <q>C Teja</q>, C <q>TypeError</q>. Nothing runs yet.",
+       "say": "Read the def and the call. Option A, hands up. B. C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>**data opens: block='C', name='Teja'.</q> In the data: to = null; boxes = {\"name\": null, \"block\": null}; printed = .",
+       "say": "Which box does this one go to? Say it before I press."
+      },
+      {
+       "screen": "<q>block='C' has a name, so it goes to the box called block.</q> In the data: boxes = {\"name\": null, \"block\": \"'C'\"}; printed = .",
+       "say": "Which box does this one go to? Say it before I press."
+      },
+      {
+       "screen": "<q>name='Teja' has a name, so it goes to the box called name.</q> In the data: boxes = {\"name\": \"'Teja'\", \"block\": \"'C'\"}; printed = .",
+       "say": "Which box does this one go to? Say it before I press."
+      },
+      {
+       "screen": "<q>Every argument has a box. The body runs.</q> In the data: arg = null; to = null; boxes = {\"name\": \"'Teja'\", \"block\": \"'C'\"}; printed = Teja C.",
+       "say": "Which box does this one go to? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>Teja C</q>. <q>Every argument found its box, so the body printed Teja C.</q> Then a line for every other option: <q>C Teja</q> <q>** gives name=value arguments. They land by name, not by order.</q>; <q>TypeError</q> <q>room has a box called block, so block='C' lands there.</q>.",
+       "say": "Which argument decided it?"
+      },
+      {
+       "screen": "Round 3 of 4. The round's setup, as in the data. The question: <q>What does print(kwargs) show?</q> Options: A <q>{'age': '15'}</q>, B <q>{'name': 'Rahul', 'age': '15'}</q>, C <q>{}</q>. Nothing runs yet.",
+       "say": "Read the def and the call. Option A, hands up. B. C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>There is no named box. 'Math' joins the tuple args.</q> In the data: boxes = {\"args\": \"('Math',)\", \"kwargs\": \"{}\"}; printed = .",
+       "say": "Which box does this one go to? Say it before I press."
+      },
+      {
+       "screen": "<q>There is no named box. 'Science' joins the tuple args.</q> In the data: boxes = {\"args\": \"('Math', 'Science')\", \"kwargs\": \"{}\"}; printed = .",
+       "say": "Which box does this one go to? Say it before I press."
+      },
+      {
+       "screen": "<q>There is no named box. 'Rahul' joins the tuple args.</q> In the data: boxes = {\"args\": \"('Math', 'Science', 'Rahul')\", \"kwargs\": \"{}\"}; printed = .",
+       "say": "Which box does this one go to? Say it before I press."
+      },
+      {
+       "screen": "<q>No box is called age, so age='15' joins the dictionary kwargs.</q> In the data: boxes = {\"args\": \"('Math', 'Science', 'Rahul')\", \"kwargs\": \"{'age': '15'}\"}; printed = .",
+       "say": "Which box does this one go to? Say it before I press."
+      },
+      {
+       "screen": "<q>Every argument has a box. The body runs.</q> In the data: arg = null; to = null; boxes = {\"args\": \"('Math', 'Science', 'Rahul')\", \"kwargs\": \"{'age': '15'}\"}; printed = {'age': '15'}.",
+       "say": "Which box does this one go to? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>{'age': '15'}</q>. <q>Every argument found its box, so the body printed {'age': '15'}.</q> Then a line for every other option: <q>{'name': 'Rahul', 'age': '15'}</q> <q>'Rahul' has no name=, so it joins args. Python never guesses a name.</q>; <q>{}</q> <q>age='15' has a name and there is no box called age, so it goes into kwargs.</q>.",
+       "say": "Which argument decided it?"
+      },
+      {
+       "screen": "Round 4 of 4. The round's setup, as in the data. The question: <q>What does it print?</q> Options: A <q>{'Teja': 1500}</q>, B <q>{}</q>, C <q>TypeError</q>. Nothing runs yet.",
+       "say": "Read the def and the call. Option A, hands up. B. C.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>'Teja' has nowhere to go. Python stops before the body runs.</q> In the data: to = null; boxes = {\"paid\": \"{}\"}; printed = TypeError: mark_paid() takes 0 positional arguments but 2 were given.",
+       "say": "Which box does this one go to? Say it before I press."
+      },
+      {
+       "screen": "The answer: <q>TypeError</q>. <q>Python stopped before the body ran: TypeError: mark_paid() takes 0 positional arguments but 2 were given</q> Then a line for every other option: <q>{'Teja': 1500}</q> <q>** packs only name=value arguments. Two plain values are not a pair.</q>; <q>{}</q> <q>The two values do not vanish. They have nowhere to go, so Python stops.</q>.",
+       "say": "Which argument decided it?"
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Let a value with no name land in the dictionary box, or a name=value land in the tuple box.",
+      "Show the printed line before the body's press."
+     ],
+     "interaction": "A function's parameters are drawn as boxes: one box per named parameter, a tuple box for *args, a dictionary box for **kwargs. The room votes on what the print line shows; then each argument of the call flies to its box, one per press, or Python stops with TypeError before the body runs.",
+     "game_def": {
+      "id": "where-it-lands",
+      "name": "Where does it land?",
+      "one_line": "A function's parameters are drawn as boxes: one box per named parameter, a tuple box for *args, a dictionary box for **kwargs. The room votes on what the print line shows; then each argument of the call flies to its box, one per press, or Python stops with TypeError before the body runs.",
+      "how": [
+       "The program on one side: the def line, its body and the call. On the other, the parameter boxes in the def's order: a plain box for each named parameter, a tuple box for *name, a dictionary box for **name. The boxes start empty: the tuple box shows (), the dictionary box {}.",
+       "The room votes on what the print line shows. Options are concrete values, or TypeError; the full error line shows on the verdict.",
+       "One press per argument, left to right as the call is written. A value with no name= goes to the next empty named box; when those are full it joins the tuple box. A name=value goes to the box with that name; if no box has that name it joins the dictionary box as a key-value pair.",
+       "*list and **dict at the call open first, on their own press: the list becomes separate values, the dictionary becomes name=value arguments. Then they land like any other argument.",
+       "If an argument has nowhere to go, or a named box is still empty at the end, Python stops with TypeError. The body never runs and nothing prints.",
+       "If every argument lands, the body runs on one more press and the terminal fills."
+      ],
+      "setup": {
+       "world": "what the arguments and the boxes are drawn as, in the session's world (friends at a dhaba table, hostel room cards)"
+      },
+      "round": {
+       "program": "the code, exact: the def, its body, and the call last",
+       "params": "the boxes, in the def's order, as [name, kind]; kind is named, *args or **kwargs",
+       "output": "what the program prints, or the error line, computed"
+      },
+      "step": {
+       "arg": "the argument this press moves, as written in the call (\"'Teja'\", \"Teja=1500\"), or the *list or **dict being opened, or null on the body's press",
+       "to": "the box it lands in, or null when it opens, stops the program, or the body runs",
+       "boxes": "every box after this press: name to the value as Python prints it; null for an empty named box",
+       "printed": "what the terminal shows after this press, '' for nothing yet"
+      }
+     },
+     "press_count": 23
+    }
+   ]
+  },
+  {
+   "name": "When to use them: sort five jobs",
+   "kind": "activity",
+   "mins": 2,
+   "start": 61,
+   "cards": [
+    {
+     "id": "C9",
+     "title": "When to use them",
+     "source": [
+      30
+     ],
+     "purpose": "Use *args or **kwargs only when you cannot say how many arguments there will be. When you know, name each one.",
+     "heading": "Note",
+     "show": [
+      "A fixed number",
+      "Any number of values: *args",
+      "Any number of name=value: **kwargs",
+      "Split the dhaba bill among the friends at the table",
+      "Print one student's room: name and block",
+      "Save any extra details a student types: phone, blood group, anything",
+      "Add up all of today's trip expenses",
+      "Area of the hostel room: length and width",
+      "Use variable length args only in cases where you cannot specify the number of positional/keyword arguments"
+     ],
+     "presses": [
+      {
+       "screen": "Three bins: <q>A fixed number</q>, <q>Any number of values: *args</q>, <q>Any number of name=value: **kwargs</q>. Five cards stacked, one per job: <q>Split the dhaba bill among the friends at the table</q>, <q>Print one student's room: name and block</q>, <q>Save any extra details a student types: phone, blood group, anything</q>, <q>Add up all of today's trip expenses</q>, <q>Area of the hostel room: length and width</q>.",
+       "say": "One card at a time. Which bin? Hands up for each bin.",
+       "room": "Hands up per bin."
+      },
+      {
+       "screen": "One card per press flies to its bin and shows its def line, from data.items.",
+       "n": 5,
+       "say": "Hands up first, then press.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Deck slide 30's note: <q>Use variable length args only in cases where you cannot specify the number of positional/keyword arguments</q>",
+       "say": "If you know how many, name each one. The star is for when you cannot know."
+      }
+     ],
+     "answer": "Split the dhaba bill among the friends at the table: Any number of values: *args; Print one student's room: name and block: A fixed number; Save any extra details a student types: phone, blood group, anything: Any number of name=value: **kwargs; Add up all of today's trip expenses: Any number of values: *args; Area of the hostel room: length and width: A fixed number",
+     "must": [
+      "All five cards and three bins are on screen from press 1. One card moves per press, in order."
+     ],
+     "must_not": [
+      "Show a card's def line before it lands."
+     ],
+     "data": {
+      "items": [
+       {
+        "job": "Split the dhaba bill among the friends at the table",
+        "def": "def split(bill, *friends):",
+        "bin": "Any number of values: *args"
+       },
+       {
+        "job": "Print one student's room: name and block",
+        "def": "def room(name, block):",
+        "bin": "A fixed number"
+       },
+       {
+        "job": "Save any extra details a student types: phone, blood group, anything",
+        "def": "def save(**details):",
+        "bin": "Any number of name=value: **kwargs"
+       },
+       {
+        "job": "Add up all of today's trip expenses",
+        "def": "def total(*amounts):",
+        "bin": "Any number of values: *args"
+       },
+       {
+        "job": "Area of the hostel room: length and width",
+        "def": "def area(length, width):",
+        "bin": "A fixed number"
+       }
+      ]
+     },
+     "play": "The bins and the cards. Deck slide 30's picture can sit in a corner.",
+     "engage": "play",
+     "interaction": "For each job the room votes a bin by hands before the card lands.",
+     "press_count": 7
+    }
+   ]
+  },
+  {
+   "name": "Task 2: the trip total",
+   "kind": "activity",
+   "mins": 5,
+   "start": 63,
+   "cards": [
+    {
+     "id": "T2",
+     "title": "Task 2: the trip total",
+     "source": "new",
+     "handout": "Task 2",
+     "activity": 11,
+     "timer": 300,
+     "engage": "task",
+     "purpose": "Run a function with **paid that adds up the money and counts who paid 0. Then call it with Divya's whole sheet using **. Then call it with nothing.",
+     "heading": "The trip total",
+     "show": [
+      "Worksheet · Task 2",
+      "Divya needs the total and how many have not paid.",
+      "Type it. Predict. Run.",
+      "Replace line 10 with the sheet and a call using **.",
+      "Call it with nothing. Predict."
+     ],
+     "code": [
+      {
+       "file": "trip_total.py",
+       "src": "def trip_total(**paid):\n    total = 0\n    unpaid = 0\n    for name, amount in paid.items():\n        total = total + amount\n        if amount == 0:\n            unpaid = unpaid + 1\n    print(total, unpaid)\n\ntrip_total(Teja=1500, Ravi=800, Kiran=0)",
+       "output": "2300 1"
+      },
+      {
+       "file": "trip_total_sheet.py",
+       "src": "def trip_total(**paid):\n    total = 0\n    unpaid = 0\n    for name, amount in paid.items():\n        total = total + amount\n        if amount == 0:\n            unpaid = unpaid + 1\n    print(total, unpaid)\n\nsheet = {\"Teja\": 1500, \"Ravi\": 800, \"Kiran\": 0, \"Sai\": 0}\ntrip_total(**sheet)",
+       "output": "2300 2"
+      },
+      {
+       "file": "trip_total_empty.py",
+       "src": "def trip_total(**paid):\n    total = 0\n    unpaid = 0\n    for name, amount in paid.items():\n        total = total + amount\n        if amount == 0:\n            unpaid = unpaid + 1\n    print(total, unpaid)\n\ntrip_total()",
+       "output": "0 0"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "trip_total.py with line numbers, the steps (only step 1 lit) and a 5 minute timer. Caption: <q>Divya needs the total and how many have not paid.</q>",
+       "say": "Worksheet tab and playground. Type, predict, run.",
+       "room": "Type, predict, run."
+      },
+      {
+       "screen": "Step 2 lights: <q>Replace line 10 with the sheet and a call using **.</q> The sheet line: <q>sheet = {\"Teja\": 1500, \"Ravi\": 800, \"Kiran\": 0, \"Sai\": 0}</q>",
+       "say": "The sheet is already a dictionary. How do you open it at the call?",
+       "room": "Change, predict, run."
+      },
+      {
+       "screen": "Step 3 lights: <q>Call it with nothing. Predict.</q>",
+       "say": "What is paid when no arguments come?",
+       "room": "Predict, run."
+      },
+      {
+       "screen": "Step 1's terminal: <q>2300 1</q>.",
+       "say": "1500 + 800 + 0. One person paid 0."
+      },
+      {
+       "screen": "Step 2: the call becomes <q>trip_total(**sheet)</q>, and the terminal shows <q>2300 2</q>. Beside it, without the stars: <q>TypeError: trip_total() takes 0 positional arguments but 1 was given</q>.",
+       "say": "Sai paid 0 too: two unpaid. Without ** the sheet is one plain value, and there is no box for it."
+      },
+      {
+       "screen": "Step 3's terminal: <q>0 0</q>.",
+       "say": "paid is {}. The loop runs zero times. No error."
+      }
+     ],
+     "answer": "Step 1: 2300 1. Step 2: trip_total(**sheet) gives 2300 2 (without ** it is TypeError: trip_total() takes 0 positional arguments but 1 was given). Step 3: 0 0",
+     "must": [
+      "No result shows until the timer has ended.",
+      "One step's result per press on the reveal.",
+      "Keep these exact values. Someone who thinks the unpaid count stays 1, as in step 1 would say 2300 1; Python gives 2300 2. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show the ** call before the timer has ended."
+     ],
+     "play": "The sheet beside the code. The layout is yours.",
+     "trap": {
+      "belief": "the unpaid count stays 1, as in step 1",
+      "wrong": "2300 1",
+      "code": 1
+     },
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Exit: which call prints nothing?",
+   "kind": "exit",
+   "mins": 3,
+   "start": 68,
+   "cards": [
+    {
+     "id": "X1",
+     "title": "Exit: which call prints nothing?",
+     "source": "new",
+     "activity": 1,
+     "timer": 150,
+     "engage": "task",
+     "purpose": "Check *args, **kwargs and in on a dictionary together: the room must try each call and find the only one that prints nothing.",
+     "heading": "Which call prints nothing?",
+     "show": [
+      "Divya's app prints who has paid, for the names you give it.",
+      "Which call prints nothing at all?"
+     ],
+     "code": [
+      {
+       "file": "show_paid.py",
+       "src": "def show_paid(*names, **paid):\n    for name in names:\n        if name in paid:\n            print(name, paid[name])\n\nshow_paid(______)"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Story line, show_paid.py with line numbers and the call's blank, the question, and options: A <q>\"Kiran\", Kiran=0</q>, B <q>\"Ravi\", \"Teja\", Teja=1500</q>, C <q>Teja=1500, Ravi=800</q>, D <q>\"Teja\", Teja=1500</q>. A 2:30 timer.",
+       "say": "Everyone answers alone. Then option A, hands up. B. C. D.",
+       "room": "Hands up per option."
+      },
+      {
+       "screen": "The right option marks, and every option shows what it prints and its why line, as in data.",
+       "say": "Go through every option, not only the right one."
+      }
+     ],
+     "answer": "C, Teja=1500, Ravi=800. \"Kiran\", Kiran=0: Kiran 0. \"Ravi\", \"Teja\", Teja=1500: Teja 1500. Teja=1500, Ravi=800: prints nothing. \"Teja\", Teja=1500: Teja 1500.",
+     "must_not": [
+      "Show any output before the second press."
+     ],
+     "data": {
+      "options": [
+       {
+        "call": "\"Kiran\", Kiran=0",
+        "prints": "Kiran 0",
+        "why": "0 is still a value. Kiran is a key in paid, so it prints Kiran 0."
+       },
+       {
+        "call": "\"Ravi\", \"Teja\", Teja=1500",
+        "prints": "Teja 1500",
+        "why": "Ravi is not a key in paid, so the if skips him. No error. Teja still prints."
+       },
+       {
+        "call": "Teja=1500, Ravi=800",
+        "prints": "",
+        "why": "No plain values, so names is (). The loop runs zero times. Nothing prints."
+       },
+       {
+        "call": "\"Teja\", Teja=1500",
+        "prints": "Teja 1500",
+        "why": "The plain \"Teja\" goes into names, Teja=1500 into paid. No clash. It prints Teja 1500."
+       }
+      ],
+      "right": "C"
+     },
+     "play": "Layout. It can sit on Divya's phone, with an app screen that stays blank for the right answer.",
+     "no_trap": "The four options are the traps; data.options carries what each one prints.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Key takeaways: the example board",
+   "kind": "buffer",
+   "mins": 2,
+   "start": 71,
+   "cards": [
+    {
+     "id": "K1",
+     "title": "Today in six examples",
+     "source": [
+      31
+     ],
+     "purpose": "Six real programs from today, each with what it prints and the rule it shows.",
+     "heading": "Today, in six examples",
+     "show": [
+      "= gives a second name",
+      "One sheet, two names. A change through one is seen by both.",
+      "copy() gives a second sheet",
+      "Two sheets. trip keeps its 0.",
+      "clear() empties it",
+      "The rows are gone. The dictionary is still there, empty.",
+      "*args packs a tuple",
+      "Values with no name go into one tuple.",
+      "**kwargs packs a dictionary",
+      "name=value arguments go into one dictionary.",
+      "** opens a dictionary",
+      "Each key goes to the box with its name."
+     ],
+     "code": [
+      {
+       "file": "example_1.py",
+       "src": "trip = {\"Teja\": 1500, \"Ravi\": 800, \"Kiran\": 0}\nb = trip\nb[\"Kiran\"] = 500\nprint(trip[\"Kiran\"])",
+       "output": "500"
+      },
+      {
+       "file": "example_2.py",
+       "src": "trip = {\"Teja\": 1500, \"Ravi\": 800, \"Kiran\": 0}\nb = trip.copy()\nb[\"Kiran\"] = 500\nprint(trip[\"Kiran\"])",
+       "output": "0"
+      },
+      {
+       "file": "example_3.py",
+       "src": "trip = {\"Teja\": 1500, \"Ravi\": 800, \"Kiran\": 0}\ntrip.clear()\nprint(trip, len(trip))",
+       "output": "{} 0"
+      },
+      {
+       "file": "example_4.py",
+       "src": "def show(*friends):\n    print(friends)\n\nshow(\"Teja\", \"Sai\")",
+       "output": "('Teja', 'Sai')"
+      },
+      {
+       "file": "example_5.py",
+       "src": "def mark_paid(**paid):\n    print(paid)\n\nmark_paid(Teja=1500)",
+       "output": "{'Teja': 1500}"
+      },
+      {
+       "file": "example_6.py",
+       "src": "def room(name, block):\n    print(name, block)\n\nroom(**{\"block\": \"C\", \"name\": \"Teja\"})",
+       "output": "Teja C"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Example 1's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 2's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 3's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 4's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 5's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 6's heading and code fill its slot; its result waits for the room, then fills with its sentence.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      }
+     ],
+     "must": [
+      "All six slots are there from press 1, empty.",
+      "Examples, not a concept map. Deck slide 31's bullets become these six.",
+      "Each result shows only after the room has said it.",
+      "Keep these exact values. Someone who thinks = makes a copy would say 0; Python gives 500. New values could hide that mistake."
+     ],
+     "play": "The grid, and the trip sheet from the hook beside the first three examples.",
+     "engage": "play",
+     "interaction": "For each example the room says the output together before its result fills.",
+     "trap": {
+      "belief": "= makes a copy",
+      "wrong": "0",
+      "code": 0
+     },
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Feedback",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 73,
+   "cards": [
+    {
+     "id": "S-FEEDBACK",
+     "title": "Feedback",
+     "source": "spine:feedback",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Thank you",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 74,
+   "cards": [
+    {
+     "id": "S-THANKYOU",
+     "title": "Thankyou",
+     "source": "spine:thankyou",
+     "press_count": 0
+    }
+   ]
+  }
+ ]
+}

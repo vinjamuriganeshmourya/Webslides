@@ -1,0 +1,149 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Sets views: fixes</title><style>
+:root{--ink:#14213d;--mut:#5b6475;--line:#dfe4ee;--bg:#f6f8fc;--card:#fff;--acc:#2f5bea;--add:#e9f7ef;--addb:#2e9d5b;--was:#9a3b3b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,Segoe UI,Arial,sans-serif}
+main{max-width:980px;margin:0 auto;padding:32px 16px 64px}
+header{margin-bottom:20px}.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);font-weight:700}
+h1{margin:.2em 0;font-size:28px}h2{font-size:20px;margin:28px 0 10px}h3{margin:0;font-size:18px}
+.sub{color:var(--mut);margin:.2em 0}.why{background:#fff8e6;border:1px solid #f1d38a;border-radius:10px;padding:10px 14px}
+.box,.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin:14px 0}
+.box h2{margin-top:0}.card.new{border-left:5px solid var(--addb)}.card.chg{border-left:5px solid var(--acc)}
+.ch{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.id{background:var(--acc);color:#fff;border-radius:6px;padding:2px 8px;font-weight:700;font-size:13px}
+.tag{background:var(--add);color:var(--addb);border-radius:999px;padding:1px 9px;font-size:12px;font-weight:700}
+.words{border:1px dashed #b9c4dc;border-radius:10px;padding:8px 14px;margin:10px 0}.lbl{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
+.hd{font-weight:700;font-size:18px;margin:.3em 0}
+.hd2{font-weight:600;margin:0 0 8px}.note{font-size:13px;color:var(--mut);margin:6px 0 0}
+table.dsw{width:auto}table.dsw th{background:#f0f3fa}table.dsw .tdy{background:var(--add)}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}th,td{border:1px solid var(--line);padding:6px 8px;vertical-align:top;text-align:left}
+th{background:#f0f3fa}td.was{color:var(--was)}q{color:var(--acc);font-weight:600}
+ol.order li.add{background:var(--add);border-radius:6px}pre{white-space:pre-wrap;font-size:12px;background:#f3f5fa;padding:10px;border-radius:8px;overflow:auto}
+details summary{cursor:pointer;font-weight:600}code{background:#eef1f8;padding:1px 5px;border-radius:4px}
+@media (max-width:600px){table{display:block;overflow-x:auto}}
+.card.hi{border-left:5px solid #c0392b}.id2{background:#14213d;color:#fff;border-radius:6px;padding:2px 8px;font-weight:700;font-size:13px}.sev{border-radius:999px;padding:1px 9px;font-size:12px;font-weight:700}.sev.high{background:#fdecea;color:#c0392b}.sev.med{background:#eef3ff;color:#2f5bea}.sev.low{background:#f0f2f5;color:#5b6475}nav ol{margin:6px 0 0 18px}</style></head><body><main><header><div class="eyebrow">Change spec for the design team</div>
+<h1>27 Sets and 28 Set Operations: fixes to the built views</h1>
+<p class="sub">Files to change: <code>python-session-27-sets 2.html</code> and <code>python-session-28-set-operations 2.html</code>.
+Everything not listed here stays exactly as it is. Slide numbers are each view's own counter.</p>
+<p class="why">Red cards teach something wrong or leave content out; fix those first. Blue cards are display fixes; grey are polish.
+Where the fault was in the data we sent, it is said on the card, and the session specs are updated to match.</p></header>
+<section class="box"><h2>Both files</h2><section class="card hi"><div class="ch"><span class="id">All slides</span><span class="id2">Both views</span><h3>Autoplay is on when a slide opens</h3><span class="sev high">Wrong content</span></div><p><b>What is wrong.</b> Both views open every slide with autoplay on (the button beside Next reads <q>Autoplay: on</q>). Steps then run by themselves: recaps match themselves, games show the answer, outputs fill a second after the code, the agenda stops come in on a timer. The room never gets to vote first. This is why several outputs in session 28 appear by themselves.</p><p><b>What to do.</b> Autoplay off by default on every slide, in both files. Every step, including agenda stops and each output, waits for Next or the right arrow. The autoplay button can stay for the instructor to turn on.</p></section></section>
+<section class="box"><h2>Session 28, Set Operations</h2><p>Session 28's view was checked press by press. Two slides teach something wrong (16 and 18), two slides leave part of the content out (6 and 26), and the rest are display fixes. Slide numbers are the view's own counter.</p><ol><li>Slide 18, Hook 2: the stall check program</li><li>Slide 16, Light the regions, round 2: the two circles are swapped</li><li>Slide 16, Light the regions: data words shown to students</li><li>Slide 16, Operators read as stray bars in the answer lines</li><li>Slide 16, Round 4 draws a list as a set circle</li><li>Slide 6, Agenda shows only 2 of the 4 stops</li><li>Slide 20, Subset: Harsha's output never fills, and the story clashes with Hook 2</li><li>Slide 26, Takeaways: example 6 never shows its result</li><li>Slide 11, 13, Outputs appear on a timer on the last press</li><li>Slide 23, Inside, around or apart: the circles are always apart</li><li>Slide 7, Proof code is too small to read</li></ol></section>
+<section class="card hi"><div class="ch"><span class="id">Slide 18</span><span class="id2">H2</span><h3>Hook 2: the stall check program</h3><span class="sev high">Wrong content</span></div><p><b>What is wrong.</b> The program on this card is a broken loop on purpose: inside the loop, the if sets <code>ok = True</code> and the else sets <code>ok = False</code>, so <code>ok</code> only keeps the last vote's answer and the program prints True while Harsha is not in CSE-A. A student reads it as a program that makes no sense. In the view the vote walk also plays by itself on a timer and the output box never shows anything until the last press.</p><p><b>What to do.</b> Replace the whole card with the new H2 below. It shows the check by hand written correctly: a flag, a loop that prints who is and is not in CSE-A, and a <code>break</code> as soon as one name is outside. It prints three lines and <code>False</code>, and Sneha is never checked. Then the loop folds into the one line <code>print(set(votes).issubset(cse))</code>, same answer. The poll order changes to <q>Anu, Ravi, Harsha, Sneha</q>. The stall_flag.py program is gone. One press per vote; nothing moves on a timer.</p><p><b>The new program, exactly:</b></p><pre>cse = {"Teja", "Ravi", "Kiran", "Anu", "Sneha", "Pooja", "Divya", "Vamsi"}
+votes = ["Anu", "Ravi", "Harsha", "Sneha"]
+ok = True
+for name in votes:
+    if name in cse:
+        print(name, "is in CSE-A")
+    else:
+        print(name, "is not in CSE-A")
+        ok = False
+        break
+print(ok)</pre><p><b>Its output, exactly:</b></p><pre>Anu is in CSE-A
+Ravi is in CSE-A
+Harsha is not in CSE-A
+False</pre><p><b>The one line it folds into:</b></p><pre>cse = {"Teja", "Ravi", "Kiran", "Anu", "Sneha", "Pooja", "Divya", "Vamsi"}
+votes = ["Anu", "Ravi", "Harsha", "Sneha"]
+print(set(votes).issubset(cse))</pre><pre>False</pre><section class="card new"><div class="ch"><span class="id">H2</span><h3>Harsha at the CSE stall</h3><span class="tag">Full card</span></div><p><b>Purpose.</b> Feel why issubset is worth having: checking the rule by hand takes a flag, a loop, an if, an else and a break, ten lines for one question. The program is right, and it is long. One line does the same job.</p><div class="words"><p class="lbl">Exact words on the card</p><p class="hd">Every volunteer from CSE-A?</p><ul><li>Rule: only CSE-A students run the CSE stall.</li><li>What does it print? Is Sneha checked?</li><li>Anu: in CSE-A. Keep going.</li><li>Ravi: in CSE-A. Keep going.</li><li>Harsha: not in CSE-A. ok = False, break.</li><li>False. Sneha was never checked.</li><li>One line. Same answer: False.</li></ul></div><table><tr><th>Press</th><th>On screen</th><th>Instructor</th><th>Room</th></tr><tr><td>1</td><td>Fest crew on WhatsApp: a poll, <q>Who will run the CSE stall?</q>, View votes open: Anu, Ravi, Harsha, Sneha, in that order. Caption: <q>Rule: only CSE-A students run the CSE stall.</q></td><td>Is the rule kept? How would you check it in code?</td><td>Say a way.</td></tr><tr><td>2</td><td>stall_check.py beside the poll: ok = True, then a loop over the votes; if the name is in cse it prints that, else it prints that, sets ok = False and breaks. Then print(ok). A name box and an ok box beside the code, empty. The output is empty. Caption: <q>What does it print? Is Sneha checked?</q></td><td>Read it line by line. Last line: True or False? And does the loop ever reach Sneha?</td><td>Hands for True, then for False. Then hands: Sneha checked, yes or no.</td></tr><tr><td>3</td><td>Line 4 lights for the first vote. The name box shows 'Anu', her chip in the poll lights green. The output gets its first line, <q>Anu is in CSE-A</q>. The ok box stays True. Caption: <q>Anu: in CSE-A. Keep going.</q></td><td>Anu is in cse, so the if part runs. ok does not change.</td><td></td></tr><tr><td>4</td><td>The second vote: the name box shows 'Ravi', his chip lights green, the output adds <q>Ravi is in CSE-A</q>. ok stays True. Caption: <q>Ravi: in CSE-A. Keep going.</q></td><td>Same again for Ravi. Who comes next in the poll?</td><td>Say the next name.</td></tr><tr><td>5</td><td>The third vote: the name box shows 'Harsha', his chip glows red. The else part lights, the output adds <q>Harsha is not in CSE-A</q>, the ok box flips to False, and the break line lights. An arrow jumps from break out of the loop to print(ok). Sneha's chip in the poll greys out with the tag <q>not checked</q>. Caption: <q>Harsha: not in CSE-A. ok = False, break.</q></td><td>One name outside is enough. break leaves the loop, so Sneha is never checked.</td><td></td></tr><tr><td>6</td><td>print(ok) lights. The output's last line fills <q>False</q>. Caption: <q>False. Sneha was never checked.</q></td><td>It is right. Now count what it took: a flag, a loop, an if, an else and a break. All for one question.</td><td>Count the lines.</td></tr><tr><td>7</td><td>The turn, one movement: lines 3 to 10 fold into one line, print(set(votes).issubset(cse)). The poll's chips become a votes circle that slides into cse; Harsha's chip stays outside it. The output becomes <q>False</q>. Caption: <q>One line. Same answer: False.</q></td><td>Python has a word for every one of these is inside that. The next cards show it.</td><td></td></tr></table><p><b>Must.</b></p><ul><li>Both programs are real and run; every output shown is theirs.</li><li>The room votes True or False, and whether Sneha is checked, before the loop runs.</li><li>One vote per press: the name box, the ok box and the output move together.</li><li>After break, nothing in the loop runs again: Sneha's chip greys and no line about her prints.</li><li>The poll looks like WhatsApp's real poll: the question, the options, View votes.</li><li>The fold is one movement and the answer does not change.</li><li>While it moves, this stays exactly as it was: The poll's four votes in their order, and the cse group: only the check changes.</li><li>Keep these exact values. Someone who thinks the loop still checks every vote after break would say Sneha is in CSE-A; Python gives Anu is in CSE-A
+Ravi is in CSE-A
+Harsha is not in CSE-A
+False. New values could hide that mistake.</li></ul><p><b>Must not.</b></p><ul><li>Animate by itself.</li><li>Fill the output before its press.</li><li>Show a wrong program to be fixed.</li></ul><p><b>Yours to design.</b> The poll in WhatsApp's look, the name and ok boxes, the break arrow and Harsha's chip are yours. The break arrow and Sneha going grey are the moment to make loud.</p><details><summary>Data for this card (JSON)</summary><pre>{
+ "votes": [
+  "Anu",
+  "Ravi",
+  "Harsha",
+  "Sneha"
+ ],
+ "cse": [
+  "Teja",
+  "Ravi",
+  "Kiran",
+  "Anu",
+  "Sneha",
+  "Pooja",
+  "Divya",
+  "Vamsi"
+ ]
+}</pre></details></section></section><section class="card hi"><div class="ch"><span class="id">Slide 16</span><span class="id2">G1</span><h3>Light the regions, round 2: the two circles are swapped</h3><span class="sev high">Wrong content</span></div><p><b>What is wrong.</b> Round 2's program is <code>result = dance - cse</code>. The labels above the circles say <q>dance</q> on the left and <q>cse</q> on the right, but the name chips are the other way round: the cse names (Teja, Ravi, Kiran, Pooja, Divya, Vamsi) sit in the left circle and the dancers (Arjun, Meena, Lakshmi) in the right one. The captions then say <q>Only in cse ... Dropped</q> for the left circle. The data we sent had left and right swapped for this round; that is our mistake, now fixed in the data.</p><p><b>What to do.</b> The left circle is always the set before the operator. For round 2 that is dance. Use the new round 2 data below: left circle <q>dance</q> with Arjun, Lakshmi, Meena only in it; Anu and Sneha in the middle; right circle <q>cse</q> with Divya, Kiran, Pooja, Ravi, Teja, Vamsi only in it. The program's first two lines also swap, so dance is written first. The steps now light: only dance (kept), both (dropped), only cse (dropped), then print shows 3.</p><p><b>Round 2 program, exactly:</b></p><pre>dance = {"Anu", "Sneha", "Arjun", "Meena", "Lakshmi"}
+cse = {"Teja", "Ravi", "Kiran", "Anu", "Sneha", "Pooja", "Divya", "Vamsi"}
+result = dance - cse
+print(len(result))</pre><table><tr><th>Step</th><th>Caption, exactly</th><th>Region</th><th>Kept</th></tr><tr><td>1</td><td><q>Only in dance: Arjun, Lakshmi, Meena. Kept.</q></td><td>only-left</td><td>True</td></tr><tr><td>2</td><td><q>In both: Anu, Sneha. Dropped.</q></td><td>both</td><td>False</td></tr><tr><td>3</td><td><q>Only in cse: Divya, Kiran, Pooja, Ravi, Teja, Vamsi. Dropped.</q></td><td>only-right</td><td>False</td></tr><tr><td>4</td><td><q>print(len(result)) shows 3.</q></td><td>print</td><td>None</td></tr></table><details><summary>Round 2 data (JSON)</summary><pre>{
+ "ask": "What does the last line print?",
+ "program": "dance = {\"Anu\", \"Sneha\", \"Arjun\", \"Meena\", \"Lakshmi\"}\ncse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nresult = dance - cse\nprint(len(result))",
+ "left": [
+  "Anu",
+  "Sneha",
+  "Arjun",
+  "Meena",
+  "Lakshmi"
+ ],
+ "right": [
+  "Teja",
+  "Ravi",
+  "Kiran",
+  "Anu",
+  "Sneha",
+  "Pooja",
+  "Divya",
+  "Vamsi"
+ ],
+ "output": "3",
+ "options": [
+  "6",
+  "3",
+  "9"
+ ],
+ "answer": "3",
+ "because": "It prints 3.",
+ "why": {
+  "6": "That is cse - dance. You keep from the set before the minus.",
+  "9": "That is ^, both outer regions. - keeps only one."
+ },
+ "steps": [
+  {
+   "caption": "Only in dance: Arjun, Lakshmi, Meena. Kept.",
+   "region": "only-left",
+   "kept": true,
+   "items": [
+    "Arjun",
+    "Lakshmi",
+    "Meena"
+   ],
+   "printed": ""
+  },
+  {
+   "caption": "In both: Anu, Sneha. Dropped.",
+   "region": "both",
+   "kept": false,
+   "items": [
+    "Anu",
+    "Sneha"
+   ],
+   "printed": ""
+  },
+  {
+   "caption": "Only in cse: Divya, Kiran, Pooja, Ravi, Teja, Vamsi. Dropped.",
+   "region": "only-right",
+   "kept": false,
+   "items": [
+    "Divya",
+    "Kiran",
+    "Pooja",
+    "Ravi",
+    "Teja",
+    "Vamsi"
+   ],
+   "printed": ""
+  },
+  {
+   "caption": "print(len(result)) shows 3.",
+   "region": "print",
+   "kept": null,
+   "items": [],
+   "printed": "3"
+  }
+ ]
+}</pre></details></section><section class="card chg"><div class="ch"><span class="id">Slide 16</span><span class="id2">G1</span><h3>Light the regions: data words shown to students</h3><span class="sev med">Fix</span></div><p><b>What is wrong.</b> Each step shows a dark tag with the data field name: <q>only left</q>, <q>only right</q>, <q>both</q>, <q>print</q>, <q>error</q>. These are our field names, not words for the room.</p><p><b>What to do.</b> Drop the tag, or show the real place in words: <q>Only in cse</q>, <q>In both</q>, <q>Only in dance</q>. The caption already says it, so dropping the tag is enough.</p></section><section class="card chg"><div class="ch"><span class="id">Slide 16</span><span class="id2">G1</span><h3>Operators read as stray bars in the answer lines</h3><span class="sev low">Polish</span></div><p><b>What is wrong.</b> In the answer lines, an operator at the start of a line looks like a cursor or a stray mark: <q>| keeps each person once</q>, <q>^ drops the middle</q>, <q>- keeps only one</q>. Same on slide 10 (<q>| needs two sets</q>) and on K1.</p><p><b>What to do.</b> Show every operator inside a sentence as a small code chip (<code>|</code>, <code>^</code>, <code>-</code>, <code>&amp;</code>), the way <code>union()</code> is shown.</p></section><section class="card chg"><div class="ch"><span class="id">Slide 16</span><span class="id2">G1</span><h3>Round 4 draws a list as a set circle</h3><span class="sev low">Polish</span></div><p><b>What is wrong.</b> Round 4 is <code>cse | ["Arjun"]</code>. The view draws <q>["Arjun"]</q> as a second circle, the same shape as a set. The point of the round is that a list is not a set.</p><p><b>What to do.</b> Draw the list the way slide 10 draws <code>day</code>: a square-bracket box <q>[ "Arjun" ]</q> with <q>a list</q> under it, no circle. Same on slide 11's last press, where <q>the list</q> is drawn as a circle.</p></section><section class="card hi"><div class="ch"><span class="id">Slide 6</span><span class="id2">S-AGENDA</span><h3>Agenda shows only 2 of the 4 stops</h3><span class="sev high">Wrong content</span></div><p><b>What is wrong.</b> The agenda lists <q>Joining two groups</q> and <q>Who is in both</q> only. The second half of the session (subset, superset, disjoint) is missing.</p><p><b>What to do.</b> Show all four stops, one per press: <q>Joining two groups</q> / <q>everyone from both, once</q>; <q>Who is in both</q> / <q>and who is in only one</q>; <q>In one, not the other</q> / <q>the order matters</q>; <q>Inside or apart</q> / <q>one group inside another, or nobody shared</q>.</p></section><section class="card hi"><div class="ch"><span class="id">Slide 20</span><span class="id2">C7</span><h3>Subset: Harsha's output never fills, and the story clashes with Hook 2</h3><span class="sev high">Wrong content</span></div><p><b>What is wrong.</b> Press 3 (volunteers with Harsha) highlights <q>B False</q> and turns Harsha red, but the OUTPUT box stays empty. Also, press 2 says <q>Harsha votes too</q>, but in Hook 2 Harsha has already voted.</p><p><b>What to do.</b> On press 3 the output fills <q>False</q>. Captions: press 1 <q>Harsha swaps out. Divya takes his place.</q>; press 2 <q>Harsha wants back in.</q> (replaces <q>Harsha votes too</q>). Code and outputs do not change. Press 1 also shows the True and False choices with no question; hide them until press 2.</p></section><section class="card hi"><div class="ch"><span class="id">Slide 26</span><span class="id2">K1</span><h3>Takeaways: example 6 never shows its result</h3><span class="sev high">Wrong content</span></div><p><b>What is wrong.</b> Example 6, <code>print({"Anu"} | ["Ravi"])</code>, stays at <q>?</q> on the last press and the Next button goes grey. Its sentence <q>Use union() for a list.</q> never appears.</p><p><b>What to do.</b> The last press fills example 6 like the other five: the result <q>TypeError: unsupported operand type(s) for |: 'set' and 'list'</q> (in red, as an error) and the sentence <q>Use union() for a list.</q></p></section><section class="card chg"><div class="ch"><span class="id">Slide 11, 13</span><span class="id2">C4, C6</span><h3>Outputs appear on a timer on the last press</h3><span class="sev med">Fix</span></div><p><b>What is wrong.</b> On C4's last press (<code>cse.intersection(["Arjun", "Anu", "Meena"])</code>) and C6's last press (<code>symmetric_difference</code>), the code and its output come together: the output fills by itself about a second later. The room is asked to say the output first. On C4 the old choices <q>12 / 3 / 0</q> also stay on screen, with <q>3</q> still marked, under a program that prints <q>{'Anu'}</q>.</p><p><b>What to do.</b> Code first, output on the next press. No timers anywhere: every change waits for a press. On C4's last press hide the 12 / 3 / 0 choices, they belong to the first program.</p></section><section class="card chg"><div class="ch"><span class="id">Slide 23</span><span class="id2">G2</span><h3>Inside, around or apart: the circles are always apart</h3><span class="sev med">Fix</span></div><p><b>What is wrong.</b> Every round draws the two sets as two separate circles side by side, with shared names copied into both. That is the picture for disjoint sets (slide 22), so round 1 (a subset, True) and round 4 (bus and dance share Meena, not disjoint) both look like <q>apart</q>.</p><p><b>What to do.</b> Draw each round as the code says: round 1 and 5, the first circle inside the second; round 2, cse around volunteers; round 3, the brackets set half inside cse with Harsha poking out; round 4, two circles overlapping with Meena in the middle. The person being checked lights and moves to the other circle, as the spec's setup says.</p></section><section class="card chg"><div class="ch"><span class="id">Slide 7</span><span class="id2">DS3</span><h3>Proof code is too small to read</h3><span class="sev low">Polish</span></div><p><b>What is wrong.</b> The code and outputs beside each filled cell are about 9 px at full screen. Nobody past the first row can read them.</p><p><b>What to do.</b> At least the size of the row labels, or show only the current row's proof large and shrink the earlier ones.</p></section>
+<section class="box"><h2>Session 27, Sets</h2><p>Session 27's view was checked press by press. Two slides leave out or misplace an answer (24 and 29), one picture contradicts its caption (15), and two game lines from our data are reworded.</p><ol><li>Slide 29, Takeaways: example 6 never shows its result</li><li>Slide 24, remove's KeyError shows under the discard program</li><li>Slide 15, List cells look gone while the caption says they are still there</li><li>Slide 18, Set, something else, or error: two answer lines reworded</li><li>Slide 27, Task 2 step 2: whose notes</li><li>Slide 13, Two chips cross the card border</li><li>Slide 20, The viewers set is squashed</li><li>Slide 11, 14, Half the slide is empty</li></ol></section>
+<section class="card hi"><div class="ch"><span class="id">Slide 29</span><span class="id2">K1</span><h3>Takeaways: example 6 never shows its result</h3><span class="sev high">Wrong content</span></div><p><b>What is wrong.</b> Tile 6, <q>remove a missing name</q> (<code>s = {"Ravi"}</code> / <code>s.remove("Anu")</code>), stays at <q>?</q>. The Next button goes grey and the arrow moves on to slide 30. Same fault as session 28's K1.</p><p><b>What to do.</b> The last press fills tile 6: <q>KeyError: 'Anu'</q> in red, and the sentence <q>remove gives a KeyError. discard would do nothing.</q></p></section><section class="card hi"><div class="ch"><span class="id">Slide 24</span><span class="id2">C11</span><h3>remove's KeyError shows under the discard program</h3><span class="sev high">Wrong content</span></div><p><b>What is wrong.</b> On press 2 the OUTPUT box sits under the DISCARD code (<code>close.discard("Pooja")</code>) and shows <q>KeyError: 'Pooja'</q>. It reads as if discard caused the error, the opposite of the card's point.</p><p><b>What to do.</b> Put the output under the program that made it: the KeyError goes under REMOVE. If one shared box is kept, label it <q>remove's output</q>. On press 3 (<code>close.remove("Anu")</code>, output 2) dim the A / B / C choices: <q>C KeyError</q> still lit green beside the output 2 contradicts it.</p></section><section class="card chg"><div class="ch"><span class="id">Slide 15</span><span class="id2">E1</span><h3>List cells look gone while the caption says they are still there</h3><span class="sev med">Fix</span></div><p><b>What is wrong.</b> On the last press the caption says <q>Every open is still in views</q>, but four cells of views (positions 2, 4, 5 and 6) are still faded. Faded reads as gone.</p><p><b>What to do.</b> On the last press all seven cells of views are at full colour. During the walk, mark a repeat with a small tag <q>already in</q> on the chip that bounces off the set, and do not fade the list cell.</p></section><section class="card chg"><div class="ch"><span class="id">Slide 18</span><span class="id2">G1</span><h3>Set, something else, or error: two answer lines reworded</h3><span class="sev med">Fix</span></div><p><b>What is wrong.</b> Round 7 (<code>{"Ravi", "Anu"}[0]</code>), the line for a student who chose <q>A set</q> said <q>Python stops before any set is made</q>. That is wrong: the set is made, then <code>[0]</code> fails. Round 6's line <q>Round brackets round one string are just brackets</q> is hard to read. Both came from our data.</p><p><b>What to do.</b> Use the new lines exactly. Round 7, for <q>A set</q>: <q>The set is made first. A set has no first item. [0] gives an error.</q>. Round 6, for <q>A set</q>: <q>type() does not say set. Brackets around one string do nothing. It is the string Ravi.</q>; for <q>Error</q>: <q>It runs with no error. Brackets around one string do nothing. It is the string Ravi.</q>. On the error rounds (4 and 7), the step badge says <q>run</q>, not <q>type()</q>: Python never gets to type() there. Chips that went into a bin leave no empty grey slot behind.</p></section><section class="card chg"><div class="ch"><span class="id">Slide 27</span><span class="id2">T2</span><h3>Task 2 step 2: whose notes</h3><span class="sev low">Polish</span></div><p><b>What is wrong.</b> Step 2 says <q>My notes loop over views.</q> On a student slide, <q>my</q> has no owner.</p><p><b>What to do.</b> Change it to <q>Teja's notes loop over views. Change line 5. Run.</q></p></section><section class="card chg"><div class="ch"><span class="id">Slide 13</span><span class="id2">C5</span><h3>Two chips cross the card border</h3><span class="sev low">Polish</span></div><p><b>What is wrong.</b> On presses 1 and 3 the <code>("Ravi", 4)</code> and <code>["Ravi", 4]</code> chips sit across the left edge of the right card, half in and half out.</p><p><b>What to do.</b> Start both chips fully inside the card, to the left of the set.</p></section><section class="card chg"><div class="ch"><span class="id">Slide 20</span><span class="id2">H2</span><h3>The viewers set is squashed</h3><span class="sev low">Polish</span></div><p><b>What is wrong.</b> On press 5 the <code>viewers</code> set is a flat ellipse; Ravi and Anu sit on its top edge and Kiran on its bottom edge.</p><p><b>What to do.</b> Give it the same height as the other set pictures (about 220 px), with every chip inside the outline.</p></section><section class="card chg"><div class="ch"><span class="id">Slide 11, 14</span><span class="id2">C4, C7</span><h3>Half the slide is empty</h3><span class="sev low">Polish</span></div><p><b>What is wrong.</b> The content fills only the top half of the slide.</p><p><b>What to do.</b> Make the code and output larger so the card fills the slide.</p></section>
+<section class="box"><h2>Updated session specs</h2><p>The full specs are rebuilt with these changes:
+<code>28 - Set Operations/28_set_operations_session_spec.html</code> and <code>27 - Sets/27_sets_session_spec.html</code>.
+Use them for exact words and data.</p></section></main></body></html>

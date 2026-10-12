@@ -133,10 +133,11 @@ export const setsDeck: SlideDef[] = [
   card('C1', S1, 'a-set', S1, <WhatSet />),
   card('DS3', S1, 'what-a-set-is', S1, <WhatItIs />),
   card('C2', S1, 'create-set', S1, <CreateSet />),
-  card('C3', S1, 'no-order', S1, <NoOrder />),
+  /* C3 and C6 are centred in the body with larger type: they filled only the top half (the view fixes change spec, 2026-10-09, slides 11 and 14) */
+  card('C3', S1, 'no-order', S1, <NoOrder />, undefined, 'center'),
   card('C4', S1, 'no-repeats', S1, <NoRepeats />),
   card('C5', S1, 'immutable', S1, <Immutable />),
-  card('C6', S1, 'empty-set', S1, <EmptySet />),
+  card('C6', S1, 'empty-set', S1, <EmptySet />, undefined, 'center'),
   card('E1', S1, 'converting', S1, <Converter />),
   card('C7', S1, 'no-position', S1, <NoPosition />),
 

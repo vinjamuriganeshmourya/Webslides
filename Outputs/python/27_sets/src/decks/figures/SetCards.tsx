@@ -28,6 +28,10 @@ export const outOf = (p: Prog): OutLine[] => p.output.split('\n').map((t) => ({ 
 
 const LEFT = 'flex w-[468px] shrink-0 flex-col gap-3'
 const RIGHT = 'flex min-w-0 flex-1 flex-col gap-3'
+/* slides 11 and 14, C3 and C6, filled only the top half of the slide (the view fixes change spec, 2026-10-09): their code, output, question and picture are set larger, and the slide centres them */
+const WIDE_LEFT = 'flex w-[564px] shrink-0 flex-col gap-3'
+const BIG_CODE_FS = 18
+const BIG_OUT_FS = 20
 
 /* ------------------------------------------------------------------ C1 */
 
@@ -160,10 +164,10 @@ function RunLine({ n, text, fresh }: { n: number; text: string; fresh: boolean }
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
     >
-      <span className="w-[54px] shrink-0 text-[14px] font-bold uppercase tracking-wider" style={{ color: colors.muted }}>
+      <span className="w-[62px] shrink-0 text-[15px] font-bold uppercase tracking-wider" style={{ color: colors.muted }}>
         Run {n}
       </span>
-      <span className="whitespace-nowrap font-mono text-[18px] font-semibold" style={{ color: colors.ink }}>
+      <span className="whitespace-nowrap font-mono text-[20px] font-semibold" style={{ color: colors.ink }}>
         {'{'}
         {names.map((nm, i) => (
           <span key={`${n}-${nm}`}>
@@ -190,9 +194,9 @@ function Posts({ likes }: { likes: number[] }) {
   return (
     <div className="flex gap-3">
       {likes.map((n, i) => (
-        <div key={`post-${i}`} className="flex w-[118px] flex-col overflow-hidden rounded-xl bg-white" style={{ boxShadow: `inset 0 0 0 1.5px ${colors.line}, 0 8px 18px -14px rgba(16,32,58,0.4)` }}>
-          <span className="h-[70px]" style={{ background: ['linear-gradient(150deg,#F3E9DC,#E2C9A8)', 'linear-gradient(150deg,#DDE9F7,#B9CDEB)', 'linear-gradient(150deg,#E4F3E6,#BFE0C4)'][i] }} />
-          <span className="flex items-center gap-1.5 px-2.5 py-1.5 text-[16px] font-bold" style={{ color: colors.ink }}>
+        <div key={`post-${i}`} className="flex w-[140px] flex-col overflow-hidden rounded-xl bg-white" style={{ boxShadow: `inset 0 0 0 1.5px ${colors.line}, 0 8px 18px -14px rgba(16,32,58,0.4)` }}>
+          <span className="h-[84px]" style={{ background: ['linear-gradient(150deg,#F3E9DC,#E2C9A8)', 'linear-gradient(150deg,#DDE9F7,#B9CDEB)', 'linear-gradient(150deg,#E4F3E6,#BFE0C4)'][i] }} />
+          <span className="flex items-center gap-1.5 px-2.5 py-1.5 text-[18px] font-bold" style={{ color: colors.ink }}>
             <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
               <path d="M12 21s-7.5-4.6-9.4-9.1C1.3 8.6 3.4 5 7 5c2.2 0 3.6 1.2 5 3 1.4-1.8 2.8-3 5-3 3.6 0 5.7 3.6 4.4 6.9C19.5 16.4 12 21 12 21z" fill="#ED4956" />
             </svg>
@@ -221,15 +225,15 @@ export function NoOrder() {
   return (
     <>
       <div className="flex items-stretch gap-8">
-        <Group className="flex w-[512px] shrink-0 flex-col gap-3">
+        <Group className={WIDE_LEFT}>
           <Focus on={beat === 1 || beat === 5}>
-            <CodePane code={likes ? LIKES.src : RUNS[0].src} fontSize={CODE_FS} />
+            <CodePane code={likes ? LIKES.src : RUNS[0].src} fontSize={BIG_CODE_FS} />
           </Focus>
-          <div className="min-h-[52px]">
-            <Swap k={caption ?? 'none'}>{caption && <Ask size={22}><Lines lines={sentences(caption)} /></Ask>}</Swap>
+          <div className="min-h-[60px]">
+            <Swap k={caption ?? 'none'}>{caption && <Ask size={25}><Lines lines={sentences(caption)} /></Ask>}</Swap>
           </div>
           <Show on={beat === 4}>
-            <Note size={18} lines={[C3.show[3]]} />
+            <Note size={21} lines={[C3.show[3]]} />
           </Show>
         </Group>
         <Group className={RIGHT}>
@@ -237,17 +241,17 @@ export function NoOrder() {
             {likes ? (
               <div className="flex flex-col gap-3">
                 <Posts likes={likeNums} />
-                <OutPanel lines={beat >= 6 ? outOf(LIKES) : []} fontSize={OUT_FS} />
+                <OutPanel lines={beat >= 6 ? outOf(LIKES) : []} fontSize={BIG_OUT_FS} />
               </div>
             ) : (
               <div className="flex flex-col gap-2.5">
-                <span className="text-[14px] font-bold uppercase tracking-wider" style={{ color: colors.muted }}>
+                <span className="text-[15px] font-bold uppercase tracking-wider" style={{ color: colors.muted }}>
                   Output, one run at a time
                 </span>
                 {RUNS.slice(0, runs).map((r, i) => (
                   <RunLine key={`run-${i}`} n={i + 1} text={r.output} fresh={fwd && i === runs - 1} />
                 ))}
-                {runs === 0 && <div className="h-[46px] rounded-xl" style={{ boxShadow: `inset 0 0 0 2px ${colors.line}`, outline: 'none' }} />}
+                {runs === 0 && <div className="h-[56px] rounded-xl" style={{ boxShadow: `inset 0 0 0 2px ${colors.line}`, outline: 'none' }} />}
               </div>
             )}
           </Swap>
@@ -386,10 +390,12 @@ export function Immutable() {
               )}
             </Swap>
           </div>
+          {/* a wider door zone, so the tuple and list chips waiting at it sit fully inside the card (the view fixes change spec, 2026-10-09) */}
           <Bag
             key={list ? 'list' : 'tuple'}
             items={list ? [] : beat >= 2 ? ['Kiran', TUPLE_CHIP] : ['Kiran']}
             universe={['Kiran', TUPLE_CHIP]}
+            doorW={220}
             w={392}
             h={220}
             name="opens"
@@ -414,9 +420,9 @@ const C6_CHOICES: string[] = C6.show.slice(1, 4)
 function EmptyBag({ name, kind, note, on }: { name: string; kind: 'set' | 'dict'; note: string; on: boolean }) {
   return (
     <div className="flex items-center gap-4">
-      <Bag items={[]} door={false} w={200} h={112} name={name} kind={kind} />
+      <Bag items={[]} door={false} w={240} h={136} name={name} kind={kind} />
       <Show on={on} className="min-w-0 flex-1">
-        <Note size={18} lines={sentences(note)} />
+        <Note size={20} lines={sentences(note)} />
       </Show>
     </div>
   )
@@ -436,15 +442,15 @@ export function EmptySet() {
   return (
     <>
       <div className="flex items-stretch gap-8">
-        <Group className={LEFT}>
+        <Group className={WIDE_LEFT}>
           <Focus on={!ran}>
-            <CodePane code={P6.src} fontSize={CODE_FS} mark={ran ? undefined : [1, 2]} highlight={ran ? 1 : undefined} />
+            <CodePane code={P6.src} fontSize={BIG_CODE_FS} mark={ran ? undefined : [1, 2]} highlight={ran ? 1 : undefined} />
           </Focus>
-          <OutPanel lines={ran ? outOf(P6) : []} minRows={3} fontSize={OUT_FS} />
+          <OutPanel lines={ran ? outOf(P6) : []} minRows={3} fontSize={BIG_OUT_FS} />
         </Group>
         <Group className={RIGHT} active={beat === 1}>
-          <Ask size={22}>{C6.show[0]}</Ask>
-          <Vote options={C6_CHOICES} right={right} shown={ran} pick={pick} setPick={setPick} cols={3} size={20} nowrap />
+          <Ask size={25}>{C6.show[0]}</Ask>
+          <Vote options={C6_CHOICES} right={right} shown={ran} pick={pick} setPick={setPick} cols={3} size={22} nowrap />
           <EmptyBag name={ran ? 'a · dict' : 'a'} kind={ran ? 'dict' : 'set'} note={C6.show[5]} on={ran} />
           <EmptyBag name={ran ? 'b · set' : 'b'} kind="set" note={C6.show[4]} on={ran} />
         </Group>
@@ -497,7 +503,9 @@ function Pointer({ text, play }: { text: string; play: boolean }) {
  * first item. No [0]."; slice.py, the [0:2] pointer shakes too; in_check.py,
  * the finger checks the chips for Kiran (found), then for Pooja (none), True
  * then False, "Ask with in instead." Neither the pointer nor the finger
- * moves a chip (keeps line).
+ * moves a chip (keeps line). Both lines of in_check.py's output are on the
+ * press itself; the finger's two searches are the movement inside it (the
+ * view fixes change spec, 2026-10-09: no output on a timer).
  */
 export function NoPosition() {
   const beat = useBeats(4)
@@ -510,7 +518,7 @@ export function NoPosition() {
   const phase = useStepPhase(beat, [2600])
   const second = beat === 4 && phase >= 1
   const finger = beat === 4 ? (second ? { path: VIEWERS, found: null } : { path: VIEWERS, found: 'Kiran' }) : null
-  const out = beat === 4 ? outOf(P7I).slice(0, second ? 2 : 1) : ran ? outOf(prog) : []
+  const out = ran ? outOf(prog) : []
   const caption = beat === 2 ? C7.show[4] : beat === 4 ? C7.show[5] : null
   return (
     <>

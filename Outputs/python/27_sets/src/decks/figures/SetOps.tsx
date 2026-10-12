@@ -66,7 +66,8 @@ export function SetOps() {
     LOOP_ORDER.slice(0, k).forEach((n, i) => (states[n] = i === k - 1 && phase < 4 ? 'check' : 'lit'))
   }
   const done = phase >= 4
-  const out = !prog ? [] : beat === 4 ? FOR.output.split('\n').slice(0, Math.min(phase, 3)) : done ? prog.output.split('\n') : []
+  /* the output is on screen from the press (the view fixes change spec, 2026-10-09: no output on a timer); the chips light in turn as the movement inside it */
+  const out = !prog ? [] : prog.output.split('\n')
   const caption = beat === 1 ? C12.show[4] : beat === 4 ? C12.show[5] : null
   return (
     <>

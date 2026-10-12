@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react'
+import { Fragment, type CSSProperties, type ReactNode } from 'react'
 import { SlideBase } from '@/ui/SlideBase'
 import { ZonedFrame } from '@/ui/ZonedFrame'
 import { colors, type Tone } from '@/design/tokens'
@@ -241,11 +241,39 @@ export function Lines({ lines, className = '' }: { lines: ReactNode[]; className
     <>
       {lines.map((l, i) => (
         <span key={i} className={`block ${className}`}>
-          {l}
+          {typeof l === 'string' ? withOps(l) : l}
         </span>
       ))}
     </>
   )
+}
+
+/**
+ * A set operator standing alone in a sentence (`| keeps each person once`,
+ * `That is cse - dance`): a small code chip, the way `union()` reads as code,
+ * never a stray bar or a dash at the start of a line (the view fixes change
+ * spec, 2026-10-09, G1's answer lines, slide 10 and K1). A plain inline, with
+ * no height or line-height of its own: an inline-block chip grew the line it
+ * sat in by a pixel or two (X1's option C then reached the Next button) and
+ * the bar's tall glyph ran outside any fixed height box-overflow-check saw.
+ */
+export function OpChip({ op }: { op: string }) {
+  return (
+    <code className="rounded-md px-[0.28em] py-[0.05em] font-mono text-[1em] font-bold" style={{ background: colors.surface2, color: colors.brandDark, boxShadow: `inset 0 0 0 1px ${colors.line}` }}>
+      {op}
+    </code>
+  )
+}
+
+/* an operator on its own: after the start or a space, before a space, the end, a full stop or a comma (not a colon: `for |:` is Python's own error text) */
+const OP_RE = /(?<=^|\s)([|^&-])(?=\s|$|[.,])/g
+
+/** The sentence with every lone operator as a chip; a sentence with none is returned as it is. */
+export function withOps(text: string): ReactNode {
+  if (!OP_RE.test(text)) return text
+  OP_RE.lastIndex = 0
+  const parts = text.split(OP_RE)
+  return parts.map((part, i) => (i % 2 === 1 ? <OpChip key={i} op={part} /> : <Fragment key={i}>{part}</Fragment>))
 }
 
 /**

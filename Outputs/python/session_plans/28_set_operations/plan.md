@@ -149,3 +149,23 @@ its card JSON kept as `change_ds.json` beside this plan and merged by
 - `spec-check`, `feedback-check` (exact copy of session 18's), `gesture-check`, `agenda-check`, `ligature-check`, `autoplay-check`: all pass.
 - Every card was screenshotted at step 1, mid-run and fully revealed, and looked at.
 - Not run: `nav-stress-check`, WebKit.
+
+## Change spec, 2026-10-09: the view fixes
+
+Source: `Reference ppt's/27_28_sets_view_fixes_change_spec.html` (the pedagogy
+team's press-by-press check of the built view; its slide numbers are this
+deck's). Data: `change_fixes.json` beside this plan, merged into `spec.ts` by
+the build script. The deck's `CLAUDE.md`, item 15, has the per-card detail.
+
+- Autoplay opens off on every slide; every step and output waits for a press.
+- No output fills on a timer inside a press. Press counts grew where one did:
+  C4 4, C6 4, C7 5, C8 4; K1 7 (example 6's result on its own press); H2 7
+  (the spec's new card: the check written right, with a break, one vote per
+  press, then the fold).
+- G1: round 2's left circle is dance; no field-name badges; round 4's list
+  drawn as a list. Operators in sentences are code chips.
+- C7: captions "Harsha swaps out. Divya takes his place." and "Harsha wants
+  back in."; the choices from press 2; False on press 3.
+- G2: the circles drawn as the code says (inside, around, overlapping).
+- DS3: the current row's proof large, earlier rows small.
+- Agenda: left static (content rule 44); all four stops are on the slide.

@@ -2,8 +2,10 @@
 import { chromium } from 'playwright-core'
 import { readFileSync } from 'node:fs'
 const html = `${process.cwd()}/dist-single/python-session-28-set-operations.html`
-const spec = JSON.parse(readFileSync("../../../Reference ppt's/28_set_operations_session_spec.json", 'utf8'))
-const want = Object.fromEntries(spec.beats.flatMap((b) => b.cards).map((c) => [c.id, c.press_count]))
+/* the press counts come from the generated spec.ts: the spec JSON with both change files merged (DS cards, the view fixes of 2026-10-09) */
+const specTs = readFileSync('src/decks/figures/spec.ts', 'utf8')
+const SPEC = JSON.parse(specTs.slice(specTs.indexOf('= {') + 2, specTs.indexOf('\nexport const NOTES')))
+const want = Object.fromEntries(Object.values(SPEC).map((c) => [c.id, c.press_count]))
 const b = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {})
 const p = await b.newPage({ viewport: { width: 1280, height: 720 } })
 const reqs = [], errs = []

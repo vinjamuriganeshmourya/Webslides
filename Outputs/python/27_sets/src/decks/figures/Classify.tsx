@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+import { motion } from 'framer-motion'
 import { colors } from '@/design/tokens'
 import { useBeats, useTween } from '@/ui'
 import { useInstant } from '@/motion/instant'
@@ -23,8 +24,11 @@ import { SPEC } from './spec'
  *     with the question and the three bins as options (keys 1 to 3, or a
  *     click, mark the room's choice; the right arrow works either way).
  *   - The step taps the case into its bin, with what type() said or the error
- *     as the caption. If the room's marked bin was another, that bin shakes
- *     and the case lands where it belongs.
+ *     as the caption (its badge says `run` on an error round: Python never
+ *     gets to type() there). If the room's marked bin was another, that bin
+ *     shakes and the case lands where it belongs. A filed case leaves no
+ *     empty slot in the tray: the tray closes up (the view fixes change
+ *     spec, 2026-10-09).
  *   - The verdict marks the right bin and gives the why line under every
  *     other option.
  *
@@ -149,12 +153,19 @@ export function Classify() {
           )}
         </Group>
         <Group className="flex min-w-0 flex-1 flex-col gap-3" active={b.kind === 'step' ? true : undefined}>
-          <div className="flex flex-wrap gap-2.5">
-            {CASES.map((c, i) => (
-              <CaseChip key={`tray-${i}`} ghost={i < filed} lift={i === r && b.kind === 'ask'} refEl={(el) => { tray.current[i] = el }}>
-                {c}
-              </CaseChip>
-            ))}
+          <div className="flex min-h-[36px] flex-wrap gap-2.5">
+            {CASES.map((c, i) => {
+              /* this round's case stays in the tray, unseen, through its step press: it is where the flight starts */
+              const flying = b.kind === 'step' && i === r
+              if (i < filed && !flying) return null
+              return (
+                <motion.span key={`tray-${i}`} layout initial={false} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} style={{ opacity: flying ? 0 : 1 }}>
+                  <CaseChip lift={i === r && b.kind === 'ask'} refEl={(el) => { tray.current[i] = el }}>
+                    {c}
+                  </CaseChip>
+                </motion.span>
+              )
+            })}
           </div>
           <div className="flex flex-col gap-2.5">
             {BINS.map((name, k) => (
@@ -170,7 +181,7 @@ export function Classify() {
               />
             ))}
           </div>
-          <StepCaption badge={b.kind === 'step' ? 'type()' : null} text={caption} tone={shown ? 'rule' : 'step'} size={17} minH={50} />
+          <StepCaption badge={b.kind === 'step' ? (round!.answer === 'Error' ? 'run' : 'type()') : null} text={caption} tone={shown ? 'rule' : 'step'} size={17} minH={50} />
         </Group>
       </div>
       {shown && pick === right && <Confetti seed={160 + r} />}

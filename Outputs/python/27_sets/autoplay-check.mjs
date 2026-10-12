@@ -4,7 +4,7 @@
 import { chromium } from 'playwright-core'
 import { readdirSync } from 'node:fs'
 const html = `${process.cwd()}/dist-single/${readdirSync('dist-single').find((f) => f !== 'index.html' && f.endsWith('.html'))}`
-const ON = new Set([3, 4, 8, 10, 11, 20, 23, 26])
+const ON = new Set([]) /* 2026-10-09, the view fixes change spec: off on every slide (was 3, 4, 8, 10, 11, 20, 23, 26) */
 const b = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {})
 const p = await b.newPage({ viewport: { width: 1280, height: 720 } })
 await p.addInitScript(() => { window.__steps = 0; window.addEventListener('deck:navigate', (e) => e.detail.kind === 'step' && window.__steps++) })
@@ -20,18 +20,22 @@ for (let i = 1; i <= 31; i++) {
   else ok(!ON.has(i), `slide ${i}: no built steps, no switch`)
 }
 console.log('  ', defaults.join(' '))
-for (const [n, on] of [[3, true], [23, true], [12, false], [28, false]]) {
-  await p.goto(`file://${html}?v=x${n}#/${n}`, { waitUntil: 'load' }); await p.waitForTimeout(15000)
+/* 2026-10-09, the view fixes change spec: OFF ON EVERY SLIDE. Nothing plays by itself; the switch still works when pressed. */
+for (const n of [3, 8, 12, 28]) {
+  await p.goto(`file://${html}?v=x${n}#/${n}`, { waitUntil: 'load' }); await p.waitForTimeout(8000)
   const k = await p.evaluate(() => window.__steps)
-  ok(on ? k >= 1 : k === 0, `slide ${n}: ${k} step(s) by itself in 15s (autoplay ${on ? 'on' : 'off'})`)
+  ok(k === 0, `slide ${n}: ${k} step(s) by itself in 8s (autoplay off)`)
 }
-await p.goto(`file://${html}?v=m#/8`, { waitUntil: 'load' }); await p.waitForTimeout(400)
+const clickSwitch = () => p.evaluate(() => [...document.querySelectorAll('button')].find((x) => (x.getAttribute('aria-label') ?? '').startsWith('Autoplay') || x.textContent.includes('Autoplay')).click())
+await p.goto(`file://${html}?v=m#/15`, { waitUntil: 'load' }); await p.waitForTimeout(400) /* E1: 15 presses, so a resume still has steps left */
+await clickSwitch(); await p.waitForTimeout(7000)
+const played = await p.evaluate(() => window.__steps)
+ok((await sw()) === 'true' && played >= 1, `slide 15 pressed on: ${played} step(s) by itself in 7s`)
 await p.keyboard.press('ArrowRight'); await p.waitForTimeout(300)
 ok((await sw()) === 'false', 'a manual press pauses it: switch reads Off')
 const before = await p.evaluate(() => window.__steps); await p.waitForTimeout(7000)
 ok((await p.evaluate(() => window.__steps)) === before, 'paused: no step in 7s')
-await p.evaluate(() => [...document.querySelectorAll('button')].find((x) => (x.getAttribute('aria-label') ?? '').startsWith('Autoplay') || x.textContent.includes('Autoplay')).click())
-await p.waitForTimeout(6000)
+await clickSwitch(); await p.waitForTimeout(6000)
 ok((await sw()) === 'true' && (await p.evaluate(() => window.__steps)) > before, 'switched back on: resumes from the step on screen')
 await p.goto(`file://${html}?all#/3`, { waitUntil: 'load' }); await p.waitForTimeout(6000)
 ok((await p.evaluate(() => window.__steps)) === 0, '?all (the harnesses): never plays')

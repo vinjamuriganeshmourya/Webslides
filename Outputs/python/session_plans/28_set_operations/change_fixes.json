@@ -1,0 +1,340 @@
+{
+ "source": "Reference ppt's/27_28_sets_view_fixes_change_spec.html",
+ "note": "The view fixes of 2026-10-09. `replace` swaps a whole card; `set` writes one value at a path inside a card. Press counts that grew did so because the change spec's rule for both files is that every output waits for a press: no output may fill on a timer inside a press.",
+ "replace": {
+  "H2": {
+   "id": "H2",
+   "title": "Harsha at the CSE stall",
+   "source": "new",
+   "purpose": "Feel why issubset is worth having: checking the rule by hand takes a flag, a loop, an if, an else and a break, ten lines for one question. The program is right, and it is long. One line does the same job.",
+   "heading": "Every volunteer from CSE-A?",
+   "show": [
+    "Rule: only CSE-A students run the CSE stall.",
+    "What does it print? Is Sneha checked?",
+    "Anu: in CSE-A. Keep going.",
+    "Ravi: in CSE-A. Keep going.",
+    "Harsha: not in CSE-A. ok = False, break.",
+    "False. Sneha was never checked.",
+    "One line. Same answer: False."
+   ],
+   "code": [
+    {
+     "file": "stall_check.py",
+     "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nvotes = [\"Anu\", \"Ravi\", \"Harsha\", \"Sneha\"]\nok = True\nfor name in votes:\n    if name in cse:\n        print(name, \"is in CSE-A\")\n    else:\n        print(name, \"is not in CSE-A\")\n        ok = False\n        break\nprint(ok)",
+     "output": "Anu is in CSE-A\nRavi is in CSE-A\nHarsha is not in CSE-A\nFalse"
+    },
+    {
+     "file": "stall_short.py",
+     "src": "cse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nvotes = [\"Anu\", \"Ravi\", \"Harsha\", \"Sneha\"]\nprint(set(votes).issubset(cse))",
+     "output": "False"
+    }
+   ],
+   "answer": "stall_check.py prints three lines and False, and Sneha is never checked; the one line prints False",
+   "must": [
+    "Both programs are real and run; every output shown is theirs.",
+    "The room votes True or False, and whether Sneha is checked, before the loop runs.",
+    "One vote per press: the name box, the ok box and the output move together.",
+    "After break, nothing in the loop runs again: Sneha's chip greys and no line about her prints.",
+    "The poll looks like WhatsApp's real poll: the question, the options, View votes.",
+    "The fold is one movement and the answer does not change.",
+    "While it moves, this stays exactly as it was: The poll's four votes in their order, and the cse group: only the check changes.",
+    "Keep these exact values. Someone who thinks the loop still checks every vote after break would say Sneha is in CSE-A; Python gives Anu is in CSE-A\nRavi is in CSE-A\nHarsha is not in CSE-A\nFalse. New values could hide that mistake."
+   ],
+   "must_not": [
+    "Animate by itself.",
+    "Fill the output before its press.",
+    "Show a wrong program to be fixed."
+   ],
+   "data": {
+    "votes": [
+     "Anu",
+     "Ravi",
+     "Harsha",
+     "Sneha"
+    ],
+    "cse": [
+     "Teja",
+     "Ravi",
+     "Kiran",
+     "Anu",
+     "Sneha",
+     "Pooja",
+     "Divya",
+     "Vamsi"
+    ]
+   },
+   "play": "The poll in WhatsApp's look, the name and ok boxes, the break arrow and Harsha's chip are yours. The break arrow and Sneha going grey are the moment to make loud.",
+   "engage": "motion",
+   "ops": [
+    "issubset()"
+   ],
+   "motion": "One vote per press: the name box, the ok box and the output move together; break leaves the loop and Sneha is never checked; then the loop folds into one line and the votes circle slides into cse with Harsha left outside.",
+   "keeps": "The poll's four votes in their order, and the cse group: only the check changes.",
+   "trap": {
+    "belief": "the loop still checks every vote after break",
+    "wrong": "Sneha is in CSE-A",
+    "code": 0
+   },
+   "presses": [
+    {
+     "screen": "Fest crew on WhatsApp: a poll, <q>Who will run the CSE stall?</q>, View votes open: Anu, Ravi, Harsha, Sneha, in that order. Caption: <q>Rule: only CSE-A students run the CSE stall.</q>",
+     "say": "Is the rule kept? How would you check it in code?",
+     "room": "Say a way."
+    },
+    {
+     "screen": "stall_check.py beside the poll: ok = True, then a loop over the votes; if the name is in cse it prints that, else it prints that, sets ok = False and breaks. Then print(ok). A name box and an ok box beside the code, empty. The output is empty. Caption: <q>What does it print? Is Sneha checked?</q>",
+     "say": "Read it line by line. Last line: True or False? And does the loop ever reach Sneha?",
+     "room": "Hands for True, then for False. Then hands: Sneha checked, yes or no."
+    },
+    {
+     "screen": "Line 4 lights for the first vote. The name box shows 'Anu', her chip in the poll lights green. The output gets its first line, Anu is in CSE-A. The ok box stays True. Caption: <q>Anu: in CSE-A. Keep going.</q>",
+     "say": "Anu is in cse, so the if part runs. ok does not change."
+    },
+    {
+     "screen": "The second vote: the name box shows 'Ravi', his chip lights green, the output adds Ravi is in CSE-A. ok stays True. Caption: <q>Ravi: in CSE-A. Keep going.</q>",
+     "say": "Same again for Ravi. Who comes next in the poll?",
+     "room": "Say the next name."
+    },
+    {
+     "screen": "The third vote: the name box shows 'Harsha', his chip glows red. The else part lights, the output adds Harsha is not in CSE-A, the ok box flips to False, and the break line lights. An arrow jumps from break out of the loop to print(ok). Sneha's chip in the poll greys out with the tag not checked. Caption: <q>Harsha: not in CSE-A. ok = False, break.</q>",
+     "say": "One name outside is enough. break leaves the loop, so Sneha is never checked."
+    },
+    {
+     "screen": "print(ok) lights. The output's last line fills False. Caption: <q>False. Sneha was never checked.</q>",
+     "say": "It is right. Now count what it took: a flag, a loop, an if, an else and a break. All for one question.",
+     "room": "Count the lines."
+    },
+    {
+     "screen": "The turn, one movement: lines 3 to 10 fold into one line, print(set(votes).issubset(cse)). The poll's chips become a votes circle that slides into cse; Harsha's chip stays outside it. The output becomes False. Caption: <q>One line. Same answer: False.</q>",
+     "say": "Python has a word for every one of these is inside that. The next cards show it."
+    }
+   ],
+   "press_count": 7
+  }
+ },
+ "set": {
+  "G1": [
+   [
+    "data.rounds[1]",
+    {
+     "ask": "What does the last line print?",
+     "program": "dance = {\"Anu\", \"Sneha\", \"Arjun\", \"Meena\", \"Lakshmi\"}\ncse = {\"Teja\", \"Ravi\", \"Kiran\", \"Anu\", \"Sneha\", \"Pooja\", \"Divya\", \"Vamsi\"}\nresult = dance - cse\nprint(len(result))",
+     "left": [
+      "Anu",
+      "Sneha",
+      "Arjun",
+      "Meena",
+      "Lakshmi"
+     ],
+     "right": [
+      "Teja",
+      "Ravi",
+      "Kiran",
+      "Anu",
+      "Sneha",
+      "Pooja",
+      "Divya",
+      "Vamsi"
+     ],
+     "output": "3",
+     "options": [
+      "6",
+      "3",
+      "9"
+     ],
+     "answer": "3",
+     "because": "It prints 3.",
+     "why": {
+      "6": "That is cse - dance. You keep from the set before the minus.",
+      "9": "That is ^, both outer regions. - keeps only one."
+     },
+     "steps": [
+      {
+       "caption": "Only in dance: Arjun, Lakshmi, Meena. Kept.",
+       "region": "only-left",
+       "kept": true,
+       "items": [
+        "Arjun",
+        "Lakshmi",
+        "Meena"
+       ],
+       "printed": ""
+      },
+      {
+       "caption": "In both: Anu, Sneha. Dropped.",
+       "region": "both",
+       "kept": false,
+       "items": [
+        "Anu",
+        "Sneha"
+       ],
+       "printed": ""
+      },
+      {
+       "caption": "Only in cse: Divya, Kiran, Pooja, Ravi, Teja, Vamsi. Dropped.",
+       "region": "only-right",
+       "kept": false,
+       "items": [
+        "Divya",
+        "Kiran",
+        "Pooja",
+        "Ravi",
+        "Teja",
+        "Vamsi"
+       ],
+       "printed": ""
+      },
+      {
+       "caption": "print(len(result)) shows 3.",
+       "region": "print",
+       "kept": null,
+       "items": [],
+       "printed": "3"
+      }
+     ]
+    }
+   ]
+  ],
+  "C7": [
+   [
+    "show[2]",
+    "Harsha wants back in."
+   ],
+   [
+    "show[7]",
+    "Harsha swaps out. Divya takes his place."
+   ],
+   [
+    "press_count",
+    5
+   ],
+   [
+    "presses",
+    [
+     {
+      "screen": "The volunteers circle sits inside the cse circle: Harsha has swapped out and Divya has taken his place. subset.py, output <q>True</q> from H2. The line <q>volunteers.issubset(cse)</q> and under it <q>True if every item of the set before the dot is in the set in the brackets.</q> Caption: <q>Harsha swaps out. Divya takes his place.</q>",
+      "say": "Read it out loud: is volunteers inside cse?"
+     },
+     {
+      "screen": "subset_harsha.py: Harsha wants back in. Empty output. Caption: <q>Harsha wants back in.</q> Choices A <q>True</q>, B <q>False</q>.",
+      "say": "Harsha plays cricket. Is he in CSE-A gang? Hands up per choice.",
+      "room": "Hands up per choice."
+     },
+     {
+      "screen": "Each volunteer chip is checked against cse, one movement each; Harsha's chip pokes out of the cse circle and lights red. The output fills <q>False</q>. Caption: <q>One outside is enough.</q>",
+      "say": "Every one must be inside. One outside, False."
+     },
+     {
+      "screen": "subset_swap.py: cse.issubset(volunteers), with the four volunteers again. Empty output. Caption: <q>Now the other way round.</q>",
+      "say": "Is the big group inside the small one? Say it first.",
+      "room": "Say True or False."
+     },
+     {
+      "screen": "The cse people outside volunteers light red. The output fills <q>False</q>.",
+      "say": "Four of the eight are inside. The other four are not. False."
+     }
+    ]
+   ]
+  ],
+  "C8": [
+   [
+    "press_count",
+    4
+   ],
+   [
+    "presses",
+    [
+     {
+      "screen": "The same picture, read from the big circle. superset.py with an empty output, the line <q>cse.issuperset(volunteers)</q> and under it <q>True if every item in the brackets is in the set before the dot.</q>",
+      "say": "Does cse hold all four volunteers? Say it.",
+      "room": "Say True or False."
+     },
+     {
+      "screen": "The output fills <q>True</q>.",
+      "say": "Yes: every volunteer is in cse."
+     },
+     {
+      "screen": "superset_swap.py: volunteers.issuperset(cse). Empty output. Caption: <q>Now swap them.</q> Choices A <q>True</q>, B <q>False</q>.",
+      "say": "Hands up per choice.",
+      "room": "Hands up per choice."
+     },
+     {
+      "screen": "The output fills <q>False</q>. Deck slide 41's two lines: <q>volunteers is a subset of cse</q> and <q>cse is a superset of volunteers</q>",
+      "say": "Small inside big: subset. Big around small: superset. Same picture, read from each side."
+     }
+    ]
+   ]
+  ],
+  "C4": [
+   [
+    "press_count",
+    4
+   ],
+   [
+    "presses",
+    [
+     {
+      "screen": "both.py beside the two circles. Empty output. Caption: <q>Who is in both groups?</q> Choices for the first line A <q>12</q>, B <q>3</q>, C <q>0</q>.",
+      "say": "People in both get every fest message twice. The & key is Shift and 7. Hands up per choice.",
+      "room": "Hands up per choice."
+     },
+     {
+      "screen": "Only the middle chips lift out into a new circle, both. The output fills <q>3 / {'Ravi', 'Kiran', 'Teja'}</q>. Caption: <q>Only the middle.</q> Deck slide 19's line under it.",
+      "say": "& is not the English and that joins things. It keeps only who is in both."
+     },
+     {
+      "screen": "both_list.py: cse.intersection(['Arjun', 'Anu', 'Meena']), the list drawn as a list in square brackets, not a circle. Empty output; the 12 / 3 / 0 choices go. Caption: <q>intersection() takes a list too.</q>",
+      "say": "Arjun plays cricket but is not in cse. Meena is in neither. Say it first.",
+      "room": "Say the output."
+     },
+     {
+      "screen": "Anu lifts out of the list into result. The output fills <q>{'Anu'}</q>.",
+      "say": "Only Anu is in both."
+     }
+    ]
+   ]
+  ],
+  "C6": [
+   [
+    "press_count",
+    4
+   ],
+   [
+    "presses",
+    [
+     {
+      "screen": "one_group.py beside the two circles. Empty output. Caption: <q>Who is in only one group?</q> Choices A <q>12</q>, B <q>9</q>, C <q>3</q>.",
+      "say": "They have not met the other group yet. Teja gives each a name sticker. The ^ key is Shift and 6. Hands up per choice.",
+      "room": "Hands up per choice."
+     },
+     {
+      "screen": "The middle greys; both outer parts lift out together into one circle. The output fills <q>9</q>. Caption: <q>Everyone except the middle.</q>",
+      "say": "Five from cse, four from cricket. The three in both are out."
+     },
+     {
+      "screen": "one_group_method.py: cse.symmetric_difference(cricket). Empty output.",
+      "say": "The method gives the same set. It takes a list too. Say the output.",
+      "room": "Say the output."
+     },
+     {
+      "screen": "The output fills <q>9</q>.",
+      "say": "The same nine."
+     }
+    ]
+   ]
+  ],
+  "K1": [
+   [
+    "press_count",
+    7
+   ],
+   [
+    "presses[6]",
+    {
+     "screen": "Example 6's result fills with its sentence: the TypeError, in red, and <q>Use union() for a list.</q>",
+     "say": "A list on one side of the bar is an error. union() takes a list."
+    }
+   ]
+  ]
+ }
+}

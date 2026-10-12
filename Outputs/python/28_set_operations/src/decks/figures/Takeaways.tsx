@@ -8,7 +8,9 @@ import { OpIcon } from './venn'
 import { SPEC } from './spec'
 
 /**
- * KEY TAKEAWAYS: TODAY, IN SIX EXAMPLES. Spec card K1, six presses.
+ * KEY TAKEAWAYS: TODAY, IN SIX EXAMPLES. Spec card K1, seven presses (six
+ * until the view fixes of 2026-10-09: example 6's result then stayed at ?
+ * once Next went grey, so a seventh press now fills it like the other five).
  *
  * Six real programs from today, each with what it prints and the rule it
  * shows: examples, not a concept map. All six rows are there from press 1,
@@ -90,7 +92,7 @@ function Slot({ n, ex, filled, said, onReveal }: { n: number; ex: Ex; filled: bo
 }
 
 export function Takeaways() {
-  const beat = useBeats(6)
+  const beat = useBeats(7)
   const [revealed, setRevealed] = useState<boolean[]>(EXAMPLES.map(() => false))
   return (
     <>
@@ -99,7 +101,7 @@ export function Takeaways() {
           <Slot key={ex.file} n={i} ex={ex} filled={beat >= i + 1} said={beat > i + 1 || revealed[i]} onReveal={() => setRevealed((r) => r.map((v, j) => (j === i ? true : v)))} />
         ))}
       </div>
-      <StepControls at={beat} total={6} />
+      <StepControls at={beat} total={7} />
     </>
   )
 }

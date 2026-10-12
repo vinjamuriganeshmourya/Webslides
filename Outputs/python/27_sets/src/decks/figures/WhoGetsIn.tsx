@@ -72,7 +72,8 @@ export function WhoGetsIn() {
       finger = before.length ? { path: before, found: null } : null
     } else if (step.result === 'KeyError') visitor = { label: step.item, mode: acted ? 'stop' : 'wait', tag: acted ? 'KeyError' : '' }
   }
-  const printed = step ? (acted ? step.printed : (b.kind === 'step' && b.s > 0 ? round.steps[b.s - 1].printed : '')) : b.kind === 'verdict' ? last.printed : ''
+  /* the line's result is on screen from the press (the view fixes change spec, 2026-10-09: no output on a timer); the chip's move is the movement inside it */
+  const printed = step ? step.printed : b.kind === 'verdict' ? last.printed : ''
   const stop = /Error/.test(printed)
   const shown = b.kind === 'verdict'
   const right = round.options.indexOf(round.answer)

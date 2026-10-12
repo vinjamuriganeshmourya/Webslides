@@ -174,3 +174,22 @@ result needs the click. Autoplay stays off on K1.
 | `spec-check.mjs` hard-coded to the old deck | rewritten from the 27 JSON |
 | Duplicate React keys between siblings left a stale element (26) | keys prefixed per component |
 | A chip that flew from the page's corner because its source had unmounted (26) | a bag keeps its sources mounted until the flight lands |
+
+## Change spec, 2026-10-09: the view fixes
+
+Source: `Reference ppt's/27_28_sets_view_fixes_change_spec.html` (the pedagogy
+team's press-by-press check of the built view; its slide numbers are this
+deck's, its card labels for slides 11 and 14 were off by one). Data:
+`change_fixes.json` beside this plan, merged into `spec.ts` by the build
+script. The deck's `CLAUDE.md`, item 16, has the per-card detail.
+
+- Autoplay opens off on every slide; every output is on screen from its press.
+- K1 7 presses (tile 6's KeyError on its own press).
+- C11: the output under remove, titled remove's output; choices dim on press 3.
+- E1: no cell fades; a repeat is tagged "already in"; the captions lose "It
+  stays grey in views".
+- G1: rounds 6 and 7 reworded; `run` badge on error rounds; no empty slots.
+- T2: "Teja's notes loop over views."
+- C5's chips inside the card; H2's viewers bag beside the code at 270 x 160.
+- Slides 11 and 14 (C3, C6): larger code and output, centred.
+- DS3: the current row's proof large, earlier rows small.

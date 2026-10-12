@@ -20,8 +20,9 @@ import { SPEC } from './spec'
  *   1      views as a list row (7 cells, 0 to 6), an empty bag, the switch on
  *          list, views_to_set.py, the vote 7 and 7 / 7 and 3 / 3 and 3
  *   2-8    one value per press (data.walks.list): it leaves its cell for the
- *          door and joins, or bounces off as already in; a bounced cell turns
- *          grey and stays grey to the end of the card
+ *          door and joins, or bounces off, tagged already in; its cell lights
+ *          while it moves and never fades (the view fixes change spec,
+ *          2026-10-09: faded read as gone, and every open is still in views)
  *   9      the output 7 / 3; under views, "Every open is still in views."
  *   10     the switch moves to string: Anna as four letter cells, vote 1 to 4
  *   11-14  one letter per press (data.walks.string); the output 3 on the last
@@ -89,14 +90,13 @@ export function Converter() {
   const cur = b.kind === 'walk' ? walks[b.w!] : null
   const landed = !cur || phase >= 1
   const inBag = b.mode === 'tuple' ? [...new Set(TUPLE)] : done === 0 ? [] : walks[done - 1].bag
-  /* grey: every value that bounced, from the moment it lands at the rim to the end of the card */
+  /* the cell whose value is on its way lights; no cell ever fades: set() reads the list and leaves it whole */
   const states: Record<number, CellState> = {}
-  walks.slice(0, done).forEach((w) => w.result !== 'joins' && (w !== cur || landed) && (states[w.index] = 'grey'))
   if (cur && !landed) states[cur.index] = 'lit'
   const visitor = cur && cur.result !== 'joins' ? { label: cur.item, mode: 'bounce' as const, from: () => cells.current[cur.index] } : null
   const origin = (l: string) => (cur && cur.result === 'joins' && l === cur.item ? cells.current[cur.index] : null)
   const prog = b.mode === 'list' ? PV : b.mode === 'string' ? PN : PT
-  const shown = b.mode === 'list' ? beat >= 9 : b.mode === 'string' ? done === WORD.length && landed : true
+  const shown = b.mode === 'list' ? beat >= 9 : b.mode === 'string' ? done === WORD.length : true
   const out = shown ? outOf(prog) : []
   const opts: string[] = b.mode === 'list' ? E1.data.options : ['1', '2', '3', '4']
   const right = b.mode === 'list' ? 'ABC'.indexOf(E1.data.right) : opts.indexOf(PN.output)

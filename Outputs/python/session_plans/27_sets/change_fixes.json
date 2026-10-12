@@ -1,0 +1,65 @@
+{
+ "source": "Reference ppt's/27_28_sets_view_fixes_change_spec.html",
+ "note": "The view fixes of 2026-10-09. `set` writes one value at a path inside a card. K1 grew a seventh press so example 6's result fills on a press, like the other five. E1's walk captions lose their last sentence because the list cell no longer fades.",
+ "set": {
+  "K1": [
+   [
+    "press_count",
+    7
+   ],
+   [
+    "presses[6]",
+    {
+     "screen": "Example 6's result fills with its sentence: KeyError: 'Anu' in red, and <q>remove gives a KeyError. discard would do nothing.</q>",
+     "say": "Anu is not in s. remove complains; discard would stay quiet."
+    }
+   ]
+  ],
+  "G1": [
+   [
+    "data.rounds[5].because",
+    "Brackets around one string do nothing. It is the string Ravi."
+   ],
+   [
+    "data.rounds[5].why.A set",
+    "type() does not say set. Brackets around one string do nothing. It is the string Ravi."
+   ],
+   [
+    "data.rounds[5].why.Error",
+    "It runs with no error. Brackets around one string do nothing. It is the string Ravi."
+   ],
+   [
+    "data.rounds[6].why.A set",
+    "The set is made first. A set has no first item. [0] gives an error."
+   ]
+  ],
+  "E1": [
+   [
+    "data.walks.list[2].caption",
+    "\"Ravi\" is already in. It bounces off."
+   ],
+   [
+    "data.walks.list[4].caption",
+    "\"Ravi\" is already in. It bounces off."
+   ],
+   [
+    "data.walks.list[5].caption",
+    "\"Anu\" is already in. It bounces off."
+   ],
+   [
+    "data.walks.list[6].caption",
+    "\"Ravi\" is already in. It bounces off."
+   ],
+   [
+    "data.walks.string[2].caption",
+    "\"n\" is already in. It bounces off."
+   ]
+  ],
+  "T2": [
+   [
+    "show[3]",
+    "Teja's notes loop over views. Change line 5. Run."
+   ]
+  ]
+ }
+}
