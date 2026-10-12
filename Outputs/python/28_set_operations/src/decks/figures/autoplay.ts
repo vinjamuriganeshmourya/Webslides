@@ -28,9 +28,11 @@
  */
 
 /** Slides (1-based, deck order) whose autoplay is on when they open.
-    2026-10-09: DS3 went in at slide 7 (the room says each cell first, so it opens off);
-    the slides after it moved up one (C1 8, E1 14, H2 18, K1 26). */
-export const AUTOPLAY_ON_BY_DEFAULT = new Set<number>([3, 4, 8, 14, 18, 26])
+    2026-10-09, the view fixes change spec ("Autoplay is on when a slide opens"):
+    OFF ON EVERY SLIDE. Every step, each output and each agenda stop waits for
+    Next or the right arrow; the switch stays for the instructor to turn on.
+    (Until then: 3, 4, 8, 14, 18 and 26 opened on.) */
+export const AUTOPLAY_ON_BY_DEFAULT = new Set<number>([])
 
 /** The student's own switches, per slide, for as long as the deck is open. */
 const chosen = new Map<number, boolean>()

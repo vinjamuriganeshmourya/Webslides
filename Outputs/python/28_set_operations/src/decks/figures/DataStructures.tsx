@@ -295,17 +295,23 @@ export function DataFamily({ id = 'DS2' }: { id?: string }) {
 type Row = { key: string; label: string }
 type Proof = { code: string; output: string }
 
-const LABEL_W = 212
-const COL_W = 166
+/* the label and the earlier columns are narrow enough for the proof column to hold a 44-character line at the large size */
+const LABEL_W = 200
+const COL_W = 140
 const TODAY_W = 196
-const CELL_GAP = 6
-const PROOF_FS = 12
-const PROOF_LH = 15
+const CELL_GAP = 5
+/**
+ * The proof's type (the view fixes change spec, 2026-10-09: "Proof code is too
+ * small to read"). The row the room is looking at, the one just filled, shows
+ * its proof large, near the row labels' size; the rows filled earlier shrink
+ * back, so the whole grid still fits the body box. Rows ease between the two.
+ */
+const PROOF = { big: { fs: 15, lh: 19 }, small: { fs: 12, lh: 14 } } as const
 
-/** A row's height: tall enough for the longest proof any column has for it, so no row grows when one fills. */
-function rowHeight(proofs: Record<string, Record<string, Proof>>, key: string) {
+/** A row's height: tall enough for the longest proof any column has for it, at the size it shows now. */
+function rowHeight(proofs: Record<string, Record<string, Proof>>, key: string, big: boolean) {
   const lines = Math.max(...Object.values(proofs).map((p) => (p[key] ? p[key].code.split('\n').length + p[key].output.split('\n').length : 1)))
-  return Math.max(54, lines * PROOF_LH + 14)
+  return Math.max(48, lines * (big ? PROOF.big.lh : PROOF.small.lh) + 14)
 }
 
 /** An output line: Python's error text in the danger tone, a spoken aside muted. */
@@ -316,16 +322,18 @@ function outTone(t: string) {
 }
 
 /** The proof beside a filled cell: the code, then what it printed. */
-function ProofBox({ proof }: { proof: Proof }) {
+function ProofBox({ proof, big }: { proof: Proof; big: boolean }) {
+  const tween = useTween(420)
+  const t = big ? PROOF.big : PROOF.small
   return (
-    <div className="flex h-full flex-col justify-center rounded-xl px-3 py-1.5" style={{ background: colors.surface, boxShadow: `inset 0 0 0 1px ${colors.line}` }}>
+    <div className="flex h-full flex-col justify-center rounded-xl px-3 py-1.5" style={{ background: big ? colors.white : colors.surface, boxShadow: `inset 0 0 0 ${big ? 1.5 : 1}px ${big ? colors.brand : colors.line}`, transition: tween }}>
       {proof.code.split('\n').map((l, i) => (
-        <div key={`c${i}`} className="w-max whitespace-pre font-mono" style={{ fontSize: PROOF_FS, lineHeight: `${PROOF_LH}px`, color: colors.ink }}>
+        <div key={`c${i}`} className="w-max whitespace-pre font-mono" style={{ fontSize: t.fs, lineHeight: `${t.lh}px`, color: colors.ink, transition: tween }}>
           {l}
         </div>
       ))}
       {proof.output.split('\n').map((l, i) => (
-        <div key={`o${i}`} className="w-max whitespace-pre font-mono font-semibold" style={{ fontSize: PROOF_FS, lineHeight: `${PROOF_LH}px`, color: outTone(l) }}>
+        <div key={`o${i}`} className="w-max whitespace-pre font-mono font-semibold" style={{ fontSize: t.fs, lineHeight: `${t.lh}px`, color: outTone(l), transition: tween }}>
           {l}
         </div>
       ))}
@@ -368,9 +376,11 @@ export function DataGrid({
   const tween = useTween(420)
   const cols = columns.slice(0, columns.indexOf(today) + 1)
   const template = `${LABEL_W}px ${cols.map((c) => `${c === today ? TODAY_W : COL_W}px`).join(' ')} minmax(0, 1fr)`
-  const heights = rows.map((r) => rowHeight(proofs, r.key))
+  /* the row just filled carries the large proof; the ones before it have shrunk back */
+  const current = filled - 1
+  const heights = rows.map((r, i) => rowHeight(proofs, r.key, i === current))
   return (
-    <div className="grid w-full" style={{ gridTemplateColumns: template, gridTemplateRows: `34px ${heights.map((h) => `${h}px`).join(' ')}`, gap: CELL_GAP }}>
+    <div className="grid w-full" style={{ gridTemplateColumns: template, gridTemplateRows: `34px ${heights.map((h) => `${h}px`).join(' ')}`, gap: CELL_GAP, transition: tween }}>
       {/* the header row */}
       <span />
       {cols.map((c) => (
@@ -414,7 +424,7 @@ export function DataGrid({
           <div key={`p-${r.key}`} className="min-w-0">
             {done && proofs[today]?.[r.key] && (
               <Appear className="h-full">
-                <ProofBox proof={proofs[today][r.key]} />
+                <ProofBox proof={proofs[today][r.key]} big={i === current} />
               </Appear>
             )}
           </div>,

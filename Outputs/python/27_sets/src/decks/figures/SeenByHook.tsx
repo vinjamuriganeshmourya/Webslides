@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { useInstant } from '@/motion/instant'
 import { StepControls } from './controls'
 import { Focus, Group } from './common'
-import { Ask, OutPanel, Swap, CODE_FS, OUT_FS } from './pieces'
+import { Appear, Ask, OutPanel, Swap, OUT_FS } from './pieces'
 import { CodePane } from './trace'
 import { useForward } from './phase'
 import { Row, py } from './rows'
@@ -25,12 +25,16 @@ import { SPEC } from './spec'
  *   4  viewers_check.py: the new `if name not in viewers:` line lights; 3
  *   5  the fold, one movement: line 2 becomes `viewers = set()`, the if line
  *      goes, append becomes add; the output does not change, 3; the list
- *      gives way to the bag
+ *      gives way to the bag, drawn beside the code at a set picture's height
+ *      (the view fixes change spec, 2026-10-09: the 88px bag under the code
+ *      was a flat ellipse with chips on its rim)
  *
  * The seven opens and the app's 3 never change (keeps line); only our
  * program does. All three programs are real; every output is theirs.
  */
 const H2 = SPEC.H2
+/* this card's program sits beside a phone and, from press 5, beside the viewers bag: one size down, and a 600px column (the 60-character line needs 590), leaves the bag 250px of room */
+const H2_CODE_FS = 14
 const [PLAIN, CHECK, SET] = H2.code as { file: string; src: string; output: string }[]
 const OPENS: string[] = H2.data.opens
 const SEEN: string[] = SPEC.H1.data.seen_by
@@ -98,27 +102,31 @@ export function SeenByHook() {
         </Group>
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           {/* fixed height (two lines): the code box under it never moves when the caption changes */}
-          <div className="h-[62px] shrink-0">
+          <div className="h-[56px] shrink-0">
             <Swap k={beat}>
-              <Ask size={22}>{H2.show[beat === 2 ? 1 : beat === 3 ? 2 : beat === 4 ? 3 : beat === 5 ? 4 : 0]}</Ask>
+              <Ask size={20}>{H2.show[beat === 2 ? 1 : beat === 3 ? 2 : beat === 4 ? 3 : beat === 5 ? 4 : 0]}</Ask>
             </Swap>
           </div>
           <Group className="flex items-start gap-4" active={beat === 2}>
-            <div className="w-[640px] shrink-0">
+            <div className="w-[600px] shrink-0">
               <Focus on={beat === 2}>
-                <CodePane code={beat >= 2 ? prog.src : PLAIN.src} fontSize={CODE_FS} rows={6} highlight={beat === 4 ? 4 : beat === 5 ? 2 : undefined} />
+                <CodePane code={beat >= 2 ? prog.src : PLAIN.src} fontSize={H2_CODE_FS} rows={6} highlight={beat === 4 ? 4 : beat === 5 ? 2 : undefined} />
               </Focus>
             </div>
             <div className="flex min-w-0 flex-1 flex-col gap-2.5">
               <OutPanel lines={ran ? outOf(prog) : []} fontSize={OUT_FS} />
               {ran && <AppSays />}
+              {beat >= 5 && (
+                <Appear>
+                  <Bag items={SEEN} door={false} w={250} h={160} size="sm" name="viewers" moving={fwd} />
+                </Appear>
+              )}
             </div>
           </Group>
+          {beat < 5 && (
           <Group pad={8} className="flex min-h-[80px] items-center">
-            <Swap k={beat >= 5 ? 'bag' : 'list'}>
-              {beat >= 5 ? (
-                <Bag items={SEEN} door={false} w={360} h={88} size="sm" name="viewers" />
-              ) : ran ? (
+            <Swap k="list">
+              {ran ? (
                 /* the list, one cell per open that got in: Ravi four times, then once each with the check */
                 <motion.div key={`row-${beat}`} initial={fwd ? { opacity: 0 } : false} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
                   <Row items={kept.map(py)} kind="list" size="sm" fit name="viewers" states={beat === 3 ? Object.fromEntries(OPENS.flatMap((n, i) => (n === 'Ravi' ? [[i, 'check' as const]] : []))) : {}} />
@@ -128,6 +136,7 @@ export function SeenByHook() {
               )}
             </Swap>
           </Group>
+          )}
         </div>
       </div>
       <StepControls at={beat} total={5} />

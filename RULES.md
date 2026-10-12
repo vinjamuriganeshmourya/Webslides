@@ -126,6 +126,7 @@ shipped with that exact mistake.
 | A flow beat is real interfaces, not text cards; code labels sit on the lines they name | same, R5c |
 | Kit changes propagate by running `sync-kit.mjs`, never automatically | [`slide-kit/slide-template/KIT.md`](slide-kit/slide-template/KIT.md) |
 | `slideCount` in `deck.config.json` stays current, or sweeps skip the tail | same |
+| Every deck's slide menu ("Jump to a slide") carries the Auto-play On/Off option: On when the deck first loads, kept per deck across slides and reloads, immediate on the current slide, no setting on a slide with the menu closed; which slides auto-play is decided per deck, never copied from another | [`slide-kit/workflow/SLIDE_WORKFLOW.md`](slide-kit/workflow/SLIDE_WORKFLOW.md) Stage 5 |
 
 ## Where things live
 

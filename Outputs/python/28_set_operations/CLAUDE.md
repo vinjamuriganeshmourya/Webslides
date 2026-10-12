@@ -96,3 +96,78 @@ can be removed by hand later. `rows.tsx` must stay (`flyFrom`).
     `scripts/build-spec-data.mjs` (new beat, two minute changes, a 75-minute
     check). Nothing else on the deck changed; every slide from C1 on moved
     up one, and the reveal map, autoplay set and harness slide numbers with it.
+
+15. **Change spec, 2026-10-09: the view fixes** ("27 Sets and 28 Set
+    Operations: fixes to the built views",
+    `Reference ppt's/27_28_sets_view_fixes_change_spec.html`; its slide
+    numbers are this deck's own). Its data is
+    `../session_plans/28_set_operations/change_fixes.json` (`replace` swaps a
+    whole card, `set` writes a value at a path inside one), merged by
+    `scripts/build-spec-data.mjs` after the DS change file; `spec-check` now
+    reads press counts from the generated `spec.ts`.
+    - **Autoplay opens off on every slide** (the spec's rule for both files:
+      every step and every output waits for Next or the right arrow). The
+      switch stays for the instructor. Item 9 is superseded; `autoplay-check`
+      tests the switch by pressing it on E1.
+    - **No output on a timer, anywhere.** Where an output used to fill a
+      second after its program inside one press, it has its own press now:
+      C4 3 to 4, C6 3 to 4, C7 4 to 5 (the swap's output), C8 3 to 4 (the
+      swap and its vote). Movement inside a press (copies flying, C7's walk)
+      stays; what it reveals is on screen from the press.
+    - **H2 rebuilt** (`PollHook.tsx`, 7 presses, the spec's new card):
+      stall_check.py written right (a flag, a loop, if, else, break), one
+      vote per press with a name box and an ok box, the break arrow drawn on
+      the code, Sneha greyed "not checked", then the fold into one line and
+      the votes circle sliding into cse. Code at 14px (`H2_CODE_FS`) in a
+      684px column, so the two boxes and the four-line output fit beside the
+      phone; the fold's picture is 560 x 168 with side labels and 11px chips,
+      so the 404px panel still holds it.
+    - **G1**: round 2's data swapped (dance is the left circle, the set
+      before the operator); the step badge, which showed our field names,
+      dropped; round 4 draws `["Arjun"]` with `ListBox` (now exported from
+      `OpCards.tsx`, used on C4's last press too), never as a circle.
+    - **Operators as code chips**: `Lines` (common.tsx) runs every string
+      through `withOps`, so a lone `|`, `&`, `-` or `^` in a sentence is an
+      `OpChip` (G1's why lines, slide 10's caption, K1); not before a colon,
+      which is Python's own error text.
+    - **C7**: the choices show from press 2 only; press 1's caption "Harsha
+      swaps out. Divya takes his place." (`show[7]`), press 2's "Harsha wants
+      back in." (`show[2]`); the output fills on press 3 itself.
+    - **K1** 6 to 7 presses: the seventh fills example 6's result (the
+      TypeError, red) and its sentence; nothing is left at `?`.
+    - **G2** (`Inside.tsx`): the picture is drawn as the code says
+      (`picture()`): one circle inside the other for a subset or superset,
+      overlapping with the shared people in the middle (round 3's brackets
+      set poking out of cse, round 4's Meena and Lakshmi), apart only when
+      nobody is shared. A found person's chip pulses; a not-found person's
+      copy flies to the other circle's rim and back (`Mover`). The answer
+      colour is on the press. A two-name circle is r 72: at 62 its outside
+      name fell to the centre.
+    - **DS3**: the proof beside the row just filled is 15px; earlier rows
+      shrink back to 12px; the rows ease (`PROOF`, in both decks'
+      `DataStructures.tsx`).
+    - **Agenda, left static.** All four stops were always on the slide (the
+      kit's entrance staggers them over two seconds, which the team's capture
+      read as two stops). Content rule 44 names exactly this spec wording
+      ("stop n lights up per press") as not carried, so the stops are not
+      stepped; raised with the user.
+    - Reveal map re-measured: C4 3, C6 3, H2 6, C7 4, C8 3, K1 6. The
+      autoplay set in `autoplay.ts` and `autoplay-check` is empty.
+
+## Verification, 2026-10-09 (built file `dist-single/python-session-28-set-operations.html`, 3.16 MB)
+
+- typecheck clean; every changed card screenshotted at every press on the dev
+  server (`.shots2.mjs`, a scratch in the root: port, "slide:presses,...",
+  outdir) and the press count checked by the hash leaving the slide.
+- `spec-check`, `autoplay-check` (off on every slide, the switch tested on
+  E1), `video-safe` CLEAN, `agenda-check`, `feedback-check`, `gesture-check`,
+  `ligature-check`, `align-check` 0 of 28, `mixed-align-check` 0 of 28: pass.
+- `qa`: only slides 1 and 28 (the Welcome and Thank you baseline, NO LOGO);
+  the 16px type-floor list is informational, as before.
+- `controls-clear-check` CLEAR at every step of all 28 slides.
+- `box-overflow-check`: only the baseline, slide 18's phone screen (2px) and
+  slide 19's divider "02".
+- `overlap-check` at its 700ms sample: 19 chips caught in flight on slides 4,
+  9, 10 and 13, the same baseline as 2026-10-08.
+- Browser: `CHROME_PATH=/usr/bin/brave-browser` (the path in the kit's notes
+  does not exist on this machine).

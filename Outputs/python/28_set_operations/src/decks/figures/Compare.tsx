@@ -3,7 +3,7 @@ import { useBeats } from '@/ui'
 import { StepControls } from './controls'
 import { Confetti } from './motion'
 import { Lines } from './common'
-import { sentences, type OutLine } from './pieces'
+import { Show, sentences, type OutLine } from './pieces'
 import { Vote } from './trace'
 import { useStepPhase } from './phase'
 import { DeckLine, OpFrame, usePick } from './OpCards'
@@ -51,25 +51,27 @@ const C7P: Prog[] = C7.code
 const WITH_HARSHA = [...VOLUNTEERS, 'Harsha']
 
 /**
- * C7. Press 1: the volunteers circle inside cse, subset.py, its True from
- * H2, and the definition. Press 2: Harsha votes too, the vote. Press 3: each
- * volunteer is checked against cse, one after another; Harsha pokes out and
- * lights red; False. Press 4: cse.issubset(volunteers): say it first, then
- * the cse people outside volunteers light red, False.
+ * C7, five presses (four until the view fixes of 2026-10-09). Press 1: the
+ * volunteers circle inside cse, subset.py, its True from H2, the definition,
+ * and the story's turn: Harsha swapped out, Divya took his place. Press 2:
+ * Harsha wants back in; the vote (its two choices show only now). Press 3:
+ * the output fills False on the press; each volunteer is checked against cse
+ * one after another, movement inside the press, and Harsha pokes out red.
+ * Press 4: cse.issubset(volunteers): say it first, the output empty. Press 5:
+ * the cse people outside volunteers light red, False. No output on a timer.
  */
 export function Subset() {
-  const beat = useBeats(4)
+  const beat = useBeats(5)
   const { pick, setPick } = usePick()
-  const phase = useStepPhase(beat, beat === 3 ? [500, 550, 550, 550, 700, 600] : [2200])
+  const phase = useStepPhase(beat, beat === 3 ? [300, 380, 380, 380, 420] : [1])
   const harsha = beat === 2 || beat === 3
-  const prog = beat === 4 ? C7P[2] : harsha ? C7P[1] : C7P[0]
+  const prog = beat >= 4 ? C7P[2] : harsha ? C7P[1] : C7P[0]
   const items = harsha ? WITH_HARSHA : VOLUNTEERS
   const tones: Record<string, ChipTone> = {}
   if (beat === 3) WITH_HARSHA.slice(0, phase).forEach((n) => (tones[n] = n === 'Harsha' ? 'bad' : 'ok'))
-  const swapDone = beat === 4 && phase >= 1
-  if (swapDone) CSE.filter((n) => !VOLUNTEERS.includes(n)).forEach((n) => (tones[n] = 'bad'))
-  const out = beat === 1 ? line(C7P[0].output) : beat === 3 && phase >= 6 ? line(C7P[1].output) : swapDone ? line(C7P[2].output) : []
-  const caption = beat === 1 ? null : beat === 2 ? C7.show[2] : beat === 3 ? (phase >= 6 ? C7.show[5] : null) : C7.show[6]
+  if (beat === 5) CSE.filter((n) => !VOLUNTEERS.includes(n)).forEach((n) => (tones[n] = 'bad'))
+  const out = beat === 1 ? line(C7P[0].output) : beat === 3 ? line(C7P[1].output) : beat === 5 ? line(C7P[2].output) : []
+  const caption = beat === 1 ? C7.show[7] : beat === 2 ? C7.show[2] : beat === 3 ? C7.show[5] : C7.show[6]
   return (
     <>
       <OpFrame
@@ -77,15 +79,19 @@ export function Subset() {
         rows={3}
         ask={caption}
         out={out}
-        asking={beat === 2 || (beat === 4 && !swapDone)}
-        drawing={beat === 1 || beat === 3 || swapDone}
-        vote={<Vote options={[C7.show[3], C7.show[4]]} right={1} shown={beat >= 3} pick={pick} setPick={setPick} cols={2} size={18} nowrap dense />}
+        asking={beat === 2 || beat === 4}
+        drawing={beat === 1 || beat === 3 || beat === 5}
+        vote={
+          <Show on={beat >= 2}>
+            <Vote options={[C7.show[3], C7.show[4]]} right={1} shown={beat >= 3} pick={pick} setPick={setPick} cols={2} size={18} nowrap dense />
+          </Show>
+        }
         picture={<Venn W={NW} H={NH} L={BIG} R={harsha ? POKE : INNER} left={{ code: 'cse', items: CSE }} right={{ code: 'volunteers', items, at: 'right' }} tones={tones} fs={12} />}
         line={<Def sig={C7.show[0]} text={C7.show[1]} on />}
         side={340}
       />
       {beat >= 3 && pick === 1 && <Confetti seed={19} />}
-      <StepControls at={beat} total={4} />
+      <StepControls at={beat} total={5} />
     </>
   )
 }
@@ -96,18 +102,18 @@ const C8 = SPEC.C8
 const C8P: Prog[] = C8.code
 
 /**
- * C8. Press 1: the same picture, read from the big circle; superset.py and
- * the definition. Press 2: True fills, then the swap, volunteers.issuperset
- * (cse), and the vote. Press 3: False, and the original deck's two lines:
- * small inside big, subset; big around small, superset.
+ * C8, four presses (three until the view fixes of 2026-10-09). Press 1: the
+ * same picture, read from the big circle; superset.py and the definition.
+ * Press 2: True. Press 3: the swap, volunteers.issuperset(cse), and the vote.
+ * Press 4: False, and the original deck's two lines: small inside big,
+ * subset; big around small, superset. No program or output on a timer.
  */
 export function Superset() {
-  const beat = useBeats(3)
+  const beat = useBeats(4)
   const { pick, setPick } = usePick()
-  const phase = useStepPhase(beat, [1600])
-  const swapped = beat === 3 || (beat === 2 && phase >= 1)
+  const swapped = beat >= 3
   const prog = swapped ? C8P[1] : C8P[0]
-  const out = beat === 2 && phase < 1 ? line(C8P[0].output) : beat === 3 ? line(C8P[1].output) : []
+  const out = beat === 2 ? line(C8P[0].output) : beat === 4 ? line(C8P[1].output) : []
   /* the circle the sentence is read from lights */
   const outline = swapped ? { r: true } : { l: true }
   return (
@@ -117,16 +123,16 @@ export function Superset() {
         rows={3}
         ask={swapped ? C8.show[2] : null}
         out={out}
-        asking={beat === 1 || (beat === 2 && swapped)}
-        drawing={beat === 3}
+        asking={beat === 1 || beat === 3}
+        drawing={beat === 2 || beat === 4}
         vote={
-          <div style={{ opacity: swapped ? 1 : 0, transition: 'opacity 480ms cubic-bezier(0.22,1,0.36,1)' }}>
-            <Vote options={[C8.show[3], C8.show[4]]} right={1} shown={beat >= 3} pick={pick} setPick={setPick} cols={2} size={18} nowrap dense />
-          </div>
+          <Show on={swapped}>
+            <Vote options={[C8.show[3], C8.show[4]]} right={1} shown={beat >= 4} pick={pick} setPick={setPick} cols={2} size={18} nowrap dense />
+          </Show>
         }
         picture={<Venn W={NW} H={NH} L={BIG} R={INNER} left={{ code: 'cse', items: CSE }} right={{ code: 'volunteers', items: VOLUNTEERS, at: 'right' }} outline={outline} fs={12} />}
         line={
-          beat >= 3 ? (
+          beat >= 4 ? (
             <DeckLine on>
               <Lines lines={[C8.show[5], C8.show[6]]} />
             </DeckLine>
@@ -136,8 +142,8 @@ export function Superset() {
         }
         side={340}
       />
-      {beat >= 3 && pick === 1 && <Confetti seed={20} />}
-      <StepControls at={beat} total={3} />
+      {beat >= 4 && pick === 1 && <Confetti seed={20} />}
+      <StepControls at={beat} total={4} />
     </>
   )
 }

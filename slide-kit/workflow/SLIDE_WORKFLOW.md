@@ -84,6 +84,21 @@ type and figure, and pick from
 520ms, staggers 130ms, line draws 860ms, a whole figure assembled in about 2.4s.
 Nobody triggers a slide figure, and it is read once from the back of a room.
 
+**Every deck's slide menu carries the Auto-play On/Off option** (pedagogy
+team, 2026-10-12, on Python session 29, as a standing rule). The menu is the
+player's "Jump to a slide" overlay (the grid button on the bar, the `G` key).
+On, the slides the deck lists as auto-play play their steps when they open;
+Off, every slide waits for Next. A deck first loads with it On; the choice is
+kept per deck (localStorage under the deck's own path) across slides and
+reloads; switching it takes effect on the slide on screen at once; with the
+menu closed no setting shows on a slide (the per-card ▶ switch beside Next
+stays as the manual trigger). It is drawn as two cards in the menu's own
+style, never a new control on the slide. **Which slides auto-play is decided
+per deck**, in its `src/decks/figures/autoplay.ts`; never carry one deck's
+list into another. Until the kit PR lands, the session copies are Python 29's
+`src/deck/SlidePicker.tsx` and `src/deck/autoplayPref.ts`, and its
+`autoplay-check.mjs` checks the option on the built file.
+
 ### Stage 5b — Anything reusable goes back into the kit, through a PR
 
 A slide type, figure or transition built for this session that **a different deck

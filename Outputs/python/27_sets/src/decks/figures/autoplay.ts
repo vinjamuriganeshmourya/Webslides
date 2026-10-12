@@ -30,7 +30,11 @@
 /** Slides (1-based, deck order) whose autoplay is on when they open. */
 /* PF 27 (plan decision 11): the cards with no vote and no timer: S-RECAP, H1, C1, C2, C3, H2, C10, C12.
    2026-10-09: DS2 (slide 7) and DS3 (slide 9) went in; both take the room's word or hands, so both open off. */
-export const AUTOPLAY_ON_BY_DEFAULT = new Set<number>([3, 4, 8, 10, 11, 20, 23, 26])
+/* 2026-10-09, the view fixes change spec ("Autoplay is on when a slide opens"):
+   OFF ON EVERY SLIDE. Every step and each output waits for Next or the right
+   arrow; the switch stays for the instructor to turn on. (Until then: 3, 4, 8,
+   10, 11, 20, 23 and 26 opened on.) */
+export const AUTOPLAY_ON_BY_DEFAULT = new Set<number>([])
 
 /** The student's own switches, per slide, for as long as the deck is open. */
 const chosen = new Map<number, boolean>()

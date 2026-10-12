@@ -18,7 +18,9 @@ import { SPEC } from './spec'
  * its green star (spec note 2; the app's own colour inside the drawn world).
  * The three already in, Ravi, Anu and Sneha, never move when a chip bounces
  * or another leaves (the cards' keeps lines). Every output box fills only on
- * the press after the room has said or voted it.
+ * the press after the room has said or voted it, and on that press itself,
+ * never after a wait inside it (the view fixes change spec, 2026-10-09: no
+ * output on a timer); the chips' walks are the movement inside the press.
  */
 type Prog = { file: string; src: string; output: string }
 const CLOSE: string[] = SPEC.C12.data.close
@@ -77,7 +79,7 @@ export function AddItem() {
           <Focus on={!ran}>
             <CodePane code={prog.src} fontSize={CODE_FS} />
           </Focus>
-          <OutPanel lines={ran && phase >= 2 ? outOf(prog) : []} fontSize={OUT_FS} />
+          <OutPanel lines={ran ? outOf(prog) : []} fontSize={OUT_FS} />
           <Show on={beat >= 2}>
             <Definition sig={C8.show[1]}>{C8.show[2].replace(/\.$/, '')}</Definition>
           </Show>
@@ -133,8 +135,7 @@ export function UpdateMany() {
     beat <= 2 ? SENT.map((n) => ({ item: n, joins: !CLOSE.includes(n) })) : beat <= 4 ? LETTERS.map((l, k) => ({ item: l, joins: LETTERS.indexOf(l) === k })) : [{ item: POOJA, joins: true }]
   const phase = useStepPhase(beat, [...walkDelays(steps.length), 1000])
   const w = walking || beat === 5 ? walkState(CLOSE, steps, beat === 5 ? 1 : phase, beat === 5 ? undefined : (k) => waitRefs.current[k]) : { items: CLOSE, visitor: null, gone: () => false, origin: () => null }
-  const done = beat === 5 || phase > steps.length
-  const ran = (walking && done) || beat === 5
+  const ran = walking || beat === 5
   const right = C9_CHOICES.indexOf(P9N.output)
   const universe = beat <= 2 ? [...CLOSE, 'Vamsi', 'Pooja'] : beat <= 4 ? [...CLOSE, 'P', 'o', 'j', 'a'] : [...CLOSE, POOJA]
   const waiting = beat <= 2 ? SENT : beat <= 4 ? LETTERS : []
@@ -157,7 +158,7 @@ export function UpdateMany() {
             ) : beat === 4 ? (
               <div className="flex flex-col gap-2">
                 <Vote options={C9_CHOICES} right={right} shown pick={pick} setPick={setPick} cols={3} size={19} nowrap />
-                <Show on={done} className="flex flex-col gap-2">
+                <Show on className="flex flex-col gap-2">
                   <span className="whitespace-nowrap rounded-lg bg-white px-3 py-1.5 font-mono text-[15px] font-semibold" style={{ color: colors.ink, boxShadow: `inset 0 0 0 1.5px ${colors.success}` }}>
                     {P9P.output}
                   </span>
@@ -175,7 +176,7 @@ export function UpdateMany() {
           <Bag key={`c9-${beat <= 2 ? 'list' : beat <= 4 ? 'name' : 'add'}`} items={w.items} universe={universe} w={400} h={232} name="close" stars visitor={w.visitor} origin={w.origin} moving={fwd} />
         </Group>
       </div>
-      {beat === 4 && done && pick === right && <Confetti seed={91} />}
+      {beat === 4 && pick === right && <Confetti seed={91} />}
       <StepControls at={beat} total={5} />
     </>
   )
@@ -197,7 +198,6 @@ export function Discard() {
   const second = beat >= 3
   const prog = second ? P10M : P10A
   const ran = beat === 2 || beat === 4
-  const phase = useStepPhase(beat, [2600])
   const items = beat === 2 ? CLOSE.filter((n) => n !== 'Anu') : CLOSE
   return (
     <>
@@ -206,7 +206,7 @@ export function Discard() {
           <Focus on={!ran}>
             <CodePane code={prog.src} fontSize={CODE_FS} highlight={2} />
           </Focus>
-          <OutPanel lines={ran && (beat === 2 || phase >= 1) ? outOf(prog) : []} fontSize={OUT_FS} />
+          <OutPanel lines={ran ? outOf(prog) : []} fontSize={OUT_FS} />
           <Definition sig={C10.show[0]}>{C10.show[1]}</Definition>
         </Group>
         <Group className={RIGHT} active={ran}>
@@ -228,10 +228,15 @@ const [P11M, P11A]: Prog[] = C11.code
 const C11_CHOICES: string[] = C11.show.slice(1, 4)
 
 /**
- * C11, three presses: discard_missing.py and remove_missing.py one above the
- * other (only line 2 differs), vote 3 / 2 / KeyError; line 2 lights red, the
+ * C11, three presses: discard_missing.py and remove_missing.py side by side
+ * (only line 2 differs), vote 3 / 2 / KeyError; line 2 lights red, the
  * KeyError, line 3 greys, "Line 3 never runs."; remove.py, Anu is there and
  * walks out, 2, "discard is quiet. remove complains."
+ *
+ * The output sits under the program that made it, the remove column, and is
+ * titled remove's output (the view fixes change spec, 2026-10-09: it used to
+ * sit under the discard code and read as discard's KeyError). On press 3 the
+ * choices dim: they were about remove_missing.py, not remove.py.
  */
 export function RemoveComplains() {
   const beat = useBeats(3)
@@ -261,16 +266,19 @@ export function RemoveComplains() {
           </div>
         </Group>
         <div className="flex items-stretch gap-4">
-          <Group className="flex w-[330px] shrink-0 flex-col gap-2.5">
-            <OutPanel lines={beat >= 2 ? outOf(prog) : []} fontSize={OUT_FS} />
-            <Swap k={beat}>{beat === 2 ? <Note size={18} lines={[C11.show[4]]} /> : beat === 3 ? <Note size={18} lines={[C11.show[5]]} /> : null}</Swap>
-          </Group>
           <Group className="flex w-[400px] shrink-0 flex-col gap-2.5" active={beat === 1}>
             <Ask size={21}>{C11.show[0]}</Ask>
-            <Vote options={C11_CHOICES} right={right} shown={beat >= 2} pick={pick} setPick={setPick} template="0.7fr 0.7fr 1.5fr" size={19} nowrap />
+            <div style={{ opacity: third ? 0.35 : 1, transition: 'opacity 420ms cubic-bezier(0.22,1,0.36,1)' }}>
+              <Vote options={C11_CHOICES} right={right} shown={beat >= 2} pick={pick} setPick={setPick} template="0.7fr 0.7fr 1.5fr" size={19} nowrap />
+            </div>
           </Group>
           <Group className="flex min-w-0 flex-1 items-center justify-center">
             <Bag items={third ? CLOSE.filter((n) => n !== 'Anu') : CLOSE} universe={CLOSE} w={300} h={150} size="sm" name="close" stars moving={fwd} door={false} />
+          </Group>
+          {/* under the remove column: the program that made the output */}
+          <Group className="flex w-[380px] shrink-0 flex-col gap-2.5">
+            <OutPanel title="remove's output" lines={beat >= 2 ? outOf(prog) : []} fontSize={OUT_FS} />
+            <Swap k={beat}>{beat === 2 ? <Note size={18} lines={[C11.show[4]]} /> : beat === 3 ? <Note size={18} lines={[C11.show[5]]} /> : null}</Swap>
           </Group>
         </div>
       </div>

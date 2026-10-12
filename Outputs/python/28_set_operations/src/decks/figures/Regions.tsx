@@ -7,6 +7,7 @@ import { Confetti } from './motion'
 import { Ask, OutPanel, Swap, sentences, CODE_FS, OUT_FS } from './pieces'
 import { CodePane, StepCaption, Vote } from './trace'
 import { Venn, pair, type ChipTone, type Shade } from './venn'
+import { ListBox } from './OpCards'
 import { SPEC } from './spec'
 
 /**
@@ -21,7 +22,11 @@ import { SPEC } from './spec'
  *     only the second, and stay so to the end of the round. The count shows
  *     only on the print press; the lit chips are the count.
  *   - Round 4, | with a list, stops on its own line with a TypeError: no
- *     region lights, nothing prints.
+ *     region lights, nothing prints. The list is drawn as a list, square
+ *     brackets and `a list` under it, never as a circle (the view fixes
+ *     change spec, 2026-10-09). The same spec dropped the step badge, which
+ *     showed our data's field names (only left, both, print) to the room,
+ *     and made round 2's left circle the set before the operator, dance.
  *   - The verdict marks the right option and gives a line for every wrong one.
  * Both circles keep every chip the whole round. Every program, step and why
  * line is the spec's, run on CPython 3.12.3.
@@ -141,7 +146,9 @@ export function WhyLines({ on, rows, cols = 1 }: { on: boolean; rows: { opt: str
 const VW = 310
 const VH = 214
 const G = pair(VW, VH, 94, 120, 13)
-const APART = { L: { cx: 98, cy: VH / 2 + 13, r: 94 }, R: { cx: 256, cy: VH / 2 + 13, r: 50 } }
+const ONE = { cx: 98, cy: VH / 2 + 13, r: 94 }
+/** `{...}` as its names. */
+const namesOf = (lit: string) => [...lit.matchAll(/"([^"]*)"/g)].map((m) => m[1])
 const REGION: Record<string, 'l' | 'both' | 'r'> = { 'only-left': 'l', both: 'both', 'only-right': 'r' }
 
 export function Regions() {
@@ -165,12 +172,11 @@ export function Regions() {
   const printed = ran.length ? ran[ran.length - 1].printed : ''
   const err = /Error/.test(printed)
   const sd = sides(round.program)
-  /* nobody shared (round 4, a list): the circles are drawn apart, never overlapping on nobody */
-  const shared = round.left.some((n) => round.right.includes(n))
+  /* round 4: the right side is a list literal, drawn as a list beside the one circle */
+  const listLit = round.program.match(/^result = \w+ . (\[.*\])$/m)?.[1] ?? null
   const right = round.options.indexOf(round.answer)
   const shown = b.kind === 'verdict'
   const caption = b.kind === 'step' ? round.steps[b.s].caption : shown ? round.because : null
-  const lastStep = b.kind === 'step' ? round.steps[b.s] : null
   return (
     <>
       <RoundFrame
@@ -192,10 +198,16 @@ export function Regions() {
         vote={<Vote key={`v${r}`} options={round.options} right={right} shown={shown} pick={pick} setPick={setPick} template={round.options.some((o) => o.length > 4) ? '1fr 1fr 1.7fr' : undefined} size={18} nowrap dense />}
         picture={
           <Swap k={r}>
-            <Venn W={VW} H={VH} L={shared ? G.L : APART.L} R={shared ? G.R : APART.R} left={{ code: sd.left, items: round.left }} right={{ code: sd.right, items: round.right }} shade={shade} tones={tones} fs={12} />
+            {listLit ? (
+              <div className="flex items-center gap-4">
+                <Venn W={200} H={VH} L={ONE} R={null} left={{ code: sd.left, items: round.left }} shade={shade} tones={tones} fs={12} />
+                <ListBox items={namesOf(listLit)} bounce={err} />
+              </div>
+            ) : (
+              <Venn W={VW} H={VH} L={G.L} R={G.R} left={{ code: sd.left, items: round.left }} right={{ code: sd.right, items: round.right }} shade={shade} tones={tones} fs={12} />
+            )}
           </Swap>
         }
-        badge={b.kind === 'step' ? (lastStep!.region === 'print' ? 'print' : lastStep!.region === 'error' ? 'error' : lastStep!.region.replace('-', ' ')) : null}
         caption={caption}
         rule={shown}
         out={printed ? [{ text: printed, tone: err ? 'error' : 'plain' }] : []}

@@ -120,3 +120,54 @@ change spec of 2026-10-09, decision 15). `devPort` is 5257: run
     - Harnesses renumbered: `spec-check` (G1 is slide 18, 31 slides, the
       change file's cards counted), `autoplay-check` (ON set, the pause test
       on slide 8).
+
+16. **Change spec, 2026-10-09: the view fixes** ("27 Sets and 28 Set
+    Operations: fixes to the built views",
+    `Reference ppt's/27_28_sets_view_fixes_change_spec.html`; its slide
+    numbers are this deck's own, its card labels for slides 11 and 14 were
+    off by one card). Its data is `../session_plans/27_sets/change_fixes.json`
+    (`set` writes a value at a path inside a card), merged by
+    `scripts/build-spec-data.mjs` after the DS change file; `spec-check` reads
+    press counts from the generated `spec.ts`.
+    - **Autoplay opens off on every slide** (item 9 superseded); the switch
+      stays. `autoplay-check` tests it by pressing it on E1.
+    - **No output on a timer**: C8, C9 and C10 (`Changing.tsx`), C7
+      (`SetCards.tsx`), E1's string output, G2's printed line and C12's
+      outputs are on screen from the press itself; the chips' walks and the
+      finger stay as the movement inside it.
+    - **K1** 6 to 7 presses: the seventh fills tile 6 (KeyError: 'Anu', red,
+      and its sentence).
+    - **C11**: the output sits under the remove column, titled "remove's
+      output"; the A / B / C choices dim on press 3.
+    - **E1**: no list cell fades, ever; a repeat is tagged "already in" at
+      the rim; the walk captions lose "It stays grey in views" (change file).
+    - **G1**: rounds 6 and 7's answer lines reworded, and round 6's verdict
+      line with the same words; the step badge says `run` on the error
+      rounds; a filed case leaves no slot behind, the tray closes up
+      (`motion layout`; the round's own case stays unseen through its step
+      press, as the flight's source).
+    - **T2** step 2: "Teja's notes loop over views."
+    - **C5**: `doorW` 220, so the tuple and list chips wait inside the card.
+    - **H2**: from press 5 the viewers bag (270 x 160, every chip inside the
+      oval) sits beside the code in the right column and the list group goes;
+      code at 14px (`H2_CODE_FS`) in a 580px column; the caption box 56.
+    - **Slides 11 and 14 (C3, C6)** were the half-empty ones: code 18px,
+      output 20px, run lines 20px, bags 240 x 136, the slide in `center`
+      mode (`WIDE_LEFT`, `BIG_CODE_FS`, `BIG_OUT_FS`). C4 and C7 unchanged.
+    - **DS3**: as 28 (the current row's proof 15px, earlier rows 12px).
+    - Reveal map: K1 6. The autoplay set in `autoplay.ts` and
+      `autoplay-check` is empty.
+
+## Verification, 2026-10-09 (built file `dist-single/python-session-27-sets.html`, 3.17 MB)
+
+- typecheck clean; every changed card screenshotted at every press on the dev
+  server (`.shots2.mjs`, a scratch in the root) and the press count checked by
+  the hash leaving the slide.
+- `spec-check`, `autoplay-check` (off on every slide, the switch tested on
+  E1), `video-safe` CLEAN, `agenda-check`, `feedback-check`, `gesture-check`,
+  `ligature-check`, `align-check` 0 of 31, `mixed-align-check` 0 of 31: pass.
+- `qa`: only slides 1 and 31 (the Welcome and Thank you baseline, NO LOGO).
+- `controls-clear-check` CLEAR at every step of all 31 slides.
+- `box-overflow-check`: NO OVERFLOW at every step.
+- `overlap-check`: only slide 1's decorative sparkle (baseline).
+- Browser: `CHROME_PATH=/usr/bin/brave-browser`.

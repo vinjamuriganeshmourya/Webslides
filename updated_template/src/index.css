@@ -1,0 +1,54 @@
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: #060c1c; /* the dark stage behind the slide canvas */
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/*
+  THE STAGE: the 1920x1080 box the player zooms to fit the screen.
+
+  `geometricPrecision` makes layout scale-invariant: with it, glyph advances
+  scale linearly with the zoom, so a line breaks in the same place on every
+  screen the deck is shown on. Same reasoning as the slide kit's `.slide-stage`.
+*/
+.slide-stage {
+  text-rendering: geometricPrecision;
+}
+
+/* The control bar fades out while the pointer is still; moving it brings it back. */
+.deck-controls {
+  transition: opacity 240ms ease;
+}
+.deck-controls[data-idle='true'] {
+  opacity: 0;
+  pointer-events: none;
+}
+.deck-controls button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.deck-controls button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.deck-controls button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}

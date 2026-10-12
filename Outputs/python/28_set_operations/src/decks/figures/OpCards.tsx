@@ -7,7 +7,6 @@ import { Focus, Group } from './common'
 import { Confetti } from './motion'
 import { OutPanel, Show, Swap, CODE_FS, OUT_FS, type OutLine } from './pieces'
 import { CodePane, StepCaption, Vote } from './trace'
-import { useStepPhase } from './phase'
 import { CRICKET, CSE, DrawArrow, OpIcon, Pool, Venn, pair, type ChipTone, type PoolItem, type Shade } from './venn'
 import { SPEC } from './spec'
 
@@ -231,8 +230,14 @@ const C3 = SPEC.C3
 const C3P: Prog[] = C3.code
 const DAY = ['Meena', 'Ravi']
 
-/** The list as Teja typed it: square brackets, quoted names, one box. It can bounce. */
-function ListBox({ bounce, refs }: { bounce: boolean; refs: React.MutableRefObject<Record<string, HTMLElement | null>> }) {
+/**
+ * A list as Teja typed it: square brackets, quoted names, one box, `a list`
+ * under it, never a circle (the view fixes change spec, 2026-10-09: a list is
+ * not a set, so it is never drawn as one; G1's round 4 and C4's last press use
+ * it too). `name` is the variable over it, if the list has one. `refs` gets
+ * each item as `list:<item>`, for a copy to fly from. It can bounce.
+ */
+export function ListBox({ items, name, bounce = false, refs }: { items: string[]; name?: string; bounce?: boolean; refs?: React.MutableRefObject<Record<string, HTMLElement | null>> }) {
   const instant = useInstant()
   const ref = useRef<HTMLDivElement>(null)
   const was = useRef(bounce)
@@ -243,15 +248,17 @@ function ListBox({ bounce, refs }: { bounce: boolean; refs: React.MutableRefObje
   was.current = bounce
   return (
     <div ref={ref} className="flex flex-col items-center gap-1.5">
-      <span className="font-mono text-[16px] font-bold" style={{ color: colors.accentDark }}>
-        day
-      </span>
+      {name && (
+        <span className="font-mono text-[16px] font-bold" style={{ color: colors.accentDark }}>
+          {name}
+        </span>
+      )}
       <div className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 font-mono text-[17px] font-semibold" style={{ boxShadow: `inset 0 0 0 2px ${bounce ? colors.danger : colors.line}`, color: colors.ink, transition: 'box-shadow 420ms cubic-bezier(0.22,1,0.36,1)' }}>
         <span style={{ color: colors.muted }}>[</span>
-        {DAY.map((n, i) => (
+        {items.map((n, i) => (
           <span key={n} className="flex items-center">
-            <span ref={(el) => { refs.current[`day:${n}`] = el }}>"{n}"</span>
-            {i < DAY.length - 1 && <span style={{ color: colors.muted }}>,</span>}
+            <span ref={(el) => { if (refs) refs.current[`list:${n}`] = el }}>"{n}"</span>
+            {i < items.length - 1 && <span style={{ color: colors.muted }}>,</span>}
           </span>
         ))}
         <span style={{ color: colors.muted }}>]</span>
@@ -278,7 +285,7 @@ export function UnionList() {
   const walked = beat === 2
   const W = 180
   const one = { cx: W / 2, cy: VH / 2 + 14, r: 86 }
-  const items: PoolItem[] = walked ? [...CSE.map((n) => ({ name: n, from: n === 'Ravi' ? refs.current['day:Ravi'] : refs.current[n] })), { name: 'Meena', from: refs.current['day:Meena'] }] : []
+  const items: PoolItem[] = walked ? [...CSE.map((n) => ({ name: n, from: n === 'Ravi' ? refs.current['list:Ravi'] : refs.current[n] })), { name: 'Meena', from: refs.current['list:Meena'] }] : []
   return (
     <>
       <OpFrame
@@ -314,7 +321,7 @@ export function UnionList() {
             <span className="grid h-[46px] min-w-[86px] place-items-center rounded-xl bg-white px-2 font-mono text-[20px] font-bold" style={{ color: beat === 4 ? colors.danger : colors.brandDark, boxShadow: `inset 0 0 0 2px ${beat === 4 ? colors.danger : colors.line}`, transition: 'color 420ms, box-shadow 420ms' }}>
               <Swap k={pipe ? 'pipe' : 'union'}>{pipe ? '|' : '.union( )'}</Swap>
             </span>
-            <ListBox bounce={beat === 4} refs={refs} />
+            <ListBox items={DAY} name="day" bounce={beat === 4} refs={refs} />
             {!pipe && <DrawArrow on={walked} w={48} />}
             {!pipe && <Pool items={items} rx={100} ry={84} fs={FS} code="fest" lit={walked} />}
           </>
@@ -333,25 +340,25 @@ const C4 = SPEC.C4
 const C4P: Prog[] = C4.code
 const BOTH = CSE.filter((n) => CRICKET.includes(n))
 const PICK3 = ['Arjun', 'Anu', 'Meena']
-/* the list's circle is smaller and only Anu is shared, so cse keeps room for its seven others */
-const LIST_G = { L: { cx: 88, cy: VH / 2 + 14, r: 86 }, R: { cx: 198, cy: VH / 2 + 14, r: 74 } }
-const LIST_GS = { L: { ...LIST_G.L, cy: SAFE_H / 2 + 14 }, R: { ...LIST_G.R, cy: SAFE_H / 2 + 14 } }
 
 /**
- * C4. Press 1: both.py, the vote 12 / 3 / 0. Press 2: only the middle chips
- * lift out into a new circle, both; 3 and the set. Press 3:
- * cse.intersection(a list): only Anu is in both; the output fills after a
- * beat, once the room has said it.
+ * C4, four presses (three until the view fixes of 2026-10-09). Press 1:
+ * both.py, the vote 12 / 3 / 0. Press 2: only the middle chips lift out into
+ * a new circle, both; 3 and the set. Press 3: cse.intersection(a list): the
+ * list drawn as a list, in square brackets, not as a circle; the 12 / 3 / 0
+ * choices go (they belong to the first program); the output waits for the
+ * room. Press 4: Anu lifts out of the list into result, {'Anu'}.
  */
+const ONE_W = 180
+const ONE_L = { cx: ONE_W / 2, cy: SAFE_H / 2 + 14, r: 86 }
 export function Intersection() {
-  const beat = useBeats(3)
+  const beat = useBeats(4)
   const { pick, setPick } = usePick()
   const refs = useRef<Record<string, HTMLElement | null>>({})
-  const phase = useStepPhase(beat, [2400])
-  const list = beat === 3
+  const list = beat >= 3
   const prog = list ? C4P[1] : C4P[0]
-  const out = beat === 2 ? outLines(C4P[0].output) : list && phase >= 1 ? outLines(C4P[1].output) : []
-  const pool: PoolItem[] = beat === 2 ? BOTH.map((n) => ({ name: n, from: refs.current[n] })) : list && phase >= 1 ? [{ name: 'Anu', from: refs.current.Anu }] : []
+  const out = beat === 2 ? outLines(C4P[0].output) : beat === 4 ? outLines(C4P[1].output) : []
+  const pool: PoolItem[] = beat === 2 ? BOTH.map((n) => ({ name: n, from: refs.current[n] })) : beat === 4 ? [{ name: 'Anu', from: refs.current['list:Anu'] }] : []
   return (
     <>
       <OpFrame
@@ -360,30 +367,33 @@ export function Intersection() {
         rows={5}
         ask={list ? C4.show[7] : beat === 2 ? C4.show[6] : C4.show[2]}
         out={out}
-        asking={beat === 1 || (list && phase < 1)}
-        drawing={beat === 2 || (list && phase >= 1)}
-        vote={<Vote options={[C4.show[3], C4.show[4], C4.show[5]]} right={1} shown={beat >= 2} pick={pick} setPick={setPick} cols={3} size={18} nowrap dense />}
+        asking={beat === 1 || beat === 3}
+        drawing={beat === 2 || beat === 4}
+        vote={
+          <Show on={!list}>
+            <Vote options={[C4.show[3], C4.show[4], C4.show[5]]} right={1} shown={beat >= 2} pick={pick} setPick={setPick} cols={3} size={18} nowrap dense />
+          </Show>
+        }
         picture={
-          <>
-            <Venn
-              W={VW}
-              H={SAFE_H}
-              L={list ? LIST_GS.L : GS.L}
-              R={list ? LIST_GS.R : GS.R}
-              left={CSE_SIDE}
-              right={list ? { code: 'the list', items: PICK3 } : CRI_SIDE}
-              shade={beat === 2 || (list && phase >= 1) ? { both: 'lit' } : {}}
-              refs={refs}
-              fs={FS}
-            />
-            <DrawArrow on={pool.length > 0} />
-            <Pool items={pool} rx={86} ry={78} fs={FS} code={list ? 'result' : 'both'} lit={pool.length > 0} />
+          list ? (
+            <>
+              <Venn W={ONE_W} H={SAFE_H} L={ONE_L} R={null} left={CSE_SIDE} refs={refs} fs={FS} tones={beat === 4 ? { Anu: 'lit' } : {}} />
+              <ListBox items={PICK3} refs={refs} />
+              <DrawArrow on={beat === 4} w={48} />
+              <Pool items={pool} rx={86} ry={78} fs={FS} code="result" lit={beat === 4} />
             </>
+          ) : (
+            <>
+              <Venn W={VW} H={SAFE_H} L={GS.L} R={GS.R} left={CSE_SIDE} right={CRI_SIDE} shade={beat === 2 ? { both: 'lit' } : {}} refs={refs} fs={FS} />
+              <DrawArrow on={beat === 2} />
+              <Pool items={pool} rx={86} ry={78} fs={FS} code="both" lit={beat === 2} />
+            </>
+          )
         }
         line={<DeckLine on={beat >= 2}>{C4.show[0]}</DeckLine>}
       />
       {beat >= 2 && pick === 1 && <Confetti seed={10} />}
-      <StepControls at={beat} total={3} />
+      <StepControls at={beat} total={4} />
     </>
   )
 }
@@ -447,18 +457,18 @@ const C6P: Prog[] = C6.code
 const ONE_GROUP = [...ONLY_CSE, ...ONLY_CRI]
 
 /**
- * C6. Press 1: one_group.py, the vote 12 / 9 / 3. Press 2: the middle greys,
- * both outer parts lift out together into one circle, 9. Press 3: the
- * method gives the same set; its output fills after a beat.
+ * C6, four presses (three until the view fixes of 2026-10-09). Press 1:
+ * one_group.py, the vote 12 / 9 / 3. Press 2: the middle greys, both outer
+ * parts lift out together into one circle, 9. Press 3: the method; its output
+ * waits for the room. Press 4: 9.
  */
 export function SymDiff() {
-  const beat = useBeats(3)
+  const beat = useBeats(4)
   const { pick, setPick } = usePick()
   const refs = useRef<Record<string, HTMLElement | null>>({})
-  const phase = useStepPhase(beat, [2200])
-  const method = beat === 3
+  const method = beat >= 3
   const prog = method ? C6P[1] : C6P[0]
-  const out = beat === 2 || (method && phase >= 1) ? outLines(prog.output) : []
+  const out = beat === 2 || beat === 4 ? outLines(prog.output) : []
   return (
     <>
       <OpFrame
@@ -466,8 +476,8 @@ export function SymDiff() {
         rows={4}
         ask={beat >= 2 ? C6.show[6] : C6.show[2]}
         out={out}
-        asking={beat === 1}
-        drawing={beat >= 2}
+        asking={beat === 1 || beat === 3}
+        drawing={beat === 2 || beat === 4}
         vote={<Vote options={[C6.show[3], C6.show[4], C6.show[5]]} right={1} shown={beat >= 2} pick={pick} setPick={setPick} cols={3} size={18} nowrap dense />}
         picture={
           <>
@@ -479,8 +489,7 @@ export function SymDiff() {
         line={<DeckLine on={beat >= 2}>{C6.show[0]}</DeckLine>}
       />
       {beat >= 2 && pick === 1 && <Confetti seed={12} />}
-      <StepControls at={beat} total={3} />
+      <StepControls at={beat} total={4} />
     </>
   )
 }
-
