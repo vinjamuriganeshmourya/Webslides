@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import type { SlideDef } from './types'
+import { setAutoplayPref, useAutoplayPref } from './autoplayPref'
 
 /**
  * JUMP TO A SLIDE, INSTEAD OF WALKING THERE ONE PRESS AT A TIME.
@@ -60,6 +61,7 @@ export function SlidePicker({
   onClose: () => void
 }) {
   const reduce = useReducedMotion()
+  const auto = useAutoplayPref()
   const [q, setQ] = useState('')
   const [cursor, setCursor] = useState(index)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -168,6 +170,51 @@ export function SlidePicker({
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-8 py-6">
+        {/*
+          THE DECK'S AUTO-PLAY SETTING (pedagogy team, 2026-10-12): the one
+          place it is set, as two cards drawn like the slide cards below. On,
+          the slides the deck lists as auto-play play their steps when they
+          open; Off, every slide waits for Next. It is kept per deck and takes
+          effect on the slide on screen at once (`autoplayPref.ts`). A key
+          press on a card stays on the card: Enter must not also jump to the
+          cursor's slide. The block is sticky, so the option is in view
+          however far down the list has scrolled to the cursor; on a phone
+          held upright the cards are 74px wide, so the second line is dropped
+          there (the slide cards truncate theirs) and ON / OFF say it alone.
+        */}
+        <div role="group" aria-label="Auto-play" className="sticky top-0 z-10 -mx-8 -mt-6 mb-4 bg-night px-8 pb-4 pt-6">
+          <p className="mb-2.5 font-heading text-[11px] font-bold uppercase tracking-[0.14em] text-white/45">Auto-play</p>
+          <div className="grid grid-cols-4 gap-2.5">
+            {([true, false] as const).map((v) => {
+              const chosen = auto === v
+              return (
+                <button
+                  key={v ? 'on' : 'off'}
+                  type="button"
+                  onClick={() => setAutoplayPref(v)}
+                  onKeyDown={(e) => e.stopPropagation()}
+                  aria-pressed={chosen}
+                  className={`rounded-card border px-3.5 py-3 text-left transition-colors ${
+                    chosen ? 'border-white/60 bg-white/15' : 'border-white/[0.12] bg-white/[0.055] hover:bg-white/10'
+                  }`}
+                >
+                  <span className="flex items-baseline gap-2">
+                    <span className="font-mono text-[12px] font-bold text-white/50">{v ? 'ON' : 'OFF'}</span>
+                    {chosen && (
+                      <span className="rounded-pill bg-white/20 px-1.5 py-0.5 font-mono text-[9.5px] font-bold uppercase tracking-wider text-white">
+                        now
+                      </span>
+                    )}
+                  </span>
+                  <span className="mt-1 hidden whitespace-nowrap font-heading text-[13.5px] font-semibold text-white/90 sm:block">
+                    {v ? 'Plays on opening' : 'Waits for Next'}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
         {hits.length === 0 && (
           <p className="font-body text-[15px] text-white/50">Nothing matches that.</p>
         )}

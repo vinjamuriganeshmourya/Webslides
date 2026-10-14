@@ -73,21 +73,22 @@ shipped with that exact mistake.
 | 30 | Every process is shown with a real screenshot |
 | 31 | Every code panel says where the code lives or runs: the language in a playground course, the file path or UI location in a project course |
 | 32 | The slide is laid out in zones: header, Space-1, Space-2, Space-3 |
-| 33 | The header: no tick before the kicker, and a pair of short gradient bars |
-| 34 | Typefaces: Inter for the kicker and content, Poppins for headings |
+| 33 | The header: no tick before the kicker; the kicker 22px Title Case navy; one gradient divider between kicker and title, no edge bars |
+| 34 | Typefaces: the updated template's sheet. Sora SemiBold for session and section titles and hero words, DM Sans SemiBold for headings, DM Sans Medium for kicker and body, Fira Code for code, Ubuntu Mono for code-window title bars; two weights only |
 | 35 | A heading never wraps: shorten the words, never shrink the font or widen the box |
 | 36 | No full stop at the end of a line of slide copy: two sentences on one line go onto two lines |
-| 37 | Template colours only: never a colour from the reference deck. The recap header is brand, like every other header |
+| 37 | Template colours only: never a colour from the reference deck. The recap header is brand, like every other header (the kit's `RecapSlide` since 2026-10-14). Headings and body are the template's navy on light slides |
 | 38 | One alignment per slide: the lead, the text, the code boxes and their captions share it. Left for text, lists and code; centred, first line included, for a diagram or a single statement |
 | 39 | The agenda mark says `Agenda`, large, over the session name, small; a long name shrinks to fit and is never clipped or truncated. The points sit on the arc, the group centred on the mark's centre line (y 366) with equal gaps, extending past the ring equally when there are many, never under the speaker box, never off the slide |
 | 40 | Code never shows a ligature: `==`, `===`, `>=`, `<=`, `!=` are separate characters. Ligatures are off on every code surface in the kit's `index.css`; never fixed slide by slide |
-| 41 | Every session ends with Python session 18's feedback slide, copied exactly (source of truth: its built `dist-single/python-session-18-comparing-strings-naming-variables.html`), only session-specific text changed, followed only by Thank you. Never recreated or redesigned. `feedback-check.mjs` compares the rendered slide markup |
+| 41 | Every session ends with the kit's `FeedbackSlide` (the standard slide since 2026-10-14; source of truth the kit's built gallery), after the Next Session signpost, followed only by Thank You and then All the Best. Never recreated or redesigned. `feedback-check.mjs` compares the rendered slide markup |
 | 42 | An arrow, cursor or connector never overlaps a box at any build step or state; its ends stay attached to the right boxes. Fixed in the component. `overlap-check.mjs` on the built file |
 | 43 | A highlight (glow, ring, tint, outline) matches the exact bounds of the element it highlights, never the width of its parent or container. `overlap-check.mjs` on the built file |
 | 44 | The agenda is static, exactly like Python session 19's: no step-through, no active or selected point, no highlight box or circle, no Next or Replay buttons; it advances with the deck's navigation only |
 | 45 | Arrow heads stay small and proportionate to the line (about 9px on a 2.5 to 3px connector), sized in absolute units, fixed in the arrow component |
 | 46 | A connector line meets its arrow head on the head's own axis: its last stretch is straight along the head's centre line; the head never moves to fix it. The line ends exactly at the centre of the head's base: no gap, no overlap (butt cap at the base) |
 | 47 | No label, annotation or callout overlaps a code box or any other element at any step; when space is tight, change the layout, never let them overlap. `overlap-check.mjs` on the built file |
+| 48 | Every slide sits on one of the kit's three grounds (paper, closing gradient, welcome mesh); a slide never paints its own wash, blur, orb or background; the hero frames put the white mark on stage and the words in a glass pill |
 
 ## Process rules
 
@@ -113,7 +114,7 @@ shipped with that exact mistake.
 | A pedagogy-team lesson plan is a WORKING DECK: render every card its presenter walks (`.slide, .pcard`, checked against its own counter) and match them, never rebuild from its markup | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md), section 6b |
 | No text runs out of its box (card, panel, option, pill, phone row) at any build step, and none is clipped or truncated to fit; `box-overflow-check.mjs` must print NO OVERFLOW | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md), section 7 |
 | Every deck applies the carry-forward standard: `Group`/`Focus` clusters, `Code.tsx` blanks, cross-fading captions, centred options, one code size, ease-in on every appearance, path-drawn arrows, lab characters, phones at 1 : 2.06, the full gate | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md), section 2b |
-| Every deck navigates three ways: keyboard, two-finger trackpad swipe, touch swipe. One gesture, one slide, never over an on-slide control. A deck not yet synced to the kit hook installs the session copy, `src/decks/figures/gestures.ts`, from its deck file. All three are checked on the built file | same, sections 2 and 7, and the kit's [`src/deck/useGestureNav.ts`](slide-kit/slide-template/src/deck/useGestureNav.ts) |
+| Every deck navigates three ways: keyboard, two-finger trackpad swipe, touch swipe. One gesture, one slide, never over an on-slide control. The kit's `useGestureNav` does it (in the kit since 2026-10-14); `gesture-check.mjs` proves it on the built file | same, sections 2 and 7, and the kit's [`src/deck/useGestureNav.ts`](slide-kit/slide-template/src/deck/useGestureNav.ts) |
 | Iterate with a one-slide screenshot; run the three harnesses once, before committing | same, section 6c |
 | Check every build at step 0, mid-run AND fully revealed | same, section 6c |
 | A correction on one slide is a correction on every slide of that shape: grep the construct, fix the class | same, section 6d |

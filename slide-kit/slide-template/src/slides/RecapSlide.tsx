@@ -27,7 +27,7 @@ export function RecapSlide({
           narrowed to the old left column (1.3fr of 1152 less the 40px gap) so the
           list never runs under the mascot.
         */}
-        <ZonedFrame kicker={kicker} title={title} tone="success" bodyWidth={628}>
+        <ZonedFrame kicker={kicker} title={title} tone="brand" bodyWidth={628}>
           <div className={`grid gap-x-10 gap-y-0 ${twoCols ? 'grid-cols-2' : 'grid-cols-1'}`}>
             {columns.map((group, i) => (
               <BulletList key={i} items={group} marker="check" tone="success" immediate={immediate} />

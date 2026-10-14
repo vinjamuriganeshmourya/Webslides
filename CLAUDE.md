@@ -248,11 +248,16 @@ npm run build:html     # -> dist-single/<htmlName>.html, the deliverable
 Then the verification pass:
 
 ```bash
-export CHROME_PATH=/opt/google/chrome/chrome
+export CHROME_PATH=/usr/bin/brave-browser
 node video-safe.mjs    # must print CLEAN
-node qa.mjs            # only slide 1 should be flagged
+node qa.mjs            # only the Welcome, Thank You and All the Best frames are flagged (NO LOGO)
 node preview.mjs && node scripts/build-preview-page.mjs
 ```
+
+That is the short pass. The full one is the check list in
+`slide-kit/slide-template/CLAUDE.md` (section 7, "Commands"): the twelve
+checks session 31 was held to are in the kit since 2026-10-14, and a deck is
+not done until every one prints clean or says it has nothing to check.
 
 **Keep `slideCount` in `deck.config.json` current.** Every harness reads it,
 and a stale count silently skips the tail of the deck.

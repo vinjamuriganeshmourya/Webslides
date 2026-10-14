@@ -89,7 +89,14 @@ probably in there already.
 `FlowChartSlide` · `StatusPointsSlide` · `ScenarioSlide` · `ConversationSlide` ·
 `ChatSlide` · `ChatCharacterSlide` · `QuestionSlide` · `QuestionPointsSlide` ·
 `QuizTimeSlide` · `PracticeSlide` · `RecapSlide` · `KeyTakeawaysSlide` ·
-`FeedbackSlide` · `ThankYouSlide`
+`NextSessionSlide` · `FeedbackSlide` · `ThankYouSlide` (also the All the Best send-off)
+
+The Python course's shared figures (the step controls, the code pane with
+blanks, the memory tiles, the phone, the classroom quiz, `Group` / `Focus`)
+are in the kit too since 2026-10-14, under `src/ui/foundations/`, imported by
+path: `@/ui/foundations/common`, the way the sessions imported
+`./figures/common`. A new deck starts from the template, never from the
+previous session's folder.
 
 **Four pairs are easy to confuse, and picking the wrong one is the commonest way
 this content ships wrong.** The registry has the full text; the short version:
@@ -135,25 +142,17 @@ and 2026-10-06, for every deck from then on; none is a choice the plan makes):
   shorten it. The points lay themselves out too: on the arc, the group centred
   on the mark's centre line with equal gaps, clear of the speaker box. Pass the
   items and nothing about position. Content rule 39 has the full text and the
-  check; until the kit PR lands, the session copy is Python 18's
-  `src/decks/figures/Agenda.tsx`.
+  check; the kit's `AgendaSlide` carries it since 2026-10-14.
 - **Navigation three ways: keyboard, two-finger trackpad swipe, touch swipe.**
   One gesture, one slide, never over an on-slide control. The kit's
-  `src/deck/useGestureNav.ts` (branch `kit/deck-gestures`) does it once that
-  branch has merged and the session is synced. Until then the deck file
-  installs the session copy: `src/decks/figures/gestures.ts` from Python 17
-  or 18, copied unchanged, with `installGestures()` at module scope. It
-  stands down by itself when the kit hook is present, so leaving it in place
-  after a sync costs nothing. Section 7 says how both are checked on the
-  built file.
-- **The standard feedback slide** (content rule 41): Python session 18's
-  `src/decks/figures/FeedbackForm.tsx`, copied unchanged, as
-  `<FeedbackEmbedSlide lesson={SESSION} />`, with
-  `slide-kit/assets/brand/feedback-qr.png` copied to
-  `public/assets/feedback-qr.png`. It has the QR code, the form link and the
-  Google Form in a frame, and is followed only by Thank you. Never the kit's
-  plain `FeedbackSlide`, and never redrawn: the source of truth is session
-  18's built file, and `feedback-check.mjs` (from Python 19's root) must
+  `src/deck/useGestureNav.ts` does it (in the kit since 2026-10-14); a deck
+  adds nothing. Section 7 says how it is checked on the built file.
+- **The standard feedback slide** (content rule 41): the kit's
+  `<FeedbackSlide lesson={SESSION} />` with id `feedback`, nothing copied. It
+  has the QR code, the form link and the Google Form in a frame. The close is
+  fixed: Next Session, then feedback, then Thank You, then All the Best
+  (`ThankYouSlide title="All the Best"`). Never redrawn: the source of truth
+  is the kit's built gallery, and `feedback-check.mjs` (in the kit) must
   report an exact copy on the built deck.
 
 **On every built card, the step controls and autoplay pacing are fixed too**
@@ -386,6 +385,17 @@ inline.
 
 ### It does not stay in the session
 
+**And a fix to a kit-owned file never stays in the session either.** From
+2026-10-05 to 2026-10-14 every kit-level fix (the agenda, the recap tone, the
+feedback slide, the gestures, the player) was parked as a "session-local
+override" under `src/decks/figures/` with a note that a kit PR would follow,
+and the PR never did. Sixteen decks carried the fixes and the template carried
+none, so the next deck built from the template lost all of them. A change to
+anything `KIT.md` lists as kit-owned goes to `slide-kit/slide-template` on a
+`kit/` branch and is merged before the deck that needed it is delivered. The
+session may carry a copy while the PR is open, with the branch named in its
+header; it may not be the only place the fix lives.
+
 **Anything built while generating a session that a second deck would want is
 copied back into `slide-kit/slide-template`.** Not left in the session, not
 copied later, not "noted for next time".
@@ -421,7 +431,7 @@ this?* A one-off arrangement for a single slide stays inline in the deck file.
    gallery is the only discovery mechanism there is.
 4. **Add a row to the registry**, saying when to reach for it.
 5. **Colours from `src/design/tokens.ts`, motion from the presets.**
-6. **Verify by rendering**, through all four harnesses, at 1280x720. A new type
+6. **Verify by rendering**, through the full check list of section 7, at 1280x720. A new type
    has been tested at one content length on one slide, which is not tested.
 7. **Commit it to the kit and raise a PR.** On a branch, never on `main`:
 
@@ -665,10 +675,9 @@ hard against an edge. Session 4 was reported clean by the first two and the
 user still opened it to find overlapping slides, because this harness was
 skipped.
 
-`qa.mjs`'s expected baseline is **two** slides, both benign: the Welcome slide
-(`NO LOGO`, plus its `pointer-events-none` decorative blobs) and the Thank you
-slide (`NO LOGO`, because it carries the mark on stage instead of in the
-footer). Anything else is a regression.
+`qa.mjs`'s expected baseline is **three** slides, all `NO LOGO` only and all
+benign: the Welcome frame, Thank You and All the Best, which carry the mark on
+stage instead of in the footer. Anything else is a regression.
 
 **Re-run `video-safe.mjs` and `qa.mjs` as a pair after any layout change.**
 They pull in opposite directions: video-safe wants content pushed down out of
@@ -702,9 +711,9 @@ trackpad burst with an inertia tail moves exactly one slide, in both
 directions; a vertical wheel moves nothing; a touch swipe left is next and
 right is previous; a tap and a vertical scroll move nothing; a swipe that
 starts on a button, a slider or an option does not change slide.
-`gesture-check.mjs` at Python 18's root does all of this against the built
-file; copy it to the session and run it. Run `agenda-check.mjs` beside it
-(content rule 39: the mark says `Agenda` over the session name, fitted).
+`gesture-check.mjs`, in the kit, does all of this against the built file.
+Run `agenda-check.mjs` beside it (content rule 39: the mark says `Agenda`
+over the session name, fitted; `AGENDA_SLIDE` names the slide).
 
 Report honestly: what passed, what failed, what you did not run.
 
@@ -778,7 +787,7 @@ Hard rule 9. Changing content changes more than one file. After edits, check:
 Plan at `<course>/session_plans/<session_name>/plan.md`, signed off → read the
 hard rules and the guidelines → apply the carry-forward standard (section 2b) → compose kit components, never new markup →
 figures that argue, icons from the house set, motion from presets at the
-explanatory tier → build → render and sweep all four harnesses → anything new and
+explanatory tier → build → render and run the full check list → anything new and
 reusable goes back into the kit, into the gallery, into the registry, and out as
 a PR → offer durable feedback to a named skill file → update the dependents and
 the plan.

@@ -53,6 +53,8 @@ export const baseDeckMeta: DeckMeta = {
   course: 'NxtWave · Session Template',
   lesson: 'Base Template',
   presenter: 'NxtWave Instructor',
+  /* The control bar auto-hides, as every delivered Python deck from session 18 ran it (2026-10-14). */
+  player: { autoHideControls: true },
 }
 
 /** Footer text on every slide: the session name, never "Session N". */
@@ -100,9 +102,10 @@ export const baseDeck: SlideDef[] = [
     section: 'Opening',
     label: 'Agenda',
     element: (
+      /* Pass the items and the session name only: the mark says Agenda, large,
+         over the session name, small (content rule 39). "What We Will Cover"
+         as the title is one of the three ways it shipped wrong. */
       <AgendaSlide
-        kicker="Agenda"
-        title="What We Will Cover"
         lesson={SESSION}
         items={[
           { title: 'The First Concept', sub: 'One divider, then three slides of mixed layouts' },

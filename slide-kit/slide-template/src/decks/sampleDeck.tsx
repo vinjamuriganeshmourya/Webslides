@@ -91,6 +91,11 @@ export const sampleMeta: DeckMeta = {
   course: 'Backend Development',
   lesson: 'REST APIs',
   presenter: 'NxtWave Instructor',
+  /* The control bar fades out when nothing is touched and comes back on a tap,
+     as every Python-course deck from session 18 to 31 ran it. The kit decks set
+     it too (2026-10-14) so a deck copied from them matches, and so
+     `autohide-check.mjs` means the same thing here as in a session. */
+  player: { autoHideControls: true },
 }
 
 const FOOTER = 'REST APIs · Backend'
@@ -1515,12 +1520,7 @@ export const sampleDeck: SlideDef[] = [
     label: 'Feedback',
     section: 'Wrap-up',
     element: (
-      <FeedbackSlide
-        lesson={FOOTER}
-        title="How did this session land?"
-        prompt="Two minutes of feedback helps us make the next session sharper."
-        link="nxtwave.tech/feedback"
-      />
+      <FeedbackSlide lesson={FOOTER} />
     ),
   },
   {

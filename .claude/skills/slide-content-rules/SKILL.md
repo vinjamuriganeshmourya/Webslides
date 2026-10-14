@@ -1080,51 +1080,55 @@ slide to slide, so the body started at a different height on every slide and
 content was pushed down or packed top-left by whatever the header happened to
 be. Fixed zones give every slide the same body area.
 
-## 33. The header: no tick before the kicker, and a pair of short gradient bars
+## 33. The header: the kicker, a gradient divider, the title
 
-1. **No accent line before the kicker.** The kicker is the uppercase label on
-   its own: no 3px x 24px tick in front of it, and no gap left where it was.
-2. **Two gradient bars at the left edge, not one full-height rail.**
-   - The edge bar: x 0..24, only its right corners rounded, by 2px.
-   - An 8px gap.
-   - The rail: x 32..38, fully rounded.
-   - Both 80px tall (`h-20`), starting with the kicker at y=52 and ending at
-     y=132, just under the title, and both fading from the tone to transparent.
+1. **No accent line before the kicker.** The kicker is the label on its own: no
+   3px x 24px tick in front of it, and no gap left where it was.
+2. **The kicker is 22px, Title Case as typed, navy on a light slide.** DM Sans
+   Medium, 0.02em tracking, `#002A4B` (`colors.ink`); white on a dark slide.
+   Never capitals, never the slide's tone colour. Title Case follows the
+   user's seven rules: first and last word capitalised; nouns, verbs,
+   adjectives, adverbs and pronouns capitalised; `a an the and but or nor in
+   on at of to for by as` lowercase unless first or last; prepositions of four
+   or more letters capitalised; the first word after a colon capitalised;
+   every part of a hyphenated term capitalised; a technical name in its own
+   form (`id`, `id()` stay lowercase even as the last word).
+3. **One gradient divider between the kicker and the title**, 3px tall and
+   400px long from the text's left edge, solid in the slide's tone for 13% of
+   its run and faded to nothing by the end, 33px below the header's top. No
+   bars at the left edge: the pair of 2026-09-24 went with the old design.
 
-The design is the user's `Rules_beta/graphics.png`, measured pixel by pixel,
-first judged on `Rules_beta/beta_testing_slides` (`src/ui/primitives.tsx` and
-`src/ui/SlideHeader.tsx` there). The reason: the single rail ran the header's
-full height, including the lead, and ended 4px past the header block it belongs
-to; the pair brackets exactly the kicker and title that rule 19 pins, and the
-tick before the kicker was a second accent competing with them.
+The design is the user's updated template (`updated_template/`), first proved
+on `new-template-slide-generation/` (Python session 20 re-dressed,
+2026-10-12 and 13) and made the base template on 2026-10-14. **The kit carries
+it** (`src/ui/primitives.tsx`, `src/ui/SlideHeader.tsx`, the `kicker` token in
+`tailwind.config.ts`). An existing session gets it the next time
+`sync-kit.mjs --apply` is run on it; delivered decks stay as they are.
 
-**The kit template carries this header** (`src/ui/primitives.tsx` and
-`src/ui/SlideHeader.tsx`, updated 2026-09-24). An existing session gets it the
-next time `sync-kit.mjs --apply` is run on it; until then it still draws the
-tick and the single rail.
-
-## 34. Typefaces: Inter for the kicker and content, Poppins for headings
+## 34. Typefaces: the updated template's sheet, four faces, two weights
 
 | Role | Typeface |
 |---|---|
-| Kicker | Inter |
-| Headings (slide titles, card and step titles, everything `font-heading`) | Poppins |
-| Content (leads, bullets, subs, table cells, captions, callouts) | Inter |
-| Code and terminals | JetBrains Mono, unchanged |
+| Session and section titles, the hero words (Welcome, Thank You, All the Best, the agenda's `Agenda`, `Quiz Time!`), the next session's name | Sora SemiBold (`font-tpl-title`) |
+| Slide titles and every heading inside a figure (question lines, task names, agenda point titles, chip, button and vote labels, badge numbers) | DM Sans SemiBold (`font-heading`) |
+| Kicker and all body (leads, bullets, subs, captions, worksheet steps, speech bubbles, the phone mock, timer digits) | DM Sans Medium (`font-body`) |
+| Code, output, the ids, names and values in memory pictures, the player's own counter and picker | Fira Code (`font-mono`) |
+| The title bar of a code or terminal window (`Python`, `OUTPUT`, the tabs) | Ubuntu Mono (`font-term`) |
 
-Never set another family on a slide, and never hardcode a `font-family` in a
-deck: headings use `font-heading`, everything else inherits `font-body` from
-`SlideBase`.
+Only Medium (500) and SemiBold (600) exist. The `fontWeight` remap in
+`tailwind.config.ts` folds every lighter class onto Medium and every heavier
+one onto SemiBold, and `font-synthesis-weight: none` stops the browser faking
+a weight. Never set another family on a slide, and never hardcode a
+`font-family` in a deck: headings use `font-heading`, hero words
+`font-tpl-title`, everything else inherits `font-body` from `SlideBase`.
 
-Poppins replaced Sora on 2026-09-25. The user compared two sets side by side on
-`Rules_beta/typography` (set 1: Inter / Poppins / Inter; set 2: Work Sans /
-Libre Franklin / Work Sans) and chose set 1 for every deck.
-
-**The kit template carries it** (`index.html`, `tailwind.config.ts`,
-`src/design/tokens.ts`). An existing session keeps Sora until `sync-kit.mjs
---apply` is run on it. Poppins sets wider than Sora, so re-run `qa.mjs` and
-`fit-check.mjs` on a session after syncing it: a title that fitted in Sora can
-wrap in Poppins.
+The sheet is the user's (2026-10-12, on the Python session 20 re-dress), made
+the base template on 2026-10-14; it replaced Poppins, Inter and JetBrains
+Mono, which had replaced Sora on 2026-09-25. **The kit carries it**
+(`index.html`, `tailwind.config.ts`, `src/design/tokens.ts`, `src/index.css`).
+An existing session keeps its old faces until `sync-kit.mjs --apply` is run on
+it. DM Sans measures linear under zoom to 0.01px, but a line can still sit at a
+wrap boundary, so re-run `fit-check.mjs` on a session after syncing it.
 
 ## 35. A heading never wraps: shorten the words
 
@@ -1184,12 +1188,15 @@ that happens to echo it.
 
 Three places this bites:
 
-- **The recap header.** The kit's `RecapSlide` paints its kicker and the two
-  gradient bars beside it in the success tone. On a deck whose every other
-  header is brand blue that reads as a stray colour, so the recap header takes
-  the **brand tone** like every other content slide. Until a kit PR gives
-  `RecapSlide` a `tone` prop, a session does this with the `RecapBrand`
-  override that sessions 16 and 17 of the Python course carry.
+- **The recap header.** The kit's `RecapSlide` used to paint its kicker and
+  the bars beside it in the success tone. On a deck whose every other header
+  is brand blue that reads as a stray colour, so the recap header takes the
+  **brand tone** like every other content slide. The kit's `RecapSlide` does
+  so since 2026-10-14; sessions 16 to 31 carried the same thing as the
+  `RecapBrand` override. The checklist's green ticks stay: a tick is a verdict.
+- **Text is the template's navy.** Headings and body on a light slide are both
+  `#002A4B` (`ink` and `body` in the tokens); white on a dark slide. Never a
+  grey body colour from a reference.
 - **Pills, chips and category bars** (takeaways, legends, option letters) are
   tokens: `brand`, `brandDark`, `success`, `warning`, `danger`, `muted`,
   `accent`, `teal`. Never the reference's purple, pink or grey.
@@ -1257,11 +1264,11 @@ and nothing else as the title. "What We Will Cover", "Today's Agenda" and
 "Agenda for Today's Session" are the three ways it shipped wrong.
 
 The fitting is the component's job, not the deck's. The kit's `AgendaSlide`
-(kit branch `kit/agenda-session-name`; `title` defaults to `Agenda` and
-`kicker` to `lesson`) steps the name down from 16px towards 11px until it sits
-in two lines inside the mark, and a session that is not yet synced carries the
-same file as `src/decks/figures/Agenda.tsx` (Python 17 and 18). Never shorten
-the session name to make it fit, and never pass it as the title.
+(`title` defaults to `Agenda` and `kicker` to `lesson`) steps the name down
+from 16px towards 11px until it sits in two lines inside the mark. Sessions 17
+to 31 carried this file as `src/decks/figures/Agenda.tsx`; it is the kit's own
+since 2026-10-14. Never shorten the session name to make it fit, and never
+pass it as the title.
 
 **The points, too, are the component's job**, and the rule is the same for
 every count (user, 2026-10-05, first on Python 18, then 17, then for every
@@ -1277,8 +1284,8 @@ capped at the frame's right edge, and a long title or sub wraps inside that
 width. Never a straight vertical list, never a fixed first and last y, never
 a title shortened to fit.
 
-**Check, on the built file:** `node agenda-check.mjs` at the session root
-(Python 17 and 18 carry it; copy it forward): the large word is `Agenda`, the
+**Check, on the built file:** `node agenda-check.mjs` at the session root (in
+the kit since 2026-10-14; `AGENDA_SLIDE` names the slide): the large word is `Agenda`, the
 small line is `deck.config.json`'s title, both sit inside the mark, the name in
 at most two lines with no sideways overflow; the group of points centred on
 y 366 with equal gaps, every badge within 2px of the arc, no point reaching
@@ -1300,9 +1307,9 @@ y 268 to a fixed y 612 whatever their number.
 ## 40. Code never shows a ligature: `==` and `>=` are two characters
 
 **Hard rule.** In code, `==`, `===`, `>=`, `<=` and `!=` are drawn as the
-separate characters the learner types, never as one joined glyph. JetBrains
-Mono, the kit's code face, ships ligatures that join exactly these, so every
-code surface has them switched off:
+separate characters the learner types, never as one joined glyph. Fira Code,
+the kit's code face since 2026-10-14 (JetBrains Mono before it), ships
+ligatures that join exactly these, so every code surface has them switched off:
 
 ```css
 .font-mono, pre, code, kbd, samp {
@@ -1311,15 +1318,14 @@ code surface has them switched off:
 }
 ```
 
-That block lives in the kit's `src/index.css` (kit branch
-`kit/code-ligatures`; Python 17 and 18 carry it), so a deck gets it without
-doing anything: the fix is the template's, never a slide's. A session figure
+That block lives in the kit's `src/index.css` (since 2026-10-14; Python 17 to
+31 carried it in their own copies), so a deck gets it without doing anything: the fix is the template's, never a slide's. A session figure
 that draws code with an inline `fontFamily` instead of the `font-mono` class
 must set the same two properties beside it. The advance widths do not change,
 so nothing on the slide moves.
 
 **Check, on the built file:** `node ligature-check.mjs` at the session root
-(Python 17 and 18 carry it; copy it forward) walks every slide, finds every
+(in the kit since 2026-10-14) walks every slide, finds every
 text node carrying one of the five operators, and fails if the element drawing
 it in the monospace face still has ligatures on. It prints the slides and the
 operators it found.
@@ -1331,16 +1337,21 @@ render as merged glyphs in code. Build this into the template."* Nine slides
 of 17 and five of 18 showed a joined `==` or `>=`; the whole course had been
 teaching comparison with a glyph no keyboard has.
 
-## 41. Every deck closes with Python session 18's feedback slide, copied exactly
+## 41. Every deck closes with the kit's feedback slide, then Thank You, then All the Best
 
-**Hard rule.** Every session created from now on ends with the feedback slide
-of Python session 18, copied exactly, with only session-specific text
-changed. It is never recreated, redesigned, re-laid out or restyled. The
-**source of truth is the built file**:
+**Hard rule.** Every session ends with the standard feedback slide, the kit's
+`FeedbackSlide`, used as `<FeedbackSlide lesson={SESSION} />` with the id
+`feedback`, then `ThankYouSlide`, then `ThankYouSlide title="All the Best"`
+as the last frame, with the Next Session signpost before the feedback slide.
+The feedback slide is never recreated, redesigned, re-laid out or restyled.
+The **source of truth is the kit's built gallery**:
 
 ```
-Outputs/python/18_comparing_strings_naming_variables/dist-single/python-session-18-comparing-strings-naming-variables.html
+slide-kit/slide-template/dist-single/base-template.html
 ```
+
+It was built and chosen in Python session 18 and carried by every deck since
+as `src/decks/figures/FeedbackForm.tsx`; the kit holds it since 2026-10-14.
 
 What that slide is: the night stage, the kicker `Feedback`, the title `We’d
 love your feedback` and the line `Your thoughts help us improve this course`;
@@ -1348,34 +1359,27 @@ under them one white box holding the supplied QR code with `Scan to open the
 feedback form`, the form's link (`forms.gle/5d1Ru8geTKdC4Bcr7`, opening in a
 new tab) and `Scan the code, click the link, or fill out the form right
 here`, a hairline separator, then the Google Form itself in a frame. The
-kit's plain `FeedbackSlide` is never used.
+kit's earlier `FeedbackSlide`, a heading with a link and no way to reach the
+form, is gone; the name now IS this slide.
 
 **Where it sits.** It is the deck's closing content slide, with id
-`feedback`, followed only by the Thank you slide, as in the source deck.
+`feedback`, after the Next Session signpost and followed only by Thank You and
+then All the Best.
 
-**How it is copied**, until the kit carries it. The built file was made from
-these two files, so a deck copies them and nothing else:
-
-- `Outputs/python/18_comparing_strings_naming_variables/src/decks/figures/FeedbackForm.tsx`
-  to the deck's `src/decks/figures/FeedbackForm.tsx`, unchanged, used as
-  `<FeedbackEmbedSlide lesson={SESSION} />` on the slide with id `feedback`.
-  The only edit allowed is session-specific text, if the slide ever carries
-  any (today it carries none), and the file's header comment.
-- `slide-kit/assets/brand/feedback-qr.png` (byte for byte the source deck's
-  `public/assets/feedback-qr.png`) to the deck's `public/assets/feedback-qr.png`
-  (rule 13). The QR encodes the link above. Never regenerate it, recolour it
-  or retype it.
+**How a deck uses it.** Nothing is copied: the kit's `src/slides/FeedbackSlide.tsx`
+and `public/assets/feedback-qr.png` (byte for byte `slide-kit/assets/brand/
+feedback-qr.png`, rule 13) come with the template. A deck passes the session
+name and nothing else. Never regenerate the QR, recolour it or retype it.
 
 The frame needs the network, and it is the only thing in a deck that does.
 The QR code and the link reach the same form when the frame cannot load.
 
 **Check, on the built file, before a deck is delivered:** `node
-feedback-check.mjs` (Python 19 carries it; copy it to the session root). It
-opens the deck and the source file, finds the slide with id `feedback` in
-each, and compares the rendered slide markup character for character. It
-also checks that the QR image loads, the link text, the form frame's `src`,
-and that only Thank you follows. A redrawn or restyled slide fails it, and
-so does the kit's `FeedbackSlide`. The frame never lets the network go
+feedback-check.mjs` (in the kit since 2026-10-14). It opens the deck and the
+kit's built gallery, finds the slide with id `feedback` in each, and compares
+the rendered slide markup character for character. It also checks that the QR
+image loads, the link text, the form frame's `src`, and that only Thank You
+and All the Best follow. A redrawn or restyled slide fails it. The frame never lets the network go
 quiet, so `video-safe`, `qa`, `align-check` and `mixed-align-check`, which
 wait for that, may time out on this slide; run them with outside requests
 blocked rather than changing the slide.
@@ -1394,6 +1398,25 @@ must end with the feedback slide copied exactly from the source file, with
 only session-specific text changed. Do not recreate or redesign it."* That
 is why the built file is named as the source of truth and the check compares
 markup rather than trusting a description.
+
+## 48. Every slide sits on one of the kit's three grounds, and a slide never paints its own
+
+**Hard rule.** The frame paints the ground, from `src/design/ground.tsx`: the
+paper ground (off-white, the azure wash in the top-right corner, two thin
+deep-blue rings) under every light slide; the closing gradient (with its grain
+and two rings) under every dark slide; the welcome mesh under the opener and
+the Next Session signpost. A slide, a figure or a session file never draws a
+wash, a blur, an orb, a dot grid or a background of its own behind content,
+and never passes a `bg-*` class to `SlideBase`. The footer bar on a light slide
+is flat brand blue. The hero frames (Welcome, Thank You, All the Best, Next
+Session) put the white mark on stage and the words in a glass pill, static
+except the greeting's letters.
+
+Why: the user's updated template (2026-10-12), made the base template on
+2026-10-14. The kit's old wash, hairline arcs, orbs and dot grid were deleted
+rather than switched off, and the agenda's own blue blur went with them: a
+frame that carries two grounds is a frame whose look depends on stacking
+order, which `SlideBase` records happening once already.
 
 ## 42. An arrow or connector never overlaps a box, at any step
 
@@ -1417,7 +1440,7 @@ Fix the component that draws the arrow, never one slide's coordinates, so
 every slide that uses it is fixed at once.
 
 **Check, on the built file, before a deck is delivered:** `node
-overlap-check.mjs` (Python 19 carries it; copy it to the session root) steps
+overlap-check.mjs` (in the kit since 2026-10-14) steps
 every slide through every build and reports any small arrow-like `<svg>`
 that overlaps a bordered box other than its own container. It must print no
 findings. The other harnesses cannot see this: an arrow and a box are both

@@ -471,12 +471,27 @@ npm run build               # tsc -b && vite build
 npm run build:html          # ONE self-contained .html — see below
 npx tsc -b --noEmit         # fastest correctness check
 
-export CHROME_PATH=/opt/google/chrome/chrome
+export CHROME_PATH=/usr/bin/brave-browser      # or /opt/google/chrome/chrome
 node qa.mjs                 # overflow + logo per slide
 node video-safe.mjs         # must print CLEAN
 node align-check.mjs        # header datum drift
 node fit-check.mjs          # layout identical at 1x/1.5x/2x, and centred
 node workflow/export/build-reveal-steps.mjs http://localhost:<port> <count>
+
+# THE FULL CHECK LIST, session 31's, in the kit since 2026-10-14. On the dev server:
+node mixed-align-check.mjs                       # content rule 38: 0 slides mix left and centred blocks
+node box-overflow-check.mjs http://localhost:<port> <count>     # must print NO OVERFLOW
+node controls-clear-check.mjs http://localhost:<port> <count>   # must print CLEAR
+# On the BUILT file (dist-single/<htmlName>.html); the slide numbers are a deck's own:
+AGENDA_SLIDE=4 node agenda-check.mjs             # rule 39: Agenda over the session name, points centred on the mark
+node feedback-check.mjs                          # rule 41: the kit's feedback slide, untouched, then Thank You, All the Best
+node ligature-check.mjs                          # rule 40
+node overlap-check.mjs                           # rules 42, 43, 47
+CONTENT_SLIDE=6 node gesture-check.mjs           # keyboard, trackpad, touch: one gesture, one slide
+CONTENT_SLIDE=6 node phone-nav-check.mjs         # the bar on a phone, both orientations
+CONTENT_SLIDE=6 PLAIN_SLIDE=2 BUTTONS_SLIDE=10 node autohide-check.mjs   # the bar hides and comes back
+node nav-stress-check.mjs dist-single/<htmlName>.html chromium,firefox  # no stacking, every engine and size
+AUTOPLAY_ON=3,4,7 AUTOPLAY_TOTAL=<count> node autoplay-check.mjs        # a deck's own autoplay list; skips when none
 
 node sync-kit.mjs --check ../../django_deployement_course/deployement_session_1_v2   # is that session behind?
 node sync-kit.mjs --apply ../../django_deployement_course/deployement_session_1_v2   # bring it up to date
@@ -484,7 +499,10 @@ node sync-kit.mjs --apply ../../django_deployement_course/deployement_session_1_
 
 The harnesses take their URL, slide count and output name from
 `deck.config.json`, so the bare command is correct in every session. Pass
-arguments only to override. **Update `slideCount` there when slides are added or
+arguments only to override. The twelve checks from session 31 take the slides
+they drive from the environment variables shown, with session 31's numbers as
+the defaults; `feedback-check.mjs` finds the kit's built gallery by walking up
+to the repo root, or takes `FEEDBACK_SOURCE`. **Update `slideCount` there when slides are added or
 removed** — a stale count silently skips the tail of the deck.
 
 `?all` forces every click-gated build step open. It does NOT fast-forward
