@@ -116,14 +116,15 @@ export function SectionBreakerSlide({
           )}
           {kicker && (
             <Reveal dir="up" className="mb-4 inline-block">
-              <Kicker tone={tone} onDark>
+              {/* The updated template (base template since 2026-10-14): DM Sans kicker, Sora title at the template's section-title size (101px on 1920 = 67px here), the same as the session-name slide: one size per slide type. */}
+              <Kicker tone={tone} onDark className="font-tpl-body">
                 {kicker}
               </Kicker>
             </Reveal>
           )}
           <Reveal dir="up">
             <motion.h2
-              className="font-heading text-slide-title-lg font-extrabold leading-[1.04] text-white"
+              className="font-tpl-title text-[67px] font-semibold leading-[1.05] text-white"
               initial={instant ? false : { opacity: 0, scale: 0.97, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ delay: 0.35, duration: 1.1, ease: easing.soft }}

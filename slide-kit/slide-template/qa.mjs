@@ -33,21 +33,20 @@ fs.mkdirSync(OUT, { recursive: true })
 const MIN_TEXT_PX = 16
 
 /**
- * The 15px kicker is the ONE exemption, and it is deliberately narrow.
+ * The kicker used to be the ONE exemption: `text-kicker` was 15px, uppercase and
+ * 0.14em tracked, under the floor, and flagging it would have put a finding on
+ * nearly every slide. It was matched by its rendered SIGNATURE, never by class
+ * name, so a 15px SENTENCE was still a finding.
  *
- * `text-kicker` is a named step in the type scale at 15px: uppercase, 0.14em
- * tracked, the section label that sits above almost every slide title. Flagging
- * it would put a finding on nearly every slide in every deck, and a report that
- * fires everywhere is a report nobody reads.
- *
- * It is matched by its rendered SIGNATURE — 15px AND uppercase AND visibly
- * tracked — not by its class name, so a 15px SENTENCE is still a finding. That
- * is the point: `align-check.mjs` records at length that an exemption which
- * fires by accident is worse than no harness, because it is believed. Widen this
- * and you re-open the 7px hole.
+ * Since the updated template became the base template (2026-10-14) the kicker
+ * is 22px, title case, 0.02em: it clears MIN_TEXT_PX on its own and the
+ * exemption below never fires. The constants are kept current with the type
+ * scale so nothing here encodes a value it no longer has; `align-check.mjs`
+ * records at length that an exemption which fires by accident is worse than no
+ * harness, because it is believed.
  */
-const KICKER_PX = 15
-const KICKER_TRACKING_PX = 1.5
+const KICKER_PX = 22
+const KICKER_TRACKING_PX = 0.3
 
 /**
  * The deck's own chrome is UI, not content, so it is not held to the floor: the

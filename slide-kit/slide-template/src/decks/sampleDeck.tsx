@@ -58,6 +58,7 @@ import {
   PracticeSlide,
   FeedbackSlide,
   ThankYouSlide,
+  NextSessionSlide,
 } from '@/slides'
 import {
   BeatStory as GalleryBeatStory,
@@ -563,7 +564,10 @@ export const sampleDeck: SlideDef[] = [
         beats={[
           { label: 'Situation', detail: 'The app has no direct database access.', icon: 'info', tone: 'brand' },
           { label: 'Action', detail: 'Expose GET /api/products/ with a DRF view + serializer.', icon: 'code', tone: 'teal' },
-          { label: 'Result', detail: 'The app fetches JSON and renders the catalogue anywhere.', icon: 'check', tone: 'success' },
+          /* 'renders the catalogue anywhere.' measured 293.16px against a 293px card at 1x
+             and 439.73 against 440.84 at 1.5x: three lines at one zoom, two at the other,
+             which fit-check rightly fails. Boundary copy, shortened (2026-10-14). */
+          { label: 'Result', detail: 'The app fetches JSON and renders the catalogue.', icon: 'check', tone: 'success' },
         ]}
       />
     ),
@@ -1499,6 +1503,14 @@ export const sampleDeck: SlideDef[] = [
     ),
   },
   {
+    id: 'next-session',
+    label: 'Next session',
+    section: 'Wrap-up',
+    notes:
+      'THE SIGNPOST BEFORE THE CLOSE. A glass chip reading "Next Session" over the next session\'s name, on the mesh ground, the two centred together as one block. The name is written the way that session\'s own title slide will write it, and nothing else goes on the frame: no line on why it follows, no list of what it covers. It sits after the takeaways and before the feedback frame (content rule 41: feedback is followed only by the close), which is why Thank you carries no "next up" line of its own.',
+    element: <NextSessionSlide title="Lists and Strings" lesson={FOOTER} />,
+  },
+  {
     id: 'feedback',
     label: 'Feedback',
     section: 'Wrap-up',
@@ -1516,9 +1528,17 @@ export const sampleDeck: SlideDef[] = [
     label: 'Thank you',
     transition: 'zoom',
     notes:
-      'THE LAST FRAME, AND IT CARRIES TWO WORDS. No sign-off sentence, no recap of what the room can now do, and no "see you next session": the Next session frame sits immediately before this one and already names what is coming, and a summary here gives the deck two endings. `message` still exists on the props type for a deck that genuinely needs one line, but the default is nothing.',
+      'TWO WORDS, THE WHITE MARK, AND NOTHING ELSE. No sign-off sentence, no recap of what the room can now do, and no "see you next session": the Next session frame sits immediately before this one and already names what is coming, and a summary here gives the deck two endings. `message` still exists on the props type for a deck that genuinely needs one line, but the default is nothing. The send-off, All the Best, follows it on the same frame.',
     element: (
-      <ThankYouSlide title="Thank you!" />
+      <ThankYouSlide title="Thank You" />
     ),
+  },
+  {
+    id: 'all-the-best',
+    label: 'All the best',
+    transition: 'fade',
+    notes:
+      'THE SEND-OFF, AND THE LAST FRAME. The same frame as Thank you with different words: `ThankYouSlide title="All the Best"`. Title case under the kicker and title rule, so "the" stays lowercase. Nothing else goes on it.',
+    element: <ThankYouSlide title="All the Best" />,
   },
 ]

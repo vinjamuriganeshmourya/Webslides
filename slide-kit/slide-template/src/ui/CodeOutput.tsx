@@ -141,7 +141,7 @@ export function OutputPanel({
     >
       <div className="flex items-center gap-2 border-b border-line bg-surface px-4 py-2">
         <span className="inline-block h-2 w-2 rounded-full" style={{ background: OUT_DOT[kind] }} />
-        <span className="font-heading text-body-sm font-bold uppercase tracking-wider text-body">
+        <span className="font-term text-body-sm font-bold uppercase tracking-wider text-body">
           {title ?? OUT_TITLE[kind]}
         </span>
       </div>
@@ -208,7 +208,7 @@ function PaneLabel({ label, logo }: { label?: ReactNode; logo?: string }) {
     <div className="mb-2 flex items-center gap-2">
       {logo && <img src={logo} alt="" aria-hidden className="h-6 w-6 object-contain" />}
       {label && (
-        <span className="font-heading text-body-sm font-bold uppercase tracking-wider text-body">
+        <span className="font-term text-body-sm font-bold uppercase tracking-wider text-body">
           {label}
         </span>
       )}

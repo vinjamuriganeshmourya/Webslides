@@ -66,12 +66,12 @@ export default {
         danger: { DEFAULT: '#EF4444', 100: '#FEE2E2', 600: '#B91C1C' },
         info: { DEFAULT: '#0EA5E9', 100: '#E0F2FE', 600: '#0369A1' },
         ink: {
-          DEFAULT: '#0B1A2B', // headings / strong text
-          soft: '#1E3048',
+          DEFAULT: '#002A4B', // the updated template's navy (user, 2026-10-12; base template 2026-10-14)
+          soft: '#002A4B',
         },
         body: {
-          DEFAULT: '#4A5B6B', // paragraph text
-          soft: '#6B7A8A',
+          DEFAULT: '#002A4B', // body text is the same navy (user, 2026-10-12)
+          soft: '#002A4B',
         },
         muted: '#8A99A8',
         line: '#D8E3F5',
@@ -100,16 +100,30 @@ export default {
         },
       },
       fontFamily: {
-        heading: ['Poppins', 'system-ui', 'sans-serif'],
-        body: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        /* THE UPDATED TEMPLATE'S FONT SHEET (user, 2026-10-12; the base template since 2026-10-14; content rule 34). `heading` and
+           `body` are both DM Sans (Medium for body, SemiBold for headings, see
+           fontWeight below); `mono` is Fira Code; `tpl-title` is Sora SemiBold for
+           session and section titles and hero words; `term` is Ubuntu Mono for
+           the title bar of a code or terminal window. */
+        heading: ['"DM Sans"', 'system-ui', 'sans-serif'],
+        body: ['"DM Sans"', 'system-ui', 'sans-serif'],
+        mono: ['"Fira Code"', 'ui-monospace', 'monospace'],
+        'tpl-title': ['Sora', 'system-ui', 'sans-serif'],
+        'tpl-body': ['"DM Sans"', 'system-ui', 'sans-serif'],
+        term: ['"Ubuntu Mono"', 'ui-monospace', 'monospace'],
+      },
+      /* Two weights only, Medium and SemiBold: every lighter class is Medium, every heavier one SemiBold. */
+      fontWeight: {
+        thin: '500', extralight: '500', light: '500', normal: '500', medium: '500',
+        semibold: '600', bold: '600', extrabold: '600', black: '600',
       },
       /* Type scale locked to the 1280×720 slide canvas (fixed px). */
       fontSize: {
-        kicker: ['15px', { lineHeight: '1.2', letterSpacing: '0.14em', fontWeight: '700' }],
-        'slide-title': ['34px', { lineHeight: '1.12', fontWeight: '700' }],
-        'slide-title-lg': ['44px', { lineHeight: '1.08', fontWeight: '800' }],
-        hero: ['64px', { lineHeight: '1.02', fontWeight: '800' }],
+        /* The kicker: 22px title case at 0.02em, Medium (user, 2026-10-13); was 15px capitals at 0.14em, bold. */
+        kicker: ['22px', { lineHeight: '1.2', letterSpacing: '0.02em', fontWeight: '500' }],
+        'slide-title': ['34px', { lineHeight: '1.12', fontWeight: '600' }],
+        'slide-title-lg': ['44px', { lineHeight: '1.08', fontWeight: '600' }],
+        hero: ['64px', { lineHeight: '1.02', fontWeight: '600' }],
         'body-xl': ['26px', { lineHeight: '1.45' }],
         'body-lg': ['22px', { lineHeight: '1.5' }],
         body: ['19px', { lineHeight: '1.6' }],

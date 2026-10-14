@@ -86,7 +86,7 @@ export function Countdown({ seconds }: { seconds: number }) {
           style={{ transition: 'stroke-dashoffset 1s linear' }}
         />
       </svg>
-      <span role="timer" className="font-mono text-body-lg font-semibold tabular-nums" style={{ color: done ? colors.danger : colors.ink }}>
+      <span role="timer" className="font-body text-body-lg font-semibold tabular-nums" style={{ color: done ? colors.danger : colors.ink }}>
         {fmt(left)}
       </span>
     </span>

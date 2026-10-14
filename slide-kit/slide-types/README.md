@@ -41,6 +41,8 @@ propagated by `sync-kit.mjs`; nothing is duplicated here, so nothing can drift.
 | `RecapSlide` | what was covered |
 | `KeyTakeawaysSlide` | what to remember |
 | `FeedbackSlide` `ThankYouSlide` `BrandSlide` | the closing chrome |
+| `NextSessionSlide` | the signpost before the close: a glass chip over the next session's name, on the mesh ground. Added to the kit 2026-10-14 with the updated template |
+| `ThankYouSlide title="All the Best"` | the send-off, the last frame of every deck: the Thank you frame with different words |
 
 `QuestionSlide` was **added in session 4**. A question posed to the room used to
 be written as a `ContentSlide` with a lead and no points, which inherits the

@@ -50,7 +50,7 @@ import type { QuestionPointsSlideProps } from './types'
  * reason.
  */
 export function QuestionPointsSlide({
-  kicker = 'A question first',
+  kicker = 'A Question First',
   question,
   qualifier,
   points,

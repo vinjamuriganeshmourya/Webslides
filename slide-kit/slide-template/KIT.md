@@ -29,7 +29,7 @@ reads and never writes.
 
 | Kit (synced) | Session's own (never touched) |
 |---|---|
-| `src/design/` tokens | `src/decks/` the deck itself |
+| `src/design/` tokens and the three grounds | `src/decks/` the deck itself |
 | `src/motion/` Reveal, Stepper, instant | `src/decks/activeDeck.ts` which deck is live |
 | `src/deck/` the player | `src/export/revealSteps.ts` and `deckCss.ts`, generated per deck |
 | `src/ui/` primitives and figures | `deck.config.json` name, title, slide count |
