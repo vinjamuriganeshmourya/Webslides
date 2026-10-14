@@ -252,7 +252,7 @@ export function CodeBlock({
         <span className="h-3 w-3 rounded-full bg-[#FEBC2E]" />
         <span className="h-3 w-3 rounded-full bg-[#28C840]" />
         {filename && (
-          <span className="ml-2 font-mono text-body-sm text-white/60">{filename}</span>
+          <span className="ml-2 font-term text-body-sm text-white/60">{filename}</span>
         )}
         {chip && (
           <span className="ml-auto rounded-pill bg-white/10 px-2 py-0.5 font-mono text-xs uppercase tracking-wide text-white/50">

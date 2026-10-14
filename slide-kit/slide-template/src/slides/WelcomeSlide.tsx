@@ -25,13 +25,19 @@ export function WelcomeSlide({
     return (
       <SlideBase variant="night" lesson={lesson} footer>
         <RevealGroup className="relative z-10 flex h-full flex-col items-center justify-center text-center" stagger={0.12}>
+          {/* THE UPDATED TEMPLATE'S SESSION NAME (user, 2026-10-12; the base template
+              since 2026-10-14): the template's section-breaker type, the kicker in
+              DM Sans at 72% white, the name in Sora SemiBold 67px (101px on the 1920
+              frame); the closing gradient and its rings come from the frame. The
+              reveals are the kit's. The kicker follows the header kicker: 22px title
+              case at 0.02em (`text-kicker`), was 15px capitals at 0.16em. */}
           <Reveal dir="up">
-            <p className="mb-4 text-kicker uppercase tracking-widest text-white/70">
-              Welcome to today’s session
+            <p data-kicker className="mb-4 font-tpl-body text-kicker text-white/70">
+              Welcome to Today’s Session
             </p>
           </Reveal>
           <Reveal dir="up">
-            <h1 className="max-w-4xl font-heading text-hero font-extrabold leading-[1.05] text-white">
+            <h1 className="max-w-4xl font-tpl-title text-[67px] font-semibold leading-[1.05] text-white">
               {title}
             </h1>
           </Reveal>
@@ -56,7 +62,7 @@ export function WelcomeSlide({
             </div>
           </Reveal>
           <Reveal dir="up">
-            <p className="mb-2 text-kicker uppercase text-white/70">Welcome to today’s session</p>
+            <p className="mb-2 text-kicker text-white/70">Welcome to Today’s Session</p>
           </Reveal>
           <Reveal dir="up">
             <h1 className="font-heading text-hero font-extrabold leading-[1.02] text-white">

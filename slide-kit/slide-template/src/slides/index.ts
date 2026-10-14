@@ -28,6 +28,7 @@ export { StatusPointsSlide } from './StatusPointsSlide'
 export { ConversationSlide } from './ConversationSlide'
 export { ChatSlide, ChatCharacterSlide } from './ChatSlides'
 export { QuizTimeSlide } from './QuizTimeSlide'
+export { NextSessionSlide } from './NextSessionSlide'
 export { ThankYouSlide } from './ThankYouSlide'
 
 export * from './types'

@@ -13,6 +13,7 @@ import {
   RecapSlide,
   SectionBreakerSlide,
   ThankYouSlide,
+  NextSessionSlide,
   WelcomeSlide,
 } from '@/slides'
 import { CodeBlock, DataTable, Terminal } from '@/ui'
@@ -339,6 +340,14 @@ export const baseDeck: SlideDef[] = [
       'Practice is the last thing they see before feedback, so it is the thing they remember to do. Keep it to three tasks they can finish.',
   },
   {
+    id: 'base-next-session',
+    section: 'Closing',
+    label: 'Next session',
+    element: <NextSessionSlide title="The Next Session" lesson={SESSION} />,
+    notes:
+      'The signpost: a glass chip over the next session\'s name, on the mesh ground. Name the next session the way its own title slide will name it, and put nothing else on the frame.',
+  },
+  {
     id: 'base-feedback',
     section: 'Closing',
     label: 'Feedback',
@@ -346,26 +355,18 @@ export const baseDeck: SlideDef[] = [
     notes: 'Leave it on screen while the room fills the form. Read the link out rather than assuming everyone can see it.',
   },
   {
-    id: 'base-next-session',
-    section: 'Closing',
-    label: 'Next session',
-    element: (
-      <SectionBreakerSlide
-        kicker="Next session"
-        title="Coming Next"
-        subtitle="One line on what the next session opens, and why it follows from this one"
-        lesson={SESSION}
-      />
-    ),
-    notes:
-      'A divider without an index, used as a signpost. Name the next session the way its own title slide will name it.',
-  },
-  {
     id: 'base-thank-you',
     section: 'Closing',
     label: 'Thank you',
-    element: <ThankYouSlide lesson={SESSION} />,
+    element: <ThankYouSlide title="Thank You" lesson={SESSION} />,
     notes:
-      'The closing frame. Nothing new goes on it, and in particular no "next up" line: the Next session slide immediately before this one already carries that, and saying it twice makes the deck look like it has two endings.',
+      'The closing frame. Nothing new goes on it, and in particular no "next up" line: the Next session slide before the feedback frame already carries that, and saying it twice makes the deck look like it has two endings.',
+  },
+  {
+    id: 'base-all-the-best',
+    section: 'Closing',
+    label: 'All the best',
+    element: <ThankYouSlide title="All the Best" lesson={SESSION} />,
+    notes: 'The send-off, the last frame: the Thank you frame with different words.',
   },
 ]

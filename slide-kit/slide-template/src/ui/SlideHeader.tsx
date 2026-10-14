@@ -141,27 +141,40 @@ export function SlideHeader({
           not read as short. If it ever does, `h-24` is the next step up, and both
           bars have to move together.
         */
-        <>
+        /*
+          THE UPDATED TEMPLATE'S HEADER (user, 2026-10-12; the base template
+          since 2026-10-14). The two bars of content rule 33 are gone. In their
+          place the template's GRADIENT DIVIDER runs BETWEEN the kicker and the
+          title: 3px tall (4px on the 1920 frame), 400px long (600px there)
+          from the text's left edge, solid deep blue for 13% of its run and
+          faded to nothing by the end, the agenda reference's own rule. It is
+          positioned absolutely, 33px below the header's top (y=48), which is
+          the template's own y for it (115 on the 1920 frame) plus the 4px the
+          kicker's line box grew when the kicker went from 15px to 22px (user,
+          2026-10-13). Drawn only under a kicker.
+        */
+        kicker != null && (
           <span
-            className="absolute -left-16 top-1 h-20 w-6 rounded-r-sm"
-            style={{ background: `linear-gradient(${color}, ${color}00)` }}
+            aria-hidden
+            className="pointer-events-none absolute left-0 h-[3px] w-[400px]"
+            style={{
+              top: 33,
+              background: `linear-gradient(90deg, ${color} 0%, ${color} 13%, ${color}8C 68%, ${color}00 100%)`,
+            }}
           />
-          <span
-            className="absolute -left-8 top-1 h-20 w-[6px] rounded-pill"
-            style={{ background: `linear-gradient(${color}, ${color}00)` }}
-          />
-        </>
+        )
       )}
       {kicker && (
         <KickerPart dir="right" className={centered ? 'mb-3 inline-block' : 'mb-3 block'}>
-          <Kicker tone={tone} onDark={onDark}>
+          {/* The user's sheet: the kicker (header label) DM Sans Medium, the slide title DM Sans SemiBold. */}
+          <Kicker tone={tone} onDark={onDark} className="font-tpl-body">
             {kicker}
           </Kicker>
         </KickerPart>
       )}
       <TitlePart dir="up">
         <h2
-          className={`font-heading font-extrabold leading-tight ${
+          className={`font-heading font-semibold leading-tight ${
             centered ? 'text-slide-title-lg' : 'text-slide-title'
           } ${onDark ? 'text-white' : 'text-ink'}`}
         >

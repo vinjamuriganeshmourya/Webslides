@@ -65,7 +65,7 @@ const BULB_GLOW = { left: '75%', top: '23%' }
 export function QuizTimeSlide({
   title = 'Quiz Time!',
   subtitle,
-  kicker = 'Your turn',
+  kicker = 'Your Turn',
   steps,
   lesson,
 }: QuizTimeSlideProps) {
@@ -209,7 +209,7 @@ export function QuizTimeSlide({
           </motion.div>
 
           <motion.h2
-            className="mt-6 font-heading text-[88px] font-extrabold leading-[0.98] text-ink"
+            className="mt-6 font-tpl-title text-[88px] font-semibold leading-[0.98] text-ink"
             initial={{ opacity: 0, y: 26, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ delay: 0.25, duration: 1.2, ease: EASE }}

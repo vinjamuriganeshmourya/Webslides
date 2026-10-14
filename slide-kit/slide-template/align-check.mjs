@@ -147,7 +147,12 @@ for (let i = 1; i <= TOTAL; i++) {
     const content = sec?.querySelector(':scope > div.relative.z-10')
     if (!content) return null
     const cr = content.getBoundingClientRect()
-    const title = content.querySelector('h1, h2, .font-heading')
+    /* `.font-tpl-title` as well: since the updated template became the base
+       template (2026-10-14) a hero word such as the agenda mark's "Agenda" is set
+       in the title face, not `font-heading`, and without it the first
+       `font-heading` match on that slide was a number badge at x=489, which put
+       every block on the agenda in DRIFT. */
+    const title = content.querySelector('h1, h2, .font-heading, .font-tpl-title')
     const tr = title?.getBoundingClientRect()
     const headerLeft = tr ? Math.round(tr.left) : Math.round(cr.left)
     const centre = cr.left + cr.width / 2

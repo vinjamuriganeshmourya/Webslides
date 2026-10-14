@@ -101,13 +101,8 @@ export function AgendaSlide({
 
   return (
     <SlideBase variant="light" lesson={lesson} padded={false}>
-      {/* the soft blue field behind the curve, top right */}
-      <div
-        className="pointer-events-none absolute right-1 top-0 h-[30rem] w-[33rem] blur-3xl"
-        style={{
-          background: `radial-gradient(60% 60% at 80% 20%, ${colors.nwBlue}33 0%, transparent 100%)`,
-        }}
-      />
+      {/* No blue field of its own any more: the frame's paper ground carries the
+          azure corner wash (base template since 2026-10-14). */}
 
       {/* the orbit mark */}
       <div className="absolute left-[292px] top-[366px] -translate-x-1/2 -translate-y-1/2">
@@ -128,7 +123,8 @@ export function AgendaSlide({
         >
           <div className="px-10">
             <p className="text-body-sm font-semibold leading-snug text-white/70">{kicker}</p>
-            <p className="mt-1 font-heading text-[46px] font-extrabold leading-none text-white">
+            {/* The big word in the template's title face, like every hero word. */}
+            <p className="mt-1 font-tpl-title text-[46px] font-semibold leading-none text-white">
               {title}
             </p>
           </div>

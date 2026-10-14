@@ -235,6 +235,14 @@ export interface QuizTimeSlideProps extends Base {
   steps?: ReactNode[]
 }
 
+/** The next-session signpost: a glass chip over the next session's name, on the mesh ground (base template since 2026-10-14). */
+export interface NextSessionSlideProps extends Base {
+  /** The next session's name. */
+  title: ReactNode
+  /** The chip label. */
+  label?: ReactNode
+}
+
 export interface ThankYouSlideProps extends Base {
   title?: ReactNode
   message?: ReactNode

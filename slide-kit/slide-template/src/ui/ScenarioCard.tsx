@@ -63,7 +63,7 @@ export function ScenarioCard({
                 >
                   <Icon width={20} height={20} />
                 </span>
-                <p className="text-kicker uppercase" style={{ color }}>
+                <p className="text-kicker" style={{ color }}>
                   {b.label}
                 </p>
                 <p className="mt-1.5 text-body leading-relaxed text-ink-soft">{b.detail}</p>

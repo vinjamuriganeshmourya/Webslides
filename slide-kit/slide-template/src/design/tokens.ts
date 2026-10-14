@@ -27,8 +27,8 @@ export const colors = {
   warning: '#F59E0B',
   danger: '#EF4444',
   info: '#0EA5E9',
-  ink: '#0B1A2B',
-  body: '#4A5B6B',
+  ink: '#002A4B', // the updated template's navy: headings AND body on light slides (user, 2026-10-12; base template 2026-10-14)
+  body: '#002A4B', // body text, the same navy
   muted: '#8A99A8',
   line: '#D8E3F5',
   surface: '#F5F8FF',
@@ -72,9 +72,13 @@ export const accentByTone = {
 export type Tone = keyof typeof accentByTone
 
 export const fonts = {
-  heading: "'Poppins', system-ui, sans-serif",
-  body: "'Inter', system-ui, sans-serif",
-  mono: "'JetBrains Mono', ui-monospace, monospace",
+  /* The updated template's font sheet (user, 2026-10-12; the base template since 2026-10-14; content rule 34): see tailwind.config.ts. */
+  heading: "'DM Sans', system-ui, sans-serif",
+  body: "'DM Sans', system-ui, sans-serif",
+  mono: "'Fira Code', ui-monospace, monospace",
+  tplTitle: "'Sora', system-ui, sans-serif",
+  tplBody: "'DM Sans', system-ui, sans-serif",
+  term: "'Ubuntu Mono', ui-monospace, monospace",
 } as const
 
 /** Standard easing curves shared across all slide/element transitions. */

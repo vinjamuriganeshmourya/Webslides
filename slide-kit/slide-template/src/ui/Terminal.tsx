@@ -139,7 +139,7 @@ export function Terminal({
               return (
                 <span
                   key={t}
-                  className="py-2 text-[11px] font-semibold tracking-wider"
+                  className="font-term py-2 text-[11px] font-semibold tracking-wider"
                   style={{
                     color: active ? '#E7E7E7' : '#8A8A8A',
                     borderBottom: `1.5px solid ${active ? '#0B5FFF' : 'transparent'}`,
@@ -149,7 +149,7 @@ export function Terminal({
                 </span>
               )
             })}
-            <span className="ml-auto py-2 text-[11px]" style={{ color: '#8A8A8A' }}>
+            <span className="ml-auto font-term py-2 text-[11px]" style={{ color: '#8A8A8A' }}>
               powershell
             </span>
           </div>

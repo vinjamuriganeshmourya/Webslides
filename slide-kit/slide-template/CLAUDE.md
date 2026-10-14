@@ -33,8 +33,8 @@ export const colors = {
   brandDeep: '#00254B',
   teal: '#12B5A8',    // Evolve. LIGHT slides only — never on the navy stage.
   accent: '#FF8A3D',  // Evolve. Same restriction.
-  ink: '#0B1A2B',
-  body: '#4A5B6B',
+  ink: '#002A4B',     // the updated template's navy: headings AND body on light slides
+  body: '#002A4B',
   line: '#D8E3F5',
   nwNavy: '#00254B',
   nwBlue: '#2D63FB',
@@ -57,9 +57,9 @@ from Tailwind. Most colours need both.
 - **Type scale** — fixed **px**, not `rem`, because the canvas is a fixed size:
   ```ts
   fontSize: {
-    kicker: ['15px', { lineHeight: '1.2', letterSpacing: '0.14em', fontWeight: '700' }],
-    'slide-title': ['34px', { lineHeight: '1.12', fontWeight: '700' }],
-    hero: ['64px', { lineHeight: '1.02', fontWeight: '800' }],
+    kicker: ['22px', { lineHeight: '1.2', letterSpacing: '0.02em', fontWeight: '500' }],
+    'slide-title': ['34px', { lineHeight: '1.12', fontWeight: '600' }],
+    hero: ['64px', { lineHeight: '1.02', fontWeight: '600' }],
     'body-lg': ['22px', { lineHeight: '1.5' }],
   }
   ```
@@ -182,10 +182,17 @@ build**. `npm run build` runs `tsc -b` first for exactly this reason.
 Path alias `@/` → `src/`, declared in *both* `vite.config.ts` and
 `tsconfig.app.json`.
 
-Fonts load from Google Fonts in `index.html`: **Poppins** (headings), **Inter**
-(kicker and body), **JetBrains Mono** (code). Match those when reading a Figma text style —
-if the design specifies a different family, raise it rather than silently
-substituting.
+Fonts load from Google Fonts in `index.html`, the updated template's sheet (user,
+2026-10-12; the base template since 2026-10-14): **Sora SemiBold** (`font-tpl-title`:
+the session and section titles, the hero words, the agenda and quiz words),
+**DM Sans** (`font-heading` SemiBold for slide titles and headings inside figures,
+`font-body` Medium for the kicker and every line of body), **Fira Code**
+(`font-mono`: code and output) and **Ubuntu Mono** (`font-term`: the title bar of a
+code or terminal window). Only two weights exist, Medium and SemiBold; the
+`fontWeight` remap in `tailwind.config.ts` folds every other class onto them and
+`font-synthesis-weight: none` stops the browser faking one. Match those when
+reading a Figma text style; if the design specifies a different family, raise it
+rather than silently substituting.
 
 ---
 
@@ -258,8 +265,9 @@ behind one component, `Illustration`, selected by an `IllustrationName` union.
 
 **Tailwind utilities in `className`.** No CSS Modules, no styled-components, no
 `.css` file per component. `src/index.css` holds only: the three `@tailwind`
-directives, `html/body/#root` reset, the `.slide-canvas` and `.slide-footer-bar`
-component classes, and a `prefers-reduced-motion` block.
+directives, `html/body/#root` reset, the ligature switch-off on every code
+surface (content rule 40) and `font-synthesis-weight: none`, the `.slide-canvas`
+and `.slide-footer-bar` component classes, and a `prefers-reduced-motion` block.
 
 Inline `style` is legitimate in exactly three cases:
 1. values Tailwind cannot express (`gridTemplateColumns` from a prop, a computed
@@ -321,8 +329,14 @@ they do not share accents:
 
 | Family | Ground | Accents |
 |---|---|---|
-| Dark chrome (welcome, session name, dividers, practice, feedback, thank you) | `variant="night"` → `bg-nw-night` | white, or `tone="nw"` / `"nwDeep"` |
-| Light content (everything else) | `variant="light"` → `bg-brand-soft` | `tone="brand"` (now the same blue), `success`/`warning`/`danger` for semantics |
+| Dark chrome (welcome, session name, dividers, practice, feedback, next session, thank you, all the best) | `variant="night"`: the template's closing gradient from `src/design/ground.tsx`, or the welcome mesh when the slide passes `ground="mesh"` | white, or `tone="nw"` / `"nwDeep"` |
+| Light content (everything else) | `variant="light"`: the template's paper ground, off-white with the azure corner wash and two rings | `tone="brand"` (now the same blue), `success`/`warning`/`danger` for semantics. Text is the navy `ink` for headings and body alike |
+
+The three grounds are CSS gradient stacks fitted to the updated template's
+reference renders (`src/design/grounds.ts`, every number the optimiser's) and
+drawn on a 1920x1080 box scaled by 2/3 (`src/design/ground.tsx`). `SlideBase`
+paints one under every slide and nothing else: the kit's old wash, hairline arcs,
+orbs and dot grid are gone. A slide never paints its own ground.
 
 `tone="accent"` (orange) and `tone="teal"` are Evolve hues with no counterpart in
 the NxtWave style guide. They are legible on a light slide and off-brand on the
@@ -477,17 +491,31 @@ removed** — a stale count silently skips the tail of the deck.
 entrances that play on mount, which is why the harnesses settle for 2600ms; see
 the capture-timing note at the end of `KIT.md` before lowering that.
 
-Expected `qa.mjs` baseline — **two** flagged slides, both benign:
+Expected `qa.mjs` baseline — **three** flagged slides, all `NO LOGO` only and
+all benign: **the first frame** (`BrandSlide` in the gallery, the Welcome frame
+in `baseDeck`), **Thank you** and **All the Best**. Each carries the white mark
+*on stage* and passes `footerLogo={false}` so the footer prints no second one,
+and the harness looks for the mark in `footer svg, footer img`. The gallery also
+carries one figure slide (`RadialSpread`, "Versatile Language") whose caption
+runs 13px past the content well; it predates the updated template and is a
+figure defect, not a frame one.
 
-- **the first frame** — `NO LOGO` plus overflow on its `pointer-events-none`
-  decorative blobs. In the gallery this is `BrandSlide`; in `baseDeck` it is the
-  Welcome frame. Both carry the mark on stage rather than in the footer.
-- **the Thank you slide (last)** — `NO LOGO` only. The harness looks for the mark
-  in `footer svg, footer img`, and this slide carries the mark *on stage*
-  instead, so it passes `footerLogo={false}` to stop the footer printing a
-  second one. `BrandSlide` does the same.
+`fit-check.mjs`'s baseline on the gallery is **not clean** and never was. Measured
+on 2026-10-14, the pre-change build drifted 1.5 to 5px at 1.5x or 2x on sixteen
+gallery slides in Chromium (16, 17, 21, 31, 39, 42, 47, 54, 60 to 62, 64 to 67,
+69: one span or button each, the build-steps list throughout); the updated
+template's fonts drift on five (21, 37, 39, 63, 68), so the sheet is the more
+stable of the two under zoom, and DM Sans measures linear to 0.01px at 19, 28.5
+and 38px in both engines. What the font change did add was ONE line-count
+failure, the scenario frame's Result card, whose placeholder copy measured 0.16px
+wider than its card at 1x and 1px narrower at 1.5x; the copy was shortened. A new
+line-count failure after a font or copy change is that same coincidence and is
+fixed in the copy, never by widening the box (rule 35).
 
-Anything else is a regression.
+Anything else is a regression. In particular no frame reports overflow any more:
+the old opener's decorative blobs are gone with the old ground, and the hero
+frames' wrappers stop 8px short of the frame's sides so a full-bleed box is never
+reported.
 
 ### The standalone HTML build
 
@@ -501,7 +529,7 @@ no server and no network:
    `public/`. **This step is not optional** — §4 references assets by
    *root-absolute* path, which under `file://` resolves to the filesystem root
    and silently breaks every screenshot.
-3. `scripts/inline-fonts.mjs` embeds the three Google families as woff2 data
+3. `scripts/inline-fonts.mjs` embeds the four Google families as woff2 data
    URIs and drops the `<link>`. It fails soft: no network at build time means a
    deck that still works but falls back to system fonts.
 

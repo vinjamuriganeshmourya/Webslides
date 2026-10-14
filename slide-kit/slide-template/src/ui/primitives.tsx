@@ -1,8 +1,15 @@
 import type { ReactNode } from 'react'
-import { accentByTone, type Tone } from '@/design/tokens'
+import { accentByTone, colors, type Tone } from '@/design/tokens'
 
 /**
- * Small uppercase eyebrow label.
+ * Small eyebrow label.
+ *
+ * THE UPDATED TEMPLATE'S KICKER (user, 2026-10-13; the base template since
+ * 2026-10-14): title case, not caps (no `uppercase` class, the text shows as
+ * typed), 22px not 15px (the `kicker` token in tailwind.config.ts), and the
+ * template's navy #002A4B (`colors.ink`) on light slides instead of the slide's
+ * tone. White on dark slides stays. `data-kicker` is what the harnesses find it
+ * by; they used to look for `span.uppercase`.
  *
  * NO LEADING ACCENT TICK (content rule 33). The label used to open with a 3px x
  * 24px pill in the tone; it was a second accent competing with the header's
@@ -10,7 +17,8 @@ import { accentByTone, type Tone } from '@/design/tokens'
  */
 export function Kicker({
   children,
-  tone = 'brand',
+  /* Kept so callers still compile; the colour no longer follows the tone. */
+  tone: _tone = 'brand',
   onDark = false,
   className = '',
 }: {
@@ -19,11 +27,11 @@ export function Kicker({
   onDark?: boolean
   className?: string
 }) {
-  const color = accentByTone[tone]
   return (
     <span
-      className={`inline-flex items-center text-kicker uppercase ${className}`}
-      style={{ color: onDark ? '#FFFFFF' : color }}
+      data-kicker
+      className={`inline-flex items-center text-kicker ${className}`}
+      style={{ color: onDark ? '#FFFFFF' : colors.ink }}
     >
       {children}
     </span>
