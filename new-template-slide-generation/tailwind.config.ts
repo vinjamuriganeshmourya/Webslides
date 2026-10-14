@@ -119,7 +119,8 @@ export default {
       },
       /* Type scale locked to the 1280×720 slide canvas (fixed px). */
       fontSize: {
-        kicker: ['15px', { lineHeight: '1.2', letterSpacing: '0.14em', fontWeight: '500' }],
+        /* THIS DECK ONLY (user, 2026-10-13): 18px title case, was 15px caps at 0.14em. */
+        kicker: ['22px', { lineHeight: '1.2', letterSpacing: '0.02em', fontWeight: '500' }],
         'slide-title': ['34px', { lineHeight: '1.12', fontWeight: '600' }],
         'slide-title-lg': ['44px', { lineHeight: '1.08', fontWeight: '600' }],
         hero: ['64px', { lineHeight: '1.02', fontWeight: '600' }],

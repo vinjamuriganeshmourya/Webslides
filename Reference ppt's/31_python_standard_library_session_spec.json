@@ -1,0 +1,3223 @@
+{
+ "meta": {
+  "session": "31 - Python Standard Library",
+  "course": "Programming Foundations",
+  "one_idea": "Python comes with many ready-made tools, kept in modules; import switches one on and the dot reaches inside it. map, filter and reduce are loops Python already wrote: you hand them only the rule.",
+  "outcomes": [
+   "Say what the Python Standard Library is, and what a module and a package are.",
+   "Bring a module in with import, and call its tools with the dot: math.sqrt, math.factorial, math.pi.",
+   "Rename a module with as, bring in one tool with from ... import, and call each the right way.",
+   "Read a NameError after an import and fix line 1.",
+   "Make a random whole number with random.randint and pick a random item with random.choice.",
+   "Use map to apply one function to every item, and list(map(int, input().split())) to read numbers.",
+   "Use filter to keep the items a True/False function picks.",
+   "Use reduce from functools to join items two at a time into one value, and say when it stops."
+  ],
+  "previous": "30 - Working with Dictionaries",
+  "slides_dir": "C:\\Lesson Plans New\\builds\\build-31-standard-library\\work\\slides",
+  "deck_total": 39,
+  "kept": [
+   6,
+   7,
+   8,
+   9,
+   12,
+   13,
+   14,
+   15,
+   16,
+   19,
+   21,
+   23,
+   26,
+   30,
+   32,
+   33,
+   35,
+   37
+  ],
+  "cuts": [
+   [
+    "1-3",
+    "Welcome, deck title and agenda. The fixed spine cards and S-AGENDA replace them."
+   ],
+   [
+    "4-5",
+    "Built-in functions print, max, min, len. Taught in session 24; C1's press 1 names them as the tools that were always there."
+   ],
+   [
+    "10, 11",
+    "import math and the syntax picture without code. Their words are press 1 of C3 and C5, so the definition is still on screen."
+   ],
+   [
+    "17, 18",
+    "Why randomness, and the randint syntax. Their words are presses 1 and 3 of C10."
+   ],
+   [
+    "20",
+    "The choice syntax. It is press 1 of C11."
+   ],
+   [
+    "22",
+    "The documentation screenshot. A screenshot cannot be predicted against; the guide gives the link docs.python.org/3/library and one spoken line."
+   ],
+   [
+    "24, 25",
+    "Why map, filter and reduce, and the map definition. Slide 24's line is press 2 of C12; slide 25's definition is press 1 of C13."
+   ],
+   [
+    "27",
+    "The square example. Redrawn on C13 with the Zomato prices: squares of 1 to 4 cannot catch a wrong idea."
+   ],
+   [
+    "28, 29",
+    "The long loop and map step by step. The steps become C14's inside-out presses."
+   ],
+   [
+    "31",
+    "The filter definition. It is press 1 of C15."
+   ],
+   [
+    "34",
+    "reduce lives in functools. It is press 1 of C16."
+   ],
+   [
+    "36",
+    "Near-copy of slide 35."
+   ],
+   [
+    "38-39",
+    "Thank you and all the best. The fixed spine cards replace them."
+   ]
+  ],
+  "defects": [
+   [
+    "slide 28",
+    "The program defines convert_string_to_int and calls it, but never prints. The output box shows [1, 2, 3, 4], which the program does not print.",
+    "C14 prints the list and its sum, and both outputs are real runs."
+   ],
+   [
+    "slide 31",
+    "Calls filter() a method. It is a function, like map; methods are called with a dot on a value (session 25).",
+    "C15 says function."
+   ],
+   [
+    "slides 35, 36",
+    "reduce is shown only adding a list. sum() from session 24 already does that, so the slide shows no reason to use reduce.",
+    "C16 says sum gives the same total, then multiplies three dice (216 ways), a rule sum cannot do."
+   ],
+   [
+    "slides 26, 27, 33, 21",
+    "Examples are [1, 2, 3, 4] squared, [1, -2, 3, -4] and [\"A\", \"B\", \"C\"]. 1 squared is 1, so a student who thinks map leaves items alone still gets the first one right.",
+    "Every card uses the Zomato prices, ratings and cart, or Ludo King's players."
+   ],
+   [
+    "slide 3",
+    "The agenda opens on built-in functions, already taught in session 24.",
+    "S-AGENDA has four stops, all new."
+   ],
+   [
+    "slide 19",
+    "Shows one run printing 8 as if it were the output.",
+    "C10 shows three runs and says every run differs."
+   ]
+  ],
+  "notes": [
+   "The room is 50 to 60 first-year students on laptops. Laptops stay shut except on T1, T2 and the classroom quiz, where only the worksheet tab and the playground are open.",
+   "The world, first half: Ravi's phone calculator. Upright it has + - x and /; turned sideways the scientific keys appear. That is import: the keys were inside the app all along. random: Ludo King on Teja's phone, four players Teja, Ravi, Kiran, Divya. Second half: Zomato near campus. The Rating 4.0+ button is filter, each cart line (price times quantity) is map, the item total is reduce. G2 uses Ravi's Google Pay spends this week.",
+   "The restaurants are made up. The buttons, the chips, the cart and the look are Zomato's own. In the real app a filter makes the other places disappear, and the hook draws it that way.",
+   "The hooks and both games were approved by the course owner on a stepped preview (builds/build-31-standard-library/preview/pf31_hooks_games.html). Build them as close to it as fits the student view; its look is a preview, not the final design.",
+   "One picture for the import cards: The import cards share one picture: the name line 1 brings in is underlined in a colour, and the name line 2 uses is underlined too. Same name, same colour, it runs. A different name turns red and the program stops there. A small table, How you import decides how you call, grows by one row on each of C3, C6, C7 and C8. Rows already added stay.",
+   "Outputs of random lines in this spec are sample runs. Every run in the room gives other numbers; the card says so, and the instructor reads out whatever the room gets.",
+   "Words on screen: module, import, name, tool, function, rule. Never say namespace, object or attribute in a sentence; an error line on screen keeps its own words.",
+   "Code font: turn ligatures off (font-variant-ligatures: none). JetBrains Mono and Fira Code draw >= as one sign, and students type what they see. Today >= is on T2 and C15.",
+   "Votes are taken option by option: the instructor reads each option and asks how many think it is that one. Hands up. Nobody is named.",
+   "Nothing before the title card may say the session's name. The hook shows the calculator and code with import math, but never the words Python Standard Library.",
+   "Two games: G1 (Make it print this, from the library, played as fix the import) after Task 1, before the quiz; G2 (Inside the built-in, the session's concept game) after the reduce card.",
+   "The bar to beat is Plans/DSA/Module 3 - Stacks & Queues/01 - Introduction to Stacks/: a simulation the room drives, a picture that refuses to lie."
+  ],
+  "topics": [
+   "built-ins",
+   "functions",
+   "lists"
+  ],
+  "structure": null,
+  "world": "Ravi's phone: the calculator's hidden scientific keys (import), Ludo King's dice (random), and Zomato's Rating 4.0+ button, cart lines and item total (filter, map, reduce)",
+  "new_ops": [
+   "import",
+   "math.sqrt()",
+   "math.factorial()",
+   "math.pi",
+   "as",
+   "from ... import",
+   "random.randint()",
+   "random.choice()",
+   "map()",
+   "list(map(int, input().split()))",
+   "filter()",
+   "reduce()"
+  ]
+ },
+ "build_contract": [
+  "One self-contained HTML file. It opens offline from a USB stick and makes no network request.",
+  "It opens in presenter view. There is no sidebar, top bar or button the instructor has to use.",
+  "Right arrow or the clicker is one press. Left arrow goes back one press. F goes full screen, A shows all the cards, and End shows the whole card at once. The instructor guide tells the instructor these keys, so they must work.",
+  "Every card is its own screen, in the order of this spec. Press 1 is what shows when the card opens.",
+  "Every card's outer element carries data-spec=\"<card id>\" and data-presses=\"<number of presses>\". The review script reads both.",
+  "No link to any other file. The students' handout and the instructor guide are separate files, and a link from this file is how a class finds the answers."
+ ],
+ "rules": [
+  "No autoplay. Nothing moves on a timer. One press, one move, with a caption that says what just happened.",
+  "Commit, then reveal. Where a card asks a question, the answer shows only on the press after the room has answered.",
+  "Wrong answers stay private. No names, no per-student results on screen. Hands are counted out loud, never shown.",
+  "The topic is named once. Nothing before the title card says today's topic, not a heading, not a caption, not a file name on a code card.",
+  "Words are exact. Words in quotation marks, and every line under Exact words, are final. The rest of a press describes what happens, in your own design. If an exact line does not fit, ask for a new one; do not rewrite it.",
+  "Code is exact. Copy code and outputs from the JSON, never retype them. Every output here came from running the program.",
+  "Simple English. Short sentences, everyday words. No em-dashes anywhere, the page title included.",
+  "Every card moves. A card that introduces an idea steps; a static card is a picture of a lecture."
+ ],
+ "beats": [
+  {
+   "name": "Welcome",
+   "kind": "concept",
+   "mins": 1,
+   "start": 0,
+   "cards": [
+    {
+     "id": "S-WELCOME",
+     "title": "Welcome",
+     "source": "spine:welcome",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap",
+   "kind": "concept",
+   "mins": 1,
+   "start": 1,
+   "cards": [
+    {
+     "id": "S-RECAP-CARD",
+     "title": "Recap card",
+     "source": "spine:recap_card",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Recap sort: does backup change too?",
+   "kind": "quiz",
+   "mins": 3,
+   "start": 2,
+   "cards": [
+    {
+     "id": "S-RECAP",
+     "title": "Recap: does backup change too?",
+     "source": "spine:recap",
+     "purpose": "Pull back session 30: = gives a dictionary a second name, copy() makes a second one, clear() empties the one both names share, and trip = {} moves only trip.",
+     "heading": "Does backup change too?",
+     "show": [
+      "Divya's trip sheet from last class.",
+      "trip = {\"Teja\": 1500, \"Ravi\": 800}",
+      "Does backup change too?",
+      "backup changes too",
+      "backup stays the same",
+      "backup = trip\ntrip[\"Kiran\"] = 0",
+      "backup = trip.copy()\ntrip[\"Kiran\"] = 0",
+      "backup = trip\ntrip.clear()",
+      "backup = trip\ntrip = {}",
+      "backup = trip.copy()\ntrip.clear()",
+      "One sheet, two names. Kiran's row is on backup too.",
+      "copy() made a second sheet. Only trip gets Kiran.",
+      "clear() empties the one sheet both names point at.",
+      "trip = {} gives trip a new empty sheet. backup keeps the old one.",
+      "The copy is its own sheet. Clearing trip leaves it full."
+     ],
+     "code": [
+      {
+       "file": "chip_1.py",
+       "src": "trip = {\"Teja\": 1500, \"Ravi\": 800}\nbackup = trip\ntrip[\"Kiran\"] = 0\nprint(backup)",
+       "output": "{'Teja': 1500, 'Ravi': 800, 'Kiran': 0}"
+      },
+      {
+       "file": "chip_2.py",
+       "src": "trip = {\"Teja\": 1500, \"Ravi\": 800}\nbackup = trip.copy()\ntrip[\"Kiran\"] = 0\nprint(backup)",
+       "output": "{'Teja': 1500, 'Ravi': 800}"
+      },
+      {
+       "file": "chip_3.py",
+       "src": "trip = {\"Teja\": 1500, \"Ravi\": 800}\nbackup = trip\ntrip.clear()\nprint(backup)",
+       "output": "{}"
+      },
+      {
+       "file": "chip_4.py",
+       "src": "trip = {\"Teja\": 1500, \"Ravi\": 800}\nbackup = trip\ntrip = {}\nprint(backup)",
+       "output": "{'Teja': 1500, 'Ravi': 800}"
+      },
+      {
+       "file": "chip_5.py",
+       "src": "trip = {\"Teja\": 1500, \"Ravi\": 800}\nbackup = trip.copy()\ntrip.clear()\nprint(backup)",
+       "output": "{'Teja': 1500, 'Ravi': 800}"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Two bins, <q>backup changes too</q> and <q>backup stays the same</q>. Above them the line <q>trip = {\"Teja\": 1500, \"Ravi\": 800}</q> and five chips waiting, two lines of code each (data.chips). Caption: <q>Does backup change too?</q>",
+       "say": "Last class's trip sheet. Write C or S for all five in your notebook first.",
+       "room": "Write five letters in the notebook."
+      },
+      {
+       "screen": "Chip 1, <q>backup = trip; trip[\"Kiran\"] = 0</q>, flies into the bin <q>backup changes too</q>. Under it: <q>One sheet, two names. Kiran's row is on backup too.</q> and what print(backup) shows.",
+       "say": "Chip 1: changes too, hands up. Stays the same, hands up. Then press.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Chip 2, <q>backup = trip.copy(); trip[\"Kiran\"] = 0</q>, flies into the bin <q>backup stays the same</q>. Under it: <q>copy() made a second sheet. Only trip gets Kiran.</q> and what print(backup) shows.",
+       "say": "Chip 2: changes too, hands up. Stays the same, hands up. Then press.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Chip 3, <q>backup = trip; trip.clear()</q>, flies into the bin <q>backup changes too</q>. Under it: <q>clear() empties the one sheet both names point at.</q> and what print(backup) shows.",
+       "say": "Chip 3: changes too, hands up. Stays the same, hands up. Then press.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Chip 4, <q>backup = trip; trip = {}</q>, flies into the bin <q>backup stays the same</q>. Under it: <q>trip = {} gives trip a new empty sheet. backup keeps the old one.</q> and what print(backup) shows.",
+       "say": "Chip 4: changes too, hands up. Stays the same, hands up. Then press.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "Chip 5, <q>backup = trip.copy(); trip.clear()</q>, flies into the bin <q>backup stays the same</q>. Under it: <q>The copy is its own sheet. Clearing trip leaves it full.</q> and what print(backup) shows.",
+       "say": "Chip 5: changes too, hands up. Stays the same, hands up. Then press.",
+       "room": "Hands up."
+      }
+     ],
+     "interaction": "Format: sort. The room writes C or S for all five in the notebook, then votes each chip by hands before the press that sorts it. Nobody is named.",
+     "must": [
+      "All five chips and both bins are on screen from press 1. One chip flies per press, in the order of data.chips.",
+      "Chip 4 (trip = {}) and chip 5 (copy, then clear) both land in stays the same; the why line says why."
+     ],
+     "must_not": [
+      "Sort a chip before the vote.",
+      "List what last session covered."
+     ],
+     "data": {
+      "base": "trip = {\"Teja\": 1500, \"Ravi\": 800}",
+      "bins": [
+       "backup changes too",
+       "backup stays the same"
+      ],
+      "chips": [
+       {
+        "lines": "backup = trip\ntrip[\"Kiran\"] = 0",
+        "bin": "backup changes too",
+        "print_backup": "{'Teja': 1500, 'Ravi': 800, 'Kiran': 0}",
+        "why": "One sheet, two names. Kiran's row is on backup too."
+       },
+       {
+        "lines": "backup = trip.copy()\ntrip[\"Kiran\"] = 0",
+        "bin": "backup stays the same",
+        "print_backup": "{'Teja': 1500, 'Ravi': 800}",
+        "why": "copy() made a second sheet. Only trip gets Kiran."
+       },
+       {
+        "lines": "backup = trip\ntrip.clear()",
+        "bin": "backup changes too",
+        "print_backup": "{}",
+        "why": "clear() empties the one sheet both names point at."
+       },
+       {
+        "lines": "backup = trip\ntrip = {}",
+        "bin": "backup stays the same",
+        "print_backup": "{'Teja': 1500, 'Ravi': 800}",
+        "why": "trip = {} gives trip a new empty sheet. backup keeps the old one."
+       },
+       {
+        "lines": "backup = trip.copy()\ntrip.clear()",
+        "bin": "backup stays the same",
+        "print_backup": "{'Teja': 1500, 'Ravi': 800}",
+        "why": "The copy is its own sheet. Clearing trip leaves it full."
+       }
+      ]
+     },
+     "play": "The bins and the chips. They can wear last session's Google Sheet look, Divya's trip sheet.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Hook: where is the √ key?",
+   "kind": "hook",
+   "mins": 4,
+   "start": 5,
+   "cards": [
+    {
+     "id": "H1",
+     "title": "Where is the √ key?",
+     "source": "new",
+     "animated": "hook",
+     "engage": "motion",
+     "ops": [
+      "import",
+      "math.sqrt()",
+      "math.pi"
+     ],
+     "motion": "Ravi's calculator, upright, has no √. He turns the phone and the scientific keys appear: they were in the app all along. Then the same in Python: 7 * 8 always works, sqrt(49) stops, and one line, import math, switches the tools on. It proves extra tools are there but hidden until you ask.",
+     "keeps": "The basic keys: + - x / and the numbers are the same keys upright and sideways. Turning the phone adds keys and takes none away.",
+     "purpose": "Feel, from the phone in their pocket, why a language hides extra tools until you ask: the basic set stays simple, and one action switches on the rest. The last press shows other sets of tools side by side, without naming the topic.",
+     "heading": "Where is the √ key?",
+     "show": [
+      "Maths homework, Q4",
+      "Find √49",
+      "Area of a circle, radius 7 cm: π × 7 × 7",
+      "Ravi needs √ and π. Where are those keys?",
+      "They were in the app all the time.",
+      "Python is the same. The basic keys are always there.",
+      "Ask for √ without switching anything on.",
+      "One line switches the keys on. Like turning the phone.",
+      "All of these came with Python. You switch on the one you need."
+     ],
+     "code": [
+      {
+       "file": "homework.py",
+       "src": "print(7 * 8)",
+       "output": "56"
+      },
+      {
+       "file": "homework.py",
+       "src": "print(sqrt(49))",
+       "output": "NameError: name 'sqrt' is not defined"
+      },
+      {
+       "file": "homework.py",
+       "src": "import math\n\nprint(math.sqrt(49))\nprint(math.pi * 7 * 7)",
+       "output": "7.0\n153.93804002589985"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Ravi's phone calculator, held upright: AC, the numbers, + - x / and =, display 0. Beside it a notebook page: <q>Maths homework, Q4</q>, <q>Find √49</q>, <q>Area of a circle, radius 7 cm: π × 7 × 7</q>. Caption: <q>Ravi needs √ and π. Where are those keys?</q>",
+       "say": "You all have this calculator. Ravi needs √. Where is the key?",
+       "room": "Call out: turn the phone sideways."
+      },
+      {
+       "screen": "The phone turns to landscape. The scientific keys appear on the left: <q>√</q>, <q>π</q>, <q>x!</q>, <q>sin</q>, <q>cos</q>, <q>tan</q>, <q>log</q>, <q>ln</q>, <q>e</q>, <q>x²</q>, <q>xʸ</q>, <q>( )</q>. √, π and x! glow. Caption: <q>They were in the app all the time.</q>",
+       "say": "Did the phone download these keys just now? No. They were inside the app. Turning it switched them on.",
+       "room": "Answer: no."
+      },
+      {
+       "screen": "The display shows <q>√49 = 7</q> above <q>π×7×7 = 153.93804</q>.",
+       "say": "Why does the app hide them when you hold it upright?",
+       "room": "Answer: too many keys; most people only add and subtract."
+      },
+      {
+       "screen": "Two small calculators on the left, upright (lit) and sideways. On the right homework.py, <q>print(7 * 8)</q>. The output fills <q>56</q>. Caption: <q>Python is the same. The basic keys are always there.</q>",
+       "say": "7 times 8 works every time, like the upright keys.",
+       "room": "Say 56."
+      },
+      {
+       "screen": "homework.py becomes <q>print(sqrt(49))</q>, line 1 red. The output fills <q>NameError: name 'sqrt' is not defined</q>. Caption: <q>Ask for √ without switching anything on.</q>",
+       "say": "Predict first: will this work? Hands up for yes. Now run it.",
+       "room": "Hands up, then read the error."
+      },
+      {
+       "screen": "The sideways calculator lights. homework.py becomes the four lines of data.on, line 1 <q>import math</q> highlighted. The output fills <q>7.0 / 153.93804002589985</q>. Caption: <q>One line switches the keys on. Like turning the phone.</q>",
+       "say": "Line 1 is the phone turning. After it, math.sqrt and math.pi work. Python prints 7.0 where the calculator showed 7.",
+       "room": "Read both answers."
+      },
+      {
+       "screen": "Six cards side by side, math lit: <q>math: √, π, factorial</q>, <q>random: dice, lucky draw</q>, <q>datetime: today's date, time</q>, <q>statistics: average, middle value</q>, <q>string: all the letters</q>, <q>calendar: months, days</q>. Caption: <q>All of these came with Python. You switch on the one you need.</q>",
+       "say": "math is one set. There are many more, inside Python already. Guess today's topic.",
+       "room": "Guess the topic."
+      }
+     ],
+     "answer": "56; NameError: name 'sqrt' is not defined; 7.0 / 153.93804002589985",
+     "must": [
+      "The calculator looks like a real phone calculator: round keys, the = key in the accent colour, the display at the top. The sideways one keeps every basic key and adds the scientific ones on the left.",
+      "On presses 4 to 6 both small calculators stay on screen and the one that matches the code is lit.",
+      "Python prints 7.0; the calculator shows 7. Both are on screen together on press 6.",
+      "While it moves, this stays exactly as it was: The basic keys: + - x / and the numbers are the same keys upright and sideways. Turning the phone adds keys and takes none away."
+     ],
+     "must_not": [
+      "Say the words Python Standard Library anywhere on this card.",
+      "Animate by itself. The phone turns only on its press."
+     ],
+     "data": {
+      "on": "import math\n\nprint(math.sqrt(49))\nprint(math.pi * 7 * 7)",
+      "sci_keys": [
+       "√",
+       "π",
+       "x!",
+       "sin",
+       "cos",
+       "tan",
+       "log",
+       "ln",
+       "e",
+       "x²",
+       "xʸ",
+       "( )"
+      ],
+      "modes": [
+       [
+        "math",
+        "√, π, factorial"
+       ],
+       [
+        "random",
+        "dice, lucky draw"
+       ],
+       [
+        "datetime",
+        "today's date, time"
+       ],
+       [
+        "statistics",
+        "average, middle value"
+       ],
+       [
+        "string",
+        "all the letters"
+       ],
+       [
+        "calendar",
+        "months, days"
+       ]
+      ],
+      "preview": "builds/build-31-standard-library/preview/pf31_hooks_games.html, tab H1"
+     },
+     "play": "The phone, the turn and the calculator: yours to make real. A real Android or iPhone calculator look is welcome. How the six sets of tools appear on the last press is yours.",
+     "no_trap": "A hook: the hidden-key error is meant to happen, so there is no wrong idea to catch yet.",
+     "press_count": 7
+    }
+   ]
+  },
+  {
+   "name": "Today's topic",
+   "kind": "concept",
+   "mins": 1,
+   "start": 9,
+   "cards": [
+    {
+     "id": "S-TITLE",
+     "title": "Title",
+     "source": "spine:title",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Agenda",
+   "kind": "concept",
+   "mins": 1,
+   "start": 10,
+   "cards": [
+    {
+     "id": "S-AGENDA",
+     "title": "Agenda",
+     "source": "spine:agenda",
+     "purpose": "Name today's four stops in plain words. All four are new; built-in functions were session 24.",
+     "play": "How the stops sit and light. The calculator can sit beside the first two, Zomato beside the last.",
+     "show": [
+      "What came with Python",
+      "the library, modules, packages",
+      "Switch a module on",
+      "import, the dot, as, from",
+      "Ready-made randomness",
+      "random.randint, random.choice",
+      "Loops Python already wrote",
+      "map, filter, reduce"
+     ],
+     "presses": [
+      {
+       "screen": "Stop 1 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 2 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 3 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      },
+      {
+       "screen": "Stop 4 lights up.",
+       "say": "Read the stop and its line, nothing more."
+      }
+     ],
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "What came with Python: the library, modules, packages",
+   "kind": "concept",
+   "mins": 3,
+   "start": 11,
+   "cards": [
+    {
+     "id": "C1",
+     "title": "The Python Standard Library",
+     "source": [
+      6
+     ],
+     "purpose": "Python comes with many ready-made values and functions. All of them together are called the Python Standard Library.",
+     "heading": "Python Standard Library",
+     "show": [
+      "Always there, like the upright keys.",
+      "print()",
+      "input()",
+      "len()",
+      "int()",
+      "max()",
+      "sum()",
+      "sorted()",
+      "Thousands more came with Python. Most are hidden, like the sideways keys.",
+      "Python gives us many ready-made values and functions.",
+      "All of them together are called the Python Standard Library."
+     ],
+     "presses": [
+      {
+       "screen": "The upright calculator in a corner. The built-ins they already use as tiles: <q>print()</q>, <q>input()</q>, <q>len()</q>, <q>int()</q>, <q>max()</q>, <q>sum()</q>, <q>sorted()</q>. Caption: <q>Always there, like the upright keys.</q>",
+       "say": "These you call without doing anything. Session 24."
+      },
+      {
+       "screen": "The calculator turns; behind the tiles a large shelf of more tools fades in. Caption: <q>Thousands more came with Python. Most are hidden, like the sideways keys.</q>",
+       "say": "Python came with far more than these. You have not seen them because they are switched off."
+      },
+      {
+       "screen": "Deck slide 6's two lines, simplified: <q>Python gives us many ready-made values and functions.</q> Then <q>All of them together are called the Python Standard Library.</q>",
+       "say": "Standard: every Python has it. Library: a collection of ready tools.",
+       "room": "Say the name together."
+      }
+     ],
+     "must": [
+      "The definition is on screen in words, not only spoken.",
+      "Draw it in the the phone calculator world: every key the calculator app came with, upright or sideways, is the Standard Library; the upright keys are the built-ins you always have. Do not take the picture further than this: a calculator has about 40 keys; Python has thousands of tools, so they are kept in many separate sets, not one sideways screen"
+     ],
+     "play": "The shelf and the calculator. Deck slide 6's picture can sit beside the definition.",
+     "engage": "analogy",
+     "analogy": {
+      "world": "the phone calculator",
+      "maps": "every key the calculator app came with, upright or sideways, is the Standard Library; the upright keys are the built-ins you always have",
+      "breaks": "a calculator has about 40 keys; Python has thousands of tools, so they are kept in many separate sets, not one sideways screen"
+     },
+     "press_count": 3
+    },
+    {
+     "id": "C2",
+     "title": "Modules and packages",
+     "source": [
+      7
+     ],
+     "purpose": "The tools are kept in modules: a module is a file of Python code. Modules are kept in folders, called packages.",
+     "heading": "Python Standard Library",
+     "show": [
+      "The tools are kept in modules.",
+      "A module is a file of Python code.",
+      "random.py",
+      "Modules are kept in folders called packages.",
+      "math",
+      "random",
+      "datetime",
+      "collections",
+      "and more"
+     ],
+     "presses": [
+      {
+       "screen": "The shelf from C1 sorts itself into labelled boxes: <q>math</q>, <q>random</q>, <q>datetime</q>, <q>collections</q> <q>and more</q>. Caption: <q>The tools are kept in modules.</q>",
+       "say": "Like the calculator's sets: the maths keys together, the random key with its friends."
+      },
+      {
+       "screen": "The box random opens into a file icon <q>random.py</q> with a few lines of code inside. Caption: <q>A module is a file of Python code.</q>",
+       "say": "Someone wrote random.py. It came with Python. Any .py file is a module, even yours."
+      },
+      {
+       "screen": "Several module files slide into one folder icon. Caption: <q>Modules are kept in folders called packages.</q>",
+       "say": "A folder of modules is a package. Today we use single modules: math, random, functools.",
+       "room": "Say: module is a file, package is a folder."
+      }
+     ],
+     "must": [
+      "The words module and package are on screen with their one-line meaning.",
+      "While it moves, this stays exactly as it was: Every tool stays in its module; nothing is switched on yet."
+     ],
+     "play": "The boxes, the file and the folder. Deck slide 7's arrows and module names can be the boxes.",
+     "engage": "motion",
+     "motion": "The shelf of tools sorts into labelled modules; one opens into a .py file; files slide into a folder. It proves a module is a file and a package is a folder of them.",
+     "keeps": "Every tool stays in its module; nothing is switched on yet.",
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "import, then the dot: math",
+   "kind": "concept",
+   "mins": 4,
+   "start": 14,
+   "cards": [
+    {
+     "id": "C3",
+     "title": "import switches a module on",
+     "source": [
+      8,
+      10
+     ],
+     "purpose": "To use a module, import it first: import math. Without the import, Python does not know the name math and stops with NameError.",
+     "heading": "Working with Standard Library",
+     "show": [
+      "To use a module, import it first.",
+      "import module_name",
+      "What happens?",
+      "NameError: name 'math' is not defined",
+      "7.0",
+      "How you import decides how you call"
+     ],
+     "code": [
+      {
+       "file": "sqrt.py",
+       "src": "print(math.sqrt(49))",
+       "output": "NameError: name 'math' is not defined"
+      },
+      {
+       "file": "sqrt.py",
+       "src": "import math\n\nprint(math.sqrt(49))",
+       "output": "7.0"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 8's line <q>To use a module, import it first.</q> and the code card <q>import module_name</q>.",
+       "say": "Like turning the phone. One line, at the top."
+      },
+      {
+       "screen": "sqrt.py with only <q>print(math.sqrt(49))</q> and an empty output. Caption: <q>What happens?</q>",
+       "say": "No import. Does it print 7.0? Hands up yes. Hands up no.",
+       "room": "Hands up."
+      },
+      {
+       "screen": "math on line 1 has no partner above it and turns red. The output fills <q>NameError: name 'math' is not defined</q>.",
+       "say": "Python has never heard the name math. Nothing switched it on."
+      },
+      {
+       "screen": "Line 1 <q>import math</q> slides in above. The two math names underline in one colour. The output fills <q>7.0</q>. The table How you import decides how you call gets its first row: import math, math.factorial(5).",
+       "say": "Now the name math exists. The dot opens it."
+      }
+     ],
+     "answer": "without import: NameError: name 'math' is not defined; with import math: 7.0",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "The import cards share one picture: the name line 1 brings in is underlined in a colour, and the name line 2 uses is underlined too. Same name, same colour, it runs. A different name turns red and the program stops there.",
+      "A small table, How you import decides how you call, grows by one row on each of C3, C6, C7 and C8. Rows already added stay.",
+      "While it moves, this stays exactly as it was: Line 2, exactly as written, in both versions.",
+      "Keep these exact values. Someone who thinks Python knows math without an import would say 7.0; Python gives NameError: name 'math' is not defined. New values could hide that mistake."
+     ],
+     "play": "How the import line slides in and the names match. The sideways calculator can light as it does.",
+     "engage": "motion",
+     "ops": [
+      "import",
+      "math.sqrt()"
+     ],
+     "motion": "A line asking for math with no import above it turns red and stops; import math slides in and both names light in one colour. It proves import brings in the name.",
+     "keeps": "Line 2, exactly as written, in both versions.",
+     "trap": {
+      "belief": "Python knows math without an import",
+      "wrong": "7.0",
+      "code": 0
+     },
+     "press_count": 4
+    },
+    {
+     "id": "C4",
+     "title": "Math Module",
+     "source": [
+      9
+     ],
+     "engage": "motion",
+     "purpose": "Mark the start of the math module.",
+     "heading": "Math Module",
+     "show": [
+      "Math Module"
+     ],
+     "presses": [
+      {
+       "screen": "The words <q>Math Module</q> build themselves out of the sideways calculator's keys: √, π, x! fly in and settle into the letters.",
+       "say": "The keys we switched on. Let us look inside."
+      }
+     ],
+     "motion": "The sideways keys fly in and form the words Math Module.",
+     "keeps": "Nothing else is on the card.",
+     "play": "Deck slide 9's look, with the keys flying in.",
+     "must": [
+      "While it moves, this stays exactly as it was: Nothing else is on the card."
+     ],
+     "press_count": 1
+    },
+    {
+     "id": "C5",
+     "title": "The dot reaches inside",
+     "source": [
+      11,
+      12
+     ],
+     "purpose": "math.factorial(5): the module's name, a dot, then the tool inside it. math.pi is a value, so it has no brackets.",
+     "heading": "Syntax",
+     "show": [
+      "Module name",
+      "Variable / Function defined in the module",
+      "In how many orders can 5 friends stand in a line for a photo?",
+      "120",
+      "3.141592653589793",
+      "math.pi is a value. No brackets.",
+      "TypeError: 'float' object is not callable"
+     ],
+     "code": [
+      {
+       "file": "photo.py",
+       "src": "import math\n\nprint(math.factorial(5))\nprint(math.pi)",
+       "output": "120\n3.141592653589793"
+      },
+      {
+       "file": "pi.py",
+       "src": "import math\n\nprint(math.pi())",
+       "output": "TypeError: 'float' object is not callable"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 11's picture: <q>math.factorial(5)</q> with an arrow down to <q>Module name</q> under math and an arrow up to <q>Variable / Function defined in the module</q> over factorial.",
+       "say": "Left of the dot: which module. Right of the dot: which tool."
+      },
+      {
+       "screen": "photo.py, empty output. Caption: <q>In how many orders can 5 friends stand in a line for a photo?</q>",
+       "say": "From maths class: 5 times 4 times 3 times 2 times 1. Say lines 3 and 4.",
+       "room": "Say two answers."
+      },
+      {
+       "screen": "The output fills <q>120</q>, then <q>3.141592653589793</q>. The dot after math opens a small box with factorial and pi inside.",
+       "say": "factorial is a function, so it has brackets. pi is a number."
+      },
+      {
+       "screen": "pi.py: <q>print(math.pi())</q>. The output fills <q>TypeError: 'float' object is not callable</q>. Caption: <q>math.pi is a value. No brackets.</q>",
+       "say": "Brackets mean call it. You cannot call a number.",
+       "room": "Say why it failed."
+      }
+     ],
+     "answer": "120 / 3.141592653589793; math.pi(): TypeError: 'float' object is not callable",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "The import cards share one picture: the name line 1 brings in is underlined in a colour, and the name line 2 uses is underlined too. Same name, same colour, it runs. A different name turns red and the program stops there.",
+      "While it moves, this stays exactly as it was: The module name math, the same on every line.",
+      "Keep these exact values. Someone who thinks factorial adds 5 + 4 + 3 + 2 + 1 would say 15; Python gives 120\n3.141592653589793. New values could hide that mistake.",
+      "Keep these exact values. Someone who thinks math.pi is a function, called with brackets would say 3.141592653589793; Python gives TypeError: 'float' object is not callable. New values could hide that mistake."
+     ],
+     "play": "The arrows of slide 11 and the box the dot opens.",
+     "engage": "motion",
+     "ops": [
+      "math.factorial()",
+      "math.pi"
+     ],
+     "motion": "The dot opens the math box and lifts out factorial, then pi; calling pi with brackets stops. It proves the dot reaches one tool inside a module.",
+     "keeps": "The module name math, the same on every line.",
+     "trap": [
+      {
+       "belief": "factorial adds 5 + 4 + 3 + 2 + 1",
+       "wrong": "15",
+       "code": 0
+      },
+      {
+       "belief": "math.pi is a function, called with brackets",
+       "wrong": "3.141592653589793",
+       "code": 1
+      }
+     ],
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "as and from: three more ways to import",
+   "kind": "concept",
+   "mins": 4,
+   "start": 18,
+   "cards": [
+    {
+     "id": "C6",
+     "title": "as gives the module a new name",
+     "source": [
+      13
+     ],
+     "purpose": "import math as m brings the module in under the name m. Use it when your own variable already has the module's name. After as m, the name math is not there.",
+     "heading": "Importing Modules",
+     "show": [
+      "Kiran keeps his maths marks in a variable called math.",
+      "What happens?",
+      "Importing a module and giving it a new name",
+      "120",
+      "After as m, use m."
+     ],
+     "code": [
+      {
+       "file": "marks.py",
+       "src": "import math\n\nmath = 78\nprint(math.factorial(5))",
+       "output": "AttributeError: 'int' object has no attribute 'factorial'"
+      },
+      {
+       "file": "marks_fixed.py",
+       "src": "import math as m\n\nmath = 78\nprint(m.factorial(5))\nprint(math)",
+       "output": "120\n78"
+      },
+      {
+       "file": "old_name.py",
+       "src": "import math as m\n\nprint(math.pi)",
+       "output": "NameError: name 'math' is not defined"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "marks.py with empty output. Caption: <q>Kiran keeps his maths marks in a variable called math.</q> Then <q>What happens?</q>",
+       "say": "Line 3 puts 78 in math. What does line 4 do?",
+       "room": "Say a guess."
+      },
+      {
+       "screen": "Line 3 runs: the name math now holds 78, and the module is gone from it. The output fills <q>AttributeError: 'int' object has no attribute 'factorial'</q>.",
+       "say": "The number 78 has no factorial inside. One name cannot hold two things."
+      },
+      {
+       "screen": "marks_fixed.py: line 1 becomes <q>import math as m</q>. Deck slide 13's line <q>Importing a module and giving it a new name</q>. The output fills <q>120 / 78</q>. The table gets its second row: import math as m, m.factorial(5).",
+       "say": "The module is m, the marks are math. Both work."
+      },
+      {
+       "screen": "old_name.py: import math as m, then print(math.pi). The output fills <q>NameError: name 'math' is not defined</q>. Caption: <q>After as m, use m.</q>",
+       "say": "as m brings in only the name m.",
+       "room": "Say the fix: m.pi."
+      }
+     ],
+     "answer": "AttributeError: 'int' object has no attribute 'factorial'; with as m: 120 / 78; math.pi after as m: NameError: name 'math' is not defined",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "The import cards share one picture: the name line 1 brings in is underlined in a colour, and the name line 2 uses is underlined too. Same name, same colour, it runs. A different name turns red and the program stops there.",
+      "A small table, How you import decides how you call, grows by one row on each of C3, C6, C7 and C8. Rows already added stay.",
+      "While it moves, this stays exactly as it was: The module itself: only the name it is reached by changes.",
+      "Keep these exact values. Someone who thinks a variable called math does not touch the module would say 120; Python gives AttributeError: 'int' object has no attribute 'factorial'. New values could hide that mistake.",
+      "Keep these exact values. Someone who thinks math still works after import math as m would say 3.141592653589793; Python gives NameError: name 'math' is not defined. New values could hide that mistake."
+     ],
+     "play": "Kiran's marks card and how the name moves from the module to 78.",
+     "engage": "motion",
+     "ops": [
+      "as"
+     ],
+     "motion": "math = 78 takes the name away from the module and the call stops; as m gives the module its own name and both lines work. It proves as is the name the module is called by.",
+     "keeps": "The module itself: only the name it is reached by changes.",
+     "trap": [
+      {
+       "belief": "a variable called math does not touch the module",
+       "wrong": "120",
+       "code": 0
+      },
+      {
+       "belief": "math still works after import math as m",
+       "wrong": "3.141592653589793",
+       "code": 2
+      }
+     ],
+     "press_count": 4
+    },
+    {
+     "id": "C7",
+     "title": "from math import factorial",
+     "source": [
+      14
+     ],
+     "purpose": "from math import factorial brings in only the name factorial, so you call factorial(5) with no dot. The name math is not there.",
+     "heading": "Importing from a Module",
+     "show": [
+      "We can import just one tool from a module.",
+      "Now try math.factorial(5)."
+     ],
+     "code": [
+      {
+       "file": "one_tool.py",
+       "src": "from math import factorial\n\nprint(factorial(5))",
+       "output": "120"
+      },
+      {
+       "file": "one_tool_dot.py",
+       "src": "from math import factorial\n\nprint(math.factorial(5))",
+       "output": "NameError: name 'math' is not defined"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 14's line <q>We can import just one tool from a module.</q> one_tool.py, empty output.",
+       "say": "Only factorial comes in. How do we call it?",
+       "room": "Say the output."
+      },
+      {
+       "screen": "factorial lifts out of the math box on its own. The output fills <q>120</q>. The table gets its third row: from math import factorial, factorial(5).",
+       "say": "No dot: the tool came in by itself."
+      },
+      {
+       "screen": "one_tool_dot.py. Caption: <q>Now try math.factorial(5).</q> Choices A <q>120</q>, B <q>NameError</q>.",
+       "say": "Option A, hands up. B.",
+       "room": "Hands up per choice."
+      },
+      {
+       "screen": "math turns red. The output fills <q>NameError: name 'math' is not defined</q>.",
+       "say": "We brought in factorial, not math."
+      }
+     ],
+     "answer": "120; math.factorial after from-import: NameError: name 'math' is not defined",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "The import cards share one picture: the name line 1 brings in is underlined in a colour, and the name line 2 uses is underlined too. Same name, same colour, it runs. A different name turns red and the program stops there.",
+      "A small table, How you import decides how you call, grows by one row on each of C3, C6, C7 and C8. Rows already added stay.",
+      "While it moves, this stays exactly as it was: The math box itself, closed, with its other tools inside.",
+      "Keep these exact values. Someone who thinks from math import factorial also brings in math would say 120; Python gives NameError: name 'math' is not defined. New values could hide that mistake."
+     ],
+     "play": "The tool lifting out of its box on its own.",
+     "engage": "motion",
+     "ops": [
+      "from ... import"
+     ],
+     "motion": "Only factorial lifts out of the math box; asking for math afterwards turns red. It proves from ... import brings in one name, not the module.",
+     "keeps": "The math box itself, closed, with its other tools inside.",
+     "trap": {
+      "belief": "from math import factorial also brings in math",
+      "wrong": "120",
+      "code": 1
+     },
+     "press_count": 4
+    },
+    {
+     "id": "C8",
+     "title": "from math import factorial as fact",
+     "source": [
+      15
+     ],
+     "purpose": "One tool, with a new name: from math import factorial as fact, then fact(5). factorial is not there.",
+     "heading": "Aliasing Imports",
+     "show": [
+      "We can import one tool and give it a new name.",
+      "How you import decides how you call"
+     ],
+     "code": [
+      {
+       "file": "short_name.py",
+       "src": "from math import factorial as fact\n\nprint(fact(5))",
+       "output": "120"
+      },
+      {
+       "file": "short_name_old.py",
+       "src": "from math import factorial as fact\n\nprint(factorial(5))",
+       "output": "NameError: name 'factorial' is not defined"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 15's line <q>We can import one tool and give it a new name.</q> short_name.py, empty output.",
+       "say": "Say what it prints.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "factorial lifts out and its label changes to fact. The output fills <q>120</q>. Below, short_name_old.py calls factorial(5) and fills <q>NameError: name 'factorial' is not defined</q>.",
+       "say": "Only the new name exists."
+      },
+      {
+       "screen": "The table is complete, four rows: <q>import math</q> then <q>math.factorial(5)</q>; <q>import math as m</q> then <q>m.factorial(5)</q>; <q>from math import factorial</q> then <q>factorial(5)</q>; <q>from math import factorial as fact</q> then <q>fact(5)</q>. Caption: <q>How you import decides how you call</q>",
+       "say": "Read across each row. Line 1 decides how line 2 is written.",
+       "room": "Read one row aloud."
+      }
+     ],
+     "answer": "120; factorial after as fact: NameError: name 'factorial' is not defined",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "The import cards share one picture: the name line 1 brings in is underlined in a colour, and the name line 2 uses is underlined too. Same name, same colour, it runs. A different name turns red and the program stops there.",
+      "A small table, How you import decides how you call, grows by one row on each of C3, C6, C7 and C8. Rows already added stay.",
+      "All four rows print 120; each is a real run.",
+      "While it moves, this stays exactly as it was: The tool itself: fact and factorial are the same function.",
+      "Keep these exact values. Someone who thinks factorial still works after as fact would say 120; Python gives NameError: name 'factorial' is not defined. New values could hide that mistake."
+     ],
+     "play": "The label changing on the tool, and the finished table.",
+     "engage": "motion",
+     "ops": [
+      "as",
+      "from ... import"
+     ],
+     "motion": "factorial lifts out and its label turns into fact; the old name is gone. It proves as renames one tool.",
+     "keeps": "The tool itself: fact and factorial are the same function.",
+     "trap": {
+      "belief": "factorial still works after as fact",
+      "wrong": "120",
+      "code": 1
+     },
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "Task 1: Ravi's homework",
+   "kind": "activity",
+   "mins": 6,
+   "start": 22,
+   "cards": [
+    {
+     "id": "T1",
+     "title": "Task 1: Ravi's homework",
+     "source": "new",
+     "handout": "Task 1",
+     "activity": 3,
+     "timer": 360,
+     "engage": "task",
+     "purpose": "Predict four short programs, each with a different import line: say what each prints or that it stops. Run them, then fix the two that stop by changing line 1 only.",
+     "heading": "Ravi's homework",
+     "show": [
+      "Worksheet · Task 1",
+      "Four programs. Two of them stop.",
+      "Predict. Run. Fix line 1."
+     ],
+     "code": [
+      {
+       "file": "q1.py",
+       "src": "import math\nprint(math.sqrt(81))",
+       "output": "9.0"
+      },
+      {
+       "file": "q2.py",
+       "src": "from math import sqrt\nprint(math.sqrt(64))",
+       "output": "NameError: name 'math' is not defined"
+      },
+      {
+       "file": "q3.py",
+       "src": "import math as m\nprint(m.factorial(4))",
+       "output": "24"
+      },
+      {
+       "file": "q4.py",
+       "src": "from math import factorial\nprint(fact(6))",
+       "output": "NameError: name 'fact' is not defined"
+      },
+      {
+       "file": "q2_fixed.py",
+       "src": "import math\nprint(math.sqrt(64))",
+       "output": "8.0"
+      },
+      {
+       "file": "q4_fixed.py",
+       "src": "from math import factorial as fact\nprint(fact(6))",
+       "output": "720"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "The four programs, each with its homework question (data.programs), and a 6 minute timer. Caption: <q>Four programs. Two of them stop.</q>",
+       "say": "Worksheet tab and playground. Predict all four first, then run.",
+       "room": "Predict, then run."
+      },
+      {
+       "screen": "One program's result per press, in order, from data.results.",
+       "n": 4,
+       "say": "Hands up if you predicted this one right.",
+       "room": "Hands up, privately check."
+      },
+      {
+       "screen": "The two fixes: Q2's line 1 becomes <q>import math</q> and prints <q>8.0</q>; Q4's line 1 becomes <q>from math import factorial as fact</q> and prints <q>720</q>.",
+       "say": "Line 1 decides how line 2 is called. Change line 1, not line 2."
+      }
+     ],
+     "answer": "Q1: 9.0; Q2: NameError: name 'math' is not defined; Q3: 24; Q4: NameError: name 'fact' is not defined. Fixes: Q2 import math gives 8.0; Q4 from math import factorial as fact gives 720",
+     "must": [
+      "No result shows until the timer has ended.",
+      "One program's result per press on the reveal."
+     ],
+     "must_not": [
+      "Show the fixed line 1 before the timer has ended."
+     ],
+     "data": {
+      "programs": [
+       {
+        "question": "Q1. √81",
+        "src": "import math\nprint(math.sqrt(81))"
+       },
+       {
+        "question": "Q2. √64",
+        "src": "from math import sqrt\nprint(math.sqrt(64))"
+       },
+       {
+        "question": "Q3. 4 friends in a row: how many orders?",
+        "src": "import math as m\nprint(m.factorial(4))"
+       },
+       {
+        "question": "Q4. 6 friends in a row: how many orders?",
+        "src": "from math import factorial\nprint(fact(6))"
+       }
+      ],
+      "results": [
+       "9.0",
+       "NameError: name 'math' is not defined",
+       "24",
+       "NameError: name 'fact' is not defined"
+      ],
+      "fixes": {
+       "Q2": "import math",
+       "Q4": "from math import factorial as fact"
+      }
+     },
+     "play": "The layout of the four programs and the timer. A notebook page can hold the homework questions.",
+     "no_trap": "The task is the trap: two of the four programs stop, and the room finds which by predicting.",
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Game G1: fix the import",
+   "kind": "activity",
+   "mins": 5,
+   "start": 28,
+   "cards": [
+    {
+     "id": "G1",
+     "title": "Fix the import",
+     "game": "make-it-print",
+     "ops": [
+      "import",
+      "as",
+      "from ... import"
+     ],
+     "purpose": "Line 1 of the program is blank. Vote which import line makes it print the target, then watch every option tried in turn: one hits, three stop.",
+     "heading": "Fix the import",
+     "data": {
+      "setup": {
+       "goal": "Choose the line 1 that makes line 2 print the target exactly."
+      },
+      "rounds": [
+       {
+        "ask": "Which line 1 makes it print the target?",
+        "template": "____\nprint(math.sqrt(64))",
+        "target": "8.0",
+        "options": [
+         "import math",
+         "from math import sqrt",
+         "import math as m",
+         "import sqrt"
+        ],
+        "answer": "import math",
+        "because": "import math brings in exactly the name line 2 uses.",
+        "why": {
+         "from math import sqrt": "Line 1 brings in the name sqrt, but line 2 asks for math.",
+         "import math as m": "Line 1 brings in the name m, but line 2 asks for math.",
+         "import sqrt": "There is no module called that. It lives inside math."
+        },
+        "steps": [
+         {
+          "caption": "Try A: import math. It prints 8.0. That is the target.",
+          "fill": "import math",
+          "output": "8.0",
+          "match": true
+         },
+         {
+          "caption": "Try B: from math import sqrt. It stops with NameError.",
+          "fill": "from math import sqrt",
+          "output": "NameError: name 'math' is not defined",
+          "match": false
+         },
+         {
+          "caption": "Try C: import math as m. It stops with NameError.",
+          "fill": "import math as m",
+          "output": "NameError: name 'math' is not defined",
+          "match": false
+         },
+         {
+          "caption": "Try D: import sqrt. It stops with ModuleNotFoundError.",
+          "fill": "import sqrt",
+          "output": "ModuleNotFoundError: No module named 'sqrt'",
+          "match": false
+         }
+        ]
+       },
+       {
+        "ask": "Which line 1 makes it print the target?",
+        "template": "____\nprint(fact(6))",
+        "target": "720",
+        "options": [
+         "from math import factorial",
+         "import math",
+         "import math as fact",
+         "from math import factorial as fact"
+        ],
+        "answer": "from math import factorial as fact",
+        "because": "from math import factorial as fact brings in exactly the name line 2 uses.",
+        "why": {
+         "from math import factorial": "Line 1 brings in the name factorial, but line 2 asks for fact.",
+         "import math": "Line 1 brings in the name math, but line 2 asks for fact.",
+         "import math as fact": "The name now means the whole module, and a module cannot be called like a function."
+        },
+        "steps": [
+         {
+          "caption": "Try A: from math import factorial. It stops with NameError.",
+          "fill": "from math import factorial",
+          "output": "NameError: name 'fact' is not defined",
+          "match": false
+         },
+         {
+          "caption": "Try B: import math. It stops with NameError.",
+          "fill": "import math",
+          "output": "NameError: name 'fact' is not defined",
+          "match": false
+         },
+         {
+          "caption": "Try C: import math as fact. It stops with TypeError.",
+          "fill": "import math as fact",
+          "output": "TypeError: 'module' object is not callable",
+          "match": false
+         },
+         {
+          "caption": "Try D: from math import factorial as fact. It prints 720. That is the target.",
+          "fill": "from math import factorial as fact",
+          "output": "720",
+          "match": true
+         }
+        ]
+       },
+       {
+        "ask": "Which line 1 makes it print the target?",
+        "template": "____\nprint(m.pi)",
+        "target": "3.141592653589793",
+        "options": [
+         "import math",
+         "from math import pi",
+         "import math as m",
+         "from math import pi as m"
+        ],
+        "answer": "import math as m",
+        "because": "import math as m brings in exactly the name line 2 uses.",
+        "why": {
+         "import math": "Line 1 brings in the name math, but line 2 asks for m.",
+         "from math import pi": "Line 1 brings in the name pi, but line 2 asks for m.",
+         "from math import pi as m": "Now m is the number pi itself, and a number has no .pi inside it."
+        },
+        "steps": [
+         {
+          "caption": "Try A: import math. It stops with NameError.",
+          "fill": "import math",
+          "output": "NameError: name 'm' is not defined",
+          "match": false
+         },
+         {
+          "caption": "Try B: from math import pi. It stops with NameError.",
+          "fill": "from math import pi",
+          "output": "NameError: name 'm' is not defined",
+          "match": false
+         },
+         {
+          "caption": "Try C: import math as m. It prints 3.141592653589793. That is the target.",
+          "fill": "import math as m",
+          "output": "3.141592653589793",
+          "match": true
+         },
+         {
+          "caption": "Try D: from math import pi as m. It stops with AttributeError.",
+          "fill": "from math import pi as m",
+          "output": "AttributeError: 'float' object has no attribute 'pi'",
+          "match": false
+         }
+        ]
+       },
+       {
+        "ask": "Which line 1 makes it print the target?",
+        "template": "____\nprint(factorial(0))",
+        "target": "1",
+        "options": [
+         "import math",
+         "from math import factorial",
+         "from math import factorial as fact",
+         "import math as factorial"
+        ],
+        "answer": "from math import factorial",
+        "because": "from math import factorial brings in exactly the name line 2 uses.",
+        "why": {
+         "import math": "Line 1 brings in the name math, but line 2 asks for factorial.",
+         "from math import factorial as fact": "Line 1 brings in the name fact, but line 2 asks for factorial.",
+         "import math as factorial": "The name now means the whole module, and a module cannot be called like a function."
+        },
+        "steps": [
+         {
+          "caption": "Try A: import math. It stops with NameError.",
+          "fill": "import math",
+          "output": "NameError: name 'factorial' is not defined",
+          "match": false
+         },
+         {
+          "caption": "Try B: from math import factorial. It prints 1. That is the target.",
+          "fill": "from math import factorial",
+          "output": "1",
+          "match": true
+         },
+         {
+          "caption": "Try C: from math import factorial as fact. It stops with NameError.",
+          "fill": "from math import factorial as fact",
+          "output": "NameError: name 'factorial' is not defined",
+          "match": false
+         },
+         {
+          "caption": "Try D: import math as factorial. It stops with TypeError.",
+          "fill": "import math as factorial",
+          "output": "TypeError: 'module' object is not callable",
+          "match": false
+         }
+        ]
+       }
+      ]
+     },
+     "say": {
+      "ask": "Which line 1? Option A, hands up. B. C. D.",
+      "step": "Run it with this line. Does it hit the target?",
+      "verdict": "Read the why line for the most popular wrong option."
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "The options are tried in the order A, B, C, D, the right one included.",
+      "Rounds 1 and 2 are Task 1's two programs that stopped, so the room has already seen them.",
+      "Every try stays listed with its real output or error, so the four results can be compared.",
+      "Round 4 is the edge: factorial(0) is 1.",
+      "The approved preview of this card is tab G1 of the preview page."
+     ],
+     "play": "The blank line, the target and the list of tries. The look of the preview is a starting point.",
+     "presses": [
+      {
+       "screen": "Round 1 of 4. The round's setup, as in the data. The question: <q>Which line 1 makes it print the target?</q> Options: A <q>import math</q>, B <q>from math import sqrt</q>, C <q>import math as m</q>, D <q>import sqrt</q>. Nothing runs yet.",
+       "say": "Which line 1? Option A, hands up. B. C. D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Try A: import math. It prints 8.0. That is the target.</q> In the data: match = true.",
+       "say": "Run it with this line. Does it hit the target?"
+      },
+      {
+       "screen": "<q>Try B: from math import sqrt. It stops with NameError.</q> In the data: output = NameError: name 'math' is not defined; match = false.",
+       "say": "Run it with this line. Does it hit the target?"
+      },
+      {
+       "screen": "<q>Try C: import math as m. It stops with NameError.</q> In the data: output = NameError: name 'math' is not defined; match = false.",
+       "say": "Run it with this line. Does it hit the target?"
+      },
+      {
+       "screen": "<q>Try D: import sqrt. It stops with ModuleNotFoundError.</q> In the data: output = ModuleNotFoundError: No module named 'sqrt'; match = false.",
+       "say": "Run it with this line. Does it hit the target?"
+      },
+      {
+       "screen": "The answer: <q>import math</q>. <q>import math brings in exactly the name line 2 uses.</q> Then a line for every other option: <q>from math import sqrt</q> <q>Line 1 brings in the name sqrt, but line 2 asks for math.</q>; <q>import math as m</q> <q>Line 1 brings in the name m, but line 2 asks for math.</q>; <q>import sqrt</q> <q>There is no module called that. It lives inside math.</q>.",
+       "say": "Read the why line for the most popular wrong option."
+      },
+      {
+       "screen": "Round 2 of 4. The round's setup, as in the data. The question: <q>Which line 1 makes it print the target?</q> Options: A <q>from math import factorial</q>, B <q>import math</q>, C <q>import math as fact</q>, D <q>from math import factorial as fact</q>. Nothing runs yet.",
+       "say": "Which line 1? Option A, hands up. B. C. D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Try A: from math import factorial. It stops with NameError.</q> In the data: output = NameError: name 'fact' is not defined; match = false.",
+       "say": "Run it with this line. Does it hit the target?"
+      },
+      {
+       "screen": "<q>Try B: import math. It stops with NameError.</q> In the data: output = NameError: name 'fact' is not defined; match = false.",
+       "say": "Run it with this line. Does it hit the target?"
+      },
+      {
+       "screen": "<q>Try C: import math as fact. It stops with TypeError.</q> In the data: output = TypeError: 'module' object is not callable; match = false.",
+       "say": "Run it with this line. Does it hit the target?"
+      },
+      {
+       "screen": "<q>Try D: from math import factorial as fact. It prints 720. That is the target.</q> In the data: match = true.",
+       "say": "Run it with this line. Does it hit the target?"
+      },
+      {
+       "screen": "The answer: <q>from math import factorial as fact</q>. <q>from math import factorial as fact brings in exactly the name line 2 uses.</q> Then a line for every other option: <q>from math import factorial</q> <q>Line 1 brings in the name factorial, but line 2 asks for fact.</q>; <q>import math</q> <q>Line 1 brings in the name math, but line 2 asks for fact.</q>; <q>import math as fact</q> <q>The name now means the whole module, and a module cannot be called like a function.</q>.",
+       "say": "Read the why line for the most popular wrong option."
+      },
+      {
+       "screen": "Round 3 of 4. The round's setup, as in the data. The question: <q>Which line 1 makes it print the target?</q> Options: A <q>import math</q>, B <q>from math import pi</q>, C <q>import math as m</q>, D <q>from math import pi as m</q>. Nothing runs yet.",
+       "say": "Which line 1? Option A, hands up. B. C. D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Try A: import math. It stops with NameError.</q> In the data: output = NameError: name 'm' is not defined; match = false.",
+       "say": "Run it with this line. Does it hit the target?"
+      },
+      {
+       "screen": "<q>Try B: from math import pi. It stops with NameError.</q> In the data: output = NameError: name 'm' is not defined; match = false.",
+       "say": "Run it with this line. Does it hit the target?"
+      },
+      {
+       "screen": "<q>Try C: import math as m. It prints 3.141592653589793. That is the target.</q> In the data: match = true.",
+       "say": "Run it with this line. Does it hit the target?"
+      },
+      {
+       "screen": "<q>Try D: from math import pi as m. It stops with AttributeError.</q> In the data: output = AttributeError: 'float' object has no attribute 'pi'; match = false.",
+       "say": "Run it with this line. Does it hit the target?"
+      },
+      {
+       "screen": "The answer: <q>import math as m</q>. <q>import math as m brings in exactly the name line 2 uses.</q> Then a line for every other option: <q>import math</q> <q>Line 1 brings in the name math, but line 2 asks for m.</q>; <q>from math import pi</q> <q>Line 1 brings in the name pi, but line 2 asks for m.</q>; <q>from math import pi as m</q> <q>Now m is the number pi itself, and a number has no .pi inside it.</q>.",
+       "say": "Read the why line for the most popular wrong option."
+      },
+      {
+       "screen": "Round 4 of 4. The round's setup, as in the data. The question: <q>Which line 1 makes it print the target?</q> Options: A <q>import math</q>, B <q>from math import factorial</q>, C <q>from math import factorial as fact</q>, D <q>import math as factorial</q>. Nothing runs yet.",
+       "say": "Which line 1? Option A, hands up. B. C. D.",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>Try A: import math. It stops with NameError.</q> In the data: output = NameError: name 'factorial' is not defined; match = false.",
+       "say": "Run it with this line. Does it hit the target?"
+      },
+      {
+       "screen": "<q>Try B: from math import factorial. It prints 1. That is the target.</q> In the data: match = true.",
+       "say": "Run it with this line. Does it hit the target?"
+      },
+      {
+       "screen": "<q>Try C: from math import factorial as fact. It stops with NameError.</q> In the data: output = NameError: name 'factorial' is not defined; match = false.",
+       "say": "Run it with this line. Does it hit the target?"
+      },
+      {
+       "screen": "<q>Try D: import math as factorial. It stops with TypeError.</q> In the data: output = TypeError: 'module' object is not callable; match = false.",
+       "say": "Run it with this line. Does it hit the target?"
+      },
+      {
+       "screen": "The answer: <q>from math import factorial</q>. <q>from math import factorial brings in exactly the name line 2 uses.</q> Then a line for every other option: <q>import math</q> <q>Line 1 brings in the name math, but line 2 asks for factorial.</q>; <q>from math import factorial as fact</q> <q>Line 1 brings in the name fact, but line 2 asks for factorial.</q>; <q>import math as factorial</q> <q>The name now means the whole module, and a module cannot be called like a function.</q>.",
+       "say": "Read the why line for the most popular wrong option."
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Show which option hits before its press."
+     ],
+     "interaction": "A target output and a program with one blank. The room votes the value for the blank; then each option is tried in turn, and only one hits the target.",
+     "game_def": {
+      "id": "make-it-print",
+      "name": "Make it print this",
+      "one_line": "A target output and a program with one blank. The room votes the value for the blank; then each option is tried in turn, and only one hits the target.",
+      "how": [
+       "The target output, big. The program, with one blank: ____.",
+       "Options are values for the blank.",
+       "Each press tries one option: its output appears next to the target, and it matches or misses.",
+       "The verdict keeps the one that hit."
+      ],
+      "setup": {
+       "goal": "what the room is aiming for, in one line"
+      },
+      "round": {
+       "template": "the code with ____ for the blank, exact",
+       "target": "the output wanted, computed from the answer"
+      },
+      "step": {
+       "fill": "the option tried",
+       "output": "what it prints",
+       "match": "true or false"
+      }
+     },
+     "press_count": 24
+    }
+   ]
+  },
+  {
+   "name": "Classroom quiz",
+   "kind": "quiz",
+   "mins": 5,
+   "start": 33,
+   "cards": [
+    {
+     "id": "S-QUIZ",
+     "title": "Quiz",
+     "source": "spine:quiz",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "random: who decides the dice, who plays first",
+   "kind": "concept",
+   "mins": 4,
+   "start": 38,
+   "cards": [
+    {
+     "id": "C9",
+     "title": "Random Module",
+     "source": [
+      16
+     ],
+     "engage": "motion",
+     "purpose": "Mark the start of the random module.",
+     "heading": "Random Module",
+     "show": [
+      "Random Module"
+     ],
+     "presses": [
+      {
+       "screen": "A Ludo King dice rolls across the card and the words <q>Random Module</q> come out of it.",
+       "say": "Now a module for something we cannot write ourselves."
+      }
+     ],
+     "motion": "A dice rolls in and the words Random Module come out of it.",
+     "keeps": "Nothing else is on the card.",
+     "play": "Deck slide 16's look, with the dice.",
+     "must": [
+      "While it moves, this stays exactly as it was: Nothing else is on the card."
+     ],
+     "press_count": 1
+    },
+    {
+     "id": "C10",
+     "title": "Who decides the dice?",
+     "source": [
+      17,
+      18,
+      19
+     ],
+     "purpose": "random.randint(1, 6) gives a whole number from 1 to 6, both ends included, and a different one on every run. Nothing we have learnt so far can do that.",
+     "heading": "Creating Randomness",
+     "show": [
+      "Teja's turn. Who decides the number?",
+      "dice = 4",
+      "Same number, every run.",
+      "Random is useful when nobody should be able to guess: a dice, a coin.",
+      "random.randint(min, max)",
+      "A different number every run.",
+      "30 rolls. Did a 6 ever come?"
+     ],
+     "code": [
+      {
+       "file": "dice.py",
+       "src": "dice = 4\nprint(dice)",
+       "output": "4"
+      },
+      {
+       "file": "dice.py",
+       "src": "import random\n\ndice = random.randint(1, 6)\nprint(dice)",
+       "output": "6"
+      },
+      {
+       "file": "thirty_rolls.py",
+       "src": "import random\n\nrolls = []\nfor turn in range(30):\n    rolls.append(random.randint(1, 6))\nprint(6 in rolls)",
+       "output": "True"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Ludo King on Teja's phone, four players Teja, Ravi, Kiran, Divya, the dice glowing. Caption: <q>Teja's turn. Who decides the number?</q>",
+       "say": "You are the coder at Ludo King. What would you write?",
+       "room": "Suggest a line."
+      },
+      {
+       "screen": "dice.py, <q>dice = 4</q>, run twice: <q>4</q>, <q>4</q>. The phone's dice shows 4 both times. Caption: <q>Same number, every run.</q>",
+       "say": "Every player gets 4 in every game. Would you play this?",
+       "room": "Say no."
+      },
+      {
+       "screen": "Deck slide 17's line, simplified: <q>Random is useful when nobody should be able to guess: a dice, a coin.</q> Deck slide 18's code card <q>random.randint(min, max)</q>.",
+       "say": "randint: a random whole number between min and max."
+      },
+      {
+       "screen": "dice.py becomes the random version. Three runs, one per press inside this press: <q>6</q>, <q>1</q>, <q>5</q>, the phone's dice matching each. Caption: <q>A different number every run.</q>",
+       "say": "Guess before each run. Your laptop will give other numbers.",
+       "room": "Guess a number."
+      },
+      {
+       "screen": "thirty_rolls.py rolls 30 times and asks if a 6 came. Caption: <q>30 rolls. Did a 6 ever come?</q> Choices A <q>True</q>, B <q>False</q>. Then the output fills <q>True</q>.",
+       "say": "range(1, 6) stops before 6. Does randint(1, 6)? Hands up for each, then press.",
+       "room": "Hands up per choice."
+      }
+     ],
+     "answer": "dice = 4 gives 4 every run; randint(1, 6) differs every run; 30 rolls: True",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "Outputs of random lines in this spec are sample runs. Every run in the room gives other numbers; the card says so, and the instructor reads out whatever the room gets.",
+      "randint's range is shown with both ends lit: 1 and 6.",
+      "While it moves, this stays exactly as it was: The Ludo board and the four players; only the dice changes.",
+      "Keep these exact values. Someone who thinks randint(1, 6) never gives 6, like range(1, 6) would say False; Python gives True. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Present a sample run's number as the answer."
+     ],
+     "data": {
+      "sample_runs": [
+       "6",
+       "1",
+       "5"
+      ]
+     },
+     "play": "Ludo King's board, the dice and how it rolls. The preview page's first round used this board.",
+     "engage": "motion",
+     "ops": [
+      "random.randint()"
+     ],
+     "motion": "The fixed line rolls 4 twice; randint rolls a different number each run, the dice matching. It proves randint gives a number nobody chose, from min to max with both ends in.",
+     "keeps": "The Ludo board and the four players; only the dice changes.",
+     "trap": {
+      "belief": "randint(1, 6) never gives 6, like range(1, 6)",
+      "wrong": "False",
+      "code": 2
+     },
+     "press_count": 5
+    },
+    {
+     "id": "C11",
+     "title": "Who plays first?",
+     "source": [
+      20,
+      21
+     ],
+     "purpose": "random.choice(players) picks one item from a list at random. On a string it picks one letter.",
+     "heading": "Choice",
+     "show": [
+      "random.choice(seq)",
+      "Gives a random item from a sequence.",
+      "Who plays first?",
+      "choice on \"Teja\""
+     ],
+     "code": [
+      {
+       "file": "first.py",
+       "src": "import random\n\nplayers = [\"Teja\", \"Ravi\", \"Kiran\", \"Divya\"]\nprint(random.choice(players))",
+       "output": "Teja"
+      },
+      {
+       "file": "letter.py",
+       "src": "import random\n\nprint(random.choice(\"Teja\"))",
+       "output": "e"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 20's code card <q>random.choice(seq)</q> and its line <q>Gives a random item from a sequence.</q>",
+       "say": "A sequence: a list, a string, a tuple."
+      },
+      {
+       "screen": "first.py: the four players. Caption: <q>Who plays first?</q> Two runs: <q>Teja</q> and <q>Divya</q>, each lighting that player on the board.",
+       "say": "Who will it pick? Guess, then run.",
+       "room": "Guess a name."
+      },
+      {
+       "screen": "letter.py: random.choice(\"Teja\"). Caption: <q>choice on \"Teja\"</q> Choices A <q>Teja</q>, B <q>a single letter</q>. Then a sample run fills <q>e</q>.",
+       "say": "A string is a sequence of letters. Hands up for A, then B.",
+       "room": "Hands up per choice."
+      }
+     ],
+     "answer": "one player at random; on \"Teja\" one letter (sample: e)",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "Outputs of random lines in this spec are sample runs. Every run in the room gives other numbers; the card says so, and the instructor reads out whatever the room gets.",
+      "While it moves, this stays exactly as it was: The players list, in its order.",
+      "Keep these exact values. Someone who thinks choice on a name gives the whole name would say Teja; Python gives e. New values could hide that mistake."
+     ],
+     "play": "The Ludo players lighting up as they are picked.",
+     "engage": "motion",
+     "ops": [
+      "random.choice()"
+     ],
+     "motion": "A highlight jumps between the four players and stops on one; on a name it stops on one letter. It proves choice picks one item of whatever sequence it gets.",
+     "keeps": "The players list, in its order.",
+     "trap": {
+      "belief": "choice on a name gives the whole name",
+      "wrong": "Teja",
+      "code": 1
+     },
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "Hook 2: Rating 4.0+ on Zomato",
+   "kind": "hook",
+   "mins": 4,
+   "start": 42,
+   "cards": [
+    {
+     "id": "H2",
+     "title": "Rating 4.0+",
+     "source": "new",
+     "purpose": "Feel, from an app they open every week, why map, filter and reduce exist: the loop over the items is the same every time, only the rule changes. A filter button, each cart line and the item total are the three shapes.",
+     "heading": "Rating 4.0+",
+     "show": [
+      "Biryani near campus. Six places.",
+      "You tap Rating 4.0+. What does the app do with these six?",
+      "Rating 4.0+ shows 3 of the 6.",
+      "Tap the button again and all 6 come back.",
+      "Pure Veg instead. Same job. A different rule.",
+      "Did Zomato's coder write a new loop for every button?",
+      "One filter. Each button is a rule we hand to it.",
+      "Price times how many, on every line. One rule, one answer per item.",
+      "Item total: many amounts become one number.",
+      "sum(amounts) gives 710 too.",
+      "You write only the rule. Python runs the loop."
+     ],
+     "code": [
+      {
+       "file": "buttons.py",
+       "src": "rating = {\"Spice Route\": 4.3, \"Green Leaf\": 4.1, \"Biryani Box\": 3.8,\n          \"Annapurna Meals\": 3.6, \"Royal Handi\": 4.6, \"Dum Corner\": 3.9}\nveg = {\"Green Leaf\", \"Annapurna Meals\"}\n\ndef is_rated_4(name):\n    return rating[name] >= 4.0\n\ndef is_veg(name):\n    return name in veg\n\nprint(list(filter(is_rated_4, rating)))\nprint(list(filter(is_veg, rating)))",
+       "output": "['Spice Route', 'Green Leaf', 'Royal Handi']\n['Green Leaf', 'Annapurna Meals']"
+      },
+      {
+       "file": "cart.py",
+       "src": "def line_total(item):\n    price, qty = item\n    return price * qty\n\ncart = [(250, 2), (90, 1), (40, 3)]\nprint(list(map(line_total, cart)))",
+       "output": "[500, 90, 120]"
+      },
+      {
+       "file": "total.py",
+       "src": "from functools import reduce\n\ndef add(a, b):\n    return a + b\n\namounts = [500, 90, 120]\nprint(reduce(add, amounts))",
+       "output": "710"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Zomato on a phone: location Campus, Main Gate, search <q>biryani</q>, the chip row <q>Filters</q>, <q>Rating 4.0+</q>, <q>Pure Veg</q>, <q>Less than ₹300</q>, and six places (data.places), each with its rating badge, veg mark and price for one. Caption: <q>You tap Rating 4.0+. What does the app do with these six?</q>",
+       "say": "You tap Rating 4.0+. What does the app do? Take three answers.",
+       "room": "Call out: it checks each one, keeps some."
+      },
+      {
+       "screen": "The chip turns on. The 3 places under 4.0 disappear from the list; 3 stay: <q>Spice Route</q>, <q>Green Leaf</q>, <q>Royal Handi</q>. Caption: <q>Rating 4.0+ shows 3 of the 6.</q> Small print: <q>Tap the button again and all 6 come back.</q>",
+       "say": "Which places disappeared? Why did Dum Corner go? 3.9 is not 4.0. Tap it off: all 6 are back.",
+       "room": "Name the ones that went."
+      },
+      {
+       "screen": "Pure Veg instead: 2 stay, <q>Green Leaf</q>, <q>Annapurna Meals</q>. Caption: <q>Pure Veg instead. Same job. A different rule.</q>",
+       "say": "What changed between the two buttons? Only the rule.",
+       "room": "Say: the rule."
+      },
+      {
+       "screen": "Ten chips fill the space beside the phone: <q>Rating 4.0+</q>, <q>Pure Veg</q>, <q>Less than ₹300</q>, <q>Offers</q>, <q>Fast delivery</q>, <q>Rating 4.5+</q>, <q>Under 30 min</q>, <q>Distance under 2 km</q>, <q>Free delivery</q>, <q>Previously ordered</q>. Caption: <q>Did Zomato's coder write a new loop for every button?</q>",
+       "say": "Each one checks every place and keeps some. Would you write that loop again for each?",
+       "room": "Answer: no, write it once."
+      },
+      {
+       "screen": "buttons.py beside the phone. The two print lines light. The output fills <q>['Spice Route', 'Green Leaf', 'Royal Handi'] / ['Green Leaf', 'Annapurna Meals']</q>, matching the two lists the app showed. Caption: <q>One filter. Each button is a rule we hand to it.</q>",
+       "say": "is_rated_4 and is_veg are the two buttons. filter is the loop, written once by Python.",
+       "room": "Match each output line to a button."
+      },
+      {
+       "screen": "Ravi's cart from Spice Route: <q>Chicken biryani ₹250 × 2</q>, <q>Double ka meetha ₹90 × 1</q>, <q>Thums Up ₹40 × 3</q>. Each line's amount shows a ?, and so does Item total.",
+       "say": "Look at the first line. What amount will the app show? And the next two?",
+       "room": "Say ₹500, ₹90, ₹120."
+      },
+      {
+       "screen": "The amounts fill: <q>₹500</q>, <q>₹90</q>, <q>₹120</q>. cart.py beside it prints <q>[500, 90, 120]</q>. Caption: <q>Price times how many, on every line. One rule, one answer per item.</q>",
+       "say": "Not keep some. Every line gets the same rule and gives one answer. 3 in, 3 out. That shape is map.",
+       "room": "Check each amount."
+      },
+      {
+       "screen": "Item total fills <q>₹710</q>. total.py prints <q>710</q>. Caption: <q>Item total: many amounts become one number.</q> A note: <q>sum(amounts) gives 710 too.</q>",
+       "say": "reduce joins the amounts two at a time into one total. sum does the adding one; reduce takes any rule.",
+       "room": "Say 710."
+      },
+      {
+       "screen": "Three labels under the phone: filter, the buttons, keep some; map, the cart lines, one answer per item; reduce, the item total, many into one. Caption: <q>You write only the rule. Python runs the loop.</q>",
+       "say": "filter, map, reduce. We hand them the rule; they do the loop.",
+       "room": "Listen."
+      }
+     ],
+     "answer": "['Spice Route', 'Green Leaf', 'Royal Handi'] / ['Green Leaf', 'Annapurna Meals']; map: [500, 90, 120]; reduce: 710",
+     "must": [
+      "The phone looks like the real Zomato app: red accents, white cards, green rating badges, veg and non-veg marks, the chip row.",
+      "A filter makes the dropped places disappear from the list, as the real app does. The instructor says tapping it off brings all 6 back: filter makes a new list and the full list is not changed.",
+      "Search, filter, cart lines, item total are one order, so the three shapes are one story. Amounts and the total show only after the room has said them.",
+      "The code's outputs match what the app shows, item for item.",
+      "While it moves, this stays exactly as it was: The six places themselves: tapping a button off brings all six back. The cart's prices and quantities."
+     ],
+     "must_not": [
+      "Grey out or blur the places a filter drops. In the app they disappear.",
+      "Animate by itself."
+     ],
+     "data": {
+      "places": [
+       {
+        "name": "Spice Route",
+        "rating": 4.3,
+        "veg": false,
+        "price_for_one": 250
+       },
+       {
+        "name": "Green Leaf",
+        "rating": 4.1,
+        "veg": true,
+        "price_for_one": 180
+       },
+       {
+        "name": "Biryani Box",
+        "rating": 3.8,
+        "veg": false,
+        "price_for_one": 220
+       },
+       {
+        "name": "Annapurna Meals",
+        "rating": 3.6,
+        "veg": true,
+        "price_for_one": 150
+       },
+       {
+        "name": "Royal Handi",
+        "rating": 4.6,
+        "veg": false,
+        "price_for_one": 320
+       },
+       {
+        "name": "Dum Corner",
+        "rating": 3.9,
+        "veg": false,
+        "price_for_one": 200
+       }
+      ],
+      "kept_rating_4": [
+       "Spice Route",
+       "Green Leaf",
+       "Royal Handi"
+      ],
+      "kept_veg": [
+       "Green Leaf",
+       "Annapurna Meals"
+      ],
+      "cart": [
+       {
+        "item": "Chicken biryani",
+        "price": 250,
+        "qty": 2,
+        "amount": 500
+       },
+       {
+        "item": "Double ka meetha",
+        "price": 90,
+        "qty": 1,
+        "amount": 90
+       },
+       {
+        "item": "Thums Up",
+        "price": 40,
+        "qty": 3,
+        "amount": 120
+       }
+      ],
+      "item_total": 710,
+      "preview": "builds/build-31-standard-library/preview/pf31_hooks_games.html, tab H2"
+     },
+     "play": "The Zomato screens, the chips and the cart: yours to make real. How the three labels appear is yours.",
+     "engage": "motion",
+     "ops": [
+      "filter()",
+      "map()",
+      "reduce()"
+     ],
+     "motion": "A button keeps the places that pass and the rest disappear; another button, another rule, the same job; each cart line becomes price times quantity; the amounts join into one total. It proves the loop is the same each time and only the rule changes.",
+     "keeps": "The six places themselves: tapping a button off brings all six back. The cart's prices and quantities.",
+     "no_trap": "A hook: the room describes what the app does before any code, so there is no wrong idea to catch yet.",
+     "press_count": 9
+    }
+   ]
+  },
+  {
+   "name": "map: one answer per item, and the input line",
+   "kind": "concept",
+   "mins": 5,
+   "start": 46,
+   "cards": [
+    {
+     "id": "C12",
+     "title": "Map, Filter & Reduce",
+     "source": [
+      23,
+      24
+     ],
+     "engage": "motion",
+     "purpose": "Mark the start of the second half, with deck slide 24's one line on why these three exist.",
+     "heading": "Map, Filter & Reduce",
+     "show": [
+      "Map, Filter & Reduce",
+      "To make working with lists simpler, we can use map(), filter() and reduce()."
+     ],
+     "presses": [
+      {
+       "screen": "The three Zomato moments from H2 shrink into three tiles that read <q>Map, Filter & Reduce</q>.",
+       "say": "The three shapes from Zomato. One at a time."
+      },
+      {
+       "screen": "Deck slide 24's line: <q>To make working with lists simpler, we can use map(), filter() and reduce().</q>",
+       "say": "Simpler: you write the rule, not the loop."
+      }
+     ],
+     "motion": "The button, the cart lines and the item total shrink into three labelled tiles.",
+     "keeps": "Which moment became which tile: the button is filter, the cart lines map, the total reduce.",
+     "play": "Deck slide 23's look, with the three tiles.",
+     "must": [
+      "While it moves, this stays exactly as it was: Which moment became which tile: the button is filter, the cart lines map, the total reduce."
+     ],
+     "press_count": 2
+    },
+    {
+     "id": "C13",
+     "title": "map: one answer per item",
+     "source": [
+      25,
+      26,
+      27
+     ],
+     "purpose": "map(function, sequence) runs the function on every item and gives back the answers, one per item. The original list does not change. Give map the function's name, without brackets.",
+     "heading": "Map",
+     "show": [
+      "map() applies a function to each item of a sequence and gives back the results.",
+      "map(function, sequence)",
+      "The cart's prices came in as text.",
+      "[250, 90, 40]",
+      "['250', '90', '40']",
+      "Give map the name, not a call.",
+      "TypeError: 'int' object is not callable",
+      "print(map(...)) alone shows <map object at 0x...>. Wrap it in list() to see the items."
+     ],
+     "code": [
+      {
+       "file": "prices.py",
+       "src": "prices = [\"250\", \"90\", \"40\"]\nnumbers = list(map(int, prices))\nprint(numbers)\nprint(prices)",
+       "output": "[250, 90, 40]\n['250', '90', '40']"
+      },
+      {
+       "file": "packing.py",
+       "src": "def with_packing(price):\n    return price + 10\n\nprices = [250, 90, 40]\nprint(list(map(with_packing, prices)))",
+       "output": "[260, 100, 50]"
+      },
+      {
+       "file": "prices_called.py",
+       "src": "prices = [\"250\", \"90\", \"40\"]\nnumbers = list(map(int(), prices))\nprint(numbers)",
+       "output": "TypeError: 'int' object is not callable"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 25's line, simplified: <q>map() applies a function to each item of a sequence and gives back the results.</q> and the code card <q>map(function, sequence)</q>.",
+       "say": "Like the cart lines: one rule, every line."
+      },
+      {
+       "screen": "prices.py, empty output. Caption: <q>The cart's prices came in as text.</q> Deck slide 26's picture redrawn: the row \"250\", \"90\", \"40\" on top, an empty row under it.",
+       "say": "What does line 3 print? And line 4?",
+       "room": "Say two answers."
+      },
+      {
+       "screen": "One item per press inside this press: int(\"250\") gives 250 and drops into the new row, then 90, then 40. The output fills <q>[250, 90, 40]</q>, then <q>['250', '90', '40']</q>: the text row is still there, unchanged.",
+       "say": "Three in, three out, in the same order. prices did not change."
+      },
+      {
+       "screen": "packing.py: with_packing adds ₹10 to each. The output fills <q>[260, 100, 50]</q>.",
+       "say": "Your own function works the same way. Deck slide 27 did this with square.",
+       "room": "Say the output first."
+      },
+      {
+       "screen": "prices_called.py: map(int(), prices). The output fills <q>TypeError: 'int' object is not callable</q>. Caption: <q>Give map the name, not a call.</q> Small print: <q>print(map(...)) alone shows <map object at 0x...>. Wrap it in list() to see the items.</q>",
+       "say": "int() runs int right now and gives 0. map needs the function itself, to call later.",
+       "room": "Say why it failed."
+      }
+     ],
+     "answer": "[250, 90, 40] / ['250', '90', '40']; with_packing: [260, 100, 50]; map(int(), ...): TypeError: 'int' object is not callable",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "The original row stays on screen above the new row the whole card.",
+      "The map object is shown only as words, never as code: its address differs on every laptop.",
+      "While it moves, this stays exactly as it was: prices, the text row, unchanged and still lit.",
+      "Keep these exact values. Someone who thinks map changes prices itself would say [250, 90, 40]\n[250, 90, 40]; Python gives [250, 90, 40]\n['250', '90', '40']. New values could hide that mistake.",
+      "Keep these exact values. Someone who thinks write int() with brackets inside map would say [250, 90, 40]; Python gives TypeError: 'int' object is not callable. New values could hide that mistake."
+     ],
+     "play": "The two rows and how each item drops. They can wear the Zomato cart's look.",
+     "engage": "motion",
+     "ops": [
+      "map()"
+     ],
+     "motion": "Each text price goes through int and drops into a new row, one per press; the text row stays. It proves map gives one answer per item and leaves the list alone.",
+     "keeps": "prices, the text row, unchanged and still lit.",
+     "trap": [
+      {
+       "belief": "map changes prices itself",
+       "wrong": "[250, 90, 40]\n[250, 90, 40]",
+       "code": 0
+      },
+      {
+       "belief": "write int() with brackets inside map",
+       "wrong": "[250, 90, 40]",
+       "code": 2
+      }
+     ],
+     "press_count": 5
+    },
+    {
+     "id": "C14",
+     "title": "The line for every coding question",
+     "source": [
+      28,
+      29,
+      30
+     ],
+     "purpose": "list(map(int, input().split())) turns a line of numbers typed by the user into a list of int, read from the inside out. Without map they stay text.",
+     "heading": "Map",
+     "show": [
+      "Read it from the inside out.",
+      "input()",
+      "input().split()",
+      "map(int, input().split())",
+      "list(map(int, input().split()))",
+      "Without map, they are still text."
+     ],
+     "code": [
+      {
+       "file": "read_prices.py",
+       "src": "prices = list(map(int, input().split()))\nprint(prices)\nprint(sum(prices))",
+       "output": "[250, 90, 40]\n380",
+       "input": "250 90 40"
+      },
+      {
+       "file": "read_text.py",
+       "src": "prices = input().split()\nprint(sum(prices))",
+       "output": "TypeError: unsupported operand type(s) for +: 'int' and 'str'",
+       "input": "250 90 40"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "read_prices.py with the input <q>250 90 40</q>. Caption: <q>Read it from the inside out.</q>",
+       "say": "Coding questions often give numbers on one line. This line reads them all."
+      },
+      {
+       "screen": "One piece per press, from data.build: the innermost piece lights and shows what it gives, then the next bracket wraps it.",
+       "n": 4,
+       "say": "What does this piece give? Say it before the press.",
+       "room": "Say what the piece gives."
+      },
+      {
+       "screen": "The output fills <q>[250, 90, 40] / 380</q>.",
+       "say": "Real numbers: sum works."
+      },
+      {
+       "screen": "read_text.py skips map. The output fills <q>TypeError: unsupported operand type(s) for +: 'int' and 'str'</q>. Caption: <q>Without map, they are still text.</q>",
+       "say": "split gives text. sum cannot add text.",
+       "room": "Say why it failed."
+      }
+     ],
+     "answer": "[250, 90, 40] / 380; without map: TypeError: unsupported operand type(s) for +: 'int' and 'str'",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "Each piece's result stays on screen as the next bracket wraps it.",
+      "While it moves, this stays exactly as it was: The typed line 250 90 40, on screen the whole card.",
+      "Keep these exact values. Someone who thinks input().split() already gives numbers would say 380; Python gives TypeError: unsupported operand type(s) for +: 'int' and 'str'. New values could hide that mistake."
+     ],
+     "data": {
+      "build": [
+       {
+        "piece": "input()",
+        "gives": "'250 90 40'"
+       },
+       {
+        "piece": "input().split()",
+        "gives": "['250', '90', '40']"
+       },
+       {
+        "piece": "map(int, input().split())",
+        "gives": "<map object at 0x...>"
+       },
+       {
+        "piece": "list(map(int, input().split()))",
+        "gives": "[250, 90, 40]"
+       }
+      ]
+     },
+     "play": "How the brackets wrap one another. Deck slide 29's step-by-step layout is a good start.",
+     "engage": "motion",
+     "ops": [
+      "list(map(int, input().split()))"
+     ],
+     "motion": "Each bracket lights from the inside out and shows what it gives: the line, the pieces, the map, the list. It proves the one line is four small steps.",
+     "keeps": "The typed line 250 90 40, on screen the whole card.",
+     "trap": {
+      "belief": "input().split() already gives numbers",
+      "wrong": "380",
+      "code": 1
+     },
+     "press_count": 7
+    }
+   ]
+  },
+  {
+   "name": "filter: keep the ones that pass",
+   "kind": "concept",
+   "mins": 2,
+   "start": 51,
+   "cards": [
+    {
+     "id": "C15",
+     "title": "filter: keep the ones that pass",
+     "source": [
+      31,
+      32,
+      33
+     ],
+     "purpose": "filter(function, sequence) keeps the items for which the function gives True. The function must give True or False. The original list does not change.",
+     "heading": "Filter",
+     "show": [
+      "filter() keeps the items for which the function gives True.",
+      "The function must give True or False.",
+      "filter(function, sequence)",
+      "Rating 4.0+, in Python.",
+      "[4.3, 4.1, 4.6]",
+      "[4.3, 4.1, 3.8, 3.6, 4.6, 3.9]"
+     ],
+     "code": [
+      {
+       "file": "rating.py",
+       "src": "def is_rated_4(rating):\n    return rating >= 4.0\n\nratings = [4.3, 4.1, 3.8, 3.6, 4.6, 3.9]\nprint(list(filter(is_rated_4, ratings)))\nprint(ratings)",
+       "output": "[4.3, 4.1, 4.6]\n[4.3, 4.1, 3.8, 3.6, 4.6, 3.9]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 31's lines, simplified: <q>filter() keeps the items for which the function gives True.</q> <q>The function must give True or False.</q> and the code card <q>filter(function, sequence)</q>.",
+       "say": "A function, not a method. Like the Zomato button."
+      },
+      {
+       "screen": "Deck slide 32's funnel, with the six ratings above it and is_rated_4 inside. rating.py, empty output. Caption: <q>Rating 4.0+, in Python.</q>",
+       "say": "What does line 5 print? Line 6?",
+       "room": "Say two answers."
+      },
+      {
+       "screen": "The ratings that pass drop out of the funnel. The output fills <q>[4.3, 4.1, 4.6]</q>, then <q>[4.3, 4.1, 3.8, 3.6, 4.6, 3.9]</q>.",
+       "say": "Only the ones that pass come out. ratings is still all six."
+      }
+     ],
+     "answer": "[4.3, 4.1, 4.6] / [4.3, 4.1, 3.8, 3.6, 4.6, 3.9]",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "The six ratings stay above the funnel the whole card; the kept ones are copies that drop out.",
+      "While it moves, this stays exactly as it was: ratings, all six, above the funnel.",
+      "Keep these exact values. Someone who thinks filter gives True or False for each item would say [True, True, False, False, True, False]; Python gives [4.3, 4.1, 4.6]\n[4.3, 4.1, 3.8, 3.6, 4.6, 3.9]. New values could hide that mistake."
+     ],
+     "play": "The funnel of slide 32, in the Zomato look.",
+     "engage": "motion",
+     "ops": [
+      "filter()"
+     ],
+     "motion": "The ratings pass the funnel; the ones is_rated_4 says True to drop out. It proves filter keeps some items.",
+     "keeps": "ratings, all six, above the funnel.",
+     "trap": {
+      "belief": "filter gives True or False for each item",
+      "wrong": "[True, True, False, False, True, False]",
+      "code": 0
+     },
+     "press_count": 3
+    }
+   ]
+  },
+  {
+   "name": "Explainer: who calls is_rated_4?",
+   "kind": "hook",
+   "mins": 3,
+   "start": 53,
+   "cards": [
+    {
+     "id": "E1",
+     "title": "Who calls is_rated_4?",
+     "source": "new",
+     "animated": "explainer",
+     "purpose": "Watch filter call your function once for every item: the run jumps into is_rated_4, comes back with True or False, and filter keeps the item or leaves it. You never call is_rated_4 yourself.",
+     "heading": "Who calls is_rated_4?",
+     "show": [
+      "Nobody writes is_rated_4(4.3). Who calls it?",
+      "filter calls your function once for every item."
+     ],
+     "code": [
+      {
+       "file": "rating.py",
+       "src": "def is_rated_4(rating):\n    return rating >= 4.0\n\nratings = [4.3, 4.1, 3.8, 3.6, 4.6, 3.9]\nprint(list(filter(is_rated_4, ratings)))\nprint(ratings)",
+       "output": "[4.3, 4.1, 4.6]\n[4.3, 4.1, 3.8, 3.6, 4.6, 3.9]"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "rating.py with line numbers on one side; on the other the six ratings in a row and an empty kept list. Caption: <q>Nobody writes is_rated_4(4.3). Who calls it?</q>",
+       "say": "Look: we never call is_rated_4 ourselves. Who does?",
+       "room": "Say a guess."
+      },
+      {
+       "screen": "One event per press, following data.walk: an arrow jumps from line 5 into def is_rated_4 with the rating, line 2 lights, the arrow returns with True or False, and the rating gets a tick (and a copy drops into kept) or a cross.",
+       "n": 13,
+       "say": "Before each press: True or False? Kept or not?",
+       "room": "Say True or False."
+      },
+      {
+       "screen": "All six ratings carry their tick or cross; kept is <q>[4.3, 4.1, 4.6]</q>. Caption: <q>filter calls your function once for every item.</q>",
+       "say": "6 items, 6 calls. map calls it the same way; it just keeps every answer."
+      }
+     ],
+     "answer": "is_rated_4 runs 6 times, once per rating; it prints [4.3, 4.1, 4.6] / [4.3, 4.1, 3.8, 3.6, 4.6, 3.9]",
+     "must": [
+      "One event per press, in the order of data.walk.",
+      "A rating's tick or cross stays to the end of the card. The ratings row itself never changes.",
+      "The arrow visibly goes into the function and comes back: this is the flow students asked to see.",
+      "While it moves, this stays exactly as it was: ratings, all six, in order, and every tick or cross once it is drawn.",
+      "Keep these exact values. Someone who thinks filter removes items from ratings would say [4.3, 4.1, 4.6]\n[4.3, 4.1, 4.6]; Python gives [4.3, 4.1, 4.6]\n[4.3, 4.1, 3.8, 3.6, 4.6, 3.9]. New values could hide that mistake."
+     ],
+     "must_not": [
+      "Show a free code box, a picker or an input field.",
+      "Move by itself.",
+      "Remove a rating from the ratings row."
+     ],
+     "data": {
+      "walk": [
+       {
+        "kind": "call",
+        "line": 1,
+        "rating": 4.3,
+        "kept": [],
+        "caption": "filter hands 4.3 to is_rated_4."
+       },
+       {
+        "kind": "return",
+        "line": 2,
+        "rating": 4.3,
+        "result": true,
+        "kept": [
+         4.3
+        ],
+        "caption": "4.3 >= 4.0 is True. filter keeps it."
+       },
+       {
+        "kind": "call",
+        "line": 1,
+        "rating": 4.1,
+        "kept": [
+         4.3
+        ],
+        "caption": "filter hands 4.1 to is_rated_4."
+       },
+       {
+        "kind": "return",
+        "line": 2,
+        "rating": 4.1,
+        "result": true,
+        "kept": [
+         4.3,
+         4.1
+        ],
+        "caption": "4.1 >= 4.0 is True. filter keeps it."
+       },
+       {
+        "kind": "call",
+        "line": 1,
+        "rating": 3.8,
+        "kept": [
+         4.3,
+         4.1
+        ],
+        "caption": "filter hands 3.8 to is_rated_4."
+       },
+       {
+        "kind": "return",
+        "line": 2,
+        "rating": 3.8,
+        "result": false,
+        "kept": [
+         4.3,
+         4.1
+        ],
+        "caption": "3.8 >= 4.0 is False. filter leaves it out."
+       },
+       {
+        "kind": "call",
+        "line": 1,
+        "rating": 3.6,
+        "kept": [
+         4.3,
+         4.1
+        ],
+        "caption": "filter hands 3.6 to is_rated_4."
+       },
+       {
+        "kind": "return",
+        "line": 2,
+        "rating": 3.6,
+        "result": false,
+        "kept": [
+         4.3,
+         4.1
+        ],
+        "caption": "3.6 >= 4.0 is False. filter leaves it out."
+       },
+       {
+        "kind": "call",
+        "line": 1,
+        "rating": 4.6,
+        "kept": [
+         4.3,
+         4.1
+        ],
+        "caption": "filter hands 4.6 to is_rated_4."
+       },
+       {
+        "kind": "return",
+        "line": 2,
+        "rating": 4.6,
+        "result": true,
+        "kept": [
+         4.3,
+         4.1,
+         4.6
+        ],
+        "caption": "4.6 >= 4.0 is True. filter keeps it."
+       },
+       {
+        "kind": "call",
+        "line": 1,
+        "rating": 3.9,
+        "kept": [
+         4.3,
+         4.1,
+         4.6
+        ],
+        "caption": "filter hands 3.9 to is_rated_4."
+       },
+       {
+        "kind": "return",
+        "line": 2,
+        "rating": 3.9,
+        "result": false,
+        "kept": [
+         4.3,
+         4.1,
+         4.6
+        ],
+        "caption": "3.9 >= 4.0 is False. filter leaves it out."
+       },
+       {
+        "kind": "print",
+        "line": 5,
+        "kept": [
+         4.3,
+         4.1,
+         4.6
+        ],
+        "printed": "[4.3, 4.1, 4.6]",
+        "caption": "Line 5 prints [4.3, 4.1, 4.6]. Line 6 prints ratings: all six, unchanged."
+       }
+      ]
+     },
+     "play": "The arrow, the ticks and the kept list. Session 11's Follow the Dot is the bar: one thing moves at a time, and what is done stays marked.",
+     "engage": "motion",
+     "ops": [
+      "filter()"
+     ],
+     "motion": "An arrow jumps into is_rated_4 for each rating and back with True or False; ticks and crosses stay; kept grows. It proves filter calls your function, once per item.",
+     "keeps": "ratings, all six, in order, and every tick or cross once it is drawn.",
+     "trap": {
+      "belief": "filter removes items from ratings",
+      "wrong": "[4.3, 4.1, 4.6]\n[4.3, 4.1, 4.6]",
+      "code": 0
+     },
+     "press_count": 15
+    }
+   ]
+  },
+  {
+   "name": "reduce: many into one",
+   "kind": "concept",
+   "mins": 3,
+   "start": 56,
+   "cards": [
+    {
+     "id": "C16",
+     "title": "reduce: many into one",
+     "source": [
+      34,
+      35
+     ],
+     "purpose": "reduce(function, sequence) from functools joins the first two items, then joins the result with the next, down to one value. One item gives itself back; no items stops with TypeError.",
+     "heading": "How Reduce Works",
+     "show": [
+      "reduce() lives in the functools module.",
+      "from functools import reduce",
+      "reduce(function, sequence)",
+      "Ravi's cart amounts.",
+      "sum(amounts) gives 710 too.",
+      "A rule sum cannot do:",
+      "Three dice. How many ways can they land?",
+      "One item? No items?",
+      "450",
+      "TypeError: reduce() of empty iterable with no initial value"
+     ],
+     "code": [
+      {
+       "file": "total.py",
+       "src": "from functools import reduce\n\ndef add(a, b):\n    return a + b\n\namounts = [500, 90, 120]\nprint(reduce(add, amounts))",
+       "output": "710"
+      },
+      {
+       "file": "dice_ways.py",
+       "src": "from functools import reduce\n\ndef multiply(a, b):\n    return a * b\n\ndice = [6, 6, 6]\nprint(reduce(multiply, dice))",
+       "output": "216"
+      },
+      {
+       "file": "one_item.py",
+       "src": "from functools import reduce\n\ndef add(a, b):\n    return a + b\n\nprint(reduce(add, [450]))",
+       "output": "450"
+      },
+      {
+       "file": "no_items.py",
+       "src": "from functools import reduce\n\ndef add(a, b):\n    return a + b\n\nprint(reduce(add, []))",
+       "output": "TypeError: reduce() of empty iterable with no initial value"
+      },
+      {
+       "file": "no_import.py",
+       "src": "def add(a, b):\n    return a + b\n\namounts = [500, 90, 120]\nprint(reduce(add, amounts))",
+       "output": "NameError: name 'reduce' is not defined"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Deck slide 34's line <q>reduce() lives in the functools module.</q> and the code card <q>from functools import reduce</q> above <q>reduce(function, sequence)</q>.",
+       "say": "map and filter are built in. reduce must be imported, the way we learnt today."
+      },
+      {
+       "screen": "total.py with the cart amounts [500, 90, 120]. Caption: <q>Ravi's cart amounts.</q> Deck slide 35's picture redrawn on these amounts.",
+       "say": "Say what it prints.",
+       "room": "Say the total."
+      },
+      {
+       "screen": "One join per press, from data.joins: the first two boxes merge into one with their sum, then that box merges with the next.",
+       "n": 2,
+       "say": "What is the new box? Say it before the press.",
+       "room": "Say the sum."
+      },
+      {
+       "screen": "The output fills <q>710</q>. Note: <q>sum(amounts) gives 710 too.</q>",
+       "say": "Adding is what sum does already. reduce takes any rule."
+      },
+      {
+       "screen": "dice_ways.py: multiply instead of add. Caption: <q>A rule sum cannot do:</q> <q>Three dice. How many ways can they land?</q> The output fills <q>216</q>.",
+       "say": "6 times 6 times 6. Two at a time.",
+       "room": "Say the answer first."
+      },
+      {
+       "screen": "Caption: <q>One item? No items?</q> one_item.py fills <q>450</q>; no_items.py fills <q>TypeError: reduce() of empty iterable with no initial value</q>. Small print: forget the import line and it stops with <q>NameError: name 'reduce' is not defined</q>.",
+       "say": "One item: nothing to join, it comes back. No items: nothing to start with.",
+       "room": "Say both before the press."
+      }
+     ],
+     "answer": "710; multiply: 216; one item: 450; none: TypeError: reduce() of empty iterable with no initial value; no import: NameError: name 'reduce' is not defined",
+     "must": [
+      "Every output box starts empty and fills only after the room has said or voted its answer.",
+      "Each join shows the two boxes it joins and the one it makes; joined boxes merge, no grey copies are left behind.",
+      "While it moves, this stays exactly as it was: amounts, the list, as written in the code; the merging happens in a copy beside it.",
+      "Keep these exact values. Someone who thinks reduce gives back a list would say [710]; Python gives 710. New values could hide that mistake.",
+      "Keep these exact values. Someone who thinks reduce is built in, like map and filter would say 710; Python gives NameError: name 'reduce' is not defined. New values could hide that mistake."
+     ],
+     "data": {
+      "joins": [
+       {
+        "a": 500,
+        "b": 90,
+        "makes": 590
+       },
+       {
+        "a": 590,
+        "b": 120,
+        "makes": 710
+       }
+      ]
+     },
+     "play": "Deck slide 35's merging boxes, in the Zomato cart's look.",
+     "engage": "motion",
+     "ops": [
+      "reduce()"
+     ],
+     "motion": "The first two boxes merge into one with their sum, then that box merges with the next, down to one. It proves reduce joins two at a time into a single value.",
+     "keeps": "amounts, the list, as written in the code; the merging happens in a copy beside it.",
+     "abstract_ok": "dice = [6, 6, 6] is three real dice with 6 faces each.",
+     "trap": [
+      {
+       "belief": "reduce gives back a list",
+       "wrong": "[710]",
+       "code": 0
+      },
+      {
+       "belief": "reduce is built in, like map and filter",
+       "wrong": "710",
+       "code": 4
+      }
+     ],
+     "press_count": 7
+    }
+   ]
+  },
+  {
+   "name": "Game G2: inside the built-in",
+   "kind": "activity",
+   "mins": 4,
+   "start": 59,
+   "cards": [
+    {
+     "id": "G2",
+     "title": "Inside the built-in",
+     "game": "inside-the-builtin",
+     "ops": [
+      "map()",
+      "filter()",
+      "reduce()"
+     ],
+     "purpose": "Vote what map, filter or reduce gives, then watch it visit each spend and keep its answer so far. The spends list never changes.",
+     "heading": "Inside the built-in",
+     "data": {
+      "setup": {
+       "world": "Ravi's Google Pay spends this week, drawn as Google Pay transaction tiles"
+      },
+      "rounds": [
+       {
+        "ask": "What does it print?",
+        "program": "def is_big(n):\n    return n > 100\n\nspends = [45, 120, 30, 200, 15]\nprint(list(filter(is_big, spends)))",
+        "output": "[120, 200]",
+        "options": [
+         "[120, 200]",
+         "[False, True, False, True, False]",
+         "320",
+         "[45, 30, 15]"
+        ],
+        "answer": "[120, 200]",
+        "because": "It prints [120, 200].",
+        "why": {
+         "[False, True, False, True, False]": "That is map. filter keeps the spends, not True and False.",
+         "320": "filter gives back a list. It does not add.",
+         "[45, 30, 15]": "filter keeps the ones where is_big says True. Those are the big ones."
+        },
+        "steps": [
+         {
+          "caption": "is_big(45) gives False. Leave it out.",
+          "item": "Chai 45",
+          "keeping": "[]"
+         },
+         {
+          "caption": "is_big(120) gives True. Keep it.",
+          "item": "Movie 120",
+          "keeping": "[120]"
+         },
+         {
+          "caption": "is_big(30) gives False. Leave it out.",
+          "item": "Auto 30",
+          "keeping": "[120]"
+         },
+         {
+          "caption": "is_big(200) gives True. Keep it.",
+          "item": "Recharge 200",
+          "keeping": "[120, 200]"
+         },
+         {
+          "caption": "is_big(15) gives False. Leave it out.",
+          "item": "Samosa 15",
+          "keeping": "[120, 200]"
+         },
+         {
+          "caption": "It prints [120, 200]. The spends list has not changed.",
+          "item": null,
+          "keeping": "[120, 200]"
+         }
+        ]
+       },
+       {
+        "ask": "Same is_big. Now map. What does it print?",
+        "program": "def is_big(n):\n    return n > 100\n\nspends = [45, 120, 30, 200, 15]\nprint(list(map(is_big, spends)))",
+        "output": "[False, True, False, True, False]",
+        "options": [
+         "[120, 200]",
+         "[False, True, False, True, False]",
+         "[True, True]",
+         "[45, 120, 30, 200, 15]"
+        ],
+        "answer": "[False, True, False, True, False]",
+        "because": "It prints [False, True, False, True, False].",
+        "why": {
+         "[120, 200]": "That is filter. map keeps every answer is_big gives, one per spend.",
+         "[True, True]": "map drops nothing. Five spends in, five answers out.",
+         "[45, 120, 30, 200, 15]": "map puts is_big's answer in the new list, not the spend."
+        },
+        "steps": [
+         {
+          "caption": "is_big(45) gives False. That answer goes in the new list.",
+          "item": "Chai 45",
+          "keeping": "[False]"
+         },
+         {
+          "caption": "is_big(120) gives True. That answer goes in the new list.",
+          "item": "Movie 120",
+          "keeping": "[False, True]"
+         },
+         {
+          "caption": "is_big(30) gives False. That answer goes in the new list.",
+          "item": "Auto 30",
+          "keeping": "[False, True, False]"
+         },
+         {
+          "caption": "is_big(200) gives True. That answer goes in the new list.",
+          "item": "Recharge 200",
+          "keeping": "[False, True, False, True]"
+         },
+         {
+          "caption": "is_big(15) gives False. That answer goes in the new list.",
+          "item": "Samosa 15",
+          "keeping": "[False, True, False, True, False]"
+         },
+         {
+          "caption": "It prints [False, True, False, True, False]. The spends list has not changed.",
+          "item": null,
+          "keeping": "[False, True, False, True, False]"
+         }
+        ]
+       },
+       {
+        "ask": "What does reduce give?",
+        "program": "from functools import reduce\n\ndef add(a, b):\n    return a + b\n\nspends = [45, 120, 30, 200, 15]\nprint(reduce(add, spends))",
+        "output": "410",
+        "options": [
+         "410",
+         "[410]",
+         "200",
+         "5"
+        ],
+        "answer": "410",
+        "because": "It prints 410.",
+        "why": {
+         "[410]": "reduce gives one value, not a list.",
+         "200": "That is the biggest. add combines, it does not compare.",
+         "5": "That is how many spends there are. add adds the values."
+        },
+        "steps": [
+         {
+          "caption": "reduce starts with the first spend, 45.",
+          "item": "Chai 45",
+          "keeping": "45"
+         },
+         {
+          "caption": "add(45, 120) gives 165.",
+          "item": "Movie 120",
+          "keeping": "165"
+         },
+         {
+          "caption": "add(165, 30) gives 195.",
+          "item": "Auto 30",
+          "keeping": "195"
+         },
+         {
+          "caption": "add(195, 200) gives 395.",
+          "item": "Recharge 200",
+          "keeping": "395"
+         },
+         {
+          "caption": "add(395, 15) gives 410.",
+          "item": "Samosa 15",
+          "keeping": "410"
+         },
+         {
+          "caption": "It prints 410. The spends list has not changed.",
+          "item": null,
+          "keeping": "410"
+         }
+        ]
+       },
+       {
+        "ask": "A quiet week. What does it print?",
+        "program": "def is_big(n):\n    return n > 100\n\nspends = [45, 30, 15]\nprint(list(filter(is_big, spends)))",
+        "output": "[]",
+        "options": [
+         "[]",
+         "[45, 30, 15]",
+         "Nothing prints",
+         "TypeError"
+        ],
+        "answer": "[]",
+        "because": "It prints [].",
+        "why": {
+         "[45, 30, 15]": "None of them is over 100, so filter keeps none.",
+         "Nothing prints": "print still runs. It prints the empty list.",
+         "TypeError": "An empty result is not an error. filter just keeps nothing."
+        },
+        "steps": [
+         {
+          "caption": "is_big(45) gives False. Leave it out.",
+          "item": "Chai 45",
+          "keeping": "[]"
+         },
+         {
+          "caption": "is_big(30) gives False. Leave it out.",
+          "item": "Auto 30",
+          "keeping": "[]"
+         },
+         {
+          "caption": "is_big(15) gives False. Leave it out.",
+          "item": "Samosa 15",
+          "keeping": "[]"
+         },
+         {
+          "caption": "It prints []. The spends list has not changed.",
+          "item": null,
+          "keeping": "[]"
+         }
+        ]
+       }
+      ]
+     },
+     "must": [
+      "Nothing in a round moves until the press after the room has answered.",
+      "Every step is one press on the right arrow, with its caption. Left goes back one step and redraws it still.",
+      "The verdict says why the answer is right, and gives a line for every wrong option.",
+      "Keys 1 to 4, or a click, may mark the room's choice. The right arrow works with or without a mark.",
+      "The original row never changes order or value. sorted builds its new row beside it.",
+      "The keeping box is on screen from the first step and shows the value from the data after every press.",
+      "Strings are drawn in quotes, so a string round is visibly not numbers.",
+      "Round 1 is filter, round 2 map with the same is_big, to catch the idea that map keeps the True ones.",
+      "Round 4 is the edge: a quiet week gives [].",
+      "The approved preview of this card is tab G2 of the preview page."
+     ],
+     "play": "The Google Pay tiles, the pointer and the keeping box, as on the preview.",
+     "presses": [
+      {
+       "screen": "Round 1 of 4. The round's setup, as in the data. The question: <q>What does it print?</q> Options: A <q>[120, 200]</q>, B <q>[False, True, False, True, False]</q>, C <q>320</q>, D <q>[45, 30, 15]</q>. Nothing runs yet.",
+       "say": "Read the line. How many think A? Hands up. B? C?",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>is_big(45) gives False. Leave it out.</q> In the data: item = Chai 45; keeping = [].",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>is_big(120) gives True. Keep it.</q> In the data: item = Movie 120; keeping = [120].",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>is_big(30) gives False. Leave it out.</q> In the data: item = Auto 30; keeping = [120].",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>is_big(200) gives True. Keep it.</q> In the data: item = Recharge 200; keeping = [120, 200].",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>is_big(15) gives False. Leave it out.</q> In the data: item = Samosa 15; keeping = [120, 200].",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>It prints [120, 200]. The spends list has not changed.</q> In the data: item = null.",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "The answer: <q>[120, 200]</q>. <q>It prints [120, 200].</q> Then a line for every other option: <q>[False, True, False, True, False]</q> <q>That is map. filter keeps the spends, not True and False.</q>; <q>320</q> <q>filter gives back a list. It does not add.</q>; <q>[45, 30, 15]</q> <q>filter keeps the ones where is_big says True. Those are the big ones.</q>.",
+       "say": "Read the line for the most popular wrong option."
+      },
+      {
+       "screen": "Round 2 of 4. The round's setup, as in the data. The question: <q>Same is_big. Now map. What does it print?</q> Options: A <q>[120, 200]</q>, B <q>[False, True, False, True, False]</q>, C <q>[True, True]</q>, D <q>[45, 120, 30, 200, 15]</q>. Nothing runs yet.",
+       "say": "Read the line. How many think A? Hands up. B? C?",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>is_big(45) gives False. That answer goes in the new list.</q> In the data: item = Chai 45; keeping = [False].",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>is_big(120) gives True. That answer goes in the new list.</q> In the data: item = Movie 120; keeping = [False, True].",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>is_big(30) gives False. That answer goes in the new list.</q> In the data: item = Auto 30; keeping = [False, True, False].",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>is_big(200) gives True. That answer goes in the new list.</q> In the data: item = Recharge 200; keeping = [False, True, False, True].",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>is_big(15) gives False. That answer goes in the new list.</q> In the data: item = Samosa 15; keeping = [False, True, False, True, False].",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>It prints [False, True, False, True, False]. The spends list has not changed.</q> In the data: item = null.",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "The answer: <q>[False, True, False, True, False]</q>. <q>It prints [False, True, False, True, False].</q> Then a line for every other option: <q>[120, 200]</q> <q>That is filter. map keeps every answer is_big gives, one per spend.</q>; <q>[True, True]</q> <q>map drops nothing. Five spends in, five answers out.</q>; <q>[45, 120, 30, 200, 15]</q> <q>map puts is_big's answer in the new list, not the spend.</q>.",
+       "say": "Read the line for the most popular wrong option."
+      },
+      {
+       "screen": "Round 3 of 4. The round's setup, as in the data. The question: <q>What does reduce give?</q> Options: A <q>410</q>, B <q>[410]</q>, C <q>200</q>, D <q>5</q>. Nothing runs yet.",
+       "say": "Read the line. How many think A? Hands up. B? C?",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>reduce starts with the first spend, 45.</q> In the data: item = Chai 45.",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>add(45, 120) gives 165.</q> In the data: item = Movie 120.",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>add(165, 30) gives 195.</q> In the data: item = Auto 30.",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>add(195, 200) gives 395.</q> In the data: item = Recharge 200.",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>add(395, 15) gives 410.</q> In the data: item = Samosa 15.",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>It prints 410. The spends list has not changed.</q> In the data: item = null.",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "The answer: <q>410</q>. <q>It prints 410.</q> Then a line for every other option: <q>[410]</q> <q>reduce gives one value, not a list.</q>; <q>200</q> <q>That is the biggest. add combines, it does not compare.</q>; <q>5</q> <q>That is how many spends there are. add adds the values.</q>.",
+       "say": "Read the line for the most popular wrong option."
+      },
+      {
+       "screen": "Round 4 of 4. The round's setup, as in the data. The question: <q>A quiet week. What does it print?</q> Options: A <q>[]</q>, B <q>[45, 30, 15]</q>, C <q>Nothing prints</q>, D <q>TypeError</q>. Nothing runs yet.",
+       "say": "Read the line. How many think A? Hands up. B? C?",
+       "room": "Vote with hands."
+      },
+      {
+       "screen": "<q>is_big(45) gives False. Leave it out.</q> In the data: item = Chai 45; keeping = [].",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>is_big(30) gives False. Leave it out.</q> In the data: item = Auto 30; keeping = [].",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>is_big(15) gives False. Leave it out.</q> In the data: item = Samosa 15; keeping = [].",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "<q>It prints []. The spends list has not changed.</q> In the data: item = null.",
+       "say": "What does it keep now?"
+      },
+      {
+       "screen": "The answer: <q>[]</q>. <q>It prints [].</q> Then a line for every other option: <q>[45, 30, 15]</q> <q>None of them is over 100, so filter keeps none.</q>; <q>Nothing prints</q> <q>print still runs. It prints the empty list.</q>; <q>TypeError</q> <q>An empty result is not an error. filter just keeps nothing.</q>.",
+       "say": "Read the line for the most popular wrong option."
+      }
+     ],
+     "must_not": [
+      "Run anything on a timer. Movement inside one press is fine; a press that plays by itself is not.",
+      "Show the answer, a tick or a highlight on the right option before the steps run.",
+      "Show any one student's answer or result.",
+      "Move the pointer before the room has answered.",
+      "Show the keeping box's final value before its step."
+     ],
+     "interaction": "A real list from their phone sits on screen as a row of bars or tiles. One built-in call (max, min, sum, sorted) is on screen; the room votes what it prints. Then each press shows the built-in visiting the next item and what it keeps so far, while the list itself never changes.",
+     "game_def": {
+      "id": "inside-the-builtin",
+      "name": "Inside the built-in",
+      "one_line": "A real list from their phone sits on screen as a row of bars or tiles. One built-in call (max, min, sum, sorted) is on screen; the room votes what it prints. Then each press shows the built-in visiting the next item and what it keeps so far, while the list itself never changes.",
+      "how": [
+       "The program, and its list drawn big as a row of bars or tiles in the world's look.",
+       "The room votes on what the last line prints.",
+       "Each press, a pointer moves to the next item. Beside the row, a box shows what the built-in keeps so far: the biggest, the smallest, the running total, or a new sorted row being built.",
+       "The last step prints. The original row is still there, in its old order."
+      ],
+      "setup": {
+       "world": "what the list is (a week of screen time, test marks), the same world as the session if it fits"
+      },
+      "round": {
+       "program": "the code, exact",
+       "output": "what it prints, computed"
+      },
+      "step": {
+       "item": "the item the built-in looks at on this press, or null on the print step",
+       "keeping": "what the built-in keeps so far after this item (a number, a string, or the new list)"
+      }
+     },
+     "press_count": 30
+    }
+   ]
+  },
+  {
+   "name": "Task 2: Ravi's Zomato month",
+   "kind": "activity",
+   "mins": 5,
+   "start": 63,
+   "cards": [
+    {
+     "id": "T2",
+     "title": "Task 2: Ravi's Zomato month",
+     "source": "new",
+     "handout": "Task 2",
+     "activity": 11,
+     "timer": 300,
+     "engage": "task",
+     "purpose": "Predict and run a program that reads a month of orders with map, keeps the big ones with filter and adds them with reduce. Then change the rule and predict again.",
+     "heading": "Ravi's Zomato month",
+     "show": [
+      "Worksheet · Task 2",
+      "Ravi types his Zomato orders for the month on one line.",
+      "Predict. Run.",
+      "Change line 4: 200 becomes 100. Predict. Run."
+     ],
+     "code": [
+      {
+       "file": "month.py",
+       "src": "from functools import reduce\n\ndef is_big(amount):\n    return amount >= 200\n\ndef add(a, b):\n    return a + b\n\norders = list(map(int, input().split()))\nbig = list(filter(is_big, orders))\nprint(big)\nprint(reduce(add, big))",
+       "output": "[250, 300]\n550",
+       "input": "120 45 250 80 300"
+      },
+      {
+       "file": "month_100.py",
+       "src": "from functools import reduce\n\ndef is_big(amount):\n    return amount >= 100\n\ndef add(a, b):\n    return a + b\n\norders = list(map(int, input().split()))\nbig = list(filter(is_big, orders))\nprint(big)\nprint(reduce(add, big))",
+       "output": "[120, 250, 300]\n670",
+       "input": "120 45 250 80 300"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "month.py with line numbers, the input <q>120 45 250 80 300</q>, the steps (only step 1 lit) and a 5 minute timer. Caption: <q>Ravi types his Zomato orders for the month on one line.</q>",
+       "say": "Worksheet tab and playground. Predict the two lines, then run.",
+       "room": "Predict, run."
+      },
+      {
+       "screen": "Step 2 lights: <q>Change line 4: 200 becomes 100. Predict. Run.</q>",
+       "say": "Which orders join big now?",
+       "room": "Change, predict, run."
+      },
+      {
+       "screen": "Step 1's terminal: <q>[250, 300] / 550</q>.",
+       "say": "map read the line, filter kept two, reduce added them."
+      },
+      {
+       "screen": "Step 2's terminal: <q>[120, 250, 300] / 670</q>.",
+       "say": "Only the rule changed. The three lines stayed."
+      }
+     ],
+     "answer": "Step 1: [250, 300] / 550. Step 2: [120, 250, 300] / 670",
+     "must": [
+      "No result shows until the timer has ended.",
+      "One step's result per press on the reveal.",
+      "Keep these exact values. Someone who thinks filter gives True or False for each order would say [False, False, True, False, True]\n2; Python gives [250, 300]\n550. New values could hide that mistake."
+     ],
+     "play": "The Zomato order history beside the code. The layout is yours.",
+     "trap": {
+      "belief": "filter gives True or False for each order",
+      "wrong": "[False, False, True, False, True]\n2",
+      "code": 0
+     },
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Exit: which input crashes it?",
+   "kind": "exit",
+   "mins": 3,
+   "start": 68,
+   "cards": [
+    {
+     "id": "X1",
+     "title": "Exit: which input crashes it?",
+     "source": "new",
+     "activity": 1,
+     "timer": 150,
+     "engage": "task",
+     "purpose": "Check map, filter and reduce together: the room must run each input in their head and find the only one that stops the program.",
+     "heading": "Which input crashes it?",
+     "show": [
+      "Ravi's app adds up his big orders, over ₹200.",
+      "Which input makes it crash?"
+     ],
+     "code": [
+      {
+       "file": "big_orders.py",
+       "src": "from functools import reduce\n\ndef is_big(amount):\n    return amount > 200\n\ndef add(a, b):\n    return a + b\n\norders = list(map(int, input().split()))\nbig = list(filter(is_big, orders))\nprint(reduce(add, big))"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Story line, big_orders.py with line numbers, the question, and options: A <q>250 300</q>, B <q>201 90</q>, C <q>450</q>, D <q>200 150 50</q>. A 2:30 timer.",
+       "say": "Everyone answers alone. Then option A, hands up. B. C. D.",
+       "room": "Hands up per option."
+      },
+      {
+       "screen": "The right option marks, and every option shows what it prints and its why line, as in data.",
+       "say": "Go through every option, not only the right one."
+      }
+     ],
+     "answer": "D, 200 150 50. 250 300: 550. 201 90: 201. 450: 450. 200 150 50: TypeError: reduce() of empty iterable with no initial value.",
+     "must_not": [
+      "Show any output before the second press."
+     ],
+     "data": {
+      "options": [
+       {
+        "input": "250 300",
+        "prints": "550",
+        "why": "Both are over 200. reduce adds them."
+       },
+       {
+        "input": "201 90",
+        "prints": "201",
+        "why": "201 is over 200, so big is [201] and reduce gives 201."
+       },
+       {
+        "input": "450",
+        "prints": "450",
+        "why": "One item is fine: reduce gives it back."
+       },
+       {
+        "input": "200 150 50",
+        "prints": "TypeError: reduce() of empty iterable with no initial value",
+        "why": "200 is not over 200, so big is []. reduce has nothing to start with and stops."
+       }
+      ],
+      "right": "D"
+     },
+     "play": "Layout. It can sit on Ravi's phone, the Zomato order history beside the code.",
+     "no_trap": "The four options are the traps; data.options carries what each one prints.",
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Key takeaways: the example board",
+   "kind": "buffer",
+   "mins": 2,
+   "start": 71,
+   "cards": [
+    {
+     "id": "K1",
+     "title": "Today in six examples",
+     "source": [
+      37
+     ],
+     "purpose": "Six real programs from today, each with what it prints and the rule it shows.",
+     "heading": "Today, in six examples",
+     "show": [
+      "import, then the dot",
+      "import math brings in the name math.",
+      "A new name with as",
+      "After as m, the name is m, not math.",
+      "Just one tool",
+      "from ... import brings in one name.",
+      "map: one answer per item",
+      "Same rule on every item. Same count out.",
+      "filter: keep some",
+      "Keeps the items the rule says True for.",
+      "reduce: many into one",
+      "Joins two at a time, down to one value."
+     ],
+     "code": [
+      {
+       "file": "example_1.py",
+       "src": "import math\nprint(math.sqrt(81))",
+       "output": "9.0"
+      },
+      {
+       "file": "example_2.py",
+       "src": "import math as m\nprint(m.factorial(4))",
+       "output": "24"
+      },
+      {
+       "file": "example_3.py",
+       "src": "from math import factorial as fact\nprint(fact(3))",
+       "output": "6"
+      },
+      {
+       "file": "example_4.py",
+       "src": "print(list(map(int, [\"7\", \"12\"])))",
+       "output": "[7, 12]"
+      },
+      {
+       "file": "example_5.py",
+       "src": "def is_good(r):\n    return r >= 4.0\n\nprint(list(filter(is_good, [4.3, 3.8])))",
+       "output": "[4.3]"
+      },
+      {
+       "file": "example_6.py",
+       "src": "from functools import reduce\n\ndef add(a, b):\n    return a + b\n\nprint(reduce(add, [500, 90, 120]))",
+       "output": "710"
+      }
+     ],
+     "presses": [
+      {
+       "screen": "Example 1's heading and code fill its slot; its result waits for the room, then fills with its rule.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 2's heading and code fill its slot; its result waits for the room, then fills with its rule.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 3's heading and code fill its slot; its result waits for the room, then fills with its rule.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 4's heading and code fill its slot; its result waits for the room, then fills with its rule.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 5's heading and code fill its slot; its result waits for the room, then fills with its rule.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      },
+      {
+       "screen": "Example 6's heading and code fill its slot; its result waits for the room, then fills with its rule.",
+       "say": "Read the code. Everyone, say what it prints. Then press.",
+       "room": "Say the output."
+      }
+     ],
+     "must": [
+      "All six slots are there from press 1, empty.",
+      "Examples, not a concept map. Deck slide 37's bullets become these six.",
+      "Each result shows only after the room has said it.",
+      "Keep these exact values. Someone who thinks as m keeps the name math would say NameError; Python gives 24. New values could hide that mistake."
+     ],
+     "play": "The grid. The calculator can sit beside the first three, Zomato beside the last three.",
+     "engage": "play",
+     "interaction": "For each example the room says the output together before its result fills.",
+     "trap": {
+      "belief": "as m keeps the name math",
+      "wrong": "NameError",
+      "code": 1
+     },
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Feedback",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 73,
+   "cards": [
+    {
+     "id": "S-FEEDBACK",
+     "title": "Feedback",
+     "source": "spine:feedback",
+     "press_count": 0
+    }
+   ]
+  },
+  {
+   "name": "Thank you",
+   "kind": "buffer",
+   "mins": 1,
+   "start": 74,
+   "cards": [
+    {
+     "id": "S-THANKYOU",
+     "title": "Thankyou",
+     "source": "spine:thankyou",
+     "press_count": 0
+    }
+   ]
+  }
+ ]
+}

@@ -60,7 +60,7 @@ import { installSpecKeys } from './figures/keys'
 installGestures()
 installSpecKeys()
 
-const SESSION = 'Working with Lists'
+const SESSION = 'Working With Lists'
 
 export const workingListsMeta: DeckMeta = {
   title: SESSION,
@@ -72,10 +72,10 @@ export const workingListsMeta: DeckMeta = {
 
 /** The four agenda stops, word for word from the spec. */
 const AGENDA = [
-  { title: 'Change a list', sub: 'one item at a time' },
+  { title: 'Change a List', sub: 'one item at a time' }, /* title case: this line is also the T1 kicker (user, 2026-10-13) */
   { title: 'Objects and id', sub: 'every value has one' },
-  { title: 'Two names, one list', sub: 'change it, both see it' },
-  { title: 'Change or move?', sub: '=, + and +=' },
+  { title: 'Two Names, One List', sub: 'change it, both see it' },
+  { title: 'Change or Move?', sub: '=, + and +=' },
 ]
 
 export const workingListsDeck: SlideDef[] = [
@@ -106,7 +106,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'Which line is to blame?',
     notes: 'Spec S-RECAP, three presses. Everyone picks a line number: line 1? Hands up. Line 2? Line 3? Line 4? Press 2 lights the culprit; ask for the fix before press 3.',
     element: (
-      <Panel kicker="Recap" title="Which line is to blame?" lesson={SESSION} spec="S-RECAP" presses={3}>
+      <Panel kicker="Recap" title="Which Line Is to Blame?" lesson={SESSION} spec="S-RECAP" presses={3}>
         <RecapBug />
       </Panel>
     ),
@@ -119,7 +119,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'Kiran wants your Road Trip songs',
     notes: 'Spec H1, five presses. Remember these songs? Kiran wants them on his phone: how would you give them? Press 3: Way A first, hands up if it vanishes from your phone; then Way B. Press 5: hold this picture, do not name it.',
     element: (
-      <Panel kicker="Programming Foundations" title="Kiran wants your Road Trip songs" lesson={SESSION} spec="H1" presses={5}>
+      <Panel kicker="Programming Foundations" title="Kiran Wants Your Road Trip Songs" lesson={SESSION} spec="H1" presses={5}>
         <ShareHook />
       </Panel>
     ),
@@ -137,7 +137,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'Change one item',
     notes: 'Spec T1, three presses, timer 3:00. Worksheet open: type it, predict line 4, run. Press 2, then: my mistake, I want to do the same to a word. Press 3: let them react first; line 2 printed, then Python stopped at line 3.',
     element: (
-      <Panel kicker={AGENDA[0].title} title="Change one item" lesson={SESSION} spec="T1" presses={3}>
+      <Panel kicker={AGENDA[0].title} title="Change One Item" lesson={SESSION} spec="T1" presses={3}>
         <Task1 />
       </Panel>
     ),
@@ -156,7 +156,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'Every value is an object',
     notes: 'Spec C2. What do these three have in common? Python calls each stored value an object. Anything you can put in a variable.',
     element: (
-      <Panel kicker={AGENDA[1].title} title="Every value is an object" lesson={SESSION} spec="C2" presses={3}>
+      <Panel kicker={AGENDA[1].title} title="Every Value Is an Object" lesson={SESSION} spec="C2" presses={3}>
         <ObjectCast />
       </Panel>
     ),
@@ -167,7 +167,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'Each object gets an id',
     notes: 'Spec C3. One id per object; no two objects share one at the same time. We never learn an id by heart: we compare them.',
     element: (
-      <Panel kicker={AGENDA[1].title} title="Each object gets an id" lesson={SESSION} spec="C3" presses={3}>
+      <Panel kicker={AGENDA[1].title} title="Each Object Gets an id" lesson={SESSION} spec="C3" presses={3}>
         <IdCast />
       </Panel>
     ),
@@ -178,7 +178,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'id() gives the id',
     notes: 'Spec C4. Laptops open, playground only. Type it, run it twice. Same number twice? Hands up. Then laptops closed.',
     element: (
-      <Panel kicker={AGENDA[1].title} title="id() gives the id" lesson={SESSION} spec="C4" presses={2}>
+      <Panel kicker={AGENDA[1].title} title="id() Gives the id" lesson={SESSION} spec="C4" presses={2}>
         <IdTwice />
       </Panel>
     ),
@@ -189,7 +189,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'A name points at an object',
     notes: 'Spec C5. Python makes the object first. Until now we said a stores Hello; really, a points at it.',
     element: (
-      <Panel kicker={AGENDA[1].title} title="A name points at an object" lesson={SESSION} spec="C5" presses={3}>
+      <Panel kicker={AGENDA[1].title} title="A Name Points at an Object" lesson={SESSION} spec="C5" presses={3}>
         <NamePoints />
       </Panel>
     ),
@@ -200,7 +200,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'Same id, or a new one?',
     notes: 'Spec C6. Same? Hands up. Different? A string cannot change, remember task 1, so + builds a new one. Who said different? That is why.',
     element: (
-      <Panel kicker={AGENDA[1].title} title="Same id, or a new one?" lesson={SESSION} spec="C6" presses={5}>
+      <Panel kicker={AGENDA[1].title} title="Same id, or a New One?" lesson={SESSION} spec="C6" presses={5}>
         <NewObject />
       </Panel>
     ),
@@ -213,7 +213,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'A list is an object too',
     notes: 'Spec C7. Each item is an object. The list holds an arrow to each item. From now on we draw it short.',
     element: (
-      <Panel kicker={AGENDA[2].title} title="A list is an object too" lesson={SESSION} spec="C7" presses={4}>
+      <Panel kicker={AGENDA[2].title} title="A List Is an Object Too" lesson={SESSION} spec="C7" presses={4}>
         <ListObject />
       </Panel>
     ),
@@ -224,7 +224,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'Same values. Same list?',
     notes: 'Spec C8. Same? Hands up. Different? Two sets of brackets, two lists. Like Way B in the hook.',
     element: (
-      <Panel kicker={AGENDA[2].title} title="Same values. Same list?" lesson={SESSION} spec="C8" presses={3}>
+      <Panel kicker={AGENDA[2].title} title="Same Values. Same List?" lesson={SESSION} spec="C8" presses={3}>
         <TwoLists />
       </Panel>
     ),
@@ -235,7 +235,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'A second name',
     notes: 'Spec C9. Not a copy: the same list. Take answers before press 2. No brackets on the right, so no new list. Like Way A in the hook.',
     element: (
-      <Panel kicker={AGENDA[2].title} title="A second name" lesson={SESSION} spec="C9" presses={3}>
+      <Panel kicker={AGENDA[2].title} title="A Second Name" lesson={SESSION} spec="C9" presses={3}>
         <SecondName />
       </Panel>
     ),
@@ -246,7 +246,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'Predict, then run',
     notes: 'Spec T2, eleven presses, timer 4:00. Worksheet open, type your four lines, then run both. Walk A, then B, one line per press. Who typed [1, 2, 3, 5] for list a in B? You were thinking Way B. Do not name anyone.',
     element: (
-      <Panel kicker={AGENDA[2].title} title="Predict, then run" lesson={SESSION} spec="T2" presses={11}>
+      <Panel kicker={AGENDA[2].title} title="Predict, Then Run" lesson={SESSION} spec="T2" presses={11}>
         <Task2 />
       </Panel>
     ),
@@ -257,7 +257,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'Freeze frame',
     notes: 'Spec G1, thirteen presses. Read each option: how many think A? Hands up. Then B, then C. Keys 1 to 3 or a click mark the room\'s pick. Then one line per press; at the verdict, point at the boxes.',
     element: (
-      <Panel kicker={AGENDA[2].title} title="Freeze frame" lesson={SESSION} spec="G1" presses={13}>
+      <Panel kicker={AGENDA[2].title} title="Freeze Frame" lesson={SESSION} spec="G1" presses={13}>
         <FreezeFrame />
       </Panel>
     ),
@@ -273,7 +273,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'Change the list, or move the name?',
     notes: 'Spec C10, seven presses. Option A, hands up. Option B. Watch list_b\'s arrow. Line 3 did not touch the list: it moved list_a.',
     element: (
-      <Panel kicker={AGENDA[3].title} title="Change the list, or move the name?" lesson={SESSION} spec="C10" presses={7}>
+      <Panel kicker={AGENDA[3].title} title="Change the List, or Move the Name?" lesson={SESSION} spec="C10" presses={7}>
         <MoveName />
       </Panel>
     ),
@@ -284,7 +284,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'Follow the arrows',
     notes: 'Spec E1, thirteen presses. Option by option: list b prints [1, 2]? Hands up. [1, 2, 6, 7]? Watch list_b\'s arrow. Last press: did the line change the list, or move a name?',
     element: (
-      <Panel kicker={AGENDA[3].title} title="Follow the arrows" lesson={SESSION} spec="E1" presses={13}>
+      <Panel kicker={AGENDA[3].title} title="Follow the Arrows" lesson={SESSION} spec="E1" presses={13}>
         <PlusWalk />
       </Panel>
     ),
@@ -295,7 +295,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'One list or two?',
     notes: 'Spec T3, eight presses, timer 4:00. Worksheet open: one list or two for lines 2 to 5, then type the prints; do not run it yet. Then check each line before the next press.',
     element: (
-      <Panel kicker={AGENDA[3].title} title="One list or two?" lesson={SESSION} spec="T3" presses={8}>
+      <Panel kicker={AGENDA[3].title} title="One List or Two?" lesson={SESSION} spec="T3" presses={8}>
         <Task3 />
       </Panel>
     ),
@@ -306,7 +306,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'A list inside a list',
     notes: 'Spec C11, six presses. Option A, hands up. Option B. list_b holds list_a\'s own list, not a copy.',
     element: (
-      <Panel kicker={AGENDA[3].title} title="A list inside a list" lesson={SESSION} spec="C11" presses={6}>
+      <Panel kicker={AGENDA[3].title} title="A List Inside a List" lesson={SESSION} spec="C11" presses={6}>
         <NestedRef />
       </Panel>
     ),
@@ -317,7 +317,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'A number inside a list',
     notes: 'Spec C12, seven presses. Option A, hands up. Option B. Same rule as before: = moves one name.',
     element: (
-      <Panel kicker={AGENDA[3].title} title="A number inside a list" lesson={SESSION} spec="C12" presses={7}>
+      <Panel kicker={AGENDA[3].title} title="A Number Inside a List" lesson={SESSION} spec="C12" presses={7}>
         <NumberRef />
       </Panel>
     ),
@@ -330,7 +330,7 @@ export const workingListsDeck: SlideDef[] = [
     label: "Keep Kiran's songs",
     notes: 'Spec X1, two presses, timer 2:30. Everyone answers alone. Then option A, hands up. B. C. D. Go through every option, not only the right one.',
     element: (
-      <Panel kicker="Exit" title="Keep Kiran's songs" lesson={SESSION} spec="X1" presses={2}>
+      <Panel kicker="Exit" title="Keep Kiran's Songs" lesson={SESSION} spec="X1" presses={2}>
         <ExitKeep />
       </Panel>
     ),
@@ -343,7 +343,7 @@ export const workingListsDeck: SlideDef[] = [
     label: 'Today, in six examples',
     notes: 'Spec K1, six presses. Read heading, code, result, sentence.',
     element: (
-      <Panel kicker="Key takeaways" title="Today, in six examples" lesson={SESSION} spec="K1" presses={6}>
+      <Panel kicker="Key Takeaways" title="Today, in Six Examples" lesson={SESSION} spec="K1" presses={6}>
         <Takeaways />
       </Panel>
     ),
@@ -354,7 +354,7 @@ export const workingListsDeck: SlideDef[] = [
   { id: 'next-session', section: 'Close', label: 'Next session', transition: 'zoom', notes: 'Next session: Lists and Strings.', element: <NextSessionSlide title="Lists and Strings" lesson={SESSION} /> },
   /* 28 · Feedback */
   { id: 'feedback', section: 'Close', label: 'Feedback', transition: 'fade', element: <FeedbackEmbedSlide lesson={SESSION} /> },
-  { id: 'thank-you', section: 'Close', label: 'Thank you', transition: 'zoom', element: <ThankYouSlide title="Thank you!" /> },
+  { id: 'thank-you', section: 'Close', label: 'Thank you', transition: 'zoom', element: <ThankYouSlide title="Thank You!" /> },
   /* 29 · All The Best, the deck's final slide (user, 2026-10-12): the template's send-off, the thank-you frame with different words. */
-  { id: 'all-the-best', section: 'Close', label: 'All the best', transition: 'zoom', element: <ThankYouSlide title="All The Best" /> },
+  { id: 'all-the-best', section: 'Close', label: 'All the best', transition: 'zoom', element: <ThankYouSlide title="All the Best" /> },
 ]
