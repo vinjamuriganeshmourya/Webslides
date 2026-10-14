@@ -12,10 +12,15 @@ import { deck, meta } from './decks/activeDeck'
  * `sampleDeck` is kept in ./decks as the layout reference — it exercises every
  * slide type in the kit and is the right thing to open when a layout looks
  * wrong. Point `activeDeck.ts` at it to see them all.
+ *
+ * `deck-viewport` (in `index.css`) and not `h-screen w-screen`: `100vh` on a
+ * phone is the LARGEST viewport, the one with the browser's address bar
+ * scrolled away, so with the bar on screen the bottom of the player, and the
+ * control bar with it, sat under the browser chrome. `100dvh` follows the bar.
  */
 export function App() {
   return (
-    <div className="h-screen w-screen">
+    <div className="deck-viewport">
       <Deck slides={deck} meta={meta} transition="slide" />
     </div>
   )

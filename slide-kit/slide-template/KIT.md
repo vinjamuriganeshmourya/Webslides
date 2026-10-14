@@ -38,6 +38,8 @@ reads and never writes.
 | `tailwind.config.ts`, `vite*.config.ts`, `index.html` | `package.json`, `CLAUDE.md`, `README.md` |
 | `qa.mjs`, `video-safe.mjs`, `preview.mjs` | `dist/`, `dist-single/`, `node_modules/` |
 | `align-check.mjs`, `fit-check.mjs`, `marker-check.mjs` | |
+| the twelve checks from session 31: `agenda-`, `autohide-`, `autoplay-`, `box-overflow-`, `controls-clear-`, `feedback-`, `gesture-`, `ligature-`, `mixed-align-`, `nav-stress-`, `overlap-`, `phone-nav-check.mjs` | `spec-check.mjs` and `scripts/build-spec-data.mjs`, which read that session's spec |
+| `src/ui/foundations/` the Python course's shared figures | |
 | `scripts/`, `workflow/export/` | `workflow/review/` the review build's output |
 | `review/markComponents.mjs`, `vite.review.config.ts` | |
 

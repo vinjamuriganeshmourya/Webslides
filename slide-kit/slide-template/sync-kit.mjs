@@ -101,6 +101,21 @@ const KIT = {
     'continuity-check.mjs',
     'align-check.mjs',
     'fit-check.mjs',
+    /* Session 31's checks, folded into the kit on 2026-10-14 (content rules 38
+       to 43 and 47, the gestures and phone rules, the box-overflow rule): a deck
+       built from the kit is held to the same list a Python-course deck was. */
+    'agenda-check.mjs',
+    'autohide-check.mjs',
+    'autoplay-check.mjs',
+    'box-overflow-check.mjs',
+    'controls-clear-check.mjs',
+    'feedback-check.mjs',
+    'gesture-check.mjs',
+    'ligature-check.mjs',
+    'mixed-align-check.mjs',
+    'nav-stress-check.mjs',
+    'overlap-check.mjs',
+    'phone-nav-check.mjs',
     /* The marker's own harness. It drives a real pointer over the BUILT html, so
        it is the only check here that can catch the marker breaking, and a session
        that is behind on it is a session whose marker nobody has tested. */

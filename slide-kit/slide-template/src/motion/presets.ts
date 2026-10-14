@@ -22,54 +22,98 @@ export type SlideTransition =
   | 'flip'
   | 'none'
 
-/** direction: +1 when advancing, -1 when going back. */
-export function slideVariants(kind: SlideTransition): Variants {
+/**
+ * What a slide transition is told about the move: its direction (+1 when
+ * advancing, -1 when going back) and whether it is a CUT (the plain arrows in
+ * "slide" mode, the picker, Replay). A bare number is still accepted, as the
+ * direction of a move that is not a cut.
+ */
+export type SlideMove = number | { dir: number; cut?: boolean }
+
+const dirOf = (m: SlideMove) => (typeof m === 'number' ? m : m.dir)
+const isCut = (m: SlideMove) => typeof m !== 'number' && !!m.cut
+
+export const slideTransition: Transition = {
+  duration: 0.6,
+  ease: easing.soft,
+}
+
+const INSTANT: Transition = { duration: 0 }
+
+/*
+  THE CUT HAS A REAL EXIT, AND EVERY EXIT CARRIES ITS OWN TIMING.
+
+  The `none` variant used to be `{ enter: {}, center: {}, exit: {} }`. An exit
+  with nothing to animate never reports itself finished to `AnimatePresence`,
+  so the slide that left was never unmounted: in "slide" mode every press laid
+  the next slide over the ones before it, and a leftover caught mid-fade showed
+  as a dark or blank frame (user, 2026-10-06, Python 19 and 20: "when I switch
+  to slide mode … sometimes it just shows black screen and sometimes it
+  overlaps the content"). Every variant now ends on a real value, and a cut
+  leaves by going to opacity 0 at once.
+
+  The timing rides on the variant, read from `custom` at the moment the slide
+  leaves, because `AnimatePresence` keeps a departing slide's LAST props: its
+  `transition` prop is the one it arrived with, so a slide that came in by an
+  animated move and left by a cut used to fade out for 0.6s under the new one.
+*/
+function base(kind: SlideTransition) {
   switch (kind) {
     case 'fade':
       return {
-        enter: { opacity: 0 },
-        center: { opacity: 1 },
-        exit: { opacity: 0 },
+        enter: () => ({ opacity: 0 }),
+        center: () => ({ opacity: 1 }),
+        exit: () => ({ opacity: 0 }),
       }
     case 'zoom':
       return {
-        enter: { opacity: 0, scale: 1.06 },
-        center: { opacity: 1, scale: 1 },
-        exit: { opacity: 0, scale: 0.96 },
+        enter: () => ({ opacity: 0, scale: 1.06 }),
+        center: () => ({ opacity: 1, scale: 1 }),
+        exit: () => ({ opacity: 0, scale: 0.96 }),
       }
     case 'rise':
       return {
-        enter: { opacity: 0, y: 60 },
-        center: { opacity: 1, y: 0 },
-        exit: { opacity: 0, y: -60 },
+        enter: () => ({ opacity: 0, y: 60 }),
+        center: () => ({ opacity: 1, y: 0 }),
+        exit: () => ({ opacity: 0, y: -60 }),
       }
     case 'cover':
       return {
         enter: (dir: number) => ({ x: dir > 0 ? '100%' : '-100%' }),
-        center: { x: 0 },
+        center: () => ({ x: 0, opacity: 1 }),
         exit: (dir: number) => ({ x: dir > 0 ? '-30%' : '30%', opacity: 0.4 }),
       }
     case 'flip':
       return {
         enter: (dir: number) => ({ opacity: 0, rotateY: dir > 0 ? 35 : -35 }),
-        center: { opacity: 1, rotateY: 0 },
+        center: () => ({ opacity: 1, rotateY: 0 }),
         exit: (dir: number) => ({ opacity: 0, rotateY: dir > 0 ? -35 : 35 }),
       }
     case 'none':
-      return { enter: {}, center: {}, exit: {} }
+      return {
+        enter: () => ({ opacity: 1 }),
+        center: () => ({ opacity: 1 }),
+        exit: () => ({ opacity: 0 }),
+      }
     case 'slide':
     default:
       return {
         enter: (dir: number) => ({ opacity: 0, x: dir > 0 ? 120 : -120 }),
-        center: { opacity: 1, x: 0 },
+        center: () => ({ opacity: 1, x: 0 }),
         exit: (dir: number) => ({ opacity: 0, x: dir > 0 ? -120 : 120 }),
       }
   }
 }
 
-export const slideTransition: Transition = {
-  duration: 0.6,
-  ease: easing.soft,
+/** The whole-slide variants for a transition. Pass `{ dir, cut }` as `custom`. */
+export function slideVariants(kind: SlideTransition): Variants {
+  const v = base(kind)
+  return {
+    /* a cut lands where the slide rests: no offset, fully opaque */
+    enter: (m: SlideMove) => (isCut(m) ? { ...v.center(), transition: INSTANT } : v.enter(dirOf(m))),
+    center: (m: SlideMove) => ({ ...v.center(), transition: isCut(m) ? INSTANT : slideTransition }),
+    exit: (m: SlideMove) => (isCut(m) ? { opacity: 0, transition: INSTANT } : { ...v.exit(dirOf(m)), transition: slideTransition }),
+  }
 }
 
 /* ------------------------------------------------------------------ */

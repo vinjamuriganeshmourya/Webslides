@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/assets/logo-nxtwave.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- `viewport-fit=cover`: the page runs under the notch and the home indicator
+         and the control bar keeps clear of them with the safe-area insets, which
+         are zero without it. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <!-- Filled from deck.config.json by the `deck-title` plugin in vite.config.ts.
          This file is kit, so it must not name a session. -->
     <title>%DECK_TITLE%</title>

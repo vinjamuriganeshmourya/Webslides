@@ -199,9 +199,18 @@ export interface PracticeSlideProps extends Base {
   tasks?: (BulletItem | string)[]
 }
 
+/**
+ * The standard feedback slide (content rule 41) takes the session name and
+ * nothing else: its words, QR code and form are fixed. `title`, `prompt` and
+ * `link` belonged to the kit's earlier heading-and-link frame and are accepted
+ * so an older deck file still compiles; they are not rendered.
+ */
 export interface FeedbackSlideProps extends Base {
+  /** @deprecated not rendered since 2026-10-14; the slide's words are fixed by rule 41 */
   title?: ReactNode
+  /** @deprecated not rendered since 2026-10-14 */
   prompt?: ReactNode
+  /** @deprecated not rendered since 2026-10-14; the form's link is fixed by rule 41 */
   link?: string
 }
 

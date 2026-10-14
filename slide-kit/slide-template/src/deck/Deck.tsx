@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, PresenceContext, motion } from 'framer-motion'
 import type { DeckProps } from './types'
 import { DeckContext } from './DeckContext'
 import { SlideStage } from './SlideStage'
@@ -16,6 +16,7 @@ import { useAnnotate } from './annotate/useAnnotate'
 import { AnnotationLayer } from './annotate/AnnotationLayer'
 import { AnnotationToolbar } from './annotate/AnnotationToolbar'
 import { useFullscreen } from './useFullscreen'
+import { useGestureNav } from './useGestureNav'
 import { slideVariants, slideTransition, type SlideTransition } from '@/motion/presets'
 import { Stepper } from '@/motion/Stepper'
 import { InstantContext } from '@/motion/instant'
@@ -47,9 +48,13 @@ function hashIndex(total: number): number {
  *   R              replay this slide from the top of its build
  *   M              the marker: draw on the slide (see `annotate/`)
  *
+ * ON A PHONE the control bar is re-laid for a thumb and, if the session asks
+ * (`meta.player.autoHideControls`), hides until a tap on the stage or a pull up
+ * from the bottom edge brings it back. See `DeckControls`.
+ *
  * Speaker notes and click-to-advance are still intentionally omitted.
  */
-export function Deck({ slides, transition = 'slide' }: DeckProps) {
+export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
   const total = slides.length
   const rootRef = useRef<HTMLDivElement>(null)
   const [index, setIndex] = useState(() => hashIndex(total))
@@ -85,6 +90,12 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
   */
   const [replay, setReplay] = useState(0)
   const { isFullscreen, toggle: toggleFullscreen } = useFullscreen(rootRef)
+  /*
+    WHAT THE SESSION ASKED OF THE PLAYER. `meta` is the one session-owned object
+    that reaches this component, so the player's options ride on it rather than
+    on a prop that `App.tsx` (kit, identical in every session) would have to pass.
+  */
+  const player = meta?.player
 
   /*
     WHAT THE PLAIN ARROWS DO, AND WHERE THE PICKER LIVES.
@@ -132,6 +143,18 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
     [setStep],
   )
 
+  /*
+    EVERY MOVE IS ANNOUNCED ON `window` AS `deck:navigate`, for whatever a session
+    wants to hang on it (a sound, a log, a presenter display) without reaching
+    into this file: `detail` is `{ kind: 'slide' | 'step' | 'replay', dir }`.
+    Dispatched from the action and not from an effect, so a listener hears it in
+    the same tick as the press, and only for a move that happens: a press on the
+    last slide's forward arrow announces nothing.
+  */
+  const announce = useCallback((kind: 'slide' | 'step' | 'replay', dir: 1 | -1 | 0) => {
+    window.dispatchEvent(new CustomEvent('deck:navigate', { detail: { kind, dir } }))
+  }, [])
+
   const gotoSlide = useCallback(
     (i: number, dir: number, opts: { cut?: boolean } = {}) => {
       const clamped = Math.min(Math.max(i, 0), total - 1)
@@ -141,26 +164,31 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
       maxRef.current = 0
       setMaxStep(0)
       setStep(0)
+      if (clamped !== indexRef.current) announce('slide', dir < 0 ? -1 : 1)
     },
-    [total, setStep],
+    [total, setStep, announce],
   )
 
   // "Next" (Ctrl+→): reveal the next fragment, or advance to the next slide with
   // the deck's transition.
   const next = useCallback(() => {
-    if (stepRef.current < maxRef.current) setStep(stepRef.current + 1)
-    else if (indexRef.current < total - 1) gotoSlide(indexRef.current + 1, 1)
-  }, [total, gotoSlide, setStep])
+    if (stepRef.current < maxRef.current) {
+      setStep(stepRef.current + 1)
+      announce('step', 1)
+    } else if (indexRef.current < total - 1) gotoSlide(indexRef.current + 1, 1)
+  }, [total, gotoSlide, setStep, announce])
 
   // "Prev" (Ctrl+←): hide the last fragment, or go back a slide with the
   // transition, landing revealed.
   const prev = useCallback(() => {
-    if (stepRef.current > 0) setStep(stepRef.current - 1)
-    else if (indexRef.current > 0) {
+    if (stepRef.current > 0) {
+      setStep(stepRef.current - 1)
+      announce('step', -1)
+    } else if (indexRef.current > 0) {
       pendingFull.current = true
       gotoSlide(indexRef.current - 1, -1)
     }
-  }, [gotoSlide, setStep])
+  }, [gotoSlide, setStep, announce])
 
   // "Prev slide" (←): one slide back as a cut, landing with the build already
   // revealed. This is the key that gets tapped while presenting.
@@ -205,7 +233,8 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
     setMaxStep(0)
     setStep(0)
     setReplay((n) => n + 1)
-  }, [setStep])
+    announce('replay', 0)
+  }, [setStep, announce])
 
   const goTo = useCallback(
     (i: number) => gotoSlide(i, i >= indexRef.current ? 1 : -1),
@@ -275,6 +304,20 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
   */
   const slideKey = slides[index]?.id ?? String(index)
   const ann = useAnnotate(slideKey, step)
+
+  /*
+    THE TRACKPAD AND THE TOUCH SCREEN PRESS THE PLAIN ARROWS. The same pair the
+    keyboard binds, so the mode pill governs all three. Off while the picker is
+    open (it owns the surface) and while the marker is armed (a finger on the
+    ink layer is a stroke, not a swipe). From kit branch `kit/deck-gestures`,
+    folded into the kit on 2026-10-14; the sessions' `figures/gestures.ts` stands
+    down when this hook has mounted.
+  */
+  useGestureNav({
+    fwd: arrowMode === 'steps' ? next : nextSlide,
+    back: arrowMode === 'steps' ? prev : prevSlide,
+    enabled: !pickerOpen && !ann.active,
+  })
 
   /*
     THE PICKER OWNS THE ARROW KEYS WHILE IT IS OPEN.
@@ -380,91 +423,126 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
     header across the screen, which is the opposite of holding it still.
   */
   const kind: SlideTransition = cut || held ? 'none' : (current?.transition ?? transition)
+  /* what the transition needs to know about this move: its direction, and whether it is a cut */
+  const move = useMemo(() => ({ dir: direction, cut: cut || held }), [direction, cut, held])
 
   return (
     <DeckContext.Provider value={ctx}>
-      <div ref={rootRef} className="relative h-full w-full overflow-hidden bg-[#060c1c]">
+      {/*
+        A FLEX COLUMN, so that on a phone the control bar can be a sibling BELOW
+        the stage rather than a layer over it (see `DeckControls`, "SMALL
+        SCREENS"). On a desktop the bar is absolute and the stage area is the
+        whole player, exactly as before.
+      */}
+      <div ref={rootRef} className="relative flex h-full w-full flex-col overflow-hidden bg-[#060c1c]">
         <ProgressBar index={index} total={total} onDot={goTo} />
 
-        <SlideStage flip={kind === 'flip'}>
-          <AnimatePresence initial={false} custom={direction} mode="popLayout">
-            <motion.div
-              /* `replay` IS PART OF THE KEY. That is the whole mechanism: a new key
-                 is a new subtree, and a new subtree animates in. */
-              key={`${current?.id ?? index}#${replay}`}
-              custom={direction}
-              variants={slideVariants(kind)}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={cut ? { duration: 0 } : slideTransition}
-              className="absolute inset-0"
-              /*
-                `preserve-3d` ONLY FOR THE FLIP, AND THAT IS HALF THE BLUR FIX.
+        {/*
+          THE STAGE AREA. On a desktop this is the whole player and the bar lies
+          over it. On a phone in `dock` mode the bar is a flex sibling below, so
+          this box is what is left above it and `SlideStage` fits the slide into
+          that; the bar never lies on the slide.
+        */}
+        <div className="relative min-h-0 flex-1">
+          <SlideStage flip={kind === 'flip'}>
+            {/* `custom` reaches the slide that is LEAVING too, so it leaves the way this
+                move asks (a cut, or the deck's transition), never the way it arrived.
+                See `slideVariants`. */}
+            <AnimatePresence initial={false} custom={move} mode="popLayout">
+              <motion.div
+                /* `replay` IS PART OF THE KEY. That is the whole mechanism: a new key
+                   is a new subtree, and a new subtree animates in. */
+                key={`${current?.id ?? index}#${replay}`}
+                custom={move}
+                variants={slideVariants(kind)}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={cut ? { duration: 0 } : slideTransition}
+                className="absolute inset-0"
+                /*
+                  `preserve-3d` ONLY FOR THE FLIP, AND THAT IS HALF THE BLUR FIX.
 
-                It used to be unconditional. Together with the `perspective` on
-                the stage wrapper it put every slide of every deck into a 3D
-                rendering context, and a 3D context is a promise to the
-                compositor that the subtree will be transformed in space: the
-                subtree gets flattened into a texture up front, and a texture
-                cannot be re-rasterised when an ancestor scales it. That is the
-                soft text, paid for on all 44 slides to support one transition no
-                shipping deck uses. `rotateY` is the only variant that needs it;
-                see `slideVariants`.
-              */
-              style={kind === 'flip' ? { transformStyle: 'preserve-3d' } : undefined}
-            >
-              {/*
-                NOT `landFull`. Landing a slide fully revealed means "do not wait
-                for clicks", not "do not animate": the plain arrows are now the
-                normal way through the deck, so feeding that flag into
-                InstantContext switched every entrance animation in the deck off.
-                Fragments still arrive built, because `pendingFull` sets the step
-                to the slide's maximum; what plays is each slide's own entrance.
-              */}
-              <InstantContext.Provider value={false}>
-                <ContinuityContext.Provider value={carry}>
-                  <Stepper step={step} onMax={onMax}>
-                    {current?.element}
-                  </Stepper>
-                </ContinuityContext.Provider>
-              </InstantContext.Provider>
-            </motion.div>
-          </AnimatePresence>
+                  It used to be unconditional. Together with the `perspective` on
+                  the stage wrapper it put every slide of every deck into a 3D
+                  rendering context, and a 3D context is a promise to the
+                  compositor that the subtree will be transformed in space: the
+                  subtree gets flattened into a texture up front, and a texture
+                  cannot be re-rasterised when an ancestor scales it. That is the
+                  soft text, paid for on all 44 slides to support one transition no
+                  shipping deck uses. `rotateY` is the only variant that needs it;
+                  see `slideVariants`.
+                */
+                style={kind === 'flip' ? { transformStyle: 'preserve-3d' } : undefined}
+              >
+                {/*
+                  NOT `landFull`. Landing a slide fully revealed means "do not wait
+                  for clicks", not "do not animate": the plain arrows are now the
+                  normal way through the deck, so feeding that flag into
+                  InstantContext switched every entrance animation in the deck off.
+                  Fragments still arrive built, because `pendingFull` sets the step
+                  to the slide's maximum; what plays is each slide's own entrance.
+                */}
+                {/*
+                  THE SLIDE'S INSIDE NEVER HOLDS UP THE SLIDE'S EXIT.
 
-          {/*
-            THE INK LIVES INSIDE THE STAGE AND OUTSIDE THE SLIDE.
+                  Without this, every motion element inside the slide joins the
+                  deck-level `AnimatePresence`: a shared-layout element (`layoutId`)
+                  or a nested presence waits for a hand-over that never comes when
+                  its whole slide leaves, so the slide is never unmounted, and
+                  `AnimatePresence` removes nothing until EVERY exit has finished.
+                  One such slide and every slide after it stayed mounted, stacked
+                  over the next (user, 2026-10-06, Python 19 and 20, "slide" mode:
+                  black screens and overlapping content). `null` tells the inside
+                  it is simply present; it unmounts with the slide. Exits INSIDE a
+                  slide (its own `AnimatePresence`) are untouched.
+                */}
+                <PresenceContext.Provider value={null}>
+                  <InstantContext.Provider value={false}>
+                    <ContinuityContext.Provider value={carry}>
+                      <Stepper step={step} onMax={onMax}>
+                        {current?.element}
+                      </Stepper>
+                    </ContinuityContext.Provider>
+                  </InstantContext.Provider>
+                </PresenceContext.Provider>
+              </motion.div>
+            </AnimatePresence>
 
-            Inside the stage, because the stage is the 1280x720 box that gets
-            scaled to the screen: an overlay in here shares the slide's coordinate
-            system, so a circle drawn round a word in a window is still round that
-            word on the projector and after a fullscreen toggle.
+            {/*
+              THE INK LIVES INSIDE THE STAGE AND OUTSIDE THE SLIDE.
 
-            Outside the slide's own motion element, because that element is keyed
-            and gets replaced on every navigation AND on every replay. Ink mounted
-            in there would be destroyed by the very key that replays the build, so
-            pressing R would silently wipe the annotation the presenter had just
-            drawn to explain the slide.
+              Inside the stage, because the stage is the 1280x720 box that gets
+              scaled to the screen: an overlay in here shares the slide's coordinate
+              system, so a circle drawn round a word in a window is still round that
+              word on the projector and after a fullscreen toggle.
 
-            MOUNTED WHILE THE MARKER IS OPEN *OR* THE SLIDE HAS INK, WHICH IS NOT
-            THE SAME CONDITION AND THE DIFFERENCE IS THE FEATURE.
+              Outside the slide's own motion element, because that element is keyed
+              and gets replaced on every navigation AND on every replay. Ink mounted
+              in there would be destroyed by the very key that replays the build, so
+              pressing R would silently wipe the annotation the presenter had just
+              drawn to explain the slide.
 
-            An instructor draws on a build, puts the pen down, and advances the
-            build. Gating the layer on `active` alone erases the drawing from the
-            screen the moment they close the marker, so the annotation they made to
-            explain the slide vanishes exactly when they start talking about it.
-            Gating it on `hasInk` as well keeps the ink on the slide and lets the
-            pen go away, which is what a whiteboard does.
+              MOUNTED WHILE THE MARKER IS OPEN *OR* THE SLIDE HAS INK, WHICH IS NOT
+              THE SAME CONDITION AND THE DIFFERENCE IS THE FEATURE.
 
-            It is still ABSENT from the DOM in the case that matters for the
-            harnesses: a deck nobody has drawn on. An inert full-stage overlay would
-            be reported by `qa.mjs` as content that scrolls and by `video-safe.mjs`
-            as covering the instructor video, on every slide of every deck, and
-            `qa.mjs` never draws. The layer itself also drops `pointer-events` when
-            the marker is closed, so ink on screen never eats a click.
-          */}
-          {(ann.active || ann.hasInk) && <AnnotationLayer ann={ann} />}
-        </SlideStage>
+              An instructor draws on a build, puts the pen down, and advances the
+              build. Gating the layer on `active` alone erases the drawing from the
+              screen the moment they close the marker, so the annotation they made to
+              explain the slide vanishes exactly when they start talking about it.
+              Gating it on `hasInk` as well keeps the ink on the slide and lets the
+              pen go away, which is what a whiteboard does.
+
+              It is still ABSENT from the DOM in the case that matters for the
+              harnesses: a deck nobody has drawn on. An inert full-stage overlay would
+              be reported by `qa.mjs` as content that scrolls and by `video-safe.mjs`
+              as covering the instructor video, on every slide of every deck, and
+              `qa.mjs` never draws. The layer itself also drops `pointer-events` when
+              the marker is closed, so ink on screen never eats a click.
+            */}
+            {(ann.active || ann.hasInk) && <AnnotationLayer ann={ann} />}
+          </SlideStage>
+        </div>
 
         <DeckControls
           index={index}
@@ -484,6 +562,9 @@ export function Deck({ slides, transition = 'slide' }: DeckProps) {
           markerActive={ann.active}
           toggleMarker={ann.toggle}
           hasInk={ann.hasInk}
+          mobile={player?.autoHideControls ? 'overlay' : 'dock'}
+          enabled={!pickerOpen && !ann.active}
+          extra={player?.extraControls}
         />
 
         {/*
