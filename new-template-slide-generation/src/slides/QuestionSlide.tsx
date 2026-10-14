@@ -70,7 +70,7 @@ import type { QuestionSlideProps } from './types'
  * the same block, so the pause beat is the same shape wherever it falls.
  */
 export function QuestionSlide({
-  kicker = 'A question first',
+  kicker = 'A Question First',
   question,
   qualifier,
   choices,

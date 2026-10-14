@@ -46,8 +46,14 @@ const MIN_TEXT_PX = 16
  * fires by accident is worse than no harness, because it is believed. Widen this
  * and you re-open the 7px hole.
  */
-const KICKER_PX = 15
-const KICKER_TRACKING_PX = 1.5
+/*
+ * THIS DECK ONLY (user, 2026-10-13): the kicker is 18px, title case, 0.02em.
+ * At 18px it clears MIN_TEXT_PX on its own, so the exemption below never
+ * fires any more; the constants are kept current so nothing here encodes a
+ * value the type scale no longer has.
+ */
+const KICKER_PX = 18
+const KICKER_TRACKING_PX = 0.3
 
 /**
  * The deck's own chrome is UI, not content, so it is not held to the floor: the

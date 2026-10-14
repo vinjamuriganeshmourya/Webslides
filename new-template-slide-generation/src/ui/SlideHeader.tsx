@@ -151,13 +151,18 @@ export function SlideHeader({
           content slide puts it (y=115 on the 1920 frame, 77 here, 29 below
           the header's top at y=48), so the kicker and the title keep exactly
           the boxes they had. Drawn only under a kicker.
+
+          THIS DECK ONLY (user, 2026-10-13): the kicker grew from 15px to 18px,
+          so its line box is 21.6px, not 18. The divider moves down the same
+          4px (29 -> 33) so the kicker, the divider and the title keep the
+          spacing they had; the header is 4px taller.
         */
         kicker != null && (
           <span
             aria-hidden
             className="pointer-events-none absolute left-0 h-[3px] w-[400px]"
             style={{
-              top: 29,
+              top: 33,
               background: `linear-gradient(90deg, ${color} 0%, ${color} 13%, ${color}8C 68%, ${color}00 100%)`,
             }}
           />

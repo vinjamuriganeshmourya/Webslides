@@ -65,7 +65,7 @@ const BULB_GLOW = { left: '75%', top: '23%' }
 export function QuizTimeSlide({
   title = 'Quiz Time!',
   subtitle,
-  kicker = 'Your turn',
+  kicker = 'Your Turn',
   steps,
   lesson,
 }: QuizTimeSlideProps) {

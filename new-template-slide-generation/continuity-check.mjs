@@ -68,7 +68,7 @@ const probe = () =>
         tf: cs.transform === 'none' ? 'none' : cs.transform,
       }
     }
-    const kickerSpan = sec.querySelector('span.uppercase')
+    const kickerSpan = sec.querySelector('[data-kicker]')
     const h2 = sec.querySelector('h2')
     return {
       kickerText: kickerSpan?.textContent?.trim() ?? null,

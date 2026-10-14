@@ -55,6 +55,23 @@ nothing here goes back to the kit, to the Python decks or to any rule file.
   navy #002A4B for headings AND body on light slides (`ink`, `body` in both
   token files); white stays on the dark slides; highlights stay #2D63FB.
   Poppins, Inter and JetBrains Mono are gone from `index.html`.
+- **The kicker (user, 2026-10-13; this deck only, not the kit, not any other
+  deck).** Three changes to the eyebrow label over every slide title, and to the
+  session-name slide's line above the name: (1) colour is the sheet's navy
+  #002A4B (`colors.ink`) on light slides, not the slide's tone; white stays on
+  dark slides; (2) title case, not capitals: the `uppercase` class is gone from
+  `Kicker` (`src/ui/primitives.tsx`), from the session-name slide and from
+  `ScenarioCard`, so the text shows as typed, and the deck's strings were
+  re-cased ("Key Takeaways", "Change a List", "Two Names, One List", "Change or
+  Move?", "Welcome to Today's Session", the slide-type defaults "Your Turn" and
+  "A Question First"; "Objects and id" keeps `id` lowercase because it is the
+  function's name); (3) 18px, not 15px, with the tracking down from 0.14em to
+  0.02em since caps tracking looks gappy on title case (the `kicker` token in
+  `tailwind.config.ts`). The kicker's line box grew 4px, so the header's
+  gradient divider moved from 29 to 33 below the header top and the header is
+  4px taller. `Kicker` now carries `data-kicker`; `continuity-check.mjs` finds
+  it by that instead of `span.uppercase`, and the 15px exemption in `qa.mjs` is
+  dormant because 18px clears the 16px floor on its own.
 - **One size per slide type (user, later the same day).** The section
   breaker's title (slide 8, "Objects") was on the kit's `text-slide-title-lg`
   token (44px) while the session-name slide (slide 5) had the template's
