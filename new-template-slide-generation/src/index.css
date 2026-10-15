@@ -148,7 +148,7 @@ html {
     left: 0;
     right: 0;
     bottom: 0;
-    height: 8px;
+    height: 4px;
     background: linear-gradient(90deg, #00254b 0%, #0146c7 45%, #2d63fb 100%);
   }
 }

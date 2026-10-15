@@ -351,7 +351,7 @@ export function SlideBase({
       */}
       {footer && (
         <footer className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-center justify-end px-8 pb-4">
-          {footerLogo && <Logo className="h-9" onDark={dark} />}
+          {footerLogo && <Logo className="h-[25.2px]" onDark={dark} />}
         </footer>
       )}
       {/* NEW TEMPLATE: the bar is the template's flat brand blue, not the kit's navy-to-blue run. */}
