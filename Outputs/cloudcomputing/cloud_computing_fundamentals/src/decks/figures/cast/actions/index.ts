@@ -3,7 +3,7 @@
  * this file only merges them and records which file each name came from,
  * so the playground can group its buttons without a second list to keep
  * in step. */
-import type { Action } from '@/decks/figures/cast/rig/track'
+import type { Action } from '../rig/track'
 import { EXPRESSIONS, FACE_ACTIONS } from './face'
 import { HEAD_ACTIONS } from './head'
 import { HAND_ACTIONS } from './hands'

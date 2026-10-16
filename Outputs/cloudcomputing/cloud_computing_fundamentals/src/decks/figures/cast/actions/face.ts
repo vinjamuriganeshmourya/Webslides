@@ -12,8 +12,8 @@
  * the mouth slides a few px to one side. The renderer derives the rest of a
  * smile (cheek apples, lower lids, teeth) from `smile` itself, so a smile
  * here is mostly the corners and a little mouth width. */
-import type { Channel, Pose } from '@/decks/figures/cast/rig/channels'
-import { delay, mirror, type Action, type Key, type Tracks } from '@/decks/figures/cast/rig/track'
+import type { Channel, Pose } from '../rig/channels'
+import { delay, mirror, type Action, type Key, type Tracks } from '../rig/track'
 
 type Face = Partial<Pose>
 

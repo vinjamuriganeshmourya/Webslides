@@ -11,11 +11,11 @@
  * straight hem over a bare arm. Neither reference outlines the arm, so
  * 'line' art leaves it plain and puts its lines on the hand only. */
 import type { JSX } from 'react'
-import type { Pose } from '@/decks/figures/cast/rig/channels'
-import type { Skin } from '@/decks/figures/cast/skins/types'
-import { Hand } from '@/decks/figures/cast/rig/Hand'
-import { handPoseOf } from '@/decks/figures/cast/actions/handPoses'
-import { SHOULDER_Y, clamp, shade, type Url } from '@/decks/figures/cast/rig/Body'
+import type { Pose } from '../rig/channels'
+import type { Skin } from '../skins/types'
+import { Hand } from '../rig/Hand'
+import { handPoseOf } from '../actions/handPoses'
+import { SHOULDER_Y, clamp, shade, type Url } from '../rig/Body'
 
 const UPPER = 95
 const FORE = 85
@@ -39,8 +39,14 @@ export function Arm({ side, pose, skin, url }: { side: 'L' | 'R'; pose: Pose; sk
   const sleeveFill = flat ? p.sleeve : url('sleeve' + side)
   const upper = long ? sleeveFill : skinFill
   const elbowCrease = clamp(elbow / 120, 0, 1) * 0.16
+  const clay = skin.shading === 'clay'
+  /* Clay: the arm drops a soft shadow on the chest and turns as one form.
+     Both filters sit OUTSIDE the mirror, so the right arm is lit from the
+     same lamp as the left rather than its mirror image. */
   return (
-    <g data-part={`arm-${side}`} filter={flat ? undefined : url('armDrop')} transform={side === 'R' ? 'translate(400 0) scale(-1 1)' : undefined}>
+    <g data-part={`arm-${side}`} filter={clay ? url('clayDrop') : flat ? undefined : url('armDrop')}>
+    <g filter={clay ? url('clayLimb') : undefined}>
+    <g transform={side === 'R' ? 'translate(400 0) scale(-1 1)' : undefined}>
       <g transform={`translate(${pivotX} ${SHOULDER_Y}) rotate(${shoulder})`}>
         {/* The capsule starts 5 px down the bone so its round cap meets the
             torso's shoulder slope as a deltoid bump, not a ball above it. */}
@@ -80,6 +86,8 @@ export function Arm({ side, pose, skin, url }: { side: 'L' | 'R'; pose: Pose; sk
           </g>
         </g>
       </g>
+    </g>
+    </g>
     </g>
   )
 }

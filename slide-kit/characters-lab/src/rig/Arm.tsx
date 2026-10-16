@@ -39,8 +39,14 @@ export function Arm({ side, pose, skin, url }: { side: 'L' | 'R'; pose: Pose; sk
   const sleeveFill = flat ? p.sleeve : url('sleeve' + side)
   const upper = long ? sleeveFill : skinFill
   const elbowCrease = clamp(elbow / 120, 0, 1) * 0.16
+  const clay = skin.shading === 'clay'
+  /* Clay: the arm drops a soft shadow on the chest and turns as one form.
+     Both filters sit OUTSIDE the mirror, so the right arm is lit from the
+     same lamp as the left rather than its mirror image. */
   return (
-    <g data-part={`arm-${side}`} filter={flat ? undefined : url('armDrop')} transform={side === 'R' ? 'translate(400 0) scale(-1 1)' : undefined}>
+    <g data-part={`arm-${side}`} filter={clay ? url('clayDrop') : flat ? undefined : url('armDrop')}>
+    <g filter={clay ? url('clayLimb') : undefined}>
+    <g transform={side === 'R' ? 'translate(400 0) scale(-1 1)' : undefined}>
       <g transform={`translate(${pivotX} ${SHOULDER_Y}) rotate(${shoulder})`}>
         {/* The capsule starts 5 px down the bone so its round cap meets the
             torso's shoulder slope as a deltoid bump, not a ball above it. */}
@@ -80,6 +86,8 @@ export function Arm({ side, pose, skin, url }: { side: 'L' | 'R'; pose: Pose; sk
           </g>
         </g>
       </g>
+    </g>
+    </g>
     </g>
   )
 }

@@ -39,6 +39,15 @@ export interface DeckPlayerOptions {
    * its auto-hide timing with the rest.
    */
   extraControls?: ReactNode
+  /**
+   * EVERY MOVE IS A TRANSITION (Cloud Computing Fundamentals, 2026-10-15). No
+   * cuts: the plain arrows, the picker and a held pair all play the deck's one
+   * transition, and under `prefers-reduced-motion` every motion in the deck
+   * becomes a plain fade.
+   */
+  smooth?: boolean
+  /** The slide picker shows a live thumbnail of each slide, built in its final state. */
+  thumbnails?: boolean
 }
 
 export interface DeckMeta {

@@ -12,7 +12,7 @@
  * reference says so beside it. Everything here is a table, so a new
  * character is a new row, not a new branch. */
 import type { Palette, Skin } from './types'
-import { hairBack, hairFront } from '@/decks/figures/cast/skins/hair'
+import { hairBack, hairFront } from '../skins/hair'
 import { faceExtras, legs, neckExtras, top } from './outfits'
 
 export type SkinTone = 'fair' | 'wheatish' | 'medium' | 'dusky' | 'deep' | `#${string}`
@@ -23,21 +23,25 @@ export type HairStyle =
 export type TopStyle = 'shirt' | 'shirtTie' | 'tshirt' | 'kurta' | 'hoodie' | 'blouse' | 'polo'
 export type BottomStyle = 'trousers' | 'jeans' | 'skirt' | 'salwar' | 'shorts'
 export type ArtStyle = 'soft' | 'line'
-export type Shading = 'flat' | 'lit'
+export type Shading = 'flat' | 'lit' | 'clay'
 
 export type CharacterConfig = {
   name: string
   gender: 'male' | 'female' // base proportions: shoulder width, neck, jaw default
   /** 'soft': no outlines, flat fills with soft shadow shapes (Arjun). 'line': thin dark outlines on hands, collar, pockets (Riya) */
   art: ArtStyle
-  /** 'flat' is the reference look and the default; 'lit' keeps the old specular filters */
+  /** 'clay' is the Library look the presets use; 'flat' the earlier Storyset
+      look and the default for a config that names none; 'lit' the old specular filters */
   shading?: Shading
   skinTone: SkinTone
   hair: { style: HairStyle; color: HairColor }
   face: {
     jaw: 'round' | 'oval' | 'square'
     brows: 'thin' | 'medium' | 'thick'
-    eyes: 'oval' | 'dot'
+    /** 'big' is the Library eye; 'oval' and 'dot' the earlier flat looks */
+    eyes: 'oval' | 'dot' | 'big'
+    /** lash flicks on a 'big' eye; unset means on for female, off for male, as in every Library image */
+    lashes?: boolean
     mouth: 'full' | 'line'
     lip?: `#${string}`
     blush?: number
@@ -64,32 +68,133 @@ export type CharacterConfig = {
   build: { height: number; shoulders: number } // multipliers, 0.9..1.1
 }
 
-/* The two reference characters, exactly as the Art direction section of
-   CONTRACTS.md lists them. */
-export const PRESETS: Record<'arjun' | 'riya', CharacterConfig> = {
+/* The characters, all in the Library look (CONTRACTS.md, "Art direction").
+   Every colour is read off the Library's pixels and says which image it came
+   from. Arjun and Riya keep who they are, a teacher and a teacher, and are
+   redrawn in that look; the rest are new members of the same set. None
+   copies one Library figure: each takes a hair from one image, clothes from
+   another and a colour from a third, and every part of it appears somewhere
+   in the folder.
+
+   The Library's skin is one warm peach family, light to warm:
+   #FBC499 (man wondering expression), #F9AE7C (Wondering man, the most
+   common), #F4A077 (Bearded Man Presenting). It has no darker tones, so
+   neither does this set; see CONTRACTS.md for why that is reported, not
+   invented. */
+const LIBRARY_SKIN = { light: '#FBC499', mid: '#F9AE7C', warm: '#F4A077' } as const
+/* Hair, base colour of each Library family: black (Wondering man), navy-black
+   (Man Thinking-1), dark brown (Woman Pointing-2), brown-black (Bearded Man). */
+const LIBRARY_HAIR = { black: '#2A2324', navy: '#262B43', brown: '#532921', brownBlack: '#483032' } as const
+
+export const PRESET_NAMES = ['arjun', 'riya', 'kabir', 'meera', 'dev', 'ananya', 'rohan'] as const
+export type PresetName = (typeof PRESET_NAMES)[number]
+
+export const PRESETS: Record<PresetName, CharacterConfig> = {
+  /* The teacher of the white-shirt series (Wondering man, M, Please Stop,
+     Teaching using a book and eleven more): the Library's most drawn man.
+     Pompadour, lavender-white shirt #D5D8EB, black belt, charcoal trousers.
+     His old navy tie goes: the Library only puts a tie under a suit. */
   arjun: {
     name: 'Arjun',
     gender: 'male',
     art: 'soft',
-    shading: 'flat',
-    skinTone: '#F8C9A8',
-    hair: { style: 'quiff', color: '#151515' },
-    face: { jaw: 'square', brows: 'medium', eyes: 'oval', mouth: 'full' },
-    outfit: { top: 'shirtTie', topColor: '#FFFFFF', bottom: 'trousers', bottomColor: '#1B2238', shoeColor: '#2A2F45' },
+    shading: 'clay',
+    skinTone: LIBRARY_SKIN.mid,
+    hair: { style: 'quiff', color: LIBRARY_HAIR.black },
+    face: { jaw: 'round', brows: 'thick', eyes: 'big', mouth: 'full' },
+    outfit: { top: 'shirt', topColor: '#D5D8EB', bottom: 'trousers', bottomColor: '#3E3D45', shoeColor: '#2A2A30' },
     accessories: { belt: true },
     build: { height: 1, shoulders: 1 },
   },
+  /* Riya keeps her bun, her blouse and her skirt, redrawn after Female Teacher
+     Icon: a smooth bun on top with a yellow scrunchie, no fall of hair down
+     the back (no Library bun has one). Periwinkle top #5856DC (Woman
+     Presenting), royal navy A-line skirt #1B3F80 (Female Teacher Icon). */
   riya: {
     name: 'Riya',
     gender: 'female',
-    art: 'line',
-    shading: 'flat',
-    skinTone: '#F5A68E',
-    hair: { style: 'bun', color: '#1A1F3D' },
-    face: { jaw: 'oval', brows: 'thin', eyes: 'dot', mouth: 'line' },
-    outfit: { top: 'blouse', topColor: '#5B6EE1', bottom: 'skirt', bottomColor: '#171A3B', shoeColor: '#1A1F3D' },
+    art: 'soft',
+    shading: 'clay',
+    skinTone: LIBRARY_SKIN.light,
+    hair: { style: 'bun', color: LIBRARY_HAIR.navy },
+    face: { jaw: 'oval', brows: 'medium', eyes: 'big', mouth: 'full' },
+    outfit: { top: 'blouse', topColor: '#5856DC', bottom: 'skirt', bottomColor: '#1B3F80', shoeColor: '#1B3F80', accentColor: '#F6C531' },
     accessories: {},
     build: { height: 1, shoulders: 1 },
+  },
+  /* New. Curly navy-black hair (Man Working on Laptop-4) on a yellow tee
+     #FCC82B (Man Using Laptop-1) over navy jeans #2C3C81. The student. */
+  kabir: {
+    name: 'Kabir',
+    gender: 'male',
+    art: 'soft',
+    shading: 'clay',
+    skinTone: LIBRARY_SKIN.light,
+    hair: { style: 'curly', color: LIBRARY_HAIR.navy },
+    face: { jaw: 'round', brows: 'thick', eyes: 'big', mouth: 'full' },
+    outfit: { top: 'tshirt', topColor: '#FCC82B', bottom: 'jeans', bottomColor: '#2C3C81', shoeColor: '#1F4FD8' },
+    accessories: {},
+    build: { height: 0.97, shoulders: 0.95 },
+  },
+  /* New. Long dark-brown waves (Woman Pointing-2, Woman Explaining-1) with
+     an orange top #FC963C (Man Presenting-2's sweater colour) and charcoal
+     trousers, small gold hoops (Woman Presenting wears large ones). */
+  meera: {
+    name: 'Meera',
+    gender: 'female',
+    art: 'soft',
+    shading: 'clay',
+    skinTone: LIBRARY_SKIN.mid,
+    hair: { style: 'wavy', color: LIBRARY_HAIR.brown },
+    face: { jaw: 'oval', brows: 'medium', eyes: 'big', mouth: 'full' },
+    outfit: { top: 'blouse', topColor: '#FC963C', bottom: 'trousers', bottomColor: '#3E3D45', shoeColor: '#2A2A30' },
+    accessories: { earrings: true },
+    build: { height: 1, shoulders: 1 },
+  },
+  /* New. Round glasses (Man Holding Tablet and Pointing, Man Presenting-3)
+     with a side part, a light-blue shirt #95C2FB (the tablet man's sweater
+     colour) and navy trousers, and a watch (Man Holding Tablet-1). */
+  dev: {
+    name: 'Dev',
+    gender: 'male',
+    art: 'soft',
+    shading: 'clay',
+    skinTone: LIBRARY_SKIN.light,
+    hair: { style: 'sidePart', color: LIBRARY_HAIR.black },
+    face: { jaw: 'square', brows: 'thick', eyes: 'big', mouth: 'full' },
+    outfit: { top: 'shirt', topColor: '#95C2FB', bottom: 'trousers', bottomColor: '#1F2A4A', shoeColor: '#2A2A30' },
+    accessories: { glasses: 'round', watch: true },
+    build: { height: 1.02, shoulders: 1 },
+  },
+  /* New. A black bob (Woman Working at Computer) with a sage top #829983
+     (Woman Thinking's blazer) over royal-blue jeans #1F4FD8 (Woman
+     Pointing-1). */
+  ananya: {
+    name: 'Ananya',
+    gender: 'female',
+    art: 'soft',
+    shading: 'clay',
+    skinTone: LIBRARY_SKIN.light,
+    hair: { style: 'bob', color: LIBRARY_HAIR.black },
+    face: { jaw: 'oval', brows: 'medium', eyes: 'big', mouth: 'full' },
+    outfit: { top: 'tshirt', topColor: '#829983', bottom: 'jeans', bottomColor: '#1F4FD8', shoeColor: '#F2F2F5' },
+    accessories: {},
+    build: { height: 0.98, shoulders: 1 },
+  },
+  /* New. The senior: a short brown-black beard and hair (Bearded Man
+     Presenting) with a red polo #D8352F (Man Working at Computer's sweater)
+     and charcoal trousers. */
+  rohan: {
+    name: 'Rohan',
+    gender: 'male',
+    art: 'soft',
+    shading: 'clay',
+    skinTone: LIBRARY_SKIN.warm,
+    hair: { style: 'short', color: LIBRARY_HAIR.brownBlack },
+    face: { jaw: 'square', brows: 'thick', eyes: 'big', mouth: 'full' },
+    outfit: { top: 'polo', topColor: '#D8352F', bottom: 'trousers', bottomColor: '#3E3D45', shoeColor: '#5A3A2A' },
+    accessories: { beard: 'short', watch: true },
+    build: { height: 1.04, shoulders: 1.06 },
   },
 }
 
@@ -305,11 +410,34 @@ function skinId(c: CharacterConfig): Skin['id'] {
   return c.gender === 'female' ? 'riya' : 'arjun'
 }
 
+/* The Library mouth, measured on Wondering man and Man Presenting: a shut
+   smile is a warm brown-rose line, never red; the open mouth is a deep
+   wine #8E2B2E with a coral tongue. */
+const CLAY_MOUTH = { lip: { light: -0.24, sat: -0.05 }, mouth: '#8E2B2E', tongue: '#E8706A' }
+
 function paletteFor(c: CharacterConfig): Palette {
   const tone = resolveTone(c.skinTone)
   const hair = resolveHair(c.hair.color)
-  const lip = c.face.lip ?? tone.lip
+  const clay = c.shading === 'clay'
+  const lip = c.face.lip ?? (clay ? shift(tone.skinShade, CLAY_MOUTH.lip.light, CLAY_MOUTH.lip.sat) : tone.lip)
   const [lipHue] = hexToHsl(lip)
+  if (clay) {
+    return {
+      ...tone,
+      ...hair,
+      ...clothFor(c.outfit.topColor),
+      lip,
+      mouth: CLAY_MOUTH.mouth,
+      tongue: CLAY_MOUTH.tongue,
+      /* the Library iris is a warm mid brown (#5A3420 on Woman Pointing-2) */
+      iris: '#5A3420',
+      brow: shift(hair.hair, -0.04),
+      accent: accentFor(c),
+      bottom: c.outfit.bottomColor,
+      bottomShade: shift(c.outfit.bottomColor, BOTTOM_RULE.shade.light, BOTTOM_RULE.shade.sat),
+      shoe: c.outfit.shoeColor ?? '#2B2521',
+    }
+  }
   return {
     ...tone,
     ...hair,
@@ -331,6 +459,8 @@ function paletteFor(c: CharacterConfig): Palette {
    skull alone; a braid or a ponytail hangs over the shoulder and stays in
    front. hair.tsx draws both as hairBack, so the layer is decided here. */
 const FALLING_HAIR: ReadonlySet<HairStyle> = new Set(['long', 'bun', 'wavy'])
+/* In the Library look a bun is a bun: no fall behind it (hair.tsx). */
+const FALLING_HAIR_CLAY: ReadonlySet<HairStyle> = new Set(['long', 'wavy'])
 
 export function buildSkin(config: CharacterConfig): Skin {
   const palette = paletteFor(config)
@@ -338,6 +468,7 @@ export function buildSkin(config: CharacterConfig): Skin {
   const shoulderHalf = SHOULDER_HALF[config.gender] * config.build.shoulders
   const jaw = config.face.jaw === 'oval' && female ? 'ovalNarrow' : config.face.jaw
   const outline = outlineFor(palette.hair)
+  const clay = config.shading === 'clay'
   return {
     id: skinId(config),
     label: config.name,
@@ -350,18 +481,19 @@ export function buildSkin(config: CharacterConfig): Skin {
     art: config.art,
     shading: config.shading ?? 'flat',
     eyes: config.face.eyes,
+    lashes: config.face.lashes ?? female,
     mouthStyle: config.face.mouth,
     browWeight: BROW_WEIGHT[config.face.brows],
     outline,
     belt: Boolean(config.accessories.belt),
     watch: Boolean(config.accessories.watch),
-    hairBack: hairBack(config.hair.style, palette) ?? undefined,
-    hairFalls: FALLING_HAIR.has(config.hair.style),
-    hairFront: hairFront(config.hair.style, palette) ?? undefined,
+    hairBack: hairBack(config.hair.style, palette, clay) ?? undefined,
+    hairFalls: (clay ? FALLING_HAIR_CLAY : FALLING_HAIR).has(config.hair.style),
+    hairFront: hairFront(config.hair.style, palette, clay) ?? undefined,
     faceExtras: faceExtras(config, palette) ?? undefined,
     /* the outfit is drawn to this body's own shoulders, so the cloth and
        the base torso agree to the pixel and nothing is scaled afterwards */
-    top: top(config.outfit.top, palette, { art: config.art, belt: config.accessories.belt, outline, shoulderHalf }),
+    top: top(config.outfit.top, palette, { art: config.art, belt: config.accessories.belt, outline, shoulderHalf, clay }),
     legs: legs(config.outfit.bottom, palette, { art: config.art, outline, shoulderHalf }),
     neckExtras: neckExtras(config, palette, { shoulderHalf }) ?? undefined,
   }

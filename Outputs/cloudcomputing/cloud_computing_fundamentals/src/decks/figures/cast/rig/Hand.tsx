@@ -19,8 +19,8 @@
  * whole arc. Facing the viewer (palm 1) it folds toward us, so it only
  * shortens, and past 90 deg the fingertip comes back down over the palm. */
 import { useId } from 'react'
-import type { HandPose } from '@/decks/figures/cast/actions/handPoses'
-import type { Palette } from '@/decks/figures/cast/skins/types'
+import type { HandPose } from '../actions/handPoses'
+import type { Palette } from '../skins/types'
 
 type Pt = { x: number; y: number }
 
@@ -32,7 +32,7 @@ export type HandProps = {
   /** the line colour for art 'line' */
   outline?: string
   /** 'flat' is one skin tone (default); 'lit' keeps the lamp gradient */
-  shading?: 'flat' | 'lit'
+  shading?: 'flat' | 'lit' | 'clay'
 }
 
 /* Knuckle positions and lengths, index to pinky, from the reference: the

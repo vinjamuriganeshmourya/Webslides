@@ -1,7 +1,9 @@
 # Characters lab
 
-Two characters, **Arjun** and **Riya**, on one shared rig, with a library of
-actions that read as real human motion. Everything that moves is a number in
+Seven characters on one shared rig, **Arjun**, **Riya**, **Kabir**,
+**Meera**, **Dev**, **Ananya** and **Rohan**, drawn in the soft 3D look of
+the seventy-one reference images in `reference/library/` (the Library),
+with a library of actions that read as real human motion. Everything that moves is a number in
 a channel (`src/rig/channels.ts`); actions write keyframes into channels,
 the composer stacks the layers, and one SVG renderer draws the result for
 whichever skin is on. `CONTRACTS.md` is the spec every module is built to.
@@ -26,7 +28,9 @@ A skin is never hand-drawn. It is built from a `CharacterConfig`
 (`src/skins/config.ts`): gender for the base proportions, skin tone, hair
 style and colour, jaw and brows, top and bottom with their colours, every
 accessory (glasses, earrings, bindi, beard, watch, flower, necklace) and two
-build multipliers. `PRESETS.arjun` and `PRESETS.riya` are two such configs.
+build multipliers. `PRESETS` holds the seven; `shading: 'clay'` is the
+Library look, and CONTRACTS.md ("Art direction") is the style spec every
+one of them is drawn to.
 The playground's Character panel edits all of it live and copies the JSON,
 and `?config=<urlencoded JSON>` loads one into the harness.
 
@@ -66,7 +70,7 @@ single actor for the harnesses:
 
 ```bash
 node shoot.mjs                   # both skins, every gesture, expression, one talk line
-node shoot.mjs --skin arjun      # one skin
+node shoot.mjs --skin kabir      # one skin
 node shoot.mjs --only wave       # clips whose name contains the text
 ```
 

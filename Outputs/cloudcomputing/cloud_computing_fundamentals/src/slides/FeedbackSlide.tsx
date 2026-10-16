@@ -75,9 +75,9 @@ const CSS = `
 .fb-qr-text { display: flex; flex-direction: column; align-items: center; margin-top: 14px; min-width: 0; }
 .fb-qr-label { font: 600 16px/1.35 ${fonts.body}; color: ${colors.ink}; text-align: center; }
 .fb-qr-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; padding: 2px 4px; border-radius: 6px;
-  font: 600 16px/1.3 ${fonts.body}; color: ${colors.brandDark}; text-decoration: underline; text-underline-offset: 3px;
-  text-decoration-color: ${colors.brand}66; transition: color 200ms ${HOUSE}, text-decoration-color 200ms ${HOUSE}; }
-.fb-qr-link:hover { color: ${colors.brand}; text-decoration-color: ${colors.brand}; }
+  font: 600 16px/1.3 ${fonts.body}; color: ${colors.brandDark}; text-decoration: none;
+  transition: color 200ms ${HOUSE}; }
+.fb-qr-link:hover { color: ${colors.brand}; }
 .fb-qr-link:focus-visible { outline: none; box-shadow: 0 0 0 4px ${colors.brand}33; }
 .fb-qr-link svg { width: 16px; height: 16px; flex: none; }
 .fb-qr-cta { margin-top: 10px; font: 400 16px/1.35 ${fonts.body}; color: ${colors.body}; text-align: center; }

@@ -59,6 +59,21 @@ describe('configuration', () => {
     const ids = [...page.matchAll(/ id="([^"]+)"/g)].map((m) => m[1])
     expect(new Set(ids).size, 'duplicate ids').toBe(ids.length)
   })
+  it('the Library look: every preset is clay, with filters, big eyes and lashes by gender', () => {
+    for (const cfg of Object.values(PRESETS)) {
+      expect(cfg.shading, cfg.name).toBe('clay')
+      expect(cfg.face.eyes, cfg.name).toBe('big')
+      const skin = buildSkin(cfg)
+      expect(skin.lashes, cfg.name).toBe(cfg.gender === 'female')
+      const svg = markup(cfg)
+      expect(svg, cfg.name).toContain('<filter')
+      expect(svg, cfg.name).toContain('feBlend')
+    }
+  })
+  it('the flat look still draws with no filter of its own', () => {
+    const svg = markup({ ...PRESETS.arjun, shading: 'flat', face: { ...PRESETS.arjun.face, eyes: 'oval' } })
+    expect(svg).not.toContain('<filter')
+  })
   it('the parts a harness looks for are named', () => {
     const svg = markup(PRESETS.arjun)
     for (const part of ['head', 'arm-L', 'arm-R', 'mouth']) expect(svg, part).toContain(`data-part="${part}"`)

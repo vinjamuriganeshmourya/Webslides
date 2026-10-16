@@ -33,8 +33,22 @@ interface StepContextValue {
 const StepContext = createContext<StepContextValue | null>(null)
 
 /** When ?all is in the URL, every Step is shown at once (used for thumbnails/QA). */
-const REVEAL_ALL =
+let REVEAL_ALL =
   typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('all')
+
+/*
+  A DECK WITH NO BUILDS (Cloud Computing Fundamentals, user 2026-10-15: "all of
+  that content appears at once when the slide loads"). A session calls this once,
+  at module load, before the first render. Every Step and claimed beat is then
+  shown, and the Stepper reports ZERO steps, so a press never lands on a build
+  that has nothing left to show: every press is a slide.
+*/
+let NO_STEPS = false
+export function revealEveryStep() {
+  REVEAL_ALL = true
+  NO_STEPS = true
+}
+export const everyStepRevealed = () => NO_STEPS
 
 export function Stepper({
   step,
@@ -62,7 +76,7 @@ export function Stepper({
 
   // After children have rendered (and claimed), report the total step count.
   useLayoutEffect(() => {
-    onMax(reg.current.next)
+    onMax(NO_STEPS ? 0 : reg.current.next)
   })
 
   const value = useMemo(() => ({ step, claim }), [step, claim])

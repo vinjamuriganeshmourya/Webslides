@@ -111,6 +111,7 @@ export function legOutline(skin: Pick<Skin, 'shoulderHalf'>, side: 'L' | 'R'): s
 export function Body({ pose, skin, nod, url, behind, children }: { pose: Pose; skin: Skin; nod: number; url: Url; behind?: ReactNode; children: ReactNode }): JSX.Element {
   const p = skin.palette
   const flat = skin.shading !== 'lit'
+  const clay = skin.shading === 'clay'
   const m = torsoMetrics(skin)
   const sh = m.shoulderHalf
   const b = pose.breathe
@@ -135,7 +136,7 @@ export function Body({ pose, skin, nod, url, behind, children }: { pose: Pose; s
 
       <g transform={`translate(${200 + pose.bodyX} ${GROUND + pose.bodyY}) scale(${pose.bodyScale * skin.buildScale}) translate(-200 ${-GROUND})`}>
         <g transform={`translate(${pose.stance * 1.5} 0)`}>
-          <Legs skin={skin} flat={flat} kneeL={pose.kneeL} kneeR={pose.kneeR} url={url} />
+          <Legs skin={skin} flat={flat} clay={clay} kneeL={pose.kneeL} kneeR={pose.kneeR} url={url} />
         </g>
 
         {/* Everything above the hips leans and shifts weight together. */}
@@ -143,11 +144,11 @@ export function Body({ pose, skin, nod, url, behind, children }: { pose: Pose; s
           {behind && <g transform={shoulderXf}>{behind}</g>}
           {/* The chest swells about the hips with each breath; a bow folds the torso down. */}
           <g transform={`translate(200 ${HIP}) scale(${1 + b * 0.015} ${(1 + b * 0.015) * (1 - (pose.bow * 26) / TORSO_H)}) translate(-200 ${-HIP})`}>
-            <g filter={flat ? undefined : url('litBig')}>
+            <g filter={clay ? url('clayBody') : flat ? undefined : url('litBig')}>
               <path d={torso} fill={flat ? p.top : url('top')} />
               {skin.top}
             </g>
-            {flat ? (
+            {clay ? null : flat ? (
               /* The arms shade the cloth beside them: one flat shape a tone
                  darker down each side, where the sleeve meets the chest. */
               <>
@@ -194,7 +195,7 @@ function underArm(sh: number, s: 1 | -1): string {
 }
 
 /** Skin-coloured legs under the outfit's legs; a knee bend shortens its half about the hip. */
-function Legs({ skin, flat, kneeL, kneeR, url }: { skin: Skin; flat: boolean; kneeL: number; kneeR: number; url: Url }) {
+function Legs({ skin, flat, clay, kneeL, kneeR, url }: { skin: Skin; flat: boolean; clay: boolean; kneeL: number; kneeR: number; url: Url }) {
   const bend = (k: number) => `translate(200 ${HIP}) scale(1 ${1 - k * 0.06}) translate(-200 ${-HIP})`
   const p = skin.palette
   const fill = flat ? p.skin : url('skin')
@@ -205,6 +206,7 @@ function Legs({ skin, flat, kneeL, kneeR, url }: { skin: Skin; flat: boolean; kn
       ))}
       {/* the inner calves turn away from each other: one flat sliver each */}
       {flat &&
+        !clay &&
         ([-1, 1] as const).map((s) => (
           <path
             key={s}
@@ -222,15 +224,17 @@ function Legs({ skin, flat, kneeL, kneeR, url }: { skin: Skin; flat: boolean; kn
     </>
   )
   /* Same bend both sides: draw once, no seam down the middle. */
-  if (Math.abs(kneeL - kneeR) < 0.004) return <g transform={bend(kneeL)}>{both}</g>
+  /* Clay turns each leg as one form; the filter sits outside the bend so the lamp stays put. */
+  const filter = clay ? url('clayBody') : undefined
+  if (Math.abs(kneeL - kneeR) < 0.004) return <g filter={filter}><g transform={bend(kneeL)}>{both}</g></g>
   return (
-    <>
+    <g filter={filter}>
       <g clipPath={url('legL')}>
         <g transform={bend(kneeL)}>{both}</g>
       </g>
       <g clipPath={url('legR')}>
         <g transform={bend(kneeR)}>{both}</g>
       </g>
-    </>
+    </g>
   )
 }

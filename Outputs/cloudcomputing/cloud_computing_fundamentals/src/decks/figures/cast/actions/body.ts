@@ -10,8 +10,8 @@
  * Hands are keyed straight into the finger channels from HAND_POSES, with
  * each finger arriving a few ms after the last so a fist closes like a fist.
  * Keys are [time, value, ease-into-this-key]; omitted ease is inOut. */
-import type { Action, Ease, Key, Tracks } from '@/decks/figures/cast/rig/track'
-import { mirror } from '@/decks/figures/cast/rig/track'
+import type { Action, Ease, Key, Tracks } from '../rig/track'
+import { mirror } from '../rig/track'
 import { HAND_POSES, handChannel } from './handPoses'
 import type { HandPose, HandPoseName } from './handPoses'
 

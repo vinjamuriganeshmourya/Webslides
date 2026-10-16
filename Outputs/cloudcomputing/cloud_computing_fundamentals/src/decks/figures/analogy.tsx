@@ -1,14 +1,18 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { colors } from '@/design/tokens'
+import { useInstant } from '@/motion/instant'
 import { useBeats } from '@/ui'
-import { Card, Stage, At, Fade, Label, Arrow, Control, useTicker, STILL, BOX_W } from './scene'
-import { Idling, Posed, FACE, BUST, BAKER } from './Cast'
-import { MEERA, TENANTS } from './people'
-import {
-  Atm, Bag, Bed, Bill, Book, Bricks, Bulb, ClockFace, CloudShape, Counter, Cupboards, Desktop, Fan, Flats, Fridge, House, Lamp,
-  Laptop, Mainframe, MessCounter, MeterDial, Moon, Padlock, Parcel, ParkedCar, Plate, ProviderBuilding, Rack, RoamingPhone, RubberBand,
-  ServerUnit, Sofa, Stove, TableTop, Taxi, Terminal, Truck, Wall, WeighScale, useEase,
-} from './art'
+import { Card, Stage, At, Fade, Label, Arrow, Traveller, useCycle, STILL, BOX_W } from './scene'
+import { Idling, Posed, FACE_WHOLE, BUST, BAKER } from './Cast'
+import { TENANTS } from './people'
+import { ClaySvg, CloudShape, useEase } from './art'
+import { mo } from './motion'
+import { TILE_SKIN } from './card'
+import { R, usePrefix, Shadow, BlurDef, Lin } from './depth'
+import { CloudResources, FurnishedFlat, RESOURCE_VW, RESOURCE_X } from './clay-a'
+import { ClayBar, ClayBook, ClayClock, ClayCloud, ClayDesktop, ClayFlats, ClayMainframe, ClayMeter, ClayOsWindow, ClayPadlock, ClayParcel, ClayScale, ClayServerBox, ClayShop, ClayTable, ClayTerminal, ClayTruck, FLAT_DOORS, FLAT_W, LAB } from './clay-b'
+import { ClayBars, ClayFittedCupboards, ClayMoon, ClayMovingBox, ClayNo, ClayParkedCar, ClayPhone, ClayServerUnit, ClayTaxi } from './clay-d'
+import { ClayAtm, ClayBand, ClayBill, ClayBulb, ClayFan, ClayFridge, ClayHouse, ClayLaptop as LaptopC, ClayMessCounter, ClayPlate, ClayRack, ClayServer as ServerC, ClayStove, ClosedCounter, ElectricMeter, TenantTile, TENANT_TONES } from './clay-c'
 
 /**
  * EVERY ANALOGY IN THE DECK IS ONE SCENE PAIR (plan decision 4).
@@ -28,6 +32,57 @@ import {
 const SW = 470
 const SH = 292
 const MID = BOX_W - SW * 2
+
+/**
+ * REVIEW 2026-10-16 (global rules 3 to 5): no analogy needs a hand. Every
+ * sequence runs on `useCycle` (one step every 2400ms, the deck's step), a
+ * counting loop completes a lap in about 8s (the deck's lap), a connector
+ * draws from its source to its target once its entrance is done, and a
+ * transfer is a dot along the path. Everything holds still on harness URLs.
+ */
+
+/** True once a slide has been up long enough for its entrances to finish, so an arrow drawn then is seen drawing. Immediately true on harness URLs and in thumbnails. */
+function useDrawn(delay = 1100): boolean {
+  const instant = useInstant()
+  const [d, setD] = useState(STILL || instant)
+  useEffect(() => {
+    if (d) return
+    const t = window.setTimeout(() => setD(true), delay)
+    return () => window.clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  return d
+}
+
+/** A key on the floor: the tenant's, the flat being ready to move into (slide 9's illustration). Gold is its own colour,
+ *  in the render's solids (user, 2026-10-16, slide 5 as the style): a graded gold with a lit crown, a darker underside on
+ *  the bow and the blade, a specular on the bow, and a soft blurred shadow on the floor.
+ *  Motion layer: it rests on the floor, so its idle is the gentle pulse, not a float that would lift it. */
+function ClayKey({ w }: { w: number }) {
+  const idle = mo('pulse', 9)
+  const id = usePrefix()
+  return (
+    <ClaySvg w={w} vw={80} vh={36}>
+      <defs>
+        <BlurDef id={id} sd={2.5} />
+        <Lin id={`${id}-gold`} from={R.goldHi} to={R.gold} />
+        <Lin id={`${id}-side`} from={R.goldSide} to={R.goldSideDark} />
+      </defs>
+      <Shadow id={id} cx={40} cy={33} rx={34} ry={2.6} o={0.2} />
+      <g className={idle.className} style={idle.style}>
+        <circle cx={16} cy={20} r={14} fill={`url(#${id}-side)`} />
+        <rect x={26} y={16} width={50} height={8} rx={4} fill={`url(#${id}-side)`} />
+        <circle cx={16} cy={18} r={14} fill={`url(#${id}-gold)`} />
+        <circle cx={16} cy={18} r={5} fill={R.goldSideDark} />
+        <rect x={26} y={14} width={50} height={8} rx={4} fill={`url(#${id}-gold)`} />
+        <rect x={58} y={20} width={6} height={9} rx={2} fill={`url(#${id}-side)`} />
+        <rect x={68} y={20} width={6} height={12} rx={2} fill={`url(#${id}-side)`} />
+        <ellipse cx={11} cy={11} rx={5} ry={2.4} fill={R.goldShine} opacity={0.8} transform="rotate(-30 11 11)" />
+        <rect x={30} y={15} width={34} height={2} rx={1} fill={R.goldShine} opacity={0.6} />
+      </g>
+    </ClaySvg>
+  )
+}
 
 export function AnalogyScene({
   id,
@@ -105,6 +160,7 @@ export function AnalogyScene({
 
 /** Cloud Computing Defined: a furnished apartment. */
 export function ApartmentAnalogy({ lesson }: { lesson: string }) {
+  const step = useCycle(4)
   return (
     <AnalogyScene
       id="nist-analogy"
@@ -112,43 +168,29 @@ export function ApartmentAnalogy({ lesson }: { lesson: string }) {
       lesson={lesson}
       everyday={{
         label: 'A furnished apartment',
-        scene: (b) => (
+        /* review 2026-10-16: the flat alone, in the clay look; no person, no bricks, no bag */
+        scene: () => (
           <>
-            <At x={14} y={14} w={300}>
-              <div className="relative rounded-xl" style={{ width: 300, height: 262, background: colors.surface }}>
-                <At x={16} y={120}><Sofa w={120} /></At>
-                <At x={150} y={150}><Bed w={136} /></At>
-                <At x={18} y={22}><Lamp w={34} /></At>
-                <At x={226} y={30}><Fridge w={50} /></At>
-                <At x={70} y={26}><Label tone="good" size={13}>ready to use</Label></At>
-              </div>
-            </At>
-            <At x={330} y={70}><Idling cfg={MEERA} scale={0.5} seed={5} /></At>
-            <At x={334} y={232}><Bag w={44} /></At>
-            <Fade on={b >= 2} style={{ position: 'absolute', left: 392, top: 226 }}>
-              <div className="relative">
-                <Bricks w={62} />
-                <span className="absolute left-0 top-[18px] block h-[4px] w-[70px] rotate-[-22deg] rounded-full" style={{ background: colors.danger }} />
-              </div>
-            </Fade>
+            <At x={14} y={14}><FurnishedFlat w={442} /></At>
+            {/* review 2026-10-16: the keys on the floor, the move-in itself */}
+            <At x={372} y={238}><ClayKey w={68} /></At>
+            <At x={318} y={40}><Label tone="good" size={14}>Ready to use</Label></At>
           </>
         ),
       }}
       cloud={{
         label: 'Cloud computing',
+        /* the provider's resources under its cloud, each named, ready the same way; review 2026-10-16: a
+           packet leaves the cloud for each resource in turn, down the bus line, the provisioning itself */
         scene: () => (
           <>
-            <At x={16} y={18}><ProviderBuilding w={240} lit={8} /></At>
-            <At x={22} y={200} w={232}>
-              <div className="flex flex-wrap gap-2">
-                <Label tone="brand" size={13}>servers</Label>
-                <Label tone="brand" size={13}>storage</Label>
-                <Label tone="brand" size={13}>networks</Label>
-                <Label tone="brand" size={13}>applications</Label>
-              </div>
-            </At>
-            <At x={300} y={64}><Idling cfg={MEERA} scale={0.5} seed={6} /></At>
-            <At x={272} y={214}><Laptop w={100} glow /></At>
+            <At x={14} y={8}><CloudResources w={442} /></At>
+            {['Servers', 'Storage', 'Networks', 'Applications'].map((t, i) => (
+              <At key={t} x={14 + (RESOURCE_X[i] * 442) / RESOURCE_VW} y={236} cx>
+                <Label tone="brand" size={14}>{t}</Label>
+              </At>
+            ))}
+            <Traveller key={step} k={step} run={!STILL} dur={1.8} size={12} path={[[235, 118], [235, 137], [14 + (RESOURCE_X[step] * 442) / RESOURCE_VW, 137], [14 + (RESOURCE_X[step] * 442) / RESOURCE_VW, 160]]} />
           </>
         ),
       }}
@@ -163,10 +205,18 @@ export function ReadingRoomAnalogy({ lesson }: { lesson: string }) {
 }
 
 function ReadingRoom({ lesson }: { lesson: string }) {
-  const tick = useTicker(true, 1400, 1)
-  const turn = tick % 4
+  const turn = useCycle(4, 2400, 1)
   const ease = useEase(700)
-  const seats = [56, 152, 248, 344]
+  /* one column per seat, shared by both scenes, so every chip sits centred under its person or terminal on one baseline */
+  const seats = [80, 183, 286, 389]
+  const CHIP_Y = 238
+  const chips = seats.map((x, i) => (
+    <At key={`t${i}`} x={x} y={CHIP_Y} cx>
+      <Label tone={i === turn ? 'brand' : 'muted'} size={14}>
+        {`Turn ${i + 1}`}
+      </Label>
+    </At>
+  ))
   return (
     <AnalogyScene
       id="mainframes-analogy"
@@ -177,26 +227,18 @@ function ReadingRoom({ lesson }: { lesson: string }) {
         scene: () => (
           <>
             {seats.map((x, i) => (
-              <At key={i} x={x} y={92} cx>
-                <div style={{ opacity: i === turn ? 1 : 0.55, transition: ease }}>
+              <At key={i} x={x} y={84} cx>
+                <div style={{ opacity: i === turn ? 1 : 0.6, transition: ease }}>
                   <Idling cfg={TENANTS[i]} scale={0.42} crop={BUST} seed={20 + i} />
                 </div>
               </At>
             ))}
-            <At x={14} y={180}><TableTop w={420} /></At>
-            <div className="absolute" style={{ left: seats[turn] - 24, top: 150, transition: ease }}>
-              <Book w={48} />
+            <At x={235} y={170} cx><ClayTable w={420} /></At>
+            <div className="absolute" style={{ left: seats[turn] - 26, top: 150, transition: ease }}>
+              <ClayBook w={52} />
             </div>
-            <At x={400} y={14}><ClockFace w={50} turn={turn / 4} /></At>
-            <At x={20} y={226} w={430}>
-              <div className="flex justify-between">
-                {seats.map((_, i) => (
-                  <Label key={i} tone={i === turn ? 'brand' : 'muted'} size={13}>
-                    {`turn ${i + 1}`}
-                  </Label>
-                ))}
-              </div>
-            </At>
+            <At x={408} y={14}><ClayClock w={48} turn={turn / 4} /></At>
+            {chips}
           </>
         ),
       }}
@@ -204,23 +246,15 @@ function ReadingRoom({ lesson }: { lesson: string }) {
         label: 'Time-sharing',
         scene: () => (
           <>
-            <At x={235} y={14} cx><Mainframe w={170} busy /></At>
+            <At x={235} y={12} cx><ClayMainframe w={176} /></At>
             {seats.map((x, i) => (
-              <At key={i} x={x + 10} y={176} cx>
-                <div style={{ opacity: i === turn ? 1 : 0.5, transition: ease }}>
-                  <Terminal w={74} lit={i === turn} />
+              <At key={i} x={x} y={150} cx>
+                <div style={{ opacity: i === turn ? 1 : 0.6, transition: ease }}>
+                  <ClayTerminal w={84} lit={i === turn} />
                 </div>
               </At>
             ))}
-            <At x={20} y={252} w={430}>
-              <div className="flex justify-between">
-                {seats.map((_, i) => (
-                  <Label key={i} tone={i === turn ? 'brand' : 'muted'} size={13}>
-                    {`turn ${i + 1}`}
-                  </Label>
-                ))}
-              </div>
-            </At>
+            {chips}
           </>
         ),
       }}
@@ -231,6 +265,8 @@ function ReadingRoom({ lesson }: { lesson: string }) {
 
 /** Client-server and virtualization: one plot, locked apartments. */
 export function PlotAnalogy({ lesson }: { lesson: string }) {
+  const FW = 400
+  const k = FW / FLAT_W
   return (
     <AnalogyScene
       id="virtualization-analogy"
@@ -240,48 +276,59 @@ export function PlotAnalogy({ lesson }: { lesson: string }) {
         label: 'One plot, locked apartments',
         scene: () => (
           <>
-            <At x={235} y={34} cx><Flats w={380} n={3} /></At>
-            {[0, 1, 2].map((i) => (
-              <At key={i} x={235 - 120 + i * 120} y={150} cx>
-                <Idling cfg={TENANTS[i]} scale={0.32} crop={FACE} seed={30 + i} />
-              </At>
-            ))}
-            <At x={235} y={262} cx><Label size={13}>one plot</Label></At>
+            {/* one plot, three flats: each furnished its own way, each door numbered and locked (review 2026-10-16: no faces) */}
+            <At x={235} y={8} cx>
+              <div className="relative" style={{ width: FW }}>
+                <ClayFlats w={FW} />
+                {FLAT_DOORS.map((d, i) => (
+                  <span key={i} className="absolute font-heading text-[14px] font-semibold leading-none text-white" style={{ left: d.x * k, top: d.y * k, transform: 'translateX(-50%)' }}>
+                    {i + 1}
+                  </span>
+                ))}
+              </div>
+            </At>
+            <At x={235} y={256} cx><Label size={14}>One plot</Label></At>
           </>
         ),
       }}
       cloud={{
         label: 'Virtual machines',
-        scene: () => <VmStack top={30} faces />,
+        scene: () => <VmStack top={22} w={420} />,
       }}
       claim="One space, divided and locked"
     />
   )
 }
 
-/** Three VMs on a hypervisor on one physical server: drawn as DOM so every label is a real element. */
-export function VmStack({ top = 30, faces = false, vms = 3, osTag = true, cx = 235 }: { top?: number; faces?: boolean; vms?: number; osTag?: boolean; cx?: number }) {
+/**
+ * Three VMs on a hypervisor on one physical server, in clay: each VM a locked
+ * card showing its own OS window (a different system in each), the hypervisor
+ * and the server as clay slabs. Labels are DOM, so every word is a real element.
+ */
+export function VmStack({ top = 30, vms = 3, osTag = true, cx = 235, w = 380 }: { top?: number; vms?: number; osTag?: boolean; cx?: number; w?: number }) {
   const ease = useEase()
+  const gap = 10
+  const tile = (w - gap * 2) / 3
   return (
-    <At x={cx} y={top} cx w={380}>
-      <div className="flex flex-col gap-2">
-        <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(3, 1fr)` }}>
+    <At x={cx} y={top} cx w={w}>
+      <div className="flex flex-col" style={{ gap: 8 }}>
+        <div className="flex" style={{ gap }}>
           {[0, 1, 2].map((i) => (
-            <div key={i} className="relative flex h-[110px] flex-col items-center justify-center gap-1 rounded-xl" style={{ background: colors.white, boxShadow: `inset 0 0 0 2px ${colors.brand}`, opacity: i < vms ? 1 : 0, transform: i < vms ? 'none' : 'translateY(10px)', transition: ease }}>
-              {faces ? <Idling cfg={TENANTS[i]} scale={0.26} crop={FACE} seed={40 + i} /> : null}
-              <span className="font-heading text-[15px] font-semibold" style={{ color: colors.brandDark }}>VM</span>
-              {osTag && <span className="text-[14px]" style={{ color: colors.ink }}>its own OS</span>}
-              <span className="absolute right-2 top-2"><Padlock w={14} /></span>
+            <div key={i} className="relative flex flex-col items-center gap-1 rounded-2xl pb-2 pt-3" style={{ width: tile, ...TILE_SKIN, opacity: i < vms ? 1 : 0, transform: i < vms ? 'none' : 'translateY(10px)', transition: ease }}>
+              <ClayOsWindow w={Math.round(tile * 0.64)} k={i} />
+              <span className="font-heading text-[15px] font-semibold leading-tight" style={{ color: colors.brandDark }}>VM</span>
+              {osTag && <span className="text-[14px] leading-tight" style={{ color: colors.ink }}>Its own OS</span>}
+              <span className="absolute right-2 top-2"><ClayPadlock w={15} /></span>
             </div>
           ))}
         </div>
-        <div className="grid h-[34px] place-items-center rounded-xl font-heading text-[15px] font-semibold text-white" style={{ background: colors.brand }}>
-          Hypervisor
-        </div>
-        <div className="flex h-[40px] items-center justify-center gap-2 rounded-xl" style={{ background: colors.white, boxShadow: `inset 0 0 0 1.5px ${colors.line}` }}>
-          <ServerUnit w={44} />
-          <span className="text-[14px] font-medium" style={{ color: colors.ink }}>One physical server</span>
-        </div>
+        <ClayBar w={w} h={36} fill={LAB.cobalt}>
+          <span className="font-heading text-[15px] font-semibold text-white">Hypervisor</span>
+        </ClayBar>
+        <ClayBar w={w} h={44} fill={LAB.lavender}>
+          <ClayServerBox w={30} n={2} />
+          <span className="text-[15px] font-medium" style={{ color: colors.ink }}>One physical server</span>
+        </ClayBar>
       </div>
     </At>
   )
@@ -289,8 +336,14 @@ export function VmStack({ top = 30, faces = false, vms = 3, osTag = true, cx = 2
 
 /** Grid and utility computing: one shipping company's trucks. */
 export function TruckAnalogy({ lesson }: { lesson: string }) {
-  const tones = [colors.accent, colors.teal, colors.brand]
+  /* each sender's own colour (LAB palette), carried by its parcel and, in the cloud scene, by its job */
+  const tones = [LAB.orange, LAB.sage, LAB.periwinkle]
   const weights = ['2 kg', '5 kg', '3 kg']
+  const ROWS = [24, 110, 196]
+  /* review 2026-10-16: the connectors draw from the desktops to the cloud and on to the meter, then one
+     job at a time travels that way: into the pool, then to the bill */
+  const drawn = useDrawn()
+  const job = useCycle(3)
   return (
     <AnalogyScene
       id="grid-analogy"
@@ -300,18 +353,19 @@ export function TruckAnalogy({ lesson }: { lesson: string }) {
         label: "One shipping company's trucks",
         scene: () => (
           <>
-            {[0, 1, 2].map((i) => (
-              <At key={i} x={18} y={18 + i * 84}>
+            {/* the senders are shops, not faces (review 2026-10-16) */}
+            {ROWS.map((y, i) => (
+              <At key={i} x={18} y={y}>
                 <div className="flex items-center gap-2">
-                  <Idling cfg={TENANTS[i]} scale={0.3} crop={FACE} seed={50 + i} />
-                  <Parcel w={30} tone={tones[i]} />
-                  <Label size={12} tone="warn">{weights[i]}</Label>
+                  <ClayShop w={62} tone={tones[i]} />
+                  <ClayParcel w={30} tone={tones[i]} />
+                  <Label size={14} tone="warn">{weights[i]}</Label>
                 </div>
               </At>
             ))}
-            <At x={210} y={70}><Truck w={240} parcels={tones} /></At>
-            <At x={250} y={200}><WeighScale w={64} value={0.6} /></At>
-            <At x={324} y={218}><Label size={13}>pay by weight</Label></At>
+            <At x={204} y={40}><ClayTruck w={252} parcels={tones} /></At>
+            <At x={236} y={196}><ClayScale w={70} value={0.6} /></At>
+            <At x={318} y={214}><Label size={14}>Pay by weight</Label></At>
           </>
         ),
       }}
@@ -319,21 +373,23 @@ export function TruckAnalogy({ lesson }: { lesson: string }) {
         label: 'Grid and utility computing',
         scene: () => (
           <>
-            {[0, 1, 2].map((i) => (
-              <At key={i} x={22} y={20 + i * 86}>
+            {ROWS.map((y, i) => (
+              <At key={i} x={18} y={y}>
                 <div className="flex items-center gap-2">
-                  <Desktop w={70} lit />
-                  <span className="block h-[16px] w-[16px] rounded" style={{ background: tones[i] }} />
+                  <ClayDesktop w={76} />
+                  <ClayParcel w={22} tone={tones[i]} />
                 </div>
               </At>
             ))}
-            <At x={196} y={70}><CloudShape w={150} /></At>
-            <At x={218} y={170}><Label tone="brand" size={13}>pooled processing power</Label></At>
-            <At x={372} y={58}><MeterDial w={80} value={0.55} spin={!STILL} /></At>
-            <At x={344} y={146}><Label size={13}>metered billing</Label></At>
-            <Arrow x1={118} y1={50} x2={196} y2={100} />
-            <Arrow x1={118} y1={136} x2={196} y2={120} />
-            <Arrow x1={118} y1={222} x2={196} y2={140} />
+            {ROWS.map((y, i) => (
+              <Arrow key={i} x1={146} y1={y + 30} x2={176} y2={102 + i * 16} on={drawn} delay={i * 180} />
+            ))}
+            <At x={176} y={66}><ClayCloud w={146} /></At>
+            <At x={284} y={190} cx><Label tone="brand" size={14}>Pooled processing power</Label></At>
+            <Arrow x1={324} y1={110} x2={352} y2={100} on={drawn} delay={540} />
+            {drawn && <Traveller key={job} k={job} run={!STILL} dur={2.1} size={12} tone={tones[job]} path={[[146, ROWS[job] + 30], [176, 102 + job * 16], [250, 112], [250, 112], [324, 110], [352, 100]]} />}
+            <At x={356} y={40}><ClayMeter w={84} value={0.55} /></At>
+            <At x={398} y={152} cx><Label size={14}>Metered billing</Label></At>
           </>
         ),
       }}
@@ -344,8 +400,7 @@ export function TruckAnalogy({ lesson }: { lesson: string }) {
 
 /** On-demand self-service: an ATM. */
 export function AtmAnalogy({ lesson }: { lesson: string }) {
-  const tick = useTicker(true, 1500, 2)
-  const phase = tick % 3
+  const phase = useCycle(3, 2400, 2)
   return (
     <AnalogyScene
       id="self-service-analogy"
@@ -355,18 +410,18 @@ export function AtmAnalogy({ lesson }: { lesson: string }) {
       everyday={{
         label: 'An ATM',
         scene: () => (
+          /* review 2026-10-16: no person, clay objects; the card, PIN and cash cycle is the self-service itself */
           <>
-            <At x={40} y={40}><Atm w={130} card={phase >= 1} cash={phase >= 2} screen={phase >= 1 ? colors.brand : colors.surface2} /></At>
-            <At x={176} y={70}><Idling cfg={MEERA} scale={0.48} seed={7} /></At>
-            <At x={300} y={60}>
-              <div className="flex flex-col items-center gap-2 opacity-60">
-                <Counter w={130} />
-                <Label tone="muted" size={12}>no queue, no clerk</Label>
+            <At x={50} y={22}><ClayAtm w={150} card={phase >= 1} cash={phase >= 2} lit={phase >= 1} /></At>
+            <At x={50} y={238} w={150}>
+              <div className="flex justify-center">
+                <Label tone={phase >= 2 ? 'good' : 'brand'} size={14}>{phase === 0 ? 'Card in' : phase === 1 ? 'PIN' : 'Cash out'}</Label>
               </div>
             </At>
-            <At x={40} y={244} w={140}>
-              <div className="flex justify-center">
-                <Label tone={phase >= 2 ? 'good' : 'brand'} size={13}>{phase === 0 ? 'card in' : phase === 1 ? 'PIN' : 'cash out'}</Label>
+            <At x={250} y={70}>
+              <div className="flex flex-col items-center gap-3">
+                <ClosedCounter w={170} />
+                <Label tone="muted" size={14}>No queue, no clerk</Label>
               </div>
             </At>
           </>
@@ -376,20 +431,23 @@ export function AtmAnalogy({ lesson }: { lesson: string }) {
         label: 'On-demand self-service',
         scene: () => (
           <>
-            <At x={30} y={60}><Laptop w={170} glow={phase >= 1} /></At>
-            <At x={70} y={92}><Label tone={phase >= 1 ? 'dark' : 'plain'} size={12}>Launch Instance</Label></At>
-            <At x={230} y={64}><Idling cfg={MEERA} scale={0.44} seed={8} /></At>
-            <At x={340} y={70} w={110}>
-              <div className="flex flex-col items-center gap-2">
-                {[0, 1, 2].map((i) => (
-                  <Fade key={i} on={phase >= 2 || STILL} delay={i * 120}>
-                    <ServerUnit w={90} />
-                  </Fade>
-                ))}
-                <Label tone="good" size={12}>ready</Label>
+            <At x={30} y={56}>
+              <div className="flex flex-col items-center gap-3">
+                <LaptopC w={190} lit={phase >= 1} />
+                <Label tone={phase >= 1 ? 'dark' : 'plain'} size={14}>Launch Instance</Label>
               </div>
             </At>
-            <At x={40} y={234}><Label tone="muted" size={13}>Nobody to ask first</Label></At>
+            <At x={300} y={54} w={140}>
+              <div className="flex flex-col items-center gap-2.5">
+                {[0, 1, 2].map((i) => (
+                  <Fade key={i} on={phase >= 2 || STILL} delay={i * 120}>
+                    <ServerC w={120} />
+                  </Fade>
+                ))}
+                <Label tone="good" size={14}>Ready</Label>
+              </div>
+            </At>
+            <At x={30} y={250}><Label tone="muted" size={14}>Nobody to ask first</Label></At>
           </>
         ),
       }}
@@ -400,8 +458,9 @@ export function AtmAnalogy({ lesson }: { lesson: string }) {
 
 /** Pooling and multi-tenancy: a hostel mess kitchen. */
 export function MessAnalogy({ lesson }: { lesson: string }) {
-  const tick = useTicker(true, 1300, 3)
-  const served = tick % 4
+  const served = useCycle(4, 2400, 3)
+  /* the half-body crop raised above the cap and widened to the canvas edge, past the presenting hand (review 2026-10-16: the hand was cut at the wrist) */
+  const MESS_CROP = { x0: 70, y0: -36, x1: 400, y1: 392 }
   return (
     <AnalogyScene
       id="pooling-analogy"
@@ -412,20 +471,22 @@ export function MessAnalogy({ lesson }: { lesson: string }) {
         label: 'A hostel mess kitchen',
         scene: () => (
           <>
-            <At x={175} y={4} cx><Posed cfg={BAKER} props scale={0.42} expression="happy" gesture="presentRight" amplitude={0.5} at={1.0} /></At>
-            <At x={20} y={140}><MessCounter w={300} served={served} /></At>
+            {/* review 2026-10-16: the chef's cap and whole reaching hand inside the crop (MESS_CROP), clay objects throughout;
+                the later review: the chef and the students alive, head, eyes and a little hand movement only */}
+            <At x={20} y={6}><Posed cfg={BAKER} props scale={0.4} crop={MESS_CROP} expression="happy" gesture="presentRight" amplitude={0.5} at={1.0} alive /></At>
+            <At x={14} y={156}><ClayMessCounter w={270} served={served} /></At>
             {[0, 1, 2].map((i) => (
-              <At key={i} x={352} y={18 + i * 86}>
+              <At key={i} x={330} y={4 + i * 64}>
                 <div className="flex items-center gap-2">
-                  <Idling cfg={TENANTS[i]} scale={0.28} crop={FACE} seed={60 + i} />
-                  <Plate w={44} portions={i < served ? 3 : 0} />
+                  <Idling cfg={TENANTS[i]} scale={0.3} crop={FACE_WHOLE} seed={60 + i} alive />
+                  <ClayPlate w={56} portions={i < served ? 3 : 0} />
                 </div>
               </At>
             ))}
-            <At x={24} y={250}>
-              <div className="flex items-center gap-2 opacity-60">
-                <Stove w={40} />
-                <Label tone="muted" size={12}>no stove per student</Label>
+            <At x={372} y={206} cx>
+              <div className="flex flex-col items-center gap-1.5 opacity-70">
+                <ClayStove w={44} />
+                <Label tone="muted" size={14}>No stove per student</Label>
               </div>
             </At>
           </>
@@ -435,16 +496,16 @@ export function MessAnalogy({ lesson }: { lesson: string }) {
         label: 'Resource pooling',
         scene: () => (
           <>
-            <At x={40} y={20}><Rack w={120} units={['run', 'run', 'run', 'run', 'run', 'idle']} /></At>
-            <At x={40} y={272 - 22}><Label size={12}>one shared pool</Label></At>
+            <At x={40} y={16}><ClayRack w={116} units={['run', 'run', 'run', 'run', 'run', 'idle']} /></At>
+            <At x={98} y={244} cx><Label size={14}>One shared pool</Label></At>
             {[0, 1, 2].map((i) => (
-              <At key={i} x={210} y={30 + i * 84}>
+              <At key={i} x={200} y={30 + i * 80}>
                 <div className="flex items-center gap-3">
-                  <Idling cfg={TENANTS[i]} scale={0.28} crop={FACE} seed={70 + i} />
-                  <div className="flex gap-1">
+                  <TenantTile w={44} tone={TENANT_TONES[i]} />
+                  <div className="flex gap-1.5">
                     {Array.from({ length: i + 1 }, (_, k) => (
                       <Fade key={k} on={i < served || STILL} delay={k * 100}>
-                        <ServerUnit w={52} />
+                        <ServerC w={62} />
                       </Fade>
                     ))}
                   </div>
@@ -461,9 +522,9 @@ export function MessAnalogy({ lesson }: { lesson: string }) {
 
 /** Rapid elasticity: a rubber band. */
 export function BandAnalogy({ lesson }: { lesson: string }) {
-  const tick = useTicker(true, 1100, 2)
-  const stretch = [0, 0.5, 1, 0.5][tick % 4]
-  const count = [2, 4, 6, 4][tick % 4]
+  const k = useCycle(4, 2400, 2)
+  const stretch = [0, 0.5, 1, 0.5][k]
+  const count = [2, 4, 6, 4][k]
   return (
     <AnalogyScene
       id="elasticity-analogy"
@@ -474,9 +535,10 @@ export function BandAnalogy({ lesson }: { lesson: string }) {
         label: 'A rubber band',
         scene: () => (
           <>
-            <At x={235} y={90} cx><RubberBand w={420} stretch={stretch} /></At>
+            {/* review 2026-10-16: a clay band on a board; the stretch loop is the concept and stays */}
+            <At x={235} y={60} cx><ClayBand w={430} stretch={stretch} /></At>
             <At x={235} y={232} cx>
-              <Label tone={stretch > 0.7 ? 'warn' : stretch > 0 ? 'brand' : 'good'} size={13}>{stretch > 0.7 ? 'stretched under load' : stretch > 0 ? 'stretching' : 'at rest'}</Label>
+              <Label tone={stretch > 0.7 ? 'warn' : stretch > 0 ? 'brand' : 'good'} size={14}>{stretch > 0.7 ? 'Stretched under load' : stretch > 0 ? 'Stretching' : 'At rest'}</Label>
             </At>
           </>
         ),
@@ -485,17 +547,17 @@ export function BandAnalogy({ lesson }: { lesson: string }) {
         label: 'Rapid elasticity',
         scene: () => (
           <>
-            <At x={235} y={40} cx w={420}>
-              <div className="flex flex-wrap items-center justify-center gap-2">
+            <At x={235} y={44} cx w={420}>
+              <div className="grid grid-cols-3 justify-items-center gap-3">
                 {Array.from({ length: 6 }, (_, i) => (
                   <Fade key={i} on={i < count} lift={6}>
-                    <ServerUnit w={110} />
+                    <ServerC w={120} />
                   </Fade>
                 ))}
               </div>
             </At>
             <At x={235} y={232} cx>
-              <Label tone="brand" size={13}>{`${count} instances`}</Label>
+              <Label tone="brand" size={14}>{`${count} instances`}</Label>
             </At>
           </>
         ),
@@ -505,11 +567,18 @@ export function BandAnalogy({ lesson }: { lesson: string }) {
   )
 }
 
-/** Measured service: a household electricity meter. The room switches the appliances. */
+/** The appliance states the meter scene cycles through: two on, all three, one, none. */
+const METER_STATES: [boolean, boolean, boolean][] = [
+  [true, true, false],
+  [true, true, true],
+  [false, true, false],
+  [false, false, false],
+]
+
+/** Measured service: a household electricity meter. Review 2026-10-16: the switches throw themselves, one state every step, so the meter is seen turning and resting. */
 export function MeterAnalogy({ lesson }: { lesson: string }) {
-  const [on, setOn] = useState<[boolean, boolean, boolean]>([true, true, false])
+  const on = METER_STATES[useCycle(METER_STATES.length)]
   const live = on.filter(Boolean).length
-  const flip = (i: number) => setOn((v) => v.map((x, k) => (k === i ? !x : x)) as [boolean, boolean, boolean])
   return (
     <AnalogyScene
       id="measured-analogy"
@@ -519,13 +588,18 @@ export function MeterAnalogy({ lesson }: { lesson: string }) {
         label: 'A household electricity meter',
         scene: () => (
           <>
-            <At x={20} y={20}><House w={120} /></At>
-            <At x={40} y={150}><Fan w={52} on={on[0]} /></At>
-            <At x={108} y={156}><Bulb w={38} on={on[1]} /></At>
-            <At x={160} y={170}><div style={{ opacity: on[2] ? 1 : 0.45 }}><Fridge w={36} /></div></At>
-            <At x={230} y={30}><MeterDial w={120} value={live / 3} spin={live > 0 && !STILL} /></At>
-            <At x={370} y={40}><Bill w={74} rows={live} /></At>
-            <At x={236} y={170} w={220}><span className="block text-center text-[14px] font-semibold" style={{ color: colors.ink }}>{live === 0 ? 'nothing on, the meter rests' : `${live} on, the meter turns`}</span></At>
+            {/* review 2026-10-16: clay house, appliances, meter and bill; the meter's wheel turning is the concept */}
+            <At x={24} y={20}><ClayHouse w={110} lit={live > 0} /></At>
+            <At x={24} y={150} w={200}>
+              <div className="flex items-end gap-4">
+                <ClayFan w={50} on={on[0]} />
+                <ClayBulb w={36} on={on[1]} />
+                <div style={{ opacity: on[2] ? 1 : 0.45 }}><ClayFridge w={42} /></div>
+              </div>
+            </At>
+            <At x={226} y={24}><ElectricMeter w={104} value={live / 3} spin={live > 0 && !STILL} /></At>
+            <At x={358} y={36}><ClayBill w={74} rows={live} /></At>
+            <At x={226} y={180} w={220}><span className="block text-center text-[15px] font-semibold" style={{ color: colors.ink }}>{live === 0 ? 'Nothing on, the meter rests' : `${live} on, the meter turns`}</span></At>
           </>
         ),
       }}
@@ -536,33 +610,26 @@ export function MeterAnalogy({ lesson }: { lesson: string }) {
             <At x={24} y={40} w={150}>
               <div className="flex flex-col gap-3">
                 {on.map((x, i) => (
-                  <ServerUnit key={i} w={140} state={x ? 'run' : 'off'} />
+                  <ServerC key={i} w={150} state={x ? 'run' : 'off'} />
                 ))}
               </div>
             </At>
-            <At x={230} y={30}><MeterDial w={120} value={live / 3} spin={live > 0 && !STILL} /></At>
-            <At x={370} y={40}><Bill w={74} rows={live} /></At>
-            <At x={236} y={170} w={220}><span className="block text-center text-[14px] font-semibold" style={{ color: colors.ink }}>{live === 0 ? 'no usage, no charge' : `${live} running, ${live} billed`}</span></At>
+            <At x={226} y={24}><ElectricMeter w={104} value={live / 3} spin={live > 0 && !STILL} /></At>
+            <At x={358} y={36}><ClayBill w={74} rows={live} /></At>
+            <At x={226} y={180} w={220}><span className="block text-center text-[15px] font-semibold" style={{ color: colors.ink }}>{live === 0 ? 'No usage, no charge' : `${live} running, ${live} billed`}</span></At>
           </>
         ),
       }}
-      controls={(b) => (
-        <div className="flex items-center gap-2" style={{ opacity: b >= 1 ? 1 : 0 }}>
-          <span className="text-[14px] font-semibold" style={{ color: colors.ink }}>Switch</span>
-          <Control on={on[0]} onClick={() => flip(0)}>fan</Control>
-          <Control on={on[1]} onClick={() => flip(1)}>light</Control>
-          <Control on={on[2]} onClick={() => flip(2)}>fridge</Control>
-        </div>
-      )}
       claim="Billed for what was used"
     />
   )
 }
 
-/** Cost model shift: renting a taxi. */
+/** Cost model shift: renting a taxi (review 2026-10-16: clay objects, no driver). */
 export function TaxiAnalogy({ lesson }: { lesson: string }) {
-  const tick = useTicker(true, 900, 4)
-  const fare = (tick % 6) + 1
+  /* the meter counting trips is the concept, so this loop stays: six trips in a lap of about 8s */
+  const fare = useCycle(6, 1300, 4) + 1
+  const trips = [3, 6, 2, 8, 4, 5]
   return (
     <AnalogyScene
       id="capex-analogy"
@@ -573,16 +640,13 @@ export function TaxiAnalogy({ lesson }: { lesson: string }) {
         label: 'Renting a taxi',
         scene: () => (
           <>
-            <At x={20} y={26}><Taxi w={220} meterOn /></At>
-            <At x={60} y={130}><Label tone="good" size={13}>{`meter: trip ${fare} of 6`}</Label></At>
-            <At x={270} y={12}><Idling cfg={MEERA} scale={0.4} crop={BUST} seed={9} /></At>
-            <At x={24} y={178}>
-              <div className="flex items-center gap-3 opacity-70">
-                <ParkedCar w={150} />
-                <div className="flex flex-col gap-1">
-                  <Label tone="muted" size={12}>owned car, idle most days</Label>
-                  <Label tone="warn" size={12}>loan, insurance, upkeep</Label>
-                </div>
+            <At x={24} y={22}><ClayTaxi w={230} /></At>
+            <At x={276} y={72}><Label tone="good" size={14}>{`Meter: trip ${fare} of 6`}</Label></At>
+            <At x={24} y={168}><ClayParkedCar w={190} /></At>
+            <At x={236} y={186}>
+              <div className="flex flex-col items-start gap-1.5">
+                <Label tone="muted" size={14}>Owned car, idle most days</Label>
+                <Label tone="warn" size={14}>Loan, insurance, upkeep</Label>
               </div>
             </At>
           </>
@@ -592,17 +656,15 @@ export function TaxiAnalogy({ lesson }: { lesson: string }) {
         label: 'OpEx cloud billing',
         scene: () => (
           <>
-            <At x={30} y={30} w={410}>
-              <div className="flex items-end justify-between" style={{ height: 150 }}>
-                {[3, 6, 2, 8, 4, 5].map((v, i) => (
-                  <div key={i} className="flex flex-col items-center gap-1">
-                    <div className="w-[44px] rounded-t-md" style={{ height: v * 15, background: i + 1 <= fare ? colors.brand : colors.surface2, transition: 'height 400ms' }} />
-                    <span className="text-[14px]" style={{ color: colors.ink }}>{`trip ${i + 1}`}</span>
-                  </div>
+            <At x={30} y={28} w={410}>
+              <ClayBars w={410} h={160} values={trips.map((v) => v / 8)} lit={fare} tone="#0055E8" />
+              <div className="mt-2 flex justify-between">
+                {trips.map((_, i) => (
+                  <span key={i} className="text-center text-[14px] font-medium" style={{ width: 410 / 6 - 10, color: colors.ink }}>{`Trip ${i + 1}`}</span>
                 ))}
               </div>
             </At>
-            <At x={30} y={214}><Label tone="brand" size={13}>pay per use, nothing between trips</Label></At>
+            <At x={30} y={236}><Label tone="brand" size={14}>Pay per use, nothing between trips</Label></At>
           </>
         ),
       }}
@@ -611,7 +673,12 @@ export function TaxiAnalogy({ lesson }: { lesson: string }) {
   )
 }
 
-/** Vendor lock-in: a landlord's fitted cupboards. */
+/**
+ * Vendor lock-in: a landlord's fitted cupboards (review 2026-10-16: clay, no
+ * person). Both scenes are drawn on one plan so the twins line up: the thing
+ * built in place on the left, the way out with a shut sign in the middle, the
+ * place it cannot go on the right, the reason under it.
+ */
 export function CupboardAnalogy({ lesson }: { lesson: string }) {
   return (
     <AnalogyScene
@@ -621,14 +688,18 @@ export function CupboardAnalogy({ lesson }: { lesson: string }) {
       alt="Cupboards fitted along a kitchen wall, each drawer labelled"
       everyday={{
         label: "A landlord's fitted cupboards",
-        scene: (b) => (
+        scene: () => (
           <>
-            <At x={14} y={14}><Wall w={300} h={262} /></At>
-            <At x={30} y={60}><Cupboards w={268} labels={b >= 2} /></At>
-            <At x={30} y={26}><Label size={12} tone="warn">fitted to this wall</Label></At>
-            <At x={330} y={60}><Idling cfg={MEERA} scale={0.46} seed={11} expression="worried" /></At>
-            <At x={336} y={226}><Bag w={40} /></At>
-            <At x={330} y={20}><Label size={12} tone="muted">moving out</Label></At>
+            <At x={20} y={44}><ClayFittedCupboards w={250} /></At>
+            <Arrow x1={282} y1={146} x2={344} y2={146} dashed tone={colors.danger} />
+            <At x={313} y={146} cx cy><ClayNo w={26} /></At>
+            <At x={402} y={146} cx cy>
+              <div className="flex flex-col items-center gap-2 pt-[30px]">
+                <ClayMovingBox w={90} />
+                <Label size={14} tone="muted">Moving out</Label>
+              </div>
+            </At>
+            <At x={20} y={244}><Label size={14} tone="warn">Fitted to this wall</Label></At>
           </>
         ),
       }}
@@ -636,25 +707,26 @@ export function CupboardAnalogy({ lesson }: { lesson: string }) {
         label: 'Vendor lock-in',
         scene: () => (
           <>
-            <At x={20} y={24} w={250}>
-              <div className="rounded-2xl p-3" style={{ background: colors.surface2, boxShadow: `inset 0 0 0 2px ${colors.brand}` }}>
+            <At x={20} y={50} w={250}>
+              <div className="rounded-2xl p-3" style={{ background: TILE_SKIN.background, boxShadow: `inset 0 0 0 2px ${colors.brand}, 0 12px 24px -16px rgba(31,64,140,0.30)` }}>
                 <span className="block font-heading text-[14px] font-semibold" style={{ color: colors.brandDark }}>One provider</span>
-                <div className="mt-2 rounded-xl bg-white p-2.5" style={{ boxShadow: `inset 0 0 0 1.5px ${colors.line}` }}>
+                <div className="mt-2 rounded-xl p-2.5" style={TILE_SKIN}>
                   <span className="block text-[14px] font-semibold" style={{ color: colors.ink }}>Your application</span>
                   <div className="mt-2 flex flex-wrap gap-1.5">
-                    <Label tone="brand" size={12} mono>Lambda triggers</Label>
-                    <Label tone="brand" size={12} mono>DynamoDB APIs</Label>
+                    <Label tone="brand" size={14} mono>Lambda triggers</Label>
+                    <Label tone="brand" size={14} mono>DynamoDB APIs</Label>
                   </div>
                 </div>
               </div>
             </At>
-            <At x={300} y={70}><Padlock w={34} /></At>
-            <At x={350} y={60} w={100}>
-              <div className="grid h-[70px] place-items-center rounded-xl text-center text-[14px] font-semibold" style={{ boxShadow: `inset 0 0 0 1.5px ${colors.line}`, background: colors.white, color: colors.ink }}>
+            <Arrow x1={282} y1={146} x2={344} y2={146} dashed tone={colors.danger} />
+            <At x={313} y={146} cx cy><ClayNo w={26} /></At>
+            <At x={354} y={106} w={96}>
+              <div className="grid h-[80px] place-items-center rounded-xl border-2 border-dashed px-1 text-center text-[14px] font-semibold leading-tight" style={{ borderColor: colors.line, background: TILE_SKIN.background, boxShadow: '0 12px 24px -16px rgba(31,64,140,0.30)', color: colors.ink }}>
                 Other providers
               </div>
             </At>
-            <At x={30} y={210}><Label tone="warn" size={13}>built from one provider's parts</Label></At>
+            <At x={20} y={244}><Label tone="warn" size={14}>Built from one provider's parts</Label></At>
           </>
         ),
       }}
@@ -663,16 +735,12 @@ export function CupboardAnalogy({ lesson }: { lesson: string }) {
   )
 }
 
-/** Cost overruns: roaming left switched on. */
+/** Cost overruns: roaming left switched on (review 2026-10-16: clay, the plane wholly inside the screen). */
 export function RoamingAnalogy({ lesson }: { lesson: string }) {
-  const tick = useTicker(true, 700, 5)
-  const n = (tick % 7) + 1
+  /* the charges growing bar by bar is the concept, so this loop stays: seven bars in a lap of about 8s */
+  const n = useCycle(7, 1150, 5) + 1
   const bars = (tone: string) => (
-    <div className="flex items-end gap-1.5" style={{ height: 130 }}>
-      {Array.from({ length: 7 }, (_, i) => (
-        <div key={i} className="w-[22px] rounded-t-md" style={{ height: 14 + i * i * 2.2, background: i < n ? (i >= 5 ? colors.danger : tone) : colors.surface2, transition: 'background-color 300ms' }} />
-      ))}
-    </div>
+    <ClayBars w={236} h={150} values={Array.from({ length: 7 }, (_, i) => (14 + i * i * 2.2) / 100)} lit={n} tone={tone} hot={5} gap={10} />
   )
   return (
     <AnalogyScene
@@ -683,11 +751,11 @@ export function RoamingAnalogy({ lesson }: { lesson: string }) {
         label: 'Roaming left switched on',
         scene: () => (
           <>
-            <At x={30} y={30}><RoamingPhone w={84} on /></At>
-            <At x={22} y={218}><Label tone="warn" size={13}>roaming: on</Label></At>
-            <At x={140} y={24}><Moon w={36} /></At>
-            <At x={200} y={60}>{bars(colors.warning)}</At>
-            <At x={200} y={208}><Label tone="bad" size={13}>charges grow overnight</Label></At>
+            <At x={40} y={26}><ClayPhone w={88} /></At>
+            <At x={146} y={26}><ClayMoon w={38} /></At>
+            <At x={210} y={56}>{bars('#FC963C')}</At>
+            <At x={84} y={246} cx><Label tone="warn" size={14}>Roaming: on</Label></At>
+            <At x={210} y={246}><Label tone="bad" size={14}>Charges grow overnight</Label></At>
           </>
         ),
       }}
@@ -695,14 +763,10 @@ export function RoamingAnalogy({ lesson }: { lesson: string }) {
         label: 'Cost overruns',
         scene: () => (
           <>
-            <At x={30} y={60} w={130}>
-              <div className="flex flex-col items-center gap-2">
-                <ServerUnit w={120} state="run" />
-                <Label tone="warn" size={12}>forgotten, still running</Label>
-              </div>
-            </At>
-            <At x={200} y={60}>{bars(colors.brand)}</At>
-            <At x={200} y={208}><Label tone="bad" size={13}>billing until the invoice</Label></At>
+            <At x={24} y={110}><ClayServerUnit w={150} /></At>
+            <At x={210} y={56}>{bars('#0055E8')}</At>
+            <At x={99} y={246} cx><Label tone="warn" size={14}>Forgotten, still running</Label></At>
+            <At x={210} y={246}><Label tone="bad" size={14}>Billing until the invoice</Label></At>
           </>
         ),
       }}
@@ -710,4 +774,3 @@ export function RoamingAnalogy({ lesson }: { lesson: string }) {
     />
   )
 }
-

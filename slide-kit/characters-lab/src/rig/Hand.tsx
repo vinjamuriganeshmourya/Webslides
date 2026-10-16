@@ -32,7 +32,7 @@ export type HandProps = {
   /** the line colour for art 'line' */
   outline?: string
   /** 'flat' is one skin tone (default); 'lit' keeps the lamp gradient */
-  shading?: 'flat' | 'lit'
+  shading?: 'flat' | 'lit' | 'clay'
 }
 
 /* Knuckle positions and lengths, index to pinky, from the reference: the
