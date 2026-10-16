@@ -4,8 +4,8 @@
  * `say` speaks it, and `time` switches to the manual clock so a deck that
  * drives its own timeline gets the exact pose for that instant. */
 import { useEffect, useMemo, type JSX } from 'react'
-import { buildSkin, PRESETS, type CharacterConfig } from '@/decks/figures/cast/skins/config'
-import { Character } from '@/decks/figures/cast/rig/Character'
+import { buildSkin, PRESETS, type CharacterConfig } from '../skins/config'
+import { Character } from '../rig/Character'
 import { useCharacter, type IdleOptions, type PlayOptions } from './useCharacter'
 
 export type ActorProps = {

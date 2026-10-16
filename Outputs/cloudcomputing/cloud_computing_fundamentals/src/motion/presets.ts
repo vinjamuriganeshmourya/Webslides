@@ -15,6 +15,7 @@ import { easing } from '@/design/tokens'
 
 export type SlideTransition =
   | 'slide'
+  | 'glide'
   | 'fade'
   | 'zoom'
   | 'rise'
@@ -94,6 +95,22 @@ function base(kind: SlideTransition) {
         enter: () => ({ opacity: 1 }),
         center: () => ({ opacity: 1 }),
         exit: () => ({ opacity: 0 }),
+      }
+    /*
+      GLIDE (Cloud Computing Fundamentals, review 2026-10-16: "remove the
+      jitter between slides"; session-local change to a kit file). The same
+      move as 'slide', fade plus a sideways drift, but written as a literal
+      `transform` string, because framer-motion 11 hands only `opacity` and
+      `transform` to the compositor (WAAPI). 'slide' animates `x`, which runs
+      on the main thread: the frame a heavy slide mounts in stalls it, and the
+      stall shows as a jerk. Here a stalled main thread cannot touch the
+      movement. 60px instead of 120: half the travel, the same direction.
+    */
+    case 'glide':
+      return {
+        enter: (dir: number) => ({ opacity: 0, transform: `translateX(${dir > 0 ? 60 : -60}px)` }),
+        center: () => ({ opacity: 1, transform: 'translateX(0px)' }),
+        exit: (dir: number) => ({ opacity: 0, transform: `translateX(${dir > 0 ? -60 : 60}px)` }),
       }
     case 'slide':
     default:

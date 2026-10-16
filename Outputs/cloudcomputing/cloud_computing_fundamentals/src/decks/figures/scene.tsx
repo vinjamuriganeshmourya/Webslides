@@ -3,8 +3,9 @@ import { motion } from 'framer-motion'
 import { colors, easing } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
 import { Panel, Group } from '@/ui/foundations/common'
-import { StepControls } from '@/ui/foundations/controls'
 import { Press } from '@/ui/foundations/motion'
+import { TILE_SKIN } from './card'
+import { CARD_SKIN } from './card'
 
 /**
  * THE PIECES EVERY FIGURE SLIDE OF THIS DECK IS BUILT FROM.
@@ -12,8 +13,11 @@ import { Press } from '@/ui/foundations/motion'
  * `Card` is the frame: the kit's zoned header, the reference's lead as the
  * body's first block (content rule 32), one body BOX 1110px wide on the left
  * edge (content rule 38: the lead and the box share the left edge, and the box
- * is narrower than the zone so `mixed-align-check` reads it as one left block),
- * and the kit's Next and Autoplay under it when the slide has steps.
+ * is narrower than the zone so `mixed-align-check` reads it as one left block).
+ *
+ * NO NEXT, NO AUTOPLAY (user, 2026-10-15): every beat is on screen when the
+ * slide opens (`revealEveryStep` in the deck file), so `beat` arrives as the
+ * slide's last beat and there is nothing left for a button to press.
  *
  * Inside the box a scene is laid out with absolute positions on a fixed
  * stage, so a step never moves what is already there.
@@ -21,8 +25,18 @@ import { Press } from '@/ui/foundations/motion'
 
 export const BOX_W = 1110
 
+/**
+ * WHICH BEAT IS "THE CURRENT ONE": none (user, 2026-10-15). Every beat is on
+ * screen when the slide opens, so the last bullet or row is not the one being
+ * talked about, and lighting it as current would say it is.
+ */
+export const isNow = (_beat: number, _at: number) => false
+
 /** Harness URLs hold every live loop still (Python 29's lesson: a moving svg stalls the screenshot). */
 export const STILL = typeof window !== 'undefined' && /[?&](all|noauto|still)(=|&|$)/.test(window.location.search)
+
+/** Reduced motion holds every loop at its still frame too (motion layer, 2026-10-16): the content loops are loop animation. */
+export const REDUCED = typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 export function Card({
   id,
@@ -44,11 +58,51 @@ export function Card({
   total?: number
   children: ReactNode
 }) {
+  void beat
   return (
     <Panel kicker={kicker} title={title} lead={lead} lesson={lesson} mode="top" wide spec={id} presses={total ? total - 1 : 0}>
       <div style={{ width: BOX_W }}>{children}</div>
-      {beat !== undefined && total !== undefined && total > 1 && <StepControls at={beat} total={total} />}
     </Panel>
+  )
+}
+
+/** A bold label at the head of a point (the review's `**Label:**`). */
+export const B = ({ children }: { children: ReactNode }) => <b className="font-heading font-semibold">{children}</b>
+
+/** One phrase of a statement, lit (brand colour, semibold, never underlined: review 2026-10-16) when `hi` is set. */
+export type StatementPart = { t: string; hi?: boolean }
+
+/**
+ * THE STATEMENT HALF OF A SPLIT SLIDE (review 2026-10-15): the definition or
+ * lead a slide opened with, alone on its own frame in one 1110px box, so the
+ * points and the picture get the next frame to themselves. Every split slide
+ * in this deck uses this frame, so the halves read as one pattern. `art` is a
+ * small static picture on the box's right, never a second copy of the words.
+ */
+export function Statement({ id, kicker, title, label, parts, lesson, art }: { id: string; kicker: string; title: string; label: string; parts: StatementPart[]; lesson: string; art?: ReactNode }) {
+  return (
+    <Card id={id} kicker={kicker} title={title} lesson={lesson}>
+      <Stage w={BOX_W} h={art ? 400 : 360} active={false} pad={36}>
+        <div className="flex h-full items-center gap-10">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2.5">
+              <span className="grid h-8 w-8 place-items-center rounded-full" style={{ background: colors.brand }} aria-hidden>
+                <svg width={14} height={18} viewBox="0 0 14 18"><circle cx={7} cy={3} r={2.2} fill={colors.white} /><rect x={5.2} y={7} width={3.6} height={10} rx={1.8} fill={colors.white} /></svg>
+              </span>
+              <span className="font-heading text-[20px] font-semibold" style={{ color: colors.brandDark }}>{label}</span>
+            </div>
+            <p className="mt-5 whitespace-pre-line text-[28px] font-medium leading-[1.5]" style={{ color: colors.ink }}>
+              {parts.map((p, i) => (
+                <span key={i} style={p.hi ? { color: colors.brand, fontWeight: 600 } : undefined}>
+                  {p.t}
+                </span>
+              ))}
+            </p>
+          </div>
+          {art && <div className="grid w-[300px] shrink-0 place-items-center">{art}</div>}
+        </div>
+      </Stage>
+    </Card>
   )
 }
 
@@ -81,14 +135,13 @@ export function Rail({ items, beat, width = 372, size = 17, gap = 10 }: { items:
     <div className="flex shrink-0 flex-col" style={{ width, gap }}>
       {items.map((it, i) => {
         const shown = beat >= it.at
-        const now = beat === it.at
+        const now = isNow(beat, it.at)
         return (
           <div
             key={i}
             className="flex items-start gap-3 rounded-2xl px-3.5 py-2.5"
             style={{
-              background: now ? 'rgba(232,240,255,0.95)' : 'rgba(255,255,255,0.7)',
-              boxShadow: now ? `inset 0 0 0 2px ${colors.brand}` : `inset 0 0 0 1px ${colors.line}`,
+              ...(now ? { background: 'rgba(232,240,255,0.95)', boxShadow: `inset 0 0 0 2px ${colors.brand}` } : TILE_SKIN),
               opacity: shown ? 1 : 0,
               transform: shown ? 'none' : 'translateY(8px)',
               transition: ease,
@@ -114,13 +167,21 @@ export function Rail({ items, beat, width = 372, size = 17, gap = 10 }: { items:
  * lit while it is the cluster the room works on. Everything inside is placed
  * with `At`, so nothing moves the stage's own size.
  */
-export function Stage({ w, h, active, children, className = '', pad = 0, style }: { w: number | string; h: number; active?: boolean; children: ReactNode; className?: string; pad?: number; style?: CSSProperties }) {
+export function Stage({ w, h, active, children, className = '', pad = 0, style, raised = true }: { w: number | string; h: number; active?: boolean; children: ReactNode; className?: string; pad?: number; style?: CSSProperties; raised?: boolean }) {
   return (
-    <Group pad={pad} active={active} className={`relative shrink-0 overflow-hidden ${className}`} style={{ width: w, height: h, ...style }}>
+    <Group pad={pad} active={active} className={`relative shrink-0 overflow-hidden ${className}`} style={{ width: w, height: h, ...(raised ? RAISED : {}), ...style }}>
       {children}
     </Group>
   )
 }
+
+/**
+ * THE RAISED CARD (user, 2026-10-16, from the reference render; the default for
+ * every stage since the same day's "same style for all"): a stage that
+ * reads as a plate lying on the slide. Its surface and shadow are `card.tsx`
+ * `CARD_SKIN`, which says why it is CSS on the Group and not a layer.
+ */
+const RAISED: CSSProperties = CARD_SKIN
 
 /** Absolute placement inside a stage. `cx` centres the child on x. */
 export function At({ x, y, cx = false, cy = false, w, children, style, className = '' }: { x: number; y: number; cx?: boolean; cy?: boolean; w?: number; children: ReactNode; style?: CSSProperties; className?: string }) {
@@ -153,11 +214,13 @@ export function Fade({ on, children, lift = 10, delay = 0, style, className = ''
 
 /* ------------------------------------------------------------------ labels */
 
-export type LabelTone = 'plain' | 'brand' | 'good' | 'bad' | 'warn' | 'muted' | 'dark'
+export type LabelTone = 'plain' | 'brand' | 'solid' | 'lift' | 'good' | 'bad' | 'warn' | 'muted' | 'dark'
 
 const LABEL: Record<LabelTone, { bg: string; ink: string; ring: string }> = {
   plain: { bg: colors.white, ink: colors.ink, ring: colors.line },
   brand: { bg: colors.surface2, ink: colors.brandDark, ring: colors.brand },
+  solid: { bg: colors.brand, ink: colors.white, ring: colors.brand },
+  lift: { bg: colors.white, ink: colors.brandDark, ring: colors.line },
   good: { bg: '#E9F8EF', ink: '#137A3A', ring: colors.success },
   bad: { bg: '#FDECEC', ink: colors.danger, ring: colors.danger },
   warn: { bg: '#FFF4E0', ink: '#9A5B00', ring: colors.warning },
@@ -165,17 +228,32 @@ const LABEL: Record<LabelTone, { bg: string; ink: string; ring: string }> = {
   dark: { bg: colors.brandDeep, ink: colors.white, ring: colors.brandDeep },
 }
 
-/** A label: a DOM chip beside the object it names (content rule 17), never text inside the svg. */
-export function Label({ children, tone = 'plain', size = 14, strong = false, mono = false, className = '', style }: { children: ReactNode; tone?: LabelTone; size?: number; strong?: boolean; mono?: boolean; className?: string; style?: CSSProperties }) {
+/**
+ * A label: a DOM chip beside the object it names (content rule 17), never
+ * text inside the svg. `icon` (user, 2026-10-16, from the reference render)
+ * puts a house icon on a small tinted tile at the chip's head, only where it
+ * says something the words do not (generate-slides §4), `iconRound` as a
+ * filled disc (the render's tick); `raised` lifts the chip off the card with
+ * a soft shadow, the ring still inset (rule 43); `lift` is its white chip
+ * with brand ink.
+ */
+export function Label({ children, tone = 'plain', size = 14, strong = false, mono = false, className = '', style, icon, raised = false, iconRound = false }: { children: ReactNode; tone?: LabelTone; size?: number; strong?: boolean; mono?: boolean; className?: string; style?: CSSProperties; icon?: ReactNode; raised?: boolean; iconRound?: boolean }) {
   const ease = useInstant() ? 'none' : 'all 420ms cubic-bezier(0.22,1,0.36,1)'
   const t = LABEL[tone]
   /* a label is read from the back of a room: never under 14px, whatever a scene asks for */
   const px = Math.max(14, size)
+  const tileBg = iconRound ? t.ring : tone === 'plain' || tone === 'lift' ? colors.surface2 : tone === 'solid' ? 'rgba(255,255,255,0.22)' : `${t.ring}26`
+  const tileInk = iconRound ? colors.white : tone === 'plain' || tone === 'lift' ? colors.brand : t.ink
   return (
     <span
-      className={`inline-flex items-center whitespace-nowrap rounded-pill px-2.5 py-[3px] leading-tight ${strong ? 'font-heading font-semibold' : 'font-medium'} ${mono ? 'font-mono' : ''} ${className}`}
-      style={{ fontSize: px, background: t.bg, color: t.ink, boxShadow: `inset 0 0 0 1.5px ${t.ring}`, transition: ease, ...style }}
+      className={`inline-flex items-center whitespace-nowrap rounded-pill ${icon ? 'gap-2 pl-1.5 pr-3 py-[3px]' : 'px-2.5 py-[3px]'} leading-tight ${strong ? 'font-heading font-semibold' : 'font-medium'} ${mono ? 'font-mono' : ''} ${className}`}
+      style={{ fontSize: px, background: t.bg, color: t.ink, boxShadow: `inset 0 0 0 1.5px ${t.ring}${raised ? ', 0 8px 16px -10px rgba(16,32,58,0.35)' : ''}`, transition: ease, ...style }}
     >
+      {icon && (
+        <span className={`grid shrink-0 place-items-center ${iconRound ? 'rounded-full [&>svg]:h-[12px] [&>svg]:w-[12px] [&>svg]:[stroke-width:3]' : 'rounded-[7px] [&>svg]:h-[14px] [&>svg]:w-[14px]'}`} style={{ width: iconRound ? px + 4 : px + 8, height: iconRound ? px + 4 : px + 8, background: tileBg, color: tileInk }} aria-hidden>
+          {icon}
+        </span>
+      )}
       {children}
     </span>
   )
@@ -246,7 +324,10 @@ export function Arrow({ x1, y1, x2, y2, on = true, tone = colors.brand, dashed =
   return (
     <svg aria-hidden className="pointer-events-none absolute" style={{ left: minX, top: minY, overflow: 'visible' }} width={maxX - minX} height={maxY - minY}>
       <g transform={`translate(${-minX} ${-minY})`}>
-        <path d={`M ${sx} ${sy} L ${ex} ${ey}`} stroke={tone} strokeWidth={width} strokeLinecap="round" fill="none" pathLength={1} strokeDasharray={dashed ? undefined : '1'} style={{ strokeDashoffset: dashed ? undefined : on ? 0 : 1, opacity: on ? 1 : 0, transition: t, ...(dashed ? { strokeDasharray: '6 6' } : {}) }} />
+        {/* a dashed arrow keeps user-unit lengths (no pathLength), so its '7 7' pattern (period 14) travels two periods per mo-dash lap with no jump */}
+        <path d={`M ${sx} ${sy} L ${ex} ${ey}`} stroke={tone} strokeWidth={width} strokeLinecap="round" fill="none" pathLength={dashed ? undefined : 1} strokeDasharray={dashed ? undefined : '1'} className={dashed ? 'mo mo-dash' : undefined} style={{ strokeDashoffset: dashed ? undefined : on ? 0 : 1, opacity: on ? 1 : 0, transition: t, ...(dashed ? { strokeDasharray: '7 7' } : {}) }} />
+        {/* the motion layer (2026-10-16): a lighter dash rides the line from source to target, so the direction of flow is always readable */}
+        {!dashed && <path d={`M ${sx} ${sy} L ${ex} ${ey}`} stroke={colors.white} strokeWidth={Math.max(1, width * 0.45)} strokeLinecap="round" fill="none" strokeDasharray="5 9" className="mo mo-dash" style={{ opacity: on ? 0.75 : 0, transition: instant ? 'none' : `opacity 300ms ${delay + 700}ms`, '--mo-delay': `${-((x1 * 7 + y1 * 3) % 16) / 10}s` } as CSSProperties} />}
         <path d={head(x2, y2, ang)} fill={tone} style={{ opacity: on ? 1 : 0, transition: instant ? 'none' : `opacity 300ms ${delay + (dashed ? 200 : 700)}ms` }} />
         {both && <path d={head(x1, y1, ang + Math.PI)} fill={tone} style={{ opacity: on ? 1 : 0, transition: instant ? 'none' : `opacity 300ms ${delay + 700}ms` }} />}
       </g>
@@ -305,9 +386,11 @@ export function Control({ children, onClick, on, disabled = false, size = 14 }: 
   )
 }
 
-/** A slider the room drags (demand, load). Gives the arrow keys back to the deck when released. */
-export function Slider({ value, onChange, label, width = 220 }: { value: number; onChange: (v: number) => void; label: ReactNode; width?: number }) {
+/** A slider the room drags (demand, load). Gives the arrow keys back to the deck when released. `auto`: driven by the scene's `useLoop`, no hand can move it (global rule 3). */
+export function Slider({ value, onChange, label, width = 220, fill = false, auto = false }: { value: number; onChange: (v: number) => void; label: ReactNode; width?: number; fill?: boolean; auto?: boolean }) {
   const ref = useRef<HTMLInputElement>(null)
+  /* `fill` (user, 2026-10-16, from the reference render): the track is brand up to the thumb, so the level reads at a glance */
+  const pct = Math.round(Math.max(0, Math.min(1, value)) * 100)
   return (
     <label className="flex items-center gap-3" style={{ width }}>
       <span className="shrink-0 font-heading text-[14px] font-semibold" style={{ color: colors.ink }}>
@@ -323,6 +406,8 @@ export function Slider({ value, onChange, label, width = 220 }: { value: number;
         onPointerUp={() => ref.current?.blur()}
         onKeyDown={(e) => e.stopPropagation()}
         className="cc-range min-w-0 flex-1"
+        tabIndex={auto ? -1 : undefined}
+        style={{ ...(fill ? { background: `linear-gradient(90deg, ${colors.brand} 0%, ${colors.brand} ${pct}%, ${colors.surface2} ${pct}%, ${colors.surface2} 100%)` } : {}), ...(auto ? { pointerEvents: 'none' as const } : {}) }}
         aria-label={typeof label === 'string' ? label : 'level'}
       />
     </label>
@@ -332,12 +417,57 @@ export function Slider({ value, onChange, label, width = 220 }: { value: number;
 /** A counter that grows by one every `ms` while `on`, held at `still` on harness URLs. */
 export function useTicker(on: boolean, ms = 600, still = 0): number {
   const [n, setN] = useState(0)
+  /* a picker thumbnail renders under InstantContext: it holds still like a harness URL */
+  const instant = useInstant()
+  const held = STILL || REDUCED || instant
   useEffect(() => {
-    if (!on || STILL) return
+    if (!on || held) return
     const t = window.setInterval(() => setN((v) => v + 1), ms)
     return () => window.clearInterval(t)
-  }, [on, ms])
-  return STILL ? still : n
+  }, [on, ms, held])
+  return held ? still : n
+}
+
+/**
+ * A LOOP THAT NEEDS NO HAND (review 2026-10-16, global rule 3: every manual
+ * interaction becomes an automatic, seamless, looping animation). Returns a
+ * phase that runs forever at constant speed: ping-pong 0 to 1 to 0 (a level
+ * that rises and falls, no visible reset) or `sawtooth` 0 to 1 then 0 again
+ * (a flow in one direction). Drawn on requestAnimationFrame, so a scene eases
+ * its own state changes on the house curve and never jumps. Held at `still`
+ * on harness URLs and under InstantContext (a picker thumbnail), or the
+ * screenshot stalls. The deck's one loop duration: a lap every 8s.
+ */
+export function useLoop(periodMs = 8000, opts: { mode?: 'pingpong' | 'sawtooth'; still?: number; on?: boolean; steps?: number } = {}): number {
+  const { mode = 'pingpong', still = 0.25, on = true, steps = 240 } = opts
+  const instant = useInstant()
+  const held = STILL || REDUCED || instant || !on
+  const [t, setT] = useState(still)
+  useEffect(() => {
+    if (held) return
+    let raf = 0
+    let last = -1
+    const t0 = performance.now()
+    const tick = (now: number) => {
+      /* the phase is quantised to `steps` per lap, so a slide re-renders only when it has moved (about 30 times a second at 8s) */
+      const q = Math.floor((((now - t0) / periodMs) % 1) * steps)
+      if (q !== last) {
+        last = q
+        const u = q / steps
+        setT(mode === 'sawtooth' ? u : u < 0.5 ? u * 2 : 2 - u * 2)
+      }
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [held, periodMs, mode, steps])
+  return held ? still : t
+}
+
+/** A step index that advances by itself every `ms`, 0 to n-1 and round again (a scene that had a Next or a button). The deck's one step duration: 2400ms. */
+export function useCycle(n: number, ms = 2400, still = 0): number {
+  const k = useTicker(true, ms, still)
+  return n > 0 ? k % n : 0
 }
 
 /** Local state that resets to `init` whenever the beat changes (a press shows the beat's own picture). */

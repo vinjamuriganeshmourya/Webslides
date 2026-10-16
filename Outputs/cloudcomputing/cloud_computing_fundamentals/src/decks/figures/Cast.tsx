@@ -1,9 +1,11 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, type ReactNode } from 'react'
+import { mo } from './motion'
 import { useInstant } from '@/motion/instant'
 import { Character } from './cast/rig/Character'
 import { useCharacter } from './cast/rig/useCharacter'
 import { buildSkin, PRESETS, type CharacterConfig } from './cast/skins/config'
-import type { Action, Key } from './cast/rig/track'
+import type { Action, Key, Tracks } from './cast/rig/track'
+import { HAND_POSES, handKeys } from './cast/actions'
 
 /**
  * THE CAST, copied from PF 22's Cast.tsx (2026-10-08) for PF 25. Originally: THE CAST OF PF 22, from the Character Lab (`slide-kit/characters-lab`,
@@ -61,12 +63,12 @@ export const BAKER: CharacterConfig = {
   name: 'Baker',
   gender: 'male',
   art: 'soft',
-  shading: 'flat',
-  skinTone: 'medium',
-  hair: { style: 'short', color: 'black' },
-  face: { jaw: 'square', brows: 'thick', eyes: 'oval', mouth: 'full' },
-  outfit: { top: 'tshirt', topColor: '#FFFFFF', bottom: 'trousers', bottomColor: '#1B2238' },
-  accessories: { beard: 'short' },
+  shading: 'clay',
+  skinTone: '#F9AE7C',
+  hair: { style: 'short', color: '#2A2324' },
+  face: { jaw: 'round', brows: 'thick', eyes: 'big', mouth: 'full' },
+  outfit: { top: 'tshirt', topColor: '#FFFFFF', bottom: 'trousers', bottomColor: '#2C3C81', shoeColor: '#2A2A30' },
+  accessories: {},
   build: { height: 1, shoulders: 1.04 },
 }
 
@@ -109,10 +111,16 @@ export function Posed({
   seed = 3,
   say,
   children,
+  alive = false,
+  breathe = true,
 }: {
   cfg: CharacterConfig
   /** the baker's cap and apron */
   props?: boolean
+  /** motion layer 2026-10-16: a character breathes (the smallest scale from its base, CSS, off on harness URLs and in thumbnails); the pose is untouched */
+  breathe?: boolean
+  /** review 2026-10-16, slide 37: after the held frame the figure stays in its gesture and moves only its head, eyes and hands a little, on a seamless loop; still on harness URLs and in thumbnails */
+  alive?: boolean
   expression?: string
   intensity?: number
   gesture?: string
@@ -152,24 +160,37 @@ export function Posed({
       ),
     }
   }, [key]) // eslint-disable-line react-hooks/exhaustive-deps
-  const c = useCharacter({ clock: 'manual', seed })
+  const c = useCharacter({ clock: 'manual', seed, idle: alive ? ALIVE_IDLE : undefined })
   const { seek, setExpression, play, say: speak } = c
   useEffect(() => {
     seek(0)
     setExpression(expression, intensity)
     if (gesture) play(gesture, { side, amplitude, variation: 0 })
     if (say) speak(say)
-    if (instant) {
+    if (instant || (alive && STILL)) {
       seek(at)
       return
     }
-    /* play up to the held frame once, then stop there */
+    /* play up to the held frame once, then stop there; `alive`: at the held frame the gesture hands over to
+       its hold (the same arm, drifting a degree) and the clock keeps running for the blinks and glances */
     let raf = 0
+    let holding = false
     const t0 = performance.now()
     const tick = (now: number) => {
-      const t = Math.min(at, (now - t0) / 1000)
+      const t = (now - t0) / 1000
+      if (!alive) {
+        const u = Math.min(at, t)
+        seek(u)
+        if (u < at) raf = requestAnimationFrame(tick)
+        return
+      }
+      if (!holding && t >= at) {
+        holding = true
+        const hold = gesture ? HOLDS[gesture] : undefined
+        if (hold) play(hold, { side, amplitude, variation: 0 })
+      }
       seek(t)
-      if (t < at) raf = requestAnimationFrame(tick)
+      raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
@@ -177,14 +198,69 @@ export function Posed({
   }, [])
   const w = (crop.x1 - crop.x0) * scale
   const h = (crop.y1 - crop.y0) * scale
+  const breath = breathe ? mo('breath', seed, { base: true }) : { className: '', style: {} }
+  /* the breathing wrapper sits OUTSIDE the flip, whose inline transform a CSS animation would replace */
   return (
-    <div className="relative shrink-0 overflow-hidden" style={{ width: w, height: h, transform: flip ? 'scaleX(-1)' : undefined }}>
-      <div className="absolute" style={{ left: -crop.x0 * scale, top: -crop.y0 * scale }}>
-        <Character pose={c.pose} skin={skin} width={400 * scale} />
+    <div className={`shrink-0 ${breath.className}`} style={{ width: w, height: h, ...breath.style }}>
+      <div className="relative overflow-hidden" style={{ width: w, height: h, transform: flip ? 'scaleX(-1)' : undefined }}>
+        <div className="absolute" style={{ left: -crop.x0 * scale, top: -crop.y0 * scale }}>
+          <Character pose={c.pose} skin={skin} width={400 * scale} />
+        </div>
+        {children}
       </div>
-      {children}
     </div>
   )
+}
+
+/* ------------------------------------------------------------------ alive, subtly */
+
+/** The idle layer a subtly alive figure runs: blinks and glances (eyes, a little head), no breath, no sway. */
+const ALIVE_IDLE = { breath: false, sway: false, blink: true, saccades: true, liveliness: 0.6 }
+
+/** Keys that wander `amp` around `rest` over `D` seconds and come home, so a loop has no seam. */
+function drift(rest: number, amp: number, D: number, phase: number): Key[] {
+  return [
+    [0, rest],
+    [D * (0.18 + phase * 0.08), rest + amp, 'inOut'],
+    [D * (0.5 + phase * 0.05), rest - amp * 0.6, 'inOut'],
+    [D * (0.76 + phase * 0.04), rest + amp * 0.4, 'inOut'],
+    [D, rest, 'inOut'],
+  ]
+}
+
+/**
+ * The hold a presenting arm settles into after its gesture's held frame
+ * (`present` in the lab's hands.ts: shoulder 62, elbow 28, wrist -20, the
+ * hand open, the head turned and tilted toward what is shown): the same
+ * pose, each joint drifting about a degree, the eyes and head glancing a
+ * little, the other arm at rest with the same drift. Played through the same
+ * amplitude as the gesture, so the two frames meet exactly and the handover
+ * is a cross-fade between near-identical poses.
+ */
+function presentHold(side: 'L' | 'R'): Action {
+  const D = 6.4
+  const dir = side === 'R' ? 1 : -1
+  const other = side === 'R' ? 'L' : 'R'
+  const tracks: Tracks = {
+    [`shoulder${side}`]: drift(62, 1.4, D, 0),
+    [`elbow${side}`]: drift(28, 1.1, D, 1),
+    [`wrist${side}`]: drift(-20, 2.4, D, 2),
+    [`shoulder${other}`]: drift(8, 1.2, D, 3),
+    [`elbow${other}`]: drift(6, 1.6, D, 4),
+    [`wrist${other}`]: drift(0, 2.2, D, 5),
+    headTurn: drift(0.35 * dir, 0.07, D, 1),
+    headTilt: drift(1.8 * dir, 0.5, D, 3),
+    lookX: drift(0.55 * dir, 0.14, D, 2),
+    lookY: drift(0, 0.1, D, 4),
+    ...handKeys(side, HAND_POSES.open, 0, 'out'),
+  } as Tracks
+  return { name: `presentHold${side}`, duration: D, loop: true, blendIn: 0.5, tracks }
+}
+
+/** The hold each gesture settles into when a `Posed` figure is `alive`. */
+const HOLDS: Record<string, Action> = {
+  presentRight: presentHold('R'),
+  presentLeft: presentHold('L'),
 }
 
 /* ------------------------------------------------------------------ idling */
@@ -249,12 +325,19 @@ function handDrift(seed: number): Action {
  */
 const STILL = typeof window !== 'undefined' && /[?&](all|noauto|still)(=|&|$)/.test(window.location.search)
 
-export function Idling({ cfg, expression = 'happy', scale, crop = HALF, seed = 3, head }: { cfg: CharacterConfig; expression?: string; scale: number; crop?: Crop; seed?: number; /** a head-local prop drawn over the hair (PF 25: the DJ's headphones), so it moves with the head */ head?: ReactNode }) {
+export function Idling({ cfg, expression = 'happy', scale, crop = HALF, seed = 3, head, alive = false, breathe = true }: { cfg: CharacterConfig; expression?: string; scale: number; crop?: Crop; seed?: number; /** a head-local prop drawn over the hair (PF 25: the DJ's headphones), so it moves with the head */ head?: ReactNode; /** review 2026-10-16, slide 37: blinks, glances and a little head and hand movement, on a seamless loop; still on harness URLs and in thumbnails */ alive?: boolean; /** motion layer 2026-10-16: breathing, the smallest scale from the base (CSS, off on harness URLs and in thumbnails) */ breathe?: boolean }) {
   const skin = useMemo(() => {
     const s = buildSkin(cfg)
     return head ? { ...s, hairFront: (<>{s.hairFront}{head}</>) } : s
   }, [JSON.stringify(cfg), !!head]) // eslint-disable-line react-hooks/exhaustive-deps
-  const c = useCharacter({ id: `scene-${cfg.name}`, clock: STILL ? 'manual' : 'auto', seed, idle: { breath: true, blink: true, saccades: true, sway: true, liveliness: 0.7 } })
+  /* a slide-picker thumbnail renders under InstantContext: 64 live rigs would drag the picker to 12fps (2026-10-15) */
+  const thumb = useInstant()
+  /* Review 2026-10-16 (A6, no animation unrelated to the content): a person
+     no longer breathes, blinks or sways on a slide; every rig holds one frame,
+     unless the slide asks for `alive` (the later review's slide 37: head, eyes
+     and a little hand movement only). */
+  const still = STILL || thumb || !alive
+  const c = useCharacter({ id: `scene-${cfg.name}`, clock: still ? 'manual' : 'auto', seed, idle: ALIVE_IDLE })
   const { setExpression, play, seek } = c
   /* PF 25: the svg itself is cut to the crop (its viewBox and size), instead of
      a full 400 x 600 picture hanging out of a clipping box, so every layout
@@ -270,7 +353,7 @@ export function Idling({ cfg, expression = 'happy', scale, crop = HALF, seed = 3
   }, [crop.x0, crop.y0, crop.x1, crop.y1, scale])
   useEffect(() => {
     setExpression(expression)
-    if (STILL) {
+    if (still) {
       seek(0.45)
       return
     }
@@ -279,9 +362,12 @@ export function Idling({ cfg, expression = 'happy', scale, crop = HALF, seed = 3
   }, [])
   const w = (crop.x1 - crop.x0) * scale
   const h = (crop.y1 - crop.y0) * scale
+  const breath = breathe ? mo('breath', seed, { base: true }) : { className: '', style: {} }
   return (
-    <div ref={box} className="relative shrink-0 overflow-hidden" style={{ width: w, height: h }}>
-      <Character pose={c.pose} skin={skin} width={400 * scale} />
+    <div className={`shrink-0 ${breath.className}`} style={{ width: w, height: h, ...breath.style }}>
+      <div ref={box} className="relative overflow-hidden" style={{ width: w, height: h }}>
+        <Character pose={c.pose} skin={skin} width={400 * scale} />
+      </div>
     </div>
   )
 }
@@ -314,6 +400,8 @@ export const BUST: Crop = { x0: 122, y0: 26, x1: 278, y1: 236 }
 export const HEADSET: Crop = { x0: 126, y0: 28, x1: 274, y1: 206 }
 /** The head alone, for a chat avatar. */
 export const FACE: Crop = { x0: 136, y0: 40, x1: 264, y1: 190 }
+/** The head with its hair whole: the crop starts above every hairstyle's crown (review 2026-10-16, slide 37: no face cut at the top). */
+export const FACE_WHOLE: Crop = { x0: 130, y0: 10, x1: 270, y1: 190 }
 
 /**
  * Over-ear headphones, head-local (skull centre 0,0, rx 50 ry 56): a band

@@ -36,7 +36,8 @@ const DIR = {
   reel: path.join(REVIEW, 'reel'),
   frames: path.join(REVIEW, 'frames'),
 }
-const SKINS = ['arjun', 'riya']
+/* every preset in src/skins/config.ts; keep in step with PRESET_NAMES there */
+const SKINS = ['arjun', 'riya', 'kabir', 'meera', 'dev', 'ananya', 'rohan']
 const KINDS = ['gesture', 'expression', 'talk', 'idle', 'hero', 'grids', 'velocity', 'reel']
 
 /* A tile is at most 300 px wide: a 12-frame sheet then reads in one look and

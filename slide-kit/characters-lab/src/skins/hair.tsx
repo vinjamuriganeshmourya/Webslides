@@ -22,13 +22,16 @@ import type { Palette } from '@/skins/types'
 
 type Draw = (p: Palette) => ReactNode
 
-export function hairBack(style: HairStyle, p: Palette): ReactNode | null {
-  const draw = BACK[style]
+/* `clay` picks the Library drawing where a style has one (CLAY_BACK and
+   CLAY_FRONT, at the bottom of this file); the renderer's clay filter turns
+   it, so a clay drawing is mass plus sculpted grooves, with no flat sheen. */
+export function hairBack(style: HairStyle, p: Palette, clay = false): ReactNode | null {
+  const draw = (clay && CLAY_BACK[style]) || BACK[style]
   return draw ? draw(p) : null
 }
 
-export function hairFront(style: HairStyle, p: Palette): ReactNode | null {
-  const draw = FRONT[style]
+export function hairFront(style: HairStyle, p: Palette, clay = false): ReactNode | null {
+  const draw = (clay && CLAY_FRONT[style]) || FRONT[style]
   return draw ? draw(p) : null
 }
 
@@ -378,6 +381,168 @@ function wavyFront(p: Palette) {
       {mass(p, 'M-42 -15 C-50 0 -58 17 -53 37 C-50 51 -58 61 -50 71 C-43 73 -37 66 -37 56 C-38 37 -35 17 -38 -3 Z M42 -17 C50 -3 58 12 52 31 C47 46 58 56 52 71 C45 75 38 68 37 58 C37 41 33 19 38 -5 Z')}
       {sheen(p, 'M-12 -60 C6 -64 24 -58 36 -46 C24 -54 8 -58 -8 -56 Z')}
       {shade(p, 'M42 -17 C50 -3 58 12 52 31 C47 46 58 56 52 71 C48 60 45 50 45 38 C47 20 45 0 42 -17 Z M37 -59 C50 -49 52 -31 45 -14 L40 -15 C43 -30 42 -43 33 -52 Z')}
+    </>
+  )
+}
+
+/* ---- the Library look ---------------------------------------------------- */
+
+/* Library hair is sculpted, not painted: big soft clumps, each a rounded
+ * ridge with a groove between it and the next, swept in one direction, with
+ * a gloss on the ridges facing the lamp (the gloss comes from the clay
+ * filter's sheen). Drawn here as the mass, the grooves as soft strokes a
+ * step darker, and the ridge tops as strokes a step lighter just above them.
+ * The references: Wondering man, M and Please Stop for the pompadour;
+ * Female Teacher Icon, Woman Pointing-1 and Woman Pointing wirh tab for the bun. */
+const groove = (p: Palette, d: string, w = 3.2) => <path d={d} fill="none" stroke={p.hairShade} strokeWidth={w} strokeLinecap="round" opacity="0.6" />
+const ridge = (p: Palette, d: string, w = 3) => <path d={d} fill="none" stroke={p.hairLight} strokeWidth={w} strokeLinecap="round" opacity="0.32" />
+
+const CLAY_BACK: Partial<Record<HairStyle, Draw>> = { quiff: clayQuiffBack, bun: clayBunBack, curly: clayCurlyBack, short: clayShortBack, sidePart: clayShortBack }
+const CLAY_FRONT: Partial<Record<HairStyle, Draw>> = { quiff: clayQuiffFront, bun: clayBunFront, curly: clayCurlyFront, short: clayShortFront, sidePart: claySidePartFront }
+
+/* The pompadour of the white-shirt teacher: a full rounded mass wider than
+ * the skull, rising from a low soft hairline into one big roll that sweeps
+ * up from the viewer's left and back over to the right. Thick at the sides,
+ * covering the top of the ear, with a short sideburn. No points anywhere. */
+function clayQuiffFront(p: Palette) {
+  return (
+    <>
+      {/* The loaf: as tall above the brows as the face is below them (on
+          Wondering man the hair is 85 px tall to the face's 80). Widest at
+          the temples, 12 px proud of the skull each side, narrowing to a
+          rounded peak that leans to the viewer's right, because the roll
+          sweeps up from the left temple. The hairline arches over the
+          forehead and comes down over the temples to the top of the ear,
+          ending in a short sideburn. */}
+      {mass(
+        p,
+        'M-57 -2 C-63 -18 -63 -38 -60 -50 C-56 -72 -46 -86 -30 -92 C-14 -100 6 -100 22 -96 ' +
+          'C44 -90 60 -74 63 -52 C66 -36 64 -18 57 -2 L46 -2 C45 4 44 9 43 13 C41 13 40 9 41 4 L42 -8 ' +
+          'C38 -32 18 -42 0 -42 C-18 -42 -38 -32 -42 -8 L-41 4 C-40 9 -41 13 -43 13 C-44 9 -45 4 -46 -2 Z',
+      )}
+      {/* the clumps: each one sweep from the left temple up and over to the right */}
+      {groove(p, 'M-52 -44 C-36 -60 -8 -70 20 -66 C36 -63 48 -54 54 -44')}
+      {groove(p, 'M-46 -72 C-30 -88 -4 -96 22 -92 C40 -88 54 -76 58 -62')}
+      {groove(p, 'M-24 -94 C-8 -100 12 -100 30 -94', 2.8)}
+      {groove(p, 'M56 -16 C62 -30 62 -46 56 -60', 2.6)}
+      {groove(p, 'M-56 -16 C-60 -28 -60 -40 -56 -52', 2.6)}
+      {ridge(p, 'M-48 -52 C-32 -68 -4 -76 22 -72')}
+      {ridge(p, 'M-40 -80 C-24 -94 2 -100 26 -96')}
+      {ridge(p, 'M-30 -86 C-14 -94 8 -96 26 -90', 2.6)}
+    </>
+  )
+}
+
+/* Behind: the rest of the mass, so the crown is full from any turn. */
+function clayQuiffBack(p: Palette) {
+  return mass(p, 'M-54 14 C-66 -24 -64 -70 -30 -92 C-6 -104 26 -102 46 -88 C66 -72 68 -28 56 14 Z')
+}
+
+/* Library curls (Man Working on Laptop-4, Man Working on Laptop): a few big
+ * soft clumps, each a bump on the silhouette with a groove curling under
+ * it, not a cap of small circles. The hairline is a row of bumps too. */
+const CLAY_CURLS_FRONT: [number, number, number][] = [
+  [-50, -22, 14], [-44, -52, 15], [-22, -72, 16], [8, -78, 16], [36, -68, 15], [52, -44, 14], [54, -14, 13],
+]
+/* two clumps over the forehead, inside the silhouette, with no groove */
+const CLAY_CURLS_INNER: [number, number, number][] = [[-8, -44, 13], [26, -40, 12]]
+const CLAY_CURLS_BACK: [number, number, number][] = [
+  [-58, -6, 15], [-56, -34, 15], [-40, -62, 16], [-12, -82, 17], [20, -84, 17], [44, -68, 16], [58, -40, 15], [60, -8, 14],
+]
+
+function clayCurlyFront(p: Palette) {
+  return (
+    <>
+      {mass(p, 'M-47 10 C-55 -20 -47 -54 -22 -66 C-7 -73 10 -73 25 -66 C50 -54 55 -20 47 10 L42 10 C42 -5 42 -20 37 -32 C27 -42 7 -48 -3 -48 C-18 -48 -33 -42 -38 -31 C-42 -20 -42 -5 -42 10 Z')}
+      {curls(p, CLAY_CURLS_INNER)}
+      {curls(p, CLAY_CURLS_FRONT)}
+      {CLAY_CURLS_FRONT.map(([x, y, r], i) => (
+        <path key={i} d={`M${x - r * 0.7} ${y + r * 0.5} A${r * 0.85} ${r * 0.85} 0 0 0 ${x + r * 0.75} ${y + r * 0.4}`} fill="none" stroke={p.hairShade} strokeWidth="2.6" strokeLinecap="round" opacity="0.38" />
+      ))}
+    </>
+  )
+}
+
+function clayCurlyBack(p: Palette) {
+  return (
+    <>
+      {mass(p, 'M-55 17 C-67 -17 -58 -59 -25 -73 C-8 -80 12 -80 28 -73 C63 -59 68 -17 55 17 Z')}
+      {curls(p, CLAY_CURLS_BACK)}
+    </>
+  )
+}
+
+/* Short, brushed up and back (Bearded Man Presenting, Man Pointing): the
+ * flat cap with more height at the front, and the clumps as sweeps that
+ * run from the forehead back over the crown. */
+function clayShortFront(p: Palette) {
+  return (
+    <>
+      {mass(p, 'M-48 12 C-57 -19 -50 -58 -24 -72 C-6 -80 14 -78 28 -70 C52 -56 57 -19 48 12 L42 12 C42 -3 43 -19 38 -31 C33 -37 20 -41 3 -41 C-15 -41 -32 -37 -38 -29 C-43 -19 -42 -3 -42 12 Z')}
+      {groove(p, 'M-40 -44 C-24 -60 0 -66 24 -60')}
+      {groove(p, 'M-34 -62 C-16 -74 6 -76 26 -68', 2.8)}
+      {groove(p, 'M50 -10 C54 -28 50 -46 40 -58', 2.6)}
+      {ridge(p, 'M-38 -52 C-22 -66 2 -70 24 -64')}
+    </>
+  )
+}
+
+/* Parted on the viewer's left and swept across to the right in a soft
+ * wave (Man Presenting-3, Man Holding Pointer): the same cap, the parting
+ * a single groove and the sweep three grooves fanning from it. */
+function claySidePartFront(p: Palette) {
+  return (
+    <>
+      {mass(p, 'M-48 12 C-57 -19 -48 -58 -20 -70 C-4 -77 16 -76 30 -68 C54 -54 57 -19 48 12 L42 12 C43 -5 42 -22 33 -29 C22 -36 2 -39 -13 -39 C-28 -38 -38 -31 -40 -20 C-42 -8 -42 2 -42 12 Z')}
+      {groove(p, 'M-14 -40 C-18 -48 -22 -56 -24 -66', 2.8)}
+      {groove(p, 'M-10 -46 C8 -54 26 -52 40 -40')}
+      {groove(p, 'M-12 -58 C8 -68 28 -64 44 -52')}
+      {groove(p, 'M-30 -40 C-36 -48 -40 -56 -42 -62', 2.4)}
+      {ridge(p, 'M-8 -52 C10 -60 28 -58 42 -46')}
+    </>
+  )
+}
+
+function clayShortBack(p: Palette) {
+  return mass(p, 'M-52 14 C-62 -19 -54 -60 -26 -74 C-8 -82 14 -80 28 -72 C56 -58 63 -19 52 14 Z')
+}
+
+/* Riya's bun after Female Teacher Icon: hair drawn smoothly back from a
+ * parting on the viewer's right, a soft side-swept fringe over the left
+ * temple, a short lock in front of each ear, and a round bun on top held by
+ * a scrunchie in the accent colour. */
+function clayBunFront(p: Palette) {
+  return (
+    <>
+      {mass(
+        p,
+        'M-46 16 C-53 2 -56 -18 -54 -36 C-50 -58 -30 -70 -2 -70 C26 -70 48 -58 53 -36 C56 -18 53 2 47 14 ' +
+          'C46 0 46 -14 43 -24 C40 -32 30 -38 16 -40 C8 -36 -6 -32 -22 -30 C-34 -28 -42 -22 -44 -12 C-46 -2 -46 8 -46 16 Z',
+      )}
+      {/* the fringe sweeping from the parting down over the left temple */}
+      {mass(p, 'M16 -42 C2 -36 -22 -32 -38 -24 C-46 -20 -50 -10 -48 2 C-46 -16 -34 -26 -16 -28 C0 -30 10 -34 16 -42 Z')}
+      {groove(p, 'M14 -44 C0 -40 -24 -36 -40 -24', 2.2)}
+      {groove(p, 'M18 -46 C24 -54 30 -60 36 -62', 2)}
+      {groove(p, 'M-46 -26 C-46 -44 -32 -60 -10 -64', 2.2)}
+      {groove(p, 'M48 -18 C50 -32 46 -48 34 -58', 2)}
+      {ridge(p, 'M-38 -40 C-30 -54 -16 -62 2 -64')}
+      {ridge(p, 'M22 -60 C32 -58 40 -50 44 -40', 2)}
+    </>
+  )
+}
+
+function clayBunBack(p: Palette) {
+  return (
+    <>
+      {mass(p, 'M-54 14 C-62 -22 -52 -66 -2 -70 C48 -66 62 -22 54 14 Z')}
+      {/* the bun sits on top, a little back of centre */}
+      <circle cx="4" cy="-84" r="21" fill={p.hair} />
+      {groove(p, 'M-12 -90 C-6 -100 10 -102 18 -94', 2.2)}
+      {groove(p, 'M-14 -78 C-6 -70 12 -70 20 -78', 2.2)}
+      {ridge(p, 'M-10 -96 C-2 -103 10 -103 16 -98', 2)}
+      {/* the scrunchie where the bun meets the head */}
+      <path d="M-18 -68 C-10 -60 18 -60 26 -68 C24 -61 16 -56 4 -56 C-8 -56 -16 -61 -18 -68 Z" fill={accent(p)} />
+      <path d="M-14 -66 C-6 -61 14 -61 22 -66" fill="none" stroke="#FFFFFF" strokeOpacity="0.45" strokeWidth="1.6" strokeLinecap="round" />
     </>
   )
 }

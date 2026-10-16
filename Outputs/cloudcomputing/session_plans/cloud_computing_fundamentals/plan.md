@@ -185,3 +185,20 @@ screenshots read by eye at step 0, mid-run and fully revealed.
   more; qa's 16px warning remains on figure labels.
 - **Autoplay list** set by slide id in the deck file (kit list held Python
   31's numbers).
+
+---
+
+## Revision 2026-10-15 (review feedback, applied on the user's word)
+
+- Slide 6 definition replaced with the review's NIST wording; definition and the
+  four points are now two slides. Slides 18, 21, 24, 38, 39, 41, 42, 44, 46 split
+  the same way (statement, then points and picture); 34 splits chart / table;
+  21's table moves to its own slide and the "what cloud inherited" panel goes.
+- Slide 11 (Cost, Scale and Speed) and 16 (Hardware Gets Abstracted): copy
+  replaced word for word by the review's.
+- Slide 47: balances removed (duplicated the table); slide 38's balance lost
+  its pair labels for the same reason.
+- 53 → 64 slides.
+- Deck-wide: no step builds, no Next or Autoplay; every element enters in
+  reading order within 1.5s; every slide change is the one smooth transition;
+  the slide picker shows live thumbnails. Details in the session CLAUDE.md.

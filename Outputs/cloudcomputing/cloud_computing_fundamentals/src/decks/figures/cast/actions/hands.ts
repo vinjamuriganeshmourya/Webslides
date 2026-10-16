@@ -15,8 +15,8 @@
  *
  * Default one-handed gestures use the character's right hand, which is the
  * screen-RIGHT arm (channels ending in R). The runtime mirrors on request. */
-import type { Channel } from '@/decks/figures/cast/rig/channels'
-import type { Action, Ease, Key, Tracks } from '@/decks/figures/cast/rig/track'
+import type { Channel } from '../rig/channels'
+import type { Action, Ease, Key, Tracks } from '../rig/track'
 import { HAND_POSES, handKeys, type HandPose } from './handPoses'
 
 type Side = 'L' | 'R'

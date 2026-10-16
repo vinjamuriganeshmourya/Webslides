@@ -2,6 +2,82 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import type { SlideDef } from './types'
 import { setAutoplayPref, useAutoplayPref } from './autoplayPref'
+import { InstantContext } from '@/motion/instant'
+import { SLIDE_WIDTH, SLIDE_HEIGHT } from '@/design/tokens'
+
+/*
+  THUMBNAILS (`player.thumbnails`, Cloud Computing Fundamentals, 2026-10-15).
+
+  Each card shows the slide itself: its own element, rendered live at 1280x720
+  and scaled into the card, under InstantContext and outside any Stepper, so it
+  is the slide's FINAL state with every build shown and no entrance playing. A
+  thumbnail is therefore never stale: change a slide and its preview changes.
+
+  Kept fast in three ways. A card mounts its slide only when it scrolls within
+  a screen of the viewport (IntersectionObserver), mounting is queued a few per
+  frame so opening the panel never renders 60 slides in one task, and a slide
+  once mounted stays mounted while the panel is open. The card's ground is the
+  slide paper colour while it waits, so there is no flash.
+*/
+const PER_FRAME = 3
+const queue: (() => void)[] = []
+let pumping = false
+function pump() {
+  pumping = true
+  requestAnimationFrame(() => {
+    for (let k = 0; k < PER_FRAME && queue.length; k++) queue.shift()!()
+    if (queue.length) pump()
+    else pumping = false
+  })
+}
+function enqueue(fn: () => void) {
+  queue.push(fn)
+  if (!pumping) pump()
+}
+
+const THUMB_CSS = `.deck-thumb *, .deck-thumb *::before, .deck-thumb *::after { animation: none !important; transition: none !important; }`
+
+function Thumb({ slide, scroller }: { slide: SlideDef; scroller: React.RefObject<HTMLDivElement | null> }) {
+  const box = useRef<HTMLDivElement>(null)
+  const [w, setW] = useState(0)
+  const [ready, setReady] = useState(false)
+  useEffect(() => {
+    const el = box.current
+    if (!el) return
+    const ro = new ResizeObserver(() => setW(el.getBoundingClientRect().width))
+    ro.observe(el)
+    let cancelled = false
+    const io = new IntersectionObserver(
+      (es) => {
+        if (es.some((e) => e.isIntersecting)) {
+          io.disconnect()
+          enqueue(() => !cancelled && setReady(true))
+        }
+      },
+      { root: scroller.current, rootMargin: '100% 0px' },
+    )
+    io.observe(el)
+    return () => {
+      cancelled = true
+      ro.disconnect()
+      io.disconnect()
+    }
+  }, [scroller])
+  return (
+    <div ref={box} className="relative w-full overflow-hidden rounded-[10px] bg-[#f4f6fb]" style={{ aspectRatio: `${SLIDE_WIDTH} / ${SLIDE_HEIGHT}` }}>
+      {ready && w > 0 && (
+        <div
+          aria-hidden
+          inert
+          className="deck-thumb pointer-events-none absolute left-0 top-0 origin-top-left"
+          style={{ width: SLIDE_WIDTH, height: SLIDE_HEIGHT, transform: `scale(${w / SLIDE_WIDTH})` }}
+        >
+          <InstantContext.Provider value={true}>{slide.element}</InstantContext.Provider>
+        </div>
+      )}
+    </div>
+  )
+}
 
 /**
  * JUMP TO A SLIDE, INSTEAD OF WALKING THERE ONE PRESS AT A TIME.
@@ -54,18 +130,21 @@ export function SlidePicker({
   index,
   onPick,
   onClose,
+  thumbnails = false,
 }: {
   slides: SlideDef[]
   index: number
   onPick: (i: number) => void
   onClose: () => void
+  thumbnails?: boolean
 }) {
+  const scroller = useRef<HTMLDivElement>(null)
   const reduce = useReducedMotion()
   const auto = useAutoplayPref()
   const [q, setQ] = useState('')
   const [cursor, setCursor] = useState(index)
   const inputRef = useRef<HTMLInputElement>(null)
-  const cursorRef = useRef<HTMLButtonElement>(null)
+  const cursorRef = useRef<HTMLDivElement>(null)
 
   /* The slides that match, keeping their real deck index: a picker that renumbered
      its results would be a list of the wrong slide numbers. */
@@ -169,7 +248,8 @@ export function SlidePicker({
         </span>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-8 py-6">
+      {thumbnails && <style>{THUMB_CSS}</style>}
+      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto px-8 py-6">
         {/*
           THE DECK'S AUTO-PLAY SETTING (pedagogy team, 2026-10-12): the one
           place it is set, as two cards drawn like the slide cards below. On,
@@ -182,6 +262,8 @@ export function SlidePicker({
           held upright the cards are 74px wide, so the second line is dropped
           there (the slide cards truncate theirs) and ON / OFF say it alone.
         */}
+        {/* a deck with no builds has nothing to auto-play: the setting goes with the thumbnails */}
+        {!thumbnails && (
         <div role="group" aria-label="Auto-play" className="sticky top-0 z-10 -mx-8 -mt-6 mb-4 bg-night px-8 pb-4 pt-6">
           <p className="mb-2.5 font-heading text-[11px] font-bold uppercase tracking-[0.14em] text-white/45">Auto-play</p>
           <div className="grid grid-cols-4 gap-2.5">
@@ -214,6 +296,7 @@ export function SlidePicker({
             })}
           </div>
         </div>
+        )}
 
         {hits.length === 0 && (
           <p className="font-body text-[15px] text-white/50">Nothing matches that.</p>
@@ -231,10 +314,13 @@ export function SlidePicker({
                 const here = i === index
                 const on = i === cursor
                 return (
-                  <button
+                  <div
+                    /* a div, not a button: a thumbnail holds the slide's own buttons,
+                       and a button may not contain a button */
+                    role="button"
+                    tabIndex={0}
                     key={s.id}
                     ref={on ? cursorRef : undefined}
-                    type="button"
                     onClick={() => onPick(i)}
                     onPointerEnter={() => setCursor(i)}
                     aria-current={here ? 'true' : undefined}
@@ -244,7 +330,9 @@ export function SlidePicker({
                       keyboard is pointing, and a picker that conflates them leaves
                       the presenter unable to tell whether Enter will move anything.
                     */
-                    className={`rounded-card border px-3.5 py-3 text-left transition-colors ${
+                    className={`cursor-pointer rounded-card border px-3.5 py-3 text-left transition-colors ${
+                      thumbnails && here ? 'ring-[3px] ring-[#2D63FB] ' : ''
+                    }${
                       on
                         ? 'border-white/60 bg-white/15'
                         /* `/[0.12]` and NOT `/12`: 12 is off Tailwind's opacity
@@ -256,6 +344,11 @@ export function SlidePicker({
                         : 'border-white/[0.12] bg-white/[0.055] hover:bg-white/10'
                     }`}
                   >
+                    {thumbnails && (
+                      <span className="mb-2.5 block">
+                        <Thumb slide={s} scroller={scroller} />
+                      </span>
+                    )}
                     <span className="flex items-baseline gap-2">
                       <span className="font-mono text-[12px] font-bold text-white/50">
                         {String(i + 1).padStart(2, '0')}
@@ -269,7 +362,7 @@ export function SlidePicker({
                     <span className="mt-1 block truncate font-heading text-[13.5px] font-semibold text-white/90">
                       {s.label ?? s.id}
                     </span>
-                  </button>
+                  </div>
                 )
               })}
             </div>

@@ -17,8 +17,8 @@
  * with the arm. A top is the body of the garment plus whatever sits on it
  * (collar, placket, tie, belt). */
 import { isValidElement, useId, type ReactNode } from 'react'
-import type { Palette } from '@/decks/figures/cast/skins/types'
-import type { BottomStyle, CharacterConfig, TopStyle } from '@/decks/figures/cast/skins/config'
+import type { Palette } from '../skins/types'
+import type { BottomStyle, CharacterConfig, TopStyle } from '../skins/config'
 
 /* ---------- options every exported drawer accepts ---------- */
 
@@ -35,6 +35,8 @@ export type OutfitOpts = {
   shoulderHalf?: number
   /** the waist half-width a top tapers to and a bottom starts from; defaults by style */
   waistHalf?: number
+  /** the Library look: a black belt with a grey buckle (Wondering man), a full beard */
+  clay?: boolean
 }
 
 const DEFAULTS: Required<Pick<OutfitOpts, 'art' | 'belt' | 'outline'>> = { art: 'soft', belt: false, outline: '#1A1F3D' }
@@ -44,6 +46,9 @@ const LINE_W = 1.3
    the skirt pocket stitch, the earring gold, the flower. */
 const BELT = '#8B5A2B'
 const BUCKLE = '#C9A24A'
+/* the Library's belt, read off Wondering man and Please Stop */
+const CLAY_BELT = '#2A2A30'
+const CLAY_BUCKLE = '#9A9CA8'
 const POCKET_STITCH = '#8A8FB8'
 const GOLD = '#D9A441'
 const TIE_FALLBACK = '#1E2B4F'
@@ -164,15 +169,17 @@ function Tie({ color, tip }: { color: string; tip: number }) {
   )
 }
 
-function Belt({ f }: { f: Fit }) {
+function Belt({ f, clay }: { f: Fit; clay?: boolean }) {
   const { wh, waistY } = f
+  const belt = clay ? CLAY_BELT : BELT
+  const buckle = clay ? CLAY_BUCKLE : BUCKLE
   return (
     <g>
-      <path d={`M-${wh + 1} ${waistY - 6} L${wh + 1} ${waistY - 6} L${wh + 1} ${waistY + 7} L-${wh + 1} ${waistY + 7} Z`} fill={BELT} />
-      <path d={`M-${wh + 1} ${waistY + 4} L${wh + 1} ${waistY + 4} L${wh + 1} ${waistY + 7} L-${wh + 1} ${waistY + 7} Z`} fill={darken(BELT, 0.3)} />
-      <rect x="-9" y={waistY - 8} width="18" height="17" rx="2.5" fill={BUCKLE} />
-      <rect x="-5.5" y={waistY - 4.5} width="11" height="10" rx="1.5" fill={BELT} />
-      <rect x="-1" y={waistY - 8} width="2" height="17" fill={BUCKLE} />
+      <path d={`M-${wh + 1} ${waistY - 6} L${wh + 1} ${waistY - 6} L${wh + 1} ${waistY + 7} L-${wh + 1} ${waistY + 7} Z`} fill={belt} />
+      <path d={`M-${wh + 1} ${waistY + 4} L${wh + 1} ${waistY + 4} L${wh + 1} ${waistY + 7} L-${wh + 1} ${waistY + 7} Z`} fill={darken(belt, 0.3)} />
+      <rect x="-9" y={waistY - 8} width="18" height="17" rx="2.5" fill={buckle} />
+      <rect x="-5.5" y={waistY - 4.5} width="11" height="10" rx="1.5" fill={belt} />
+      <rect x="-1" y={waistY - 8} width="2" height="17" fill={buckle} />
     </g>
   )
 }
@@ -181,7 +188,7 @@ function Belt({ f }: { f: Fit }) {
 
 /* Arjun's shirt: white at the collar grading to the hem tint, tucked into
    the belt, the tie down the placket. */
-function ShirtTie({ p, f, belt }: { p: Palette; f: Fit; belt: boolean }) {
+function ShirtTie({ p, f, belt, clay }: { p: Palette; f: Fit; belt: boolean; clay?: boolean }) {
   const g = useIds()
   /* tucked in: the hem runs under the belt when there is one, otherwise
      it stops at the waist so no band of shirt shows over the trousers */
@@ -203,14 +210,14 @@ function ShirtTie({ p, f, belt }: { p: Palette; f: Fit; belt: boolean }) {
       <path d={`M8 222 L8 ${f.waistY + 4}`} stroke={p.topShade} strokeWidth="1" opacity="0.5" />
       <Collar f={f} fill="#FFFFFF" shadow={p.topShade} />
       <Tie color={accentOf(p)} tip={f.waistY + 4} />
-      {belt && <Belt f={f} />}
+      {belt && <Belt f={f} clay={clay} />}
     </g>
   )
 }
 
 /* A plain shirt: the top colour, a placket with buttons, a collar in the
    same cloth, a chest pocket. */
-function Shirt({ p, f, belt, line }: { p: Palette; f: Fit; belt: boolean; line?: string }) {
+function Shirt({ p, f, belt, line, clay }: { p: Palette; f: Fit; belt: boolean; line?: string; clay?: boolean }) {
   const d = torso(f, { hem: f.waistY + 10 })
   return (
     <g transform="translate(200 0)">
@@ -222,7 +229,7 @@ function Shirt({ p, f, belt, line }: { p: Palette; f: Fit; belt: boolean; line?:
       ))}
       <path d="M-44 246 L-20 246 L-20 272 L-44 272 Z" fill="none" stroke={p.topShade} strokeWidth="1.2" />
       <Collar f={f} fill={p.topLight} shadow={p.topShade} line={line} />
-      {belt && <Belt f={f} />}
+      {belt && <Belt f={f} clay={clay} />}
     </g>
   )
 }
@@ -312,9 +319,9 @@ export function top(style: TopStyle | 'shirtTie', p: Palette, opts: OutfitOpts =
   const node = (() => {
     switch (style) {
       case 'shirtTie':
-        return <ShirtTie p={p} f={f} belt={o.belt} />
+        return <ShirtTie p={p} f={f} belt={o.belt} clay={o.clay} />
       case 'shirt':
-        return <Shirt p={p} f={f} belt={o.belt} line={line} />
+        return <Shirt p={p} f={f} belt={o.belt} line={line} clay={o.clay} />
       case 'polo':
         return <Polo p={p} f={f} line={line} />
       case 'tshirt':
@@ -516,6 +523,30 @@ function ShortBeard({ p }: { p: Palette }) {
   )
 }
 
+/* The Library beard (Bearded Man Presenting, Man Pointing): a full short
+   beard in the hair colour from the sideburns round the jaw, filling the
+   cheeks up to a line under the cheekbone, with a moustache that meets it
+   at the corners. The mouth stays clear; the shape ends under the lower
+   lip, so a wide laugh runs a little over it, as a real one does. */
+function FullBeard({ p }: { p: Palette }) {
+  return (
+    <g>
+      <path
+        d={
+          'M-50 -4 C-50 24 -34 52 0 58 C34 52 50 24 50 -4 L46 -2 C44 10 40 18 34 22 ' +
+          'C28 25 20 27 14 26 L12 30 C12 38 8 44 0 45 C-8 44 -12 38 -12 30 L-14 26 ' +
+          'C-20 27 -28 25 -34 22 C-40 18 -44 10 -46 -2 Z'
+        }
+        fill={p.hair}
+      />
+      {/* the moustache, two soft wings meeting in a dip above the lip */}
+      <path d="M-15 24 C-9 19 -3 19 0 22 C3 19 9 19 15 24 C10 28 4 28.5 0 27.5 C-4 28.5 -10 28 -15 24 Z" fill={p.hair} />
+      {/* the cheek edge softens into the skin: a lighter sliver along the top */}
+      <path d="M-46 -2 C-44 10 -40 18 -34 22 L-32 19 C-38 15 -42 8 -43 -2 Z M46 -2 C44 10 40 18 34 22 L32 19 C38 15 42 8 43 -2 Z" fill={p.hairLight} opacity="0.3" />
+    </g>
+  )
+}
+
 function Earrings() {
   /* small hoops hanging from the lobes, the ears being at (+-50, 2) */
   const hoop = (x: number) => (
@@ -549,7 +580,7 @@ export function faceExtras(cfg: CharacterConfig, p: Palette, _opts: OutfitOpts =
   const a = cfg.accessories
   const parts: ReactNode[] = []
   if (a.beard === 'stubble') parts.push(<Stubble key="beard" p={p} />)
-  if (a.beard === 'short') parts.push(<ShortBeard key="beard" p={p} />)
+  if (a.beard === 'short') parts.push(cfg.shading === 'clay' ? <FullBeard key="beard" p={p} /> : <ShortBeard key="beard" p={p} />)
   if (a.glasses && a.glasses !== 'none') parts.push(<Glasses key="glasses" kind={a.glasses} p={p} />)
   /* between the brows, which sit at y=-18 */
   if (a.bindi) parts.push(<circle key="bindi" cx="0" cy="-21" r="2.8" fill="#C0243A" />)

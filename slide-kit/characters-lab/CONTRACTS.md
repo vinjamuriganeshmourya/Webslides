@@ -38,7 +38,107 @@ shoot.mjs                     contact sheets per action, for review (G)
 record.mjs                    frame-exact video export (G)
 ```
 
-## Art direction (supersedes the drawing notes below where they differ)
+## Art direction: the Library look (2026-10-15, supersedes everything below where they differ)
+
+The user handed over a second, larger set of references: seventy-one PNGs in
+`reference/library/`, copied from the Library folder, every one a soft 3D
+render of a person in one house style. The characters must look like them.
+Open the folder before drawing anything. What is in them, read off the
+pixels, is the spec below; `shading: 'clay'` in `CharacterConfig` is the
+look, and every preset uses it. The flat Storyset look of the first two
+references (`reference/arjun.png`, `reference/riya.png`) stays available as
+`shading: 'flat'` and `art: 'line'`, described in the next section, but no
+preset uses it any more.
+
+**Rendering.** No outline anywhere. Every form turns by its own shading: a
+soft band along the edge away from the lamp, a lighter band toward it, a
+few px wide, never a hard crescent. The lamp is upper left and in front.
+Skin is matte; hair is glossy, with one broad highlight band where a clump
+faces the lamp. Shadows deepen a colour in its own hue (peach skin shades to
+orange `#E68A57`, blue cloth to a deeper blue), never to grey. Soft contact
+shadows where one form sits on another: hair on the forehead, an arm on the
+chest. The figure is cut out on white with no ground shadow (the rig keeps
+its contact shadow for the slide; that is a deck decision, not a Library
+one). In the rig this is `ClayDefs` in `src/rig/lighting.tsx`: one
+alpha-rim filter per scale of form (head, body, limb, hair), multiply for
+the shade and screen for the light, so a flat palette fill underneath
+stays the palette colour.
+
+**Face.** Wide and rounded with full cheeks and a small rounded chin; a tall
+forehead under the hair. Eyes are the biggest single feature: upright ovals
+about a fifth of the face width (Wondering man: 21 px on a 110 px face),
+with white showing at the sides, a warm brown iris `#5A3420` filling about
+three quarters, a black pupil, one large catchlight upper left and a small
+one lower right (the same side on both eyes), a heavy dark upper lid
+`#24181A` that runs a little past the outer corner, and a faint lower lid
+crease in the skin shade. Every woman has two lash flicks at the outer
+corner; no man does. Brows are thick, dark, soft-edged wedges: thin at the
+inner end, thickest two thirds out, a short tail; a man's are straighter
+and heavier, a woman's more arched. They sit close above the eye, a gap of
+about 8 px on that face. The nose is a small rounded button with no line:
+a bump in the skin colour with a soft shadow below and beside it. Shut,
+the mouth is a short warm brown-rose smile line (the skin shade darkened,
+never red). Open, it is a wide D with a row of upper teeth, a deep wine
+interior `#8E2B2E` and a coral tongue; no drawn lower lip. Cheeks carry a
+soft orange-pink glow, low and wide, with no edge. Ears are small and
+rounded, their top third usually under the hair.
+
+**Proportions.** Five to six heads tall in the full-length images (Man
+Explaining, Woman Pointing-1), with a big head, a short neck, rounded
+sloping shoulders, thick tubular arms with no elbow line, big hands with
+rounded fingers and no outlines, straight tubular legs. The half-length
+crops, which are most of the folder, stop at the waist or mid-thigh.
+
+**Colour.** Skin is one warm peach family, three steps: `#FBC499` (man
+wondering expression), `#F9AE7C` (Wondering man, the most common),
+`#F4A077` (Bearded Man Presenting). The Library has no darker tone, so the
+presets use none; the rig's five named tones remain for a config that asks.
+Hair: black `#2A2324`, navy-black `#262B43`, dark brown `#532921`,
+brown-black `#483032`, and one light brown. Clothes are flat saturated
+blocks: the teacher's lavender-white shirt `#D5D8EB`, cobalt `#0055E8`, sky
+`#95C2FB`, periwinkle `#5856DC`, yellow `#FCC82B`, orange `#FC963C`, red
+`#D8352F`, sage `#829983`; trousers navy `#2C3C81` or charcoal `#3E3D45`;
+a black belt `#2A2A30` with a grey buckle; white sneakers, dark flats.
+
+**Hair.** Sculpted, not painted: a few big smooth clumps, each a rounded
+ridge with a groove between it and the next, all swept one way, glossy on
+the ridges. Men: the pompadour (swept up from the left temple and back over
+to a rounded peak, as tall above the brows as the face is below them, ears
+showing, short sideburn: the white-shirt teacher, drawn fourteen times), a
+side part swept across in a wave, short brushed up and back, big curls.
+Women: long waves falling past the shoulders, a top-knot bun with a
+scrunchie, a chin-length bob, a lob with a side part. `src/skins/hair.tsx`
+has a clay drawing for quiff, bun, curly, short and sidePart; the other
+styles fall back to the flat drawing under the clay filter.
+
+**Clothing.** Collared shirts tucked in with a belt, crew-neck sweaters and
+tees, blazers over tees, blouses with a white collar, jeans, trousers, an
+A-line skirt, sneakers, flats. Suits with ties appear only on the
+businessman images; the teacher never wears a tie.
+
+**Poses and framing.** Frontal or three-quarter, the head often turned a
+little toward the thing being pointed at. Pointing, presenting with an open
+palm, hand on chin, finger raised with an idea, waving, hands up, holding a
+laptop, tablet, book or pointer, typing at a desk, sitting cross-legged
+with a laptop. The rig covers the gestures; props are figure work for a
+deck, not part of a character.
+
+**What the rig does not match, on purpose or because it cannot.** The
+references are raytraced renders; the rig approximates the turn of a form
+with one blurred-alpha rim per group, so a highlight never bends round a
+clump the way a render's does. The rig draws a frontal head with a 2.5D
+turn; the Library's true three-quarter view, with the far eye narrowed and
+the nose bridge in profile, is not reachable. Hands are the rig's own
+(section below) with the clay turn added; the Library's chunkier fingers
+with a pad at each tip are not redrawn. The ground shadow stays.
+
+**The presets.** Seven, in `src/skins/config.ts`, every colour read off a
+named Library image: Arjun (the teacher), Riya (the teacher with the bun,
+after Female Teacher Icon), and five new ones, Kabir, Meera, Dev, Ananya,
+Rohan, each a different mix of a Library hair, outfit and colour, none a
+copy of a single image.
+
+## The earlier flat look (kept as shading 'flat' and art 'line')
 
 The user handed over two reference images; the characters must look like
 them. `reference/arjun.png` and `reference/riya.png` (480 x 463 each). Open

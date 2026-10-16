@@ -73,7 +73,7 @@ shipped with that exact mistake.
 | 30 | Every process is shown with a real screenshot |
 | 31 | Every code panel says where the code lives or runs: the language in a playground course, the file path or UI location in a project course |
 | 32 | The slide is laid out in zones: header, Space-1, Space-2, Space-3 |
-| 33 | The header: no tick before the kicker; the kicker 22px Title Case navy; one gradient divider between kicker and title, no edge bars |
+| 33 | The header: no tick before the kicker; the kicker 22px Title Case navy; one gradient divider between kicker and title, ALWAYS (never removed, whatever a review says), no edge bars |
 | 34 | Typefaces: the updated template's sheet. Sora SemiBold for session and section titles and hero words, DM Sans SemiBold for headings, DM Sans Medium for kicker and body, Fira Code for code, Ubuntu Mono for code-window title bars; two weights only |
 | 35 | A heading never wraps: shorten the words, never shrink the font or widen the box |
 | 36 | No full stop at the end of a line of slide copy: two sentences on one line go onto two lines |
@@ -89,6 +89,7 @@ shipped with that exact mistake.
 | 46 | A connector line meets its arrow head on the head's own axis: its last stretch is straight along the head's centre line; the head never moves to fix it. The line ends exactly at the centre of the head's base: no gap, no overlap (butt cap at the base) |
 | 47 | No label, annotation or callout overlaps a code box or any other element at any step; when space is tight, change the layout, never let them overlap. `overlap-check.mjs` on the built file |
 | 48 | Every slide sits on one of the kit's three grounds (paper, closing gradient, welcome mesh); a slide never paints its own wash, blur, orb or background; the hero frames put the white mark on stage and the words in a glass pill |
+| 49 | No underlines anywhere: no underlined text, phrase, heading or link. Emphasis is colour and weight. The kicker's gradient divider is template, not an underline, and always stays |
 
 ## Process rules
 

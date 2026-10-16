@@ -8,8 +8,8 @@
  * mouth, a curious tilt lifts the brows.
  *
  * Keys are [time, value, ease-into-this-key]; omitted ease is inOut. */
-import type { Action, Key, Tracks } from '@/decks/figures/cast/rig/track'
-import { mirror } from '@/decks/figures/cast/rig/track'
+import type { Action, Key, Tracks } from '../rig/track'
+import { mirror } from '../rig/track'
 
 const head = (name: string, duration: number, tracks: Tracks, extra: Partial<Action> = {}): Action => ({
   name,

@@ -6,8 +6,8 @@
  * a slide. `manual` only moves on seek(t), for the recorder and the shoot
  * harness, which step time themselves so every frame is exact. */
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ACTIONS, EXPRESSIONS } from '@/decks/figures/cast/actions'
-import { talkAction } from '@/decks/figures/cast/actions/talk'
+import { ACTIONS, EXPRESSIONS } from '../actions'
+import { talkAction } from '../actions/talk'
 import { defaultPose, type Pose } from './channels'
 import { clipDone, EXPRESSION_CROSSFADE, poseAt, type Timeline } from './compose'
 import { delay, mirror, retime, scaleAction, type Action, type Key, type Tracks } from './track'

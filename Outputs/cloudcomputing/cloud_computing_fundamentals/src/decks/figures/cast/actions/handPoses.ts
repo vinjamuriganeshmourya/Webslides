@@ -1,8 +1,8 @@
 /* Named hand shapes as finger-curl vectors, so a hand can blend from one to
  * the next instead of swapping drawings. Written by actions, read by the
  * renderer through the fL1..fL4, tL, spreadL, palmL channels (and R). */
-import type { Channel, Pose } from '@/decks/figures/cast/rig/channels'
-import type { Ease, Key, Tracks } from '@/decks/figures/cast/rig/track'
+import type { Channel, Pose } from '../rig/channels'
+import type { Ease, Key, Tracks } from '../rig/track'
 
 export type HandPose = { f1: number; f2: number; f3: number; f4: number; thumb: number; spread: number; palm: number }
 

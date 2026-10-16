@@ -29,6 +29,8 @@ export type Palette = {
   shoe: string
   /** the tie (Arjun, navy) or the hair band (Riya, the blouse periwinkle) */
   accent: string
+  /** the tongue; unset means the blush, as in the flat look */
+  tongue?: string
 }
 
 export type Skin = {
@@ -49,10 +51,15 @@ export type Skin = {
      gradient on the top (Arjun). 'line': flat fills with thin dark outlines
      on hands, collar and pockets (Riya). */
   art: 'soft' | 'line'
-  /** 'flat' is the reference look; 'lit' keeps the specular filters */
-  shading: 'flat' | 'lit'
-  /** 'oval': small dark ovals with a catchlight (Arjun). 'dot': tiny almond dots with a lash line (Riya) */
-  eyes: 'oval' | 'dot'
+  /** 'clay' is the Library look (soft 3D, no outlines, see CONTRACTS.md);
+      'flat' the earlier Storyset look; 'lit' keeps the specular filters */
+  shading: 'flat' | 'lit' | 'clay'
+  /** 'big': the Library eye, white, brown iris, pupil, two catchlights and a
+      heavy upper lid. 'oval': small dark ovals with a catchlight. 'dot': tiny
+      almond dots with a lash line */
+  eyes: 'oval' | 'dot' | 'big'
+  /** two or three lash flicks at the outer corner of a 'big' eye: every woman in the Library has them, no man does */
+  lashes?: boolean
   /** 'full': lips, teeth and tongue (Arjun). 'line': a drawn line that opens into a small dark shape (Riya) */
   mouthStyle: 'full' | 'line'
   /** brow stroke width in px, from config.face.brows */

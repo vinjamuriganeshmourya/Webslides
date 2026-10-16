@@ -15,8 +15,8 @@
  * Nothing under "lit" is mounted unless skin.shading === 'lit', which is how
  * a flat SVG ends up with no <filter> element at all. */
 import type { JSX } from 'react'
-import type { Palette } from '@/decks/figures/cast/skins/types'
-import { shade } from '@/decks/figures/cast/rig/Body'
+import type { Palette } from '../skins/types'
+import { shade } from '../rig/Body'
 
 /** Upper left, in front. The one lamp for every character, both looks. */
 export const LAMP = { x: -60, y: -90, z: 180 }
@@ -150,6 +150,99 @@ export function CastShadow({ id, dy = 3, blur = 3, opacity = 0.35 }: { id: strin
   return (
     <filter id={id} x="-30%" y="-30%" width="160%" height="170%">
       <feDropShadow dx="1.5" dy={dy} stdDeviation={blur} floodColor="#3A1B0B" floodOpacity={opacity} />
+    </filter>
+  )
+}
+
+/* ---------- clay ---------- */
+
+/* 'clay' is the Library look (the reference folder named in CONTRACTS.md):
+ * soft 3D figures with no outline anywhere, where every form turns by its
+ * own shading. Measured off the references: skin #F9AE7C lit to #FCC398 on
+ * the side toward the lamp and down to #E88D5C on the side away; a white
+ * shirt #D5D8EB to #B7B8CE in its folds. The turn is a soft band along the
+ * silhouette, a few px wide, never a hard crescent.
+ *
+ * One filter does that for any shape: the shape's own blurred alpha, slid
+ * toward the lamp, leaves a soft rim along the far edge; that rim multiplies
+ * the paint darker in its own hue. Slid away from the lamp it leaves the
+ * near rim, which is lightened. Because the filter reads only alpha, the
+ * same def turns a skull, a sleeve, a quiff or a trouser leg, and every
+ * fill stays the flat palette colour underneath. */
+
+/** The paint names of the clay look: flat colours, as in flatPaints, plus
+    the filters that give each group its volume. */
+export function clayPaints(p: Palette, url: (n: string) => string): Record<string, string> {
+  return {
+    ...flatPaints(p),
+    clayHead: url('clayHead'),
+    clayBody: url('clayBody'),
+    clayLimb: url('clayLimb'),
+    clayHair: url('clayHair'),
+    clayDrop: url('clayDrop'),
+  }
+}
+
+/* Rim width (blur) and slide (off) per scale of form, in the 400-wide
+   viewBox: a skull turns over about 8 px, a torso over 12, a finger over 3. */
+const CLAY = {
+  head: { blur: 7, off: 6, shadow: 0.5, light: 0.3 },
+  body: { blur: 11, off: 9, shadow: 0.42, light: 0.26 },
+  limb: { blur: 4.5, off: 4, shadow: 0.45, light: 0.28 },
+  hair: { blur: 5, off: 4.5, shadow: 0.55, light: 0.08 },
+}
+/* The multiply colour: a cool violet-grey. The Library's shadows deepen
+   every hue without greying it, and a violet multiply is what keeps a blue
+   sweater blue and warms peach skin to orange, as the references do. */
+const CLAY_SHADOW = '#7C6C8E'
+const CLAY_LIGHT = '#FFF6EE'
+
+export function ClayDefs({ id }: { id: (n: string) => string }): JSX.Element {
+  return (
+    <>
+      <ClayFilter id={id('clayHead')} {...CLAY.head} />
+      <ClayFilter id={id('clayBody')} {...CLAY.body} />
+      <ClayFilter id={id('clayLimb')} {...CLAY.limb} />
+      <ClayFilter id={id('clayHair')} {...CLAY.hair} sheen />
+      {/* hair onto the forehead, an arm onto the chest: a soft contact shadow, no hard edge */}
+      <CastShadow id={id('clayDrop')} dy={3} blur={3} opacity={0.22} />
+    </>
+  )
+}
+
+function ClayFilter({ id, blur, off, shadow, light, sheen }: { id: string; blur: number; off: number; shadow: number; light: number; sheen?: boolean }) {
+  const ox = Math.sign(LAMP.x) * off
+  const oy = Math.sign(LAMP.y) * off * 1.2
+  return (
+    <filter id={id} x="-15%" y="-15%" width="130%" height="130%" colorInterpolationFilters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation={blur} result="b" />
+      {/* the far rim: alpha slid toward the lamp leaves the edge away from it */}
+      <feOffset in="b" dx={ox} dy={oy} result="bs" />
+      <feComposite in="SourceAlpha" in2="bs" operator="out" result="rimS" />
+      <feFlood floodColor={CLAY_SHADOW} floodOpacity={shadow} />
+      <feComposite in2="rimS" operator="in" result="sh" />
+      <feBlend in="sh" in2="SourceGraphic" mode="multiply" result="shaded" />
+      {/* the near rim, lightened */}
+      <feOffset in="b" dx={-ox} dy={-oy} result="bh" />
+      <feComposite in="SourceAlpha" in2="bh" operator="out" result="rimH" />
+      <feFlood floodColor={CLAY_LIGHT} floodOpacity={light} />
+      <feComposite in2="rimH" operator="in" result="hi" />
+      {sheen && (
+        /* Hair in the Library is glossy: one broad specular band where the
+           mass faces the lamp, on top of the rim shading. */
+        <>
+          <feGaussianBlur in="SourceAlpha" stdDeviation={blur * 1.6} result="bb" />
+          <feSpecularLighting in="bb" surfaceScale="4" specularConstant="0.26" specularExponent="22" lightingColor="#B9BDD6" result="spec">
+            <feDistantLight azimuth="225" elevation="52" />
+          </feSpecularLighting>
+          <feComposite in="spec" in2="SourceAlpha" operator="in" result="specIn" />
+        </>
+      )}
+      <feMerge>
+        <feMergeNode in="shaded" />
+        <feMergeNode in="hi" />
+        {sheen && <feMergeNode in="specIn" />}
+      </feMerge>
     </filter>
   )
 }

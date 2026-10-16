@@ -1093,7 +1093,9 @@ be. Fixed zones give every slide the same body area.
    or more letters capitalised; the first word after a colon capitalised;
    every part of a hyphenated term capitalised; a technical name in its own
    form (`id`, `id()` stay lowercase even as the last word).
-3. **One gradient divider between the kicker and the title**, 3px tall and
+3. **One gradient divider between the kicker and the title, ALWAYS** (user,
+   2026-10-16: "that is part of the template, don't remove it in any case;
+   the gradient line below the kicker is a must"; rule 49 never covers it), 3px tall and
    400px long from the text's left edge, solid in the slide's tone for 13% of
    its run and faded to nothing by the end, 33px below the header's top. No
    bars at the left edge: the pair of 2026-09-24 went with the old design.
@@ -1587,3 +1589,28 @@ edge of the code box (12px into the title bar). It was the label of a
 `TokenRing` lifted 44px above `friend`, which is less than the distance to
 the box's top edge. Fixed by lifting it to 74px, an 18px gap. Rule 42's check
 covered arrows only, so no harness saw it.
+
+## 49. No underlines, anywhere (the kicker's gradient divider is not an underline)
+
+**Hard rule, every deck.** Nothing on a slide is underlined: not a word in a
+sentence, not a highlighted phrase in a definition, not a heading, not a link,
+and no extra decorative line under a title. Emphasis is colour and weight: a
+key phrase in a definition is the brand colour, semibold. A link is told apart
+by its colour and its icon, never by an underline.
+
+**The exception that is not optional:** the template's gradient divider between
+the kicker and the title (rule 33, point 3) is part of the template and is
+drawn on every slide with a kicker. Never remove it, whatever a review's "no
+underlines" wording seems to say.
+
+Check: `.text-audit.mjs` (Cloud Computing Fundamentals session root) reports
+any text whose computed `text-decoration-line` includes `underline`.
+
+Why: user, 2026-10-16, review of Cloud Computing Fundamentals
+(`Outputs/cloudcomputing/cloud_computing_fundamentals`): the definition
+slides underlined their key phrases; "No underlines anywhere in any deck: text,
+headings, links, decorative lines under titles. Treat this as a permanent
+global rule for all future decks." The first pass also removed the kicker's
+gradient divider; the user, the same day: "that is part of the template, don't
+remove it in any case; from now on the gradient line below the kicker is a
+must."

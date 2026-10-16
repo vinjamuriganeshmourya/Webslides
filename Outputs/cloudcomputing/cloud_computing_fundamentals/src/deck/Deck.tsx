@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AnimatePresence, PresenceContext, motion } from 'framer-motion'
+import { AnimatePresence, MotionConfig, PresenceContext, motion, useReducedMotion } from 'framer-motion'
 import type { DeckProps } from './types'
 import { DeckContext } from './DeckContext'
 import { SlideStage } from './SlideStage'
@@ -411,7 +411,11 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
     */
     contRef.current = { index, replay, carry: NO_CONTINUITY, held: false }
   }
-  const { carry, held } = contRef.current
+  /* a smooth deck holds nothing over and cuts nothing: every move is the one transition */
+  const smooth = !!player?.smooth
+  /* under prefers-reduced-motion a smooth deck's transition is the plain fade, so nothing slides or snaps */
+  const reduceMotion = useReducedMotion()
+  const { carry, held } = smooth ? { carry: NO_CONTINUITY, held: false } : contRef.current
 
   /*
     Plain arrows jump a whole slide as a cut; Ctrl+arrows step the build and play
@@ -422,12 +426,14 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
     something the room is already looking at — and it would slide the static
     header across the screen, which is the opposite of holding it still.
   */
-  const kind: SlideTransition = cut || held ? 'none' : (current?.transition ?? transition)
+  const noCut = !smooth && (cut || held)
+  const kind: SlideTransition = smooth ? (reduceMotion ? 'fade' : 'glide') : noCut ? 'none' : (current?.transition ?? transition)
   /* what the transition needs to know about this move: its direction, and whether it is a cut */
-  const move = useMemo(() => ({ dir: direction, cut: cut || held }), [direction, cut, held])
+  const move = useMemo(() => ({ dir: direction, cut: noCut }), [direction, noCut])
 
   return (
     <DeckContext.Provider value={ctx}>
+      <MotionConfig reducedMotion={smooth ? 'user' : 'never'}>
       {/*
         A FLEX COLUMN, so that on a phone the control bar can be a sibling BELOW
         the stage rather than a layer over it (see `DeckControls`, "SMALL
@@ -458,7 +464,7 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
                 initial="enter"
                 animate="center"
                 exit="exit"
-                transition={cut ? { duration: 0 } : slideTransition}
+                transition={cut && !smooth ? { duration: 0 } : slideTransition}
                 className="absolute inset-0"
                 /*
                   `preserve-3d` ONLY FOR THE FLIP, AND THAT IS HALF THE BLUR FIX.
@@ -596,10 +602,12 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
               index={index}
               onPick={pickSlide}
               onClose={closePicker}
+              thumbnails={!!player?.thumbnails}
             />
           )}
         </AnimatePresence>
       </div>
+      </MotionConfig>
     </DeckContext.Provider>
   )
 }

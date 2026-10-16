@@ -1,57 +1,101 @@
-import type { ReactNode } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useState, type ReactNode } from 'react'
 import { colors } from '@/design/tokens'
 import { useBeats } from '@/ui'
 import { useInstant } from '@/motion/instant'
-import { Card, Stage, At, Fade, Label, Note, Arrow, Rail, useTicker, STILL, BOX_W } from './scene'
-import { Idling, BUST, FACE } from './Cast'
-import { OPERATOR, TENANTS } from './people'
+import { Card, Stage, At, Label, Note, Arrow, Statement, Traveller, B, useLoop, useCycle, STILL, BOX_W, isNow } from './scene'
 import { VmStack } from './analogy'
-import { ClockFace, CloudShape, Desktop, Mainframe, MeterDial, Padlock, ProviderBuilding, Rack, Storefront, Terminal, useEase } from './art'
+import { CloudShape, Storefront, useEase } from './art'
+import { ClayBar, ClayClock, ClayCloud, ClayCloudScene, ClayDataCentre, ClayDesktop, ClayInstitution, ClayJobTray, ClayMainframe, ClayMeter, ClayOsWindow, ClayPadlock, ClayServerBox, ClayTerminal, LAB } from './clay-b'
+import { mo } from './motion'
+import { tile, WELL } from './basics'
 
 /**
  * SECTION 2, HISTORY & EVOLUTION (STAR): four eras, each solving the
  * resource-sharing problem of its own time, then the table of what cloud
  * inherited. Every string is the reference's.
+ *
+ * Review 2026-10-16 (global rules): nothing needs a hand (the era timeline
+ * runs on `useLoop`, turns on `useCycle`); motion only where it explains the
+ * content (a connector draws from source to target, a request is a dot on
+ * its path, a timeline reveals in order); every ease on the house curve with
+ * the deck's fixed durations.
  */
 
-/* ================================================================== 13 · Four eras */
+/** A connector's `on`, false at mount and true after `delay`, so it draws itself source to target; already on under harness URLs and in a thumbnail. */
+function useDrawn(delay = 1100): boolean {
+  const instant = useInstant()
+  const [on, setOn] = useState(STILL || instant)
+  useEffect(() => {
+    if (STILL || instant) {
+      setOn(true)
+      return
+    }
+    const t = window.setTimeout(() => setOn(true), delay)
+    return () => window.clearTimeout(t)
+  }, [instant, delay])
+  return on
+}
+
+/* ================================================================== 14 · Four eras */
 
 const ERAS = [
-  { period: '1960s-70s', label: 'mainframes & time-sharing' },
-  { period: '1980s-2000s', label: 'client-server & x86 virtualization' },
-  { period: '1990s-2000s', label: 'grid & utility computing' },
-  { period: '2006 onward', label: 'the public cloud era' },
+  { period: '1960s-70s', label: 'Mainframes & time-sharing' },
+  { period: '1980s-2000s', label: 'Client-server & x86 virtualization' },
+  { period: '1990s-2000s', label: 'Grid & utility computing' },
+  { period: '2006 onward', label: 'The public cloud era' },
 ]
 
-function EraPicture({ i }: { i: number }): ReactNode {
+/** The timeline strip: the line runs from LINE_X0 to LINE_X1; era i's dot sits at ERA_DOT(i). */
+const LINE_X0 = 40
+const LINE_X1 = BOX_W - 40
+const ERA_DOT = (i: number) => 132 + i * 281
+/** The lap holds the finished timeline for its last 14%, so the room sees all four eras before it runs again. */
+const LAP_RUN = 0.86
+
+/**
+ * Each era's picture, in clay (review 2026-10-16: no operator, the data centre
+ * lost its stray door box), animated the way its era worked once the timeline
+ * reaches it: terminals light on the mainframe, a request runs from the
+ * client to the server, the grid's links join, the data centre comes on.
+ */
+function EraPicture({ i, on }: { i: number; on: boolean }): ReactNode {
+  const ease = useEase()
+  const draw = useEase(860)
   if (i === 0)
     return (
-      <div className="flex items-end gap-1">
-        <Idling cfg={OPERATOR} scale={0.3} crop={BUST} seed={3} />
-        <Mainframe w={120} busy />
+      <div className="flex items-end gap-1.5">
+        <ClayTerminal w={46} lit={on} />
+        <ClayMainframe w={132} busy={on} />
+        <ClayTerminal w={46} lit={on} />
       </div>
     )
   if (i === 1)
     return (
-      <div className="flex items-end gap-3">
-        <Desktop w={84} lit />
-        <Rack w={46} units={['run', 'run', 'run']} />
+      <div className="relative flex items-end gap-3">
+        <ClayDesktop w={100} />
+        <ClayServerBox w={52} n={3} />
+        <Traveller path={[[50, 36], [138, 40]]} run={on} k="req" size={12} />
       </div>
     )
   if (i === 2)
     return (
-      <div className="relative" style={{ width: 200, height: 100 }}>
+      <div className="relative" style={{ width: 210, height: 112 }}>
+        <svg data-flat className="absolute inset-0" width={210} height={112} aria-hidden>
+          <path d="M 44 76 L 105 30 L 166 76" fill="none" stroke={colors.line} strokeWidth={3} strokeDasharray="5 5" strokeLinecap="round" />
+          <path d="M 44 76 L 105 30 L 166 76" fill="none" stroke={colors.brand} strokeWidth={3} strokeLinecap="round" pathLength={1} strokeDasharray="1" style={{ strokeDashoffset: on ? 0 : 1, transition: draw }} />
+          {/* motion layer: the joined links carry a flow dash */}
+          <path d="M 44 76 L 105 30 L 166 76" fill="none" stroke={colors.white} strokeWidth={1.5} strokeLinecap="round" strokeDasharray="5 9" className={mo('dash', 3).className} style={{ opacity: on ? 0.75 : 0, transition: ease, ...mo('dash', 3).style }} />
+        </svg>
         {[0, 1, 2].map((k) => (
-          <div key={k} className="absolute" style={{ left: k * 70, top: k === 1 ? 0 : 40 }}>
-            <Desktop w={58} lit />
+          <div key={k} className="absolute" style={{ left: k * 74, top: k === 1 ? 0 : 52 }}>
+            <ClayDesktop w={62} lit={on} />
           </div>
         ))}
       </div>
     )
   return (
-    <div className="flex items-end gap-2">
-      <ProviderBuilding w={150} lit={10} />
+    <div style={{ opacity: on ? 1 : 0.6, transition: ease }}>
+      <ClayDataCentre w={160} />
     </div>
   )
 }
@@ -59,276 +103,391 @@ function EraPicture({ i }: { i: number }): ReactNode {
 export function EraWalk({ lesson }: { lesson: string }) {
   const beat = useBeats(4)
   const ease = useEase()
+  /* the timeline runs by itself (global rule 3): one lap every 8s, the line reaching each era in order, held complete on a harness frame */
+  const t = useLoop(8000, { mode: 'sawtooth', still: 1 })
+  const p = Math.min(1, t / LAP_RUN)
+  const head = LINE_X0 + p * (LINE_X1 - LINE_X0)
+  const reached = (i: number) => head >= ERA_DOT(i) - 1
   return (
     <Card id="four-eras" kicker="Four Eras Of Computing" title="From Mainframes To Cloud" lead="Cloud computing did not appear overnight; it inherited ideas from four earlier eras, each solving the resource-sharing problem of its own time" lesson={lesson} beat={beat} total={4}>
       <div className="flex gap-[16px]">
         {ERAS.map((e, i) => {
-          const now = beat === i + 1
-          const seen = beat >= i + 1
+          const now = isNow(beat, i + 1)
+          const seen = reached(i)
           return (
             <Stage key={e.period} w={265} h={236} active={now}>
-              <div className="absolute inset-x-0 top-0 grid h-[160px] place-items-center" style={{ opacity: seen ? 1 : 0.28, filter: seen ? 'none' : 'grayscale(1)', transition: ease }}>
-                <EraPicture i={i} />
+              <div className="absolute inset-x-0 top-[10px] grid h-[150px] place-items-center" style={{ opacity: seen ? 1 : 0.28, filter: seen ? 'none' : 'grayscale(1)', transition: ease }}>
+                <EraPicture i={i} on={seen} />
               </div>
               <div className="absolute inset-x-0 bottom-[14px] flex flex-col items-center gap-1.5">
                 <Label tone={seen ? 'brand' : 'muted'} strong size={14}>{e.period}</Label>
-                <span className="text-[14px] font-medium" style={{ color: colors.ink }}>{e.label}</span>
+                <span className="text-[15px] font-medium" style={{ color: colors.ink, opacity: seen ? 1 : 0.45, transition: ease }}>{e.label}</span>
               </div>
             </Stage>
           )
         })}
       </div>
       <div className="relative mt-3" style={{ width: BOX_W, height: 40 }}>
-        <div className="absolute left-[40px] right-[40px] top-[18px] h-[4px] rounded-full" style={{ background: colors.line }} />
-        <div className="absolute left-[40px] top-[18px] h-[4px] rounded-full" style={{ background: colors.brand, width: `${((beat - 1) / 3) * (BOX_W - 80)}px`, transition: ease }} />
+        <div className="absolute top-[18px] h-[4px] rounded-full" style={{ left: LINE_X0, width: LINE_X1 - LINE_X0, background: colors.line }} />
+        <div className="absolute top-[18px] h-[4px] rounded-full" style={{ left: LINE_X0, width: head - LINE_X0, background: colors.brand, transition: ease }} />
         {ERAS.map((e, i) => (
-          <span key={e.period} className="absolute top-[11px] h-[18px] w-[18px] rounded-full" style={{ left: 132 + i * 281 - 9, background: beat >= i + 1 ? colors.brand : colors.white, boxShadow: `inset 0 0 0 3px ${colors.brand}`, transition: ease }} />
+          <span key={e.period} className={`absolute top-[11px] h-[18px] w-[18px] rounded-full ${reached(i) ? mo('pulse', i).className : ''}`} style={{ left: ERA_DOT(i) - 9, background: reached(i) ? colors.brand : colors.white, boxShadow: `inset 0 0 0 3px ${colors.brand}`, transition: ease, ...mo('pulse', i).style }} />
         ))}
       </div>
     </Card>
   )
 }
 
-/* ================================================================== 14 · One Machine Many Users (reference 14 + 15) */
+/* ================================================================== 15 · One Machine Many Users (reference 14 + 15; split by the review 2026-10-16: the points, then the picture) */
+
+/** A point with its own small picture beside it (review 2026-10-16: the points shown visually, the full scene stays on the next slide). */
+function PointRow({ text, art, h = 62, artW = 150 }: { text: ReactNode; art: ReactNode; h?: number; artW?: number }) {
+  return (
+    <div className="flex items-center gap-4 rounded-2xl pr-5" style={{ height: h, ...tile() }}>
+      <div className="grid h-full shrink-0 place-items-center rounded-2xl" style={{ width: artW, ...WELL }}>
+        {art}
+      </div>
+      <span className="min-w-0 text-[18px] font-medium leading-snug" style={{ color: colors.ink }}>
+        {text}
+      </span>
+    </div>
+  )
+}
 
 export function MainframeScene({ lesson }: { lesson: string }) {
   const beat = useBeats(5)
-  const tick = useTicker(beat >= 3, 1200, 1)
-  const turn = tick % 4
+  /* the scheduler's turn passes terminal to terminal by itself: one step every 2.4s */
+  const turn = useCycle(4)
   const ease = useEase()
-  const instant = useInstant()
-  const items = [
-    { text: 'Mainframes: centralised, costly machines run by dedicated operators', at: 1 },
-    { text: 'Batch processing: jobs queued and run without interaction', at: 2 },
-    { text: 'Time-sharing (1960s): CPU scheduled across simultaneous terminal users', at: 3 },
-    { text: 'Each user experienced an illusion of a private computer', at: 4 },
-    { text: "IBM's CP-40/CP-67 (1960s) pioneered mainframe virtualization: the earliest form of the concept", at: 5 },
+  const rows: { text: string; art: ReactNode }[] = [
+    { text: 'Mainframes: centralised, costly machines run by dedicated operators', art: <ClayMainframe w={74} busy /> },
+    { text: 'Batch processing: jobs queued and run without interaction', art: <ClayJobTray w={92} /> },
+    {
+      text: 'Time-sharing (1960s): CPU scheduled across simultaneous terminal users',
+      art: (
+        <div className="flex items-center gap-2">
+          <ClayClock w={38} turn={turn / 4} />
+          <div className="flex items-end gap-1">
+            {[0, 1, 2, 3].map((k) => (
+              <div key={k} style={{ opacity: k === turn ? 1 : 0.55, transition: ease }}>
+                <ClayTerminal w={22} lit={k === turn} />
+              </div>
+            ))}
+          </div>
+        </div>
+      ),
+    },
+    {
+      text: 'Each user experienced an illusion of a private computer',
+      art: (
+        <div className="flex items-center gap-2">
+          <ClayTerminal w={44} lit />
+          <Label size={14} tone="good">Mine</Label>
+        </div>
+      ),
+    },
+    {
+      text: "IBM's CP-40/CP-67 (1960s) pioneered mainframe virtualization: the earliest form of the concept",
+      art: (
+        <div className="flex items-center gap-1.5">
+          {[0, 1, 2].map((k) => (
+            <ClayBar key={k} w={38} h={28} fill={LAB.cobalt}>
+              <span className="font-heading text-[14px] font-semibold text-white">VM</span>
+            </ClayBar>
+          ))}
+        </div>
+      ),
+    },
   ]
-  const TX = [60, 220, 380, 540]
   return (
     <Card id="mainframes" kicker="Mainframes & Time-Sharing" title="One Machine Many Users" lead="Early mainframes were too costly for one user alone, so time-sharing let many users access the same machine at once" lesson={lesson} beat={beat} total={5}>
-      <div className="flex gap-4">
-        <Rail items={items} beat={beat} width={404} size={16} gap={8} />
-        <Stage w={690} h={392} active={false}>
-          <At x={20} y={20}><Idling cfg={OPERATOR} scale={0.42} seed={12} /></At>
-          <At x={20} y={180}><Label size={12} tone="muted">operator</Label></At>
-          <At x={220} y={18}>
-            <div className="relative">
-              <Mainframe w={200} busy={beat >= 2} />
-              <Fade on={beat >= 5} style={{ position: 'absolute', inset: '24px 18px 18px 18px' }}>
-                <div className="grid h-full grid-cols-3 gap-1.5">
-                  {[0, 1, 2].map((k) => (
-                    <div key={k} className="grid place-items-center rounded-md text-[14px] font-semibold text-white" style={{ background: colors.brand }}>VM</div>
-                  ))}
-                </div>
-              </Fade>
-            </div>
-          </At>
-          <At x={432} y={26} w={240}>
-            <div className="flex flex-col items-start gap-1.5">
-              <Label strong tone="dark" size={14}>Mainframe</Label>
-              <Fade on={beat >= 3}><Note size={13}>CPU scheduled across simultaneous terminal users</Note></Fade>
-              <Fade on={beat >= 5}><Label tone="brand" size={13}>CP-40/CP-67</Label></Fade>
-            </div>
-          </At>
-          {/* the batch tray: jobs queued, run one after another without interaction */}
-          <At x={432} y={118} w={240}>
-            <Fade on={beat === 2}>
-              <div className="flex items-center gap-2">
-                <div className="flex gap-1">
-                  {[0, 1, 2, 3].map((k) => (
-                    <motion.span key={k} className="block h-[34px] w-[26px] rounded-md" style={{ background: colors.white, boxShadow: `inset 0 0 0 2px ${colors.warning}` }} initial={false} animate={{ x: instant ? 0 : beat === 2 ? [0, -8, 0] : 0 }} transition={{ duration: 0.8, delay: k * 0.2 }} />
-                  ))}
-                </div>
-                <Label tone="warn" size={12}>jobs queued</Label>
-              </div>
-            </Fade>
-          </At>
-          <At x={548} y={150}>
-            <Fade on={beat >= 3}><ClockFace w={56} turn={turn / 4} /></Fade>
-          </At>
-          <At x={548} y={210}><Fade on={beat >= 3}><Label size={12} tone="brand">scheduled turns</Label></Fade></At>
-          {TX.map((x, i) => (
-            <Arrow key={i} x1={x + 44} y1={262} x2={320} y2={184} on={beat >= 3} tone={beat >= 3 && i === turn ? colors.brand : colors.line} />
-          ))}
-          {TX.map((x, i) => {
-            const lit = beat >= 3 && i === turn
-            return (
-              <At key={i} x={x} y={266} w={88}>
-                <div className="flex flex-col items-center gap-1" style={{ opacity: beat >= 3 ? 1 : 0.25, transition: ease }}>
-                  <Terminal w={70} lit={lit || beat >= 4} />
-                  <Label size={12} tone={lit ? 'brand' : 'plain'}>Terminal</Label>
-                </div>
-              </At>
-            )
-          })}
-          {TX.map((x, i) => (
-            <At key={`b${i}`} x={x + 44} y={360} cx>
-              <Fade on={beat >= 4} delay={i * 120}>
-                <Label size={12} tone="good">my computer</Label>
-              </Fade>
-            </At>
-          ))}
-        </Stage>
+      <div className="flex flex-col gap-[10px]" style={{ width: BOX_W }}>
+        {rows.map((r) => (
+          <PointRow key={r.text} text={r.text} art={r.art} />
+        ))}
       </div>
     </Card>
   )
 }
 
-/* ================================================================== 16 · Hardware Gets Abstracted (reference 17 + 18) */
+/** The picture half: one mainframe, its batch tray, four terminals taking scheduled turns. No operator (review 2026-10-16). */
+export function MainframePicture({ lesson }: { lesson: string }) {
+  /* the turn passes by itself, one step every 2.4s; the user's job is the dot that runs up to the machine */
+  const turn = useCycle(4)
+  const ease = useEase()
+  const TX = [210, 440, 670, 900]
+  const top = (i: number) => 555 + (i - 1.5) * 44
+  return (
+    <Card id="mainframes-2" kicker="Mainframes & Time-Sharing" title="One Machine Many Users" lesson={lesson}>
+      <Stage w={BOX_W} h={392} active={false}>
+        {/* the batch tray and the scheduler's clock, left of the machine */}
+        <At x={70} y={30} w={330}>
+          <div className="flex items-center gap-3">
+            <ClayJobTray w={140} />
+            <Label tone="warn" size={15}>Jobs queued</Label>
+          </div>
+        </At>
+        <At x={70} y={130} w={330}>
+          <div className="flex items-center gap-3">
+            <ClayClock w={60} turn={turn / 4} />
+            <Label tone="brand" size={15}>Scheduled turns</Label>
+          </div>
+        </At>
+        <At x={555} y={14} cx>
+          <ClayMainframe w={250} />
+        </At>
+        {/* what the machine is, and its first virtual machines */}
+        <At x={706} y={26} w={390}>
+          <div className="flex flex-col items-start gap-2.5">
+            <Label strong tone="dark" size={15}>Mainframe</Label>
+            <Note size={16} className="whitespace-nowrap">CPU scheduled across simultaneous terminal users</Note>
+            <div className="flex items-center gap-2">
+              {[0, 1, 2].map((k) => (
+                <ClayBar key={k} w={50} h={34} fill={LAB.cobalt}>
+                  <span className="font-heading text-[14px] font-semibold text-white">VM</span>
+                </ClayBar>
+              ))}
+              <Label tone="brand" size={15}>CP-40/CP-67</Label>
+            </div>
+          </div>
+        </At>
+        {TX.map((x, i) => (
+          <Arrow key={i} x1={x} y1={246} x2={top(i)} y2={204} tone={i === turn ? colors.brand : colors.line} />
+        ))}
+        <Traveller path={[[TX[turn], 246], [top(turn), 206]]} run k={turn} size={12} dur={1.2} />
+        {TX.map((x, i) => {
+          const lit = i === turn
+          return (
+            <At key={i} x={x} y={252} cx>
+              <div className="flex flex-col items-center gap-2">
+                <div style={{ opacity: lit ? 1 : 0.7, transition: ease }}>
+                  <ClayTerminal w={96} lit={lit} />
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Label size={14} tone={lit ? 'brand' : 'plain'}>Terminal</Label>
+                  <Label size={14} tone="good">My computer</Label>
+                </div>
+              </div>
+            </At>
+          )
+        })}
+      </Stage>
+    </Card>
+  )
+}
+
+/* ================================================================== 18 · Hardware Gets Abstracted (copy replaced by the review, 2026-10-15, word for word; split by the review 2026-10-16) */
+
+/** Clients to a server, the request a dot on its path: a scene small enough for a point row. */
+function ClientServerMini({ k }: { k: number }) {
+  const on = useDrawn()
+  return (
+    <div className="relative" style={{ width: 196, height: 84 }}>
+      <div className="absolute" style={{ left: 0, top: 8 }}><ClayDesktop w={78} /></div>
+      <div className="absolute" style={{ left: 142, top: 6 }}><ClayServerBox w={44} n={2} /></div>
+      <Arrow x1={82} y1={44} x2={138} y2={44} on={on} />
+      <Traveller path={[[84, 44], [136, 44]]} run k={k} size={11} dur={1.2} />
+    </div>
+  )
+}
+
+/** One server, its hypervisor, three VMs with their own OS: the stack, small. */
+function HypervisorMini() {
+  return (
+    <div className="flex flex-col items-center" style={{ gap: 4 }}>
+      <div className="flex" style={{ gap: 6 }}>
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="grid place-items-center rounded-lg" style={{ width: 54, height: 40, ...tile() }}>
+            <ClayOsWindow w={40} k={i} />
+          </div>
+        ))}
+      </div>
+      <ClayBar w={174} h={22} fill={LAB.cobalt}>
+        <span className="font-heading text-[14px] font-semibold text-white">Hypervisor</span>
+      </ClayBar>
+      <ClayBar w={174} h={22} fill={LAB.lavender}>
+        <span className="text-[14px] font-medium" style={{ color: colors.ink }}>One server</span>
+      </ClayBar>
+    </div>
+  )
+}
+
+/** The benefit: a meter high on use, and one VM that can sit on either of two machines. */
+function BenefitMini() {
+  const k = useCycle(2)
+  const ease = useEase()
+  return (
+    <div className="flex items-center gap-4">
+      <ClayMeter w={50} value={0.9} />
+      <div className="relative" style={{ width: 118, height: 84 }}>
+        <div className="absolute" style={{ left: 0, top: 34 }}><ClayServerBox w={44} n={1} /></div>
+        <div className="absolute" style={{ left: 74, top: 34 }}><ClayServerBox w={44} n={1} /></div>
+        <div className="absolute" style={{ left: 4, top: 0, transform: `translateX(${74 * k}px)`, transition: ease }}><ClayOsWindow w={36} k={0} /></div>
+      </div>
+    </div>
+  )
+}
 
 export function HypervisorScene({ lesson }: { lesson: string }) {
-  const beat = useBeats(4)
-  const ease = useEase()
-  const tick = useTicker(beat === 1, 1300, 1)
-  const items = [
-    { text: '1980s-90s: client-server split desktop and network-server roles', at: 1 },
-    { text: 'Commodity x86 virtualization (late 1990s onward, e.g. VMware): a hypervisor partitions one server', at: 2 },
-    { text: 'Each virtual machine runs its own OS, isolated from others', at: 3 },
-    { text: 'Decouples software from physical hardware, enabling resource pooling', at: 4 },
+  const beat = useBeats(3)
+  const k = useCycle(2)
+  const rows: { text: ReactNode; art: ReactNode; key: string }[] = [
+    { key: 'a', text: <><B>1980s–90s:</B> Clients accessed shared server resources.</>, art: <ClientServerMini k={k} /> },
+    { key: 'b', text: <><B>Late 1990s onward:</B> Hypervisors enabled multiple VMs on one server.</>, art: <HypervisorMini /> },
+    { key: 'c', text: <><B>Benefit:</B> Better resource utilization and hardware independence.</>, art: <BenefitMini /> },
   ]
   return (
-    <Card id="virtualization" kicker="Client-Server & Virtualization" title="Hardware Gets Abstracted" lead="Personal computers and networks split work into client requests and dedicated servers; virtualization then lets one physical server run several independent virtual machines" lesson={lesson} beat={beat} total={4}>
-      <div className="flex gap-4">
-        <Rail items={items} beat={beat} width={404} size={16} />
-        <Stage w={690} h={360} active={false}>
-          {/* clients on the left */}
-          <At x={20} y={20} w={200}>
-            <div className="flex flex-col items-center gap-2">
-              {[0, 1].map((k) => (
-                <div key={k} className="flex items-center gap-2">
-                  <Idling cfg={TENANTS[k]} scale={0.28} crop={FACE} seed={80 + k} />
-                  <Desktop w={84} lit={beat === 1 && tick % 2 === k} />
-                </div>
-              ))}
-              <Label size={12}>client: the desktop</Label>
-            </div>
-          </At>
-          <Arrow x1={222} y1={124} x2={294} y2={124} on both />
-          <At x={222} y={86}><Label size={11} tone="muted">requests</Label></At>
-          {/* the server: one box, then the hypervisor and its VMs */}
-          <At x={300} y={20} w={380}>
-            <div style={{ opacity: beat === 1 ? 1 : 0, transition: ease, position: 'absolute', inset: 0 }}>
-              <div className="flex flex-col items-center gap-2 pt-6">
-                <Rack w={110} units={['run', 'run', 'run', 'run']} />
-                <Label size={12}>network server</Label>
-              </div>
-            </div>
-          </At>
-          <div className="absolute" style={{ left: 300, top: 0, width: 380, height: 340, opacity: beat >= 2 ? 1 : 0, transition: ease }}>
-            <VmStack top={34} cx={190} vms={beat >= 2 ? 3 : 0} osTag={beat >= 3} />
-          </div>
-          <At x={300} y={290} w={380}>
-            <Fade on={beat >= 3}>
-              <div className="flex items-center justify-center gap-2">
-                <Padlock w={16} />
-                <span className="text-[14px] font-medium" style={{ color: colors.ink }}>isolated from others</span>
-              </div>
-            </Fade>
-          </At>
-          <At x={300} y={318} w={380}>
-            <Fade on={beat >= 4}>
-              <div className="flex items-center justify-center gap-2">
-                <Label tone="brand" size={13}>software</Label>
-                <span className="text-[14px]" style={{ color: colors.ink }}>no longer tied to one machine</span>
-              </div>
-            </Fade>
-          </At>
-        </Stage>
+    <Card id="virtualization" kicker="Client-Server & Virtualization" title="Hardware Gets Abstracted" lead="Clients request services from servers. Virtualization allows one physical server to run multiple isolated virtual machines (VMs), each with its own OS." lesson={lesson} beat={beat} total={3}>
+      <div className="flex flex-col gap-[12px]" style={{ width: BOX_W }}>
+        {rows.map((r) => (
+          <PointRow key={r.key} text={r.text} art={r.art} h={110} artW={232} />
+        ))}
       </div>
     </Card>
   )
 }
 
-/* ================================================================== 18 · Pooling And Metering Power (reference 20 + 21) */
+/** The picture half: client desktops ask one server, inside which a hypervisor runs isolated VMs, each with its own OS. No faces (review 2026-10-16). */
+export function HypervisorPicture({ lesson }: { lesson: string }) {
+  const on = useDrawn()
+  /* a request runs to the server, a response runs back: one step every 2.4s */
+  const k = useCycle(2)
+  const path: [number, number][] = k === 0 ? [[264, 172], [460, 172]] : [[460, 172], [264, 172]]
+  return (
+    <Card id="virtualization-2" kicker="Client-Server & Virtualization" title="Hardware Gets Abstracted" lesson={lesson}>
+      <Stage w={BOX_W} h={372} active={false}>
+        {/* clients on the left */}
+        <At x={180} y={28} cx>
+          <div className="flex flex-col items-center gap-4">
+            <ClayDesktop w={128} />
+            <ClayDesktop w={128} />
+            <Label size={15}>Client: the desktop</Label>
+          </div>
+        </At>
+        <At x={362} y={132} cx><Label size={14} tone="muted">{k === 0 ? 'Requests' : 'Services'}</Label></At>
+        <Arrow x1={262} y1={172} x2={462} y2={172} both on={on} />
+        <Traveller path={path} run k={k} size={12} dur={1.2} />
+        {/* the one server: the hypervisor and its VMs */}
+        <VmStack top={24} cx={760} w={560} />
+        <At x={760} y={290} cx>
+          <div className="flex flex-col items-center gap-2.5">
+            <div className="flex items-center gap-2">
+              <ClayPadlock w={18} />
+              <span className="text-[16px] font-medium" style={{ color: colors.ink }}>Isolated virtual machines</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Label tone="good" size={15}>Better resource utilization</Label>
+              <Label tone="good" size={15}>Hardware independence</Label>
+            </div>
+          </div>
+        </At>
+      </Stage>
+    </Card>
+  )
+}
 
+/* ================================================================== 21 · Pooling And Metering Power (reference 20 + 21; split by the review, 2026-10-15) */
+
+export function GridStatement({ lesson }: { lesson: string }) {
+  return (
+    <Statement
+      id="grid-utility"
+      kicker="Grid & Utility Computing"
+      title="Pooling And Metering Power"
+      label="Grid & Utility Computing"
+      parts={[{ t: 'Grid computing', hi: true }, { t: ' pooled processing power across many organisations for one large task, while ' }, { t: 'utility computing', hi: true }, { t: ' proposed billing that powers the way electricity is billed' }]}
+      lesson={lesson}
+      art={
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex items-end gap-2">{[0, 1, 2].map((k) => <ClayInstitution key={k} w={88} tone={[LAB.cobalt, LAB.orange, LAB.periwinkle][k]} />)}</div>
+          <ClayMeter w={96} value={0.6} />
+        </div>
+      }
+    />
+  )
+}
+
+/** The points stay on the rail; the picture's own words sit under it, one line each (review 2026-10-16). */
 export function GridScene({ lesson }: { lesson: string }) {
   const beat = useBeats(4)
-  const run = beat >= 2
-  const tick = useTicker(run, 800, 3)
-  const ease = useEase()
-  const instant = useInstant()
+  const on = useDrawn()
+  /* each institution's idle CPUs go to the grid in turn, and the grid's use runs to the meter: one step every 2.4s */
+  const k = useCycle(3)
   const items = [
     { text: 'Grid computing: idle CPUs across institutions combined for shared jobs', at: 1 },
     { text: 'Example: distributed scientific projects pooling volunteer processing power', at: 2 },
     { text: 'Utility computing: pay only for capacity consumed, not owned', at: 3 },
     { text: 'Both separate consumption from ownership of hardware, ahead of cloud', at: 4 },
   ]
-  const INST = [
-    { x: 30, y: 30 },
-    { x: 30, y: 140 },
-    { x: 30, y: 250 },
+  const INST = [16, 104, 192]
+  const TONES = [LAB.cobalt, LAB.orange, LAB.periwinkle]
+  const NOTES = [
+    { t: 'Idle CPUs combined for shared jobs', dot: colors.brand },
+    { t: 'Metered billing', dot: colors.success },
+    { t: 'Owned: stays with each institution', dot: colors.muted },
+    { t: 'Consumed: paid by use', dot: colors.brand },
   ]
-  const hub = { x: 400, y: 150 }
   return (
-    <Card id="grid-utility" kicker="Grid & Utility Computing" title="Pooling And Metering Power" lead="Grid computing pooled processing power across many organisations for one large task, while utility computing proposed billing that powers the way electricity is billed" lesson={lesson} beat={beat} total={4}>
+    <Card id="grid-points" kicker="Grid & Utility Computing" title="Pooling And Metering Power" lesson={lesson} beat={beat} total={4}>
       <div className="flex gap-4">
-        <Rail items={items} beat={beat} width={404} size={16} />
-        <Stage w={690} h={360} active={false}>
-          {INST.map((p, i) => (
-            <At key={i} x={p.x} y={p.y}>
-              <div className="flex items-center gap-2">
-                <Desktop w={70} lit={run && (tick + i) % 2 === 0} />
-                <Label size={12}>Institution</Label>
+        <div className="flex shrink-0 flex-col" style={{ width: 404, gap: 10 }}>
+          {items.map((it) => (
+            <div key={it.at} className="flex items-start gap-3 rounded-2xl px-3.5 py-2.5" style={tile()}>
+              <span className="mt-[7px] grid h-[14px] w-[14px] shrink-0 place-items-center rounded-full" style={{ background: colors.surface2, boxShadow: `inset 0 0 0 1.5px ${colors.brand}` }}>
+                <span className="block h-[5px] w-[5px] rounded-full" style={{ background: colors.brand }} />
+              </span>
+              <span className="min-w-0 text-[16px] leading-snug" style={{ color: colors.ink }}>{it.text}</span>
+            </div>
+          ))}
+        </div>
+        <Stage w={690} h={392} active={false}>
+          {INST.map((y, i) => (
+            <At key={i} x={22} y={y}>
+              <div className="flex items-center gap-2.5">
+                <ClayInstitution w={84} tone={TONES[i]} />
+                <Label size={14}>Institution</Label>
               </div>
             </At>
           ))}
-          {INST.map((p, i) => (
-            <Arrow key={i} x1={p.x + 168} y1={p.y + 30} x2={hub.x - 84} y2={hub.y + 10 + (i - 1) * 24} on={beat >= 1} />
+          {INST.map((y, i) => (
+            <Arrow key={i} x1={222} y1={y + 36} x2={296} y2={118 + (i - 1) * 26} on={on} delay={i * 120} />
           ))}
-          <At x={hub.x} y={hub.y - 80} cx>
-            <div className="flex flex-col items-center gap-1.5">
-              <CloudShape w={160} />
-              <Label strong tone="brand" size={14}>One grid</Label>
-              <Note size={13} className="w-[200px] text-center">Idle CPUs combined for shared jobs</Note>
+          <Traveller path={[[224, INST[k] + 36], [294, 118 + (k - 1) * 26]]} run k={k} size={12} tone={TONES[k]} dur={1.2} />
+          <At x={400} y={46} cx>
+            <div className="flex flex-col items-center gap-2">
+              <ClayCloud w={196} />
+              <Label strong tone="brand" size={15}>One grid</Label>
             </div>
           </At>
-          {/* pieces of one job flying out and back */}
-          {run &&
-            [0, 1, 2].map((i) => (
-              <motion.span
-                key={`${i}-${beat}`}
-                className="absolute h-[14px] w-[14px] rounded-[4px]"
-                style={{ background: colors.accent, left: 0, top: 0 }}
-                initial={instant || STILL ? { x: INST[i].x + 28, y: INST[i].y + 16 } : { x: hub.x - 7, y: hub.y }}
-                animate={instant || STILL ? { x: INST[i].x + 28, y: INST[i].y + 16 } : { x: [hub.x - 7, INST[i].x + 28, hub.x - 7], y: [hub.y, INST[i].y + 16, hub.y] }}
-                transition={{ duration: 2.4, delay: i * 0.4, repeat: instant || STILL ? 0 : Infinity, repeatDelay: 0.6, ease: 'easeInOut' }}
-              />
-            ))}
-          <At x={560} y={40} w={120}>
-            <Fade on={beat >= 3}>
-              <div className="flex flex-col items-center gap-1.5">
-                <MeterDial w={86} value={beat >= 3 ? ((tick % 6) + 2) / 8 : 0} spin={!STILL} />
-                <Label size={12} tone="good">metered billing</Label>
-              </div>
-            </Fade>
+          <Arrow x1={508} y1={112} x2={556} y2={112} on={on} delay={360} />
+          <Traveller path={[[510, 112], [554, 112]]} run k={`m${k}`} size={10} tone={colors.success} dur={1.2} />
+          <At x={566} y={50}>
+            <ClayMeter w={96} value={0.62} />
           </At>
-          <At x={548} y={200} w={136}>
-            <Fade on={beat >= 4}>
-              <div className="flex flex-col gap-2">
-                <div className="rounded-xl px-2.5 py-2 text-[14px] font-medium" style={{ background: colors.surface, boxShadow: `inset 0 0 0 1px ${colors.line}`, color: colors.ink }}>
-                  owned: stays with each institution
+          {/* the picture's words, out of the picture: one line each */}
+          <At x={24} y={290} w={642}>
+            <div className="grid grid-cols-2 gap-2.5">
+              {NOTES.map((n) => (
+                <div key={n.t} className="flex items-center gap-2.5 whitespace-nowrap rounded-xl px-3.5 py-2.5 text-[16px] font-medium" style={{ ...tile(), color: colors.ink }}>
+                  <span className="block h-[10px] w-[10px] shrink-0 rounded-full" style={{ background: n.dot }} />
+                  {n.t}
                 </div>
-                <div className="rounded-xl px-2.5 py-2 text-[14px] font-medium" style={{ background: colors.surface2, boxShadow: `inset 0 0 0 1.5px ${colors.brand}`, color: colors.ink }}>
-                  consumed: paid by use
-                </div>
-              </div>
-            </Fade>
+              ))}
+            </div>
           </At>
-          <div style={{ display: 'none' }}>{ease}</div>
         </Stage>
       </div>
     </Card>
   )
 }
 
-/* ================================================================== 20 · 2006 Onward Milestones */
+/* ================================================================== 24 · 2006 Onward Milestones */
 
 const MILES = [
   { period: '2006', label: 'Amazon Web Services launches S3 storage, then EC2 compute', logo: '/assets/companies/amazon.png' },
   { period: '2008', label: 'Google App Engine offers a managed application platform', logo: '/assets/companies/google.png' },
   { period: '2010', label: 'Microsoft launches Windows Azure commercially', logo: '/assets/companies/microsoft.png' },
-  { period: 'By the 2010s', label: 'public cloud becomes the default for new IT', logo: '' },
+  { period: 'By the 2010s', label: 'Public cloud becomes the default for new IT', logo: '' },
 ]
 
 export function Milestones({ lesson }: { lesson: string }) {
@@ -351,9 +510,21 @@ export function Milestones({ lesson }: { lesson: string }) {
             </At>
           )
         })}
+        {/* the adoption curve draws itself from 2006 to the 2010s, in its slot after the milestones (entrance.ts `data-draw`) */}
         <svg className="absolute" style={{ left: 30, top: 236 }} width={1050} height={110} aria-hidden>
+          <defs>
+            <linearGradient id="adopt-area" x1={0} y1={0} x2={0} y2={1}>
+              <stop offset="0" stopColor={colors.brand} stopOpacity={0.2} />
+              <stop offset="1" stopColor={colors.brand} stopOpacity={0.02} />
+            </linearGradient>
+          </defs>
+          {/* the render's style: the curve stands on a graded fill and carries a soft glow */}
+          <path d="M 0 100 C 260 98 420 92 560 80 C 740 64 900 34 1040 6 V 110 H 0 Z" fill="url(#adopt-area)" />
           <path d="M 0 100 C 260 98 420 92 560 80 C 740 64 900 34 1040 6" fill="none" stroke={colors.line} strokeWidth={3} />
-          <path d="M 0 100 C 260 98 420 92 560 80 C 740 64 900 34 1040 6" fill="none" stroke={colors.brand} strokeWidth={4} strokeLinecap="round" pathLength={1} strokeDasharray="1" style={{ strokeDashoffset: 1 - beat / 4, transition: ease }} />
+          <path data-draw d="M 0 100 C 260 98 420 92 560 80 C 740 64 900 34 1040 6" fill="none" stroke={colors.brand} strokeWidth={10} strokeLinecap="round" opacity={0.16} />
+          <path data-draw d="M 0 100 C 260 98 420 92 560 80 C 740 64 900 34 1040 6" fill="none" stroke={colors.brand} strokeWidth={4} strokeLinecap="round" />
+          {/* motion layer: adoption keeps flowing along the curve, drawn on in the same slot */}
+          <path data-draw d="M 0 100 C 260 98 420 92 560 80 C 740 64 900 34 1040 6" fill="none" stroke={colors.white} strokeWidth={2} strokeLinecap="round" strokeDasharray="5 9" opacity={0.75} className={mo('dash', 4).className} style={mo('dash', 4).style} />
         </svg>
         <At x={1000} y={318}><Label tone="brand" size={13}>Adoption</Label></At>
       </Stage>
@@ -361,7 +532,21 @@ export function Milestones({ lesson }: { lesson: string }) {
   )
 }
 
-/* ================================================================== 21 · Eras And Their Legacy */
+/* ================================================================== 25 · Eras And Their Legacy (split by the review, 2026-10-15: the lead, then the table; the "what cloud inherited" panel is gone, it repeated the Cloud Legacy column) */
+
+export function EraStatement({ lesson }: { lesson: string }) {
+  return (
+    <Statement
+      id="evolution-table"
+      kicker="Evolution At A Glance"
+      title="Eras And Their Legacy"
+      label="Evolution At A Glance"
+      parts={[{ t: 'Each era solved a resource problem that cloud computing still answers, from ' }, { t: 'shared access on one machine', hi: true }, { t: ' to ' }, { t: 'metered, on-demand delivery over the internet', hi: true }]}
+      lesson={lesson}
+      art={<ClayCloudScene w={280} />}
+    />
+  )
+}
 
 const TABLE: [string, string, string, string][] = [
   ['Mainframes & Time-sharing', '1960s-70s', 'Many users share one machine', 'Shared-access roots'],
@@ -374,48 +559,32 @@ export function EraTable({ lesson }: { lesson: string }) {
   const beat = useBeats(4)
   const ease = useEase()
   return (
-    <Card id="evolution-table" kicker="Evolution At A Glance" title="Eras And Their Legacy" lead="Each era solved a resource problem that cloud computing still answers, from shared access on one machine to metered, on-demand delivery over the internet" lesson={lesson} beat={beat} total={4}>
-      <div className="flex gap-4">
-        <div className="flex flex-col gap-3" style={{ width: 806 }}>
-          <div className="relative h-[40px]">
-            <div className="absolute left-[20px] right-[20px] top-[10px] h-[3px] rounded-full" style={{ background: colors.line }} />
-            {TABLE.map((r, i) => (
-              <div key={r[1]} className="absolute flex flex-col items-center" style={{ left: 100 + i * 200, transform: 'translateX(-50%)' }}>
-                <span className="block h-[14px] w-[14px] rounded-full" style={{ marginTop: 4, background: beat >= i + 1 ? colors.brand : colors.white, boxShadow: `inset 0 0 0 3px ${colors.brand}`, transition: ease }} />
-                <span className="mt-1 whitespace-nowrap font-heading text-[14px] font-semibold" style={{ color: colors.brandDark }}>{r[1]}</span>
-              </div>
-            ))}
-          </div>
-          <Stage w={806} h={300} active={false} pad={10}>
-            <div className="grid overflow-hidden rounded-xl bg-white" style={{ gridTemplateColumns: '1.3fr 0.9fr 1.4fr 1fr', boxShadow: `inset 0 0 0 1px ${colors.line}` }}>
-              {['Era', 'Period', 'Core Idea', 'Cloud Legacy'].map((h) => (
-                <span key={h} className="px-3 py-2.5 font-heading text-[14px] font-semibold" style={{ background: colors.surface2, color: colors.brandDark }}>{h}</span>
-              ))}
-              {TABLE.map((r, i) =>
-                r.map((c, k) => (
-                  <span key={`${i}${k}`} className={`px-3 py-3 text-[14px] leading-snug ${k === 0 ? 'font-heading font-semibold' : 'font-medium'}`} style={{ color: colors.ink, borderTop: `1px solid ${colors.line}`, background: beat === i + 1 ? 'rgba(45,99,251,0.09)' : 'transparent', opacity: beat >= i + 1 ? 1 : 0, transition: ease }}>
-                    {c}
-                  </span>
-                )),
-              )}
+    <Card id="evolution-rows" kicker="Evolution At A Glance" title="Eras And Their Legacy" lesson={lesson} beat={beat} total={4}>
+      <div className="flex flex-col gap-3" style={{ width: BOX_W }}>
+        <div className="relative h-[44px]">
+          <div className="absolute left-[20px] right-[20px] top-[10px] h-[3px] rounded-full" style={{ background: colors.line }} />
+          {TABLE.map((r, i) => (
+            <div key={r[1]} className="absolute flex flex-col items-center" style={{ left: 139 + i * 277, transform: 'translateX(-50%)' }}>
+              <span className={`block h-[14px] w-[14px] rounded-full ${mo('pulse', i + 5).className}`} style={{ marginTop: 4, background: beat >= i + 1 ? colors.brand : colors.white, boxShadow: `inset 0 0 0 3px ${colors.brand}`, transition: ease, ...mo('pulse', i + 5).style }} />
+              <span className="mt-1 whitespace-nowrap font-heading text-[16px] font-semibold" style={{ color: colors.brandDark }}>{r[1]}</span>
             </div>
-          </Stage>
+          ))}
         </div>
-        <Stage w={288} h={352} active={beat >= 1}>
-          <At x={144} y={18} cx><CloudShape w={150} /></At>
-          <At x={144} y={118} cx><span className="whitespace-nowrap font-heading text-[15px] font-semibold" style={{ color: colors.ink }}>what cloud inherited</span></At>
-          <At x={20} y={150} w={248}>
-            <div className="flex flex-col gap-2">
-              {TABLE.map((r, i) => (
-                <Fade key={r[3]} on={beat >= i + 1}>
-                  <Label tone="brand" size={14} strong>{r[3]}</Label>
-                </Fade>
-              ))}
-            </div>
-          </At>
+        <Stage w={BOX_W} h={360} active={false} pad={12}>
+          <div className="grid overflow-hidden rounded-xl" style={{ gridTemplateColumns: '1.3fr 0.8fr 1.4fr 1fr', ...tile() }}>
+            {['Era', 'Period', 'Core Idea', 'Cloud Legacy'].map((h) => (
+              <span key={h} className="px-4 py-3 font-heading text-[18px] font-semibold" style={{ background: colors.surface2, color: colors.brandDark }}>{h}</span>
+            ))}
+            {TABLE.map((r, i) =>
+              r.map((c, k) => (
+                <span key={`${i}${k}`} className={`px-4 py-4 text-[18px] leading-snug ${k === 0 ? 'font-heading font-semibold' : 'font-medium'}`} style={{ color: colors.ink, borderTop: `1px solid ${colors.line}`, background: isNow(beat, i + 1) ? 'rgba(45,99,251,0.09)' : 'transparent', opacity: beat >= i + 1 ? 1 : 0, transition: ease }}>
+                  {c}
+                </span>
+              )),
+            )}
+          </div>
         </Stage>
       </div>
     </Card>
   )
 }
-

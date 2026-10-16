@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { colors } from '@/design/tokens'
 import { Card, Stage, Num, BOX_W } from './scene'
 import { Balance, Laptop, Mainframe, MeterDial, ProviderBuilding, ServerUnit } from './art'
+import { WELL } from './basics'
 
 /**
  * KEY TAKEAWAYS (content rule 20): the agenda's five items, word for word,
@@ -24,7 +25,7 @@ export function Takeaways({ lesson, items }: { lesson: string; items: { title: s
   const card = (it: { title: string; sub: string }, i: number) => (
     <Stage key={it.title} w={W} h={128} pad={12}>
       <div className="flex h-full gap-3">
-        <div className="grid w-[96px] shrink-0 place-items-center rounded-xl" style={{ background: colors.surface }}>
+        <div className="grid w-[96px] shrink-0 place-items-center rounded-xl" style={WELL}>
           {PICS[i]}
         </div>
         <div className="flex min-w-0 flex-col gap-1.5">

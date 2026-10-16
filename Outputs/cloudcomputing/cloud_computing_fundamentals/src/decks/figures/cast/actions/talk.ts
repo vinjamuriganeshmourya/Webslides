@@ -6,9 +6,9 @@
  * goes. The mapping is from English spelling, not sound. That is crude
  * phonetically, but at slide size the rhythm is what reads, and the rhythm
  * comes from the timing, not from which letter made which shape. */
-import type { Channel } from '@/decks/figures/cast/rig/channels'
-import { delay } from '@/decks/figures/cast/rig/track'
-import type { Action, Ease, Key, Tracks } from '@/decks/figures/cast/rig/track'
+import type { Channel } from '../rig/channels'
+import { delay } from '../rig/track'
+import type { Action, Ease, Key, Tracks } from '../rig/track'
 
 export type VisemeShape = 'rest' | 'A' | 'E' | 'I' | 'O' | 'U' | 'M' | 'F' | 'L' | 'W' | 'TH' | 'S'
 export type Viseme = { shape: VisemeShape; dur: number; stress: boolean }
