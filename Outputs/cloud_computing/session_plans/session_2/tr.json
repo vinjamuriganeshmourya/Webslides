@@ -1,0 +1,831 @@
+{
+ "source": "tr.docx",
+ "title": "Session 2 : Deployment & Service Models",
+ "recap": {
+  "heading": "RECAP: Session 1 : Cloud Computing Fundamentals",
+  "items": [
+   "1. Cloud Computing Basics: Definition & the NIST view; on-premise IT vs cloud; drivers: cost, scale & speed",
+   "2. History & Evolution: Mainframes & time-sharing; client-server & virtualization; grid & utility computing; the public cloud era",
+   "3. Essential Characteristics - I: On-demand self-service; broad network access; resource pooling & multi-tenancy",
+   "4. Essential Characteristics - II: Rapid elasticity vs scalability; measured service & pay-per-use metering",
+   "5. Benefits & Challenges: Cost model shift, elasticity, global reach & speed to market; vendor lock-in, cost overruns, latency & data residency"
+  ]
+ },
+ "agenda": {
+  "heading": "Agenda for Today's Session",
+  "items": [
+   "1. Cloud Deployment Models: Public cloud; private cloud: on-premise vs hosted; hybrid & cloud bursting; community cloud",
+   "2. Multi-Cloud: Motivations: resilience, negotiation & regulation; operational cost of multiple platforms",
+   "3. Service Models: IaaS, PaaS & SaaS: what each provides & abstracts; representative services (e.g. EC2 for IaaS, AWS Elastic Beanstalk for PaaS)",
+   "4. Beyond the Big Three: Function as a Service (FaaS) & serverless; AI/ML-as-a-Service; responsibility boundaries across models",
+   "5. Cloud Economics & Providers: CapEx vs OpEx; total cost of ownership (TCO); pricing: on-demand, committed use & spot; AWS, Azure, GCP & Indian providers"
+  ]
+ },
+ "sections": [
+  {
+   "number": 1,
+   "title": "1. Cloud Deployment Models: Public cloud; private cloud: on-premise vs hosted; hybrid & cloud bursting; community cloud",
+   "slides": [
+    {
+     "number": 1,
+     "tr_title": "Cloud Deployment Models Landscape",
+     "heading": "Deployment Models Map",
+     "subheading": "Four Ways To Deploy",
+     "content": [
+      {
+       "line": "A cloud deployment model defines who owns the infrastructure, where it is hosted, and who has access to it."
+      },
+      {
+       "line": "Different organisations choose different deployment models based on their *control, security, scalability, and sharing requirements.*"
+      },
+      {
+       "line": "Let’s explore the four major deployment models."
+      },
+      {
+       "line": "Public cloud: provider-owned, shared across tenants"
+      },
+      {
+       "line": "Private cloud: dedicated, either on-premise or hosted"
+      },
+      {
+       "line": "Hybrid cloud: private and public linked together"
+      },
+      {
+       "line": "Community cloud: shared by organisations with common needs"
+      }
+     ],
+     "visual_guidance": "Four boxes labelled Public, Private, Hybrid, Community arranged around a central 'Infrastructure Choice' node, arrows showing a spectrum from fully shared to fully dedicated."
+    },
+    {
+     "number": 2,
+     "tr_title": "Public Cloud Explained",
+     "heading": "Public Cloud",
+     "subheading": "Shared Multi-Tenant Infrastructure",
+     "content": [
+      {
+       "line": "A public cloud is a cloud environment where a cloud provider owns and manages the infrastructure, and multiple customers use its resources over the internet."
+      },
+      {
+       "image": "tr_images/slide-02-1.png"
+      },
+      {
+       "line": "Infrastructure owned and run entirely by the provider"
+      },
+      {
+       "line": "Many tenants share hardware, isolated logically from each other"
+      },
+      {
+       "line": "Capacity scales rapidly across resources pooled across customers"
+      },
+      {
+       "line": "Best fit: variable workloads, fast launch, low compliance limits"
+      }
+     ],
+     "analogy": "A shared cab is owned by the cab company; many riders book seats and pay only for the ride taken, never owning the vehicle — just as public cloud tenants share provider-owned servers and pay only for the capacity used.",
+     "visual_guidance": "One large building labelled 'Provider Data Centre' with multiple small logos (different companies) drawing from it over an internet cloud icon."
+    },
+    {
+     "number": 3,
+     "tr_title": "Private Cloud: On-Premise Vs Hosted",
+     "heading": "Private Cloud",
+     "subheading": "On-Premise Vs Hosted",
+     "content": [
+      {
+       "line": "Private cloud dedicates infrastructure to one organisation only, chosen when compliance, data residency or latency needs rule out shared public hardware."
+      },
+      {
+       "image": "tr_images/slide-03-1.png"
+      },
+      {
+       "table": {
+        "columns": [
+         "Aspect",
+         "On-Premise Private",
+         "Hosted Private"
+        ],
+        "rows": [
+         [
+          "Location",
+          "Organisation's own data centre",
+          "Provider's data centre, dedicated section"
+         ],
+         [
+          "Owned by",
+          "The organisation itself",
+          "Provider, leased to one customer"
+         ],
+         [
+          "Example",
+          "In-house VMware or OpenStack cluster",
+          "VMware Cloud on AWS"
+         ],
+         [
+          "Control",
+          "Full physical and logical control",
+          "Full logical control, no physical access"
+         ]
+        ]
+       }
+      }
+     ],
+     "analogy": "Building a house on owned land gives full control forever; renting a private bungalow built by a developer gives the same exclusivity without construction effort — just as on-premise private cloud means owned infrastructure, while hosted private cloud means dedicated but provider-managed infrastructure.",
+     "visual_guidance": "Split diagram: left shows a building icon inside an organisation's fence (on-premise); right shows the same dedicated building inside a provider's larger data centre fence (hosted)."
+    },
+    {
+     "number": 4,
+     "tr_title": "Hybrid Cloud And Cloud Bursting",
+     "heading": "Hybrid Cloud",
+     "subheading": "Cloud Bursting Explained",
+     "content": [
+      {
+       "line": "Hybrid cloud links private and public infrastructure so workloads move between them, avoiding the need to size on-premise capacity for rare demand peaks."
+      },
+      {
+       "image": "tr_images/slide-04-1.png"
+      },
+      {
+       "line": "Sudden overload bursts into public cloud capacity temporarily"
+      },
+      {
+       "line": "Cloud bursting: automatic overflow triggered by demand thresholds"
+      },
+      {
+       "line": "Example: AWS Outposts extends AWS infrastructure into on-premise sites"
+      }
+     ],
+     "analogy": "A restaurant kitchen handles daily orders alone, but during a wedding rush it hires a banquet hall's ovens for the overflow and releases them once the rush ends — just as cloud bursting shifts excess load to public cloud only during demand spikes.",
+     "visual_guidance": "Two linked boxes, 'Private Infrastructure' and 'Public Cloud', with a dashed arrow labelled 'burst' flowing from private to public only when a load gauge crosses a threshold line."
+    },
+    {
+     "number": 5,
+     "tr_title": "Community Cloud Explained",
+     "heading": "Community Cloud",
+     "subheading": "Shared Among Peers",
+     "content": [
+      {
+       "line": "Community cloud is infrastructure shared by several organisations with common regulatory, security or mission needs, rather than opened to the general public."
+      },
+      {
+       "image": "tr_images/slide-05-1.png"
+      },
+      {
+       "line": "Governance and compliance rules set jointly by member organisations"
+      },
+      {
+       "line": "Cost split among fewer tenants than public, more than solo private"
+      },
+      {
+       "line": "Example: AWS GovCloud (US), reserved for government agencies and partners"
+      },
+      {
+       "line": "Typical users: government bodies, healthcare consortiums, research collaborations"
+      }
+     ],
+     "visual_guidance": "One shared infrastructure block in the centre with several matching organisation icons (government, healthcare, research) connected to it, ringed off from the general public cloud."
+    },
+    {
+     "number": 6,
+     "tr_title": "Deployment Models At A Glance",
+     "heading": "Deployment Models Compared",
+     "subheading": "Ownership Tenancy Use Case",
+     "content": [
+      {
+       "line": "Choosing a deployment model trades control for convenience: full ownership costs more effort, full sharing costs less control."
+      },
+      {
+       "table": {
+        "columns": [
+         "Model",
+         "Owned By",
+         "Tenancy",
+         "Typical Use"
+        ],
+        "rows": [
+         [
+          "Public",
+          "Provider",
+          "Multi-tenant",
+          "Variable, public-facing workloads"
+         ],
+         [
+          "Private (on-premise)",
+          "Organisation",
+          "Single-tenant",
+          "Strict compliance, latency-sensitive systems"
+         ],
+         [
+          "Private (hosted)",
+          "Provider, dedicated to one customer",
+          "Single-tenant",
+          "Dedicated capacity without own data centre"
+         ],
+         [
+          "Hybrid",
+          "Shared: organisation and provider",
+          "Mixed",
+          "Steady load with occasional bursts"
+         ],
+         [
+          "Community",
+          "Member organisations, or a third party",
+          "Shared within group",
+          "Sector-specific compliance, e.g. government"
+         ]
+        ]
+       }
+      }
+     ],
+     "visual_guidance": "The five-row comparison table rendered full-width, with the 'Owned By' column colour-coded to visually reinforce the control-versus-sharing spectrum from slide one."
+    }
+   ]
+  },
+  {
+   "number": 2,
+   "title": "2. Multi-Cloud: Motivations: resilience, negotiation & regulation; operational cost of multiple platforms",
+   "slides": [
+    {
+     "number": 7,
+     "tr_title": "Multi-Cloud: Beyond Hybrid",
+     "heading": "Multi-Cloud Defined",
+     "subheading": "Multiple Providers Together",
+     "content": [
+      {
+       "line": "Multi-cloud means running workloads across two or more independent public providers at once, unlike hybrid cloud, which mixes public with private infrastructure."
+      },
+      {
+       "line": "AWS handles general-purpose compute and storage workloads"
+      },
+      {
+       "line": "Azure serves Microsoft-integrated enterprise applications"
+      },
+      {
+       "line": "GCP powers data analytics and AI/ML pipelines"
+      },
+      {
+       "image": "tr_images/slide-07-1.png"
+      }
+     ],
+     "analogy": "Spreading savings across two different banks guards against one bank freezing withdrawals or raising fees — just as multi-cloud spreads workloads across providers so one outage or price hike does not stop operations.",
+     "visual_guidance": "Diagram: one company icon with three arrows branching to AWS, Azure and GCP logos, each labelled with a workload type."
+    },
+    {
+     "number": 8,
+     "tr_title": "Why Organizations Adopt Multi-Cloud",
+     "heading": "Multi-Cloud Motivations",
+     "subheading": "Resilience Negotiation Regulation",
+     "content": [
+      {
+       "line": "Three business pressures push organizations toward multiple providers even though it adds complexity."
+      },
+      {
+       "line": "Resilience: a second provider keeps services running during an outage"
+      },
+      {
+       "line": "Negotiation leverage: comparing quotes across vendors avoids one-sided pricing"
+      },
+      {
+       "line": "Regulation: in-country hosting or concentration-risk rules may require a compliant region or a second provider"
+      }
+     ],
+     "visual_guidance": "Three labelled icons (shield, handshake, gavel) mapped to resilience, negotiation and regulation respectively."
+    },
+    {
+     "number": 9,
+     "tr_title": "Cost Of Multi-Cloud Complexity",
+     "heading": "Operational Overhead Cost",
+     "subheading": "Managing Multiple Platforms",
+     "content": [
+      {
+       "line": "Multi-cloud earns its resilience and leverage at a real operational price: every added provider multiplies what must be learned, managed and paid for."
+      },
+      {
+       "line": "Separate consoles, APIs and billing dashboards per provider"
+      },
+      {
+       "line": "Distinct certifications and skill sets needed for each platform's staff"
+      },
+      {
+       "line": "Cross-cloud data transfer (egress) charges between providers"
+      },
+      {
+       "line": "Duplicate monitoring, security and IAM policies to maintain"
+      }
+     ],
+     "visual_guidance": "Table-style graphic: rows for Skills, Tooling, Billing, Security — each row showing duplicated icons across AWS/Azure/GCP columns."
+    }
+   ]
+  },
+  {
+   "number": 3,
+   "title": "3. Service Models: IaaS, PaaS & SaaS: what each provides & abstracts; representative services",
+   "slides": [
+    {
+     "number": 10,
+     "tr_title": "Service Models: Provides vs Abstracts",
+     "heading": "Service Model Spectrum",
+     "subheading": "Stack Ownership Map",
+     "content": [
+      {
+       "line": "The three service models share one technology stack; each shifts the line dividing provider-managed layers from customer-managed layers.Deployment models say where the infrastructure sits and who owns it; service models say what is abstracted. Any service model can run on any deployment model (e.g. private-cloud IaaS, public-cloud SaaS)."
+      },
+      {
+       "table": {
+        "columns": [
+         "Stack Layer",
+         "IaaS",
+         "PaaS",
+         "SaaS"
+        ],
+        "rows": [
+         [
+          "Application",
+          "Customer",
+          "Customer",
+          "Provider"
+         ],
+         [
+          "Data & access configuration",
+          "Customer",
+          "Customer",
+          "Customer"
+         ],
+         [
+          "Runtime & middleware",
+          "Customer",
+          "Provider",
+          "Provider"
+         ],
+         [
+          "Operating system",
+          "Customer",
+          "Provider",
+          "Provider"
+         ],
+         [
+          "Virtualization, servers, storage, network",
+          "Provider",
+          "Provider",
+          "Provider"
+         ]
+        ]
+       }
+      }
+     ],
+     "visual_guidance": "Horizontal stack bar split into four layers, shaded by owner colour for IaaS, PaaS and SaaS side by side."
+    },
+    {
+     "number": 11,
+     "tr_title": "IaaS: Renting Raw Infrastructure",
+     "heading": "IaaS Explained",
+     "subheading": "Raw Infrastructure Rental",
+     "content": [
+      {
+       "line": "Infrastructure as a Service rents compute, storage and network as raw building blocks, leaving the operating system and everything above it to the customer."
+      },
+      {
+       "line": "Abstracts physical hardware, racking and data-centre wiring"
+      },
+      {
+       "line": "Customer installs OS, runtime, middleware and application"
+      },
+      {
+       "line": "Representative services: AWS (Amazon Web Services) EC2, EBS, VPC"
+      },
+      {
+       "line": "Azure Virtual Machines, GCP Compute Engine offer same layer"
+      },
+      {
+       "image": "tr_images/slide-11-1.png"
+      }
+     ],
+     "analogy": "Domino's kitchen space and oven are used, but the dough, sauce and toppings are supplied separately and the pizza is cooked from scratch — just as the IaaS provider manages only the physical infrastructure while the customer manages the operating system, runtime and application.",
+     "visual_guidance": "Icon of empty kitchen equipment (oven, gas line) labelled Infrastructure, with a chef bringing own recipe cards labelled OS, Runtime, App to bake the pizza."
+    },
+    {
+     "number": 12,
+     "tr_title": "PaaS: Managed Runtime Platform",
+     "heading": "PaaS Explained",
+     "subheading": "Ready-Made Platform",
+     "content": [
+      {
+       "line": "Platform as a Service adds a managed operating system and runtime atop infrastructure, so the customer only builds, deploys and runs application code."
+      },
+      {
+       "line": "Abstracts OS patching, runtime setup and server scaling"
+      },
+      {
+       "line": "Less control over OS-level tuning than IaaS allows"
+      },
+      {
+       "line": "Representative services: AWS Elastic Beanstalk, AWS App Runner"
+      },
+      {
+       "line": "Azure App Service, GCP App Engine offer same layer"
+      },
+      {
+       "image": "tr_images/slide-12-1.png"
+      }
+     ],
+     "analogy": "Domino's kitchen, oven and ready dough are already set up, so only assembling and baking the pizza on that setup remains — just as the PaaS provider manages infrastructure, operating system and runtime while the customer manages only the application.",
+     "visual_guidance": "Icon of ready kitchen setup labelled Platform, chef adding only dough labelled Application Code."
+    },
+    {
+     "number": 13,
+     "tr_title": "SaaS: Ready-To-Use Software",
+     "heading": "SaaS Explained",
+     "subheading": "Complete Application Delivered",
+     "content": [
+      {
+       "line": "Software as a Service delivers a finished application; the provider manages every layer beneath it, leaving the customer only account setup and data."
+      },
+      {
+       "line": "Abstracts the entire stack below the application"
+      },
+      {
+       "line": "Provider pushes feature updates automatically, no customer action"
+      },
+      {
+       "line": "Representative services: Gmail/Google Workspace, Salesforce, Microsoft 365"
+      },
+      {
+       "line": "Customer effort and control both fall sharply toward SaaS"
+      },
+      {
+       "image": "tr_images/slide-13-1.png"
+      }
+     ],
+     "analogy": "A ready-made pizza is ordered directly from Domino's with no kitchen work at all — just as SaaS provider manages the entire stack while the customer only uses the finished application.",
+     "visual_guidance": "Icon of a finished pizza box handed over, labelled Application, contrasted with the empty and ready kitchens from the IaaS and PaaS slides."
+    }
+   ]
+  },
+  {
+   "number": 4,
+   "title": "4. Beyond the Big Three: Function as a Service (FaaS) & serverless; AI/ML-as-a-Service; responsibility boundaries across models",
+   "slides": [
+    {
+     "number": 14,
+     "tr_title": "Beyond IaaS, PaaS And SaaS",
+     "heading": "Beyond The Big Three",
+     "subheading": "New Service Models",
+     "content": [
+      {
+       "line": "Cloud service models did not stop at IaaS, PaaS and SaaS. Two further models push abstraction higher, changing what the provider manages and what the developer retains."
+      },
+      {
+       "line": "Function as a Service (FaaS): runs code per trigger, no visible server"
+      },
+      {
+       "line": "Serverless: broader term covering FaaS plus managed databases and queues"
+      },
+      {
+       "line": "AI/ML-as-a-Service: consumes pre-built AI and ML models via API"
+      },
+      {
+       "line": "Both shift most infrastructure responsibility onto the cloud provider"
+      }
+     ],
+     "visual_guidance": "Spectrum diagram: IaaS -> PaaS -> SaaS -> FaaS/Serverless -> AI/ML-as-a-Service, arrow showing rising abstraction and shrinking user responsibility."
+    },
+    {
+     "number": 15,
+     "tr_title": "Function As A Service And Serverless",
+     "heading": "FaaS And Serverless",
+     "subheading": "Pay Per Execution",
+     "content": [
+      {
+       "line": "Function as a Service (FaaS) runs a single function only when triggered, removing any need to provision or manage a server."
+      },
+      {
+       "line": "Triggers: HTTP request, scheduled timer, queue message, file upload"
+      },
+      {
+       "line": "Scales automatically from zero to many parallel invocations"
+      },
+      {
+       "line": "Billed per invocation and execution time, not idle time"
+      },
+      {
+       "line": "Runs on AWS Lambda; cold start delay if idle first"
+      }
+     ],
+     "analogy": "Booking a cab only when travel is needed and paying just for that ride, instead of owning an idle car, mirrors FaaS: code runs only on a trigger and billing counts only execution time.",
+     "visual_guidance": "Timeline: idle -> trigger event -> function instantiated -> executes -> torn down, labelled with AWS Lambda."
+    },
+    {
+     "number": 16,
+     "tr_title": "AI/ML-as-a-Service Explained",
+     "heading": "AI ML As Service",
+     "subheading": "Pre-Built Intelligence APIs",
+     "content": [
+      {
+       "line": "AI/ML-as-a-Service (Artificial Intelligence, Machine Learning as a Service) exposes pre-trained vision, language and forecasting models through a plain API call."
+      },
+      {
+       "line": "Representative services: Amazon Rekognition, Comprehend (pre-built APIs)"
+      },
+      {
+       "line": "Provider manages model training, GPUs (Graphics Processing Units) and hosting"
+      },
+      {
+       "line": "User manages input data and API integration only"
+      },
+      {
+       "line": "Used in vision, chatbots, fraud and forecasting"
+      }
+     ],
+     "analogy": "Consulting a specialist doctor for one diagnosis instead of building a hospital, paying only for that consultation — just as AI/ML-as-a-Service delivers intelligence via API without building the model.",
+     "visual_guidance": "Icon flow: application -> API call -> pre-trained model service -> prediction returned, labelled Amazon SageMaker / Rekognition."
+    },
+    {
+     "number": 17,
+     "tr_title": "Responsibility Boundaries Across Service Models",
+     "heading": "Full Responsibility Spectrum",
+     "subheading": "Provider Vs User",
+     "content": [
+      {
+       "line": "Moving from IaaS toward SaaS steadily shifts management from user to provider; FaaS and AI/ML-as-a-Service remove the server concept, but the user still manages function code or input data respectively."
+      },
+      {
+       "table": {
+        "columns": [
+         "Model",
+         "Provider Manages",
+         "User Manages"
+        ],
+        "rows": [
+         [
+          "IaaS",
+          "Hardware, virtualization, network",
+          "OS, runtime, applications, data"
+         ],
+         [
+          "PaaS",
+          "+ OS, runtime, middleware",
+          "Application code, data"
+         ],
+         [
+          "SaaS",
+          "Entire application stack",
+          "Configuration, user data"
+         ],
+         [
+          "FaaS / Serverless",
+          "Servers, OS, runtime, scaling",
+          "Function code, triggers, logic"
+         ],
+         [
+          "AI/ML-as-a-Service",
+          "Model training, hosting, GPUs",
+          "Input data, API integration"
+         ]
+        ]
+       }
+      }
+     ],
+     "visual_guidance": "Full-width table, one row per model, shading intensity rising left to right to show growing provider responsibility."
+    }
+   ]
+  },
+  {
+   "number": 5,
+   "title": "5. Cloud Economics & Providers: CapEx vs OpEx; total cost of ownership (TCO); pricing: on-demand, committed use & spot; AWS, Azure, GCP & Indian providers",
+   "slides": [
+    {
+     "number": 18,
+     "tr_title": "Cloud Economics Landscape",
+     "heading": "Cloud Economics Map",
+     "subheading": "Costs And Providers",
+     "content": [
+      {
+       "line": "Cloud adoption decisions turn on how spending is structured and who supplies the infrastructure."
+      },
+      {
+       "line": "CapEx vs OpEx: how spend is classified"
+      },
+      {
+       "line": "TCO: true multi-year cost of a choice"
+      },
+      {
+       "line": "Pricing models: on-demand, committed use, spot"
+      },
+      {
+       "line": "Providers: global hyperscalers and Indian regional players"
+      }
+     ],
+     "visual_guidance": "Four-quadrant map, one label per quadrant: CapEx/OpEx, TCO, Pricing Models, Providers."
+    },
+    {
+     "number": 19,
+     "tr_title": "CapEx vs OpEx — The Accounting View",
+     "heading": "CapEx vs OpEx",
+     "subheading": "Balance Sheet Impact",
+     "content": [
+      {
+       "line": "Cloud does not just change how much is paid; it changes which financial statement absorbs the cost, reshaping approvals and tax treatment."
+      },
+      {
+       "line": "CapEx: capitalised, depreciated over asset life, sits on balance sheet"
+      },
+      {
+       "line": "OpEx: expensed immediately, hits the income statement same period"
+      },
+      {
+       "line": "CapEx typically needs board-level capital approval"
+      },
+      {
+       "line": "OpEx approval sits within departmental budgets"
+      },
+      {
+       "line": "Depreciation deductions (CapEx) shift tax timing versus OpEx's immediate deduction"
+      },
+      {
+       "line": "AWS Cost and Usage Report classifies spend for finance systems"
+      }
+     ],
+     "analogy": "Buying a house needs a large loan and years of EMIs recorded as an asset, while renting is a monthly expense with nothing recorded — just as CapEx locks value on the balance sheet while OpEx flows straight through the income statement.",
+     "visual_guidance": "Split panel: balance sheet with a depreciation curve versus income statement with a flat recurring expense line."
+    },
+    {
+     "number": 20,
+     "tr_title": "Total Cost of Ownership Defined",
+     "heading": "Total Cost Ownership",
+     "subheading": "Beyond The Price Tag",
+     "content": [
+      {
+       "line": "Total cost of ownership (TCO) totals every direct and indirect cost of running a workload across its life, not only the sticker price."
+      },
+      {
+       "line": "Direct costs: compute, storage, licensing, network transfer"
+      },
+      {
+       "line": "Indirect costs: staffing, training, downtime, migration effort"
+      },
+      {
+       "line": "On-premise adds power, cooling, floor space, hardware refresh"
+      },
+      {
+       "line": "AWS Pricing Calculator estimates cloud cost."
+      },
+      {
+       "line": "Migration Evaluator builds the on-premise vs cloud business case"
+      }
+     ],
+     "analogy": "A smartphone's price tag ignores the data plan, repairs and accessories bought over its life — just as a server's purchase price ignores the staffing, power and downtime that TCO adds back in.",
+     "visual_guidance": "Layered bar: sticker price at the base, staffing/power/downtime stacked above it to show true TCO."
+    },
+    {
+     "number": 21,
+     "tr_title": "Pricing Models: On-Demand, Committed & Spot",
+     "heading": "Three Pricing Models",
+     "subheading": "On-Demand To Spot",
+     "content": [
+      {
+       "line": "Providers meter usage but let buyers trade commitment for discount; three payment patterns cover most cloud spend."
+      },
+      {
+       "line": "On-demand: metered pay-as-used rate, zero commitment"
+      },
+      {
+       "line": "Committed use: one to three-year term for lower fixed rate"
+      },
+      {
+       "line": "Spot: spare capacity at a steep discount; can be reclaimed at short notice"
+      },
+      {
+       "line": "Trade-off across all three: flexibility versus price"
+      }
+     ],
+     "analogy": "A general train ticket costs full fare and needs no planning, a season pass costs less for a fixed daily route, and a standby ticket is cheapest but the seat can be given away — just as on-demand, committed use and spot trade flexibility for price.",
+     "visual_guidance": "Three tickets side by side, labelled On-Demand, Committed Use, Spot, with a price arrow decreasing left to right."
+    },
+    {
+     "number": 22,
+     "tr_title": "Comparing Pricing Models",
+     "heading": "Pricing Models Compared",
+     "subheading": "Discount And Risk",
+     "content": [
+      {
+       "line": "Each pricing model suits a different workload shape; committed-use discounts deepen with longer terms and more upfront payment."
+      },
+      {
+       "table": {
+        "columns": [
+         "Model",
+         "Commitment",
+         "Typical Discount",
+         "Key Risk",
+         "Best For"
+        ],
+        "rows": [
+         [
+          "On-Demand",
+          "None",
+          "Baseline rate",
+          "Highest unit price; cost runs on if left running",
+          "Unpredictable, short-lived workloads"
+         ],
+         [
+          "Committed Use",
+          "1 or 3 years",
+          "Up to ~70% off on-demand",
+          "Upfront lock-in, must forecast usage",
+          "Steady, predictable baseline load"
+         ],
+         [
+          "Spot",
+          "None",
+          "Up to ~90% off on-demand",
+          "Reclaimed with short notice (~2 min AWS, ~30 sec Azure/GCP)",
+          "Fault-tolerant batch, stateless jobs"
+         ]
+        ]
+       }
+      }
+     ],
+     "visual_guidance": "Three-column bar chart showing discount depth against flexibility surrendered for each model."
+    },
+    {
+     "number": 23,
+     "tr_title": "Global Cloud Providers Compared",
+     "heading": "Global Cloud Providers",
+     "subheading": "AWS Azure GCP",
+     "content": [
+      {
+       "line": "Three hyperscalers dominate global cloud spend, each with a different platform strength that shapes provider choice."
+      },
+      {
+       "table": {
+        "columns": [
+         "Provider",
+         "Parent Company",
+         "Notable Strength"
+        ],
+        "rows": [
+         [
+          "AWS",
+          "Amazon",
+          "Broadest service catalog, largest market share"
+         ],
+         [
+          "Azure",
+          "Microsoft",
+          "Strong enterprise and hybrid integration (Active Directory)"
+         ],
+         [
+          "Google Cloud (GCP)",
+          "Google",
+          "Data analytics, AI/ML tooling strength"
+         ]
+        ]
+       }
+      }
+     ],
+     "visual_guidance": "Three logos in a row, one strength keyword under each."
+    },
+    {
+     "number": 24,
+     "tr_title": "Indian Cloud Providers & Data Residency",
+     "heading": "Indian Cloud Providers",
+     "subheading": "Regional Alternatives",
+     "content": [
+      {
+       "line": "Alongside global hyperscalers, Indian providers compete on data residency, latency for local users, and rupee-denominated billing."
+      },
+      {
+       "line": "CtrlS, Yotta, E2E Networks: private data-centre players"
+      },
+      {
+       "line": "Government's GI Cloud (MeghRaj) hosts public-sector workloads"
+      },
+      {
+       "line": "BFSI and government workloads often mandate in-country storage"
+      },
+      {
+       "line": "Regional providers can undercut hyperscaler pricing for local traffic"
+      }
+     ],
+     "visual_guidance": "Map of India with data-centre pins beside the hyperscaler logos for scale comparison."
+    }
+   ]
+  }
+ ],
+ "takeaways": {
+  "heading": "Key Takeaways",
+  "items": [
+   "1. Cloud Deployment Models: Public cloud; private cloud: on-premise vs hosted; hybrid & cloud bursting; community cloud",
+   "2. Multi-Cloud: Motivations: resilience, negotiation & regulation; operational cost of multiple platforms",
+   "3. Service Models: IaaS, PaaS & SaaS: what each provides & abstracts; representative services",
+   "4. Beyond the Big Three: Function as a Service (FaaS) & serverless; AI/ML-as-a-Service; responsibility boundaries across models",
+   "5. Cloud Economics & Providers: CapEx vs OpEx; total cost of ownership (TCO); pricing: on-demand, committed use & spot; AWS, Azure, GCP & Indian providers"
+  ]
+ },
+ "next_session": "Virtualization & Hypervisors",
+ "closing": [
+  "Thank You | All the Best"
+ ],
+ "loose": [],
+ "dropped": {
+  "speaker_notes": 24
+ }
+}
