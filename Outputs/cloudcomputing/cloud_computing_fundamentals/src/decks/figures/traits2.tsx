@@ -1,8 +1,8 @@
 import { colors } from '@/design/tokens'
 import { useBeats } from '@/ui'
-import { Card, Stage, Fade, Label, Note, Rail, Slider, LeadLines, useLoop, useCycle, STILL, BOX_W, isNow } from './scene'
+import { Card, Stage, Fade, Label, Note, Slider, LeadLines, useLoop, useCycle, STILL, BOX_W, isNow } from './scene'
 import { Bell, Bill, MeterDial, ServerUnit, useEase } from './art'
-import { useGo } from './traits1'
+import { useGo, PointColumn } from './traits1'
 import { mo } from './motion'
 import { tile, WELL, solid } from './basics'
 import { usePrefix } from './depth'
@@ -47,12 +47,12 @@ export function ControlBoard({ lesson }: { lesson: string }) {
     >
       <div className="flex gap-[18px]">
         {cards.map((c, i) => (
-          <Stage key={c.title} w={358} h={252} active={beat === c.at} pad={14}>
+          <Stage key={c.title} w={358} h={262} active={beat === c.at} pad={14}>
             <Fade on={beat >= c.at}>
               <span className="block font-heading text-[18px] font-semibold" style={{ color: colors.ink }}>{c.title}</span>
-              <Note size={14} className="mt-1">{c.body}</Note>
+              <Note size={16} className="mt-1">{c.body}</Note>
             </Fade>
-            <div className="absolute inset-x-3 bottom-3 top-[88px] grid place-items-center rounded-xl" style={{ ...WELL, opacity: beat >= c.at ? 1 : 0, transition: ease }}>
+            <div className="absolute inset-x-3 bottom-3 top-[100px] grid place-items-center rounded-xl" style={{ ...WELL, opacity: beat >= c.at ? 1 : 0, transition: ease }}>
               {i === 0 && (
                 <div className="grid grid-cols-3 gap-1.5">
                   {Array.from({ length: 6 }, (_, k) => (
@@ -65,8 +65,12 @@ export function ControlBoard({ lesson }: { lesson: string }) {
               {i === 1 && (
                 <div className="flex flex-col items-center gap-2">
                   {vertical ? (
-                    <div className={`grid place-items-center rounded-lg ${mo('pulse', 2).className}`} style={{ width: 60 + n * 22, height: 30 + n * 12, ...solid(colors.brandDeep), transition: ease, ...mo('pulse', 2).style }}>
-                      <span className="text-[14px] font-semibold text-white">{`Size ${n}`}</span>
+                    /* the block grows by a transform, never by width or height (user 2026-10-22: transform and opacity only); its size label is a chip, so no text is scaled */
+                    <div className="flex flex-col items-center gap-1.5">
+                      <div className="grid place-items-center" style={{ width: 180, height: 84 }}>
+                        <div className="h-full w-full rounded-lg" style={{ ...solid(colors.brandDeep), transform: `scale(${(60 + n * 20) / 180}, ${(30 + n * 9) / 84})`, transformOrigin: 'center', transition: ease }} />
+                      </div>
+                      <Label tone="solid" size={14} strong>{`Size ${n}`}</Label>
                     </div>
                   ) : (
                     <div className="flex flex-wrap justify-center gap-1.5" style={{ width: 240 }}>
@@ -138,7 +142,7 @@ export function ElasticChart({ lesson }: { lesson: string }) {
   const id = usePrefix()
   const ease = useEase(900)
   const stateEase = useEase()
-  const W = 640
+  const W = 614
   const H = 210
   const X = (i: number, n: number) => 20 + (i / (n - 1)) * (W - 40)
   const Y = (v: number) => H - 14 - v * (H - 30)
@@ -158,8 +162,9 @@ export function ElasticChart({ lesson }: { lesson: string }) {
   return (
     <Card id="elasticity" kicker="Rapid Elasticity" title="Auto-Scaling Mechanism" lead="Rapid elasticity is the cloud's ability to provision and release resources - in most cases automatically, almost instantly, as demand rises or falls" lesson={lesson} beat={beat} total={5}>
       <div className="flex gap-4">
-        <Rail items={items} beat={beat} width={404} size={16} />
-        <Stage w={690} h={360} active={false} pad={14}>
+        {/* user, 2026-10-22: points 16 to 18px in a column level with the stage; the chart on a 642px stage */}
+        <PointColumn items={items.map((it) => it.text)} width={452} height={360} size={18} />
+        <Stage w={642} h={360} active={false} pad={14}>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5 text-[14px] font-semibold" style={{ color: colors.ink }}><span className="block h-[3px] w-[18px] rounded-full" style={{ background: colors.brand }} />Demand</span>
             <span className="flex items-center gap-1.5 text-[14px] font-semibold" style={{ color: colors.ink }}><span className="block h-[3px] w-[18px] rounded-full" style={{ background: colors.teal }} />Instance count</span>
@@ -172,8 +177,7 @@ export function ElasticChart({ lesson }: { lesson: string }) {
               </defs>
               <rect x={0} y={0} width={W} height={H} rx={12} fill={`url(#${id}-bg)`} stroke="#D9E3F7" strokeWidth={1} />
               <line x1={20} x2={W - 20} y1={Y(ALARM)} y2={Y(ALARM)} stroke={colors.danger} strokeWidth={2} strokeDasharray="6 6" style={{ opacity: beat >= 2 ? 1 : 0, transition: ease }} />
-              {/* motion layer: the chart breathes from its baseline; the cursor and its dot sit inside the same group so they stay on the curve */}
-              <g className={mo('breathe', 1, { base: true }).className} style={mo('breathe', 1, { base: true }).style}>
+              <g>
                 <path d={smooth(dPts) + ` L ${W - 20} ${H - 14} L 20 ${H - 14} Z`} fill={`url(#${id}-area)`} />
                 <path d={smooth(dPts)} fill="none" stroke={colors.brand} strokeWidth={9} opacity={0.16} strokeLinecap="round" />
                 <path d={smooth(dPts)} fill="none" stroke={colors.brand} strokeWidth={3} />
@@ -192,7 +196,7 @@ export function ElasticChart({ lesson }: { lesson: string }) {
             </div>
           </div>
           <div className="mt-3 flex items-center gap-3">
-            <Slider value={t} onChange={() => undefined} label="Time" width={250} auto fill />
+            <Slider value={t} onChange={() => undefined} label="Time" width={224} auto fill />
             <div className="flex items-center gap-1.5">
               <Bell w={20} ringing={over && !STILL} />
               <div className="flex gap-1">
@@ -243,7 +247,7 @@ function Lane({ title, series, values, on, tone, delay = 0 }: { title: string; s
           <linearGradient id={`${id}-area`} x1={0} y1={0} x2={0} y2={1}><stop offset="0" stopColor={tone} stopOpacity={0.26} /><stop offset="1" stopColor={tone} stopOpacity={0.02} /></linearGradient>
         </defs>
         <rect width={W} height={H} rx={10} fill={`url(#${id}-bg)`} stroke="#D9E3F7" strokeWidth={1} />
-        <g className={mo('breathe', delay ? 3 : 1, { base: true }).className} style={mo('breathe', delay ? 3 : 1, { base: true }).style}>
+        <g>
           <path d={steps(pts) + ` V ${H - 8} H 10 Z`} fill={`url(#${id}-area)`} opacity={on ? 1 : 0} style={{ transition: ease, transitionDelay: `${delay}ms` }} />
           <path d={steps(pts)} fill="none" stroke={tone} strokeWidth={3} pathLength={1} strokeDasharray="1" style={{ strokeDashoffset: on ? 0 : 1, transition: ease, transitionDelay: `${delay}ms` }} />
         </g>
@@ -297,10 +301,11 @@ const METRICS = ['Compute-seconds', 'Storage-GB', 'Data transfer', 'API calls']
 export function MeterBank({ lesson }: { lesson: string }) {
   const beat = useBeats(5)
   /* the meters come into use one by one, then drop out one by one, round and round; a still frame shows all four metered */
-  const k = useCycle(8, 2400, 4)
+  /* user, 2026-10-22: the box's switching a third faster (step 2400 to 1500ms, state ease 520 to 360ms); 2026-10-23: quicker again (1000ms, 240ms) */
+  const k = useCycle(8, 1000, 4)
   const live = k <= 4 ? k : 8 - k
   const on = METRICS.map((_, i) => i < live)
-  const ease = useEase()
+  const ease = useEase(240)
   const items = [
     { text: 'Metrics tracked: compute-seconds, storage-GB, data transfer, API calls', at: 2 },
     { text: 'CloudWatch collects usage; Billing and Cost Explorer compute charges', at: 3 },
@@ -310,12 +315,13 @@ export function MeterBank({ lesson }: { lesson: string }) {
   return (
     <Card id="measured-service" kicker="Measured Service" title="Pay-Per-Use Metering" lead="Measured service means cloud providers automatically monitor, meter and report resource usage, so bills map directly to actual consumption" lesson={lesson} beat={beat} total={5}>
       <div className="flex gap-4">
-        <Rail items={items} beat={beat} width={404} size={16} />
-        <Stage w={690} h={360} active={false} pad={14}>
+        {/* user, 2026-10-22: points 16 to 18px in a column level with the stage; the picture a size smaller on a 642px stage */}
+        <PointColumn items={items.map((it) => it.text)} width={452} height={360} size={18} />
+        <Stage w={642} h={360} active={false} pad={14}>
           <div className="grid grid-cols-4 gap-2.5">
             {METRICS.map((m, i) => (
               <div key={m} className="flex flex-col items-center gap-1 rounded-xl py-2" style={{ ...tile(`${on[i] ? 2 : 1}px ${on[i] ? colors.brand : colors.line}`), opacity: beat >= 2 ? 1 : 0.35, transition: ease }}>
-                <MeterDial w={62} value={on[i] ? 0.25 + i * 0.17 : 0} spin={on[i] && !STILL} />
+                <MeterDial w={54} value={on[i] ? 0.25 + i * 0.17 : 0} spin={on[i] && !STILL} />
                 <span className="text-[14px] font-semibold" style={{ color: colors.ink }}>{m}</span>
                 <Label tone={on[i] ? 'solid' : 'muted'} size={14} strong>{on[i] ? 'In use' : 'Off'}</Label>
               </div>
@@ -334,7 +340,7 @@ export function MeterBank({ lesson }: { lesson: string }) {
               </svg>
             </Fade>
             <Fade on={beat >= 3}>
-              <div className="rounded-xl px-3 py-2" style={{ ...tile(`1.5px ${colors.brand}`), width: 330 }}>
+              <div className="rounded-xl px-3 py-2" style={{ ...tile(`1.5px ${colors.brand}`), width: 300 }}>
                 <span className="block font-heading text-[14px] font-semibold" style={{ color: colors.brandDark }}>Billing and Cost Explorer</span>
                 {METRICS.map((m, i) => (
                   <div key={m} className="mt-1 flex items-center justify-between text-[14px]" style={{ color: colors.ink }}>

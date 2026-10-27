@@ -73,8 +73,8 @@ export default {
           DEFAULT: '#002A4B', // body text is the same navy (user, 2026-10-12)
           soft: '#002A4B',
         },
-        muted: '#8A99A8',
-        line: '#D8E3F5',
+        muted: '#6B7F95', // COLOURS (Cloud Computing Fundamentals, 2026-10-22): mirrors tokens.ts, session-local
+        line: '#CFDCF5',
         surface: {
           DEFAULT: '#F4F8FF',
           2: '#E8F0FF',

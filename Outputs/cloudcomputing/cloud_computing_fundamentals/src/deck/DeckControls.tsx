@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { colors } from '@/design/tokens'
 import type { ArrowMode } from './useKeyboardNav'
+import type { DeckView } from './presenter'
 
 interface Props {
   index: number
@@ -16,6 +17,11 @@ interface Props {
   /** What the plain arrow keys currently do. */
   arrowMode: ArrowMode
   toggleArrowMode: () => void
+  /**
+   * Leave the step/slide switch out of the bar (`DeckMeta.player.hideModeSwitch`).
+   * Hidden, not removed: a deck with no build steps has nothing for it to choose.
+   */
+  hideModeSwitch?: boolean
   openPicker: () => void
   /** Play the current slide's entrance and build again from the top. */
   replay: () => void
@@ -35,6 +41,17 @@ interface Props {
   enabled?: boolean
   /** One extra control a session may add, drawn beside fullscreen. */
   extra?: ReactNode
+  /*
+    THE TWO VIEWS (2026-10-22, session-local; `presenter.ts`). The counter
+    opens the slide list in both; Edit text and Download are drawn in the
+    presenter view only, because the student file is their output.
+  */
+  view: DeckView
+  menuOpen: boolean
+  toggleMenu: () => void
+  editing: boolean
+  toggleEditing: () => void
+  download: () => void
 }
 
 /**
@@ -300,10 +317,19 @@ function useAutoHide(active: boolean, enabled: boolean, bar: React.RefObject<HTM
 
   useEffect(() => {
     if (!active) return
-    let start: { x: number; y: number; t: number; edge: boolean } | null = null
+    let start: { x: number; y: number; t: number; edge: boolean; onBar: boolean } | null = null
     let lastTouch = 0
+    /*
+      THE SEGMENTED SECTION BAR (2026-10-22) sits exactly in the bottom edge band
+      a pull-up starts from, and its segments are buttons. A touch that starts on
+      it is still ours for the PULL (a hand reaching for the control bar), but a
+      TAP on it belongs to the segment, which jumps to its section: the tap must
+      not also toggle the control bar.
+    */
+    const onSectionBar = (t: EventTarget | null) => t instanceof Element && !!t.closest('[data-section-bar]')
     const ours = (t: EventTarget | null) => {
       if (!(t instanceof Element)) return false
+      if (onSectionBar(t)) return true
       if (t.closest(CONTROL)) return false
       if (bar.current && bar.current.contains(t)) return false
       return true
@@ -312,7 +338,7 @@ function useAutoHide(active: boolean, enabled: boolean, bar: React.RefObject<HTM
       start = null
       if (!enabledRef.current || e.touches.length !== 1 || !ours(e.target)) return
       const p = e.touches[0]
-      start = { x: p.clientX, y: p.clientY, t: Date.now(), edge: p.clientY >= window.innerHeight - EDGE }
+      start = { x: p.clientX, y: p.clientY, t: Date.now(), edge: p.clientY >= window.innerHeight - EDGE, onBar: onSectionBar(e.target) }
     }
     const onEnd = (e: TouchEvent) => {
       const s = start
@@ -327,6 +353,7 @@ function useAutoHide(active: boolean, enabled: boolean, bar: React.RefObject<HTM
         show(SHOW_FOR)
         return
       }
+      if (s.onBar) return
       if (Date.now() - s.t <= TAP_TIME && Math.abs(dx) <= TAP_SLOP && Math.abs(dy) <= TAP_SLOP) {
         if (shownRef.current) hide()
         else show(SHOW_FOR)
@@ -466,6 +493,7 @@ export function DeckControls({
   toggleFullscreen,
   arrowMode,
   toggleArrowMode,
+  hideModeSwitch = false,
   openPicker,
   replay,
   markerActive,
@@ -474,6 +502,12 @@ export function DeckControls({
   mobile = 'dock',
   enabled = true,
   extra,
+  view,
+  menuOpen,
+  toggleMenu,
+  editing,
+  toggleEditing,
+  download,
 }: Props) {
   const compact = useMedia(COMPACT_MQ)
   const narrow = useMedia(NARROW_MQ)
@@ -497,9 +531,14 @@ export function DeckControls({
   }
 
   /*
-    THE READOUT. Not a button: the slide number is information, and making it
-    pressable would put a fourth navigation gesture beside three that already
-    work. `tabular-nums` so the digits do not shuffle the bar.
+    THE READOUT, AND NOW THE LIST BEHIND IT (2026-10-22). It was deliberately
+    not a button: the slide number is information, and a fourth navigation
+    gesture beside three that worked was one too many. The presenter asked
+    for the list anyway, and the number is where a presenter already looks
+    when they want to know where they are, so pressing it opens `SlideMenu`:
+    every active slide, number and title, one press to jump. It still draws
+    like a readout (no ring, no glyph) and its box is fixed, so the bar is the
+    width it always was. `tabular-nums` so the digits do not shuffle the bar.
 
     11.5px, THE SAME SIZE AS EVERYTHING ELSE IN THE BAR, and it was 13.
 
@@ -515,7 +554,15 @@ export function DeckControls({
     a slash. Nothing is emphasised by being bigger than its neighbours.
   */
   const counter = (
-    <span className="select-none px-1.5 font-mono text-[11.5px] tabular-nums leading-none">
+    <button
+      type="button"
+      data-menu-toggle=""
+      aria-haspopup="listbox"
+      aria-expanded={menuOpen}
+      aria-label="Open the list of slides"
+      onClick={act(toggleMenu)}
+      className={`inline-flex ${big ? 'h-11' : 'h-8'} shrink-0 select-none items-center rounded-pill px-1.5 font-mono text-[11.5px] tabular-nums leading-none transition-colors ${menuOpen ? 'bg-brand/10' : 'hover:bg-muted/10'}`}
+    >
       {/*
         `style={{ color }}` AND NOT `text-body`, WHICH IS THE REAL ANSWER TO WHY
         THIS NUMBER WAS TOO BIG.
@@ -538,8 +585,9 @@ export function DeckControls({
       <span className="font-medium" style={{ color: colors.body }}>
         {String(index + 1).padStart(2, '0')}
       </span>
-      <span className="text-muted/70"> / {String(total).padStart(2, '0')}</span>
-    </span>
+      {/* a non-breaking space: inside a flex button the leading space of a text run is collapsed away */}
+      <span className="text-muted/70">{'\u00a0/ '}{String(total).padStart(2, '0')}</span>
+    </button>
   )
 
   const back = (
@@ -587,7 +635,8 @@ export function DeckControls({
     </Btn>
   )
 
-  const mode = (
+  /* `null` when the session hides it: every layout below drops it by the same test. */
+  const mode = hideModeSwitch ? null : (
     <Btn
       big={big}
       label={`Plain arrow keys currently move by ${
@@ -653,6 +702,34 @@ export function DeckControls({
     </Btn>
   ) : null
 
+  /*
+    EDIT TEXT AND DOWNLOAD, PRESENTER VIEW ONLY (2026-10-22). Edit is a latch
+    like the marker: while it is on, every text element of the slide on screen
+    is editable in place (`EditLayer`). Download saves the student file: the
+    deck as finalised, skipped and deleted slides out, edits in, these two
+    buttons and the picker's skip and delete gone (`presenter.ts`). Both sit in
+    the marker's group because, like the marker, they change what the pointer
+    does to the slide rather than where the deck is.
+  */
+  const edit =
+    view === 'presenter' ? (
+      <Btn big={big} label={`${editing ? 'Stop editing' : 'Edit'} the text on this slide`} onClick={act(toggleEditing)} on={editing}>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M4 6h11M9.5 6v12" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M17.5 12.5l2.3 2.3-5.2 5.2H12.3v-2.3z" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </Btn>
+    ) : null
+
+  const save =
+    view === 'presenter' ? (
+      <Btn big={big} label="Download the student view: the deck as finalised, with skipped slides left out" onClick={act(download)}>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </Btn>
+    ) : null
+
   /* The whole bar is one surface, so the shadow belongs to the bar and not to
      each thing inside it. */
   const shadow = { boxShadow: '0 6px 24px -12px rgba(0, 37, 75, 0.28)' }
@@ -666,7 +743,8 @@ export function DeckControls({
           /* `focus-within:` twice over, so tabbing to a button brings the bar back even
              when the pointer is elsewhere. */
           className={`absolute bottom-4 left-5 z-30 flex items-center gap-0.5 rounded-pill bg-white/85 px-1.5 py-1 ring-1 ring-muted/20 backdrop-blur transition-[opacity,transform] duration-200 ease-out focus-within:pointer-events-auto focus-within:translate-y-0 focus-within:opacity-100 ${
-            near ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-1.5 opacity-0'
+            /* the bar stays while its list is open: the pointer is up in the list, outside the band */
+            near || menuOpen ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-1.5 opacity-0'
           }`}
           style={shadow}
         >
@@ -680,6 +758,8 @@ export function DeckControls({
           {mode}
           <Divide />
           {marker}
+          {edit}
+          {save}
           <Divide />
           {extra}
           {fullscreen}
@@ -738,6 +818,8 @@ export function DeckControls({
               {again}
               {jump}
               {marker}
+              {edit}
+              {save}
               {extra}
               {fullscreen}
             </div>
@@ -757,6 +839,8 @@ export function DeckControls({
             {mode}
             <Divide />
             {marker}
+            {edit}
+            {save}
             <Divide />
             {extra}
             {fullscreen}

@@ -323,12 +323,19 @@ export function useKeyboardNav(h: Handlers) {
  */
 const KEY = 'nxtwave.deck.arrowMode'
 
-export function initialArrowMode(): ArrowMode {
+/**
+ * `remembered` false (the session hides the switch, `player.hideModeSwitch`) skips
+ * the browser's saved choice: a presenter who pressed `S` in another deck on this
+ * machine must not open this one in a mode it gives them no way out of. The URL is
+ * read either way, because the harnesses ask for `?nav=steps` on purpose.
+ */
+export function initialArrowMode(remembered = true): ArrowMode {
   if (typeof window === 'undefined') return 'slides'
   const params = new URLSearchParams(window.location.search)
   const asked = params.get('nav')
   if (asked === 'slides' || asked === 'steps') return asked
   if (params.has('all')) return 'slides'
+  if (!remembered) return 'slides'
   try {
     const saved = window.localStorage.getItem(KEY)
     if (saved === 'slides' || saved === 'steps') return saved

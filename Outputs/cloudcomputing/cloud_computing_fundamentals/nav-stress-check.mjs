@@ -53,8 +53,11 @@ for (const name of engines) {
     const key = async (k, n = 1, gap = 120) => { for (let i = 0; i < n; i++) { await p.keyboard.press(k); await p.waitForTimeout(gap) } }
     // 1. slide mode, forward then back, one press at a time
     await p.goto(`file://${html}?nav=slides#/1`, { waitUntil: 'load' }); await p.waitForTimeout(1200)
-    for (let i = 1; i < N - 1; i++) { await key('ArrowRight'); await check(`slides → ${i}`, 350) }
-    for (let i = 0; i < 6; i++) { await key('ArrowLeft'); await check(`slides ← ${i}`, 350) }
+    /* settle 800, not 350 (2026-10-22): since 2026-10-15 every move in this deck plays the 600ms glide
+       (`player.smooth`), so 350ms after a press the departing layer is still mid-exit by design; the
+       assertion is about what is left once the move has settled */
+    for (let i = 1; i < N - 1; i++) { await key('ArrowRight'); await check(`slides → ${i}`, 800) }
+    for (let i = 0; i < 6; i++) { await key('ArrowLeft'); await check(`slides ← ${i}`, 800) }
     // 2. slide mode, hammered: ten presses with no wait, then settle
     await key('ArrowRight', 10, 0); await check('slides hammered →')
     await key('ArrowLeft', 10, 0); await check('slides hammered ←')

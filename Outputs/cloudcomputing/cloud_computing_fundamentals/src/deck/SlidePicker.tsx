@@ -125,19 +125,63 @@ function Thumb({ slide, scroller }: { slide: SlideDef; scroller: React.RefObject
 /** Four across. `up` and `down` move by this, so the two agree by construction. */
 const COLS = 4
 
+/**
+ * THE PREVIEW PANEL'S OWN CONTROLS (presenter view, 2026-10-22, session-local;
+ * `presenter.ts`). The grid is the one place the whole deck is laid out, so it
+ * is where a slide is skipped, unskipped or deleted. `slides` stays the FULL
+ * list: a skipped card stays in the grid, marked (badge, dimmed thumbnail,
+ * struck label) so the presenter can see what the room will not; a deleted
+ * card leaves the grid and a strip at the top counts them with one press to
+ * restore. Cards keep their ORIGINAL deck number, which is the number the
+ * presenter planned with; the counter and the menu show the active numbers.
+ *
+ * `onPick` takes an ACTIVE index. A press on a skipped card calls `onShow`
+ * instead, which unskips the slide and goes to it: the press means "this one
+ * after all". In the student view none of the controls render.
+ */
+export interface PickerControls {
+  toggleSkip: (id: string) => void
+  remove: (id: string) => void
+  restoreAll: () => void
+  resetText: (id: string) => void
+  /** false when a skip or delete would leave the deck empty */
+  canDrop: (id: string) => boolean
+}
+
 export function SlidePicker({
   slides,
-  index,
+  currentId,
+  skipped,
+  deleted,
+  edited,
+  activeIndexOf,
+  presenter,
+  controls,
   onPick,
+  onShow,
   onClose,
   thumbnails = false,
 }: {
   slides: SlideDef[]
-  index: number
+  currentId?: string
+  skipped: Set<string>
+  deleted: Set<string>
+  edited: Set<string>
+  activeIndexOf: (id: string) => number
+  presenter: boolean
+  controls: PickerControls
   onPick: (i: number) => void
+  onShow: (id: string) => void
   onClose: () => void
   thumbnails?: boolean
 }) {
+  /* the deck index of the slide on screen, for the cursor's start and the HERE badge */
+  const index = Math.max(0, slides.findIndex((s) => s.id === currentId))
+  /* a press on a card: an active slide jumps, a skipped one is shown again */
+  const go = (s: SlideDef) => {
+    if (skipped.has(s.id)) onShow(s.id)
+    else onPick(activeIndexOf(s.id))
+  }
   const scroller = useRef<HTMLDivElement>(null)
   const reduce = useReducedMotion()
   const auto = useAutoplayPref()
@@ -150,12 +194,13 @@ export function SlidePicker({
      its results would be a list of the wrong slide numbers. */
   const hits = useMemo(() => {
     const needle = q.trim().toLowerCase()
-    const all = slides.map((s, i) => ({ s, i }))
+    /* deleted slides are out of the grid; the strip above it restores them */
+    const all = slides.map((s, i) => ({ s, i })).filter(({ s }) => !deleted.has(s.id))
     if (!needle) return all
     return all.filter(({ s, i }) =>
       `${i + 1} ${s.label ?? ''} ${s.section ?? ''} ${s.id}`.toLowerCase().includes(needle),
     )
-  }, [slides, q])
+  }, [slides, q, deleted])
 
   /* The cursor lives on a DECK index, so it has to be pulled back onto the filtered
      set whenever that set changes, or Enter jumps somewhere the list is not showing. */
@@ -185,10 +230,12 @@ export function SlidePicker({
           e.preventDefault()
           onClose()
           break
-        case 'Enter':
+        case 'Enter': {
           e.preventDefault()
-          onPick(cursor)
+          const hit = hits.find((h) => h.i === cursor)
+          if (hit) go(hit.s)
           break
+        }
         case 'ArrowRight':
           e.preventDefault()
           move(1)
@@ -209,7 +256,8 @@ export function SlidePicker({
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [hits, cursor, onPick, onClose])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hits, cursor, onPick, onShow, onClose, skipped])
 
   /* Section headings, computed from the hits so a filtered view does not print the
      heading of a section it is no longer showing. */
@@ -298,6 +346,22 @@ export function SlidePicker({
         </div>
         )}
 
+        {presenter && deleted.size > 0 && (
+          <div className="sticky top-0 z-10 -mx-8 -mt-6 mb-4 flex items-center gap-3 bg-night px-8 pb-3 pt-6">
+            <span className="font-heading text-[13px] font-semibold text-white/80">
+              {deleted.size} deleted slide{deleted.size === 1 ? '' : 's'}
+            </span>
+            <button
+              type="button"
+              onClick={controls.restoreAll}
+              onKeyDown={(e) => e.stopPropagation()}
+              className="rounded-pill border border-white/25 px-3 py-1 font-heading text-[12px] font-semibold text-white transition-colors hover:bg-white/10"
+            >
+              Restore all
+            </button>
+          </div>
+        )}
+
         {hits.length === 0 && (
           <p className="font-body text-[15px] text-white/50">Nothing matches that.</p>
         )}
@@ -311,8 +375,16 @@ export function SlidePicker({
             )}
             <div className="grid grid-cols-4 gap-2.5">
               {g.items.map(({ s, i }) => {
-                const here = i === index
+                const here = s.id === currentId
                 const on = i === cursor
+                const isSkipped = skipped.has(s.id)
+                const isEdited = edited.has(s.id)
+                const droppable = controls.canDrop(s.id)
+                /* a control's press stays on the control: it must not also jump */
+                const press = (fn: () => void) => (e: React.MouseEvent) => {
+                  e.stopPropagation()
+                  fn()
+                }
                 return (
                   <div
                     /* a div, not a button: a thumbnail holds the slide's own buttons,
@@ -321,9 +393,10 @@ export function SlidePicker({
                     tabIndex={0}
                     key={s.id}
                     ref={on ? cursorRef : undefined}
-                    onClick={() => onPick(i)}
+                    onClick={() => go(s)}
                     onPointerEnter={() => setCursor(i)}
                     aria-current={here ? 'true' : undefined}
+                    data-skipped={isSkipped ? '' : undefined}
                     /*
                       THE CURRENT SLIDE AND THE CURSOR ARE DIFFERENT THINGS AND LOOK
                       DIFFERENT. One is where the deck is, the other is where the
@@ -345,7 +418,7 @@ export function SlidePicker({
                     }`}
                   >
                     {thumbnails && (
-                      <span className="mb-2.5 block">
+                      <span className="mb-2.5 block" style={{ opacity: isSkipped ? 0.4 : 1 }}>
                         <Thumb slide={s} scroller={scroller} />
                       </span>
                     )}
@@ -358,10 +431,55 @@ export function SlidePicker({
                           here
                         </span>
                       )}
+                      {isSkipped && (
+                        <span className="rounded-pill bg-warning/90 px-1.5 py-0.5 font-mono text-[9.5px] font-bold uppercase tracking-wider text-night">
+                          skipped
+                        </span>
+                      )}
+                      {isEdited && (
+                        <span className="rounded-pill bg-brand/80 px-1.5 py-0.5 font-mono text-[9.5px] font-bold uppercase tracking-wider text-white">
+                          edited
+                        </span>
+                      )}
                     </span>
-                    <span className="mt-1 block truncate font-heading text-[13.5px] font-semibold text-white/90">
+                    <span className={`mt-1 block truncate font-heading text-[13.5px] font-semibold ${isSkipped ? 'text-white/45 line-through' : 'text-white/90'}`}>
                       {s.label ?? s.id}
                     </span>
+                    {presenter && (
+                      <span className="mt-2 flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={press(() => controls.toggleSkip(s.id))}
+                          onKeyDown={(e) => e.stopPropagation()}
+                          disabled={!isSkipped && !droppable}
+                          aria-label={isSkipped ? 'Unskip this slide' : 'Skip this slide'}
+                          className="rounded-pill border border-white/20 px-2 py-0.5 font-heading text-[11px] font-semibold text-white/85 transition-colors hover:bg-white/15 disabled:opacity-30"
+                        >
+                          {isSkipped ? 'Unskip' : 'Skip'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={press(() => controls.remove(s.id))}
+                          onKeyDown={(e) => e.stopPropagation()}
+                          disabled={!droppable}
+                          aria-label="Delete this slide"
+                          className="rounded-pill border border-white/20 px-2 py-0.5 font-heading text-[11px] font-semibold text-white/85 transition-colors hover:border-danger/70 hover:bg-danger/25 disabled:opacity-30"
+                        >
+                          Delete
+                        </button>
+                        {isEdited && (
+                          <button
+                            type="button"
+                            onClick={press(() => controls.resetText(s.id))}
+                            onKeyDown={(e) => e.stopPropagation()}
+                            aria-label="Put this slide's original text back"
+                            className="rounded-pill border border-white/20 px-2 py-0.5 font-heading text-[11px] font-semibold text-white/85 transition-colors hover:bg-white/15"
+                          >
+                            Reset text
+                          </button>
+                        )}
+                      </span>
+                    )}
                   </div>
                 )
               })}

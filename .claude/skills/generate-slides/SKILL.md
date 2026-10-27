@@ -255,6 +255,180 @@ needed three fix passes to reach the same standard (characters, ease-ins,
 phones, arrows, overflow, groups), because none of it was written where the
 next deck would read it.
 
+## 2d. Changes made in the deck are kept in the file that is shared (user, 2026-10-27; every deck)
+
+User, 2026-10-27, on Cloud Computing session 3 (`setting_up_your_aws_account`):
+*"once i change any [text] or skip or delete, that html need to be like that even after i shared"*,
+and *"it need to be applied to every deck from now on."* Every new deck, and every fix pass on an
+older one, carries the presenter player with these, without being asked:
+
+1. **Edit, Skip, Delete and Download** in the presenter view (`src/deck/presenter.ts`,
+   `EditLayer.tsx`, `SlidePicker.tsx`, `DeckControls.tsx`, `pristine.ts`).
+2. **Edits made under `npm run dev` go to source:** `src/decks/slideEdits.ts`, written by the
+   `/__deck/edits` endpoint in `vite.config.ts`, baked in by `npm run build:html`.
+3. **The built HTML saves into itself in Chrome and Edge** (`src/deck/fileSave.ts`,
+   `FileSaveBadge.tsx`): the first change asks once for the file, then every edit, skip and delete
+   is written into the open file, so the file that is shared opens as it was left, with every
+   control still there. Firefox, Safari and Brave (flag off) have no API for it: there a change
+   stays in that browser, and the user was told so. Never claim it works in every browser.
+4. **Edits are keyed by the element's original words**, not its position, and re-applied after any
+   re-render (a position key put edits on the wrong text, and a figure's clock put the old words
+   back: the "edits revert" report of the same day).
+5. **Ctrl+Z, Ctrl+Y / Ctrl+Shift+Z** undo and redo text edits, and the saved file follows.
+
+The working copy is `Outputs/cloudcomputing/setting_up_your_aws_account/`: copy `src/deck/` and
+`vite.config.ts` from it with the scaffold, and create an empty `src/decks/slideEdits.ts`. The kit
+template does NOT have the presenter player yet; putting it there is a kit PR (section 6). Before
+reporting a deck done, build it and check a save: edit a word in the built file, reopen it in a
+fresh browser profile, and see the word: `node file-save-check.mjs` (copy it from that session) must
+print FILE SAVE OK.
+
+Why: the edits lived in `localStorage` only, one browser's memory, so the deck the user shared
+showed none of them, and the user believed the feature was broken.
+
+## 2c. Fixed slide types and chrome: the quiz slide, Key Takeaways, the progress bar, arrows to labels
+
+Four things the user fixed on 2026-10-22 as permanent rules for every
+session. They are not choices a plan makes; a deck that departs from them is
+wrong.
+
+### The quiz slide
+
+Every quiz slide is a replica of **slide 25 of
+`Reference ppt's/virtualization-and-hypervisors 2.html`** ("Quiz Time!"): its
+layout, structure and styling, nothing else (user, 2026-10-22, a permanent
+rule). The reference implementation is the Cloud Computing Fundamentals
+session's `src/ui/foundations/ClassroomQuiz.tsx`; copy it, do not redraw it.
+
+What that slide is, so a copy can be checked against it on the 1280 x 720
+canvas: the light `brand-soft` ground with a soft brand blob at the bottom
+left; a two-column grid centred on the page; on the left, at x 64, the pill
+(`Your turn`, 16px bold uppercase, 0.18em tracking, brand-700 ink, a 1px
+brand ring at 15%), the title `Quiz Time!` (88px, weight 800, line height
+0.98, 24px below the pill) and a 220 x 6 bar from brand through accent to
+accent at 30%; on the right a 540 x 400 stack of the reference's own four
+pictures (`public/assets/quiz/brain.png`, `bulb.png`, `bubble.png`,
+`mark.png`, layered in that order) with a 210px radial amber glow behind the
+bulb. No kicker, no divider, no title header: this slide type keeps the
+reference's own frame.
+
+**The timer stands where the reference's yellow dot stood** (user, same
+day): the pill opens with a 14px clock glyph whose hand sweeps once a minute,
+then `mm:ss` counting up from the moment the slide opens, in the dot's accent
+colour. The reference deck itself carries no timer (every slide of it was
+searched); the timer is built to the user's description and this is now the
+standard. It holds at `00:00` on harness URLs and in picker thumbnails.
+
+The quiz slide's words are the pill and the title. Instructions for the
+room ("open the quiz on your portal, answer alone, we go through the answers
+together") go in the slide's speaker notes, not on the slide: the reference's
+structure has no place for a list.
+
+### The quiz slide (addendum, user 2026-10-23)
+
+The pill shows the clock glyph and `Your turn` only, on EVERY quiz slide: no
+`mm:ss`, nothing counting (user, 2026-10-23: "remove the time going, only
+the clock icon and Your turn", then "follow slide 64's quiz design for
+all"). `ClassroomQuiz` keeps a `timer` prop, default `false`; a deck that
+wants the count asks for it per slide, and with `timer` false the count is
+never mounted, so no interval runs.
+
+### The Key Takeaways slide
+
+Every Key Takeaways slide is built to the reference in
+**`slidestraining/Untitled`** (user, 2026-10-22, a permanent rule). That
+folder is reference only: never modify, move or delete anything in it; copy
+the assets a deck needs into its own `public/assets/takeaways/` (`check.png`
+is the folder's `Frame.png`, `student.png` a 700px copy of `Cheerful Student
+with Books and Checklist.png`). The reference implementation is the Cloud
+Computing Fundamentals session's `src/decks/figures/closing.tsx`.
+
+What the reference shows (`Slide 16_9 - 104.png`): the kit header with the
+session as the kicker and `Key Takeaways` as the title; one column of items
+at x 64, each the reference's 37px blue check disc beside one line whose head
+is bold and whose rest is regular (24px there; 20px when the lines run to two
+lines, as a TR's agenda lines do); the cheerful student with her books
+standing at the lower right, her feet past the bottom edge. Content rule 20
+still holds: the strings are the agenda's, word for word; the head and the
+rest are joined by the TR's own colon, not the reference's dash (rule 1). The
+student must stay clear of the reserved video area (top right) and of the
+player bar (bottom left).
+
+### The Key Takeaways slide (addendum, user 2026-10-23)
+
+The list is the agenda slide's items and nothing more: the five section
+titles, one line each, 24px bold beside the check disc, rows 72px apart. The
+sub lines a deck's agenda data may carry are not rendered (user, 2026-10-23:
+"whatever is present in the agenda slide, do not add extra points").
+
+The student is anchored to the slide's foot, not to the list. In the
+reference her picture runs down into the blue strip (her shins are under it),
+her head top at about 42% of the frame height and her right edge clear of
+the mark at the bottom right. So: her picture's foot sits on the slide's
+bottom edge (y 720), the foot band crossing her shins; 270 wide, 405 tall
+(the file's own aspect); right edge at x 1160; the body box is given the full
+height under the header (`BODY_H`) so the centring rule has no slack to move
+it and her `top` is one fixed number (user, 2026-10-23: "check the placement
+of the illustration, it attaches to the gradient strip in the reference,
+reposition it"). Reference implementation: the Cloud Computing Fundamentals
+session's `src/decks/figures/closing.tsx`.
+
+### The section bar (user, 2026-10-22, reworked 2026-10-23; every session)
+
+The blue band at the foot of every light slide is **one segment per agenda
+point, all the same width**, and every segment is a button. It is not a
+progress bar: nothing in it fills, because the counter already says how far
+the deck is and the user asked for the sections alone (2026-10-23: "no
+progress bar below, just the sections with equal width, a hover effect that
+shows the section breaker preview in small, the bar height reduced, click to
+navigate to that section breaker"). The shipped reference implementation is
+`Outputs/cloudcomputing/cloud_computing_fundamentals/src/ui/SectionBar.tsx`
+with the `segments` and `jump` fields `Deck.tsx` puts on the deck context;
+copy those pieces into a session (or sync them from the kit once the kit
+carries them) rather than writing a bar of your own.
+
+- **Boundaries come from the section breaker slides**, nothing else. `Deck`
+  recognises a breaker by its element type (`SectionBreakerSlide`, with the
+  label "Section divider" as the fallback) over the ACTIVE list, so a deck
+  built from the kit gets the bar with no configuration, and a skipped
+  breaker simply drops its segment. The slides before the first breaker
+  (brand, welcome, agenda) are an opening segment that jumps to slide 1; the
+  closing slides belong to the last section.
+- **Equal widths, a 3px gap, 4px tall**, the template's brand blue, in its
+  old place. The section on screen reads a touch stronger, by opacity only;
+  nothing changes size, nothing scales, no fill.
+- **Hover shows the breaker.** While a segment is hovered or focused (and
+  for a moment after a tap on touch), a 240 x 135 card above it renders that
+  section's breaker slide live, the slide's own element at 1280 x 720 scaled
+  down under `InstantContext` in a `.deck-thumb` wrapper (so the motion layer
+  holds still), `inert`, with the section name on a pill over the card. The
+  card is lifted clear of the player's control bar.
+- **Pressing a segment goes to that section's breaker**, landing fully
+  revealed like a picker jump; next, previous, touch and the keyboard carry
+  on from there. Enter and Space work on a focused segment. The pointer
+  target is a 28 screen-pixel strip above the band, sized against the
+  slide's zoom so a thumb hits it on a phone, portrait or landscape.
+- **The preview is never in the DOM at rest**, and never under `?all`,
+  `?noauto` or `?still`: the harnesses measure every slide, and a card that
+  happened to be open would be reported as content at the foot of the slide.
+  It is mounted only while shown, so the entrance layer never animates it,
+  and every drawn piece of the band is under 16px tall, so the band itself is
+  never taken for a unit.
+- Dark slides (brand, dividers, thank-you) carry no bar, as before.
+
+### An arrow that points at a label is built from the label's numbers
+
+An arrow between a picture and a label (slide 11 of Cloud Computing
+Fundamentals: the laptop and the `1 Client Infrastructure` pill) is never
+placed by eye. The label gets a FIXED width, the picture is placed with its
+centre on the label's centre line, and the arrow's two ends are computed from
+those same constants (picture right edge plus a gap, label left edge minus a
+gap, one `y`). The reference is `ArchitectureWalk` in that session's
+`src/decks/figures/basics.tsx` (`PILL_W`, `LINE_Y`). Why: the user found the
+arrow misaligned on 2026-10-22 and asked that it never reappear on
+regeneration or on any other slide with the same pattern; an arrow whose
+ends are typed numbers drifts the first time either end is nudged.
+
 ## 3. Illustrations and figures
 
 A figure earns its place by making an argument a sentence cannot. Decorative

@@ -25,7 +25,7 @@ import { colors } from '@/design/tokens'
  * a visible band the render does not have.
  */
 
-const HILL_SVG = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 300' preserveAspectRatio='none'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='${colors.brand}' stop-opacity='0.07'/><stop offset='1' stop-color='${colors.brand}' stop-opacity='0.26'/></linearGradient><linearGradient id='h' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='${colors.brand}' stop-opacity='0.03'/><stop offset='1' stop-color='${colors.brand}' stop-opacity='0.09'/></linearGradient><filter id='f' x='-10%' y='-30%' width='120%' height='160%'><feGaussianBlur stdDeviation='7'/></filter></defs><path d='M-20 320 V182 C 120 146 230 156 330 204 C 420 248 480 234 560 218 V320 Z' fill='url(%23h)' filter='url(%23f)'/><path d='M-20 320 V210 C 80 170 160 186 236 226 C 310 266 420 232 560 246 V320 Z' fill='url(%23g)' filter='url(%23f)'/></svg>`
+const HILL_SVG = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 300' preserveAspectRatio='none'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='${colors.brand}' stop-opacity='0.10'/><stop offset='1' stop-color='${colors.brand}' stop-opacity='0.34'/></linearGradient><linearGradient id='h' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='${colors.brand}' stop-opacity='0.05'/><stop offset='1' stop-color='${colors.brand}' stop-opacity='0.13'/></linearGradient><filter id='f' x='-10%' y='-30%' width='120%' height='160%'><feGaussianBlur stdDeviation='7'/></filter></defs><path d='M-20 320 V182 C 120 146 230 156 330 204 C 420 248 480 234 560 218 V320 Z' fill='url(%23h)' filter='url(%23f)'/><path d='M-20 320 V210 C 80 170 160 186 236 226 C 310 266 420 232 560 246 V320 Z' fill='url(%23g)' filter='url(%23f)'/></svg>`
 
 const HILL_URL = `url("data:image/svg+xml;utf8,${encodeURIComponent(HILL_SVG)}")`
 
@@ -35,13 +35,13 @@ export const CARD_SKIN: CSSProperties = {
   background: [
     'radial-gradient(ellipse 60% 55% at 26% 16%, rgba(255,255,255,0.95), rgba(255,255,255,0) 70%)',
     `${HILL_URL} center / 100% 100% no-repeat`,
-    'linear-gradient(180deg, #FFFFFF 0%, #F5F8FD 55%, #EDF2FC 100%)',
+    'linear-gradient(180deg, #FFFFFF 0%, #F3F7FD 55%, #E7EEFB 100%)',
   ].join(', '),
   boxShadow: [
-    'inset 0 0 0 1px #D9E3F7',
+    'inset 0 0 0 1px #CFDCF5',
     `inset 0 1px 0 ${colors.white}`,
-    '0 24px 48px -24px rgba(31,64,140,0.34)',
-    '0 8px 18px -10px rgba(31,64,140,0.14)',
+    '0 24px 48px -24px rgba(31,64,140,0.44)',
+    '0 8px 18px -10px rgba(31,64,140,0.20)',
     '0 2px 6px rgba(31,64,140,0.06)',
   ].join(', '),
 }
@@ -53,6 +53,6 @@ export const CARD_SKIN: CSSProperties = {
  * a shorter shadow, so a slide of rows reads as a stack of the same plates.
  */
 export const TILE_SKIN: CSSProperties = {
-  background: 'linear-gradient(180deg, #FFFFFF 0%, #F4F7FD 100%)',
-  boxShadow: 'inset 0 0 0 1px #D9E3F7, inset 0 1px 0 #FFFFFF, 0 12px 24px -16px rgba(31,64,140,0.30), 0 2px 6px rgba(31,64,140,0.05)',
+  background: 'linear-gradient(180deg, #FFFFFF 0%, #ECF2FD 100%)',
+  boxShadow: 'inset 0 0 0 1px #CFDCF5, inset 0 1px 0 #FFFFFF, 0 12px 24px -16px rgba(31,64,140,0.34), 0 2px 6px rgba(31,64,140,0.06)',
 }

@@ -2,7 +2,6 @@ import type { DeckMeta, SlideDef } from '@/deck/types'
 import {
   AgendaSlide,
   BrandSlide,
-  FeedbackSlide,
   NextSessionSlide,
   SectionBreakerSlide,
   ThankYouSlide,
@@ -76,8 +75,11 @@ export const cloudMeta: DeckMeta = {
   course: 'Cloud Computing',
   lesson: 'Cloud Computing Fundamentals',
   presenter: 'NxtWave Instructor',
-  /* 2026-10-15: every move a transition, picker thumbnails (see DeckPlayerOptions) */
-  player: { autoHideControls: true, smooth: true, thumbnails: true },
+  /* 2026-10-15: every move a transition, picker thumbnails (see DeckPlayerOptions).
+     2026-10-23: the step/slide switch is hidden in EVERY cloud computing deck (the
+     course skill, `../workflow/skills/cloud-computing-course`): the deck animates
+     itself and has no build steps, so the switch had nothing to choose. */
+  player: { autoHideControls: true, smooth: true, thumbnails: true, hideModeSwitch: true },
 }
 
 const SESSION = 'Cloud Computing Fundamentals'
@@ -194,7 +196,7 @@ export const cloudDeck: SlideDef[] = [
   { id: 'quiz-close', section: 'Closing', label: 'Quiz time', transition: 'zoom', element: <ClassroomQuiz lesson={SESSION} />, notes: 'The last chance to find out whether the room believes the takeaways, while the session is still in the room.' },
   { id: 'takeaways', section: 'Closing', label: 'Key takeaways', element: <Takeaways lesson={SESSION} items={AGENDA} />, notes: "The TR's Key Takeaways list, which is its agenda word for word." },
   { id: 'next-session', section: 'Closing', label: 'Next session', transition: 'zoom', element: <NextSessionSlide title="Deployment & Service Models" lesson={SESSION} />, notes: "The TR's own upcoming-session line." },
-  { id: 'feedback', section: 'Closing', label: 'Feedback', transition: 'fade', element: <FeedbackSlide lesson={SESSION} />, notes: 'Leave it on screen while the room fills the form. Read the link out rather than assuming everyone can see it.' },
+  /* the feedback slide was deleted on the user's word (2026-10-22, "Feedback slide: Delete it"); content rule 41 is overridden for this deck only */
   { id: 'thank-you', section: 'Closing', label: 'Thank you', transition: 'zoom', element: <ThankYouSlide title="Thank You" lesson={SESSION} /> },
   { id: 'all-the-best', section: 'Closing', label: 'All the Best', transition: 'zoom', element: <ThankYouSlide title="All the Best" lesson={SESSION} /> },
 ]

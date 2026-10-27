@@ -3,10 +3,10 @@ import { motion } from 'framer-motion'
 import { colors } from '@/design/tokens'
 import { useBeats } from '@/ui'
 import { useInstant } from '@/motion/instant'
-import { Card, Stage, At, Fade, Label, Arrow, Rail, Statement, Traveller, useLoop, useCycle, STILL, BOX_W, isNow } from './scene'
+import { Card, Stage, At, Fade, Label, Arrow, Statement, Traveller, useLoop, useCycle, STILL, BOX_W, isNow, B } from './scene'
 import { Bell, CloudShape, Idea, MapGround, Pin, Rocket, ServerUnit, useEase } from './art'
 import { ClayBalance, ClayBell, ClayCoin, ClayCoins, ClayComputer, ClayMeter, ClayPadlock, ClayPin, ClayRocket, ClayTools } from './clay-d'
-import { mo } from './motion'
+import { ClayCalendar } from './clay-c'
 import { tile, WELL, solid, TILE_SKIN_BG, TILE_DROP } from './basics'
 import { usePrefix } from './depth'
 
@@ -35,6 +35,30 @@ function useGrown(delay = 450): boolean {
 
 const DRAW = 860
 
+/** 0..1 eased at both ends (smoothstep), for a `useLoop` phase that drives a transform. */
+const smooth = (t: number) => t * t * (3 - 2 * t)
+
+/**
+ * THE POINTS BESIDE A PICTURE (user, 2026-10-22: "increase the points font
+ * size a little"): the rail tiles at 18px, in a column as tall as the stage
+ * beside it, the slack shared between the tiles (`justify-between`) so the
+ * two sides end level.
+ */
+function StretchRail({ items, width, height, size = 18, pad = 'px-4 py-3' }: { items: { text: ReactNode }[]; width: number; height: number; size?: number; pad?: string }) {
+  return (
+    <div className="flex shrink-0 flex-col justify-between" style={{ width, height }}>
+      {items.map((it, i) => (
+        <div key={i} className={`flex items-start gap-3 rounded-2xl ${pad}`} style={tile()}>
+          <span className="mt-[8px] grid h-[14px] w-[14px] shrink-0 place-items-center rounded-full" style={{ background: colors.surface2, boxShadow: `inset 0 0 0 1.5px ${colors.brand}` }}>
+            <span className="block h-[5px] w-[5px] rounded-full" style={{ background: colors.brand }} />
+          </span>
+          <span className="min-w-0 leading-snug" style={{ fontSize: size, color: colors.ink }}>{it.text}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 /* ================================================================== 38 · Cloud Trade-Offs Map (reference 43 + 44) */
 
 const PAIRS: [string, string][] = [
@@ -51,6 +75,9 @@ const PAIRS: [string, string][] = [
  * flagged for), so the picture and the words are now on separate frames.
  */
 export function TradeoffStatement({ lesson }: { lesson: string }) {
+  /* 2026-10-22 (user): the balance weighs, a slow tilt each way, one lap every 6s on rAF; held at the right pan down on harness URLs */
+  const t = useLoop(6000, { still: 1 })
+  const tilt = -7 + 14 * smooth(t)
   return (
     <Statement
       id="tradeoffs"
@@ -59,7 +86,7 @@ export function TradeoffStatement({ lesson }: { lesson: string }) {
       label="Benefits & Challenges"
       parts={[{ t: 'Cloud adoption delivers clear business benefits, but ' }, { t: 'each benefit carries a matching operational risk', hi: true }, { t: '; recognising both before migration separates sound architecture decisions from costly surprises' }]}
       lesson={lesson}
-      art={<ClayBalance w={270} tilt={7} />}
+      art={<ClayBalance w={270} tilt={tilt} />}
     />
   )
 }
@@ -71,9 +98,9 @@ export function TradeoffScale({ lesson }: { lesson: string }) {
     <Card id="tradeoffs-map" kicker="Benefits & Challenges" title="Cloud Trade-Offs Map" lesson={lesson} beat={beat} total={4}>
       <Stage w={BOX_W} h={430} active={false} pad={24}>
         <div className="grid items-center" style={{ gridTemplateColumns: '1fr 110px 1fr', rowGap: 16 }}>
-          <span className="text-right font-heading text-[16px] font-semibold tracking-[0.06em]" style={{ color: colors.brandDark }}>BENEFITS</span>
+          <span className="text-right font-heading text-[16px] font-semibold tracking-[0.06em]" style={{ color: colors.brandDark }}>Benefits</span>
           <span />
-          <span className="font-heading text-[16px] font-semibold tracking-[0.06em]" style={{ color: colors.danger }}>CHALLENGES</span>
+          <span className="font-heading text-[16px] font-semibold tracking-[0.06em]" style={{ color: colors.danger }}>Challenges</span>
           {PAIRS.map(([b, c], i) => {
             const on = beat >= i + 1
             const now = isNow(beat, i + 1)
@@ -91,15 +118,29 @@ export function TradeoffScale({ lesson }: { lesson: string }) {
 
 /* ================================================================== 39 · CapEx To OpEx (reference 45 + 46) */
 
-function Bars({ title, values, tone, on, w, seed = 0 }: { title: string; values: number[]; tone: string; on: boolean; w: number; seed?: number }) {
-  const ease = useEase(DRAW)
+/**
+ * A bar is a full-height rounded block that SLIDES UP inside a clipping well
+ * (2026-10-22, smoothness: transform only, never `height`): the well's floor is
+ * the baseline, the block's rounded top is always the bar's top, and growing or
+ * shrinking is a translateY the compositor runs at 60fps. The `breathe` idle
+ * loop is gone (decorative).
+ */
+const BAR_H = 156
+function Bars({ title, values, tone, on, w }: { title: string; values: number[]; tone: string; on: boolean; w: number }) {
+  const ease = useInstant() ? 'none' : `transform ${DRAW}ms cubic-bezier(0.22,1,0.36,1)`
   return (
     <Stage w={w} h={268} active={false} pad={18}>
       <span className="font-heading text-[18px] font-semibold" style={{ color: colors.ink }}>{title}</span>
       <div className="mt-3 flex h-[160px] items-end justify-around border-b-2" style={{ borderColor: colors.line }}>
-        {values.map((v, i) => (
-          <div key={i} className={`w-[64px] rounded-t-lg ${mo('breathe', seed + i, { base: true }).className}`} style={{ height: on ? Math.max(6, v * 156) : 6, ...solid(tone), transition: ease, transitionDelay: `${i * 180}ms`, ...mo('breathe', seed + i, { base: true }).style }} />
-        ))}
+        {values.map((v, i) => {
+          const shown = on ? Math.max(6, v * BAR_H) : 6
+          return (
+            <div key={i} className="relative w-[64px] overflow-hidden" style={{ height: BAR_H }}>
+              {/* ONE block that grows by scaleY from the baseline (user, 2026-10-23: the separate rounded cap read as a slab floating in the air before the bar reached it; gone). Its box never leaves the well, which overlap-check reads by rect. */}
+              <div className="absolute inset-x-0 bottom-0 origin-bottom rounded-t-lg" style={{ height: BAR_H, ...solid(tone), transform: `scaleY(${shown / BAR_H})`, transition: ease, transitionDelay: `${i * 180}ms` }} />
+            </div>
+          )
+        })}
       </div>
       <div className="mt-2 flex justify-around">
         {['Yr 1', 'Yr 2', 'Yr 3', 'Yr 4'].map((y) => (
@@ -112,6 +153,9 @@ function Bars({ title, values, tone, on, w, seed = 0 }: { title: string; values:
 
 /* split by the review, 2026-10-15: the lead alone, then the points and the bars */
 export function CapexStatement({ lesson }: { lesson: string }) {
+  /* 2026-10-22 (user): the meter's needle sweeps with metered use, one lap every 6s on rAF; held near a third on harness URLs */
+  const t = useLoop(6000, { still: 0.33 })
+  const metered = 0.12 + 0.68 * smooth(t)
   return (
     <Statement
       id="capex-opex"
@@ -123,7 +167,7 @@ export function CapexStatement({ lesson }: { lesson: string }) {
       art={
         <div className="flex items-end gap-8">
           <ClayCoins w={78} n={8} />
-          <ClayMeter w={124} value={0.35} />
+          <ClayMeter w={124} value={metered} />
         </div>
       }
     />
@@ -135,21 +179,29 @@ export function CapexStatement({ lesson }: { lesson: string }) {
  * two by two across the box, each with its picture; the graph and the chips
  * that read off it are the next frame (CapexOpexTwo).
  */
+/*
+ * 2026-10-22: the TR PDF (the later revision) writes five labelled points
+ * here, Reserved Instances on a line of its own; the four cards were the
+ * older build's. One row per point, the label bold at its head.
+ */
 export function CapexOpex({ lesson }: { lesson: string }) {
-  const items: { text: string; art: ReactNode }[] = [
-    { text: 'No upfront hardware purchase or depreciation schedule', art: <ServerStackArt /> },
-    { text: 'Spend scales largely with actual resource usage (committed-use options like Reserved Instances trade some flexibility for lower rates)', art: <ClayMeter w={70} value={0.55} /> },
-    { text: 'Frees capital for core business investment', art: <ClayCoins w={50} n={5} /> },
-    { text: 'AWS Cost Explorer and Billing Dashboard track OpEx spend', art: <img src="/assets/tech/aws.png" alt="" className="h-[34px] w-auto" draggable={false} /> },
+  const items: { head: string; text: string; art: ReactNode }[] = [
+    { head: 'No upfront hardware:', text: 'Avoid large hardware purchases and depreciation costs', art: <ServerStackArt /> },
+    { head: 'Usage-based spending:', text: 'Costs increase or decrease with resource usage', art: <ClayMeter w={50} value={0.55} /> },
+    { head: 'Reserved Instances:', text: 'Commit to usage for a lower price, with less flexibility', art: <ClayCalendar w={46} crossed={9} /> },
+    { head: 'Business benefit:', text: 'Free up capital for other business needs', art: <ClayCoins w={40} n={4} /> },
+    { head: 'Cost tracking:', text: 'AWS Cost Explorer and Billing Dashboard help monitor spending', art: <img src="/assets/tech/aws.png" alt="" className="h-[24px] w-auto" draggable={false} /> },
   ]
   return (
     <Card id="capex-points" kicker="Cost Model Shift" title="CapEx To OpEx" lesson={lesson}>
-      <div className="grid grid-cols-2 gap-4" style={{ width: BOX_W }}>
+      <div className="flex flex-col gap-2" style={{ width: BOX_W }}>
         {items.map((it, i) => (
-          <Stage key={i} w="100%" h={150} active={false} pad={22}>
-            <div className="flex h-full items-center gap-5">
-              <div className="grid h-[96px] w-[96px] shrink-0 place-items-center rounded-2xl" style={WELL}>{it.art}</div>
-              <p className="text-[20px] font-medium leading-snug" style={{ color: colors.ink }}>{it.text}</p>
+          <Stage key={i} w="100%" h={76} active={false} pad={12}>
+            <div className="flex h-full items-center gap-4">
+              <div className="grid h-[52px] w-[52px] shrink-0 place-items-center rounded-xl" style={WELL}>{it.art}</div>
+              <p className="text-[18px] font-medium leading-snug" style={{ color: colors.ink }}>
+                <B>{it.head}</B> {it.text}
+              </p>
             </div>
           </Stage>
         ))}
@@ -161,10 +213,10 @@ export function CapexOpex({ lesson }: { lesson: string }) {
 /** Three running servers, stacked: the hardware a CapEx budget buys up front. */
 function ServerStackArt() {
   return (
-    <div className="flex flex-col gap-1">
-      <ServerUnit w={64} />
-      <ServerUnit w={64} />
-      <ServerUnit w={64} />
+    <div className="flex flex-col gap-[2px]">
+      <ServerUnit w={40} />
+      <ServerUnit w={40} />
+      <ServerUnit w={40} />
     </div>
   )
 }
@@ -178,8 +230,9 @@ function ServerStackArt() {
 export function CapexOpexTwo({ lesson }: { lesson: string }) {
   const beat = useBeats(4)
   const grown = useGrown()
-  const reserved = useCycle(2) === 1
-  const opex = reserved ? [0.17, 0.18, 0.16, 0.19] : [0.22, 0.25, 0.21, 0.26]
+  /* 2026-10-23 (user: "the graph grows from the baseline, keep it as is"): the bars grow once and never move again;
+     the Reserved Instances rate is a chip, not a second motion on the bars (it used to drop them at 3.2s, read as a snap) */
+  const opex = [0.22, 0.25, 0.21, 0.26]
   const cell = 'flex h-[64px] items-center gap-3 rounded-2xl px-5'
   const ring = tile(`1.5px ${colors.line}`)
   return (
@@ -187,11 +240,11 @@ export function CapexOpexTwo({ lesson }: { lesson: string }) {
       <div className="flex flex-col gap-4" style={{ width: BOX_W }}>
         <div className="flex gap-4">
           <Bars title="CapEx" values={[1, 0, 0, 0]} tone={colors.muted} on={grown} w={547} />
-          <Bars title="OpEx" values={opex} tone={colors.brand} on={grown} w={547} seed={4} />
+          <Bars title="OpEx" values={opex} tone={colors.brand} on={grown} w={547} />
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div className={cell} style={ring}>
-            <Label tone={reserved ? 'good' : 'muted'} size={15} strong>{reserved ? 'Reserved Instances: on' : 'Reserved Instances: off'}</Label>
+            <Label tone="brand" size={15} strong>Reserved Instances: a lower rate</Label>
           </div>
           <div className={cell} style={ring}>
             <ClayCoins w={30} n={4} />
@@ -240,32 +293,34 @@ export function GrowthStatement({ lesson }: { lesson: string }) {
  * then the real capture. Held on the capture on harness URLs.
  */
 export function GrowthSpeed({ lesson }: { lesson: string }) {
-  const beat = useBeats(4)
+  const beat = useBeats(5)
   const lap = useLoop(9600, { mode: 'sawtooth', still: 0.8 })
   const phase = Math.min(3, Math.floor(lap * 4))
   const local = lap * 4 - phase
   const ease = useEase()
   const shown = phase >= 2 ? REGIONS.length : phase === 1 ? Math.min(REGIONS.length, 1 + Math.floor(local * REGIONS.length)) : 0
+  /* 2026-10-22: the TR PDF's five bullets, verbatim (the four were the older build's; Business value was absent) */
   const items = [
-    { text: 'Elasticity: autoscaling matches spend to real-time load', at: 1 },
-    { text: 'Global reach: new AWS Region live in minutes', at: 2 },
-    { text: 'Speed to market: idea to production in days', at: 3 },
-    { text: 'Real-world: AWS Auto Scaling groups, Global Infrastructure Region map', at: 4 },
+    { text: 'Elasticity: Automatically scale resources up or down as demand changes', at: 1 },
+    { text: 'Global reach: Deploy applications across AWS Regions worldwide', at: 2 },
+    { text: 'Speed to market: Launch applications and services faster', at: 3 },
+    { text: 'Business value: Scale easily, reach more users, and reduce idle costs', at: 4 },
+    { text: 'Real-world: AWS Auto Scaling groups, Global Infrastructure Region map', at: 5 },
   ]
   return (
-    <Card id="growth-points" kicker="Growth And Speed Benefits" title="Scale Reach Speed" lesson={lesson} beat={beat} total={4}>
+    <Card id="growth-points" kicker="Growth And Speed Benefits" title="Scale Reach Speed" lesson={lesson} beat={beat} total={5}>
       <div className="flex gap-4">
-        <Rail items={items} beat={beat} width={404} size={16} />
+        <StretchRail items={items} width={404} height={360} pad="px-4 py-2.5" />
         <Stage w={690} h={360} active={false}>
           {/* beat 1: spend follows load */}
           <div className="absolute inset-0" style={{ opacity: phase === 0 ? 1 : 0, transition: ease }}>
             <At x={24} y={20}><Label strong size={14}>Load and spend</Label></At>
             <svg className="absolute" style={{ left: 24, top: 60 }} width={640} height={250} aria-hidden>
-              <g className={mo('breathe', 2, { base: true }).className} style={mo('breathe', 2, { base: true }).style}>
-                <path d="M 0 220 C 120 210 180 60 300 50 C 420 40 480 200 640 210" fill="none" stroke={colors.brand} strokeWidth={12} opacity={0.14} strokeLinecap="round" />
-                <path d="M 0 220 C 120 210 180 60 300 50 C 420 40 480 200 640 210" fill="none" stroke={colors.brand} strokeWidth={4} />
-                <path d="M 0 226 H 100 V 150 H 200 V 70 H 380 V 150 H 500 V 216 H 640" fill="none" stroke={colors.teal} strokeWidth={4} strokeDasharray="1" pathLength={1} style={{ strokeDashoffset: phase === 0 ? 0 : 1, transition: phase === 0 ? `stroke-dashoffset ${DRAW}ms cubic-bezier(0.22,1,0.36,1) 300ms` : 'none' }} />
-              </g>
+              {/* 2026-10-22, incomplete visual: the two lines floated with no axes; a baseline and a left axis close the chart */}
+              <path d="M 2 20 V 236 H 640" fill="none" stroke={colors.line} strokeWidth={2} strokeLinecap="round" />
+              <path d="M 0 220 C 120 210 180 60 300 50 C 420 40 480 200 640 210" fill="none" stroke={colors.brand} strokeWidth={12} opacity={0.14} strokeLinecap="round" />
+              <path d="M 0 220 C 120 210 180 60 300 50 C 420 40 480 200 640 210" fill="none" stroke={colors.brand} strokeWidth={4} />
+              <path d="M 0 226 H 100 V 150 H 200 V 70 H 380 V 150 H 500 V 216 H 640" fill="none" stroke={colors.teal} strokeWidth={4} strokeDasharray="1" pathLength={1} style={{ strokeDashoffset: phase === 0 ? 0 : 1, transition: phase === 0 ? `stroke-dashoffset ${DRAW}ms cubic-bezier(0.22,1,0.36,1) 300ms` : 'none' }} />
             </svg>
             <At x={420} y={20}>
               <div className="flex gap-3">
@@ -289,8 +344,9 @@ export function GrowthSpeed({ lesson }: { lesson: string }) {
               <Fade on={phase === 2}>
                 <div className="flex items-center gap-3">
                   <Idea w={26} />
-                  <div className="relative h-[10px] flex-1 rounded-full" style={WELL}>
-                    <div className="absolute inset-y-0 left-0 rounded-full" style={{ width: phase === 2 ? '22%' : '0%', ...solid(colors.success), transition: `width ${DRAW}ms cubic-bezier(0.22,1,0.36,1)` }} />
+                  <div className="relative h-[10px] flex-1 overflow-hidden rounded-full" style={WELL}>
+                    {/* the fill slides in from the left (transform, not width): the well clips it, so its rounded end is always the bar's end */}
+                    <div className="absolute inset-0 rounded-full" style={{ ...solid(colors.success), transform: phase === 2 ? 'translateX(-78%)' : 'translateX(-100%)', transition: `transform ${DRAW}ms cubic-bezier(0.22,1,0.36,1)` }} />
                   </div>
                   <Rocket w={22} />
                   <Label tone="good" size={13}>Production in days</Label>
@@ -308,7 +364,7 @@ export function GrowthSpeed({ lesson }: { lesson: string }) {
           </div>
           {/* beat 4: the real capture */}
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 px-4" style={{ opacity: phase === 3 ? 1 : 0, transition: ease }}>
-            <div className={`overflow-hidden rounded-xl ${mo('pulse', 6).className}`} style={{ boxShadow: `0 0 0 1.5px ${colors.line}, 0 24px 48px -24px rgba(31,64,140,0.34), 0 8px 18px -10px rgba(31,64,140,0.14)`, ...mo('pulse', 6).style }}>
+            <div className="overflow-hidden rounded-xl" style={{ boxShadow: `0 0 0 1.5px ${colors.line}, 0 24px 48px -24px rgba(31,64,140,0.34), 0 8px 18px -10px rgba(31,64,140,0.14)` }}>
               <img src="/shots/aws-global-infrastructure-regions.png" alt="The AWS Global Infrastructure page, showing Regions worldwide" width={540} height={304} draggable={false} style={{ display: 'block' }} />
             </div>
             <span className="text-[14px] font-medium" style={{ color: colors.ink }}>The AWS Global Infrastructure page, showing Regions worldwide</span>
@@ -352,11 +408,12 @@ export function LockIn({ lesson }: { lesson: string }) {
   const instant = useInstant()
   const ease = useEase()
   const tone = open ? colors.success : colors.danger
+  /* 2026-10-22: the TR PDF's four bullets, verbatim (the older build's were rewritten) */
   const items = [
-    { text: 'Proprietary services (Lambda triggers, DynamoDB APIs) resist portability', at: 1 },
-    { text: 'Data egress fees add direct exit cost', at: 2 },
-    { text: "Team skill-set built around one provider's tools", at: 3 },
-    { text: 'Mitigation: multi-cloud design, open standards, Infrastructure as Code', at: 4 },
+    { text: 'Proprietary services: Services like Lambda and DynamoDB can make applications harder to move', at: 1 },
+    { text: 'Data egress fees: Moving data out of a provider can add extra costs', at: 2 },
+    { text: "Specialized skills: Teams may become dependent on one provider's tools", at: 3 },
+    { text: 'Mitigation: Use multi-cloud, open standards, and Infrastructure as Code (IaC)', at: 4 },
   ]
   const parts = (size: number) =>
     open ? (
@@ -373,12 +430,12 @@ export function LockIn({ lesson }: { lesson: string }) {
   return (
     <Card id="lock-in-points" kicker="Vendor Lock-In" title="Switching Cost Risk" lesson={lesson} beat={beat} total={4}>
       <div className="flex gap-4">
-        <Rail items={items} beat={beat} width={404} size={16} />
+        <StretchRail items={items} width={404} height={360} />
         <Stage w={690} h={360} active={false}>
           {/* one provider: the application, its parts, the team's skills */}
           <At x={20} y={20} w={310}>
             <div className="rounded-2xl p-3.5" style={tile(`2px ${colors.brand}`, { background: 'linear-gradient(180deg, #F3F7FF 0%, #E8F0FF 100%)' })}>
-              <span className="block font-heading text-[14px] font-semibold tracking-[0.06em]" style={{ color: colors.brandDark }}>ONE PROVIDER</span>
+              <span className="block font-heading text-[14px] font-semibold tracking-[0.06em]" style={{ color: colors.brandDark }}>One provider</span>
               <motion.div
                 key={step}
                 className="mt-2 rounded-xl p-3"
@@ -464,7 +521,7 @@ export function OverrunsStatement({ lesson }: { lesson: string }) {
       art={
         <div className="flex items-end gap-8">
           <ClayCoins w={78} n={8} />
-          <ClayBell w={104} />
+          <ClayBell w={104} burst />
         </div>
       }
     />
@@ -476,33 +533,42 @@ export function Overruns({ lesson }: { lesson: string }) {
   const grown = useGrown()
   /* the scene runs itself: the forgotten resource runs and the bill climbs, then it is stopped and the bill flattens, round again */
   const stopped = useCycle(2) === 1
-  const values = stopped ? BILL.map((v, i) => (i >= 5 ? 0.32 : v)) : BILL
+  const FLAT = BILL.map((v, i) => (i >= 5 ? 0.32 : v))
+  /* 2026-10-22: the TR PDF's four bullets, verbatim */
   const items = [
-    { text: 'Idle or forgotten resources keep billing after use', at: 1 },
-    { text: 'Misconfigured autoscaling can multiply costs unexpectedly', at: 2 },
-    { text: 'Data transfer and API charges accumulate unnoticed', at: 3 },
-    { text: 'AWS Budgets and Cost Anomaly Detection flag abnormal spend', at: 4 },
+    { text: 'Unused resources: Resources left running continue to generate charges', at: 1 },
+    { text: 'Autoscaling: Incorrect settings can increase costs unexpectedly', at: 2 },
+    { text: 'Extra charges: Data transfer and API usage can add up quickly', at: 3 },
+    { text: 'Cost control: AWS Budgets and Cost Anomaly Detection help identify unusual spending', at: 4 },
   ]
   const id = usePrefix()
   const W = 400
-  const H = 210
-  const pts = values.map((v, i) => [12 + (i / (values.length - 1)) * (W - 24), H - 10 - v * (H - 24)] as [number, number])
-  const d = pts.map((p, i) => `${i ? 'L' : 'M'} ${p[0]} ${p[1]}`).join(' ')
+  const H = 190
+  /* both bills are drawn; the running one and the stopped one cross-fade (2026-10-22, smoothness: opacity, not a path morph) */
+  const toPts = (vals: number[]) => vals.map((v, i) => [12 + (i / (vals.length - 1)) * (W - 24), H - 10 - v * (H - 24)] as [number, number])
+  const toD = (pts: [number, number][]) => pts.map((p, i) => `${i ? 'L' : 'M'} ${p[0]} ${p[1]}`).join(' ')
+  const pts = toPts(BILL)
+  const bills = [
+    { d: toD(pts), on: !stopped },
+    { d: toD(toPts(FLAT)), on: stopped },
+  ]
+  const ease = useEase()
   return (
     <Card id="overruns-points" kicker="Cost Overruns" title="Unplanned Billing Risk" lesson={lesson} beat={beat} total={4}>
       <div className="flex gap-4">
-        <Rail items={items} beat={beat} width={404} size={16} />
-        <Stage w={690} h={360} active={false} pad={14}>
+        {/* 2026-10-22 (user): the points at 18px in a column level with the stage, the whole visual a size smaller */}
+        <StretchRail items={items} width={452} height={360} />
+        <Stage w={642} h={360} active={false} pad={14}>
           <div className="flex gap-4">
-            <div className="flex flex-col gap-2" style={{ width: 210 }}>
+            <div className="flex flex-col gap-2" style={{ width: 184 }}>
               <span className="font-heading text-[14px] font-semibold" style={{ color: colors.ink }}>Resources</span>
               <div className="flex items-center gap-2 rounded-xl px-2 py-2" style={tile(`${stopped ? 1 : 2}px ${stopped ? colors.line : colors.warning}`)}>
-                <ServerUnit w={60} state={stopped ? 'off' : 'run'} />
+                <ServerUnit w={48} state={stopped ? 'off' : 'run'} />
                 <span className="text-[14px] font-medium" style={{ color: colors.ink }}>{stopped ? 'Stopped' : 'Forgotten, running'}</span>
               </div>
               <Fade on={beat >= 2}>
                 <div className="flex items-center gap-1 rounded-xl px-2 py-2" style={tile()}>
-                  {Array.from({ length: 5 }, (_, k) => <ServerUnit key={k} w={30} />)}
+                  {Array.from({ length: 5 }, (_, k) => <ServerUnit key={k} w={26} />)}
                 </div>
               </Fade>
               <Fade on={beat >= 3}>
@@ -520,11 +586,13 @@ export function Overruns({ lesson }: { lesson: string }) {
                   <linearGradient id={`${id}-area`} x1={0} y1={0} x2={0} y2={1}><stop offset="0" stopColor={colors.danger} stopOpacity={0.22} /><stop offset="1" stopColor={colors.danger} stopOpacity={0.02} /></linearGradient>
                 </defs>
                 <rect width={W} height={H} rx={12} fill={`url(#${id}-bg)`} stroke="#D9E3F7" strokeWidth={1} />
-                <g className={mo('breathe', 3, { base: true }).className} style={mo('breathe', 3, { base: true }).style}>
-                  <path d={d + ` L ${W - 12} ${H - 10} L 12 ${H - 10} Z`} fill={`url(#${id}-area)`} style={{ transition: 'd 520ms cubic-bezier(0.22,1,0.36,1)' }} />
-                  <path d={d} fill="none" stroke={colors.danger} strokeWidth={3} pathLength={1} strokeDasharray="1" style={{ strokeDashoffset: grown ? 0 : 1, transition: `stroke-dashoffset ${DRAW}ms cubic-bezier(0.22,1,0.36,1), d 520ms cubic-bezier(0.22,1,0.36,1)` }} />
-                </g>
-                <line x1={pts[5][0] + 20} x2={pts[5][0] + 20} y1={10} y2={H - 10} stroke={colors.danger} strokeWidth={1.5} strokeDasharray="4 4" opacity={beat >= 3 ? 0.8 : 0} />
+                {bills.map((b, i) => (
+                  <g key={i} style={{ opacity: b.on ? 1 : 0, transition: ease }}>
+                    <path d={b.d + ` L ${W - 12} ${H - 10} L 12 ${H - 10} Z`} fill={`url(#${id}-area)`} />
+                    <path d={b.d} fill="none" stroke={colors.danger} strokeWidth={3} strokeLinejoin="round" pathLength={1} strokeDasharray="1" style={{ strokeDashoffset: grown ? 0 : 1, transition: `stroke-dashoffset ${DRAW}ms cubic-bezier(0.22,1,0.36,1)` }} />
+                  </g>
+                ))}
+                <line x1={pts[5][0] + 20} x2={pts[5][0] + 20} y1={10} y2={H - 10} stroke={colors.danger} strokeWidth={1.5} strokeDasharray="4 4" style={{ opacity: beat >= 3 ? 0.8 : 0, transition: ease }} />
               </svg>
               <div className="flex items-center gap-2">
                 <Fade on={beat >= 4}><Bell w={22} ringing={!stopped && !STILL} /></Fade>
@@ -580,26 +648,37 @@ export function RegionMap({ lesson }: { lesson: string }) {
   const pick: 'near' | 'far' = step === 0 ? 'near' : 'far'
   const ease = useEase()
   /* two lanes from the user's screen: the near Region on the upper one, the distant one on the lower */
-  const near = { x: 300, y: 140 }
-  const far = { x: 570, y: 198 }
+  /* 2026-10-22: the map a size narrower (642px) so the bullets can be 19px in a 452px column that fills the stage height */
+  const near = { x: 280, y: 140 }
+  const far = { x: 530, y: 198 }
   const from = 160
+  /* 2026-10-22: the TR PDF's three bullets, verbatim (GDPR was the deck's own, unexpanded: gone) */
   const items = [
-    { text: 'Mitigation: nearest Region or a CDN edge location', at: 1 },
-    { text: 'Data residency: laws such as GDPR require in-country storage', at: 2 },
-    { text: 'AWS Region selection at creation enforces residency choice', at: 3 },
+    { text: 'Latency: Choose a nearby AWS Region or CDN edge location to reduce network delay', at: 1 },
+    { text: 'Data residency: Laws and regulations may require certain data to stay within a country', at: 2 },
+    { text: 'Region selection: Choose the appropriate AWS Region to meet data residency requirements', at: 3 },
   ]
   const target = pick === 'near' ? near : far
   return (
     <Card id="latency-points" kicker="Latency And Residency" title="Distance And Law Limits" lesson={lesson} beat={beat} total={3}>
       <div className="flex gap-4">
-        <Rail items={items} beat={beat} width={404} size={16} />
-        <Stage w={690} h={360} active={false}>
-          <At x={16} y={16}><MapGround w={658} h={282} /></At>
-          {/* the data residency zone: the user and the near Region inside one border */}
-          <svg aria-hidden className="pointer-events-none absolute" style={{ left: 32, top: 32 }} width={348} height={250}>
-            <rect x={1.5} y={1.5} width={345} height={247} rx={28} fill="none" stroke={beat >= 2 ? colors.success : colors.line} strokeWidth={3} strokeDasharray="8 7" className={mo('glow', 1).className} style={{ transition: ease, ...mo('glow', 1).style }} />
+        <div className="flex shrink-0 flex-col justify-between" style={{ width: 452, height: 360 }}>
+          {items.map((it) => (
+            <div key={it.at} className="flex items-start gap-3 rounded-2xl px-4 py-3" style={tile()}>
+              <span className="mt-[8px] grid h-[14px] w-[14px] shrink-0 place-items-center rounded-full" style={{ background: colors.surface2, boxShadow: `inset 0 0 0 1.5px ${colors.brand}` }}>
+                <span className="block h-[5px] w-[5px] rounded-full" style={{ background: colors.brand }} />
+              </span>
+              <span className="min-w-0 text-[19px] leading-snug" style={{ color: colors.ink }}>{it.text}</span>
+            </div>
+          ))}
+        </div>
+        <Stage w={642} h={360} active={false}>
+          <At x={16} y={16}><MapGround w={610} h={282} /></At>
+          {/* the data residency zone: the user and the near Region inside one border (the border changes colour on its beat; no idle glow) */}
+          <svg aria-hidden className="pointer-events-none absolute" style={{ left: 32, top: 32 }} width={324} height={250}>
+            <rect x={1.5} y={1.5} width={321} height={247} rx={28} fill="none" stroke={beat >= 2 ? colors.success : colors.line} strokeWidth={3} strokeDasharray="8 7" style={{ transition: ease }} />
           </svg>
-          <At x={206} y={246} cx><Fade on={beat >= 2}><Label tone="good" size={14} strong>Data residency zone</Label></Fade></At>
+          <At x={194} y={246} cx><Fade on={beat >= 2}><Label tone="good" size={14} strong>Data residency zone</Label></Fade></At>
           <At x={110} y={130} cx>
             <div className="flex flex-col items-center gap-1.5">
               <ClayComputer w={88} />
@@ -618,7 +697,7 @@ export function RegionMap({ lesson }: { lesson: string }) {
           <Arrow x1={from} y1={far.y} x2={far.x - 22} y2={far.y} tone={colors.warning} dashed />
           <At x={(near.x + far.x) / 2 + 20} y={far.y + 10} cx><Label tone="warn" size={14}>More delay</Label></At>
           <Traveller k={step} run={!STILL} path={[[from, target.y], [target.x, target.y]]} dur={pick === 'near' ? 0.5 : 1.8} tone={pick === 'near' ? colors.success : colors.warning} />
-          <At x={16} y={314} w={658}>
+          <At x={16} y={314} w={610}>
             <div className="flex items-center gap-2.5">
               <span className="text-[14px] font-semibold" style={{ color: colors.ink }}>A request to</span>
               <Label tone={pick === 'near' ? 'good' : 'muted'} size={14} strong>Nearest Region</Label>

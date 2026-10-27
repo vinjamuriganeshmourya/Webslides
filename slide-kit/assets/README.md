@@ -10,6 +10,8 @@ base template rendered as broken images for anyone starting a new deck.
 
 ---
 
+<!-- 2026-10-23, Deployment & Service Models: `companies/aws.png` (the square aws mark, 512px), `companies/azure.png` (800x232) and `companies/google-cloud.png` (800x124), the vendors' own marks as embedded in the session's reference deck, for content rule 12 on the multi-cloud and provider slides. -->
+
 ## What is here
 
 ```

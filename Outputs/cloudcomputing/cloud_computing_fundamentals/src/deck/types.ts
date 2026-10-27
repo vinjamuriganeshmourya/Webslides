@@ -48,6 +48,16 @@ export interface DeckPlayerOptions {
   smooth?: boolean
   /** The slide picker shows a live thumbnail of each slide, built in its final state. */
   thumbnails?: boolean
+  /**
+   * HIDE THE STEP/SLIDE SWITCH (Cloud Computing, 2026-10-23: every deck in that
+   * course). These decks animate themselves: every slide reports 0 build steps
+   * (`revealEveryStep`) and the entrances run on their own clock, so a switch
+   * between "step" and "slide" picks between two identical moves. The button is
+   * HIDDEN, never removed: the plain arrows stay in `slides` mode, `S` does
+   * nothing, and the browser's remembered choice is ignored. `?nav=steps` on the
+   * URL is still honoured, because the harnesses drive the deck with it.
+   */
+  hideModeSwitch?: boolean
 }
 
 export interface DeckMeta {

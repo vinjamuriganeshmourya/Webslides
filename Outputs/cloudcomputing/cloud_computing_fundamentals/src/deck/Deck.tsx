@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { SectionBreakerSlide } from '@/slides'
+import type { DeckSegment } from './DeckContext'
 import { AnimatePresence, MotionConfig, PresenceContext, motion, useReducedMotion } from 'framer-motion'
 import type { DeckProps } from './types'
 import { DeckContext } from './DeckContext'
@@ -21,6 +23,9 @@ import { slideVariants, slideTransition, type SlideTransition } from '@/motion/p
 import { Stepper } from '@/motion/Stepper'
 import { InstantContext } from '@/motion/instant'
 import { ContinuityContext, computeContinuity, NO_CONTINUITY } from '@/motion/continuity'
+import { usePresenterState, detectView, downloadStudent, type DeckView } from './presenter'
+import { SlideMenu } from './SlideMenu'
+import { EditLayer } from './EditLayer'
 
 function hashIndex(total: number): number {
   if (typeof window === 'undefined') return 0
@@ -55,9 +60,29 @@ function hashIndex(total: number): number {
  * Speaker notes and click-to-advance are still intentionally omitted.
  */
 export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
-  const total = slides.length
+  /*
+    TWO VIEWS, ONE DECK (2026-10-22, session-local; `presenter.ts` says why).
+    The presenter may skip, delete and re-word slides; those choices are
+    remembered per deck, and the ACTIVE list below is what every piece of
+    navigation in this file runs over: the counter, the hash, the progress
+    bar, the picker's jump, the menu, `__DECK__`. The full `slides` list is
+    only ever handed to the picker, which shows the skipped ones marked and
+    keeps the deleted ones restorable. The student file is the same player
+    reading an injected state and drawing none of the three controls.
+  */
+  const title = meta?.title ?? 'deck'
+  const [view] = useState<DeckView>(detectView)
+  const presenter = view === 'presenter'
+  const [pst, actions] = usePresenterState(title, view)
+  const skipped = useMemo(() => new Set(pst.skipped), [pst.skipped])
+  const deleted = useMemo(() => new Set(pst.deleted), [pst.deleted])
+  const active = useMemo(() => slides.filter((s) => !deleted.has(s.id) && !skipped.has(s.id)), [slides, skipped, deleted])
+  const edited = useMemo(() => new Set(Object.keys(pst.edits)), [pst.edits])
+  const total = active.length
   const rootRef = useRef<HTMLDivElement>(null)
   const [index, setIndex] = useState(() => hashIndex(total))
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [editing, setEditing] = useState(false)
   const [direction, setDirection] = useState(1)
   const [step, setStepState] = useState(0) // current fragment within the slide
   const [maxStep, setMaxStep] = useState(0) // total fragments in the slide
@@ -103,17 +128,23 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
     The mode is initialised from the URL, then the harness flag, then this
     browser's last choice, then the default: see `initialArrowMode`. It is
     remembered on change rather than in an effect, so a render can never write it.
+
+    With the switch hidden (`player.hideModeSwitch`, see `types.ts`) the saved
+    choice is skipped and the toggle is a no-op, so the bar button, the `S` key
+    and another deck's leftover `localStorage` can none of them move it.
   */
-  const [arrowMode, setArrowMode] = useState<ArrowMode>(initialArrowMode)
+  const modeLocked = !!player?.hideModeSwitch
+  const [arrowMode, setArrowMode] = useState<ArrowMode>(() => initialArrowMode(!modeLocked))
   const [pickerOpen, setPickerOpen] = useState(false)
 
   const toggleArrowMode = useCallback(() => {
+    if (modeLocked) return
     setArrowMode((m) => {
       const nextMode: ArrowMode = m === 'slides' ? 'steps' : 'slides'
       rememberArrowMode(nextMode)
       return nextMode
     })
-  }, [])
+  }, [modeLocked])
 
   const openPicker = useCallback(() => setPickerOpen(true), [])
   const closePicker = useCallback(() => setPickerOpen(false), [])
@@ -155,9 +186,21 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
     window.dispatchEvent(new CustomEvent('deck:navigate', { detail: { kind, dir } }))
   }, [])
 
+  /*
+    WHICH SLIDE IS ON SCREEN, BY ID. `index` is a position in the active list,
+    and that list changes under it when the presenter skips or deletes from
+    the picker. The id is what must not change: a skip of slide 3 while slide
+    9 is up renumbers 9 to 8 and the deck stays on it (the effect below); a
+    skip of the slide on screen moves to the next active one.
+  */
+  const idRef = useRef<string | undefined>(active[index]?.id)
+  const activeRef = useRef(active)
+  activeRef.current = active
+
   const gotoSlide = useCallback(
     (i: number, dir: number, opts: { cut?: boolean } = {}) => {
       const clamped = Math.min(Math.max(i, 0), total - 1)
+      idRef.current = activeRef.current[clamped]?.id
       setDirection(dir)
       setCut(opts.cut ?? false)
       setIndex(clamped)
@@ -168,6 +211,31 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
     },
     [total, setStep, announce],
   )
+
+  useEffect(() => {
+    const id = idRef.current
+    if (id === undefined) return
+    const at = active.findIndex((s) => s.id === id)
+    if (at === indexRef.current) return
+    if (at >= 0) {
+      /* the same slide at a new number: no transition, the key is its id */
+      setIndex(at)
+      return
+    }
+    /* the slide on screen was skipped or deleted: the nearest following active slide, else the last */
+    const was = slides.findIndex((s) => s.id === id)
+    let to = active.findIndex((s) => slides.indexOf(s) > was)
+    if (to < 0) to = active.length - 1
+    if (to < 0) return
+    idRef.current = active[to].id
+    pendingFull.current = true
+    setDirection(1)
+    setCut(false)
+    setIndex(to)
+    maxRef.current = 0
+    setMaxStep(0)
+    setStep(0)
+  }, [active, slides, setStep])
 
   // "Next" (Ctrl+→): reveal the next fragment, or advance to the next slide with
   // the deck's transition.
@@ -241,6 +309,15 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
     [gotoSlide],
   )
 
+  /* the original words come back by remounting the slide, which is what replay already does */
+  const resetText = useCallback(
+    (id: string) => {
+      actions.resetEdits(id)
+      if (id === idRef.current) replaySlide()
+    },
+    [actions, replaySlide],
+  )
+
   // React to browser back/forward (hash changes).
   useEffect(() => {
     const onHash = () => {
@@ -251,11 +328,11 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
     return () => window.removeEventListener('hashchange', onHash)
   }, [total, gotoSlide])
 
-  // Reflect current slide in the URL hash.
+  // Reflect current slide in the URL hash (its number in the ACTIVE deck).
   useEffect(() => {
-    const id = slides[index]?.id ?? String(index + 1)
+    const id = active[index]?.id ?? String(index + 1)
     window.history.replaceState(null, '', `#/${index + 1}${id ? `-${id}` : ''}`)
-  }, [index, slides])
+  }, [index, active])
 
   /*
     THE DECK'S OWN TABLE OF CONTENTS, PUBLISHED ON `window`.
@@ -279,14 +356,19 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
     ;(window as unknown as Record<string, unknown>).__DECK__ = {
       total,
       current: index + 1,
-      slides: slides.map((s, i) => ({
+      /* the active deck, numbered as the counter numbers it; `all` is the full list for a reader that wants it */
+      slides: active.map((s, i) => ({
         n: i + 1,
         id: s.id,
         label: s.label ?? null,
         section: s.section ?? null,
       })),
+      all: slides.map((s, i) => ({ n: i + 1, id: s.id, label: s.label ?? null, section: s.section ?? null })),
+      view,
+      skipped: pst.skipped,
+      deleted: pst.deleted,
     }
-  }, [slides, total, index])
+  }, [slides, active, total, index, view, pst.skipped, pst.deleted])
 
   /*
     THE MARKER, KEYED BY SLIDE.
@@ -302,7 +384,7 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
     labs have, so the feature still works there rather than putting every slide's
     ink in one bucket.
   */
-  const slideKey = slides[index]?.id ?? String(index)
+  const slideKey = active[index]?.id ?? String(index)
   const ann = useAnnotate(slideKey, step)
 
   /*
@@ -313,10 +395,11 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
     folded into the kit on 2026-10-14; the sessions' `figures/gestures.ts` stands
     down when this hook has mounted.
   */
+  /* off while editing text too: a drag across a word being selected is not a swipe */
   useGestureNav({
     fwd: arrowMode === 'steps' ? next : nextSlide,
     back: arrowMode === 'steps' ? prev : prevSlide,
-    enabled: !pickerOpen && !ann.active,
+    enabled: !pickerOpen && !ann.active && !menuOpen && !editing,
   })
 
   /*
@@ -336,7 +419,8 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
     openPicker,
     replay: replaySlide,
     ann,
-    enabled: !pickerOpen,
+    /* the menu owns Up, Down, Enter and Escape while it is open, like the picker owns the arrows */
+    enabled: !pickerOpen && !menuOpen,
   })
 
   /*
@@ -357,6 +441,86 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
     [gotoSlide],
   )
 
+  /*
+    A SKIPPED CARD PRESSED IN THE PICKER UNSKIPS THE SLIDE AND GOES TO IT: the
+    press says "I want this one after all". The new active list is computed
+    here, in the same handler, because `gotoSlide` clamps against the active
+    total of the render it was made in, which does not yet know the slide.
+  */
+  const showSlide = useCallback(
+    (id: string) => {
+      const nextSkipped = new Set(skipped)
+      nextSkipped.delete(id)
+      const nextActive = slides.filter((s) => !deleted.has(s.id) && !nextSkipped.has(s.id))
+      const i = nextActive.findIndex((s) => s.id === id)
+      if (i < 0) return
+      actions.toggleSkip(id)
+      setPickerOpen(false)
+      pendingFull.current = true
+      idRef.current = id
+      setDirection(1)
+      setCut(true)
+      setIndex(i)
+      maxRef.current = 0
+      setMaxStep(0)
+      setStep(0)
+      announce('slide', 1)
+    },
+    [skipped, deleted, slides, actions, setStep, announce],
+  )
+
+  /* a skip or a delete may never empty the deck */
+  const canDrop = useCallback((id: string) => active.length > 1 || !active.some((s) => s.id === id), [active])
+
+  const toggleMenu = useCallback(() => setMenuOpen((o) => !o), [])
+  const closeMenu = useCallback(() => setMenuOpen(false), [])
+  /* a jump from the list lands fully revealed and plays the deck's transition */
+  const pickFromMenu = useCallback(
+    (i: number) => {
+      setMenuOpen(false)
+      if (i === indexRef.current) return
+      pendingFull.current = true
+      gotoSlide(i, i >= indexRef.current ? 1 : -1)
+    },
+    [gotoSlide],
+  )
+  const toggleEditing = useCallback(() => setEditing((e) => !e), [])
+  const download = useCallback(() => downloadStudent(title, pst), [title, pst])
+
+  /*
+    THE SEGMENTS OF THE PROGRESS BAR (user, 2026-10-22): one per section
+    breaker in the ACTIVE list, each covering the slides up to the next
+    breaker (the last one takes the closing slides too), plus a small opening
+    segment for the slides before the first breaker that lands on slide 1. A
+    breaker is recognised by its element type, with the label as a fallback,
+    so any deck built from the kit gets the bar with no configuration; a deck
+    with no breakers is one segment. Read by `SectionBar` in every slide's foot.
+  */
+  const segments = useMemo<DeckSegment[]>(() => {
+    const isBreaker = (s: (typeof active)[number]) =>
+      (isValidElement(s.element) && s.element.type === SectionBreakerSlide) || s.label === 'Section divider'
+    const breakers = active.map((s, i) => (isBreaker(s) ? i : -1)).filter((i) => i >= 0)
+    if (!total) return []
+    if (!breakers.length) return [{ name: meta?.title ?? 'Deck', start: 0, end: total - 1, target: 0, element: active[0]?.element }]
+    const out: DeckSegment[] = []
+    if (breakers[0] > 0) out.push({ name: 'Start', start: 0, end: breakers[0] - 1, target: 0, element: active[0]?.element })
+    breakers.forEach((b, k) => {
+      const end = k + 1 < breakers.length ? breakers[k + 1] - 1 : total - 1
+      out.push({ name: active[b].section ?? `Section ${k + 1}`, start: b, end, target: b, element: active[b].element })
+    })
+    return out
+  }, [active, total, meta])
+
+  /* a press on a segment lands fully revealed, the picker's way */
+  const jump = useCallback(
+    (i: number) => {
+      if (i === indexRef.current) return
+      pendingFull.current = true
+      gotoSlide(i, i >= indexRef.current ? 1 : -1, { cut: true })
+    },
+    [gotoSlide],
+  )
+
   const ctx = useMemo(
     () => ({
       index,
@@ -367,11 +531,13 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
       prev,
       isFirst: index === 0,
       isLast: index === total - 1,
+      segments,
+      jump,
     }),
-    [index, total, direction, goTo, next, prev],
+    [index, total, direction, goTo, next, prev, segments, jump],
   )
 
-  const current = slides[index]
+  const current = active[index]
 
   /*
     WHAT CARRIED OVER FROM THE OUTGOING SLIDE.
@@ -396,7 +562,7 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
     contRef.current = {
       index,
       replay,
-      ...computeContinuity(slides[contRef.current.index], current),
+      ...computeContinuity(active[contRef.current.index], current),
     }
   } else if (contRef.current.replay !== replay) {
     /*
@@ -512,6 +678,8 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
                     </ContinuityContext.Provider>
                   </InstantContext.Provider>
                 </PresenceContext.Provider>
+                {/* LAST, so its layout effect sees the slide's committed DOM (see `EditLayer`) */}
+                <EditLayer slideId={current?.id ?? String(index)} edits={pst.edits} editing={presenter && editing} onEdit={actions.setEdit} />
               </motion.div>
             </AnimatePresence>
 
@@ -563,6 +731,7 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
           toggleFullscreen={toggleFullscreen}
           arrowMode={arrowMode}
           toggleArrowMode={toggleArrowMode}
+          hideModeSwitch={modeLocked}
           openPicker={openPicker}
           replay={replaySlide}
           markerActive={ann.active}
@@ -571,7 +740,18 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
           mobile={player?.autoHideControls ? 'overlay' : 'dock'}
           enabled={!pickerOpen && !ann.active}
           extra={player?.extraControls}
+          view={view}
+          menuOpen={menuOpen}
+          toggleMenu={toggleMenu}
+          editing={presenter && editing}
+          toggleEditing={toggleEditing}
+          download={download}
         />
+
+        {/* the slide list, above the bar; never in the DOM unless open (see `SlideMenu`) */}
+        <AnimatePresence>
+          {menuOpen && <SlideMenu slides={active} index={index} onPick={pickFromMenu} onClose={closeMenu} />}
+        </AnimatePresence>
 
         {/*
           THE RAIL IS PRESENT WHILE THE MARKER IS OPEN *OR* THERE IS INK ANYWHERE IN
@@ -599,8 +779,15 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
           {pickerOpen && (
             <SlidePicker
               slides={slides}
-              index={index}
+              currentId={current?.id}
+              skipped={skipped}
+              deleted={deleted}
+              edited={edited}
+              activeIndexOf={(id) => active.findIndex((s) => s.id === id)}
+              presenter={presenter}
+              controls={{ toggleSkip: actions.toggleSkip, remove: actions.remove, restoreAll: actions.restoreAll, resetText, canDrop }}
               onPick={pickSlide}
+              onShow={showSlide}
               onClose={closePicker}
               thumbnails={!!player?.thumbnails}
             />
