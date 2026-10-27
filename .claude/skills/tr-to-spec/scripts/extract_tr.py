@@ -2,11 +2,14 @@
 """Read a TR doc (.docx) into tr.json: the TR's own words, structured, with
 every speaker note removed.
 
-    python3 -I extract_tr.py <tr.docx> <session_plans/<session>/>
+    python3 -I extract_tr.py <tr.docx> <session_plans/<session>/> <images dir>
 
-Writes, inside the session folder:
-    tr.json        the TR, slide by slide, verbatim
-    tr_images/     every image the TR embeds, named by the TR slide it sits on
+Writes:
+    <session>/tr.json      the TR, slide by slide, verbatim
+    <images dir>/tr_images/  every image the TR embeds, named by the TR slide it
+                           sits on, for reading while the spec is written. Put it
+                           in the scratchpad: the images reach the PDA embedded in
+                           spec.json and spec.html (render_spec.py), never as loose files
 
 Standard library only, so it runs anywhere Python 3.9+ does.
 
@@ -103,7 +106,7 @@ def read_tr(docx, outdir=None):
 
     tr = {'source': docx.name, 'title': '', 'recap': {'heading': '', 'items': []},
           'agenda': {'heading': '', 'items': []}, 'sections': [], 'takeaways': {'heading': '', 'items': []},
-          'next_session': '', 'closing': [], 'loose': [],
+          'extras': [], 'next_session': '', 'closing': [], 'loose': [],
           'dropped': {'speaker_notes': 0}}
     slide = None
     section = None
@@ -124,7 +127,7 @@ def read_tr(docx, outdir=None):
         if not src or src.startswith('http'):
             return None
         name = src.split('/')[-1]
-        where = f"slide-{slide['number']:02d}" if slide else 'loose'
+        where = (f"slide-{slide['number']:02d}" if slide.get('number') else f"extra-{slide['extra']}") if slide else 'loose'
         img_count[where] = img_count.get(where, 0) + 1
         ext = Path(name).suffix
         dest = f'{where}-{img_count[where]}{ext}'
@@ -188,6 +191,15 @@ def read_tr(docx, outdir=None):
                 tr['takeaways']['heading'] = txt
             elif not tr['title'] and level <= 1:
                 tr['title'] = txt
+            elif section is not None and level >= 3:
+                # A block the TR heads like a slide but does not number
+                # ("Heads-Up: Start Your AWS Account Setup Now"). Its own
+                # block, so it never folds into the slide before it.
+                slide = {'number': None, 'extra': len(tr['extras']) + 1, 'tr_title': txt,
+                         'after_slide': section['slides'][-1]['number'] if section['slides'] else None,
+                         'parts': []}
+                tr['extras'].append(slide)
+                block = None
             else:
                 put('heading_line', txt)
             continue
@@ -256,8 +268,8 @@ def read_tr(docx, outdir=None):
 
     # Fold each slide's parts into named fields, keeping order where order
     # carries meaning (content lines, tables and images interleave in the TR).
-    for sec in tr['sections']:
-        for s in sec['slides']:
+    for s in [s for sec in tr['sections'] for s in sec['slides']] + tr['extras']:
+        if True:
             body_parts, extra = [], {}
             for part in s.pop('parts'):
                 (k, v), = part.items()
@@ -275,21 +287,22 @@ def read_tr(docx, outdir=None):
     return tr, notes
 
 
-def main(docx, outdir):
-    docx, outdir = Path(docx), Path(outdir)
+def main(docx, outdir, imgroot):
+    docx, outdir, imgroot = Path(docx), Path(outdir), Path(imgroot)
     outdir.mkdir(parents=True, exist_ok=True)
-    tr, _ = read_tr(docx, outdir)
-    img_dir = outdir / 'tr_images'
+    imgroot.mkdir(parents=True, exist_ok=True)
+    tr, _ = read_tr(docx, imgroot)
+    img_dir = imgroot / 'tr_images'
     (outdir / 'tr.json').write_text(json.dumps(tr, indent=1, ensure_ascii=False) + '\n', encoding='utf-8')
     n = sum(len(s['slides']) for s in tr['sections'])
     imgs = len(list(img_dir.iterdir())) if img_dir.exists() else 0
     print(f"{docx.name}: {len(tr['sections'])} sections, {n} slides, {imgs} images, "
-          f"{tr['dropped']['speaker_notes']} speaker-note paragraphs dropped -> {outdir / 'tr.json'}")
+          f"{tr['dropped']['speaker_notes']} speaker-note paragraphs dropped -> {outdir / 'tr.json'}, images in {img_dir}")
     if tr['loose']:
         print(f"  {len(tr['loose'])} item(s) sat outside any slide; read tr.json 'loose' before planning")
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 4:
         sys.exit(__doc__)
-    main(sys.argv[1], sys.argv[2])
+    main(sys.argv[1], sys.argv[2], sys.argv[3])

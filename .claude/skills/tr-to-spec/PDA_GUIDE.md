@@ -7,10 +7,14 @@ build the slides; the spec has already decided the content.
 
 ```
 Outputs/<course>/session_plans/session_<n>/
-  spec.json      the brief. Build from this
-  tr_images/     the TR's own pictures, named slide-NN-k.png
+  spec.html      START HERE. Open it in a browser: every slide, its words,
+                 its clicks, what to draw, and the TR's pictures in place
+  spec.json      the same spec for tools and for Claude Code. The TR's
+                 pictures are inside it too (meta.tr_images)
   tr.docx        the TR it came from, for reference only
 ```
+
+Both files work offline and on their own. Nothing else needs to be sent.
 
 ## Reading spec.json
 
@@ -32,7 +36,7 @@ On a card:
 | `kit` | the template component that fits. Start there |
 | `visual_guidance` | what the TR author asked to see |
 | `visual` | our direction, where it adapts or replaces the TR's guidance |
-| `image` | a TR picture: `redraw` means draw it again in template colours; `not-used` means leave it out |
+| `image` | a TR picture: `as-is` is a real screenshot to crop and use; `redraw` means draw it again in template colours; `not-used` means leave it out. The page shows each one in place |
 | `must`, `must_not` | the things that make the slide wrong if missed |
 | `play` | your call: how it looks |
 | `purpose` | what the room must take away. Not slide copy |
