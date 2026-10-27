@@ -1,0 +1,2673 @@
+{
+ "meta": {
+  "session": "2 - Deployment & Service Models",
+  "course": "Cloud Computing",
+  "source_tr": "2. Deployment & Service Models.docx",
+  "one_idea": "A deployment model says who owns the cloud and who shares it; a service model says how much of the stack the provider runs for you. Both are choices, and cost decides between them.",
+  "outcomes": [
+   "Name the four deployment models and say who owns and who shares each.",
+   "Tell multi-cloud from hybrid cloud, and give its three motivations and its cost.",
+   "Say which layers the provider manages in IaaS, PaaS and SaaS, with a service for each.",
+   "Place FaaS, serverless and AI/ML-as-a-Service beyond SaaS, and say what the user still manages.",
+   "Tell CapEx from OpEx, say what TCO adds, and pick on-demand, committed use or spot for a workload."
+  ],
+  "previous": "1 - Cloud Computing Fundamentals",
+  "next": "Virtualization & Hypervisors",
+  "deck_total": 55,
+  "topics": [
+   "deployment models",
+   "multi-cloud",
+   "service models",
+   "serverless",
+   "cloud economics"
+  ],
+  "tr_coverage": [
+   {
+    "tr_slide": 1,
+    "cards": [
+     "T01-1",
+     "T01-2"
+    ]
+   },
+   {
+    "tr_slide": 2,
+    "cards": [
+     "T02-1",
+     "T02-AN"
+    ]
+   },
+   {
+    "tr_slide": 3,
+    "cards": [
+     "T03-1",
+     "T03-2",
+     "T03-AN"
+    ]
+   },
+   {
+    "tr_slide": 4,
+    "cards": [
+     "T04-1",
+     "T04-2",
+     "T04-AN"
+    ]
+   },
+   {
+    "tr_slide": 5,
+    "cards": [
+     "T05-1"
+    ]
+   },
+   {
+    "tr_slide": 6,
+    "cards": [
+     "T06-1"
+    ]
+   },
+   {
+    "tr_slide": 7,
+    "cards": [
+     "T07-1",
+     "T07-AN"
+    ]
+   },
+   {
+    "tr_slide": 8,
+    "cards": [
+     "T08-1"
+    ]
+   },
+   {
+    "tr_slide": 9,
+    "cards": [
+     "T09-1"
+    ]
+   },
+   {
+    "tr_slide": 10,
+    "cards": [
+     "T10-1",
+     "T10-2"
+    ]
+   },
+   {
+    "tr_slide": 11,
+    "cards": [
+     "T11-1",
+     "T11-AN"
+    ]
+   },
+   {
+    "tr_slide": 12,
+    "cards": [
+     "T12-1",
+     "T12-AN"
+    ]
+   },
+   {
+    "tr_slide": 13,
+    "cards": [
+     "T13-1",
+     "T13-AN"
+    ]
+   },
+   {
+    "tr_slide": 14,
+    "cards": [
+     "T14-1"
+    ]
+   },
+   {
+    "tr_slide": 15,
+    "cards": [
+     "T15-1",
+     "T15-AN"
+    ]
+   },
+   {
+    "tr_slide": 16,
+    "cards": [
+     "T16-1",
+     "T16-AN"
+    ]
+   },
+   {
+    "tr_slide": 17,
+    "cards": [
+     "T17-1"
+    ]
+   },
+   {
+    "tr_slide": 18,
+    "cards": [
+     "T18-1"
+    ]
+   },
+   {
+    "tr_slide": 19,
+    "cards": [
+     "T19-1",
+     "T19-2",
+     "T19-AN"
+    ]
+   },
+   {
+    "tr_slide": 20,
+    "cards": [
+     "T20-1",
+     "T20-2",
+     "T20-AN"
+    ]
+   },
+   {
+    "tr_slide": 21,
+    "cards": [
+     "T21-1",
+     "T21-AN"
+    ]
+   },
+   {
+    "tr_slide": 22,
+    "cards": [
+     "T22-1"
+    ]
+   },
+   {
+    "tr_slide": 23,
+    "cards": [
+     "T23-1"
+    ]
+   },
+   {
+    "tr_slide": 24,
+    "cards": [
+     "T24-1"
+    ]
+   }
+  ],
+  "tr_images": [
+   {
+    "file": "tr_images/slide-02-1.png",
+    "tr_slide": 2,
+    "shows": "Cloud Service Provider in the centre with arrows to Enterprise P, Enterprise Q and User R.",
+    "use": "redraw",
+    "why": "Right diagram for the slide; redraw in template colours."
+   },
+   {
+    "file": "tr_images/slide-03-1.png",
+    "tr_slide": 3,
+    "shows": "On-premise private cloud beside externally hosted private cloud, Enterprise P in both.",
+    "use": "redraw",
+    "why": "Right diagram; redraw in template colours."
+   },
+   {
+    "file": "tr_images/slide-04-1.png",
+    "tr_slide": 4,
+    "shows": "Private cloud plus public cloud, joined by a plus sign.",
+    "use": "redraw",
+    "why": "Right diagram; redraw with a link instead of the plus sign."
+   },
+   {
+    "file": "tr_images/slide-05-1.png",
+    "tr_slide": 5,
+    "shows": "Cloud Service Provider dedicated to community users Enterprise P, Q and R.",
+    "use": "redraw",
+    "why": "Right diagram; the heading inside it is misspelt \"Commmunity\" and must not be copied."
+   },
+   {
+    "file": "tr_images/slide-07-1.png",
+    "tr_slide": 7,
+    "shows": "Multi-Cloud vs Hybrid Cloud, two panels with provider logos.",
+    "use": "not-used",
+    "why": "The Google Cloud logo is captioned \"Azure\". Wrong, and stock styling."
+   },
+   {
+    "file": "tr_images/slide-11-1.png",
+    "tr_slide": 11,
+    "shows": "Decorative IaaS illustration: a cloud, gears, a laptop, a database.",
+    "use": "not-used",
+    "why": "Decorative; does not show which layers the provider manages (content rule 8)."
+   },
+   {
+    "file": "tr_images/slide-12-1.png",
+    "tr_slide": 12,
+    "shows": "Decorative PaaS illustration: a cloud, a monitor, a phone, a puzzle piece.",
+    "use": "not-used",
+    "why": "Decorative; does not show which layers the provider manages (content rule 8)."
+   },
+   {
+    "file": "tr_images/slide-13-1.png",
+    "tr_slide": 13,
+    "shows": "Decorative SaaS illustration: a cloud, a monitor, a laptop, a phone.",
+    "use": "not-used",
+    "why": "Decorative; does not show which layers the provider manages (content rule 8)."
+   }
+  ],
+  "tr_edits": [],
+  "dropped": [
+   [
+    "Speaker Notes (24 paragraphs, one per TR slide)",
+    "Speaker notes are never slide content. Cut by extract_tr.py before the TR was read."
+   ],
+   [
+    "\"Session 1\" and \"Session 2\" in the TR headings",
+    "No session numbers on a slide (content rule 12b)."
+   ]
+  ],
+  "defects": [
+   [
+    "slide 1",
+    "The second content line is wrapped in markdown asterisks (*control, security, scalability, and sharing requirements.*).",
+    "Asterisks removed; words unchanged."
+   ],
+   [
+    "slides 2, 3, 4, 7, 11, 12, 13, 19, 20, 21 (analogies), 9 and 19 (titles, guidance)",
+    "Spaced em dashes join two clauses (content rule 1).",
+    "Each spaced em dash is a comma in the spec. Words unchanged."
+   ],
+   [
+    "slide 5, TR image",
+    "The image heading reads \"Commmunity Users\".",
+    "Image marked redraw; the PDA draws it fresh."
+   ],
+   [
+    "slide 7, TR image",
+    "The Google Cloud logo is captioned \"Azure\".",
+    "Image not used. T07-1 draws the three providers with their own logos."
+   ],
+   [
+    "slide 10",
+    "Two sentences run together: \"customer-managed layers.Deployment models say\".",
+    "Split: the first is the lead of T10-1, the second is the note on T10-2."
+   ],
+   [
+    "slide 12, visual guidance",
+    "The chef adds \"dough\", but the analogy says the dough is already ready.",
+    "T12-AN follows the analogy: the chef adds the toppings."
+   ],
+   [
+    "slide 15",
+    "\"cold start\" is used and never explained.",
+    "Kept, as the TR has it. Suggest the TR author adds one line saying what a cold start is, or drops the term."
+   ],
+   [
+    "slide 16, visual guidance",
+    "Labels the model service \"Amazon SageMaker / Rekognition\"; the content never mentions SageMaker.",
+    "T16-1 labels it with Rekognition and Comprehend only (content rule 24)."
+   ],
+   [
+    "slide 20, heading",
+    "\"Total Cost Ownership\" is missing \"of\".",
+    "Kept, as the TR has it. Suggest \"Total Cost of Ownership\" to the TR author."
+   ],
+   [
+    "Key Takeaways vs Agenda",
+    "Takeaway 3 drops \"(e.g. EC2 for IaaS, AWS Elastic Beanstalk for PaaS)\" that agenda item 3 has. Content rule 20 wants them identical.",
+    "Both carried as the TR has them. Ask the TR author which wording is final."
+   ],
+   [
+    "slides 8 and 1",
+    "\"organizations\" and \"organisations\" both appear.",
+    "Kept as written. Pick one spelling in the TR."
+   ]
+  ],
+  "design_notes": [
+   "One spectrum runs through section 1: fully shared to fully dedicated (T01-2). The colour scale on T06-1 is that spectrum.",
+   "One stack runs through section 3: T10-1 draws it, T11-1, T12-1 and T13-1 reuse it with the owner line moving up. T14-1 and T17-1 extend the same direction past SaaS.",
+   "Every analogy is its own card, after the concept it explains. Familiar side first, concept side second, parts lined up.",
+   "Logos for AWS, Azure, GCP and every named service come from slide-kit/assets first (content rules 12 and 13).",
+   "Every TR image is listed in meta.tr_images. Redraw what is marked redraw in template colours; never paste it in."
+  ]
+ },
+ "build_contract": [
+  "One self-contained HTML file built with the slide template. It opens offline and makes no network request.",
+  "Every card in this spec is one slide, in this order. Press 1 is what shows when the slide opens.",
+  "Every slide's outer element carries data-spec=\"<card id>\" and data-presses=\"<press_count>\".",
+  "Right arrow or the clicker is one press. Left arrow goes back one press.",
+  "Slide components come from the kit (slide-kit/slide-template/src/slides and src/ui). A new component is a kit change and needs a PR.",
+  "There are no speaker notes in this spec, and the deck carries none from the TR."
+ ],
+ "rules": [
+  "Words are exact. kicker, heading, lead, show, table, code and analogy.text are final. If one does not fit, ask for a change to the spec; do not rewrite it.",
+  "Nothing the TR does not say. No added facts, examples, numbers or questions.",
+  "No autoplay. Nothing moves on a timer. One press, one change.",
+  "Text and the part of the figure it describes appear on the same press.",
+  "Simple English. No em dashes anywhere. No full stop at the end of a line.",
+  "Template colours, type and chrome only (RULES.md 32 to 37). Never a colour taken from a TR image.",
+  "A technology named on a slide carries its logo, from slide-kit/assets first.",
+  "The quiz frame says Quiz Time! and nothing else."
+ ],
+ "beats": [
+  {
+   "name": "Welcome",
+   "kind": "spine",
+   "source": "spine:welcome",
+   "cards": [
+    {
+     "id": "S-WELCOME",
+     "title": "Welcome",
+     "source": "spine:welcome",
+     "kit": {
+      "slide": "WelcomeSlide"
+     },
+     "purpose": "Open the session.",
+     "must_not": [
+      "Name the session topic on this frame."
+     ],
+     "presses": [
+      {
+       "screen": "The kit welcome frame, unchanged."
+      }
+     ],
+     "press_count": 1
+    }
+   ]
+  },
+  {
+   "name": "Recap",
+   "kind": "recap",
+   "source": "tr:recap",
+   "cards": [
+    {
+     "id": "S-RECAP",
+     "title": "Recap",
+     "source": "tr:recap",
+     "kit": {
+      "slide": "RecapSlide"
+     },
+     "purpose": "Bring back the five concepts of Cloud Computing Fundamentals before building on them.",
+     "kicker": "Recap",
+     "heading": "Cloud Computing Fundamentals",
+     "show": [
+      "1. Cloud Computing Basics: Definition & the NIST view; on-premise IT vs cloud; drivers: cost, scale & speed",
+      "2. History & Evolution: Mainframes & time-sharing; client-server & virtualization; grid & utility computing; the public cloud era",
+      "3. Essential Characteristics - I: On-demand self-service; broad network access; resource pooling & multi-tenancy",
+      "4. Essential Characteristics - II: Rapid elasticity vs scalability; measured service & pay-per-use metering",
+      "5. Benefits & Challenges: Cost model shift, elasticity, global reach & speed to market; vendor lock-in, cost overruns, latency & data residency"
+     ],
+     "must_not": [
+      "Show a session number. The TR heading says \"Session 1\"; the slide does not (content rule 12b)."
+     ],
+     "presses": [
+      {
+       "screen": "Header only: kicker <q>Recap</q>, heading <q>Cloud Computing Fundamentals</q>."
+      },
+      {
+       "screen": "Recap item 1 appears."
+      },
+      {
+       "screen": "Recap item 2 appears."
+      },
+      {
+       "screen": "Recap item 3 appears."
+      },
+      {
+       "screen": "Recap item 4 appears."
+      },
+      {
+       "screen": "Recap item 5 appears."
+      }
+     ],
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Agenda",
+   "kind": "agenda",
+   "source": "tr:agenda",
+   "cards": [
+    {
+     "id": "S-AGENDA",
+     "title": "Agenda",
+     "source": "tr:agenda",
+     "kit": {
+      "slide": "AgendaSlide"
+     },
+     "purpose": "Show the five concepts of the session, in order.",
+     "heading": "Agenda",
+     "show": [
+      "1. Cloud Deployment Models: Public cloud; private cloud: on-premise vs hosted; hybrid & cloud bursting; community cloud",
+      "2. Multi-Cloud: Motivations: resilience, negotiation & regulation; operational cost of multiple platforms",
+      "3. Service Models: IaaS, PaaS & SaaS: what each provides & abstracts; representative services (e.g. EC2 for IaaS, AWS Elastic Beanstalk for PaaS)",
+      "4. Beyond the Big Three: Function as a Service (FaaS) & serverless; AI/ML-as-a-Service; responsibility boundaries across models",
+      "5. Cloud Economics & Providers: CapEx vs OpEx; total cost of ownership (TCO); pricing: on-demand, committed use & spot; AWS, Azure, GCP & Indian providers"
+     ],
+     "must": [
+      "These five lines are the same words the dividers and the takeaways use."
+     ],
+     "presses": [
+      {
+       "screen": "The five agenda items, staggering in as one entry."
+      }
+     ],
+     "press_count": 1
+    }
+   ]
+  },
+  {
+   "name": "Section 1",
+   "kind": "divider",
+   "source": "tr:section 1",
+   "cards": [
+    {
+     "id": "D1",
+     "title": "Section 1",
+     "source": "tr:section 1",
+     "kit": {
+      "slide": "SectionBreakerSlide"
+     },
+     "purpose": "Mark the start of concept 1.",
+     "heading": "Cloud Deployment Models",
+     "show": [
+      "1. Cloud Deployment Models: Public cloud; private cloud: on-premise vs hosted; hybrid & cloud bursting; community cloud"
+     ],
+     "play": "Keep the kit divider look.",
+     "presses": [
+      {
+       "screen": "The divider with the section title."
+      }
+     ],
+     "press_count": 1
+    }
+   ]
+  },
+  {
+   "name": "Cloud Deployment Models Landscape",
+   "kind": "concept",
+   "source": "tr:slide 1",
+   "cards": [
+    {
+     "id": "T01-1",
+     "title": "What a deployment model decides",
+     "source": "tr:slide 1",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "PeerCards"
+     },
+     "purpose": "A deployment model answers three questions: who owns the infrastructure, where it is hosted, who can use it.",
+     "kicker": "Deployment Models Map",
+     "heading": "Four Ways To Deploy",
+     "lead": "A cloud deployment model defines who owns the infrastructure, where it is hosted, and who has access to it",
+     "show": [
+      "Different organisations choose different deployment models based on their control, security, scalability, and sharing requirements"
+     ],
+     "visual": "Three slots for the three questions the lead asks, then four chips for the four needs. No cloud clip art.",
+     "must": [
+      "The four needs are the TR's words: control, security, scalability, sharing."
+     ],
+     "play": "How the slots and chips look.",
+     "presses": [
+      {
+       "screen": "Kicker, heading and the lead. Under it, three empty labelled slots: owns, hosted, access."
+      },
+      {
+       "screen": "The second line appears and the four needs it names (control, security, scalability, sharing) arrive as four chips on the same press."
+      }
+     ],
+     "press_count": 2
+    },
+    {
+     "id": "T01-2",
+     "title": "The four models, on one spectrum",
+     "source": "tr:slide 1",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "RadialSpread"
+     },
+     "purpose": "Four deployment models sit on one line from fully shared to fully dedicated.",
+     "kicker": "Deployment Models Map",
+     "heading": "Four Ways To Deploy",
+     "lead": "Let’s explore the four major deployment models",
+     "show": [
+      "Public cloud: provider-owned, shared across tenants",
+      "Private cloud: dedicated, either on-premise or hosted",
+      "Hybrid cloud: private and public linked together",
+      "Community cloud: shared by organisations with common needs"
+     ],
+     "visual_guidance": "Four boxes labelled Public, Private, Hybrid, Community arranged around a central 'Infrastructure Choice' node, arrows showing a spectrum from fully shared to fully dedicated",
+     "visual": "The TR guidance as drawn: four boxes around a centre node. Add the spectrum as one axis under the boxes, Public at the shared end and Private at the dedicated end, Hybrid and Community between.",
+     "must": [
+      "The spectrum runs from fully shared to fully dedicated, and Public and Private sit at its two ends."
+     ],
+     "play": "Layout of the four boxes and the axis.",
+     "presses": [
+      {
+       "screen": "Kicker, heading and the line <q>Let’s explore the four major deployment models</q>. The centre node <q>Infrastructure Choice</q> alone."
+      },
+      {
+       "screen": "Point 1, <q>Public cloud: provider-owned, shared across tenants</q>, appears as one box around the centre node, on the same press."
+      },
+      {
+       "screen": "Point 2, <q>Private cloud: dedicated, either on-premise or hosted</q>, appears as one box around the centre node, on the same press."
+      },
+      {
+       "screen": "Point 3, <q>Hybrid cloud: private and public linked together</q>, appears as one box around the centre node, on the same press."
+      },
+      {
+       "screen": "Point 4, <q>Community cloud: shared by organisations with common needs</q>, appears as one box around the centre node, on the same press."
+      }
+     ],
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Public Cloud Explained",
+   "kind": "concept",
+   "source": "tr:slide 2",
+   "cards": [
+    {
+     "id": "T02-1",
+     "title": "Public cloud",
+     "source": "tr:slide 2",
+     "kit": {
+      "slide": "ContentRightImageSlide"
+     },
+     "purpose": "In a public cloud the provider owns everything and many customers share it over the internet.",
+     "kicker": "Public Cloud",
+     "heading": "Shared Multi-Tenant Infrastructure",
+     "lead": "A public cloud is a cloud environment where a cloud provider owns and manages the infrastructure, and multiple customers use its resources over the internet",
+     "show": [
+      "Infrastructure owned and run entirely by the provider",
+      "Many tenants share hardware, isolated logically from each other",
+      "Capacity scales rapidly across resources pooled across customers",
+      "Best fit: variable workloads, fast launch, low compliance limits"
+     ],
+     "image": {
+      "file": "tr_images/slide-02-1.png",
+      "use": "redraw"
+     },
+     "visual_guidance": "One large building labelled 'Provider Data Centre' with multiple small logos (different companies) drawing from it over an internet cloud icon",
+     "visual": "Redraw the TR image: one provider cloud in the centre, Enterprise P, Enterprise Q and User R each with an arrow from it. That is the TR guidance's \"many tenants drawing from one provider\".",
+     "must": [
+      "Every tenant connects to the same one provider cloud."
+     ],
+     "play": "Icons, and whether the tenants are logos or labelled boxes.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. On the right, the provider cloud in the middle with nobody connected yet."
+      },
+      {
+       "screen": "Point 1, <q>Infrastructure owned and run entirely by the provider</q>, appears."
+      },
+      {
+       "screen": "Point 2, <q>Many tenants share hardware, isolated logically from each other</q>, appears, and Enterprise P, Enterprise Q and User R connect to the provider cloud on the same press."
+      },
+      {
+       "screen": "Point 3, <q>Capacity scales rapidly across resources pooled across customers</q>, appears."
+      },
+      {
+       "screen": "Point 4, <q>Best fit: variable workloads, fast launch, low compliance limits</q>, appears."
+      }
+     ],
+     "press_count": 5
+    },
+    {
+     "id": "T02-AN",
+     "title": "Analogy: A shared cab",
+     "source": "tr:slide 2",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "AnalogyMap"
+     },
+     "purpose": "Tie Public cloud to something the room already knows: a shared cab.",
+     "kicker": "Public Cloud",
+     "heading": "A shared cab",
+     "analogy": {
+      "familiar": "A shared cab",
+      "maps_to": "Public cloud",
+      "text": "A shared cab is owned by the cab company; many riders book seats and pay only for the ride taken, never owning the vehicle, just as public cloud tenants share provider-owned servers and pay only for the capacity used"
+     },
+     "visual": "One cab, several riders each with a seat and a fare; beside it, one provider with several tenants each with their share.",
+     "must": [
+      "The concept slide comes first; this card follows it and never replaces it.",
+      "Every matched pair lines up: one familiar part beside the one concept part it stands for."
+     ],
+     "must_not": [
+      "Show the concept side before the familiar side."
+     ],
+     "play": "The drawing of the familiar thing, and how the pairs are linked.",
+     "presses": [
+      {
+       "screen": "The familiar side only: a drawing of a shared cab and the sentence <q>A shared cab is owned by the cab company; many riders book seats and pay only for the ride taken, never owning the vehicle</q>."
+      },
+      {
+       "screen": "The concept side arrives beside it, each part lined up with the part it matches: <q>Just as public cloud tenants share provider-owned servers and pay only for the capacity used</q>."
+      }
+     ],
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Private Cloud: On-Premise Vs Hosted",
+   "kind": "concept",
+   "source": "tr:slide 3",
+   "cards": [
+    {
+     "id": "T03-1",
+     "title": "Private cloud, two ways",
+     "source": "tr:slide 3",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "SplitCompare"
+     },
+     "purpose": "A private cloud is dedicated to one organisation, and it can sit on its own premises or inside a provider's data centre.",
+     "kicker": "Private Cloud",
+     "heading": "On-Premise Vs Hosted",
+     "lead": "Private cloud dedicates infrastructure to one organisation only, chosen when compliance, data residency or latency needs rule out shared public hardware",
+     "image": {
+      "file": "tr_images/slide-03-1.png",
+      "use": "redraw"
+     },
+     "visual_guidance": "Split diagram: left shows a building icon inside an organisation's fence (on-premise); right shows the same dedicated building inside a provider's larger data centre fence (hosted)",
+     "visual": "The TR guidance, drawn as two halves on one stage. The building is identical on both sides; only the fence around it changes.",
+     "must": [
+      "The two buildings are the same drawing. The only difference is whose fence it stands in."
+     ],
+     "play": "The fence and building drawing.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. Nothing else yet."
+      },
+      {
+       "screen": "Left half: on-premise. The organisation's building inside its own fence."
+      },
+      {
+       "screen": "Right half: hosted. The same building inside the provider's larger fence."
+      }
+     ],
+     "press_count": 3
+    },
+    {
+     "id": "T03-2",
+     "title": "On-premise vs hosted, row by row",
+     "source": "tr:slide 3",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "DataTable"
+     },
+     "purpose": "Compare the two private-cloud forms on location, owner, example and control.",
+     "kicker": "Private Cloud",
+     "heading": "On-Premise Vs Hosted",
+     "table": {
+      "columns": [
+       "Aspect",
+       "On-Premise Private",
+       "Hosted Private"
+      ],
+      "rows": [
+       [
+        "Location",
+        "Organisation's own data centre",
+        "Provider's data centre, dedicated section"
+       ],
+       [
+        "Owned by",
+        "The organisation itself",
+        "Provider, leased to one customer"
+       ],
+       [
+        "Example",
+        "In-house VMware or OpenStack cluster",
+        "VMware Cloud on AWS"
+       ],
+       [
+        "Control",
+        "Full physical and logical control",
+        "Full logical control, no physical access"
+       ]
+      ]
+     },
+     "must": [
+      "A row reveals both columns together. Never one whole column first."
+     ],
+     "play": "Table styling within the kit DataTable.",
+     "presses": [
+      {
+       "screen": "Kicker, heading and the header row of the table."
+      },
+      {
+       "screen": "Row <q>Location</q> appears, both columns at once."
+      },
+      {
+       "screen": "Row <q>Owned by</q> appears, both columns at once."
+      },
+      {
+       "screen": "Row <q>Example</q> appears, both columns at once."
+      },
+      {
+       "screen": "Row <q>Control</q> appears, both columns at once."
+      }
+     ],
+     "press_count": 5
+    },
+    {
+     "id": "T03-AN",
+     "title": "Analogy: Build a house or rent a bungalow",
+     "source": "tr:slide 3",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "AnalogyMap"
+     },
+     "purpose": "Tie On-premise and hosted private cloud to something the room already knows: build a house or rent a bungalow.",
+     "kicker": "Private Cloud",
+     "heading": "Build a house or rent a bungalow",
+     "analogy": {
+      "familiar": "Build a house or rent a bungalow",
+      "maps_to": "On-premise and hosted private cloud",
+      "text": "Building a house on owned land gives full control forever; renting a private bungalow built by a developer gives the same exclusivity without construction effort, just as on-premise private cloud means owned infrastructure, while hosted private cloud means dedicated but provider-managed infrastructure"
+     },
+     "visual": "Two homes side by side: a house the family built on its own land, a private bungalow a developer built. Each is used by one family only.",
+     "must": [
+      "The concept slide comes first; this card follows it and never replaces it.",
+      "Every matched pair lines up: one familiar part beside the one concept part it stands for."
+     ],
+     "must_not": [
+      "Show the concept side before the familiar side."
+     ],
+     "play": "The drawing of the familiar thing, and how the pairs are linked.",
+     "presses": [
+      {
+       "screen": "The familiar side only: a drawing of build a house or rent a bungalow and the sentence <q>Building a house on owned land gives full control forever; renting a private bungalow built by a developer gives the same exclusivity without construction effort</q>."
+      },
+      {
+       "screen": "The concept side arrives beside it, each part lined up with the part it matches: <q>Just as on-premise private cloud means owned infrastructure, while hosted private cloud means dedicated but provider-managed infrastructure</q>."
+      }
+     ],
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Hybrid Cloud And Cloud Bursting",
+   "kind": "concept",
+   "source": "tr:slide 4",
+   "cards": [
+    {
+     "id": "T04-1",
+     "title": "Hybrid cloud",
+     "source": "tr:slide 4",
+     "kit": {
+      "slide": "ContentRightImageSlide"
+     },
+     "purpose": "Hybrid cloud links a private cloud and a public cloud so work can move between them.",
+     "kicker": "Hybrid Cloud",
+     "heading": "Cloud Bursting Explained",
+     "lead": "Hybrid cloud links private and public infrastructure so workloads move between them, avoiding the need to size on-premise capacity for rare demand peaks",
+     "image": {
+      "file": "tr_images/slide-04-1.png",
+      "use": "redraw"
+     },
+     "visual": "Redraw the TR image: private cloud on the left, public cloud on the right, one link between them. Use a line, not the image's plus sign: the point is that they are connected.",
+     "play": "Icons.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. On the right, the private side alone."
+      },
+      {
+       "screen": "The public side arrives beside it, with the link between the two drawn on the same press."
+      }
+     ],
+     "press_count": 2
+    },
+    {
+     "id": "T04-2",
+     "title": "Cloud bursting",
+     "source": "tr:slide 4",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "GateFlow"
+     },
+     "purpose": "When load crosses a threshold, the overflow goes to the public cloud for a while, then comes back.",
+     "kicker": "Hybrid Cloud",
+     "heading": "Cloud Bursting Explained",
+     "show": [
+      "Sudden overload bursts into public cloud capacity temporarily",
+      "Cloud bursting: automatic overflow triggered by demand thresholds",
+      "Example: AWS Outposts extends AWS infrastructure into on-premise sites"
+     ],
+     "visual_guidance": "Two linked boxes, 'Private Infrastructure' and 'Public Cloud', with a dashed arrow labelled 'burst' flowing from private to public only when a load gauge crosses a threshold line",
+     "must": [
+      "The burst arrow appears only once the gauge is past the threshold line.",
+      "Bursting is temporary: nothing on the card suggests the workload moves for good."
+     ],
+     "must_not": [
+      "Animate the gauge on a timer."
+     ],
+     "play": "The gauge and the arrow.",
+     "presses": [
+      {
+       "screen": "Kicker, heading. The two linked boxes <q>Private Infrastructure</q> and <q>Public Cloud</q>, a load gauge on the private box, a threshold line on the gauge."
+      },
+      {
+       "screen": "Point 1, <q>Sudden overload bursts into public cloud capacity temporarily</q>, appears; on the same press the gauge rises past the threshold line and the dashed <q>burst</q> arrow appears."
+      },
+      {
+       "screen": "Point 2, <q>Cloud bursting: automatic overflow triggered by demand thresholds</q>, appears; the threshold line is labelled <q>demand threshold</q> on the same press."
+      },
+      {
+       "screen": "Point 3, <q>Example: AWS Outposts extends AWS infrastructure into on-premise sites</q>, appears with the AWS logo."
+      }
+     ],
+     "press_count": 4
+    },
+    {
+     "id": "T04-AN",
+     "title": "Analogy: A banquet hall for the rush",
+     "source": "tr:slide 4",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "AnalogyMap"
+     },
+     "purpose": "Tie Cloud bursting to something the room already knows: a banquet hall for the rush.",
+     "kicker": "Hybrid Cloud",
+     "heading": "A banquet hall for the rush",
+     "analogy": {
+      "familiar": "A banquet hall for the rush",
+      "maps_to": "Cloud bursting",
+      "text": "A restaurant kitchen handles daily orders alone, but during a wedding rush it hires a banquet hall's ovens for the overflow and releases them once the rush ends, just as cloud bursting shifts excess load to public cloud only during demand spikes"
+     },
+     "visual": "A restaurant kitchen with its own ovens; during a wedding rush, extra orders go to a hired banquet hall, then the hall is released.",
+     "must": [
+      "The concept slide comes first; this card follows it and never replaces it.",
+      "Every matched pair lines up: one familiar part beside the one concept part it stands for."
+     ],
+     "must_not": [
+      "Show the concept side before the familiar side."
+     ],
+     "play": "The drawing of the familiar thing, and how the pairs are linked.",
+     "presses": [
+      {
+       "screen": "The familiar side only: a drawing of a banquet hall for the rush and the sentence <q>A restaurant kitchen handles daily orders alone, but during a wedding rush it hires a banquet hall's ovens for the overflow and releases them once the rush ends</q>."
+      },
+      {
+       "screen": "The concept side arrives beside it, each part lined up with the part it matches: <q>Just as cloud bursting shifts excess load to public cloud only during demand spikes</q>."
+      }
+     ],
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Community Cloud Explained",
+   "kind": "concept",
+   "source": "tr:slide 5",
+   "cards": [
+    {
+     "id": "T05-1",
+     "title": "Community cloud",
+     "source": "tr:slide 5",
+     "kit": {
+      "slide": "ContentRightImageSlide"
+     },
+     "purpose": "A community cloud is shared by a group of organisations with the same needs, and closed to everyone else.",
+     "kicker": "Community Cloud",
+     "heading": "Shared Among Peers",
+     "lead": "Community cloud is infrastructure shared by several organisations with common regulatory, security or mission needs, rather than opened to the general public",
+     "show": [
+      "Governance and compliance rules set jointly by member organisations",
+      "Cost split among fewer tenants than public, more than solo private",
+      "Example: AWS GovCloud (US), reserved for government agencies and partners",
+      "Typical users: government bodies, healthcare consortiums, research collaborations"
+     ],
+     "image": {
+      "file": "tr_images/slide-05-1.png",
+      "use": "redraw"
+     },
+     "visual_guidance": "One shared infrastructure block in the centre with several matching organisation icons (government, healthcare, research) connected to it, ringed off from the general public cloud",
+     "visual": "The TR guidance, which matches the TR image: one block, a ring around it, member organisations inside the ring connected to it.",
+     "must": [
+      "The ring visibly separates the community from the general public cloud."
+     ],
+     "play": "Icons and the ring.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. On the right, one shared infrastructure block, ringed off."
+      },
+      {
+       "screen": "Point 1, <q>Governance and compliance rules set jointly by member organisations</q>, appears."
+      },
+      {
+       "screen": "Point 2, <q>Cost split among fewer tenants than public, more than solo private</q>, appears."
+      },
+      {
+       "screen": "Point 3, <q>Example: AWS GovCloud (US), reserved for government agencies and partners</q>, appears with the AWS logo."
+      },
+      {
+       "screen": "Point 4, <q>Typical users: government bodies, healthcare consortiums, research collaborations</q>, appears, and the government, healthcare and research icons connect to the block on the same press."
+      }
+     ],
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Deployment Models At A Glance",
+   "kind": "compare",
+   "source": "tr:slide 6",
+   "cards": [
+    {
+     "id": "T06-1",
+     "title": "Deployment models compared",
+     "source": "tr:slide 6",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "DataTable"
+     },
+     "purpose": "Map the five deployment rows on owner, tenancy and typical use.",
+     "kicker": "Deployment Models Compared",
+     "heading": "Ownership Tenancy Use Case",
+     "lead": "Choosing a deployment model trades control for convenience: full ownership costs more effort, full sharing costs less control",
+     "table": {
+      "columns": [
+       "Model",
+       "Owned By",
+       "Tenancy",
+       "Typical Use"
+      ],
+      "rows": [
+       [
+        "Public",
+        "Provider",
+        "Multi-tenant",
+        "Variable, public-facing workloads"
+       ],
+       [
+        "Private (on-premise)",
+        "Organisation",
+        "Single-tenant",
+        "Strict compliance, latency-sensitive systems"
+       ],
+       [
+        "Private (hosted)",
+        "Provider, dedicated to one customer",
+        "Single-tenant",
+        "Dedicated capacity without own data centre"
+       ],
+       [
+        "Hybrid",
+        "Shared: organisation and provider",
+        "Mixed",
+        "Steady load with occasional bursts"
+       ],
+       [
+        "Community",
+        "Member organisations, or a third party",
+        "Shared within group",
+        "Sector-specific compliance, e.g. government"
+       ]
+      ]
+     },
+     "visual_guidance": "The five-row comparison table rendered full-width, with the 'Owned By' column colour-coded to visually reinforce the control-versus-sharing spectrum from slide one",
+     "visual": "Colour the Owned By column along the shared-to-dedicated spectrum from T01-2, in template tints only.",
+     "must": [
+      "The colour scale is the same one used for the spectrum on T01-2."
+     ],
+     "play": "Tints within the template palette.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead and the header row."
+      },
+      {
+       "screen": "Row <q>Public</q> appears."
+      },
+      {
+       "screen": "Row <q>Private (on-premise)</q> appears."
+      },
+      {
+       "screen": "Row <q>Private (hosted)</q> appears."
+      },
+      {
+       "screen": "Row <q>Hybrid</q> appears."
+      },
+      {
+       "screen": "Row <q>Community</q> appears."
+      }
+     ],
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Section 2",
+   "kind": "divider",
+   "source": "tr:section 2",
+   "cards": [
+    {
+     "id": "D2",
+     "title": "Section 2",
+     "source": "tr:section 2",
+     "kit": {
+      "slide": "SectionBreakerSlide"
+     },
+     "purpose": "Mark the start of concept 2.",
+     "heading": "Multi-Cloud",
+     "show": [
+      "2. Multi-Cloud: Motivations: resilience, negotiation & regulation; operational cost of multiple platforms"
+     ],
+     "play": "Keep the kit divider look.",
+     "presses": [
+      {
+       "screen": "The divider with the section title."
+      }
+     ],
+     "press_count": 1
+    }
+   ]
+  },
+  {
+   "name": "Multi-Cloud: Beyond Hybrid",
+   "kind": "concept",
+   "source": "tr:slide 7",
+   "cards": [
+    {
+     "id": "T07-1",
+     "title": "Multi-cloud",
+     "source": "tr:slide 7",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "FanOut"
+     },
+     "purpose": "Multi-cloud uses two or more public providers at the same time, which is not the same as hybrid.",
+     "kicker": "Multi-Cloud Defined",
+     "heading": "Multiple Providers Together",
+     "lead": "Multi-cloud means running workloads across two or more independent public providers at once, unlike hybrid cloud, which mixes public with private infrastructure",
+     "show": [
+      "AWS handles general-purpose compute and storage workloads",
+      "Azure serves Microsoft-integrated enterprise applications",
+      "GCP powers data analytics and AI/ML pipelines"
+     ],
+     "image": {
+      "file": "tr_images/slide-07-1.png",
+      "use": "not-used"
+     },
+     "visual_guidance": "Diagram: one company icon with three arrows branching to AWS, Azure and GCP logos, each labelled with a workload type",
+     "visual": "The TR guidance: one company, three arrows to the AWS, Azure and GCP logos, each arrow labelled with its workload. Logos from slide-kit/assets.",
+     "must": [
+      "Each provider carries its own logo and its own name (content rule 12)."
+     ],
+     "must_not": [
+      "Use the TR image: it labels the Google Cloud logo \"Azure\"."
+     ],
+     "play": "Arrow and logo layout.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. One company icon alone."
+      },
+      {
+       "screen": "Point 1, <q>AWS handles general-purpose compute and storage workloads</q>, appears; the arrow to that provider's logo, labelled with its workload, appears on the same press."
+      },
+      {
+       "screen": "Point 2, <q>Azure serves Microsoft-integrated enterprise applications</q>, appears; the arrow to that provider's logo, labelled with its workload, appears on the same press."
+      },
+      {
+       "screen": "Point 3, <q>GCP powers data analytics and AI/ML pipelines</q>, appears; the arrow to that provider's logo, labelled with its workload, appears on the same press."
+      }
+     ],
+     "press_count": 4
+    },
+    {
+     "id": "T07-AN",
+     "title": "Analogy: Two banks for your savings",
+     "source": "tr:slide 7",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "AnalogyMap"
+     },
+     "purpose": "Tie Multi-cloud to something the room already knows: two banks for your savings.",
+     "kicker": "Multi-Cloud Defined",
+     "heading": "Two banks for your savings",
+     "analogy": {
+      "familiar": "Two banks for your savings",
+      "maps_to": "Multi-cloud",
+      "text": "Spreading savings across two different banks guards against one bank freezing withdrawals or raising fees, just as multi-cloud spreads workloads across providers so one outage or price hike does not stop operations"
+     },
+     "visual": "Savings split between two different banks; beside it, workloads split between two providers.",
+     "must": [
+      "The concept slide comes first; this card follows it and never replaces it.",
+      "Every matched pair lines up: one familiar part beside the one concept part it stands for."
+     ],
+     "must_not": [
+      "Show the concept side before the familiar side."
+     ],
+     "play": "The drawing of the familiar thing, and how the pairs are linked.",
+     "presses": [
+      {
+       "screen": "The familiar side only: a drawing of two banks for your savings and the sentence <q>Spreading savings across two different banks guards against one bank freezing withdrawals or raising fees</q>."
+      },
+      {
+       "screen": "The concept side arrives beside it, each part lined up with the part it matches: <q>Just as multi-cloud spreads workloads across providers so one outage or price hike does not stop operations</q>."
+      }
+     ],
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Why Organizations Adopt Multi-Cloud",
+   "kind": "concept",
+   "source": "tr:slide 8",
+   "cards": [
+    {
+     "id": "T08-1",
+     "title": "Why multi-cloud",
+     "source": "tr:slide 8",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "PeerCards"
+     },
+     "purpose": "Three pressures push a company to more than one provider: resilience, negotiation and regulation.",
+     "kicker": "Multi-Cloud Motivations",
+     "heading": "Resilience Negotiation Regulation",
+     "lead": "Three business pressures push organizations toward multiple providers even though it adds complexity",
+     "show": [
+      "Resilience: a second provider keeps services running during an outage",
+      "Negotiation leverage: comparing quotes across vendors avoids one-sided pricing",
+      "Regulation: in-country hosting or concentration-risk rules may require a compliant region or a second provider"
+     ],
+     "visual_guidance": "Three labelled icons (shield, handshake, gavel) mapped to resilience, negotiation and regulation respectively",
+     "play": "Icon style.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead."
+      },
+      {
+       "screen": "Point 1, <q>Resilience: a second provider keeps services running during an outage</q>, appears as one card with a shield icon."
+      },
+      {
+       "screen": "Point 2, <q>Negotiation leverage: comparing quotes across vendors avoids one-sided pricing</q>, appears as one card with a handshake icon."
+      },
+      {
+       "screen": "Point 3, <q>Regulation: in-country hosting or concentration-risk rules may require a compliant region or a second provider</q>, appears as one card with a gavel icon."
+      }
+     ],
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Cost Of Multi-Cloud Complexity",
+   "kind": "concept",
+   "source": "tr:slide 9",
+   "cards": [
+    {
+     "id": "T09-1",
+     "title": "What multi-cloud costs to run",
+     "source": "tr:slide 9",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "DataTable"
+     },
+     "purpose": "Each provider added repeats the skills, tools, billing and security work.",
+     "kicker": "Operational Overhead Cost",
+     "heading": "Managing Multiple Platforms",
+     "lead": "Multi-cloud earns its resilience and leverage at a real operational price: every added provider multiplies what must be learned, managed and paid for",
+     "show": [
+      "Separate consoles, APIs and billing dashboards per provider",
+      "Distinct certifications and skill sets needed for each platform's staff",
+      "Cross-cloud data transfer (egress) charges between providers",
+      "Duplicate monitoring, security and IAM policies to maintain"
+     ],
+     "visual_guidance": "Table-style graphic: rows for Skills, Tooling, Billing, Security, each row showing duplicated icons across AWS/Azure/GCP columns",
+     "visual": "The TR guidance: a grid, one row per kind of overhead, the same icon repeated in every provider column so the duplication is seen, not stated. Match each TR point to one row: consoles, APIs and billing; skills; egress; monitoring, security and IAM.",
+     "must": [
+      "The rows follow the TR points, one row per point."
+     ],
+     "play": "Icons.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. The grid's column heads: AWS, Azure, GCP logos."
+      },
+      {
+       "screen": "Point 1, <q>Separate consoles, APIs and billing dashboards per provider</q>, appears with its row of the grid, the same icon repeated under each provider."
+      },
+      {
+       "screen": "Point 2, <q>Distinct certifications and skill sets needed for each platform's staff</q>, appears with its row of the grid, the same icon repeated under each provider."
+      },
+      {
+       "screen": "Point 3, <q>Cross-cloud data transfer (egress) charges between providers</q>, appears with its row of the grid, the same icon repeated under each provider."
+      },
+      {
+       "screen": "Point 4, <q>Duplicate monitoring, security and IAM policies to maintain</q>, appears with its row of the grid, the same icon repeated under each provider."
+      }
+     ],
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Section 3",
+   "kind": "divider",
+   "source": "tr:section 3",
+   "cards": [
+    {
+     "id": "D3",
+     "title": "Section 3",
+     "source": "tr:section 3",
+     "kit": {
+      "slide": "SectionBreakerSlide"
+     },
+     "purpose": "Mark the start of concept 3.",
+     "heading": "Service Models",
+     "show": [
+      "3. Service Models: IaaS, PaaS & SaaS: what each provides & abstracts; representative services"
+     ],
+     "play": "Keep the kit divider look.",
+     "presses": [
+      {
+       "screen": "The divider with the section title."
+      }
+     ],
+     "press_count": 1
+    }
+   ]
+  },
+  {
+   "name": "Service Models: Provides vs Abstracts",
+   "kind": "compare",
+   "source": "tr:slide 10",
+   "cards": [
+    {
+     "id": "T10-1",
+     "title": "One stack, a moving line",
+     "source": "tr:slide 10",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "DataTable"
+     },
+     "purpose": "IaaS, PaaS and SaaS share one stack; the only thing that changes is where the provider's part ends.",
+     "kicker": "Service Model Spectrum",
+     "heading": "Stack Ownership Map",
+     "lead": "The three service models share one technology stack; each shifts the line dividing provider-managed layers from customer-managed layers",
+     "table": {
+      "columns": [
+       "Stack Layer",
+       "IaaS",
+       "PaaS",
+       "SaaS"
+      ],
+      "rows": [
+       [
+        "Application",
+        "Customer",
+        "Customer",
+        "Provider"
+       ],
+       [
+        "Data & access configuration",
+        "Customer",
+        "Customer",
+        "Customer"
+       ],
+       [
+        "Runtime & middleware",
+        "Customer",
+        "Provider",
+        "Provider"
+       ],
+       [
+        "Operating system",
+        "Customer",
+        "Provider",
+        "Provider"
+       ],
+       [
+        "Virtualization, servers, storage, network",
+        "Provider",
+        "Provider",
+        "Provider"
+       ]
+      ]
+     },
+     "visual_guidance": "Horizontal stack bar split into four layers, shaded by owner colour for IaaS, PaaS and SaaS side by side",
+     "visual": "The TR guidance: a stacked bar per model, shaded by owner, side by side. The table's cells are the labels.",
+     "must": [
+      "One colour means customer and one means provider, on every column.",
+      "Data & access configuration is customer on all three."
+     ],
+     "play": "Bar or table form, within the kit.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. The stack's layer names down the left, nothing coloured yet."
+      },
+      {
+       "screen": "The IaaS column fills: customer layers in one colour, provider layers in the other."
+      },
+      {
+       "screen": "The PaaS column fills. The line between the two colours has moved up."
+      },
+      {
+       "screen": "The SaaS column fills. The line has moved up again; only Data & access configuration stays with the customer."
+      }
+     ],
+     "press_count": 4
+    },
+    {
+     "id": "T10-2",
+     "title": "Deployment model vs service model",
+     "source": "tr:slide 10",
+     "kit": {
+      "slide": "ContentNoteSlide"
+     },
+     "purpose": "Deployment models and service models answer different questions, and any service model runs on any deployment model.",
+     "kicker": "Service Model Spectrum",
+     "heading": "Stack Ownership Map",
+     "show": [
+      "Deployment models say where the infrastructure sits and who owns it; service models say what is abstracted. Any service model can run on any deployment model (e.g. private-cloud IaaS, public-cloud SaaS)"
+     ],
+     "must": [
+      "This card follows the stack table, not before it."
+     ],
+     "presses": [
+      {
+       "screen": "Kicker, heading. The note appears."
+      }
+     ],
+     "press_count": 1
+    }
+   ]
+  },
+  {
+   "name": "IaaS: Renting Raw Infrastructure",
+   "kind": "concept",
+   "source": "tr:slide 11",
+   "cards": [
+    {
+     "id": "T11-1",
+     "title": "IaaS Explained",
+     "source": "tr:slide 11",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "LayerAnatomy"
+     },
+     "purpose": "IaaS: what the provider takes away from the customer, and what the customer still runs.",
+     "kicker": "IaaS Explained",
+     "heading": "Raw Infrastructure Rental",
+     "lead": "Infrastructure as a Service rents compute, storage and network as raw building blocks, leaving the operating system and everything above it to the customer",
+     "show": [
+      "Abstracts physical hardware, racking and data-centre wiring",
+      "Customer installs OS, runtime, middleware and application",
+      "Representative services: AWS (Amazon Web Services) EC2, EBS, VPC",
+      "Azure Virtual Machines, GCP Compute Engine offer same layer"
+     ],
+     "image": {
+      "file": "tr_images/slide-11-1.png",
+      "use": "not-used"
+     },
+     "visual": "Reuse the stack from T10-1 with only this model's column, so the three cards read as one picture with the line moving. Service names carry their logos.",
+     "must": [
+      "The stack and colours are the ones from T10-1."
+     ],
+     "must_not": [
+      "Use the TR image: it is decorative and does not show what the provider manages."
+     ],
+     "play": "How the column is lit.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. The stack from T10-1, with the IaaS column's owner line marked."
+      },
+      {
+       "screen": "Point 1, <q>Abstracts physical hardware, racking and data-centre wiring</q>, appears; where it names a layer, that layer lights in the stack on the same press."
+      },
+      {
+       "screen": "Point 2, <q>Customer installs OS, runtime, middleware and application</q>, appears; where it names a layer, that layer lights in the stack on the same press."
+      },
+      {
+       "screen": "Point 3, <q>Representative services: AWS (Amazon Web Services) EC2, EBS, VPC</q>, appears; where it names a layer, that layer lights in the stack on the same press."
+      },
+      {
+       "screen": "Point 4, <q>Azure Virtual Machines, GCP Compute Engine offer same layer</q>, appears; where it names a layer, that layer lights in the stack on the same press."
+      }
+     ],
+     "press_count": 5
+    },
+    {
+     "id": "T11-AN",
+     "title": "Analogy: Kitchen space only",
+     "source": "tr:slide 11",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "AnalogyMap"
+     },
+     "purpose": "Tie IaaS to something the room already knows: kitchen space only.",
+     "kicker": "IaaS Explained",
+     "heading": "Kitchen space only",
+     "analogy": {
+      "familiar": "Kitchen space only",
+      "maps_to": "IaaS",
+      "text": "Domino's kitchen space and oven are used, but the dough, sauce and toppings are supplied separately and the pizza is cooked from scratch, just as the IaaS provider manages only the physical infrastructure while the customer manages the operating system, runtime and application"
+     },
+     "visual": "A kitchen with only the oven and gas line labelled Infrastructure; the chef brings recipe cards labelled OS, Runtime, App.",
+     "must": [
+      "The concept slide comes first; this card follows it and never replaces it.",
+      "Every matched pair lines up: one familiar part beside the one concept part it stands for."
+     ],
+     "must_not": [
+      "Show the concept side before the familiar side."
+     ],
+     "play": "The drawing of the familiar thing, and how the pairs are linked.",
+     "presses": [
+      {
+       "screen": "The familiar side only: a drawing of kitchen space only and the sentence <q>Domino's kitchen space and oven are used, but the dough, sauce and toppings are supplied separately and the pizza is cooked from scratch</q>."
+      },
+      {
+       "screen": "The concept side arrives beside it, each part lined up with the part it matches: <q>Just as the IaaS provider manages only the physical infrastructure while the customer manages the operating system, runtime and application</q>."
+      }
+     ],
+     "press_count": 2,
+     "visual_guidance": "Icon of empty kitchen equipment (oven, gas line) labelled Infrastructure, with a chef bringing own recipe cards labelled OS, Runtime, App to bake the pizza"
+    }
+   ]
+  },
+  {
+   "name": "PaaS: Managed Runtime Platform",
+   "kind": "concept",
+   "source": "tr:slide 12",
+   "cards": [
+    {
+     "id": "T12-1",
+     "title": "PaaS Explained",
+     "source": "tr:slide 12",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "LayerAnatomy"
+     },
+     "purpose": "PaaS: what the provider takes away from the customer, and what the customer still runs.",
+     "kicker": "PaaS Explained",
+     "heading": "Ready-Made Platform",
+     "lead": "Platform as a Service adds a managed operating system and runtime atop infrastructure, so the customer only builds, deploys and runs application code",
+     "show": [
+      "Abstracts OS patching, runtime setup and server scaling",
+      "Less control over OS-level tuning than IaaS allows",
+      "Representative services: AWS Elastic Beanstalk, AWS App Runner",
+      "Azure App Service, GCP App Engine offer same layer"
+     ],
+     "image": {
+      "file": "tr_images/slide-12-1.png",
+      "use": "not-used"
+     },
+     "visual": "Reuse the stack from T10-1 with only this model's column, so the three cards read as one picture with the line moving. Service names carry their logos.",
+     "must": [
+      "The stack and colours are the ones from T10-1."
+     ],
+     "must_not": [
+      "Use the TR image: it is decorative and does not show what the provider manages."
+     ],
+     "play": "How the column is lit.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. The stack from T10-1, with the PaaS column's owner line marked."
+      },
+      {
+       "screen": "Point 1, <q>Abstracts OS patching, runtime setup and server scaling</q>, appears; where it names a layer, that layer lights in the stack on the same press."
+      },
+      {
+       "screen": "Point 2, <q>Less control over OS-level tuning than IaaS allows</q>, appears; where it names a layer, that layer lights in the stack on the same press."
+      },
+      {
+       "screen": "Point 3, <q>Representative services: AWS Elastic Beanstalk, AWS App Runner</q>, appears; where it names a layer, that layer lights in the stack on the same press."
+      },
+      {
+       "screen": "Point 4, <q>Azure App Service, GCP App Engine offer same layer</q>, appears; where it names a layer, that layer lights in the stack on the same press."
+      }
+     ],
+     "press_count": 5
+    },
+    {
+     "id": "T12-AN",
+     "title": "Analogy: Kitchen and dough ready",
+     "source": "tr:slide 12",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "AnalogyMap"
+     },
+     "purpose": "Tie PaaS to something the room already knows: kitchen and dough ready.",
+     "kicker": "PaaS Explained",
+     "heading": "Kitchen and dough ready",
+     "analogy": {
+      "familiar": "Kitchen and dough ready",
+      "maps_to": "PaaS",
+      "text": "Domino's kitchen, oven and ready dough are already set up, so only assembling and baking the pizza on that setup remains, just as the PaaS provider manages infrastructure, operating system and runtime while the customer manages only the application"
+     },
+     "visual": "The same kitchen, already set up and labelled Platform; the chef adds only the toppings, labelled Application Code.",
+     "must": [
+      "The concept slide comes first; this card follows it and never replaces it.",
+      "Every matched pair lines up: one familiar part beside the one concept part it stands for.",
+      "The TR guidance says the chef adds \"dough\", but the TR analogy says the dough is ready. The analogy text wins; draw the chef adding the toppings."
+     ],
+     "must_not": [
+      "Show the concept side before the familiar side."
+     ],
+     "play": "The drawing of the familiar thing, and how the pairs are linked.",
+     "presses": [
+      {
+       "screen": "The familiar side only: a drawing of kitchen and dough ready and the sentence <q>Domino's kitchen, oven and ready dough are already set up, so only assembling and baking the pizza on that setup remains</q>."
+      },
+      {
+       "screen": "The concept side arrives beside it, each part lined up with the part it matches: <q>Just as the PaaS provider manages infrastructure, operating system and runtime while the customer manages only the application</q>."
+      }
+     ],
+     "press_count": 2,
+     "visual_guidance": "Icon of ready kitchen setup labelled Platform, chef adding only dough labelled Application Code"
+    }
+   ]
+  },
+  {
+   "name": "SaaS: Ready-To-Use Software",
+   "kind": "concept",
+   "source": "tr:slide 13",
+   "cards": [
+    {
+     "id": "T13-1",
+     "title": "SaaS Explained",
+     "source": "tr:slide 13",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "LayerAnatomy"
+     },
+     "purpose": "SaaS: what the provider takes away from the customer, and what the customer still runs.",
+     "kicker": "SaaS Explained",
+     "heading": "Complete Application Delivered",
+     "lead": "Software as a Service delivers a finished application; the provider manages every layer beneath it, leaving the customer only account setup and data",
+     "show": [
+      "Abstracts the entire stack below the application",
+      "Provider pushes feature updates automatically, no customer action",
+      "Representative services: Gmail/Google Workspace, Salesforce, Microsoft 365",
+      "Customer effort and control both fall sharply toward SaaS"
+     ],
+     "image": {
+      "file": "tr_images/slide-13-1.png",
+      "use": "not-used"
+     },
+     "visual": "Reuse the stack from T10-1 with only this model's column, so the three cards read as one picture with the line moving. Service names carry their logos.",
+     "must": [
+      "The stack and colours are the ones from T10-1."
+     ],
+     "must_not": [
+      "Use the TR image: it is decorative and does not show what the provider manages."
+     ],
+     "play": "How the column is lit.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. The stack from T10-1, with the SaaS column's owner line marked."
+      },
+      {
+       "screen": "Point 1, <q>Abstracts the entire stack below the application</q>, appears; where it names a layer, that layer lights in the stack on the same press."
+      },
+      {
+       "screen": "Point 2, <q>Provider pushes feature updates automatically, no customer action</q>, appears; where it names a layer, that layer lights in the stack on the same press."
+      },
+      {
+       "screen": "Point 3, <q>Representative services: Gmail/Google Workspace, Salesforce, Microsoft 365</q>, appears; where it names a layer, that layer lights in the stack on the same press."
+      },
+      {
+       "screen": "Point 4, <q>Customer effort and control both fall sharply toward SaaS</q>, appears; where it names a layer, that layer lights in the stack on the same press."
+      }
+     ],
+     "press_count": 5
+    },
+    {
+     "id": "T13-AN",
+     "title": "Analogy: A ready-made pizza",
+     "source": "tr:slide 13",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "AnalogyMap"
+     },
+     "purpose": "Tie SaaS to something the room already knows: a ready-made pizza.",
+     "kicker": "SaaS Explained",
+     "heading": "A ready-made pizza",
+     "analogy": {
+      "familiar": "A ready-made pizza",
+      "maps_to": "SaaS",
+      "text": "A ready-made pizza is ordered directly from Domino's with no kitchen work at all, just as SaaS provider manages the entire stack while the customer only uses the finished application"
+     },
+     "visual": "A finished pizza box handed over, labelled Application, beside small copies of the two kitchens from the IaaS and PaaS cards.",
+     "must": [
+      "The concept slide comes first; this card follows it and never replaces it.",
+      "Every matched pair lines up: one familiar part beside the one concept part it stands for."
+     ],
+     "must_not": [
+      "Show the concept side before the familiar side."
+     ],
+     "play": "The drawing of the familiar thing, and how the pairs are linked.",
+     "presses": [
+      {
+       "screen": "The familiar side only: a drawing of a ready-made pizza and the sentence <q>A ready-made pizza is ordered directly from Domino's with no kitchen work at all</q>."
+      },
+      {
+       "screen": "The concept side arrives beside it, each part lined up with the part it matches: <q>Just as SaaS provider manages the entire stack while the customer only uses the finished application</q>."
+      }
+     ],
+     "press_count": 2,
+     "visual_guidance": "Icon of a finished pizza box handed over, labelled Application, contrasted with the empty and ready kitchens from the IaaS and PaaS slides"
+    }
+   ]
+  },
+  {
+   "name": "Section 4",
+   "kind": "divider",
+   "source": "tr:section 4",
+   "cards": [
+    {
+     "id": "D4",
+     "title": "Section 4",
+     "source": "tr:section 4",
+     "kit": {
+      "slide": "SectionBreakerSlide"
+     },
+     "purpose": "Mark the start of concept 4.",
+     "heading": "Beyond the Big Three",
+     "show": [
+      "4. Beyond the Big Three: Function as a Service (FaaS) & serverless; AI/ML-as-a-Service; responsibility boundaries across models"
+     ],
+     "play": "Keep the kit divider look.",
+     "presses": [
+      {
+       "screen": "The divider with the section title."
+      }
+     ],
+     "press_count": 1
+    }
+   ]
+  },
+  {
+   "name": "Beyond IaaS, PaaS And SaaS",
+   "kind": "concept",
+   "source": "tr:slide 14",
+   "cards": [
+    {
+     "id": "T14-1",
+     "title": "Beyond the big three",
+     "source": "tr:slide 14",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "SpineFlow"
+     },
+     "purpose": "FaaS, serverless and AI/ML-as-a-Service go further than SaaS: the provider takes on more, the user keeps less.",
+     "kicker": "Beyond The Big Three",
+     "heading": "New Service Models",
+     "lead": "Cloud service models did not stop at IaaS, PaaS and SaaS. Two further models push abstraction higher, changing what the provider manages and what the developer retains",
+     "show": [
+      "Function as a Service (FaaS): runs code per trigger, no visible server",
+      "Serverless: broader term covering FaaS plus managed databases and queues",
+      "AI/ML-as-a-Service: consumes pre-built AI and ML models via API",
+      "Both shift most infrastructure responsibility onto the cloud provider"
+     ],
+     "visual_guidance": "Spectrum diagram: IaaS -> PaaS -> SaaS -> FaaS/Serverless -> AI/ML-as-a-Service, arrow showing rising abstraction and shrinking user responsibility",
+     "must": [
+      "IaaS, PaaS and SaaS are on the arrow from press 1; only the new models are added one per press."
+     ],
+     "play": "The arrow.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. The spectrum IaaS, PaaS, SaaS on one arrow, already known from section 3."
+      },
+      {
+       "screen": "Point 1, <q>Function as a Service (FaaS): runs code per trigger, no visible server</q>, appears, and its stop is added to the end of the arrow on the same press."
+      },
+      {
+       "screen": "Point 2, <q>Serverless: broader term covering FaaS plus managed databases and queues</q>, appears, and its stop is added to the end of the arrow on the same press."
+      },
+      {
+       "screen": "Point 3, <q>AI/ML-as-a-Service: consumes pre-built AI and ML models via API</q>, appears, and its stop is added to the end of the arrow on the same press."
+      },
+      {
+       "screen": "Point 4, <q>Both shift most infrastructure responsibility onto the cloud provider</q>, appears, and the arrow's label <q>rising abstraction, shrinking user responsibility</q> appears."
+      }
+     ],
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Function As A Service And Serverless",
+   "kind": "concept",
+   "source": "tr:slide 15",
+   "cards": [
+    {
+     "id": "T15-1",
+     "title": "FaaS and serverless",
+     "source": "tr:slide 15",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "SpineFlow"
+     },
+     "purpose": "A function runs only when something triggers it, and is billed only for that run.",
+     "kicker": "FaaS And Serverless",
+     "heading": "Pay Per Execution",
+     "lead": "Function as a Service (FaaS) runs a single function only when triggered, removing any need to provision or manage a server",
+     "show": [
+      "Triggers: HTTP request, scheduled timer, queue message, file upload",
+      "Scales automatically from zero to many parallel invocations",
+      "Billed per invocation and execution time, not idle time",
+      "Runs on AWS Lambda; cold start delay if idle first"
+     ],
+     "visual_guidance": "Timeline: idle -> trigger event -> function instantiated -> executes -> torn down, labelled with AWS Lambda",
+     "must": [
+      "The timeline returns to idle at the end: nothing is left running."
+     ],
+     "play": "Timeline design.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. The timeline, empty except <q>idle</q>."
+      },
+      {
+       "screen": "Point 1, <q>Triggers: HTTP request, scheduled timer, queue message, file upload</q>, appears, and <q>trigger event</q> is added to the timeline."
+      },
+      {
+       "screen": "Point 2, <q>Scales automatically from zero to many parallel invocations</q>, appears, and <q>function instantiated</q> and <q>executes</q> are added."
+      },
+      {
+       "screen": "Point 3, <q>Billed per invocation and execution time, not idle time</q>, appears, and <q>torn down</q> is added: the timeline is back to idle."
+      },
+      {
+       "screen": "Point 4, <q>Runs on AWS Lambda; cold start delay if idle first</q>, appears, and the AWS Lambda logo labels the timeline."
+      }
+     ],
+     "press_count": 5
+    },
+    {
+     "id": "T15-AN",
+     "title": "Analogy: A cab for one trip",
+     "source": "tr:slide 15",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "AnalogyMap"
+     },
+     "purpose": "Tie Function as a Service to something the room already knows: a cab for one trip.",
+     "kicker": "FaaS And Serverless",
+     "heading": "A cab for one trip",
+     "analogy": {
+      "familiar": "A cab for one trip",
+      "maps_to": "Function as a Service",
+      "text": "Booking a cab only when travel is needed and paying just for that ride, instead of owning an idle car, mirrors FaaS: code runs only on a trigger and billing counts only execution time"
+     },
+     "visual": "A cab booked for one ride and paid for that ride, beside a car parked unused; on the other side, a function that runs once on a trigger.",
+     "must": [
+      "The concept slide comes first; this card follows it and never replaces it.",
+      "Every matched pair lines up: one familiar part beside the one concept part it stands for."
+     ],
+     "must_not": [
+      "Show the concept side before the familiar side."
+     ],
+     "play": "The drawing of the familiar thing, and how the pairs are linked.",
+     "presses": [
+      {
+       "screen": "The familiar side only: a drawing of a cab for one trip and the sentence <q>Booking a cab only when travel is needed and paying just for that ride, instead of owning an idle car</q>."
+      },
+      {
+       "screen": "The concept side arrives beside it, each part lined up with the part it matches: <q>... mirrors FaaS: code runs only on a trigger and billing counts only execution time</q>."
+      }
+     ],
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "AI/ML-as-a-Service Explained",
+   "kind": "concept",
+   "source": "tr:slide 16",
+   "cards": [
+    {
+     "id": "T16-1",
+     "title": "AI/ML-as-a-Service",
+     "source": "tr:slide 16",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "SpineFlow"
+     },
+     "purpose": "An application gets a prediction by calling a provider's pre-trained model through an API.",
+     "kicker": "AI ML As Service",
+     "heading": "Pre-Built Intelligence APIs",
+     "lead": "AI/ML-as-a-Service (Artificial Intelligence, Machine Learning as a Service) exposes pre-trained vision, language and forecasting models through a plain API call",
+     "show": [
+      "Representative services: Amazon Rekognition, Comprehend (pre-built APIs)",
+      "Provider manages model training, GPUs (Graphics Processing Units) and hosting",
+      "User manages input data and API integration only",
+      "Used in vision, chatbots, fraud and forecasting"
+     ],
+     "visual_guidance": "Icon flow: application -> API call -> pre-trained model service -> prediction returned, labelled Amazon SageMaker / Rekognition",
+     "visual": "The TR guidance flow, labelled Amazon Rekognition and Comprehend, the two services the content names.",
+     "must": [
+      "The model service is labelled with Rekognition and Comprehend only."
+     ],
+     "must_not": [
+      "Label it SageMaker. The guidance names it, but the slide never introduces it (content rule 24)."
+     ],
+     "play": "Flow layout.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. The flow, first stop only: <q>application</q>."
+      },
+      {
+       "screen": "Point 1, <q>Representative services: Amazon Rekognition, Comprehend (pre-built APIs)</q>, appears, and the flow gains <q>API call</q> and <q>pre-trained model service</q>, labelled Rekognition and Comprehend."
+      },
+      {
+       "screen": "Point 2, <q>Provider manages model training, GPUs (Graphics Processing Units) and hosting</q>, appears, and the model service shows what the provider runs."
+      },
+      {
+       "screen": "Point 3, <q>User manages input data and API integration only</q>, appears, and <q>prediction returned</q> completes the flow back to the application."
+      },
+      {
+       "screen": "Point 4, <q>Used in vision, chatbots, fraud and forecasting</q>, appears."
+      }
+     ],
+     "press_count": 5
+    },
+    {
+     "id": "T16-AN",
+     "title": "Analogy: One consultation, no hospital",
+     "source": "tr:slide 16",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "AnalogyMap"
+     },
+     "purpose": "Tie AI/ML-as-a-Service to something the room already knows: one consultation, no hospital.",
+     "kicker": "AI ML As Service",
+     "heading": "One consultation, no hospital",
+     "analogy": {
+      "familiar": "One consultation, no hospital",
+      "maps_to": "AI/ML-as-a-Service",
+      "text": "Consulting a specialist doctor for one diagnosis instead of building a hospital, paying only for that consultation, just as AI/ML-as-a-Service delivers intelligence via API without building the model"
+     },
+     "visual": "A patient seeing one specialist for one diagnosis, beside a hospital that was never built; on the other side, one API call to a model nobody had to train.",
+     "must": [
+      "The concept slide comes first; this card follows it and never replaces it.",
+      "Every matched pair lines up: one familiar part beside the one concept part it stands for."
+     ],
+     "must_not": [
+      "Show the concept side before the familiar side."
+     ],
+     "play": "The drawing of the familiar thing, and how the pairs are linked.",
+     "presses": [
+      {
+       "screen": "The familiar side only: a drawing of one consultation, no hospital and the sentence <q>Consulting a specialist doctor for one diagnosis instead of building a hospital, paying only for that consultation</q>."
+      },
+      {
+       "screen": "The concept side arrives beside it, each part lined up with the part it matches: <q>Just as AI/ML-as-a-Service delivers intelligence via API without building the model</q>."
+      }
+     ],
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Responsibility Boundaries Across Service Models",
+   "kind": "compare",
+   "source": "tr:slide 17",
+   "cards": [
+    {
+     "id": "T17-1",
+     "title": "Who manages what, all five",
+     "source": "tr:slide 17",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "DataTable"
+     },
+     "purpose": "From IaaS to AI/ML-as-a-Service the provider manages more each step, and the user always keeps something.",
+     "kicker": "Full Responsibility Spectrum",
+     "heading": "Provider Vs User",
+     "lead": "Moving from IaaS toward SaaS steadily shifts management from user to provider; FaaS and AI/ML-as-a-Service remove the server concept, but the user still manages function code or input data respectively",
+     "table": {
+      "columns": [
+       "Model",
+       "Provider Manages",
+       "User Manages"
+      ],
+      "rows": [
+       [
+        "IaaS",
+        "Hardware, virtualization, network",
+        "OS, runtime, applications, data"
+       ],
+       [
+        "PaaS",
+        "+ OS, runtime, middleware",
+        "Application code, data"
+       ],
+       [
+        "SaaS",
+        "Entire application stack",
+        "Configuration, user data"
+       ],
+       [
+        "FaaS / Serverless",
+        "Servers, OS, runtime, scaling",
+        "Function code, triggers, logic"
+       ],
+       [
+        "AI/ML-as-a-Service",
+        "Model training, hosting, GPUs",
+        "Input data, API integration"
+       ]
+      ]
+     },
+     "visual_guidance": "Full-width table, one row per model, shading intensity rising left to right to show growing provider responsibility",
+     "must": [
+      "Shading deepens row by row in the same direction as the spectrum on T14-1."
+     ],
+     "play": "Shading within the template palette.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead and the header row."
+      },
+      {
+       "screen": "Row <q>IaaS</q> appears."
+      },
+      {
+       "screen": "Row <q>PaaS</q> appears."
+      },
+      {
+       "screen": "Row <q>SaaS</q> appears."
+      },
+      {
+       "screen": "Row <q>FaaS / Serverless</q> appears."
+      },
+      {
+       "screen": "Row <q>AI/ML-as-a-Service</q> appears."
+      }
+     ],
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Section 5",
+   "kind": "divider",
+   "source": "tr:section 5",
+   "cards": [
+    {
+     "id": "D5",
+     "title": "Section 5",
+     "source": "tr:section 5",
+     "kit": {
+      "slide": "SectionBreakerSlide"
+     },
+     "purpose": "Mark the start of concept 5.",
+     "heading": "Cloud Economics & Providers",
+     "show": [
+      "5. Cloud Economics & Providers: CapEx vs OpEx; total cost of ownership (TCO); pricing: on-demand, committed use & spot; AWS, Azure, GCP & Indian providers"
+     ],
+     "play": "Keep the kit divider look.",
+     "presses": [
+      {
+       "screen": "The divider with the section title."
+      }
+     ],
+     "press_count": 1
+    }
+   ]
+  },
+  {
+   "name": "Cloud Economics Landscape",
+   "kind": "concept",
+   "source": "tr:slide 18",
+   "cards": [
+    {
+     "id": "T18-1",
+     "title": "Cloud economics map",
+     "source": "tr:slide 18",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "PeerCards"
+     },
+     "purpose": "Four building blocks of cloud economics, each taken in turn in this section.",
+     "kicker": "Cloud Economics Map",
+     "heading": "Costs And Providers",
+     "lead": "Cloud adoption decisions turn on how spending is structured and who supplies the infrastructure",
+     "show": [
+      "CapEx vs OpEx: how spend is classified",
+      "TCO: true multi-year cost of a choice",
+      "Pricing models: on-demand, committed use, spot",
+      "Providers: global hyperscalers and Indian regional players"
+     ],
+     "visual_guidance": "Four-quadrant map, one label per quadrant: CapEx/OpEx, TCO, Pricing Models, Providers",
+     "play": "Quadrant styling.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. An empty four-quadrant grid."
+      },
+      {
+       "screen": "Point 1, <q>CapEx vs OpEx: how spend is classified</q>, fills its quadrant."
+      },
+      {
+       "screen": "Point 2, <q>TCO: true multi-year cost of a choice</q>, fills its quadrant."
+      },
+      {
+       "screen": "Point 3, <q>Pricing models: on-demand, committed use, spot</q>, fills its quadrant."
+      },
+      {
+       "screen": "Point 4, <q>Providers: global hyperscalers and Indian regional players</q>, fills its quadrant."
+      }
+     ],
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "CapEx vs OpEx: The Accounting View",
+   "kind": "concept",
+   "source": "tr:slide 19",
+   "cards": [
+    {
+     "id": "T19-1",
+     "title": "CapEx and OpEx",
+     "source": "tr:slide 19",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "SplitCompare"
+     },
+     "purpose": "CapEx goes on the balance sheet and is spread over years; OpEx is an expense in the same period.",
+     "kicker": "CapEx vs OpEx",
+     "heading": "Balance Sheet Impact",
+     "lead": "Cloud does not just change how much is paid; it changes which financial statement absorbs the cost, reshaping approvals and tax treatment",
+     "show": [
+      "CapEx: capitalised, depreciated over asset life, sits on balance sheet",
+      "OpEx: expensed immediately, hits the income statement same period"
+     ],
+     "visual_guidance": "Split panel: balance sheet with a depreciation curve versus income statement with a flat recurring expense line",
+     "play": "The curve and the line.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. The split panel's two headings: Balance sheet, Income statement."
+      },
+      {
+       "screen": "<q>CapEx: capitalised, depreciated over asset life, sits on balance sheet</q> appears under Balance sheet, with the depreciation curve."
+      },
+      {
+       "screen": "<q>OpEx: expensed immediately, hits the income statement same period</q> appears under Income statement, with the flat recurring line."
+      }
+     ],
+     "press_count": 3
+    },
+    {
+     "id": "T19-2",
+     "title": "Approvals and tax",
+     "source": "tr:slide 19",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "DataTable"
+     },
+     "purpose": "The two kinds of spend are approved by different people and taxed at different times.",
+     "kicker": "CapEx vs OpEx",
+     "heading": "Balance Sheet Impact",
+     "show": [
+      "CapEx typically needs board-level capital approval",
+      "OpEx approval sits within departmental budgets",
+      "Depreciation deductions (CapEx) shift tax timing versus OpEx's immediate deduction",
+      "AWS Cost and Usage Report classifies spend for finance systems"
+     ],
+     "must": [
+      "Approval is one row with both sides, so the contrast arrives whole."
+     ],
+     "presses": [
+      {
+       "screen": "Kicker, heading."
+      },
+      {
+       "screen": "<q>CapEx typically needs board-level capital approval</q> and <q>OpEx approval sits within departmental budgets</q> appear together as one approval row, CapEx beside OpEx."
+      },
+      {
+       "screen": "<q>Depreciation deductions (CapEx) shift tax timing versus OpEx's immediate deduction</q> appears as the tax row."
+      },
+      {
+       "screen": "<q>AWS Cost and Usage Report classifies spend for finance systems</q> appears last, with the AWS logo."
+      }
+     ],
+     "press_count": 4
+    },
+    {
+     "id": "T19-AN",
+     "title": "Analogy: A house on a loan, or rent",
+     "source": "tr:slide 19",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "AnalogyMap"
+     },
+     "purpose": "Tie CapEx and OpEx to something the room already knows: a house on a loan, or rent.",
+     "kicker": "CapEx vs OpEx",
+     "heading": "A house on a loan, or rent",
+     "analogy": {
+      "familiar": "A house on a loan, or rent",
+      "maps_to": "CapEx and OpEx",
+      "text": "Buying a house needs a large loan and years of EMIs recorded as an asset, while renting is a monthly expense with nothing recorded, just as CapEx locks value on the balance sheet while OpEx flows straight through the income statement"
+     },
+     "visual": "A house bought on a loan, recorded as an asset with years of EMIs; beside it, a monthly rent with nothing recorded.",
+     "must": [
+      "The concept slide comes first; this card follows it and never replaces it.",
+      "Every matched pair lines up: one familiar part beside the one concept part it stands for."
+     ],
+     "must_not": [
+      "Show the concept side before the familiar side."
+     ],
+     "play": "The drawing of the familiar thing, and how the pairs are linked.",
+     "presses": [
+      {
+       "screen": "The familiar side only: a drawing of a house on a loan, or rent and the sentence <q>Buying a house needs a large loan and years of EMIs recorded as an asset, while renting is a monthly expense with nothing recorded</q>."
+      },
+      {
+       "screen": "The concept side arrives beside it, each part lined up with the part it matches: <q>Just as CapEx locks value on the balance sheet while OpEx flows straight through the income statement</q>."
+      }
+     ],
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Total Cost of Ownership Defined",
+   "kind": "concept",
+   "source": "tr:slide 20",
+   "cards": [
+    {
+     "id": "T20-1",
+     "title": "What TCO adds up",
+     "source": "tr:slide 20",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "LayerAnatomy"
+     },
+     "purpose": "TCO is every cost of a workload over its life, and the price tag is only the bottom layer.",
+     "kicker": "Total Cost Ownership",
+     "heading": "Beyond The Price Tag",
+     "lead": "Total cost of ownership (TCO) totals every direct and indirect cost of running a workload across its life, not only the sticker price",
+     "show": [
+      "Direct costs: compute, storage, licensing, network transfer",
+      "Indirect costs: staffing, training, downtime, migration effort",
+      "On-premise adds power, cooling, floor space, hardware refresh"
+     ],
+     "visual_guidance": "Layered bar: sticker price at the base, staffing/power/downtime stacked above it to show true TCO",
+     "must": [
+      "The bar only ever grows: each press adds a layer on top."
+     ],
+     "play": "The bar.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. One bar: the sticker price layer alone."
+      },
+      {
+       "screen": "<q>Direct costs: compute, storage, licensing, network transfer</q> appears and its layer stacks onto the bar."
+      },
+      {
+       "screen": "<q>Indirect costs: staffing, training, downtime, migration effort</q> appears and its layer stacks onto the bar."
+      },
+      {
+       "screen": "<q>On-premise adds power, cooling, floor space, hardware refresh</q> appears and its layer stacks onto the bar."
+      }
+     ],
+     "press_count": 4
+    },
+    {
+     "id": "T20-2",
+     "title": "Tools that estimate it",
+     "source": "tr:slide 20",
+     "kit": {
+      "slide": "ContentSlide"
+     },
+     "purpose": "AWS gives two tools: one estimates cloud cost, one builds the on-premise vs cloud case.",
+     "kicker": "Total Cost Ownership",
+     "heading": "Beyond The Price Tag",
+     "show": [
+      "AWS Pricing Calculator estimates cloud cost",
+      "Migration Evaluator builds the on-premise vs cloud business case"
+     ],
+     "presses": [
+      {
+       "screen": "Kicker, heading. <q>AWS Pricing Calculator estimates cloud cost</q> appears with the AWS logo."
+      },
+      {
+       "screen": "<q>Migration Evaluator builds the on-premise vs cloud business case</q> appears."
+      }
+     ],
+     "press_count": 2
+    },
+    {
+     "id": "T20-AN",
+     "title": "Analogy: A phone's price tag",
+     "source": "tr:slide 20",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "AnalogyMap"
+     },
+     "purpose": "Tie Server TCO to something the room already knows: a phone's price tag.",
+     "kicker": "Total Cost Ownership",
+     "heading": "A phone's price tag",
+     "analogy": {
+      "familiar": "A phone's price tag",
+      "maps_to": "Server TCO",
+      "text": "A smartphone's price tag ignores the data plan, repairs and accessories bought over its life, just as a server's purchase price ignores the staffing, power and downtime that TCO adds back in"
+     },
+     "visual": "A phone with its price tag, and the data plan, repairs and accessories stacking above it; beside it, a server with staffing, power and downtime stacking above its price.",
+     "must": [
+      "The concept slide comes first; this card follows it and never replaces it.",
+      "Every matched pair lines up: one familiar part beside the one concept part it stands for."
+     ],
+     "must_not": [
+      "Show the concept side before the familiar side."
+     ],
+     "play": "The drawing of the familiar thing, and how the pairs are linked.",
+     "presses": [
+      {
+       "screen": "The familiar side only: a drawing of a phone's price tag and the sentence <q>A smartphone's price tag ignores the data plan, repairs and accessories bought over its life</q>."
+      },
+      {
+       "screen": "The concept side arrives beside it, each part lined up with the part it matches: <q>Just as a server's purchase price ignores the staffing, power and downtime that TCO adds back in</q>."
+      }
+     ],
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Pricing Models: On-Demand, Committed & Spot",
+   "kind": "concept",
+   "source": "tr:slide 21",
+   "cards": [
+    {
+     "id": "T21-1",
+     "title": "Three pricing models",
+     "source": "tr:slide 21",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "PeerCards"
+     },
+     "purpose": "Buyers trade commitment for a lower price: on-demand, committed use, spot.",
+     "kicker": "Three Pricing Models",
+     "heading": "On-Demand To Spot",
+     "lead": "Providers meter usage but let buyers trade commitment for discount; three payment patterns cover most cloud spend",
+     "show": [
+      "On-demand: metered pay-as-used rate, zero commitment",
+      "Committed use: one to three-year term for lower fixed rate",
+      "Spot: spare capacity at a steep discount; can be reclaimed at short notice",
+      "Trade-off across all three: flexibility versus price"
+     ],
+     "visual_guidance": "Three tickets side by side, labelled On-Demand, Committed Use, Spot, with a price arrow decreasing left to right",
+     "play": "Ticket design.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. Three empty ticket outlines and a price arrow falling left to right."
+      },
+      {
+       "screen": "Point 1, <q>On-demand: metered pay-as-used rate, zero commitment</q>, fills its ticket."
+      },
+      {
+       "screen": "Point 2, <q>Committed use: one to three-year term for lower fixed rate</q>, fills its ticket."
+      },
+      {
+       "screen": "Point 3, <q>Spot: spare capacity at a steep discount; can be reclaimed at short notice</q>, fills its ticket."
+      },
+      {
+       "screen": "<q>Trade-off across all three: flexibility versus price</q> appears under all three."
+      }
+     ],
+     "press_count": 5
+    },
+    {
+     "id": "T21-AN",
+     "title": "Analogy: Three kinds of train ticket",
+     "source": "tr:slide 21",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "AnalogyMap"
+     },
+     "purpose": "Tie On-demand, committed use, spot to something the room already knows: three kinds of train ticket.",
+     "kicker": "Three Pricing Models",
+     "heading": "Three kinds of train ticket",
+     "analogy": {
+      "familiar": "Three kinds of train ticket",
+      "maps_to": "On-demand, committed use, spot",
+      "text": "A general train ticket costs full fare and needs no planning, a season pass costs less for a fixed daily route, and a standby ticket is cheapest but the seat can be given away, just as on-demand, committed use and spot trade flexibility for price"
+     },
+     "visual": "Three train tickets: a general ticket, a season pass, a standby ticket; each lined up with its pricing model.",
+     "must": [
+      "The concept slide comes first; this card follows it and never replaces it.",
+      "Every matched pair lines up: one familiar part beside the one concept part it stands for."
+     ],
+     "must_not": [
+      "Show the concept side before the familiar side."
+     ],
+     "play": "The drawing of the familiar thing, and how the pairs are linked.",
+     "presses": [
+      {
+       "screen": "The familiar side only: a drawing of three kinds of train ticket and the sentence <q>A general train ticket costs full fare and needs no planning, a season pass costs less for a fixed daily route, and a standby ticket is cheapest but the seat can be given away</q>."
+      },
+      {
+       "screen": "The concept side arrives beside it, each part lined up with the part it matches: <q>Just as on-demand, committed use and spot trade flexibility for price</q>."
+      }
+     ],
+     "press_count": 2
+    }
+   ]
+  },
+  {
+   "name": "Comparing Pricing Models",
+   "kind": "compare",
+   "source": "tr:slide 22",
+   "cards": [
+    {
+     "id": "T22-1",
+     "title": "Pricing models compared",
+     "source": "tr:slide 22",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "DataTable"
+     },
+     "purpose": "Each pricing model fits a different shape of workload.",
+     "kicker": "Pricing Models Compared",
+     "heading": "Discount And Risk",
+     "lead": "Each pricing model suits a different workload shape; committed-use discounts deepen with longer terms and more upfront payment",
+     "table": {
+      "columns": [
+       "Model",
+       "Commitment",
+       "Typical Discount",
+       "Key Risk",
+       "Best For"
+      ],
+      "rows": [
+       [
+        "On-Demand",
+        "None",
+        "Baseline rate",
+        "Highest unit price; cost runs on if left running",
+        "Unpredictable, short-lived workloads"
+       ],
+       [
+        "Committed Use",
+        "1 or 3 years",
+        "Up to ~70% off on-demand",
+        "Upfront lock-in, must forecast usage",
+        "Steady, predictable baseline load"
+       ],
+       [
+        "Spot",
+        "None",
+        "Up to ~90% off on-demand",
+        "Reclaimed with short notice (~2 min AWS, ~30 sec Azure/GCP)",
+        "Fault-tolerant batch, stateless jobs"
+       ]
+      ]
+     },
+     "visual_guidance": "Three-column bar chart showing discount depth against flexibility surrendered for each model",
+     "visual": "Use the table as the TR gives it. The TR also asks for a bar chart of discount against flexibility; if it is drawn, it is a second card, never beside a five-column table.",
+     "must": [
+      "Every number is the TR's, with its \"~\" and \"Up to\"."
+     ],
+     "play": "Whether a bar-chart card follows.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead and the header row."
+      },
+      {
+       "screen": "Row <q>On-Demand</q> appears."
+      },
+      {
+       "screen": "Row <q>Committed Use</q> appears."
+      },
+      {
+       "screen": "Row <q>Spot</q> appears."
+      }
+     ],
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Global Cloud Providers Compared",
+   "kind": "compare",
+   "source": "tr:slide 23",
+   "cards": [
+    {
+     "id": "T23-1",
+     "title": "Global providers",
+     "source": "tr:slide 23",
+     "kit": {
+      "slide": "ContentSlide",
+      "figure": "DataTable"
+     },
+     "purpose": "AWS, Azure and Google Cloud each lead in something different.",
+     "kicker": "Global Cloud Providers",
+     "heading": "AWS Azure GCP",
+     "lead": "Three hyperscalers dominate global cloud spend, each with a different platform strength that shapes provider choice",
+     "table": {
+      "columns": [
+       "Provider",
+       "Parent Company",
+       "Notable Strength"
+      ],
+      "rows": [
+       [
+        "AWS",
+        "Amazon",
+        "Broadest service catalog, largest market share"
+       ],
+       [
+        "Azure",
+        "Microsoft",
+        "Strong enterprise and hybrid integration (Active Directory)"
+       ],
+       [
+        "Google Cloud (GCP)",
+        "Google",
+        "Data analytics, AI/ML tooling strength"
+       ]
+      ]
+     },
+     "visual_guidance": "Three logos in a row, one strength keyword under each",
+     "must": [
+      "Each provider carries its logo (content rule 12)."
+     ],
+     "play": "Logos in the table, or logos with one keyword each as the TR guidance says.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead and the header row."
+      },
+      {
+       "screen": "Row <q>AWS</q> appears with its logo."
+      },
+      {
+       "screen": "Row <q>Azure</q> appears with its logo."
+      },
+      {
+       "screen": "Row <q>Google Cloud (GCP)</q> appears with its logo."
+      }
+     ],
+     "press_count": 4
+    }
+   ]
+  },
+  {
+   "name": "Indian Cloud Providers & Data Residency",
+   "kind": "concept",
+   "source": "tr:slide 24",
+   "cards": [
+    {
+     "id": "T24-1",
+     "title": "Indian providers",
+     "source": "tr:slide 24",
+     "kit": {
+      "slide": "ContentRightImageSlide"
+     },
+     "purpose": "Indian providers compete on data kept in India, low latency for local users, and billing in rupees.",
+     "kicker": "Indian Cloud Providers",
+     "heading": "Regional Alternatives",
+     "lead": "Alongside global hyperscalers, Indian providers compete on data residency, latency for local users, and rupee-denominated billing",
+     "show": [
+      "CtrlS, Yotta, E2E Networks: private data-centre players",
+      "Government's GI Cloud (MeghRaj) hosts public-sector workloads",
+      "BFSI and government workloads often mandate in-country storage",
+      "Regional providers can undercut hyperscaler pricing for local traffic"
+     ],
+     "visual_guidance": "Map of India with data-centre pins beside the hyperscaler logos for scale comparison",
+     "visual": "The TR guidance: a map of India with data-centre pins. Only pin the providers the points name (CtrlS, Yotta, E2E Networks, MeghRaj).",
+     "must": [
+      "A pin is placed only for a provider the TR names."
+     ],
+     "must_not": [
+      "Invent data-centre locations. If no source is at hand, use labelled markers in a row beside the map instead of pins on it."
+     ],
+     "play": "The map.",
+     "presses": [
+      {
+       "screen": "Kicker, heading, lead. A map of India, empty."
+      },
+      {
+       "screen": "Point 1, <q>CtrlS, Yotta, E2E Networks: private data-centre players</q>, appears, and its three providers are marked on the same press."
+      },
+      {
+       "screen": "Point 2, <q>Government's GI Cloud (MeghRaj) hosts public-sector workloads</q>, appears, and MeghRaj is marked."
+      },
+      {
+       "screen": "Point 3, <q>BFSI and government workloads often mandate in-country storage</q>, appears."
+      },
+      {
+       "screen": "Point 4, <q>Regional providers can undercut hyperscaler pricing for local traffic</q>, appears."
+      }
+     ],
+     "press_count": 5
+    }
+   ]
+  },
+  {
+   "name": "Quiz",
+   "kind": "quiz",
+   "source": "spine:quiz",
+   "cards": [
+    {
+     "id": "S-QUIZ",
+     "title": "Quiz Time",
+     "source": "spine:quiz",
+     "kit": {
+      "slide": "QuizTimeSlide"
+     },
+     "purpose": "Announce the quiz.",
+     "must_not": [
+      "Add any question. The TR has none, and this frame says Quiz Time! and nothing else."
+     ],
+     "presses": [
+      {
+       "screen": "The kit quiz frame: Quiz Time!"
+      }
+     ],
+     "press_count": 1
+    }
+   ]
+  },
+  {
+   "name": "Key Takeaways",
+   "kind": "close",
+   "source": "tr:takeaways",
+   "cards": [
+    {
+     "id": "S-TAKEAWAYS",
+     "title": "Key Takeaways",
+     "source": "tr:takeaways",
+     "kit": {
+      "slide": "KeyTakeawaysSlide"
+     },
+     "purpose": "Restate the five concepts.",
+     "heading": "Key Takeaways",
+     "show": [
+      "1. Cloud Deployment Models: Public cloud; private cloud: on-premise vs hosted; hybrid & cloud bursting; community cloud",
+      "2. Multi-Cloud: Motivations: resilience, negotiation & regulation; operational cost of multiple platforms",
+      "3. Service Models: IaaS, PaaS & SaaS: what each provides & abstracts; representative services",
+      "4. Beyond the Big Three: Function as a Service (FaaS) & serverless; AI/ML-as-a-Service; responsibility boundaries across models",
+      "5. Cloud Economics & Providers: CapEx vs OpEx; total cost of ownership (TCO); pricing: on-demand, committed use & spot; AWS, Azure, GCP & Indian providers"
+     ],
+     "presses": [
+      {
+       "screen": "The heading."
+      },
+      {
+       "screen": "Takeaway 1 appears."
+      },
+      {
+       "screen": "Takeaway 2 appears."
+      },
+      {
+       "screen": "Takeaway 3 appears."
+      },
+      {
+       "screen": "Takeaway 4 appears."
+      },
+      {
+       "screen": "Takeaway 5 appears."
+      }
+     ],
+     "press_count": 6
+    }
+   ]
+  },
+  {
+   "name": "Next session",
+   "kind": "close",
+   "source": "tr:next",
+   "cards": [
+    {
+     "id": "S-NEXT",
+     "title": "Next session",
+     "source": "tr:next",
+     "kit": {
+      "slide": "NextSessionSlide"
+     },
+     "purpose": "Name the next session.",
+     "show": [
+      "Virtualization & Hypervisors"
+     ],
+     "presses": [
+      {
+       "screen": "The next-session frame."
+      }
+     ],
+     "press_count": 1
+    }
+   ]
+  },
+  {
+   "name": "Thank you",
+   "kind": "close",
+   "source": "spine:thank-you",
+   "cards": [
+    {
+     "id": "S-THANKS",
+     "title": "Thank You",
+     "source": "spine:thank-you",
+     "kit": {
+      "slide": "ThankYouSlide"
+     },
+     "purpose": "Close.",
+     "presses": [
+      {
+       "screen": "The kit Thank You frame."
+      }
+     ],
+     "press_count": 1
+    }
+   ]
+  },
+  {
+   "name": "All the best",
+   "kind": "close",
+   "source": "spine:all-the-best",
+   "cards": [
+    {
+     "id": "S-BEST",
+     "title": "All the Best",
+     "source": "spine:all-the-best",
+     "kit": {
+      "slide": "ThankYouSlide"
+     },
+     "purpose": "Send-off.",
+     "presses": [
+      {
+       "screen": "The kit ThankYouSlide with title All the Best."
+      }
+     ],
+     "press_count": 1
+    }
+   ]
+  }
+ ]
+}

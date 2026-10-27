@@ -72,6 +72,10 @@ skills-lock.json             the pin file for the above
 .claude/
   skills/slide-content-rules/SKILL.md    hard content rules — see next section
   skills/generate-slides/SKILL.md        the whole slide-generation procedure
+  skills/tr-to-spec/                     TR doc -> session spec JSON, the hand-off
+                                         a PDA builds the deck from. SKILL.md is
+                                         the procedure, PDA_GUIDE.md the reader's
+                                         side, scripts/ extract and check
   skills/prog-lesson-plan/               VENDORED, verbatim. The pedagogy team's
                                          own lesson-plan system: 10 references,
                                          9 scripts, and the reference
@@ -175,6 +179,10 @@ Outputs/another_course/session_plans/intro-to-testing/plan.md
 own project folder, none loose at the course root, none in `workflow/`.
 `<session_name>` matches the session project directory when one exists, so the
 plan and the deck it describes are findable from each other by name alone.
+
+**A session spec** (`spec.json`, made from a TR doc by the `tr-to-spec` skill)
+lives in the same folder, `Outputs/<course>/session_plans/session_<n>/`, beside
+the `tr.docx` it was made from. It carries no speaker notes, ever.
 
 The folder is per-session so everything about that plan sits together:
 `plan.md` is the plan itself, and revisions (`plan.rev3.md`), capture notes

@@ -128,6 +128,8 @@ shipped with that exact mistake.
 | A flow beat is real interfaces, not text cards; code labels sit on the lines they name | same, R5c |
 | Kit changes propagate by running `sync-kit.mjs`, never automatically | [`slide-kit/slide-template/KIT.md`](slide-kit/slide-template/KIT.md) |
 | `slideCount` in `deck.config.json` stays current, or sweeps skip the tail | same |
+| A session spec (TR doc to JSON) never carries speaker notes: not quoted, not paraphrased, not used as a hint, and no `say` or `room` field. `check_spec.py` must print CLEAN | [`.claude/skills/tr-to-spec/SKILL.md`](.claude/skills/tr-to-spec/SKILL.md) |
+| A session spec sticks to the TR doc: every word on a slide comes from the TR, and no fact, example, number or question is added. The spec adds direction only | same |
 | Every deck's slide menu ("Jump to a slide") carries the Auto-play On/Off option: On when the deck first loads, kept per deck across slides and reloads, immediate on the current slide, no setting on a slide with the menu closed; which slides auto-play is decided per deck, never copied from another | [`slide-kit/workflow/SLIDE_WORKFLOW.md`](slide-kit/workflow/SLIDE_WORKFLOW.md) Stage 5 |
 
 ## Where things live
@@ -137,6 +139,7 @@ shipped with that exact mistake.
 | Assets are fetched into `slide-kit/assets/` first, then copied into a session | [`slide-kit/assets/README.md`](slide-kit/assets/README.md) |
 | Approved slide types, figures and transitions are registered | [`slide-kit/slide-types/README.md`](slide-kit/slide-types/README.md) |
 | A course is a root-level folder; nothing in `slide-kit/` names a course | [`CLAUDE.md`](CLAUDE.md) |
+| Every Cloud Computing session goes in `Outputs/cloud_computing/session_plans/session_<n>/`. The older `Outputs/cloudcomputing/` is left untouched and gets nothing new | [`.claude/skills/tr-to-spec/SKILL.md`](.claude/skills/tr-to-spec/SKILL.md), section 1 |
 | `.gitignore` patterns stay `**/`-prefixed or unanchored, never path-anchored | same |
 | Generators are tracked, artefacts are not — except the built `dist-single/*.html` decks | same |
 | The single-file build does not minify CSS: esbuild's minifier emits an invalid `@media(hover:hover)and(...)` | [`vite.singlefile.config.ts`](slide-kit/slide-template/vite.singlefile.config.ts) |
