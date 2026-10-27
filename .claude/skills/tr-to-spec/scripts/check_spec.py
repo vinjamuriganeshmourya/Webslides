@@ -3,7 +3,7 @@
 
     python3 -I check_spec.py <session_plans/<session>/>
 
-Reads spec.json and tr.docx from that folder. Prints one line per check and
+Reads spec.json, spec.html and tr.docx from that folder. Prints one line per check and
 exits 1 if any fails. A spec is not handed to a PDA until this prints CLEAN.
 
 What it holds the spec to:
@@ -16,8 +16,10 @@ What it holds the spec to:
             agenda and takeaway item appears in a card's copy fields (kicker,
             heading, lead, show, table, code, analogy, visual_guidance), after the edits
             the spec itself declares in meta.tr_edits
-  slides    every TR slide is the source of at least one card
-  images    every TR image is placed on a card or listed as not used
+  slides    every TR slide, and every unnumbered block the TR heads like
+            one (tr:extra <k>), is the source of at least one card
+  images    every TR image is embedded in spec.json exactly as in the TR,
+            and placed on a card or listed as not used; spec.html exists
   dashes    no em dash or spaced en dash anywhere
   spine     welcome, recap, agenda, quiz, takeaways, thank you, all the best
 """
@@ -45,7 +47,8 @@ def norm(s):
 def strings(o, path=''):
     """Every string in the spec, with the key path it sits under."""
     if isinstance(o, str):
-        yield path, o
+        if not o.startswith('data:'):    # an embedded image is not text
+            yield path, o
     elif isinstance(o, dict):
         for k, v in o.items():
             yield from strings(v, f'{path}.{k}')
@@ -76,8 +79,11 @@ def tr_texts(tr):
         yield 'next session', tr['next_session']
     for sec in tr['sections']:
         yield f"section {sec['number']}", sec['title']
-        for s in sec['slides']:
-            w = f"slide {s['number']}"
+    for s in [s for sec in tr['sections'] for s in sec['slides']] + tr.get('extras', []):
+        if True:
+            w = f"slide {s['number']}" if s.get('number') else f"extra {s['extra']}"
+            if not s.get('number'):
+                yield w, s['tr_title']
             for f in ('heading', 'subheading', 'analogy', 'visual_guidance'):
                 if s.get(f):
                     yield f'{w} {f}', s[f]
@@ -172,20 +178,27 @@ def main(folder):
     sourced = set()
     for b in spec.get('beats', []):
         for c in b.get('cards', []):
-            for m in re.finditer(r'tr:slide (\d+)', str(c.get('source', ''))):
-                sourced.add(int(m.group(1)))
-    want = {s['number'] for sec in tr['sections'] for s in sec['slides']}
-    check('slides', [f'TR slide {n} is the source of no card' for n in sorted(want - sourced)])
+            for m in re.finditer(r'tr:(slide|extra) (\d+)', str(c.get('source', ''))):
+                sourced.add((m.group(1), int(m.group(2))))
+    want = {('slide', s['number']) for sec in tr['sections'] for s in sec['slides']}
+    want |= {('extra', s['extra']) for s in tr.get('extras', [])}
+    check('slides', [f'TR {k} {n} is the source of no card' for k, n in sorted(want - sourced)])
 
-    # images
-    on_disk = {f'tr_images/{p.name}' for p in (folder / 'tr_images').glob('*')} if (folder / 'tr_images').exists() else set()
-    listed = {i.get('file') for i in spec.get('meta', {}).get('tr_images', [])}
-    probs = [f'{f} is not in meta.tr_images' for f in sorted(on_disk - listed)]
-    for i in spec.get('meta', {}).get('tr_images', []):
+    # images: every TR image is in meta.tr_images, embedded byte for byte
+    # (render_spec.py), and placed on a card unless marked not-used
+    from render_spec import tr_images as docx_images
+    want_imgs = docx_images(folder / 'tr.docx')
+    entries = {i.get('file'): i for i in spec.get('meta', {}).get('tr_images', [])}
+    probs = [f'{f} is not in meta.tr_images' for f in sorted(set(want_imgs) - set(entries))]
+    for f, i in entries.items():
         if i.get('use') not in ('as-is', 'redraw', 'not-used'):
-            probs.append(f'{i.get("file")}: use must be as-is, redraw or not-used')
-        if i.get('use') != 'not-used' and not any(i.get('file') in s for _, s in strings(spec.get('beats', []))):
-            probs.append(f'{i.get("file")} is marked {i.get("use")} but no card names it')
+            probs.append(f'{f}: use must be as-is, redraw or not-used')
+        if f in want_imgs and i.get('data') != want_imgs[f]:
+            probs.append(f'{f} is not embedded, or differs from the TR: run render_spec.py')
+        if i.get('use') != 'not-used' and not any(f in s for _, s in strings(spec.get('beats', []))):
+            probs.append(f'{f} is marked {i.get("use")} but no card names it')
+    if not (folder / 'spec.html').exists():
+        probs.append('spec.html is missing: run render_spec.py')
     check('images', probs)
 
     # dashes

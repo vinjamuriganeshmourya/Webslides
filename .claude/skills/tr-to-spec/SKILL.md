@@ -36,7 +36,10 @@ said to ignore them "at all the places".
    kit component, what must not happen), never new content. A fact, example,
    question or number the TR does not have does not appear.
 
-The spec is **JSON only**. No reading page, no HTML view.
+**Every session gets two files, both self-contained** (user, 2026-10-27):
+`spec.json` for tools and `spec.html` for the PDA to read. The TR's own images
+are **inside both**, never in a loose folder beside them: a PDA who is sent two
+files has everything. `render_spec.py` makes the page and embeds the images.
 
 ---
 
@@ -44,10 +47,10 @@ The spec is **JSON only**. No reading page, no HTML view.
 
 ```
 Outputs/<course>/session_plans/session_<n>/
-  tr.docx        the TR exactly as received (the checker reads it)
+  spec.json      DELIVERABLE 1: the spec, TR images embedded (meta.tr_images[].data)
+  spec.html      DELIVERABLE 2: the same spec as a page a PDA reads, images in place
+  tr.docx        the TR exactly as received (render and checker read it)
   tr.json        the TR extracted, speaker notes cut. Generated, re-runnable
-  tr_images/     the TR's own images, named slide-NN-k.png
-  spec.json      THE DELIVERABLE
 ```
 
 A course folder name is lower case with underscores (`cloud_computing`); a
@@ -66,12 +69,15 @@ there yet (repo `CLAUDE.md`, "Starting a new course").
 ```bash
 S=Outputs/<course>/session_plans/session_<n>
 mkdir -p $S && cp "<the TR>.docx" $S/tr.docx
-python3 -I .claude/skills/tr-to-spec/scripts/extract_tr.py $S/tr.docx $S
-# read $S/tr.json and every image in $S/tr_images, then write $S/spec.json
+python3 -I .claude/skills/tr-to-spec/scripts/extract_tr.py $S/tr.docx $S <scratchpad>
+# read $S/tr.json and every image in <scratchpad>/tr_images, then write $S/spec.json
+python3 -I .claude/skills/tr-to-spec/scripts/render_spec.py $S    # embeds images, writes spec.html
 python3 -I .claude/skills/tr-to-spec/scripts/check_spec.py $S     # must print CLEAN
 ```
 
-1. **Extract.** If the extractor reports items in `loose`, or the slide count
+1. **Extract.** Images go to the scratchpad, for reading only. A heading the
+   TR does not number ("Heads-Up: ...") becomes `tr['extras']`, and its card's
+   source is `tr:extra <k>`. If the extractor reports items in `loose`, or the slide count
    does not match the TR's own "Slide N" headings, read the TR's text and fix
    the extractor before going on. Never hand-copy around it.
 2. **Read every TR image.** Open each one. Decide `as-is`, `redraw` or
@@ -80,11 +86,14 @@ python3 -I .claude/skills/tr-to-spec/scripts/check_spec.py $S     # must print C
    Write it with a short builder script in the scratchpad that pulls every
    TR string out of `tr.json` by slide and position, and authors only the
    direction fields. Retyping TR text by hand is how a word drifts.
-4. **Check.** Fix the spec until `check_spec.py` prints CLEAN. A coverage
+4. **Render.** `render_spec.py` reads the images out of `tr.docx`, embeds them
+   in `spec.json`, and writes `spec.html`. Re-run it after every change to
+   `spec.json`. Open the page and look at it (content rule 10).
+5. **Check.** Fix the spec until `check_spec.py` prints CLEAN. A coverage
    failure means a TR line is missing: put it on a card, or, if the TR line is
    wrong, declare the change in `meta.tr_edits` and `meta.defects`. Never
    weaken the checker to pass.
-5. **Report** to the user: cards per section, every defect found in the TR,
+6. **Report** to the user: cards per section, every defect found in the TR,
    and every `tr_edits` entry, so they can push the fix back to the TR author.
 
 ---
@@ -108,7 +117,8 @@ repo read it (`scripts/build-spec-data.mjs`, `spec-check.mjs`):
     "topics": ["..."],
     "tr_coverage": [{"tr_slide": 3, "cards": ["T03-1", "T03-2", "T03-AN"]}],
     "tr_images": [{"file": "tr_images/slide-03-1.png", "tr_slide": 3,
-                   "shows": "...", "use": "redraw", "why": "..."}],
+                   "shows": "...", "use": "redraw", "why": "...",
+                   "data": "data:image/png;base64,..."}],   // added by render_spec.py
     "tr_edits": [{"tr": "exact TR text", "spec": "what the spec says instead", "why": "..."}],
     "dropped": [["what", "why"]],     // e.g. the speaker notes, by count, never by text
     "defects": [["where in the TR", "the problem", "what the spec does about it"]],
@@ -141,7 +151,7 @@ A **card** is one screen:
 | `table` | `{"columns": [...], "rows": [[...]]}` | exact words, every cell |
 | `code` | `[{"location": "...", "src": "...", "output": "..."}]` | exact, from the TR only |
 | `analogy` | `{"familiar": "...", "maps_to": "...", "text": "..."}`: `text` is the TR analogy; `familiar` and `maps_to` are short labels lifted from its words | |
-| `image` | `{"file": "tr_images/slide-03-1.png", "use": "redraw"}` | section 6 |
+| `image` | `{"file": "tr_images/slide-03-1.png", "use": "redraw", "crop": "..."}`. `file` names the image; its bytes are in `meta.tr_images` | section 6 |
 | `visual_guidance` | the TR's own Visual Guidance, verbatim | only on the card it fits |
 | `visual` | what to draw, in our words, where the TR's guidance needs adapting or is missing | direction, not copy |
 | `presses` | `[{"screen": "..."}]`, press 1 is what shows when the card opens | `screen` only. Never `say`, never `room` |
@@ -263,7 +273,8 @@ logos a card needs in `visual`; the PDA fetches them from
 
 ## 8. Before you report
 
-- `check_spec.py` prints CLEAN.
+- `check_spec.py` prints CLEAN, after `render_spec.py`.
+- `spec.html` has been opened and looked at.
 - Every TR image has been opened and judged.
 - Every defect found in the TR is in `meta.defects`.
 - No card has a field this file does not name.
