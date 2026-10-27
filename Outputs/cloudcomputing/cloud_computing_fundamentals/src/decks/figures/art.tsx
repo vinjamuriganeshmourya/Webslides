@@ -96,12 +96,12 @@ const CLAY_DEFS = CLAY_FILTERS.map(
     <feGaussianBlur in="SourceAlpha" stdDeviation="${blur}" result="b"/>
     <feOffset in="b" dx="${-off}" dy="${-off * 1.2}" result="bs"/>
     <feComposite in="SourceAlpha" in2="bs" operator="out" result="rimS"/>
-    <feFlood flood-color="#7C6C8E" flood-opacity="${shadow}"/>
+    <feFlood flood-color="#2F3F86" flood-opacity="${shadow * 0.8}"/>
     <feComposite in2="rimS" operator="in" result="sh"/>
     <feBlend in="sh" in2="SourceGraphic" mode="multiply" result="shaded"/>
     <feOffset in="b" dx="${off}" dy="${off * 1.2}" result="bh"/>
     <feComposite in="SourceAlpha" in2="bh" operator="out" result="rimH"/>
-    <feFlood flood-color="#FFF6EE" flood-opacity="${light}"/>
+    <feFlood flood-color="#FFFFFF" flood-opacity="${light * 0.8}"/>
     <feComposite in2="rimH" operator="in" result="hi"/>
     <feMerge><feMergeNode in="shaded"/><feMergeNode in="hi"/></feMerge>
   </filter>`,
@@ -550,7 +550,8 @@ export function Coin({ w }: { w: number }) {
  * it. `spin` turns the little wheel, the sign that something is being counted.
  */
 export function MeterDial({ w, value, spin = false, tone = colors.brand }: { w: number; value: number; spin?: boolean; tone?: string }) {
-  const ease = useEase(700)
+  /* 300ms, not 700 (user, 2026-10-22 and 23: slide 44's meters quicker) */
+  const ease = useEase(300)
   const a = -120 + Math.max(0, Math.min(1, value)) * 240
   const idle = useIdle('hover')
   const id = usePrefix()
@@ -687,14 +688,15 @@ export function Padlock({ w, open = false, tone = colors.warning }: { w: number;
       </defs>
       <Shadow id={id} cx={20} cy={47} rx={15} ry={2.5} />
       <g {...mo('shackle', seed)}>
-        <path d="M 11 22 V 13 A 9 9 0 0 1 29 13 V 22" fill="none" stroke={`url(#${id}-shackle)`} strokeWidth={5} strokeLinecap="round" style={{ transformBox: 'fill-box', transformOrigin: '29px 22px', transform: open ? 'translateY(-6px) rotate(25deg)' : 'none', transition: ease }} />
+        {/* ICON SHAPE (user, 2026-10-22): a thicker shackle and a larger keyhole, so the lock reads as a lock at small sizes */}
+        <path d="M 11 22 V 13 A 9 9 0 0 1 29 13 V 22" fill="none" stroke={`url(#${id}-shackle)`} strokeWidth={6.5} strokeLinecap="round" style={{ transformBox: 'fill-box', transformOrigin: '29px 22px', transform: open ? 'translateY(-6px) rotate(25deg)' : 'none', transition: ease }} />
       </g>
       <g>
         <rect x={4} y={21} width={32} height={25} rx={5} fill={`url(#${id}-body)`} />
         <rect x={6} y={22} width={28} height={1.5} fill="#FFFFFF" opacity={0.45} />
         <ellipse cx={11} cy={27} rx={4} ry={2} fill="#FFFFFF" opacity={0.35} />
-        <circle cx={20} cy={32} r={3.5} fill={R.drawerBot} />
-        <rect x={18.5} y={33} width={3} height={7} rx={1.5} fill={R.drawerBot} />
+        <circle cx={20} cy={31.5} r={4.2} fill={R.drawerBot} />
+        <rect x={18} y={33} width={4} height={8} rx={2} fill={R.drawerBot} />
       </g>
     </Svg>
   )
@@ -1354,6 +1356,8 @@ export const ART_CSS = `
 @keyframes cc-ring { from { transform: rotate(-12deg) } to { transform: rotate(12deg) } }
 @keyframes cc-pulse { 0%,100% { opacity: 1 } 50% { opacity: 0.45 } }
 @keyframes cc-dash { to { stroke-dashoffset: -24 } }
+/* COLOURS (user, 2026-10-22: "visuals look washed out", the reference render's palette): every drawn object is lifted to the render's saturation and contrast; the clay rim shade below is a cool navy multiply, not the Lab's violet-grey, so a shadow deepens a hue instead of greying it */
+svg.cc-clay { filter: saturate(1.18) contrast(1.04) }
 svg.cc-clay > :not(defs):not([data-flat]) { filter: url(#cc-clay) }
 svg.cc-clay.cc-clay-lg > :not(defs):not([data-flat]) { filter: url(#cc-clay-lg) }
 `

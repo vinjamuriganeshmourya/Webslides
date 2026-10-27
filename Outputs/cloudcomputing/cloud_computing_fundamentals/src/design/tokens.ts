@@ -29,8 +29,9 @@ export const colors = {
   info: '#0EA5E9',
   ink: '#002A4B', // the updated template's navy: headings AND body on light slides (user, 2026-10-12; base template 2026-10-14)
   body: '#002A4B', // body text, the same navy
-  muted: '#8A99A8',
-  line: '#D8E3F5',
+  /* COLOURS (Cloud Computing Fundamentals, user 2026-10-22, "washed out"): a darker muted ink and a bluer hairline, for contrast. Session-local kit change. */
+  muted: '#6B7F95',
+  line: '#CFDCF5',
   surface: '#F5F8FF',
   surface2: '#E8F0FF',
   white: '#FFFFFF',

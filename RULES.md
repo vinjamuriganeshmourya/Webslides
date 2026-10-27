@@ -90,6 +90,7 @@ shipped with that exact mistake.
 | 47 | No label, annotation or callout overlaps a code box or any other element at any step; when space is tight, change the layout, never let them overlap. `overlap-check.mjs` on the built file |
 | 48 | Every slide sits on one of the kit's three grounds (paper, closing gradient, welcome mesh); a slide never paints its own wash, blur, orb or background; the hero frames put the white mark on stage and the words in a glass pill |
 | 49 | No underlines anywhere: no underlined text, phrase, heading or link. Emphasis is colour and weight. The kicker's gradient divider is template, not an underline, and always stays |
+| 50 | The footer NxtWave mark is half size: 18px tall (`h-[18px]`, was 36px `h-9`) on every slide of every deck; still present, still bottom-right, still white on a dark ground |
 
 ## Process rules
 
@@ -101,6 +102,10 @@ shipped with that exact mistake.
 | A plan lives at `<course>/session_plans/<session_name>/plan.md`, and nowhere else | [`CLAUDE.md`](CLAUDE.md) |
 | "Generate slides" runs the full procedure without the user restating it | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md) |
 | The verification sweep is four harnesses, `align-check.mjs` included | same, section 7 |
+| Every quiz slide is a replica of slide 25 of `Reference ppt's/virtualization-and-hypervisors 2.html`, with a running timer where its yellow dot stood (user, 2026-10-22) | same, section 2c |
+| Every Key Takeaways slide is built to the reference in `slidestraining/Untitled` (reference only, never modified); assets are copied into the session (user, 2026-10-22) | same, section 2c |
+| The bar at the foot of every slide is one equal-width segment per agenda point from the section breakers, no progress fill, 4px, a hover preview of the breaker slide, click to that breaker (user, 2026-10-22, revised 2026-10-23) | same, section 2c |
+| An arrow that points at a label is computed from the label's fixed width and centre line, never placed by eye (user, 2026-10-22) | same, section 2c |
 | `mixed-align-check.mjs` runs on every deck before delivery: no slide holds a left block and a centred block together | same, section 7, and content rule 38 |
 | Re-run `video-safe` and `qa` as a pair: they pull in opposite directions | same, section 7 |
 | Durable feedback is offered to a named file before it is applied | same, section 8 |
@@ -115,6 +120,7 @@ shipped with that exact mistake.
 | A pedagogy-team lesson plan is a WORKING DECK: render every card its presenter walks (`.slide, .pcard`, checked against its own counter) and match them, never rebuild from its markup | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md), section 6b |
 | No text runs out of its box (card, panel, option, pill, phone row) at any build step, and none is clipped or truncated to fit; `box-overflow-check.mjs` must print NO OVERFLOW | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md), section 7 |
 | Every deck applies the carry-forward standard: `Group`/`Focus` clusters, `Code.tsx` blanks, cross-fading captions, centred options, one code size, ease-in on every appearance, path-drawn arrows, lab characters, phones at 1 : 2.06, the full gate | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md), section 2b |
+| Every deck carries the presenter player whose changes stay in the shared file: edits saved to `src/decks/slideEdits.ts` under dev, the built HTML saving into itself in Chrome and Edge, edits keyed by their words, Ctrl+Z/Ctrl+Y | [`.claude/skills/generate-slides/SKILL.md`](.claude/skills/generate-slides/SKILL.md), section 2d |
 | Every deck navigates three ways: keyboard, two-finger trackpad swipe, touch swipe. One gesture, one slide, never over an on-slide control. The kit's `useGestureNav` does it (in the kit since 2026-10-14); `gesture-check.mjs` proves it on the built file | same, sections 2 and 7, and the kit's [`src/deck/useGestureNav.ts`](slide-kit/slide-template/src/deck/useGestureNav.ts) |
 | Iterate with a one-slide screenshot; run the three harnesses once, before committing | same, section 6c |
 | Check every build at step 0, mid-run AND fully revealed | same, section 6c |

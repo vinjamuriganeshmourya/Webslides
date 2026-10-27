@@ -33,21 +33,22 @@ function useSeed(): number {
   return h
 }
 
-/* the Lab's Library palette: objects' own colours */
+/* the Lab's Library palette: objects' own colours. COLOURS (user, 2026-10-22, "washed out"): the pastel members
+   (sky, lavender, paper, sage, green) sit on the reference render's hues now, cool blues rather than grey-violets. */
 export const LAB = {
   cobalt: '#0055E8',
-  sky: '#95C2FB',
+  sky: '#6DAAFF',
   periwinkle: '#5856DC',
-  lavender: '#D5D8EB',
-  lavDeep: '#B7BBD6',
-  paper: '#F4F5FB',
+  lavender: '#D3E1FB',
+  lavDeep: '#A6BBE8',
+  paper: '#EDF3FD',
   yellow: '#FCC82B',
   orange: '#FC963C',
   red: '#D8352F',
-  sage: '#829983',
-  navy: '#2C3C81',
+  sage: '#6E9A72',
+  navy: '#283A8E',
   charcoal: '#3E3D45',
-  green: '#4CC38A',
+  green: '#3DDC84',
   wood: '#C98A55',
 }
 
@@ -414,18 +415,25 @@ export function ClayClock({ w, turn }: { w: number; turn: number }) {
 }
 
 /** A padlock: yellow body, a lavender shackle. */
+/**
+ * A padlock that reads as one at 15px (user 2026-10-22, "icons are not completely
+ * in shape, for example the lock"): a thick navy shackle, a tall arch standing
+ * clear of the body, on a gold body with a bold keyhole. The shackle used to
+ * be pale lavender and thin, so at the VM-card size it vanished into the card
+ * and the lock was a yellow blob with a dot.
+ */
 export function ClayPadlock({ w }: { w: number }) {
-  const fx = useFx({ shackle: LAB.lavDeep, body: LAB.yellow })
+  const fx = useFx({ shackle: LAB.navy, body: LAB.yellow })
   return (
     <ClaySvg w={w} vw={40} vh={48}>
       {fx.defs}
-      <path d="M 9 22 V 14 A 11 11 0 0 1 31 14 V 22 H 25 V 14 A 5 5 0 0 0 15 14 V 22 Z" fill={fx.g('shackle')} {...mo('shackle', 0)} />
+      <path d="M 7 24 V 15 A 13 13 0 0 1 33 15 V 24 H 26 V 15 A 6 6 0 0 0 14 15 V 24 Z" fill={fx.g('shackle')} />
       <g>
-        <rect x={3} y={20} width={34} height={26} rx={8} fill={fx.g('body')} />
-        <rect x={10} y={20} width={20} height={1.5} fill="#FFFFFF" opacity={0.45} />
-        <ellipse cx={12} cy={26} rx={5} ry={2.5} fill="#FFFFFF" opacity={0.35} />
-        <circle cx={20} cy={31} r={3.5} fill={LAB.charcoal} />
-        <rect x={18.5} y={32} width={3} height={7} rx={1.5} fill={LAB.charcoal} />
+        <rect x={2} y={22} width={36} height={25} rx={7} fill={fx.g('body')} />
+        <rect x={9} y={22.5} width={22} height={1.5} fill="#FFFFFF" opacity={0.5} />
+        <ellipse cx={11} cy={28} rx={4.5} ry={2.2} fill="#FFFFFF" opacity={0.35} />
+        <circle cx={20} cy={32} r={4.2} fill={LAB.charcoal} />
+        <rect x={18} y={33} width={4} height={8.5} rx={2} fill={LAB.charcoal} />
       </g>
     </ClaySvg>
   )

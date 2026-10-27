@@ -76,16 +76,16 @@ export function WhyCloud({ lesson }: { lesson: string }) {
         <Stage w={LEFT_W} h={H} active={false} style={{ ...CARD_SKIN, background: `url(${whyLeft}) center / 100% 100% no-repeat` }}>
           <At x={18} y={12}>
             <Label strong size={16} tone="dark">On-premise IT</Label>
-            <Note size={14} className="mt-1.5">Organisation buys, installs, maintains hardware</Note>
+            <Note size={15} className="mt-1.5">Organisation buys, installs, maintains hardware</Note>
           </At>
           <At x={246} y={92} w={270}>
             <div className="flex flex-col items-start gap-2.5">
-              <Label tone="lift" size={14} raised icon={<ServerIcon />}>{`${OWNED} servers bought on a guess`}</Label>
+              <Label tone="lift" size={15} raised icon={<ServerIcon />}>{`${OWNED} servers bought on a guess`}</Label>
               <Fade on={idle > 0}>
-                <Label tone="warn" size={14} raised icon={<Clock />}>{`${idle} paid, idle`}</Label>
+                <Label tone="warn" size={15} raised icon={<Clock />}>{`${idle} paid, idle`}</Label>
               </Fade>
               <Fade on={short > 0}>
-                <Label tone="bad" size={14} raised>{`Short by ${short}: order more, wait weeks`}</Label>
+                <Label tone="bad" size={15} raised>{`Short by ${short}: order more, wait weeks`}</Label>
               </Fade>
             </div>
           </At>
@@ -96,7 +96,7 @@ export function WhyCloud({ lesson }: { lesson: string }) {
         <Stage w={RIGHT_W} h={H} active={false} style={{ ...CARD_SKIN, background: `url(${whyRight}) center / 100% 100% no-repeat` }}>
           <At x={18} y={12}>
             <Label strong size={16} tone="solid">Cloud IT</Label>
-            <Note size={14} className="mt-1.5">Computing rented as a metered service</Note>
+            <Note size={15} className="mt-1.5">Computing rented as a metered service</Note>
           </At>
           {CELL_Y.map((cy, r) =>
             CELL_X.map((cx, c) => {
@@ -117,7 +117,7 @@ export function WhyCloud({ lesson }: { lesson: string }) {
               )
             }),
           )}
-          <At x={414} y={214} cx><Label size={14} tone="good" raised iconRound icon={<CheckIcon />}>{`${need} billed`}</Label></At>
+          <At x={414} y={214} cx><Label size={15} tone="good" raised iconRound icon={<CheckIcon />}>{`${need} billed`}</Label></At>
         </Stage>
       </div>
       <div className="mt-3 flex items-center justify-between" style={{ width: BOX_W }}>

@@ -259,6 +259,43 @@ export function PayMeter({ w, value }: { w: number; value: number }) {
   )
 }
 
+/**
+ * Pay as you go (review 2026-10-26, the Cost card's cloud well, in place of the dial the user read as a
+ * clock): a usage meter whose bars show what was used, green up to `value`, and the coin that pays for it.
+ */
+export function PayGoMeter({ w, value }: { w: number; value: number }) {
+  const ease = useEase(700)
+  const fx = useFx({ tile: R.tileHi, gold: P.yellow })
+  const used = Math.ceil(Math.max(0, Math.min(1, value)) * 4)
+  const idle = mo('hover', 3)
+  return (
+    <ClaySvg w={w} vw={80} vh={80}>
+      {fx.defs}
+      <Shadow id={fx.id} cx={40} cy={79} rx={30} ry={3.5} />
+      <g>
+        <rect x={4} y={10} width={66} height={62} rx={16} fill={R.tileUnder} />
+        <rect x={4} y={4} width={66} height={62} rx={16} fill={fx.g('tile')} />
+        <rect x={10} y={7} width={54} height={20} rx={10} fill="#FFFFFF" opacity={0.16} />
+        <rect x={9} y={5} width={56} height={1.5} rx={0.75} fill="#FFFFFF" opacity={0.3} />
+      </g>
+      <g {...mo('pulse', 2)}>
+        <rect x={12} y={13} width={50} height={32} rx={7} fill={fx.dial} />
+        {[0.38, 0.58, 0.8, 1].map((f, i) => (
+          <rect key={i} x={18 + i * 10} y={40 - 22 * f} width={7} height={22 * f} rx={2} fill={i < used ? R.arcGreen : R.arcGrey} style={{ transition: ease }} />
+        ))}
+        <rect x={20} y={52} width={30} height={5} rx={2.5} fill={R.needle} opacity={0.85} />
+      </g>
+      <g className={idle.className} style={idle.style}>
+        <circle cx={61} cy={60} r={16} fill={R.goldSideDark} />
+        <circle cx={61} cy={58} r={16} fill={fx.g('gold')} />
+        <circle cx={61} cy={58} r={16} fill={fx.spec} opacity={0.5} />
+        <circle cx={61} cy={58} r={11.5} fill="none" stroke={R.goldSide} strokeWidth={1.4} opacity={0.8} />
+        <path d="M 14 13 H 26 M 14 18 H 26 M 16 13 C 24 13 24 23 16 23 L 25 30" transform="translate(43.5 40.5) scale(0.875)" fill="none" stroke={R.goldSideDark} strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round" />
+      </g>
+    </ClaySvg>
+  )
+}
+
 /** A wall calendar, its page number laid over as DOM. */
 export function ClayCalendar({ w, page }: { w: number; page: string }) {
   const fx = useFx({ paper: '#FFFFFF', red: P.red, ring: P.charcoal })
@@ -635,8 +672,9 @@ export function NistPool({ w, on }: { w: number; on: boolean }) {
     <ClaySvg w={w} vw={380} vh={320} large>
       {fx.defs}
       {/* the network line: client to pool, drawn on in its entrance slot, a dash riding it toward the pool */}
-      <path data-draw data-flat d="M 92 232 C 92 200 120 196 150 180" fill="none" stroke={colors.brand} strokeWidth={3} strokeLinecap="round" />
-      <path data-draw data-flat d="M 92 232 C 92 200 120 196 150 180" fill="none" stroke={colors.white} strokeWidth={1.5} strokeLinecap="round" strokeDasharray="5 9" opacity={0.75} {...mo('dash', 2)} />
+      {/* audit 2026-10-22: the line ends inside the cloud's foot, under the provisioned tile, so it reads as entering the pool rather than stopping at its edge */}
+      <path data-draw data-flat d="M 92 232 C 92 196 124 190 160 170" fill="none" stroke={colors.brand} strokeWidth={3} strokeLinecap="round" />
+      <path data-draw data-flat d="M 92 232 C 92 196 124 190 160 170" fill="none" stroke={colors.white} strokeWidth={1.5} strokeLinecap="round" strokeDasharray="5 9" opacity={0.75} {...mo('dash', 2)} />
       {/* the pool: one cloud, drifting with everything it holds (one shared phase) */}
       <g {...lev}>
         <CloudPart x={40} y={8} s={2.5} fx={fx} />
@@ -717,18 +755,37 @@ export function NistPool({ w, on }: { w: number; on: boolean }) {
 
 /** The provider's back end as a building: a cloud on its roof, a door, no windows. */
 export function BackEndBuilding({ w }: { w: number }) {
-  const fx = useFx({ wall: P.lav, roof: P.cobalt, door: P.navy })
+  const fx = useFx({ wall: P.lav, roof: P.cobalt, door: P.navy, white: '#FFFFFF', base: '#B3C4E6' })
+  /* audit 2026-10-22: it was a bare slab with a slot for a door and a cloud floating clear of the roof, which read as
+     half drawn. Now a finished block: a plinth it stands on, the cloud resting on the roof band, two cooling units on
+     the roof, a lintel over a double door with a step, and a service stripe along the wall. Still no windows (review
+     2026-10-16). The idle float and pulse are gone with the motion policy; nothing here changes state. */
   return (
     <ClaySvg w={w} vw={220} vh={150}>
       {fx.defs}
-      <Shadow id={fx.id} cx={110} cy={148} rx={96} ry={5} />
-      <CloudPart x={46} y={4} s={0.56} fx={fx} motion={mo('hover', 4)} />
-      <g {...mo('pulse', 8)}>
-        <Slab x={10} y={52} w={200} h={92} rx={10} d={7} hue={P.lav} fill={fx.g('wall')} spec={false} />
-        <rect x={10} y={52} width={200} height={16} rx={8} fill={fx.g('roof')} />
-        <rect x={18} y={53} width={184} height={1.5} fill="#FFFFFF" opacity={0.35} />
+      <Shadow id={fx.id} cx={110} cy={148} rx={104} ry={5} />
+      <rect x={2} y={136} width={216} height={12} rx={6} fill={fx.g('base')} />
+      <CloudPart x={56} y={14} s={0.56} fx={fx} />
+      <g>
+        <Slab x={14} y={54} w={192} h={84} rx={9} d={8} hue={P.lav} fill={fx.g('wall')} spec={false} />
+        <rect x={14} y={54} width={192} height={14} rx={7} fill={fx.g('roof')} />
+        <rect x={22} y={55} width={176} height={1.5} fill="#FFFFFF" opacity={0.35} />
+        <rect x={14} y={92} width={192} height={5} fill={fx.g('roof')} opacity={0.45} />
       </g>
-      <rect x={98} y={112} width={24} height={32} rx={4} fill={fx.g('door')} />
+      {[26, 152].map((x) => (
+        <g key={x}>
+          <rect x={x} y={42} width={40} height={13} rx={4} fill={fx.g('white')} />
+          {[0, 1, 2].map((i) => (
+            <rect key={i} x={x + 5} y={45 + i * 3.5} width={30} height={1.6} rx={0.8} fill={P.lav} />
+          ))}
+        </g>
+      ))}
+      <rect x={86} y={100} width={48} height={5} rx={2.5} fill={fx.g('roof')} />
+      <rect x={92} y={104} width={36} height={34} rx={4} fill={fx.g('door')} />
+      <rect x={109.2} y={106} width={1.6} height={30} fill="#FFFFFF" opacity={0.25} />
+      <circle cx={104} cy={122} r={1.8} fill={P.lav} />
+      <circle cx={116} cy={122} r={1.8} fill={P.lav} />
+      <rect x={82} y={136} width={56} height={4} rx={2} fill={fx.g('base')} />
     </ClaySvg>
   )
 }

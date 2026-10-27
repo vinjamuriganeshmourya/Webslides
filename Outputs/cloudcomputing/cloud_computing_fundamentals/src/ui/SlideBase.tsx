@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Logo } from './Logo'
-import { colors } from '@/design/tokens'
+import { SectionBar } from './SectionBar'
 import { GROUND_BASE, TemplateStage, type TemplateGroundName } from '@/design/ground'
 
 export type SlideVariant = 'light' | 'plain' | 'brand' | 'night'
@@ -138,14 +138,20 @@ export function SlideBase({
 
         `lesson` is still accepted (it is part of the kit's API and `sampleDeck`
         passes it) but is no longer rendered.
+
+        HALF SIZE since 2026-10-23 (content rule 50): 18px tall, where it was
+        36px (`h-9`). The user, on Cloud Computing Fundamentals: reduce the mark
+        at the bottom of every slide by 50 percent, in every deck from now on.
+        Same corner, same reverse-to-white on a dark ground; only the size.
       */}
       {footer && (
         <footer className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-center justify-end px-8 pb-4">
-          {footerLogo && <Logo className="h-9" onDark={dark} />}
+          {footerLogo && <Logo className="h-[18px]" onDark={dark} />}
         </footer>
       )}
-      {/* The bar is the template's flat brand blue, not the old navy-to-blue run. */}
-      {footer && !dark && <div className="slide-footer-bar" style={{ background: colors.nwBlue }} />}
+      {/* The bar is the template's flat brand blue, not the old navy-to-blue run; since 2026-10-22 it is
+          segmented per section and pressable (`SectionBar`), and the plain bar outside a deck. */}
+      {footer && !dark && <SectionBar />}
     </section>
   )
 }

@@ -36,7 +36,7 @@ const found = []
 
 for (let i = 1; i <= TOTAL; i++) {
   await p.goto('about:blank')
-  await p.goto(`${BASE}/?nav=steps&v=${i}#/${i}`, { waitUntil: 'load' })
+  await p.goto(`${BASE}/?nav=steps&still&v=${i}#/${i}`, { waitUntil: 'load' }) /* `still` (2026-10-22): the deck's entrances now run 2 to 4s apart, so the final state is only reachable with them off */
   await p.waitForTimeout(900)
   const on = await p.$('[data-autoplay-ignore] button[aria-pressed="true"]')
   if (on) await on.click()

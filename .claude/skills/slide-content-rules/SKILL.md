@@ -193,6 +193,7 @@ visible at step 0, and the counter should show no leftover steps.
   with the slide counter, and every content slide already shows the session name
   in its kicker. This supersedes `SLIDE_WORKFLOW.md` Stage 6, which still asks
   for the session name in the footer.
+  The mark itself is 18px tall since 2026-10-23: rule 50.
 
 ## 8. Illustrations must depict the slide's own concept
 
@@ -1614,3 +1615,21 @@ global rule for all future decks." The first pass also removed the kicker's
 gradient divider; the user, the same day: "that is part of the template, don't
 remove it in any case; from now on the gradient line below the kicker is a
 must."
+
+## 50. The footer NxtWave mark is half size: 18px tall on every slide
+
+**Hard rule, every deck, every course.** The mark in the bottom-right footer
+(`src/ui/SlideBase.tsx`, `<Logo className="h-[18px]" />`) is 18px tall at the
+1280x720 stage size, half the 36px (`h-9`) it was until 2026-10-23. It is still
+on every slide that carries a footer, still bottom-right, still reversed to
+white on a dark ground; only its size changed. `qa.mjs` still asserts the mark
+is present on every frame but the three hero frames.
+
+Why: user, 2026-10-23, on Cloud Computing Fundamentals
+(`Outputs/cloudcomputing/cloud_computing_fundamentals`): "decrease the size of
+the nextwave logo at the bottom of every slide, reduce the size of it 50
+percent, and make sure this is the rule to be followed for every slide created,
+not only for the cloud computing." Applied there, and in the kit's
+`SlideBase.tsx` so every deck started after it carries the size. Decks
+delivered before that date keep their 36px mark (rule: a new rule never
+re-opens a delivered deck).

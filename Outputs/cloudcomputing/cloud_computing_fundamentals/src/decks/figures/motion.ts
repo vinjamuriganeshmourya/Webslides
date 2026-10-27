@@ -60,7 +60,7 @@ export const MOTION_CSS = `
 @keyframes mo-dash { to { stroke-dashoffset: -28 } }
 @keyframes mo-wave { 0% { transform: scale(0.55); opacity: 0.9 } 100% { transform: scale(1.6); opacity: 0 } }
 @keyframes mo-shake { 0%, 90%, 100% { transform: translateX(0) } 92% { transform: translateX(-1.5px) } 94% { transform: translateX(1.5px) } 96% { transform: translateX(-1px) } 98% { transform: translateX(1px) } }
-@keyframes mo-glow { from { opacity: 0.55 } to { opacity: 1 } }
+@keyframes mo-glow { from { opacity: 0.72 } to { opacity: 1 } }
 @keyframes mo-breathe { from { transform: scaleY(1) } to { transform: scaleY(1.03) } }
 @keyframes mo-scan { 0% { transform: translate(0, 0) } 25% { transform: translate(2.5px, -2px) } 50% { transform: translate(0, -3.5px) } 75% { transform: translate(-2.5px, -1.5px) } 100% { transform: translate(0, 0) } }
 @keyframes mo-hover { from { transform: translateY(-3px) } to { transform: translateY(3px) } }
@@ -69,32 +69,29 @@ export const MOTION_CSS = `
 @keyframes mo-track { 0%, 38% { opacity: 1 } 50%, 88% { opacity: 0.3 } 100% { opacity: 1 } }
 @keyframes mo-shackle { 0%, 78%, 100% { transform: translateY(0) } 86% { transform: translateY(-3px) } 92% { transform: translateY(-3px) } }
 @keyframes mo-type { 0% { transform: scaleX(0); opacity: 0.3 } 18% { transform: scaleX(1); opacity: 1 } 100% { transform: scaleX(1); opacity: 1 } }
-@keyframes mo-cursor { 0%, 49% { opacity: 1 } 50%, 100% { opacity: 0 } }
+@keyframes mo-cursor { 0%, 40% { opacity: 1 } 55%, 85% { opacity: 0.15 } 100% { opacity: 1 } }
 @keyframes mo-breath { from { transform: scale(1) } to { transform: scale(1.012) } }
 @keyframes mo-pop { 0%, 80%, 100% { transform: scale(1) } 88% { transform: scale(1.12) } }
-.mo-float { animation: mo-float var(--mo-dur, 4.2s) ease-in-out infinite alternate; }
-.mo-levitate { animation: mo-levitate var(--mo-dur, 7s) ease-in-out infinite; }
-.mo-shadow { animation: mo-shadow var(--mo-dur, 7s) ease-in-out infinite; }
+/* IDLE MOTION POLICY (user, 2026-10-22, "remove idle micro-animations unless they carry meaning"):
+   a kind that only decorates (float, hover, levitate, its shadow, pulse, breathe, scan, shake, pop,
+   shackle, breath) is a no-op now; the class names stay so every call site still compiles. A kind
+   that says what the object is DOING stays: an LED blinking (running), a dash flowing (direction),
+   a gear or fan spinning (working), a clock hand moving (time passing), a signal rippling, a screen
+   typing with its caret, a toggle throwing (a state change shown), a flame, a light's glow. */
+.mo-float, .mo-levitate, .mo-shadow, .mo-pulse, .mo-breathe, .mo-scan, .mo-hover, .mo-shake, .mo-pop, .mo-shackle, .mo-breath { animation: none; }
 .mo-blink { animation: mo-blink var(--mo-dur, 5.2s) ease-in-out infinite; }
-.mo-pulse { animation: mo-pulse var(--mo-dur, 3.6s) ease-in-out infinite alternate; }
 .mo-spin { animation: mo-spin var(--mo-dur, 14s) linear infinite; }
 .mo-spin-ccw { animation: mo-spin-ccw var(--mo-dur, 14s) linear infinite; }
 .mo-dash { animation: mo-dash var(--mo-dur, 1.6s) linear infinite; }
 .mo-wave { animation: mo-wave var(--mo-dur, 3.6s) ease-out infinite; }
-.mo-tick { animation: mo-spin var(--mo-dur, 12s) steps(12) infinite; }
-.mo-shake { animation: mo-shake var(--mo-dur, 6s) ease-in-out infinite; }
+/* SMOOTHNESS (user, 2026-10-22, "no stepped motion"): the clock hand sweeps instead of stepping twelve times, the caret fades instead of snapping */
+.mo-tick { animation: mo-spin var(--mo-dur, 12s) linear infinite; }
 .mo-glow { animation: mo-glow var(--mo-dur, 2.8s) ease-in-out infinite alternate; }
-.mo-breathe { animation: mo-breathe var(--mo-dur, 3.8s) ease-in-out infinite alternate; transform-origin: center bottom; }
-.mo-scan { animation: mo-scan var(--mo-dur, 5s) ease-in-out infinite; }
-.mo-hover { animation: mo-hover var(--mo-dur, 3.4s) ease-in-out infinite alternate; }
 .mo-flicker { animation: mo-flicker var(--mo-dur, 0.9s) ease-in-out infinite; transform-origin: center top; }
 .mo-knob { animation: mo-knob var(--mo-dur, 6s) cubic-bezier(0.22, 1, 0.36, 1) infinite; }
 .mo-track { animation: mo-track var(--mo-dur, 6s) cubic-bezier(0.22, 1, 0.36, 1) infinite; }
-.mo-shackle { animation: mo-shackle var(--mo-dur, 7s) ease-in-out infinite; }
 .mo-type { animation: mo-type var(--mo-dur, 4.8s) ease-out infinite; transform-origin: left center; }
-.mo-cursor { animation: mo-cursor var(--mo-dur, 1.1s) steps(1) infinite; }
-.mo-breath { animation: mo-breath var(--mo-dur, 3.6s) ease-in-out infinite alternate; transform-origin: center bottom; }
-.mo-pop { animation: mo-pop var(--mo-dur, 6s) ease-in-out infinite; }
+.mo-cursor { animation: mo-cursor var(--mo-dur, 1.1s) ease-in-out infinite; }
 .cc-still .mo, .deck-thumb .mo { animation: none !important; }
 @media (prefers-reduced-motion: reduce) { .mo { animation: none !important; } }
 `

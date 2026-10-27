@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { colors, easing } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
@@ -59,9 +59,39 @@ export function Card({
   children: ReactNode
 }) {
   void beat
+  /*
+    VISUALLY CENTRED (user, 2026-10-22: "some slides have empty space below,
+    push that content down a little, visually centred, not the kicker, divider
+    or title"; then: "the text needs to be associated with the content", and
+    "it is glitching, moving up and down"). Once, when the slide mounts, the
+    LEAD AND THE BODY are moved down together by half the empty space between
+    the body's foot and the safe bottom (640 on the 720 canvas, above the
+    player bar), by a transform, so the kicker, divider and title stay where
+    they are and the layout never changes. Measured with the transforms
+    cleared and in slide units whatever the stage's zoom; measured ONCE, not
+    on every render (re-measuring an already-moved body halved the shift each
+    time and the content rocked up and down). Only when the slack is worth
+    moving for; never past the safe bottom.
+  */
+  const body = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    const el = body.current
+    const sec = el?.closest('section')
+    if (!el || !sec) return
+    /* the kit's ZonedFrame (mode "top") lays the lead and the body in one content column:
+       content > [lead block, wrapper > this div]; that column is what moves, lead and body as one */
+    const zone = el.closest('[data-zone="space1"]')
+    const block = ((zone?.firstElementChild as HTMLElement | null) ?? el.parentElement?.parentElement ?? el) as HTMLElement
+    block.style.transform = ''
+    const sr = sec.getBoundingClientRect()
+    const scale = sr.height / 720 || 1
+    const r = block.getBoundingClientRect()
+    const slack = 640 - (r.bottom - sr.top) / scale
+    block.style.transform = slack > 24 ? `translateY(${Math.round(slack / 2)}px)` : ''
+  }, [])
   return (
     <Panel kicker={kicker} title={title} lead={lead} lesson={lesson} mode="top" wide spec={id} presses={total ? total - 1 : 0}>
-      <div style={{ width: BOX_W }}>{children}</div>
+      <div ref={body} style={{ width: BOX_W }}>{children}</div>
     </Panel>
   )
 }
@@ -217,14 +247,15 @@ export function Fade({ on, children, lift = 10, delay = 0, style, className = ''
 export type LabelTone = 'plain' | 'brand' | 'solid' | 'lift' | 'good' | 'bad' | 'warn' | 'muted' | 'dark'
 
 const LABEL: Record<LabelTone, { bg: string; ink: string; ring: string }> = {
-  plain: { bg: colors.white, ink: colors.ink, ring: colors.line },
+  /* COLOURS (user, 2026-10-22): the plain chip is the render's: white to a faint blue foot, a blue ring */
+  plain: { bg: 'linear-gradient(180deg, #FFFFFF 0%, #EEF3FD 100%)', ink: colors.ink, ring: '#C3D3F0' },
   brand: { bg: colors.surface2, ink: colors.brandDark, ring: colors.brand },
   solid: { bg: colors.brand, ink: colors.white, ring: colors.brand },
-  lift: { bg: colors.white, ink: colors.brandDark, ring: colors.line },
+  lift: { bg: 'linear-gradient(180deg, #FFFFFF 0%, #EEF3FD 100%)', ink: colors.brandDark, ring: '#C3D3F0' },
   good: { bg: '#E9F8EF', ink: '#137A3A', ring: colors.success },
   bad: { bg: '#FDECEC', ink: colors.danger, ring: colors.danger },
   warn: { bg: '#FFF4E0', ink: '#9A5B00', ring: colors.warning },
-  muted: { bg: colors.surface, ink: colors.muted, ring: colors.line },
+  muted: { bg: colors.surface, ink: colors.muted, ring: '#CFDCF5' },
   dark: { bg: colors.brandDeep, ink: colors.white, ring: colors.brandDeep },
 }
 
@@ -344,6 +375,7 @@ export function Traveller({ path, run, k, tone = colors.accent, size = 16, dur =
     <motion.span
       key={k}
       aria-hidden
+      data-cc-after=""
       className="pointer-events-none absolute rounded-full"
       style={{ width: size, height: size, background: tone, boxShadow: `0 0 0 4px ${tone}40`, left: -size / 2, top: -size / 2 }}
       initial={instant ? { x: end[0], y: end[1] } : { x: path[0][0], y: path[0][1] }}
@@ -396,20 +428,28 @@ export function Slider({ value, onChange, label, width = 220, fill = false, auto
       <span className="shrink-0 font-heading text-[14px] font-semibold" style={{ color: colors.ink }}>
         {label}
       </span>
-      <input
-        ref={ref}
-        type="range"
-        min={0}
-        max={100}
-        value={Math.round(value * 100)}
-        onChange={(e) => onChange(Number(e.target.value) / 100)}
-        onPointerUp={() => ref.current?.blur()}
-        onKeyDown={(e) => e.stopPropagation()}
-        className="cc-range min-w-0 flex-1"
-        tabIndex={auto ? -1 : undefined}
-        style={{ ...(fill ? { background: `linear-gradient(90deg, ${colors.brand} 0%, ${colors.brand} ${pct}%, ${colors.surface2} ${pct}%, ${colors.surface2} 100%)` } : {}), ...(auto ? { pointerEvents: 'none' as const } : {}) }}
-        aria-label={typeof label === 'string' ? label : 'level'}
-      />
+      {/* SMOOTHNESS (user, 2026-10-22): the filled part of the track is a bar scaled by `transform`, under the input, not a gradient repainted per frame */}
+      <span className="relative min-w-0 flex-1" style={{ height: 22 }}>
+        {fill && (
+          <span aria-hidden className="pointer-events-none absolute left-0 right-0 top-1/2 h-[8px] -translate-y-1/2 overflow-hidden rounded-full" style={{ background: colors.surface2, boxShadow: `inset 0 0 0 1px ${colors.line}` }}>
+            <span className="absolute inset-0 origin-left rounded-full" style={{ background: colors.brand, transform: `scaleX(${pct / 100})` }} />
+          </span>
+        )}
+        <input
+          ref={ref}
+          type="range"
+          min={0}
+          max={100}
+          value={Math.round(value * 100)}
+          onChange={(e) => onChange(Number(e.target.value) / 100)}
+          onPointerUp={() => ref.current?.blur()}
+          onKeyDown={(e) => e.stopPropagation()}
+          className={`cc-range absolute inset-x-0 top-1/2 w-full -translate-y-1/2${fill ? ' cc-range-clear' : ''}`}
+          tabIndex={auto ? -1 : undefined}
+          style={auto ? { pointerEvents: 'none' } : undefined}
+          aria-label={typeof label === 'string' ? label : 'level'}
+        />
+      </span>
     </label>
   )
 }
@@ -490,7 +530,10 @@ export function Num({ n, on = true, size = 24 }: { n: number | string; on?: bool
 /** The CSS a live control needs (the range thumb), mounted once by the deck. */
 export const SCENE_CSS = `
 .cc-range { -webkit-appearance: none; appearance: none; height: 8px; border-radius: 999px; background: ${colors.surface2}; box-shadow: inset 0 0 0 1px ${colors.line}; cursor: pointer; }
+.cc-range-clear { background: transparent; box-shadow: none; }
 .cc-range::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 999px; background: ${colors.brand}; box-shadow: 0 0 0 4px ${colors.white}, 0 4px 10px -2px ${colors.brand}; }
 .cc-range::-moz-range-thumb { width: 22px; height: 22px; border: 0; border-radius: 999px; background: ${colors.brand}; box-shadow: 0 0 0 4px ${colors.white}, 0 4px 10px -2px ${colors.brand}; }
 .cc-still svg *, .cc-still svg { animation: none !important; }
+[data-cc-after] { transition: opacity 400ms cubic-bezier(0.22,1,0.36,1); }
+.cc-entering [data-cc-after] { opacity: 0 !important; transition: none; }
 `

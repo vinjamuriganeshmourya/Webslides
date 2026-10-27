@@ -236,13 +236,24 @@ export function ClayMeter({ w, value }: { w: number; value: number }) {
   )
 }
 
-/** A bell, for an alarm; `ringing` swings it (the alarm itself, so the loop is the content). */
-export function ClayBell({ w, ringing = false }: { w: number; ringing?: boolean }) {
+/* 2026-10-22 (slide 58, user: "animate the bell"): a BURST of rings, then rest. A few swings about the hanger in the
+   first 1.4s of a 4.2s period, still for the rest; transform only, held by `.cc-still` and the picker thumbnails. */
+const BELL_CSS = `@keyframes cc-bell-burst { 0% { transform: rotate(0) } 6% { transform: rotate(-16deg) } 13% { transform: rotate(14deg) } 20% { transform: rotate(-11deg) } 27% { transform: rotate(8deg) } 33% { transform: rotate(-4deg) } 38%, 100% { transform: rotate(0) } }`
+if (typeof document !== 'undefined' && !document.getElementById('cc-bell-css')) {
+  const el = document.createElement('style')
+  el.id = 'cc-bell-css'
+  el.textContent = BELL_CSS
+  document.head.appendChild(el)
+}
+
+/** A bell, for an alarm; `ringing` swings it (the alarm itself, so the loop is the content); `burst` rings a few times then rests. */
+export function ClayBell({ w, ringing = false, burst = false }: { w: number; ringing?: boolean; burst?: boolean }) {
   const id = usePrefix()
+  const anim = ringing ? 'cc-ring 0.5s ease-in-out infinite alternate' : burst ? 'cc-bell-burst 4.2s ease-in-out infinite' : undefined
   return (
     <ClaySvg w={w} vw={60} vh={64}>
       <Depth id={id} sd={2} />
-      <g className={ringing ? undefined : mo('shake', 2).className} style={{ transformBox: 'view-box', transformOrigin: '30px 6px', animation: ringing ? 'cc-ring 0.5s ease-in-out infinite alternate' : undefined, ...(ringing ? {} : mo('shake', 2).style) }}>
+      <g style={{ transformBox: 'view-box', transformOrigin: '30px 6px', animation: anim }}>
         <circle cx={30} cy={7} r={5} fill={ORANGE} />
         <circle cx={30} cy={7} r={5} fill={`url(#${id}-lit)`} />
         <VolPath id={id} d="M 30 8 C 15 8 11 20 11 32 C 11 40 7 44 5 48 H 55 C 53 44 49 40 49 32 C 49 20 45 8 30 8 Z" fill={`url(#${id}-gold)`} />
@@ -264,13 +275,14 @@ export function ClayBell({ w, ringing = false }: { w: number; ringing?: boolean 
  */
 export function ClayBalance({ w, tilt = 0 }: { w: number; tilt?: number }) {
   const id = usePrefix()
-  const r = (tilt * Math.PI) / 180
-  /* the pans hang straight down from the beam's ends, whatever the tilt */
-  const end = (dx: number) => ({ x: 110 + dx * Math.cos(r), y: 40 + dx * Math.sin(r) })
-  const L = end(-84)
-  const Rt = end(84)
+  /* 2026-10-22 (slide 47 balances live): the tilt is TRANSFORMS, never recomputed geometry. The beam and each pan's
+     hanger rotate about the pivot (110,40); inside that, the pan is rotated back about its own hanging point, so it
+     stays level and hangs straight down from wherever the beam end has gone. A `useLoop` phase can drive `tilt`. */
+  const L = { x: 26, y: 40 }
+  const Rt = { x: 194, y: 40 }
   const pan = (p: { x: number; y: number }, tone: string, token: 'tick' | 'warn') => (
-    <g>
+    <g transform={`rotate(${tilt} 110 40)`}>
+     <g transform={`rotate(${-tilt} ${p.x} ${p.y})`}>
       <Vol id={id} x={p.x - 3} y={p.y} w={6} h={40} rx={3} fill={LAVENDER} edge={false} />
       <VolPath id={id} d={`M ${p.x - 34} ${p.y + 40} H ${p.x + 34} C ${p.x + 32} ${p.y + 58} ${p.x - 32} ${p.y + 58} ${p.x - 34} ${p.y + 40} Z`} fill={tone} />
       {token === 'tick' ? (
@@ -287,6 +299,7 @@ export function ClayBalance({ w, tilt = 0 }: { w: number; tilt?: number }) {
           <circle cx={p.x} cy={p.y + 34} r={1.8} fill={CHARCOAL} />
         </g>
       )}
+     </g>
     </g>
   )
   return (
@@ -358,22 +371,46 @@ export function ClayRocket({ w }: { w: number }) {
 /* ------------------------------------------------------------------ lock-in */
 
 /** A padlock, shut or open; its own colour by `tone`. A turned body, a steel shackle lit on its curve, a keyhole. */
-export function ClayPadlock({ w, open = false, tone = RED }: { w: number; open?: boolean; tone?: string }) {
+export function ClayPadlock({ w, open = false, tone = R.cloudMid }: { w: number; open?: boolean; tone?: string }) {
+  /*
+    REDRAWN 2026-10-23 (user: "the lock on slide 55 looks broken or unfinished;
+    make it blue"). The old body was a `Slab`, an isometric plate whose flat lid
+    and right fin stuck out past the rounded body, and the shackle's legs sat on
+    that lid instead of entering the body. Now: the shackle is drawn first (a
+    steel-blue arch with a shaded right edge and a lit left edge), its legs run
+    down INTO the body, and the body is one rounded clay form over them (lit top,
+    shaded foot, a specular on the upper left, a deeper band at the base), with a
+    navy keyhole that has a rim and a hole. The default tone is the render's
+    cloud blue; slide 56 still passes its own tones for open and shut.
+  */
   const ease = useEase()
   const id = usePrefix()
+  const base = tone === R.cloudMid ? R.cloudUnder : R.shadow
   return (
     <ClaySvg w={w} vw={60} vh={72}>
       <Depth id={id} sd={2} />
-      <Shadow id={id} cx={30} cy={70} rx={24} ry={2.5} o={0.26} />
+      <defs>
+        <clipPath id={`${id}-body`}>
+          <rect x={6} y={34} width={48} height={34} rx={10} />
+        </clipPath>
+      </defs>
+      <Shadow id={id} cx={30} cy={70} rx={24} ry={2.6} o={0.26} />
       <g style={{ transformBox: 'fill-box', transformOrigin: '100% 100%', transform: open ? 'translateY(-8px) rotate(28deg)' : 'none', transition: ease }}>
-        <path d="M 16 34 V 20 A 14 14 0 0 1 44 20 V 34" fill="none" stroke="#B9C2D8" strokeWidth={8} strokeLinecap="round" />
-        <path d="M 16 34 V 20 A 14 14 0 0 1 44 20 V 34" fill="none" stroke="#FFFFFF" strokeWidth={2.5} strokeLinecap="round" opacity={0.5} transform="translate(-1.5 -1.5)" />
+        {/* the shackle: a shaded edge on the right, the arch, a lit edge on the upper left; its legs reach y=42, under the body's top edge (34) */}
+        <path d="M 17 42 V 22 A 13 13 0 0 1 43 22 V 42" fill="none" stroke={R.chassisBot} strokeWidth={9} strokeLinecap="round" transform="translate(1.2 1.2)" />
+        <path d="M 17 42 V 22 A 13 13 0 0 1 43 22 V 42" fill="none" stroke={R.chassisTop} strokeWidth={9} strokeLinecap="round" />
+        <path d="M 17 42 V 22 A 13 13 0 0 1 43 22 V 30" fill="none" stroke="#FFFFFF" strokeWidth={2.2} strokeLinecap="round" opacity={0.5} transform="translate(-1.6 -1.6)" />
       </g>
-      <g {...mo('pulse', 2)}>
-        <Slab id={id} x={5} y={32} w={50} h={38} rx={10} fill={tone} d={4} style={{ transition: ease }} />
-        <Spec id={id} cx={16} cy={44} rx={6} ry={4} o={0.6} />
-        <circle cx={29} cy={50} r={5} fill={CHARCOAL} />
-        <rect x={26.5} y={52} width={5} height={10} rx={2.5} fill={CHARCOAL} />
+      <g>
+        <Vol id={id} x={6} y={34} w={48} h={34} rx={10} fill={tone} style={{ transition: ease }} />
+        {/* a deeper band at the base, inside the rounded shape */}
+        <rect x={6} y={60} width={48} height={8} fill={base} opacity={0.28} clipPath={`url(#${id}-body)`} />
+        <ellipse cx={17} cy={42} rx={6} ry={3.4} fill={`url(#${id}-spec)`} opacity={0.75} />
+        {/* the keyhole: a navy rim round a darker hole */}
+        <circle cx={30} cy={49} r={6} fill={R.chassisTop} />
+        <rect x={26} y={50} width={8} height={13} rx={4} fill={R.chassisTop} />
+        <circle cx={30} cy={49} r={4.2} fill="#0F1733" />
+        <rect x={27.6} y={51} width={4.8} height={10.5} rx={2.4} fill="#0F1733" />
       </g>
     </ClaySvg>
   )

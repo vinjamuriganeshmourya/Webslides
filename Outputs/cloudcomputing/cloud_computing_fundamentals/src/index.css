@@ -165,7 +165,7 @@ html {
     left: 0;
     right: 0;
     bottom: 0;
-    height: 8px;
+    height: 4px; /* 8 until 2026-10-22, 6 that day; the section bar is 4px (user, 2026-10-23), and the plain bar matches it */
     background: linear-gradient(90deg, #00254b 0%, #0146c7 45%, #2d63fb 100%);
   }
 }

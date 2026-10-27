@@ -127,7 +127,7 @@ const TOL = 10
  * precisely so this number cannot depend on which slide is up.
  */
 const CHROME = [
-  { name: 'controls', x1: 18, y1: 660, x2: 409, y2: 706 },
+  { name: 'controls', x1: 18, y1: 660, x2: 480, y2: 706 }, /* 2026-10-22: the presenter bar carries Edit text and Download, 70px wider */
   { name: 'footer mark', x1: 1172, y1: 660, x2: 1248, y2: 706 },
 ]
 

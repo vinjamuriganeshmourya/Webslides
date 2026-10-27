@@ -42,19 +42,19 @@ const Caret = ({ x, y, h = 6, fill = colors.white, o = 0.8 }: { x: number; y: nu
 const LAB = {
   cobalt: R.cloudMid,
   cobaltDeep: R.tileLo,
-  sky: '#9CC4FB',
+  sky: '#6DAAFF',
   peri: '#5856DC',
-  lav: '#DCE1F1',
+  lav: '#D3E1FB',
   yellow: R.gold,
   orange: '#FC963C',
   red: '#D8352F',
-  sage: '#829983',
+  sage: '#6E9A72',
   navy: R.chassisBot,
   navyLit: R.chassisTop,
   charcoal: '#3E3D45',
-  steel: '#C4CAD8',
+  steel: '#B3C4E6',
   wood: '#E0A86A',
-  cash: '#3BAA5C',
+  cash: '#2ECC71',
   frost: R.frostFront,
 }
 
@@ -361,7 +361,7 @@ export function ClayRack({ w, units }: { w: number; units: UnitState[] }) {
         const y = 18 + i * 34
         const live = u === 'run' || u === 'hot'
         return (
-          <g key={i} {...mo('pulse', i)}>
+          <g key={i}>
             <g style={{ transition: ease }}>
               <Vol id={id} x={14} y={y} w={90} h={27} rx={7} fill={u === 'off' ? LAB.charcoal : LAB.frost} opacity={u === 'idle' ? 0.6 : 1} style={{ transition: ease }} />
               {u !== 'off' && (
@@ -382,6 +382,23 @@ export function ClayRack({ w, units }: { w: number; units: UnitState[] }) {
 }
 
 /** A tenant's badge: a turned tile in the tenant's colour with an office block on it (a customer, no face). */
+/**
+ * A small padlock that still reads as a padlock (user, 2026-10-22: "icons are not completely in
+ * shape, for example the lock"): a thick rounded shackle standing on a rounded body with a keyhole,
+ * drawn in one tone (white on a coloured slice) with a darker inset for depth. Never under 18px.
+ */
+export function ClayLockIcon({ w, tone = '#FFFFFF' }: { w: number; tone?: string }) {
+  return (
+    <ClaySvg w={Math.max(18, w)} vw={40} vh={48}>
+      <path d="M 11 24 V 15 A 9 9 0 0 1 29 15 V 24" fill="none" stroke={tone} strokeWidth={6} strokeLinecap="round" />
+      <rect x={4} y={22} width={32} height={24} rx={6} fill={tone} />
+      <rect x={4} y={34} width={32} height={12} rx={6} fill="#000000" opacity={0.12} data-flat />
+      <circle cx={20} cy={32} r={3.4} fill="#000000" opacity={0.35} data-flat />
+      <rect x={18.4} y={33} width={3.2} height={7} rx={1.6} fill="#000000" opacity={0.35} data-flat />
+    </ClaySvg>
+  )
+}
+
 export function TenantTile({ w, tone }: { w: number; tone: string }) {
   const id = usePrefix()
   return (
@@ -390,7 +407,7 @@ export function TenantTile({ w, tone }: { w: number; tone: string }) {
       <Vol id={id} x={2} y={2} w={60} h={60} rx={16} fill={tone}>
         <Spec id={id} cx={14} cy={12} rx={9} ry={6} o={0.6} />
       </Vol>
-      <g {...mo('hover', 2)}>
+      <g>
         <Vol id={id} x={18} y={14} w={28} h={38} rx={5} fill={colors.white} edge={false} />
         {[0, 1, 2, 3, 4, 5].map((i) => (
           <rect key={i} x={23 + (i % 2) * 11} y={19 + Math.floor(i / 2) * 9} width={7} height={5} rx={1.5} fill={tone} opacity={0.75} />
@@ -411,18 +428,18 @@ export function ClayClipboard({ w }: { w: number }) {
       <Depth id={id} />
       <Shadow id={id} cx={40} cy={94} rx={30} ry={3} o={0.2} />
       {/* the board's own orange */}
-      <Vol id={id} x={6} y={10} w={68} h={82} rx={10} fill={LAB.orange} {...seq('hover', 0.2, 3.4)} />
-      <g {...seq('hover', 0.2, 3.4)}>
+      <Vol id={id} x={6} y={10} w={68} h={82} rx={10} fill={LAB.orange} />
+      <g>
         <Vol id={id} x={14} y={20} w={52} h={64} rx={5} fill={colors.white} edge={false} />
         <rect x={22} y={30} width={30} height={5} rx={2.5} fill={LAB.charcoal} opacity={0.7} />
         <rect x={22} y={42} width={36} height={4} rx={2} fill={LAB.lav} />
         <rect x={22} y={51} width={28} height={4} rx={2} fill={LAB.lav} />
-        <g {...mo('pop', 4)}>
+        <g>
           <circle cx={50} cy={70} r={9} fill={LAB.red} opacity={0.85} />
           <circle cx={50} cy={70} r={9} fill={`url(#${id}-lit)`} />
         </g>
       </g>
-      <Vol id={id} x={26} y={4} w={28} h={14} rx={5} fill={LAB.charcoal} {...seq('hover', 0.2, 3.4)} />
+      <Vol id={id} x={26} y={4} w={28} h={14} rx={5} fill={LAB.charcoal} />
     </ClaySvg>
   )
 }
@@ -440,7 +457,7 @@ export function ClayCalculator({ w }: { w: number }) {
         <rect x={12} y={14} width={44} height={18} rx={4} fill={`url(#${id}-shade)`} opacity={0.5} />
         {Array.from({ length: 12 }, (_, i) =>
           i === 11 ? (
-            <g key={i} {...mo('pop', 2)}>
+            <g key={i}>
               <Vol id={id} x={12 + (i % 3) * 16} y={38 + Math.floor(i / 3) * 13} w={12} h={9} rx={3} fill={LAB.orange} edge={false} />
             </g>
           ) : (
@@ -450,7 +467,7 @@ export function ClayCalculator({ w }: { w: number }) {
       </g>
       {/* the coins' own gold: one phase, so the stack hovers as one */}
       {[0, 1, 2, 3].map((i) => (
-        <g key={i} {...seq('hover', 0.6, 3.4)}>
+        <g key={i}>
           <rect x={67} y={82 - i * 9} width={30} height={8} rx={4} fill={R.goldSide} />
           <ellipse cx={82} cy={82 - i * 9} rx={15} ry={6} fill={R.gold} />
           <ellipse cx={82} cy={82 - i * 9} rx={15} ry={6} fill={`url(#${id}-lit)`} />
@@ -483,7 +500,7 @@ export function ClayItDesk({ w }: { w: number }) {
         <Caret x={77} y={28} h={5} />
       </g>
       {/* the toolbox's own red */}
-      <g {...mo('pulse', 3)}>
+      <g>
         <Slab id={id} x={20} y={70} w={70} h={24} rx={7} fill={LAB.red} d={4} />
         <VolPath id={id} d="M 44 72 V 66 Q 44 62 48 62 H 62 Q 66 62 66 66 V 72 H 61 V 67 H 49 V 72 Z" fill={LAB.red} />
         <rect x={26} y={80} width={56} height={4} rx={2} fill={colors.white} opacity={0.35} />
@@ -500,7 +517,7 @@ export function ClayTicket({ w, struck = false }: { w: number; struck?: boolean 
     <ClaySvg w={w} vw={92} vh={62}>
       <Depth id={id} />
       <Shadow id={id} cx={46} cy={60} rx={40} ry={3} o={0.2} />
-      <g {...mo('hover', 1)}>
+      <g>
         <g>
           <VolPath id={id} d="M 10 6 H 82 Q 88 6 88 12 V 22 A 9 9 0 0 0 88 40 V 50 Q 88 56 82 56 H 10 Q 4 56 4 50 V 40 A 9 9 0 0 0 4 22 V 12 Q 4 6 10 6 Z" fill={LAB.yellow}>
             <rect x={12} y={7} width={68} height={1.6} rx={0.8} fill="#FFFFFF" opacity={0.5} />
@@ -575,12 +592,12 @@ export function ClayAtm({ w, card = false, cash = false, lit = false }: { w: num
       <g>
         <rect x={78} y={86} width={18} height={6} rx={3} fill={LAB.charcoal} />
         {/* the card's own gold */}
-        <rect x={81} y={card ? 74 : 86} width={12} height={card ? 14 : 0} rx={2} fill={LAB.yellow} style={{ transition: ease }} />
+        <rect x={81} y={74} width={12} height={14} rx={2} fill={LAB.yellow} style={{ transformBox: 'view-box', transformOrigin: '87px 88px', transform: `scaleY(${card ? 1 : 0})`, transition: ease }} />
       </g>
       <g>
         <rect x={32} y={130} width={56} height={8} rx={4} fill={LAB.charcoal} />
         {/* the cash note's own green */}
-        <rect x={38} y={cash ? 134 : 132} width={44} height={cash ? 22 : 0} rx={3} fill={LAB.cash} style={{ transition: ease }} />
+        <rect x={38} y={134} width={44} height={22} rx={3} fill={LAB.cash} style={{ transformBox: 'view-box', transformOrigin: '60px 134px', transform: `scaleY(${cash ? 1 : 0})`, transition: ease }} />
       </g>
     </ClaySvg>
   )
@@ -593,7 +610,7 @@ export function ClosedCounter({ w }: { w: number }) {
     <ClaySvg w={w} vw={150} vh={104}>
       <Depth id={id} />
       <Vol id={id} x={4} y={4} w={142} h={58} rx={10} fill={LAB.lav} edge={false} />
-      <g {...mo('hover', 5)}>
+      <g>
         <Vol id={id} x={22} y={12} w={106} h={46} rx={6} fill={LAB.steel} />
         {[0, 1, 2, 3].map((i) => <rect key={i} x={26} y={18 + i * 10} width={98} height={4} rx={2} fill={colors.white} opacity={0.6} />)}
       </g>
@@ -616,7 +633,7 @@ export function ClayMessCounter({ w, served = 0 }: { w: number; served?: number 
     <ClaySvg w={w} vw={250} vh={110} large>
       <Depth id={id} />
       {FOOD.map((f, i) => (
-        <g key={i} {...mo('hover', i)}>
+        <g key={i}>
           <Vol id={id} x={14 + i * 78} y={18} w={66} h={42} rx={14} fill={LAB.steel} edge={false}>
             <Spec id={id} cx={30 + i * 78} cy={30} rx={10} ry={6} o={0.6} />
           </Vol>
@@ -629,7 +646,7 @@ export function ClayMessCounter({ w, served = 0 }: { w: number; served?: number 
       {/* the counter top's own wood */}
       <Vol id={id} x={2} y={56} w={246} h={14} rx={7} fill={LAB.wood} />
       <Slab id={id} x={8} y={68} w={234} h={40} rx={10} fill={LAB.sage} d={5} />
-      <g {...mo('hover', 5)}>
+      <g>
         <Vol id={id} x={210} y={2} w={6} h={30} rx={3} fill={LAB.charcoal} edge={false} />
         <ellipse cx={213} cy={32} rx={9} ry={6} fill={LAB.charcoal} />
         <ellipse cx={213} cy={32} rx={9} ry={6} fill={`url(#${id}-lit)`} />
@@ -645,7 +662,7 @@ export function ClayPlate({ w, portions = 0 }: { w: number; portions?: number })
   return (
     <ClaySvg w={w} vw={60} vh={34}>
       <Depth id={id} sd={2} />
-      <g {...mo('pulse', 2)}>
+      <g>
         <ellipse cx={30} cy={21} rx={28} ry={13} fill={LAB.steel} />
         <ellipse cx={30} cy={19} rx={28} ry={13} fill={LAB.steel} />
         <ellipse cx={30} cy={19} rx={28} ry={13} fill={`url(#${id}-lit)`} />
@@ -695,25 +712,49 @@ export function ClayStove({ w }: { w: number }) {
 export function ClayBand({ w, stretch }: { w: number; stretch: number }) {
   const ease = useEase(640)
   const id = usePrefix()
+  /*
+    THE BAND STRETCHES BY TRANSFORMS ONLY (user 2026-10-22: transform and opacity, 60fps). It is drawn once at
+    its middle stretch (half-width 68, half-height 21, wall 9) as a stadium in three parts, two round caps and
+    the straight middle, each with its own origin: the caps slide out and scale, the middle scales wider and
+    flatter about the centre, the pegs slide with the caps. No x, width or height is ever animated.
+  */
   const spread = 32 + stretch * 72
-  const left = 120 - spread
-  const right = 120 + spread
-  const t = 11 - stretch * 4
   const hh = 24 - stretch * 6
-  const h = seq('hover', 0.3, 3.4)
+  const t = 11 - stretch * 4
+  const dx = spread - 68
+  const sy = hh / 21
+  const sx = spread / 68
+  const inner = (hh - t) / 12
+  const vb: CSSProperties = { transformBox: 'view-box', transition: ease }
+  const capL = (k: number): CSSProperties => ({ ...vb, transformOrigin: '52px 50px', transform: `translateX(${-dx}px) scale(${k})` })
+  const capR = (k: number): CSSProperties => ({ ...vb, transformOrigin: '188px 50px', transform: `translateX(${dx}px) scale(${k})` })
+  const mid = (k: number): CSSProperties => ({ ...vb, transformOrigin: '120px 50px', transform: `scale(${sx}, ${k})` })
+  const stadium = (fill: string, r: number, k: number) => (
+    <>
+      <circle cx={52} cy={50} r={r} fill={fill} style={capL(k)} />
+      <rect x={52} y={50 - r} width={136} height={r * 2} fill={fill} style={mid(k)} />
+      <circle cx={188} cy={50} r={r} fill={fill} style={capR(k)} />
+    </>
+  )
   return (
     <ClaySvg w={w} vw={240} vh={100} large>
       <Depth id={id} />
       <Shadow id={id} cx={120} cy={92} rx={112} ry={5} o={0.2} />
       {/* the board's own wood */}
       <Vol id={id} x={4} y={16} w={232} h={68} rx={18} fill={LAB.wood} />
-      <rect x={left - 14} y={50 - hh} width={right - left + 28} height={hh * 2} rx={hh} fill={LAB.red} className={h.className} style={{ transition: ease, x: left - 14, y: 50 - hh, width: right - left + 28, height: hh * 2, rx: hh, ...h.style } as CSSProperties} />
-      <rect x={left - 14} y={50 - hh} width={right - left + 28} height={hh * 2} rx={hh} fill={`url(#${id}-lit)`} className={h.className} style={{ transition: ease, x: left - 14, y: 50 - hh, width: right - left + 28, height: hh * 2, rx: hh, ...h.style } as CSSProperties} />
-      <rect x={left - 14 + t} y={50 - hh + t} width={right - left + 28 - 2 * t} height={hh * 2 - 2 * t} rx={hh - t} fill={LAB.wood} className={h.className} style={{ transition: ease, x: left - 14 + t, y: 50 - hh + t, width: right - left + 28 - 2 * t, height: hh * 2 - 2 * t, rx: hh - t, ...h.style } as CSSProperties} />
-      <circle cx={left} cy={50} r={10} fill={LAB.navy} className={h.className} style={{ transition: ease, cx: left, ...h.style } as CSSProperties} />
-      <circle cx={left} cy={50} r={10} fill={`url(#${id}-lit)`} className={h.className} style={{ transition: ease, cx: left, ...h.style } as CSSProperties} />
-      <circle cx={right} cy={50} r={10} fill={LAB.navy} className={h.className} style={{ transition: ease, cx: right, ...h.style } as CSSProperties} />
-      <circle cx={right} cy={50} r={10} fill={`url(#${id}-lit)`} className={h.className} style={{ transition: ease, cx: right, ...h.style } as CSSProperties} />
+      <g>
+        {stadium(LAB.red, 21, sy)}
+        {stadium(`url(#${id}-lit)`, 21, sy)}
+        {stadium(LAB.wood, 12, inner)}
+      </g>
+      <g style={{ ...vb, transform: `translateX(${-dx}px)` }}>
+        <circle cx={52} cy={50} r={10} fill={LAB.navy} />
+        <circle cx={52} cy={50} r={10} fill={`url(#${id}-lit)`} />
+      </g>
+      <g style={{ ...vb, transform: `translateX(${dx}px)` }}>
+        <circle cx={188} cy={50} r={10} fill={LAB.navy} />
+        <circle cx={188} cy={50} r={10} fill={`url(#${id}-lit)`} />
+      </g>
     </ClaySvg>
   )
 }
@@ -759,7 +800,7 @@ export function ElectricMeter({ w, value, spin = false }: { w: number; value: nu
         <circle cx={55} cy={56} r={39} fill={R.dialEdge} />
         <circle cx={55} cy={54} r={38} fill={colors.white} />
         <circle cx={55} cy={54} r={38} fill={`url(#${id}-shade)`} opacity={0.25} />
-        <path d="M 26 66 A 31 31 0 1 1 84 66" fill="none" stroke={R.arcGrey} strokeWidth={7} strokeLinecap="round" {...mo('glow', 1)} />
+        <path d="M 26 66 A 31 31 0 1 1 84 66" fill="none" stroke={R.arcGrey} strokeWidth={7} strokeLinecap="round" />
         <path d="M 26 66 A 31 31 0 1 1 84 66" fill="none" stroke={LAB.cobalt} strokeWidth={7} strokeLinecap="round" pathLength={1} strokeDasharray="1" style={{ strokeDashoffset: 1 - Math.max(0, Math.min(1, value)), transition: ease }} />
         <g style={{ transformBox: 'view-box', transformOrigin: '55px 54px', transform: `rotate(${a}deg)`, transition: ease }}>
           <path d="M 55 54 L 52.5 30 L 55 24 L 57.5 30 Z" fill={R.needle} />
@@ -841,9 +882,9 @@ export function ClayFridge({ w }: { w: number }) {
     <ClaySvg w={w} vw={56} vh={100}>
       <Depth id={id} sd={3} />
       <Shadow id={id} cx={28} cy={98} rx={24} ry={3} o={0.22} />
-      <Vol id={id} x={3} y={3} w={50} h={34} rx={9} fill={LAB.sky} {...seq('hover', 0.7, 3.4)} />
-      <Vol id={id} x={3} y={39} w={50} h={58} rx={9} fill={LAB.sky} {...seq('hover', 0.7, 3.4)} />
-      <g {...seq('hover', 0.7, 3.4)}>
+      <Vol id={id} x={3} y={3} w={50} h={34} rx={9} fill={LAB.sky} />
+      <Vol id={id} x={3} y={39} w={50} h={58} rx={9} fill={LAB.sky} />
+      <g>
         <rect x={42} y={12} width={5} height={16} rx={2.5} fill={LAB.charcoal} />
         <rect x={42} y={48} width={5} height={22} rx={2.5} fill={LAB.charcoal} />
       </g>
@@ -859,7 +900,7 @@ export function ClayBill({ w, rows = 3 }: { w: number; rows?: number }) {
     <ClaySvg w={w} vw={72} vh={96}>
       <Depth id={id} />
       <Shadow id={id} cx={36} cy={94} rx={30} ry={3} o={0.2} />
-      <g {...mo('hover', 4)}>
+      <g>
         <VolPath id={id} d="M 10 4 H 62 Q 68 4 68 10 V 90 L 60 84 L 52 90 L 44 84 L 36 90 L 28 84 L 20 90 L 12 84 L 4 90 V 10 Q 4 4 10 4 Z" fill={colors.white} />
         <rect x={13} y={13} width={30} height={6} rx={3} fill={LAB.cobalt} />
         {Array.from({ length: 4 }, (_, i) => (

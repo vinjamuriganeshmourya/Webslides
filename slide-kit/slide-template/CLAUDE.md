@@ -226,6 +226,8 @@ No import-based asset pipeline, no CDN, no image optimisation step, no
   ```tsx
   style={onDark ? { filter: 'brightness(0) invert(1)' } : undefined}
   ```
+  In the footer it is 18px tall (`h-[18px]`), half its old 36px, since
+  2026-10-23: content rule 50, the user's call on Cloud Computing Fundamentals.
 
 ---
 
