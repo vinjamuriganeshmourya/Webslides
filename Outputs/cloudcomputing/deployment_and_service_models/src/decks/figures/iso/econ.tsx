@@ -5,7 +5,7 @@ import { ClaySvg } from '../art'
 import { Slab, drop, lift, useFx } from '../clay-a'
 import { Shadow } from '../depth'
 import { TILE_SKIN } from '../card'
-import { ClayBill, ClayBook, ClayCalculator, ClayClipboard, ClayCoin, ClayCoins, ClayDataCentre, ClayFlats, ClayHouse, ClayInstitution, ClayPhone, ClayRack, Icon3D, LAB, RichCloud } from '../d3/kit'
+import { ClayBill, ClayCalculator, ClayClipboard, ClayCoin, ClayCoins, ClayDataCentre, ClayFlats, ClayHouse, ClayInstitution, ClayPhone, ClayRack, Icon3D, LAB, RichCloud } from '../d3/kit'
 import type { UnitState } from '../art'
 import { pulse, within } from './iso'
 import { AN_W, FIG_W, FigureOnly, IsoAnalogy, MARKS, Mark, PointsFigure, TableCard, Tiles } from './frames'
@@ -136,6 +136,39 @@ function PriceTag({ w, hue = LAB.yellow }: { w: number; hue?: string }) {
   )
 }
 
+/**
+ * A wallet with banknotes (slide 43, 2026-10-27: the user asked for a wallet or a stack of banknotes in
+ * place of the book): two green notes standing out of a graded blue wallet, a flap with a clasp, a
+ * specular on the upper left, a soft ground shadow.
+ */
+function ClayWallet({ w }: { w: number }) {
+  const fx = useFx({ wal: LAB.cobalt, flap: LAB.navy, note: '#3FAE6A', note2: '#5CC487', clasp: LAB.yellow })
+  return (
+    <ClaySvg w={w} vw={140} vh={112}>
+      {fx.defs}
+      <Shadow id={fx.id} cx={70} cy={106} rx={60} ry={5} o={0.24} />
+      <g>
+        <g transform="rotate(-8 50 40)">
+          <rect x={22} y={12} width={78} height={44} rx={5} fill={fx.g('note')} />
+          <circle cx={61} cy={34} r={10} fill="none" stroke="#FFFFFF" strokeWidth={2.4} opacity={0.75} />
+          <rect x={28} y={18} width={14} height={4} rx={2} fill="#FFFFFF" opacity={0.6} />
+        </g>
+        <g transform="rotate(6 80 36)">
+          <rect x={40} y={8} width={78} height={44} rx={5} fill={fx.g('note2')} />
+          <circle cx={79} cy={30} r={10} fill="none" stroke="#FFFFFF" strokeWidth={2.4} opacity={0.8} />
+          <rect x={98} y={14} width={14} height={4} rx={2} fill="#FFFFFF" opacity={0.6} />
+        </g>
+        <rect x={8} y={38} width={124} height={64} rx={14} fill={fx.g('wal')} />
+        <rect x={14} y={39} width={112} height={1.6} rx={0.8} fill="#FFFFFF" opacity={0.4} />
+        <ellipse cx={40} cy={50} rx={24} ry={6} fill={fx.spec} />
+        <path d="M 72 52 H 132 V 84 H 72 Q 62 84 62 74 V 62 Q 62 52 72 52 Z" fill={fx.g('flap')} />
+        <circle cx={80} cy={68} r={7} fill={fx.g('clasp')} />
+        <circle cx={78} cy={66} r={2.4} fill="#FFFFFF" opacity={0.7} />
+      </g>
+    </ClaySvg>
+  )
+}
+
 /** A green approval tick: a turned disc with a white check. */
 function Tick({ w }: { w: number }) {
   const fx = useFx({ ok: colors.success })
@@ -246,7 +279,7 @@ export function EconMap({ lesson }: { lesson: string }) {
       lead="Cloud adoption decisions turn on how spending is structured and who supplies the infrastructure"
       lesson={lesson}
       tiles={[
-        { title: 'CapEx vs OpEx', sub: 'How spend is classified', scene: <EconTile i={0}><ClayBook w={124} /></EconTile> },
+        { title: 'CapEx vs OpEx', sub: 'How spend is classified', scene: <EconTile i={0}><ClayWallet w={120} /></EconTile> },
         { title: 'TCO', sub: 'True multi-year cost of a choice', scene: <EconTile i={1}><ClayCalculator w={92} /></EconTile> },
         { title: 'Pricing models', sub: 'On-demand, committed use, spot', scene: <EconTile i={2}><PriceTag w={64} /></EconTile> },
         { title: 'Providers', sub: 'Global hyperscalers and Indian regional players', scene: <EconTile i={3}><Icon3D name="globe-network" w={140} /></EconTile> },
@@ -487,13 +520,13 @@ function RackInvoiceScene() {
 }
 
 export function CapexAnalogy({ lesson }: { lesson: string }) {
-  return <IsoAnalogy id="capex-analogy" kicker="CapEx vs OpEx" lesson={lesson} everyday={{ label: 'A house on a loan, or rent', scene: <HouseRentScene /> }} cloud={{ label: 'CapEx and OpEx', scene: <RackInvoiceScene /> }} claim="One is an asset, one is a monthly cost" />
+  return <IsoAnalogy id="capex-analogy" kicker="CapEx vs OpEx" lesson={lesson} text="Buying a house needs a large loan and years of EMIs (equated monthly instalments) recorded as an asset, while renting is a monthly expense with nothing recorded, just as CapEx locks value on the balance sheet while OpEx flows straight through the income statement." everyday={{ label: 'A house on a loan, or rent', scene: <HouseRentScene /> }} cloud={{ label: 'CapEx and OpEx', scene: <RackInvoiceScene /> }} />
 }
 
 /* ================================================================== 47 · the layered bar */
 
 const TCO_LAYERS = [
-  { name: 'Sticker price', h: 80, color: colors.brand, a: 0, b: 0 },
+  { name: 'Sticker price', h: 84, color: colors.brand, a: 0, b: 0 },
   { name: 'Staffing', h: 52, color: CUSTOMER, a: 0.12, b: 0.3 },
   { name: 'Power', h: 52, color: LAB.yellow, a: 0.38, b: 0.56 },
   { name: 'Downtime', h: 52, color: LAB.red, a: 0.64, b: 0.82 },
@@ -524,11 +557,15 @@ function TcoScene() {
         </g>
       </svg>
       <At x={bx - 16} y={base - full / 2} cy style={{ transform: 'translate(-100%, -50%)' }}>
-        <Label tone="brand" size={15} strong>True cost of ownership</Label>
+        <Label tone="brand" size={16} strong>True TCO</Label>
+      </At>
+      {/* the base is the price tag itself: a tag hangs on its front (2026-10-27, TR: sticker price at the base) */}
+      <At x={left + W / 2} y={mids[0]} cx cy>
+        <PriceTag w={34} />
       </At>
       {TCO_LAYERS.map((l, i) => (
         <At key={l.name} x={left + W + D + 18} y={mids[i]} cy style={{ opacity: grown[i] > 0.4 ? 1 : 0, transition: 'opacity 420ms cubic-bezier(0.22,1,0.36,1)' }}>
-          <Label size={15} strong>{l.name}</Label>
+          <Label size={15} strong tone={i === 0 ? 'brand' : 'plain'}>{l.name}</Label>
         </At>
       ))}
     </>
@@ -610,7 +647,7 @@ function ServerTcoScene() {
 }
 
 export function TcoAnalogy({ lesson }: { lesson: string }) {
-  return <IsoAnalogy id="tco-analogy" kicker="Total Cost Ownership" lesson={lesson} everyday={{ label: "A phone's price tag", scene: <PhoneTagScene /> }} cloud={{ label: 'Server TCO', scene: <ServerTcoScene /> }} claim="The price tag is only the start" />
+  return <IsoAnalogy id="tco-analogy" kicker="Total Cost Ownership" lesson={lesson} text="A smartphone's price tag ignores the data plan, repairs and accessories bought over its life, just as a server's purchase price ignores the staffing, power and downtime that TCO adds back in." everyday={{ label: "A phone's price tag", scene: <PhoneTagScene /> }} cloud={{ label: 'Server TCO', scene: <ServerTcoScene /> }} />
 }
 
 /* ================================================================== 49 · the steps */
@@ -690,7 +727,18 @@ function Hop({ from, to, k, tone }: { from: [number, number]; to: [number, numbe
   return <span aria-hidden className="pointer-events-none absolute rounded-full" style={{ left: -6, top: -6, width: 12, height: 12, background: tone, boxShadow: `0 0 0 4px ${tone}40`, transform: `translate(${x}px, ${y}px)`, opacity: k > 0 && k < 1 ? 1 : 0 }} />
 }
 
-/** The train pulls in, the walk-up and season-pass holders board, the train fills, the standby holder steps aside, the train leaves. */
+/** A short line of plain text under a label, wrapped to a column (the TR clause the label stands for). */
+function Sub({ x, y, w = 128, children }: { x: number; y: number; w?: number; children: ReactNode }) {
+  return (
+    <At x={x} y={y} w={w} style={{ transform: 'translateX(-50%)' }}>
+      <span className="block text-center text-[14px] font-medium leading-snug" style={{ color: colors.muted }}>
+        {children}
+      </span>
+    </At>
+  )
+}
+
+/** The train pulls in, the general and season-pass holders board, the train fills, the standby holder's seat is given away, the train leaves. */
 function StationScene() {
   const t = useLoop(10000, { mode: 'sawtooth', still: 0.72 })
   const trainX = (within(t, 0.02, 0.28) - 1) * 520 + within(t, 0.8, 1) * 520
@@ -699,78 +747,89 @@ function StationScene() {
   const lit = boarded[0] > 0.99 ? (boarded[1] > 0.99 ? Math.round(filled) : 1) : 0
   const aside = within(t, 0.66, 0.76)
   const RIDERS = [
-    { name: 'Walk-up', hue: LAB.yellow },
-    { name: 'Season pass', hue: colors.brand },
-    { name: 'Standby', hue: colors.teal },
+    { name: 'General ticket', sub: 'Full fare, no planning', hue: LAB.yellow },
+    { name: 'Season pass', sub: 'Costs less, fixed daily route', hue: colors.brand },
+    { name: 'Standby ticket', sub: 'Cheapest, seat can be given away', hue: colors.teal },
   ]
   return (
     <>
-      <div aria-hidden className="pointer-events-none absolute rounded-full" style={{ left: 24, right: 24, top: 125, height: 4, background: colors.line }} />
-      <At x={AN_W / 2} y={36} cx>
+      <div aria-hidden className="pointer-events-none absolute rounded-full" style={{ left: 24, right: 24, top: 112, height: 4, background: colors.line }} />
+      <At x={AN_W / 2} y={24} cx>
         <div style={{ transform: `translateX(${trainX}px)` }}>
-          <Train w={300} lit={lit} />
+          <Train w={280} lit={lit} />
         </div>
       </At>
       {boarded.map((b, i) => (
-        <Hop key={i} from={[COLS[i], 164]} to={[COLS[i] + 20, 96]} k={b} tone={RIDERS[i].hue} />
+        <Hop key={i} from={[COLS[i], 140]} to={[COLS[i] + 20, 76]} k={b} tone={RIDERS[i].hue} />
       ))}
       {RIDERS.map((r, i) => (
-        <At key={r.name} x={COLS[i]} y={168} cx style={i === 2 ? { opacity: 1 - aside * 0.5 } : undefined}>
-          <div style={i === 2 ? { transform: `translateY(${aside * 8}px)` } : undefined}>
-            <TrainTicket w={84} hue={r.hue} dashed={i === 2} />
+        <At key={r.name} x={COLS[i]} y={126} cx style={i === 2 ? { opacity: 1 - aside * 0.5 } : undefined}>
+          <div style={i === 2 ? { transform: `translateY(${aside * 6}px)` } : undefined}>
+            <TrainTicket w={76} hue={r.hue} dashed={i === 2} />
           </div>
         </At>
       ))}
       {RIDERS.map((r, i) => (
-        <At key={r.name} x={COLS[i]} y={240} cx>
-          <Label size={14} tone="muted">{r.name}</Label>
+        <At key={r.name} x={COLS[i]} y={186} cx>
+          <Label size={14} strong>{r.name}</Label>
         </At>
+      ))}
+      {RIDERS.map((r, i) => (
+        <Sub key={r.name} x={COLS[i]} y={214}>{r.sub}</Sub>
       ))}
     </>
   )
 }
 
-/** The same three bargains as compute: the on-demand and committed blocks each send their work to a rack, the racks fill, and the spot block is reclaimed. */
+/** The same three bargains as compute: the on-demand and committed blocks each send their work to a rack, the racks fill, and the spot block is reclaimed; the price falls left to right. */
 function TokensScene() {
   const t = useLoop(10000, { mode: 'sawtooth', still: 0.72 })
   const sent = [within(t, 0.34, 0.44), within(t, 0.46, 0.56)]
   const fill = within(t, 0.58, 0.66)
   const reclaimed = pulse(t, 0.66, 0.76, 0.9, 1)
-  const names = ['On-demand', 'Committed', 'Spot']
+  const names = ['On-demand', 'Committed use', 'Spot']
+  const prices = ['Full price', 'Lower price', 'Lowest price']
   const units = (i: number): UnitState[] => [i < 2 && sent[i] > 0.99 ? 'run' : 'idle', fill > 0.5 ? 'run' : 'idle', fill > 0.5 ? 'run' : 'idle']
   return (
     <>
       {COLS.map((x, i) => (
-        <At key={i} x={x} y={30} cx>
-          <ClayRack w={72} units={units(i)} />
+        <At key={i} x={x} y={24} cx>
+          <ClayRack w={64} units={units(i)} />
         </At>
       ))}
       {[0, 1].map((i) => (
-        <Arrow key={i} x1={COLS[i]} y1={160} x2={COLS[i]} y2={120} tone={sent[i] > 0 ? colors.brand : colors.line} />
+        <Arrow key={i} x1={COLS[i]} y1={138} x2={COLS[i]} y2={108} tone={sent[i] > 0 ? colors.brand : colors.line} />
       ))}
       {[0, 1].map((i) => (
-        <Hop key={i} from={[COLS[i], 160]} to={[COLS[i], 122]} k={sent[i]} tone={colors.brand} />
+        <Hop key={i} from={[COLS[i], 138]} to={[COLS[i], 110]} k={sent[i]} tone={colors.brand} />
       ))}
       {names.map((n, i) => (
-        <Foot key={n} x={COLS[i]} y={226} style={i === 2 ? { opacity: 1 - reclaimed * 0.65 } : undefined}>
-          <div style={i === 2 ? { transform: `translateY(${-reclaimed * 22}px)` } : undefined}>
-            <Block w={46} h={42} d={10} hue={i === 2 ? colors.teal : colors.brand} />
+        <Foot key={n} x={COLS[i]} y={192} style={i === 2 ? { opacity: 1 - reclaimed * 0.65 } : undefined}>
+          <div style={i === 2 ? { transform: `translateY(${-reclaimed * 18}px)` } : undefined}>
+            <Block w={44} h={38} d={10} hue={i === 2 ? colors.teal : colors.brand} />
           </div>
         </Foot>
       ))}
       {names.map((n, i) => (
-        <At key={n} x={COLS[i]} y={240} cx>
+        <At key={n} x={COLS[i]} y={200} cx>
           <Label size={14} tone={i === 2 && reclaimed > 0.5 ? 'bad' : 'brand'} strong>
             {n}
           </Label>
         </At>
       ))}
+      {prices.map((p, i) => (
+        <Sub key={p} x={COLS[i]} y={228}>{p}</Sub>
+      ))}
+      <Arrow x1={COLS[0] - 30} y1={262} x2={COLS[1] + 50} y2={262} tone={colors.brand} dashed />
+      <At x={COLS[1] + 62} y={262} cy>
+        <Label size={14} tone="brand" strong>Price falls</Label>
+      </At>
     </>
   )
 }
 
 export function PricingAnalogy({ lesson }: { lesson: string }) {
-  return <IsoAnalogy id="pricing-analogy" kicker="Three Pricing Models" lesson={lesson} everyday={{ label: 'Three kinds of train ticket', scene: <StationScene /> }} cloud={{ label: 'On-demand, committed, spot', scene: <TokensScene /> }} claim="Less flexibility, lower price" />
+  return <IsoAnalogy id="pricing-analogy" kicker="Three Pricing Models" lesson={lesson} text="A general train ticket costs full fare and needs no planning, a season pass costs less for a fixed daily route, and a standby ticket is cheapest but the seat can be given away, just as on-demand, committed use and spot trade flexibility for price." everyday={{ label: 'Three kinds of train ticket', scene: <StationScene /> }} cloud={{ label: 'On-demand, committed use, spot', scene: <TokensScene /> }} />
 }
 
 /* ================================================================== 51 · compared */

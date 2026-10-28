@@ -4,7 +4,7 @@ import { Arrow, At, Label, Traveller, useLoop } from '../scene'
 import { ClaySvg } from '../art'
 import { Slab, drop, lift, useFx } from '../clay-a'
 import { Shadow } from '../depth'
-import { ClayClock, ClayLaptop, ClayMeter, ClayRack, ClayTaxi, Icon3D, LAB } from '../d3/kit'
+import { ClayClock, ClayLaptop, ClayMeter, ClayParkedCar, ClayRack, ClayTaxi, Icon3D, LAB } from '../d3/kit'
 import { pulse, within } from './iso'
 import { AN_W, Chips, FigureOnly, IsoAnalogy, PointsFigure, TableCard } from './frames'
 
@@ -425,11 +425,14 @@ export function FaasTimeline({ lesson }: { lesson: string }) {
 
 /* ================================================================== 37 · a cab for one trip */
 
-/** The cab arrives, one rider boards at the stop, the meter over its roof runs only for the trip, the cab leaves. */
+/**
+ * The TR's analogy (2026-10-27): an owned car stands idle in its bay; the traveller books a cab only when
+ * travel is needed, it arrives, the meter over its roof runs only for that ride, the cab leaves.
+ */
 function OneTripScene() {
   const t = useLoop(LAP, { mode: 'sawtooth', still: 0.62 })
   const LANE = AN_W - 48
-  const CAB = 150
+  const CAB = 140
   const STOP = (LANE - CAB) / 2
   const cabX = within(t, 0.05, 0.3) * STOP + within(t, 0.46, 0.86) * STOP
   const cabOn = within(t, 0.0, 0.1) * (1 - within(t, 0.86, 0.95))
@@ -438,30 +441,43 @@ function OneTripScene() {
   const running = t > 0.46 && t < 0.86
   return (
     <>
-      <At x={24} y={30}>
-        <div className="relative" style={{ width: LANE, height: 176 }}>
+      <At x={100} y={26} cx>
+        <Col gap={6}>
+          <div style={{ opacity: 0.55 }}>
+            <ClayParkedCar w={112} />
+          </div>
+          <Label size={14} tone="muted">
+            Owned car, idle
+          </Label>
+        </Col>
+      </At>
+      <At x={340} y={22} cx>
+        <Col gap={4}>
+          <div style={{ opacity: 1 - boarded * 0.6 }}>
+            <Icon3D name="student-bag" w={40} />
+          </div>
+          <Label size={14} tone="brand" strong>
+            Booked only when needed
+          </Label>
+        </Col>
+      </At>
+      <At x={24} y={138}>
+        <div className="relative" style={{ width: LANE, height: 128 }}>
           <div style={{ position: 'absolute', left: 0, bottom: 0 }}>
             <Road w={LANE} />
           </div>
           <div style={{ position: 'absolute', left: 0, bottom: 14, transform: `translateX(${cabX}px)`, opacity: cabOn }}>
-            <Col gap={4}>
-              <div style={{ opacity: running ? 1 : 0.5, transition: `opacity 420ms ${EASE}` }}>
-                <ClayMeter w={46} value={trip} />
+            <Col gap={2}>
+              <div className="flex items-center" style={{ gap: 6, opacity: running ? 1 : 0.5, transition: `opacity 420ms ${EASE}` }}>
+                <ClayMeter w={34} value={trip} />
+                <Label size={14} tone={running ? 'brand' : 'muted'} strong={running}>
+                  Pay just for that ride
+                </Label>
               </div>
               <ClayTaxi w={CAB} />
             </Col>
           </div>
         </div>
-      </At>
-      <At x={AN_W / 2} y={218} cx>
-        <div style={{ opacity: 1 - boarded, transform: `translateY(${-boarded * 10}px)` }}>
-          <Icon3D name="student-bag" w={44} />
-        </div>
-      </At>
-      <At x={AN_W / 2 + 34} y={246}>
-        <Label size={14} tone="muted">
-          The stop
-        </Label>
       </At>
     </>
   )
@@ -476,10 +492,15 @@ function OneRunScene() {
   const running = t > 0.46 && t < 0.86
   return (
     <>
-      <At x={196} y={26} cx>
+      <At x={150} y={24} cx>
         <div style={{ opacity: 0.25 + flash * 0.75, transition: `opacity 300ms ${EASE}` }}>
           <Bolt w={50} burst={flash} />
         </div>
+      </At>
+      <At x={186} y={56} cy>
+        <Label size={14} tone="plain" strong>
+          Trigger
+        </Label>
       </At>
       <At x={AN_W / 2} y={104} cx>
         <Col gap={0}>
@@ -494,7 +515,7 @@ function OneRunScene() {
       </At>
       <At x={AN_W / 2} y={236} cx>
         <Label size={14} tone="brand" strong>
-          The platform
+          Billing counts only execution time
         </Label>
       </At>
     </>
@@ -502,7 +523,7 @@ function OneRunScene() {
 }
 
 export function FaasAnalogy({ lesson }: { lesson: string }) {
-  return <IsoAnalogy id="faas-analogy" kicker="FaaS And Serverless" lesson={lesson} everyday={{ label: 'A cab for one trip', scene: <OneTripScene /> }} cloud={{ label: 'Function as a Service', scene: <OneRunScene /> }} claim="Pay only while it runs" />
+  return <IsoAnalogy id="faas-analogy" kicker="FaaS And Serverless" lesson={lesson} text="Booking a cab only when travel is needed and paying just for that ride, instead of owning an idle car, mirrors FaaS: code runs only on a trigger and billing counts only execution time." everyday={{ label: 'A cab only when travel is needed', scene: <OneTripScene /> }} cloud={{ label: 'FaaS: code runs only on a trigger', scene: <OneRunScene /> }} />
 }
 
 /* ================================================================== 38 · the model service */
@@ -678,7 +699,7 @@ function ConsultScene() {
         <Col gap={8}>
           <Icon3D name="beyond-scientist" w={112} />
           <Label size={14} tone="brand" strong>
-            The specialist
+            Specialist doctor
           </Label>
         </Col>
       </At>
@@ -686,7 +707,7 @@ function ConsultScene() {
         <Col gap={12}>
           <GhostHospital w={92} />
           <Label size={14} tone="muted">
-            Not built
+            No hospital built
           </Label>
         </Col>
       </At>
@@ -708,7 +729,7 @@ function ApiCallScene() {
         <Col gap={10}>
           <GhostRacks w={100} />
           <Label size={14} tone="muted">
-            Not built
+            No model built
           </Label>
         </Col>
       </At>
@@ -737,7 +758,7 @@ function ApiCallScene() {
       </At>
       <At x={350} y={226} cx>
         <Label size={14} tone="brand" strong>
-          The provider's GPUs
+          Provider's trained model
         </Label>
       </At>
     </>
@@ -745,7 +766,7 @@ function ApiCallScene() {
 }
 
 export function AiMlAnalogy({ lesson }: { lesson: string }) {
-  return <IsoAnalogy id="aiml-analogy" kicker="AI ML As Service" lesson={lesson} everyday={{ label: 'One consultation, no hospital', scene: <ConsultScene /> }} cloud={{ label: 'AI/ML-as-a-Service', scene: <ApiCallScene /> }} claim="Use the intelligence, skip the building" />
+  return <IsoAnalogy id="aiml-analogy" kicker="AI ML As Service" lesson={lesson} text="Consulting a specialist doctor for one diagnosis instead of building a hospital, paying only for that consultation, just as AI/ML-as-a-Service delivers intelligence via API without building the model." everyday={{ label: 'One diagnosis, pay only for that consultation', scene: <ConsultScene /> }} cloud={{ label: 'AI/ML-as-a-Service: intelligence via API', scene: <ApiCallScene /> }} />
 }
 
 /* ================================================================== 41 · the full spectrum */

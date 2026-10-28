@@ -1,11 +1,11 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { colors } from '@/design/tokens'
-import { Arrow, At, Label, useLoop } from '../scene'
+import { Arrow, At, BOX_W, Card, Label, useLoop } from '../scene'
 import { ClaySvg } from '../art'
 import { R, Shadow, BlurDef, usePrefix } from '../depth'
 import { ClayBalance, ClayBill, ClayBook, ClayCoins, ClayDataCentre, ClayInstitution, ClayLaptop, ClayPadlock, ClayTools, Icon3D, LAB, TenantTile } from '../d3/kit'
 import { pulse, within } from './iso'
-import { FigureOnly, IsoAnalogy, MARKS, Mark, PointsFigure, Tiles } from './frames'
+import { FigureOnly, IsoAnalogy, MARKS, Mark, Points, PointsFigure, Tiles } from './frames'
 
 /**
  * SECTION 2 · MULTI-CLOUD (reference frames 18 to 22), in session 1's 3D look
@@ -128,19 +128,27 @@ function MultiScene() {
   )
 }
 
+/** 2026-10-27 (the user): the TR's lead and three bullets as plain points, no figure; `MultiScene` stays for reuse. */
 export function MultiCloud({ lesson }: { lesson: string }) {
-  return <FigureOnly id="multicloud" kicker="Multi-Cloud Defined" title="Multiple Providers Together" lead="Multi-cloud means running workloads across two or more independent public providers at once, unlike hybrid cloud, which mixes public with private infrastructure" lesson={lesson} figure={<MultiScene />} h={380} />
+  return (
+    <Card id="multicloud" kicker="Multi-Cloud Defined" title="Multiple Providers Together" lead="Multi-cloud means running workloads across two or more independent public providers at once, unlike hybrid cloud, which mixes public with private infrastructure" lesson={lesson}>
+      <div style={{ width: BOX_W }}>
+        <Points items={WORK.map((w) => w.line)} width={BOX_W} size={22} gap={16} />
+      </div>
+    </Card>
+  )
 }
+void MultiScene
 
 /* ================================================================== 19 · multi-cloud against hybrid */
 
 const HALF = 555
-const VS_H = 420
+const VS_H = 350
 
 /** Left: one company linked to three distinct providers' data centres, each with its own mark. */
 function MultiSide({ t }: { t: number }) {
-  const rows = [140, 245, 350]
-  const CY = 245
+  const rows = [105, 195, 285]
+  const CY = 195
   const TRUNK = 147
   const SPLIT = 195
   const END = 266
@@ -181,7 +189,7 @@ function MultiSide({ t }: { t: number }) {
 function HybridSide({ t }: { t: number }) {
   const PX = 690
   const PUB = 960
-  const CY = 235
+  const CY = 185
   const there: Pt[] = [[786, CY - 16], [877, CY - 16]]
   const back: Pt[] = [[877, CY + 16], [786, CY + 16]]
   return (
@@ -232,7 +240,7 @@ function VsScene() {
 }
 
 export function MultiVsHybrid({ lesson }: { lesson: string }) {
-  return <FigureOnly id="multi-vs-hybrid" kicker="Multi-Cloud Defined" title="Multiple Providers Together" lesson={lesson} figure={<VsScene />} h={VS_H} />
+  return <FigureOnly id="multi-vs-hybrid" kicker="Multi-Cloud Defined" title="Multiple Providers Together" lead="Multi-cloud means running workloads across two or more independent public providers at once, unlike hybrid cloud, which mixes public with private infrastructure" lesson={lesson} figure={<VsScene />} h={VS_H} />
 }
 
 /* ================================================================== 20 · two banks for your savings */
@@ -349,7 +357,7 @@ function TwoProvidersScene() {
 }
 
 export function MultiAnalogy({ lesson }: { lesson: string }) {
-  return <IsoAnalogy id="multicloud-analogy" kicker="Multi-Cloud Defined" lesson={lesson} everyday={{ label: 'Two banks for your savings', scene: <BanksScene /> }} cloud={{ label: 'Multi-cloud', scene: <TwoProvidersScene /> }} claim="One fails, the work carries on" />
+  return <IsoAnalogy id="multicloud-analogy" kicker="Multi-Cloud Defined" lesson={lesson} everyday={{ label: 'Two banks for your savings', scene: <BanksScene /> }} text="Spreading savings across two different banks guards against one bank freezing withdrawals or raising fees, just as multi-cloud spreads workloads across providers so one outage or price hike does not stop operations." cloud={{ label: 'Multi-cloud', scene: <TwoProvidersScene /> }} />
 }
 
 /* ================================================================== 21 · motivations */

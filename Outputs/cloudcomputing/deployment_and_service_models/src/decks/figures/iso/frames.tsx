@@ -69,10 +69,13 @@ export const AN_MID = BOX_W - AN_W * 2
  * isometric stages, the everyday scene and the cloud scene, each a short
  * self-running loop whose motion is the analogy; `SAME IDEA` between them;
  * the two labels under; the claim in a pill. Every string is the reference's.
+ * `text` (2026-10-27, the TR comparison): the TR's own analogy sentence as the
+ * lead, the spaced dash turned into a comma (content rule 1); a slide that
+ * carries it drops the invented claim pill.
  */
-export function IsoAnalogy({ id, kicker, lesson, title = 'Analogy', everyday, cloud, claim }: { id: string; kicker: string; lesson: string; title?: string; everyday: { label: string; scene: ReactNode }; cloud: { label: string; scene: ReactNode }; claim: string }) {
+export function IsoAnalogy({ id, kicker, lesson, title = 'Analogy', text, everyday, cloud, claim }: { id: string; kicker: string; lesson: string; title?: string; text?: string; everyday: { label: string; scene: ReactNode }; cloud: { label: string; scene: ReactNode }; claim?: string }) {
   return (
-    <Card id={id} kicker={kicker} title={title} lesson={lesson}>
+    <Card id={id} kicker={kicker} title={title} lead={text} lesson={lesson}>
       <div className="flex items-start" style={{ width: BOX_W }}>
         <div className="flex flex-col items-center gap-2.5" style={{ width: AN_W }}>
           <Stage w={AN_W} h={AN_H} active={false}>
@@ -103,9 +106,11 @@ export function IsoAnalogy({ id, kicker, lesson, title = 'Analogy', everyday, cl
           </Label>
         </div>
       </div>
-      <div className="mx-auto mt-3 w-fit rounded-pill px-6 py-2 font-heading text-[20px] font-semibold" style={{ background: colors.brand, color: colors.white, boxShadow: `0 10px 24px -14px ${colors.brand}` }}>
-        {claim}
-      </div>
+      {claim && (
+        <div className="mx-auto mt-3 w-fit rounded-pill px-6 py-2 font-heading text-[20px] font-semibold" style={{ background: colors.brand, color: colors.white, boxShadow: `0 10px 24px -14px ${colors.brand}` }}>
+          {claim}
+        </div>
+      )}
     </Card>
   )
 }

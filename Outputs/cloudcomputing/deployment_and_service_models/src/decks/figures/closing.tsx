@@ -43,7 +43,8 @@ const BODY_H = 420
 const STUDENT = { w: 270, h: 405, right: 1160 }
 
 /** `kicker` and `title` override the frame for a recap of the previous session (Deployment & Service Models, reference slide 3): the same layout, the previous session's name as the title. */
-export function Takeaways({ lesson, items, kicker, title = 'Key Takeaways', id = 'takeaways' }: { lesson: string; items: { title: string; sub?: string }[]; kicker?: string; title?: string; id?: string }) {
+/** `art` (2026-10-28, the user): the recap frame shows the presenter instead of the student, in the same box (both files are 2:3). */
+export function Takeaways({ lesson, items, kicker, title = 'Key Takeaways', id = 'takeaways', art = '/assets/takeaways/student.png' }: { lesson: string; items: { title: string; sub?: string }[]; kicker?: string; title?: string; id?: string; art?: string }) {
   return (
     <Card id={id} kicker={kicker ?? lesson} title={title} lesson={lesson}>
       <div className="relative" style={{ width: BOX_W, height: BODY_H }}>
@@ -59,7 +60,7 @@ export function Takeaways({ lesson, items, kicker, title = 'Key Takeaways', id =
         </ol>
         {/* her foot at the slide's bottom edge: 720 - 221 (the body's top) - her height */}
         <img
-          src="/assets/takeaways/student.png"
+          src={art}
           alt=""
           draggable={false}
           className="pointer-events-none absolute select-none"
