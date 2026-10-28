@@ -1,9 +1,9 @@
 import { useId, type CSSProperties, type ReactNode } from 'react'
 import { colors } from '@/design/tokens'
 import { Arrow, At, Label, Traveller, useCycle, useLoop } from '../scene'
-import { ClayDataCentre, ClayHouse, ClayNo, ClayPadlock, ClayRack, ClayTaxi, ClayTicket, Icon3D, LAB, RichCloud, TenantTile } from '../d3/kit'
+import { ClayDataCentre, ClayHouse, ClayPadlock, ClayRack, ClayTaxi, ClayTicket, ClayTools, Icon3D, LAB, RichCloud, TenantTile } from '../d3/kit'
 import { TILE_SKIN } from '../card'
-import { ISO, beatOf, pulse, within } from './iso'
+import { ISO, pulse, within } from './iso'
 import { Dot, FigureOnly, IsoAnalogy, PointsFigure, TableCard } from './frames'
 
 /**
@@ -66,6 +66,71 @@ function Pkt({ a, b, t, tone = colors.brand, size = 12, on = true, square = fals
       style={{ width: size, height: size, background: tone, boxShadow: square ? `0 0 0 2px ${colors.white}, 0 4px 10px -2px ${tone}` : `0 0 0 4px ${tone}40`, transform: `translate(${x - size / 2}px, ${y - size / 2}px)`, opacity: on ? fade : 0 }}
     />
   )
+}
+
+/**
+ * THE TR'S CLOUD (2026-10-27, the TR comparison): the soft pale-blue cloud the
+ * TR's own diagrams set their servers in, `w` by `h` px, drawn as one shape
+ * (overlapping lobes in one fill) on a cool shadow. A backdrop: objects sit on it.
+ */
+function CloudBack({ x, y, w, h }: { x: number; y: number; w: number; h: number }) {
+  const id = useId().replace(/:/g, '')
+  return (
+    <svg aria-hidden className="pointer-events-none absolute" width={w} height={h} viewBox="0 0 400 220" preserveAspectRatio="none" style={{ left: x, top: y, overflow: 'visible', filter: 'drop-shadow(0 14px 18px rgba(31,64,140,0.16))' }}>
+      <defs>
+        <linearGradient id={`${id}-c`} x1="0" y1="0" x2="0" y2="220" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#E3EEFF" />
+          <stop offset="1" stopColor="#BCD5FB" />
+        </linearGradient>
+      </defs>
+      <g fill={`url(#${id}-c)`}>
+        <rect x={12} y={108} width={376} height={108} rx={54} />
+        <circle cx={112} cy={118} r={70} />
+        <circle cx={214} cy={92} r={88} />
+        <circle cx={306} cy={128} r={64} />
+      </g>
+    </svg>
+  )
+}
+
+/** A connector in the TR's elbow style: straight segments through `pts`, the last one ending in a head. */
+function Elbow({ pts, tone = colors.ink, width = 2, dashed = false }: { pts: [number, number][]; tone?: string; width?: number; dashed?: boolean }) {
+  const a = pts[pts.length - 2]
+  const b = pts[pts.length - 1]
+  return (
+    <>
+      {pts.length > 2 && (
+        <svg aria-hidden className="pointer-events-none absolute inset-0" style={{ overflow: 'visible' }} width="100%" height="100%">
+          <polyline points={pts.slice(0, -1).map((p) => p.join(',')).join(' ')} fill="none" stroke={tone} strokeWidth={width} strokeLinejoin="round" strokeLinecap="round" strokeDasharray={dashed ? '6 5' : undefined} />
+        </svg>
+      )}
+      <Arrow x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} tone={tone} width={width} dashed={dashed} />
+    </>
+  )
+}
+
+/** A packet along a polyline at phase `t` (0..1), by transform only, fading at both ends. */
+function PathPkt({ pts, t, tone = colors.brand, size = 11, on = true }: { pts: [number, number][]; t: number; tone?: string; size?: number; on?: boolean }) {
+  const segs = pts.slice(1).map((p, i) => Math.hypot(p[0] - pts[i][0], p[1] - pts[i][1]))
+  const total = segs.reduce((x, y) => x + y, 0)
+  let d = t * total
+  let i = 0
+  while (i < segs.length - 1 && d > segs[i]) d -= segs[i++]
+  const k = segs[i] ? Math.min(1, d / segs[i]) : 0
+  const x = pts[i][0] + (pts[i + 1][0] - pts[i][0]) * k
+  const y = pts[i][1] + (pts[i + 1][1] - pts[i][1]) * k
+  const fade = Math.max(0, Math.min(1, t * 8, (1 - t) * 8))
+  return <span aria-hidden className="pointer-events-none absolute left-0 top-0 rounded-full" style={{ width: size, height: size, background: tone, boxShadow: `0 0 0 4px ${tone}40`, transform: `translate(${x - size / 2}px, ${y - size / 2}px)`, opacity: on ? fade : 0 }} />
+}
+
+/** The provider's server stack (the library render), lit or dimmed. */
+function Stack3D({ w, dim = false }: { w: number; dim?: boolean }) {
+  return <Icon3D name="server-stack" w={w} dim={dim} />
+}
+
+/** An enterprise's own server: a tall dark tower (the TR's tower icon). */
+function Tower({ w }: { w: number }) {
+  return <ClayRack w={w} units={['run', 'run', 'run', 'run']} />
 }
 
 /**
@@ -164,9 +229,9 @@ function Oven({ w, on }: { w: number; on: boolean }) {
  * (its link, its chip, its objects).
  */
 const MAP_X = [225, 445, 665, 885]
-const MAP_BASE = 206
+const MAP_BASE = 158
 /* the top of each site's tallest object, where its link from the node stops */
-const MAP_TOP = [107, 100, 146, 127]
+const MAP_TOP = [59, 66, 98, 79]
 
 export function DeployMap({ lesson }: { lesson: string }) {
   const t = useLoop(12000, { mode: 'pingpong', still: 0.34 })
@@ -180,14 +245,14 @@ export function DeployMap({ lesson }: { lesson: string }) {
   ]
   const op = (i: number): CSSProperties => ({ opacity: lit === i ? 1 : 0.45, transition: `opacity 420ms ${EASE}` })
   return (
-    <FigureOnly id="deploy-map" kicker="Deployment Models Map" title="Four Ways To Deploy" lead="Every workload needs infrastructure somewhere, and no single arrangement of ownership, location and sharing suits every organisation's control and compliance needs" lesson={lesson} h={392}>
-      <At x={555} y={24} cx>
+    <FigureOnly id="deploy-map" kicker="Deployment Models Map" title="Four Ways To Deploy" lead={['A cloud deployment model defines who owns the infrastructure, where it is hosted, and who has access to it.', 'Different organisations choose different deployment models based on their control, security, scalability, and sharing requirements.', 'Let’s explore the four major deployment models.']} lesson={lesson} h={286}>
+      <At x={555} y={12} cx>
         <Label tone="solid" size={16} strong>
           Infrastructure Choice
         </Label>
       </At>
       {MAP_X.map((x, i) => (
-        <Arrow key={i} x1={555} y1={52} x2={x} y2={i === 2 ? 168 : MAP_TOP[i] - 3} tone={lit === i ? colors.brand : colors.line} width={2} />
+        <Arrow key={i} x1={555} y1={40} x2={x} y2={i === 2 ? 120 : MAP_TOP[i] - 3} tone={lit === i ? colors.brand : colors.line} width={2} />
       ))}
       {/* public: the provider's one data centre */}
       <Put x={MAP_X[0]} b={MAP_BASE} style={op(0)}>
@@ -196,7 +261,7 @@ export function DeployMap({ lesson }: { lesson: string }) {
       {/* community: one shared cloud over three members */}
       <Put x={MAP_X[1]} b={MAP_BASE} style={op(1)}>
         <div className="flex flex-col items-center gap-1.5">
-          <RichCloud w={100} />
+          <RichCloud w={80} />
           <div className="flex gap-1.5">
             {TENANTS.map((c) => (
               <TenantTile key={c} w={32} tone={c} />
@@ -209,7 +274,7 @@ export function DeployMap({ lesson }: { lesson: string }) {
         <TenantTile w={60} tone={colors.brand} />
       </Put>
       <div className="absolute inset-0" style={op(2)}>
-        <Arrow x1={MAP_X[2] - 37} y1={176} x2={MAP_X[2] + 3} y2={176} both tone={colors.brand} width={2} />
+        <Arrow x1={MAP_X[2] - 37} y1={128} x2={MAP_X[2] + 3} y2={128} both tone={colors.brand} width={2} />
       </div>
       <Put x={MAP_X[2] + 53} b={MAP_BASE} style={op(2)}>
         <RichCloud w={84} />
@@ -222,23 +287,23 @@ export function DeployMap({ lesson }: { lesson: string }) {
         <ClayPadlock w={32} />
       </Put>
       {/* the rail, its stops, and the pointer that walks it */}
-      <div aria-hidden className="pointer-events-none absolute rounded-full" style={{ left: 200, top: 230, width: 710, height: 4, background: colors.line }} />
+      <div aria-hidden className="pointer-events-none absolute rounded-full" style={{ left: 200, top: 182, width: 710, height: 4, background: colors.line }} />
       {MAP_X.map((x, i) => (
-        <span key={x} aria-hidden className="pointer-events-none absolute rounded-full" style={{ left: x - 5, top: 227, width: 10, height: 10, background: lit === i ? colors.brand : '#B9CBEF', transition: `background 420ms ${EASE}` }} />
+        <span key={x} aria-hidden className="pointer-events-none absolute rounded-full" style={{ left: x - 5, top: 179, width: 10, height: 10, background: lit === i ? colors.brand : '#B9CBEF', transition: `background 420ms ${EASE}` }} />
       ))}
-      <span aria-hidden className="pointer-events-none absolute left-0 top-0 rounded-full" style={{ width: 18, height: 18, background: colors.brand, boxShadow: `0 0 0 5px ${colors.brand}33, 0 4px 10px -2px ${colors.brand}`, transform: `translate(${MAP_X[0] - 9 + pos * 220}px, 223px)` }} />
-      <At x={188} y={232} cy style={{ transform: 'translate(-100%, -50%)' }}>
+      <span aria-hidden className="pointer-events-none absolute left-0 top-0 rounded-full" style={{ width: 18, height: 18, background: colors.brand, boxShadow: `0 0 0 5px ${colors.brand}33, 0 4px 10px -2px ${colors.brand}`, transform: `translate(${MAP_X[0] - 9 + pos * 220}px, 175px)` }} />
+      <At x={188} y={184} cy style={{ transform: 'translate(-100%, -50%)' }}>
         <Label tone="brand" size={14} strong mono>
           FULLY SHARED
         </Label>
       </At>
-      <At x={922} y={232} cy>
+      <At x={922} y={184} cy>
         <Label tone="brand" size={14} strong mono>
           FULLY DEDICATED
         </Label>
       </At>
       {sites.map((s, i) => (
-        <At key={s.title} x={MAP_X[i]} y={252} cx w={200}>
+        <At key={s.title} x={MAP_X[i]} y={200} cx w={200}>
           <div className="flex flex-col items-center gap-1 text-center">
             <Label tone={lit === i ? 'brand' : 'plain'} size={16} strong>
               {s.title}
@@ -306,7 +371,7 @@ export function PublicCloud({ lesson }: { lesson: string }) {
       id="public"
       kicker="Public Cloud"
       title="Shared Multi-Tenant Infrastructure"
-      lead="A provider such as Amazon Web Services (AWS) builds and operates the data centres, then rents capacity to any customer over the internet on shared hardware"
+      lead="A public cloud is a cloud environment where a cloud provider owns and manages the infrastructure, and multiple customers use its resources over the internet"
       lesson={lesson}
       points={['Infrastructure owned and run entirely by the provider', 'Many tenants share hardware, isolated logically from each other', 'Capacity scales rapidly across resources pooled across customers', 'Best fit: variable workloads, fast launch, low compliance limits']}
       figure={<PublicScene />}
@@ -403,19 +468,22 @@ function TenantRackScene() {
 }
 
 export function PublicAnalogy({ lesson }: { lesson: string }) {
-  return <IsoAnalogy id="public-analogy" kicker="Public Cloud" lesson={lesson} everyday={{ label: 'A shared cab', scene: <CabScene /> }} cloud={{ label: 'Public cloud', scene: <TenantRackScene /> }} claim="Many riders share one vehicle" />
+  return <IsoAnalogy id="public-analogy" kicker="Public Cloud" lesson={lesson} text="A shared cab is owned by the cab company; many riders book seats and pay only for the ride taken, never owning the vehicle, just as public cloud tenants share provider-owned servers and pay only for the capacity used." everyday={{ label: 'A shared cab', scene: <CabScene /> }} cloud={{ label: 'Public cloud', scene: <TenantRackScene /> }} />
 }
 
 /* ================================================================== 9 · private cloud, on-premise against hosted */
 
 /**
- * The TR's split diagram. Left: Enterprise P's own building and its rack inside
- * its own fence, locked. Right: the provider's larger fence; inside it P's
- * dedicated, locked section, and the provider's other servers greyed beside it.
+ * The TR's own diagram (2026-10-27 redraw, TR slide 3's image). Left, on-premise:
+ * Enterprise P's own server stands in the cloud beside the provider's servers,
+ * and the arrow names the Cloud Service Provider. Right, externally hosted: the
+ * provider's cloud holds several server stacks; one is lit, and its two links
+ * run out to Enterprise P's server and to `Dedicated for Enterprise P`.
  */
 function PrivateScene() {
-  const t = useLoop(LAP, { mode: 'sawtooth', still: 0.4 })
-  const BASE = 262
+  const t = useLoop(LAP, { mode: 'sawtooth', still: 0.45 })
+  const TO_P: [number, number][] = [[852, 214], [1010, 214], [1010, 178]]
+  const TO_LABEL: [number, number][] = [[852, 238], [960, 238], [960, 318]]
   return (
     <>
       <At x={24} y={24}>
@@ -423,79 +491,61 @@ function PrivateScene() {
           On-Premise Private Cloud
         </Label>
       </At>
-      <At x={560} y={24}>
+      <At x={600} y={24}>
         <Label size={16} strong>
           Externally Hosted Private Cloud
         </Label>
       </At>
 
-      {/* on-premise: the organisation's own fence round all of it */}
-      <Zone x={24} y={66} w={500} h={262} kind="own" />
-      <At x={44} y={84}>
-        <Label tone="brand" size={14} strong mono>
-          ENTERPRISE P
-        </Label>
-      </At>
-      <Put x={150} b={BASE}>
-        <TenantTile w={96} tone={colors.brand} />
-      </Put>
-      <Arrow x1={210} y1={214} x2={270} y2={214} width={2} />
-      <Pkt a={[210, 214]} b={[262, 214]} t={t} />
-      <Put x={334} b={BASE + 4}>
-        <ClayRack w={100} units={['run', 'run', 'run']} />
-      </Put>
-      <Put x={440} b={BASE}>
-        <ClayPadlock w={40} />
-      </Put>
-      <At x={334} y={BASE + 14} cx>
-        <Label tone="brand" size={15} strong>
-          Private cloud
-        </Label>
-      </At>
-
-      {/* hosted: the provider's fence, P's dedicated section inside it, the other servers greyed */}
-      <Zone x={560} y={66} w={526} h={290} kind="provider" />
-      <At x={580} y={84}>
-        <Label tone="muted" size={14} strong mono>
-          CLOUD SERVICE PROVIDER
-        </Label>
-      </At>
-      <Zone x={580} y={124} w={290} h={186} kind="own" />
-      <Put x={636} b={BASE}>
-        <TenantTile w={76} tone={colors.brand} />
-      </Put>
-      <Arrow x1={682} y1={226} x2={712} y2={226} width={2} />
-      <Pkt a={[682, 226]} b={[706, 226]} t={t} />
-      <Put x={758} b={BASE + 4}>
-        <ClayRack w={84} units={['run', 'run', 'run']} />
-      </Put>
-      <Put x={836} b={BASE}>
-        <ClayPadlock w={34} />
-      </Put>
-      <At x={725} y={BASE + 12} cx>
+      {/* on-premise: P's own server inside the cloud, the provider's servers beside it */}
+      <CloudBack x={60} y={108} w={430} h={200} />
+      <At x={130} y={106} cx>
         <Label tone="brand" size={15} strong>
           Enterprise P
         </Label>
       </At>
-      {[934, 1022].map((x) => (
-        <Put key={x} x={x} b={BASE + 4} style={{ opacity: 0.45 }}>
-          <ClayRack w={70} units={['idle', 'idle', 'idle']} />
-        </Put>
-      ))}
-      <At x={978} y={BASE + 14} cx>
-        <Label tone="muted" size={14}>
-          Other servers
+      <Put x={130} b={236}>
+        <Tower w={68} />
+      </Put>
+      <Put x={330} b={266}>
+        <Stack3D w={104} />
+      </Put>
+      <Arrow x1={330} y1={272} x2={330} y2={318} tone={colors.ink} width={2} />
+      <At x={330} y={322} cx>
+        <Label size={15} strong>
+          Cloud Service Provider
         </Label>
       </At>
-      <At x={725} y={320} cx>
-        <span className="inline-flex items-center gap-2">
-          <span className="relative block" style={{ width: 22, height: 20 }}>
-            <Arrow x1={11} y1={18} x2={11} y2={2} on />
-          </span>
-          <Label tone="brand" size={15} strong>
-            Dedicated for Enterprise P
-          </Label>
-        </span>
+
+      {/* hosted: the provider's cloud, one dedicated stack lit, linked out to P */}
+      <CloudBack x={590} y={130} w={330} h={172} />
+      <Put x={668} b={262}>
+        <Stack3D w={72} dim />
+      </Put>
+      <Zone x={748} y={164} w={106} h={112} kind="lit" />
+      <Put x={801} b={266}>
+        <Stack3D w={92} />
+      </Put>
+      <At x={720} y={322} cx>
+        <Label size={15} strong>
+          Cloud Service Provider
+        </Label>
+      </At>
+      <At x={1010} y={56} cx>
+        <Label tone="brand" size={15} strong>
+          Enterprise P
+        </Label>
+      </At>
+      <Put x={1010} b={172}>
+        <Tower w={60} />
+      </Put>
+      <Elbow pts={TO_P} />
+      <Elbow pts={TO_LABEL} />
+      <PathPkt pts={TO_P} t={t} />
+      <At x={960} y={322} cx>
+        <Label tone="brand" size={15} strong>
+          Dedicated for Enterprise P
+        </Label>
       </At>
     </>
   )
@@ -530,54 +580,80 @@ export function PrivateTable({ lesson }: { lesson: string }) {
 
 /* ================================================================== 11 · a house or a bungalow */
 
-/** Left: a house going up on your own plot, then locked; right: a bungalow in a gated estate, rented, locked the same moment. */
+/**
+ * The TR's analogy, clause by clause (2026-10-27): left, a house goes up on the
+ * owner's own land, the tools out while it is built (construction effort, full
+ * control); right, a private bungalow a developer already built, rented, and
+ * locked to its one tenant the same moment (the same exclusivity, no effort).
+ */
+function Chip({ x, y, children, tone = 'plain' }: { x: number; y: number; children: ReactNode; tone?: 'plain' | 'brand' | 'muted' }) {
+  return (
+    <At x={x} y={y} cx>
+      <Label size={14} tone={tone} strong>
+        {children}
+      </Label>
+    </At>
+  )
+}
+
 function HousesScene() {
-  const t = useLoop(LAP, { mode: 'sawtooth', still: 0.7 })
-  const built = within(t, 0.05, 0.45)
+  const t = useLoop(LAP, { mode: 'sawtooth', still: 0.75 })
+  const built = within(t, 0.05, 0.5)
   const locked = within(t, 0.55, 0.7) > 0.5
-  const BASE = 196
+  const BASE = 200
   return (
     <>
-      <Zone x={24} y={52} w={202} h={172} kind="own" />
-      <Put x={108} b={BASE}>
-        {/* review 2026-10-26: the house rises into place and fades in; one uniform scale, so it never stretches (it was a scaleY) */}
+      <Zone x={24} y={24} w={202} h={204} kind="own" />
+      <Chip x={125} y={36} tone="brand">
+        Full control
+      </Chip>
+      <Put x={100} b={BASE}>
         <div style={{ transformOrigin: '50% 100%', transform: `translateY(${(1 - built) * 22}px) scale(${0.9 + 0.1 * built})`, opacity: 0.2 + 0.8 * built }}>
-          <ClayHouse w={110} />
+          <ClayHouse w={104} />
         </div>
       </Put>
-      <Put x={192} b={BASE}>
-        <ClayPadlock w={32} open={!locked} />
+      <Put x={186} b={BASE} style={{ opacity: built < 1 ? 1 : 0, transition: `opacity 420ms ${EASE}` }}>
+        <ClayTools w={34} />
       </Put>
-      <Zone x={244} y={52} w={202} h={172} kind="provider" />
-      <Put x={328} b={BASE}>
-        <ClayHouse w={110} />
+      <Put x={186} b={BASE} style={{ opacity: built < 1 ? 0 : 1, transition: `opacity 420ms ${EASE}` }}>
+        <ClayPadlock w={30} open={!locked} />
       </Put>
-      <Put x={412} b={BASE}>
-        <ClayPadlock w={32} open={!locked} />
+      <Zone x={244} y={24} w={202} h={204} kind="provider" />
+      <Chip x={345} y={36} tone="brand">
+        Same exclusivity
+      </Chip>
+      <Put x={320} b={BASE}>
+        <ClayHouse w={104} />
       </Put>
-      <At x={125} y={236} cx>
+      <Put x={406} b={BASE}>
+        <ClayPadlock w={30} open={!locked} />
+      </Put>
+      <At x={125} y={240} cx>
         <Label size={14} tone="muted">
-          Your plot
+          House on owned land
         </Label>
       </At>
-      <At x={345} y={236} cx>
+      <At x={345} y={240} cx>
         <Label size={14} tone="muted">
-          A gated estate, rented
+          Private bungalow, rented
         </Label>
       </At>
     </>
   )
 }
 
-/** Left: a rack in your own building, switched on, then locked; right: a dedicated rack in the provider's hall beside another's idle one, locked the same moment. */
+/** Left: owned infrastructure, P's building and its own rack; right: a rack dedicated to P inside the provider's hall, provider-managed, beside another's idle one; both locked the same moment. */
 function RacksScene() {
-  const t = useLoop(LAP, { mode: 'sawtooth', still: 0.7 })
+  const t = useLoop(LAP, { mode: 'sawtooth', still: 0.75 })
   const locked = within(t, 0.55, 0.7) > 0.5
   const on = within(t, 0.05, 0.45) > 0.5
-  const BASE = 196
+  const BASE = 200
   return (
     <>
-      <Zone x={24} y={52} w={202} h={172} kind="own" />
+      <Zone x={24} y={24} w={202} h={204} kind="own" />
+      <Chip x={125} y={36} tone="brand">
+        Owned
+      </Chip>
       <Put x={70} b={BASE}>
         <TenantTile w={54} tone={colors.brand} />
       </Put>
@@ -587,7 +663,10 @@ function RacksScene() {
       <Put x={202} b={BASE}>
         <ClayPadlock w={28} open={!locked} />
       </Put>
-      <Zone x={244} y={52} w={202} h={172} kind="provider" />
+      <Zone x={244} y={24} w={202} h={204} kind="provider" />
+      <Chip x={345} y={36} tone="brand">
+        Provider-managed
+      </Chip>
       <Put x={290} b={BASE + 3} style={{ opacity: 0.45 }}>
         <ClayRack w={60} units={['idle', 'idle', 'idle']} />
       </Put>
@@ -597,12 +676,12 @@ function RacksScene() {
       <Put x={422} b={BASE}>
         <ClayPadlock w={28} open={!locked} />
       </Put>
-      <At x={125} y={236} cx>
+      <At x={125} y={240} cx>
         <Label size={14} tone="brand" strong>
           On-premise
         </Label>
       </At>
-      <At x={345} y={236} cx>
+      <At x={345} y={240} cx>
         <Label size={14} tone="brand" strong>
           Hosted, dedicated
         </Label>
@@ -612,88 +691,111 @@ function RacksScene() {
 }
 
 export function PrivateAnalogy({ lesson }: { lesson: string }) {
-  return <IsoAnalogy id="private-analogy" kicker="Private Cloud" lesson={lesson} everyday={{ label: 'Build a house or rent a bungalow', scene: <HousesScene /> }} cloud={{ label: 'On-premise or hosted private cloud', scene: <RacksScene /> }} claim="Both are yours alone" />
+  return (
+    <IsoAnalogy
+      id="private-analogy"
+      kicker="Private Cloud"
+      lesson={lesson}
+      text="Building a house on owned land gives full control forever; renting a private bungalow built by a developer gives the same exclusivity without construction effort, just as on-premise private cloud means owned infrastructure, while hosted private cloud means dedicated but provider-managed infrastructure."
+      everyday={{ label: 'House on owned land or rented bungalow', scene: <HousesScene /> }}
+      cloud={{ label: 'On-premise or hosted private cloud', scene: <RacksScene /> }}
+    />
+  )
 }
 
 /* ================================================================== 12 · hybrid cloud */
 
-/** One linked system: Enterprise P's own private site bridged to the provider's data centre, P present on both sides, workloads crossing the bridge both ways. */
+/**
+ * The TR's own diagram (2026-10-27 redraw, TR slide 4's image): the private
+ * cloud (Enterprise P's server in the cloud beside the provider's servers)
+ * PLUS the public cloud (the provider's servers in a cloud, serving
+ * Enterprise P, Enterprise Q and a user); capacity flows out to each in turn.
+ */
 function HybridScene() {
-  const t = useLoop(LAP, { mode: 'sawtooth', still: 0.3 })
-  const BASE = 270
-  const OUT: [[number, number], [number, number]] = [[356, 204], [594, 204]]
-  const BACK: [[number, number], [number, number]] = [[594, 240], [356, 240]]
+  const k = useCycle(3, 2400, 0)
+  const t = useLoop(2400, { mode: 'sawtooth', still: 0.5 })
+  const OUT: [number, number][][] = [
+    [[702, 196], [640, 196], [640, 176]],
+    [[968, 196], [1020, 196], [1020, 176]],
+    [[780, 262], [780, 296], [690, 296], [690, 310]],
+  ]
   return (
     <>
-      <At x={44} y={24}>
+      <At x={24} y={24}>
         <Label size={16} strong>
           Private cloud
         </Label>
       </At>
-      <At x={600} y={24}>
+      <At x={760} y={24} cx>
         <Label size={16} strong>
           Public cloud
         </Label>
       </At>
 
-      {/* the private side: P's own fence */}
-      <Zone x={24} y={66} w={396} h={278} kind="own" />
-      <At x={44} y={84}>
-        <Label tone="brand" size={14} strong mono>
-          ENTERPRISE P
-        </Label>
-      </At>
-      <Put x={130} b={BASE}>
-        <TenantTile w={100} tone={colors.brand} />
-      </Put>
-      <Put x={290} b={BASE + 4}>
-        <ClayRack w={100} units={['run', 'run', 'run']} />
-      </Put>
-      <At x={290} y={BASE + 14} cx>
+      {/* private: P's own server inside the cloud, the provider's servers beside it */}
+      <CloudBack x={44} y={112} w={380} h={190} />
+      <At x={110} y={106} cx>
         <Label tone="brand" size={15} strong>
-          Private cloud
+          Enterprise P
         </Label>
       </At>
-
-      {/* the bridge: workloads cross both ways */}
-      <Arrow x1={OUT[0][0]} y1={OUT[0][1]} x2={OUT[1][0]} y2={OUT[1][1]} width={3} />
-      <Arrow x1={BACK[0][0]} y1={BACK[0][1]} x2={BACK[1][0]} y2={BACK[1][1]} width={3} />
-      <Pkt a={OUT[0]} b={[OUT[1][0] - 14, OUT[1][1]]} t={t} size={14} square />
-      <Pkt a={BACK[0]} b={[BACK[1][0] + 14, BACK[1][1]]} t={(t + 0.5) % 1} size={14} square />
-      <At x={500} y={160} cx cy>
-        <Label tone="solid" size={22} strong>
-          +
-        </Label>
-      </At>
-
-      {/* the public side: the provider's data centre, P's rack and Q's beside it */}
-      <Zone x={580} y={66} w={506} h={278} kind="provider" />
-      <Put x={690} b={BASE}>
-        <ClayDataCentre w={170} />
+      <Put x={110} b={236}>
+        <Tower w={68} />
       </Put>
-      <At x={690} y={BASE + 14} cx>
+      <Put x={290} b={262}>
+        <Stack3D w={100} />
+      </Put>
+      <Arrow x1={290} y1={268} x2={290} y2={318} tone={colors.ink} width={2} />
+      <At x={290} y={322} cx>
         <Label size={15} strong>
           Cloud Service Provider
         </Label>
       </At>
-      {[
-        { x: 875, tone: colors.brand, name: 'Enterprise P', label: 'brand' as const },
-        { x: 1000, tone: colors.teal, name: 'Enterprise Q', label: 'plain' as const },
-      ].map((r) => (
-        <div key={r.name}>
-          <Put x={r.x} b={BASE + 4}>
-            <div className="flex flex-col items-center gap-2">
-              <TenantTile w={30} tone={r.tone} />
-              <ClayRack w={80} units={['run', 'run', 'run']} />
-            </div>
-          </Put>
-          <At x={r.x} y={BASE + 14} cx>
-            <Label tone={r.label} size={15} strong>
-              {r.name}
-            </Label>
-          </At>
+
+      <At x={484} y={190} cx cy>
+        <span className="font-heading text-[56px] font-bold leading-none" style={{ color: colors.ink }}>
+          +
+        </span>
+      </At>
+
+      {/* public: the provider's cloud serving P, Q and a user */}
+      <CloudBack x={680} y={116} w={300} h={150} />
+      <Put x={840} b={244}>
+        <Stack3D w={100} />
+      </Put>
+      <At x={910} y={282} cx>
+        <Label size={15} strong>
+          Cloud Service Provider
+        </Label>
+      </At>
+      <At x={640} y={50} cx>
+        <Label tone="brand" size={15} strong>
+          Enterprise P
+        </Label>
+      </At>
+      <Put x={640} b={168}>
+        <Tower w={56} />
+      </Put>
+      <At x={1020} y={50} cx>
+        <Label size={15} strong>
+          Enterprise Q
+        </Label>
+      </At>
+      <Put x={1020} b={168}>
+        <Tower w={56} />
+      </Put>
+      <At x={672} y={314}>
+        <div className="flex items-center gap-2">
+          <Icon3D name="boy-laptop" w={28} shadow={false} />
+          <Label size={15} strong>
+            User
+          </Label>
         </div>
+      </At>
+      {OUT.map((pts, i) => (
+        <Elbow key={i} pts={pts} tone={i === k ? colors.brand : colors.ink} />
       ))}
+      <PathPkt pts={OUT[k]} t={t} tone={TENANTS[k]} />
     </>
   )
 }
@@ -807,14 +909,17 @@ function KitchenScene() {
         <Arrow x1={186} y1={186} x2={296} y2={186} dashed width={2.2} />
       </div>
       <Pkt a={[186, 186]} b={[284, 186]} t={(t * 4) % 1} tone={AMBER} on={hired} />
+      <Chip x={119} y={24} tone={rush > 0.5 ? 'brand' : 'plain'}>
+        {rush > 0.5 ? 'Wedding rush' : 'Daily orders'}
+      </Chip>
       <At x={119} y={236} cx>
         <Label size={14} tone="muted">
-          The restaurant kitchen
+          Restaurant kitchen
         </Label>
       </At>
       <At x={348} y={236} cx>
         <Label size={14} tone={hired ? 'brand' : 'muted'} strong={hired}>
-          {hired ? 'The banquet hall, hired' : 'The banquet hall, idle'}
+          {hired ? 'Banquet hall, hired' : 'Banquet hall, released'}
         </Label>
       </At>
     </>
@@ -849,6 +954,9 @@ function BurstRacksScene() {
         <Arrow x1={202} y1={170} x2={276} y2={170} dashed width={2.2} />
       </div>
       <Pkt a={[202, 170]} b={[262, 170]} t={(t * 4) % 1} on={over} />
+      <Chip x={119} y={24} tone={rush > 0.5 ? 'brand' : 'plain'}>
+        {rush > 0.5 ? 'Demand spike' : 'Daily load'}
+      </Chip>
       <At x={119} y={236} cx>
         <Label size={14} tone="muted">
           Private racks
@@ -856,7 +964,7 @@ function BurstRacksScene() {
       </At>
       <At x={348} y={236} cx>
         <Label size={14} tone={over ? 'brand' : 'muted'} strong={over}>
-          {over ? 'Public cloud, bursting' : 'Public cloud, idle'}
+          {over ? 'Public cloud, bursting' : 'Public cloud, released'}
         </Label>
       </At>
     </>
@@ -864,75 +972,73 @@ function BurstRacksScene() {
 }
 
 export function HybridAnalogy({ lesson }: { lesson: string }) {
-  return <IsoAnalogy id="hybrid-analogy" kicker="Hybrid Cloud" lesson={lesson} everyday={{ label: 'A banquet hall for the rush', scene: <KitchenScene /> }} cloud={{ label: 'Cloud bursting', scene: <BurstRacksScene /> }} claim="Extra capacity only while the rush lasts" />
+  return (
+    <IsoAnalogy
+      id="hybrid-analogy"
+      kicker="Hybrid Cloud"
+      lesson={lesson}
+      text="A restaurant kitchen handles daily orders alone, but during a wedding rush it hires a banquet hall's ovens for the overflow and releases them once the rush ends, just as cloud bursting shifts excess load to public cloud only during demand spikes."
+      everyday={{ label: "A banquet hall's ovens for the overflow", scene: <KitchenScene /> }}
+      cloud={{ label: 'Cloud bursting', scene: <BurstRacksScene /> }}
+    />
+  )
 }
 
 /* ================================================================== 15 · community cloud */
 
-/** The TR's diagram: one shared data centre inside the community's ring, three members' buildings feeding it, the general public outside the ring and turned back at its edge. */
+/**
+ * The TR's own diagram (2026-10-27 redraw, TR slide 5's image): the provider's
+ * cloud holds the server stacks; one is lit, `Dedicated for Community User`
+ * above it, and its links fan out to the community users, Enterprise P, Q
+ * and R, one after another.
+ */
+const MEMBERS = ['Enterprise P', 'Enterprise Q', 'Enterprise R']
+const MEMBER_Y = [104, 204, 304] /* each member tower's middle */
+
 function CommunityScene() {
-  const t = useLoop(LAP, { mode: 'sawtooth', still: 0.3 })
-  const members = [
-    /* review 2026-10-26 (connections): each arrow starts under its member's name (y 160, the chip's foot at
-       157) and ends on the shared data centre's roof (drawing top at y 207); they floated 10px short at both ends */
-    { name: 'Government', x: 90, tone: colors.brand, end: [172, 210] as [number, number] },
-    { name: 'Healthcare', x: 202, tone: colors.teal, end: [202, 208] as [number, number] },
-    { name: 'Research', x: 314, tone: ISO.green, end: [232, 210] as [number, number] },
-  ]
-  // the public's packet goes toward the ring and bounces back
-  const pub = beatOf(t, 2) === 0 ? within(t, 0.05, 0.4) : 1 - within(t, 0.55, 0.9)
+  const k = useCycle(3, 2400, 1)
+  const t = useLoop(2400, { mode: 'sawtooth', still: 0.6 })
+  const links: [number, number][][] = MEMBER_Y.map((y, i) => [[262, 232 + (i - 1) * 10], [372, 232 + (i - 1) * 10], [372, y], [440, y]])
   return (
     <>
-      <Zone x={24} y={24} w={356} h={328} kind="own" />
-      <At x={40} y={38}>
-        <Label tone="brand" size={14} strong mono>
-          COMMUNITY CLOUD
+      <At x={146} y={30} cx>
+        <Label tone="brand" size={15} strong>
+          Dedicated for Community User
         </Label>
       </At>
-      {members.map((m) => (
-        <Arrow key={m.name} x1={m.x} y1={160} x2={m.end[0]} y2={m.end[1]} tone={m.tone} width={2} />
+      <At x={490} y={30} cx>
+        <Label size={16} strong>
+          Community Users
+        </Label>
+      </At>
+      <CloudBack x={24} y={150} w={290} h={156} />
+      <Put x={96} b={282}>
+        <Stack3D w={74} dim />
+      </Put>
+      <Zone x={160} y={180} w={106} h={108} kind="lit" />
+      <Put x={213} b={278}>
+        <Stack3D w={88} />
+      </Put>
+      <Arrow x1={213} y1={182} x2={213} y2={62} tone={colors.ink} width={2} />
+      <At x={170} y={318} cx>
+        <Label size={15} strong>
+          Cloud Service Provider
+        </Label>
+      </At>
+      {links.map((pts, i) => (
+        <Elbow key={i} pts={pts} tone={i === k ? TENANTS[i] : colors.ink} />
       ))}
-      {members.map((m, i) => (
-        <Pkt key={m.name} a={[m.x, 160]} b={[m.end[0] + (m.x - m.end[0]) * 0.18, m.end[1] - 6]} t={(t + i * 0.33) % 1} tone={m.tone} size={11} />
-      ))}
-      {members.map((m) => (
-        <At key={m.name} x={m.x} y={74} cx>
-          <div className="flex flex-col items-center gap-1.5">
-            <TenantTile w={52} tone={m.tone} />
-            <Label size={15} strong>
-              {m.name}
+      <PathPkt pts={links[k]} t={t} tone={TENANTS[k]} />
+      {MEMBERS.map((name, i) => (
+        <At key={name} x={448} y={MEMBER_Y[i]} cy>
+          <div className="flex items-center gap-3">
+            <Tower w={46} />
+            <Label size={15} strong tone={i === k ? 'brand' : 'plain'}>
+              {name}
             </Label>
           </div>
         </At>
       ))}
-      <Put x={202} b={302}>
-        <ClayDataCentre w={130} />
-      </Put>
-      <At x={202} y={312} cx>
-        <Label tone="brand" size={15} strong>
-          Shared infrastructure
-        </Label>
-      </At>
-
-      {/* outside the ring: the public, turned back at its edge */}
-      <At x={380} y={232} cx cy>
-        <ClayNo w={36} />
-      </At>
-      <Pkt a={[446, 232]} b={[404, 232]} t={pub} tone={colors.muted} size={11} />
-      {[
-        { name: 'man-pro', w: 42, x: 470 },
-        { name: 'woman-pro', w: 40, x: 518 },
-        { name: 'student-bag', w: 52, x: 568 },
-      ].map((p) => (
-        <Put key={p.name} x={p.x} b={262}>
-          <Icon3D name={p.name} w={p.w} dim />
-        </Put>
-      ))}
-      <At x={505} y={276} cx>
-        <Label size={14} tone="muted">
-          General public: not admitted
-        </Label>
-      </At>
     </>
   )
 }

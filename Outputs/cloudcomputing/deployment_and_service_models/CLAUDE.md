@@ -107,9 +107,9 @@ of `iso.tsx`). What was taken:
 ```bash
 export CHROME_PATH=/usr/bin/brave-browser
 U="http://127.0.0.1:5271/?all"
-node qa.mjs "$U" 60; node video-safe.mjs "$U" 60; node align-check.mjs "$U" 60; node mixed-align-check.mjs "$U" 60
-node box-overflow-check.mjs http://127.0.0.1:5271 60; node controls-clear-check.mjs http://127.0.0.1:5271 60; node .text-audit.mjs 1 60
-node workflow/export/build-reveal-steps.mjs "http://127.0.0.1:5271/?nav=slide&x=" 60
+node qa.mjs "$U" 56; node video-safe.mjs "$U" 56; node align-check.mjs "$U" 56; node mixed-align-check.mjs "$U" 56
+node box-overflow-check.mjs http://127.0.0.1:5271 56; node controls-clear-check.mjs http://127.0.0.1:5271 56; node .text-audit.mjs 1 56
+node workflow/export/build-reveal-steps.mjs "http://127.0.0.1:5271/?nav=slide&x=" 56
 AGENDA_SLIDE=4 node agenda-check.mjs; node ligature-check.mjs; node overlap-check.mjs; node feedback-check.mjs
 CONTENT_SLIDE=7 node gesture-check.mjs; CONTENT_SLIDE=7 node phone-nav-check.mjs
 CONTENT_SLIDE=7 PLAIN_SLIDE=2 node autohide-check.mjs
@@ -170,3 +170,42 @@ overwrite `Deck.tsx` and `DeckControls.tsx`; the two new files would survive).
 - Verified 2026-10-26: 20 browser checks on the dev server and 3 on the built file (post, reply, resolve,
   show resolved, reopen, all slides + jump, delete, reload, fullscreen hide/return, student view and
   student download carry nothing, harness URLs never open it).
+
+## 2026-10-27: TR-doc comparison pass (56 slides)
+
+The user compared the deck against the TR doc (`Reference ppt's/2. Deployment & Service Models.pdf`,
+24 TR slides, diagrams on pages 2-5, 7, 10-12) and asked for a fix list. Applied:
+
+- **Leads to the TR:** 6 (the TR's three sentences), 7 (the TR definition), 19 (the TR slide 7
+  definition over the multi-vs-hybrid diagram; it had no text).
+- **Every analogy slide carries the TR's analogy sentence as its lead** (`IsoAnalogy` `text` prop,
+  spaced dash turned into a comma, content rule 1) and the invented claim pill is dropped:
+  8, 11, 14, 20, 28, 30, 32, 37, 40, 46, 48, 50. Scenes redrawn to the sentence on 11, 14, 28, 30,
+  32, 37, 40, 50.
+- **Redrawn to the TR's own diagrams:** 9 (img on p3), 12 (p4), 15 (p5), 31 (p12); 47 to the TR
+  Visual Guidance (layered bar, `True TCO` bracket).
+- 18 plain bullets, no figure; 25 relaid as a clean grid; 26 an illustration (layers render fanning
+  out to the four deployment clouds); 27 network icon -> AWS VPC/subnet diagram (official icons in
+  `figures/d3/aws/`); 43 book -> drawn wallet with banknotes.
+- **Deleted:** 58 feedback, 52 pricing bars, 39 AI/ML flow, 36 FaaS timeline (the user's word; the
+  functions stay in the section files, unused). `slideCount` 56, reveal steps rebuilt.
+
+Sweep on 56: qa (three hero frames NO LOGO, 14-15px figure labels as before), video-safe, align,
+mixed-align, text-audit, controls-clear, agenda, ligature, gesture, phone-nav, autohide, nav-stress
+all clean. overlap-check: the pre-existing rule-42 findings on 11, 13, 14, 35 and next session,
+plus one 16x16 on 31 (a connector tip at the phone's badge). box-overflow: empty positioning
+wrappers below the stage on 27, 28, 30, 31, 32 (no text clipped; the class was in the baseline).
+
+## 2026-10-28: review pairs, recap art, chef (61 slides)
+
+- **Review pairs, both kept until the user picks one** (`figures/variants.tsx`): agenda1
+  `AgendaColumns` (5, beside agenda0 at 4), quiz1 `QuizCard` (25 and 55, each beside its
+  `ClassroomQuiz`), feedback1 `FeedbackCard` (59, beside the restored kit `FeedbackSlide` at 58).
+  Designs in `slidestraining/agendaslides|quizslide|Feedbackslide`. Art in
+  `public/assets/quiz/quiz-cube.png`, `public/assets/feedback/feedback-rating.png`.
+  `feedback-check.mjs` FAILS while the pair stands (feedback0 must be followed only by the two
+  thank-you frames); it passes again once one of the two is deleted.
+- **Recap art**: `Takeaways` takes `art`; the recap shows `public/assets/takeaways/presenter.png`
+  (from `slidestraining/Presentation Icon.png`, 2:3 like the student) in the same 270x405 box.
+- **Chef (30, 32)**: `presentRight` at `amplitude={0.3}`, crop `x1` 360 -> 400 (the hand clipped);
+  the recipe-card chips above the counter removed.

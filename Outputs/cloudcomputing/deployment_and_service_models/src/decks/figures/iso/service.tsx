@@ -4,10 +4,14 @@ import { Arrow, At, Label, Traveller, useLoop } from '../scene'
 import { ClaySvg } from '../art'
 import { useFx, Slab } from '../clay-a'
 import { Shadow } from '../depth'
-import { ClayBar, ClayHouse, ClayLaptop, ClayParcel, ClayPhone, ClayRack, ClayTicket, ClayTruck, GroundShadow, Icon3D, LAB, RichCloud } from '../d3/kit'
+import { ClayBar, ClayHouse, ClayLaptop, ClayMonitor, ClayParcel, ClayPhone, ClayRack, ClayTicket, ClayTruck, GroundShadow, Icon3D, LAB, RichCloud } from '../d3/kit'
 import { Chips, FigureOnly, IsoAnalogy, PointsFigure } from './frames'
 import { Posed } from '../Cast'
 import type { CharacterConfig } from '../cast/skins/config'
+import vpcMark from '../d3/aws/virtual-private-cloud-vpc.svg'
+import publicSubnetMark from '../d3/aws/public-subnet.svg'
+import privateSubnetMark from '../d3/aws/private-subnet.svg'
+import ec2Mark from '../d3/aws/ec2-instance.svg'
 
 /**
  * SECTION 3 · SERVICE MODELS (reference frames 25 to 32), in session 1's 3D
@@ -42,8 +46,6 @@ function within(t: number, a: number, b: number) {
   const x = (t - a) / (b - a)
   return x * x * (3 - 2 * x)
 }
-/** rises a to b, holds, falls c to d. */
-const pulse = (t: number, a: number, b: number, c: number, d: number) => within(t, a, b) * (1 - within(t, c, d))
 
 /** A labelled slab in an owner's colour: the session 1 hypervisor bar. */
 function OwnerSlab({ w, h, owner, children, size = 15 }: { w: number; h: number; owner: Owner; children?: ReactNode; size?: number }) {
@@ -149,27 +151,6 @@ function ClayCounter({ w }: { w: number }) {
   )
 }
 
-/** A tablet held landscape: a navy body with a lit edge, a screen that fades to cobalt when lit. */
-function ClayTablet({ w, lit = false }: { w: number; lit?: boolean }) {
-  const fx = useFx({ body: LAB.navy, off: LAB.lavender, on: LAB.cobalt })
-  return (
-    <ClaySvg w={w} vw={120} vh={86}>
-      {fx.defs}
-      <Shadow id={fx.id} cx={60} cy={82} rx={52} ry={3.5} o={0.22} />
-      <g>
-        <Slab x={4} y={6} w={112} h={72} rx={12} d={0} hue={LAB.navy} fill={fx.g('body')} />
-        <rect x={11} y={13} width={98} height={58} rx={7} fill={fx.g('off')} />
-        <rect x={11} y={13} width={98} height={58} rx={7} fill={fx.g('on')} style={{ opacity: lit ? 1 : 0, transition: `opacity 520ms ${EASE}` }} />
-        <rect x={19} y={21} width={50} height={7} rx={3.5} fill="#FFFFFF" opacity={0.85} />
-        <rect x={19} y={34} width={36} height={28} rx={5} fill="#FFFFFF" opacity={0.6} />
-        <rect x={61} y={34} width={40} height={6} rx={3} fill="#FFFFFF" opacity={0.6} />
-        <rect x={61} y={46} width={30} height={6} rx={3} fill="#FFFFFF" opacity={0.45} />
-        <path d="M 14 16 L 52 16 L 14 52 Z" fill="#FFFFFF" opacity={0.14} />
-      </g>
-    </ClaySvg>
-  )
-}
-
 /* ================================================================== 25 · three stacks */
 
 const LAYERS = ['Virtualization, servers, storage, network', 'Operating system', 'Runtime & middleware', 'Data & access configuration', 'Application'] // bottom to top
@@ -181,67 +162,68 @@ const MODELS: { name: string; owners: Owner[]; split: number }[] = [
 
 /**
  * Three stacks of five front-facing slabs, each in the TR table's owner
- * colour with the cell word on it; the layer names in a column on the left
- * under `Stack layer`; the ownership line sits at each stack's split and
- * glides from stack to stack and back.
+ * colour with the cell word on it, laid out as the TR's table: `Stack layer`
+ * and the layer names in a left-aligned column, the three model heads centred
+ * over their columns in the same style, even rows, the legend under the grid.
+ * Each column's ownership line is drawn once, in the gap at its split (static:
+ * 2026-10-27 the gliding line read as a glitch); the loop lights one column at
+ * a time, IaaS, PaaS, SaaS.
  */
 function TowersScene() {
-  const t = useLoop(12000, { mode: 'pingpong', still: 0.5 })
-  const SW = 200
-  const SH = 40
-  const GAP = 8
-  const Y0 = 70
-  const CX = [490, 720, 950]
+  const t = useLoop(9000, { mode: 'sawtooth', still: 0.4 })
+  const lit = Math.min(2, Math.floor(t * 3))
+  const SW = 196
+  const SH = 44
+  const GAP = 10
+  const LX = 52 // the layer column's left edge
+  const LW = 330
+  const C0 = 418 // the first model column's left edge
+  const CG = 24
+  const HEAD = 46
+  const Y0 = 76
+  const colX = (i: number) => C0 + i * (SW + CG)
   const rowTop = (k: number) => Y0 + (4 - k) * (SH + GAP) // k counts from the bottom
-  const splitY = (i: number) => rowTop(MODELS[i].split - 1) - GAP / 2
-  const pos = within(t, 0.12, 0.38) + within(t, 0.62, 0.88)
-  const near = Math.round(pos)
-  const lo = Math.floor(pos)
-  const hi = Math.min(2, lo + 1)
-  const f = pos - lo
-  const lx = CX[lo] + (CX[hi] - CX[lo]) * f
-  const ly = splitY(lo) + (splitY(hi) - splitY(lo)) * f
-  const LW = SW + 44
+  const gridBottom = rowTop(0) + SH
+  const head = 'font-heading text-[18px] font-semibold'
   return (
     <>
-      <At x={24} y={40} cy w={350}>
-        <div className="text-right font-heading text-[15px] font-semibold uppercase tracking-[0.08em]" style={{ color: colors.brandDark }}>
+      <At x={LX} y={HEAD} cy w={LW}>
+        <div className={head} style={{ color: colors.brandDark }}>
           Stack layer
         </div>
       </At>
       {LAYERS.map((name, k) => (
-        <At key={name} x={24} y={rowTop(k) + SH / 2} cy w={350}>
-          <div className="text-right font-heading text-[16px] font-semibold leading-tight" style={{ color: colors.ink }}>
+        <At key={name} x={LX} y={rowTop(k) + SH / 2} cy w={LW}>
+          <div className="font-heading text-[17px] font-medium leading-tight" style={{ color: colors.ink }}>
             {name}
           </div>
         </At>
       ))}
       {MODELS.map((m, i) => (
-        <At key={m.name} x={CX[i]} y={40} cx cy>
-          <Label size={18} strong tone={near === i ? 'solid' : 'plain'}>
-            {m.name}
-          </Label>
-        </At>
+        <div key={`g-${m.name}`} aria-hidden className="pointer-events-none absolute rounded-2xl" style={{ left: colX(i) - 10, top: HEAD - 22, width: SW + 20, height: gridBottom - HEAD + 34, background: colors.brand, opacity: lit === i ? 0.08 : 0, transition: `opacity 420ms ${EASE}` }} />
       ))}
       {MODELS.map((m, i) => (
-        <At key={`s-${m.name}`} x={CX[i] - SW / 2} y={Y0}>
-          <div className="flex flex-col" style={{ gap: GAP }}>
-            {[...m.owners].reverse().map((o, j) => (
-              <OwnerSlab key={j} w={SW} h={SH} owner={o}>
-                {o === 'P' ? 'Provider' : 'Customer'}
-              </OwnerSlab>
-            ))}
-            <GroundShadow w={SW} style={{ marginTop: 2 - GAP }} />
+        <At key={m.name} x={colX(i) + SW / 2} y={HEAD} cx cy>
+          <div className={head} style={{ color: lit === i ? colors.brand : colors.brandDark, transition: `color 420ms ${EASE}` }}>
+            {m.name}
           </div>
         </At>
       ))}
-      {/* the ownership line: provider below it, customer above */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-0 top-0 rounded-full"
-        style={{ width: LW, height: 4, background: colors.brandDark, boxShadow: `0 0 0 3px ${colors.brand}33, 0 0 14px ${colors.brand}`, transform: `translate(${lx - LW / 2}px, ${ly - 2}px)`, opacity: 1 - 0.65 * Math.sin(Math.PI * f) }}
-      />
-      <At x={720} y={342} cx cy>
+      {MODELS.map((m, i) => (
+        <At key={`s-${m.name}`} x={colX(i)} y={Y0}>
+          <div className="flex flex-col" style={{ gap: GAP }}>
+            {[...m.owners].reverse().map((o, j) => (
+              <OwnerSlab key={j} w={SW} h={SH} owner={o} size={16}>
+                {o === 'P' ? 'Provider' : 'Customer'}
+              </OwnerSlab>
+            ))}
+          </div>
+        </At>
+      ))}
+      {MODELS.map((m, i) => (
+        <div key={`l-${m.name}`} aria-hidden className="pointer-events-none absolute rounded-full" style={{ left: colX(i) - 6, top: rowTop(m.split - 1) - GAP / 2 - 1.5, width: SW + 12, height: 3, background: colors.brandDark, opacity: lit === i ? 1 : 0.35, transition: `opacity 420ms ${EASE}` }} />
+      ))}
+      <At x={555} y={gridBottom + 42} cx cy>
         <Chips
           items={[
             { text: 'Provider manages', color: PROVIDER },
@@ -254,7 +236,7 @@ function TowersScene() {
 }
 
 export function StackMap({ lesson }: { lesson: string }) {
-  return <FigureOnly id="stack" kicker="Service Model Spectrum" title="Stack Ownership Map" lead="The three service models share one technology stack; each shifts the line dividing provider-managed layers from customer-managed layers" lesson={lesson} figure={<TowersScene />} h={392} />
+  return <FigureOnly id="stack" kicker="Service Model Spectrum" title="Stack Ownership Map" lead="The three service models share one technology stack; each shifts the line dividing provider-managed layers from customer-managed layers" lesson={lesson} figure={<TowersScene />} h={410} />
 }
 
 /* ================================================================== 26 · any service model on any deployment model */
@@ -262,73 +244,71 @@ export function StackMap({ lesson }: { lesson: string }) {
 const DEPLOY = ['Public', 'Private', 'Hybrid', 'Community']
 const SERVICE = ['IaaS', 'PaaS', 'SaaS']
 
-/** A front-facing grid: deployment models across, service models down, a pale slab in every cell; the TR's two examples light in turn. */
+/**
+ * 2026-10-27 (the user: replace the grid with an illustration): the service
+ * models as one layer stack (the library's layers render, IaaS PaaS SaaS under
+ * it) fanning out to the four deployment clouds; the TR's two examples light in
+ * turn, a packet riding out to Private with IaaS lit, then to Public with SaaS.
+ */
 function GridScene() {
   const t = useLoop(9000, { mode: 'sawtooth', still: 0.25 })
   const examples = [
-    { name: 'Private-cloud IaaS', dx: 1, sy: 0 },
-    { name: 'Public-cloud SaaS', dx: 0, sy: 2 },
+    { name: 'Private-cloud IaaS', d: 1, sv: 0 },
+    { name: 'Public-cloud SaaS', d: 0, sv: 2 },
   ]
   const which = t < 0.5 ? 0 : 1
-  const lit = examples[which]
-  const glow = pulse(t % 0.5, 0.02, 0.1, 0.42, 0.49)
-  const CW = 190
-  const CH = 56
-  const GX = 16
-  const GY = 18
-  const X0 = 190
-  const Y0 = 82
-  const cx = (i: number) => X0 + i * (CW + GX) + CW / 2
-  const cy = (j: number) => Y0 + j * (CH + GY) + CH / 2
-  const gridW = DEPLOY.length * CW + (DEPLOY.length - 1) * GX
-  const gridH = SERVICE.length * CH + (SERVICE.length - 1) * GY
+  const ex = examples[which]
+  const u = (t % 0.5) / 0.5
+  const going = u > 0.04 && u < 0.36
+  const on = u >= 0.36 && u < 0.96
+  const LCX = 250
+  const HUB: [number, number] = [372, 150]
+  const CLX = 668 // the clouds' centre
+  const ROWS = [62, 136, 210, 284]
+  const CW = 78
   return (
     <>
-      {/* the lit example's column and row, faint */}
-      <div aria-hidden className="pointer-events-none absolute rounded-2xl" style={{ left: cx(lit.dx) - CW / 2 - 8, top: Y0 - 8, width: CW + 16, height: gridH + 16, background: colors.brand, opacity: 0.08 * glow }} />
-      <div aria-hidden className="pointer-events-none absolute rounded-2xl" style={{ left: X0 - 8, top: cy(lit.sy) - CH / 2 - 8, width: gridW + 16, height: CH + 16, background: colors.brand, opacity: 0.08 * glow }} />
-      {DEPLOY.map((name, i) => (
-        <At key={name} x={cx(i)} y={44} cx cy>
-          <Label size={16} strong tone={lit.dx === i && glow > 0.5 ? 'brand' : 'plain'}>
-            {name}
-          </Label>
-        </At>
-      ))}
-      {SERVICE.map((name, j) => (
-        <At key={name} x={X0 - 24} y={cy(j)} cy>
-          <div style={{ transform: 'translateX(-100%)' }}>
-            <Label size={16} strong tone={lit.sy === j && glow > 0.5 ? 'brand' : 'plain'}>
+      <At x={LCX} y={34} cx>
+        <Icon3D name="layers" w={176} />
+      </At>
+      <At x={LCX} y={262} cx>
+        <div className="flex items-center gap-2.5">
+          {SERVICE.map((name, j) => (
+            <Label key={name} size={16} strong tone={on && ex.sv === j ? 'solid' : 'brand'}>
               {name}
             </Label>
-          </div>
-        </At>
-      ))}
-      {SERVICE.map((_, j) =>
-        DEPLOY.map((__, i) => {
-          const on = examples.findIndex((e) => e.dx === i && e.sy === j)
-          const k = on >= 0 && on === which ? glow : 0
-          return (
-            <At key={`${i}-${j}`} x={cx(i) - CW / 2} y={cy(j) - CH / 2}>
-              <div className="relative" style={{ width: CW, height: CH }}>
-                <div className="absolute inset-0">
-                  <ClayBar w={CW} h={CH} fill={LAB.lavender} />
-                </div>
-                <div className="absolute inset-0" style={{ opacity: k, transition: `opacity 420ms ${EASE}` }}>
-                  <ClayBar w={CW} h={CH} fill={colors.brand} />
-                </div>
-                {on >= 0 && (
-                  <span className="absolute inset-0 flex items-center justify-center font-heading text-[16px] font-semibold" style={{ color: k > 0.5 ? colors.white : colors.brandDark, transition: `color 420ms ${EASE}` }}>
-                    {examples[on].name}
-                  </span>
-                )}
-              </div>
-            </At>
-          )
-        }),
-      )}
-      <At x={X0} y={Y0 + gridH + 2}>
-        <GroundShadow w={gridW} style={{ marginTop: 0 }} />
+          ))}
+        </div>
       </At>
+      {DEPLOY.map((name, i) => (
+        <Arrow key={`a-${name}`} x1={HUB[0]} y1={HUB[1]} x2={CLX - CW / 2 - 10} y2={ROWS[i]} dashed tone={ex.d === i && (going || on) ? colors.brand : colors.line} />
+      ))}
+      <Traveller path={[HUB, [CLX - CW / 2 - 14, ROWS[ex.d]]]} run={going} k={`g-${which}`} size={12} tone={colors.brand} dur={2.2} />
+      {DEPLOY.map((name, i) => {
+        const lit = on && ex.d === i
+        return (
+          <At key={name} x={CLX - CW / 2} y={ROWS[i]} cy>
+            <div className="flex items-center gap-4">
+              <div className="relative" style={{ width: CW }}>
+                <Glow on={lit} w={CW + 50} h={CW + 20} />
+                <div className="relative">
+                  <RichCloud w={CW} />
+                </div>
+              </div>
+              <span className="font-heading text-[18px] font-semibold" style={{ color: lit ? colors.brand : colors.ink, width: 112, transition: `color 420ms ${EASE}` }}>
+                {name}
+              </span>
+              {examples.map((e) =>
+                e.d === i ? (
+                  <Label key={e.name} size={16} strong tone={lit ? 'solid' : 'plain'}>
+                    {e.name}
+                  </Label>
+                ) : null,
+              )}
+            </div>
+          </At>
+        )
+      })}
     </>
   )
 }
@@ -354,7 +334,33 @@ function Glow({ on, w, h, tone = colors.brand }: { on: boolean; w: number; h: nu
   return <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 rounded-full" style={{ width: w, height: h, transform: 'translate(-50%,-50%)', background: `radial-gradient(closest-side, ${tone}55, ${tone}00)`, opacity: on ? 1 : 0, transition: `opacity 420ms ${EASE}` }} />
 }
 
-/** The TR's diagram: a cloud labelled IaaS over a rack, a database and a router; packets drip down three arrows in turn and each block lights as one lands. */
+/**
+ * 2026-10-27 (the user: the router icon becomes a virtual network diagram): a
+ * VPC drawn the AWS way (the official marks, slide-kit/assets/aws: VPC purple,
+ * solid; a public subnet green and a private subnet teal), an instance in each,
+ * linked.
+ */
+function VirtualNetwork({ on }: { on: boolean }) {
+  const sub = (mark: string, tone: string) => (
+    <div className="relative grid place-items-center rounded-[5px] bg-white" style={{ width: 52, height: 56, boxShadow: `inset 0 0 0 2px ${tone}` }}>
+      <img src={mark} alt="" draggable={false} className="absolute left-0 top-0" style={{ width: 15, height: 15 }} />
+      <img src={ec2Mark} alt="" draggable={false} style={{ width: 28, height: 28, marginTop: 8 }} />
+    </div>
+  )
+  return (
+    <div className="flex flex-col items-center">
+      <div className="relative flex items-center rounded-[8px] bg-white" style={{ width: 138, height: 92, padding: '22px 8px 8px', gap: 18, boxShadow: `inset 0 0 0 2px #8C4FFF, 0 12px 22px -14px rgba(16,32,58,0.5)` }}>
+        <img src={vpcMark} alt="" draggable={false} className="absolute left-0 top-0" style={{ width: 20, height: 20 }} />
+        {sub(publicSubnetMark, '#7AA116')}
+        {sub(privateSubnetMark, '#00A4A6')}
+        <div aria-hidden className="pointer-events-none absolute" style={{ left: 54, right: 54, top: 63, height: 2.5, background: on ? colors.brand : '#8C4FFF', transition: `background 420ms ${EASE}` }} />
+      </div>
+      <GroundShadow w={138} />
+    </div>
+  )
+}
+
+/** The TR's diagram: a cloud labelled IaaS over a rack, a database and a virtual network; packets drip down three arrows in turn and each block lights as one lands. */
 function IaasScene() {
   const t = useLoop(7200, { mode: 'sawtooth', still: 0.3 })
   const start = (i: number) => i * 0.22 + 0.04
@@ -363,7 +369,7 @@ function IaasScene() {
   const items: { name: string; x: number; top: number; art: (on: boolean) => ReactNode }[] = [
     { name: 'Compute', x: 147, top: 204, art: (on) => <ClayRack w={86} units={on ? ['run', 'run', 'run'] : ['run', 'idle', 'idle']} /> },
     { name: 'Storage', x: 317, top: 204, art: () => <Icon3D name="database" w={80} /> },
-    { name: 'Network', x: 487, top: 220, art: () => <Icon3D name="router" w={104} /> },
+    { name: 'Network', x: 487, top: 196, art: (on) => <VirtualNetwork on={on} /> },
   ]
   /* review 2026-10-26 (connections): out of the cloud's underside, onto each object's top */
   const SRC: [number, number][] = [[278, 158], [317, 162], [356, 158]]
@@ -478,44 +484,72 @@ function Stack4({ owners, arrive, data = false, dataArrive = null }: { owners: O
   )
 }
 
-/** The everyday kitchen: the oven (provider blue), a counter with the pizza tray, and amber crates the customer carries in at `crates`. */
-function Kitchen({ crates, stageAt, doughReady }: { crates: number[]; stageAt: [number, 0 | 1 | 2 | 3][]; doughReady: boolean }) {
+/** The chef who brings the customer's part (a Character Lab figure with the baker's cap and apron). */
+const CHEF: CharacterConfig = {
+  name: 'Chef',
+  gender: 'male',
+  art: 'soft',
+  shading: 'clay',
+  skinTone: '#E0A87E',
+  hair: { style: 'short', color: '#1B1E2E' },
+  face: { jaw: 'round', brows: 'medium', eyes: 'big', mouth: 'full' },
+  outfit: { top: 'shirt', topColor: '#FFFFFF', bottom: 'trousers', bottomColor: '#3E3D45', shoeColor: '#2A2A30' },
+  accessories: {},
+  build: { height: 0.95, shoulders: 1 },
+}
+/* x1 widened (2026-10-28, the user: the hand clipped at the crop's right edge) */
+const CHEF_CROP = { x0: -30, y0: -40, x1: 400, y1: 595 }
+const CHEF_S = 0.29
+
+/**
+ * The everyday kitchen, to the TR's guidance (2026-10-27): the provider's
+ * equipment (counter, oven and its gas line) under one `Infrastructure` or
+ * `Platform` label; the chef on the left brings the customer's part as amber
+ * recipe cards (`cards`, each flying from his hand at its phase to a row above
+ * the counter), and the pizza advances as each lands, then bakes.
+ */
+function Kitchen({ cards, stageAt, doughReady, equipment }: { cards: { text: string; at: number }[]; stageAt: [number, 0 | 1 | 2 | 3][]; doughReady: boolean; equipment: string }) {
   const t = useLoop(AN_LAP, { mode: 'sawtooth', still: 0.75 })
   let stage: number = doughReady ? 0 : -1
-  for (const [a, s] of stageAt) if (t >= a) stage = s
+  for (const [a, st] of stageAt) if (t >= a) stage = st
   const fo = fadeOut(t)
   const baked = t > 0.66 && t < 0.92
-  const FLOOR = 216
-  const C = 48
-  // the crates the customer carries in, stacked by the counter: two on the floor, one on top
-  const slots: [number, number][] = crates.length === 1 ? [[28, 50]] : [[0, 50], [56, 50], [28, 14]]
+  const FLOOR = 222
+  void cards
+  const COUNTER_X = 236
+  const OVEN_X = 368
   return (
     <>
-      <At x={29} y={FLOOR - 98}>
-        <div className="relative" style={{ width: 104, height: 98 }}>
-          {crates.map((a, i) => {
-            const k = within(t, a, a + 0.12)
-            return (
-              <div key={i} className="absolute" style={{ left: slots[i][0], top: slots[i][1], opacity: t >= a ? fo * Math.min(1, k * 2) : 0, transform: `translateX(${-(1 - k) * 16}px)` }}>
-                <ClayParcel w={C} tone={CUSTOMER} />
-              </div>
-            )
-          })}
+      <At x={18} y={FLOOR}>
+        <div style={{ transform: 'translateY(-100%)' }}>
+          {/* a subtle reach (2026-10-28, the user: the hand moved too much): a third of the gesture's amplitude */}
+          <Posed cfg={CHEF} props scale={CHEF_S} crop={CHEF_CROP} gesture="presentRight" amplitude={0.3} at={0.9} expression="happy" />
         </div>
       </At>
-      <At x={225} y={FLOOR} cx>
+      {/* the recipe-card chips above the counter were removed (2026-10-28, the user); `cards` still times the pizza */}
+      {/* the gas line: out of the oven's back, down to the floor and away */}
+      <div aria-hidden className="absolute rounded-full" style={{ left: OVEN_X + 50, top: FLOOR - 40, width: 6, height: 40, background: 'linear-gradient(90deg, #8A94A8, #5A6378)' }} />
+      <div aria-hidden className="absolute rounded-full" style={{ left: OVEN_X + 50, top: FLOOR - 6, width: 446 - OVEN_X - 50, height: 6, background: 'linear-gradient(180deg, #8A94A8, #5A6378)' }} />
+      <div aria-hidden className="absolute rounded-[3px]" style={{ left: 428, top: FLOOR - 14, width: 14, height: 14, background: LAB.yellow, boxShadow: 'inset 0 -2px 0 rgba(0,0,0,0.18)' }} />
+      <At x={COUNTER_X} y={FLOOR} cx>
         <div className="flex flex-col items-center" style={{ transform: 'translateY(-100%)' }}>
           <div style={{ marginBottom: -16 }}>
             {/* the dough is the provider's when it comes ready; the rest arrives with the customer */}
-            <ClayPizza w={126} stage={stage} tray={doughReady ? colors.brand : LAB.lavDeep} opacity={doughReady ? 1 : fo} />
+            <ClayPizza w={112} stage={stage} tray={doughReady ? colors.brand : LAB.lavDeep} opacity={doughReady ? 1 : fo} />
           </div>
-          <ClayCounter w={160} />
+          <ClayCounter w={140} />
         </div>
       </At>
-      <At x={379} y={FLOOR} cx>
+      <At x={OVEN_X} y={FLOOR} cx>
         <div style={{ transform: 'translateY(-100%)' }}>
-          <ClayOven w={124} on={baked} />
+          <ClayOven w={108} on={baked} />
         </div>
+      </At>
+      <div aria-hidden className="absolute" style={{ left: COUNTER_X - 70, top: FLOOR + 10, width: 446 - COUNTER_X + 70, height: 2, background: colors.brand, opacity: 0.4 }} />
+      <At x={(COUNTER_X - 70 + 446) / 2} y={FLOOR + 30} cx cy>
+        <Label size={15} strong tone="lift">
+          {equipment}
+        </Label>
       </At>
     </>
   )
@@ -531,9 +565,9 @@ export function IaasAnalogy({ lesson }: { lesson: string }) {
       id="iaas-analogy"
       kicker="IaaS Explained"
       lesson={lesson}
-      everyday={{ label: 'Kitchen space only', scene: <Kitchen crates={IAAS_IN} doughReady={false} stageAt={[[IAAS_IN[0] + 0.14, 0], [IAAS_IN[1] + 0.14, 1], [IAAS_IN[2] + 0.14, 2], [IAAS_IN[2] + 0.18, 3]]} /> }}
+      text="Domino's kitchen space and oven are used, but the dough, sauce and toppings are supplied separately and the pizza is cooked from scratch, just as the IaaS provider manages only the physical infrastructure while the customer manages the operating system, runtime and application."
+      everyday={{ label: 'Kitchen space only', scene: <Kitchen equipment="Infrastructure" cards={[{ text: 'OS', at: IAAS_IN[0] }, { text: 'Runtime', at: IAAS_IN[1] }, { text: 'App', at: IAAS_IN[2] }]} doughReady={false} stageAt={[[IAAS_IN[0] + 0.14, 0], [IAAS_IN[1] + 0.14, 1], [IAAS_IN[2] + 0.14, 2], [IAAS_IN[2] + 0.18, 3]]} /> }}
       cloud={{ label: 'IaaS', scene: <Stack4 owners={['P', 'C', 'C', 'C']} arrive={[null, ...IAAS_IN]} /> }}
-      claim="You bring everything above the oven"
     />
   )
 }
@@ -628,72 +662,100 @@ export function PaasAnalogy({ lesson }: { lesson: string }) {
       id="paas-analogy"
       kicker="PaaS Explained"
       lesson={lesson}
-      everyday={{ label: 'Kitchen and dough ready', scene: <Kitchen crates={[PAAS_IN]} doughReady stageAt={[[PAAS_IN + 0.14, 1], [PAAS_IN + 0.18, 2], [PAAS_IN + 0.22, 3]]} /> }}
+      text="Domino's kitchen, oven and ready dough are already set up, so only assembling and baking the pizza on that setup remains, just as the PaaS provider manages infrastructure, operating system and runtime while the customer manages only the application."
+      everyday={{ label: 'Kitchen and dough ready', scene: <Kitchen equipment="Platform" cards={[{ text: 'Application Code', at: PAAS_IN }]} doughReady stageAt={[[PAAS_IN + 0.14, 1], [PAAS_IN + 0.18, 2], [PAAS_IN + 0.22, 3]]} /> }}
       cloud={{ label: 'PaaS', scene: <Stack4 owners={['P', 'P', 'P', 'C']} arrive={[null, null, null, PAAS_IN]} /> }}
-      claim="You bring only the toppings"
     />
   )
 }
 
 /* ================================================================== 31 · SaaS */
 
-/** The TR's diagram: a cloud labelled SaaS sends the finished application down to a laptop, a tablet and a phone, whose screens light as it lands; an update badge pulses by the cloud; the customer's data is the one amber parcel. */
+/**
+ * The TR's own diagram (2026-10-27, redrawn to it): a cloud labelled SaaS at
+ * the top, three dashed connectors dropping onto one soft panel of devices, a
+ * desktop showing a folder, a phone with a check badge, a laptop showing
+ * connected users with a download beside it. The application rides down each
+ * connector in turn and the device's screen fills as it lands.
+ */
 function SaasScene() {
-  const t = useLoop(8000, { mode: 'sawtooth', still: 0.5 })
-  const start = (i: number) => 0.06 + i * 0.12
-  const going = (i: number) => t >= start(i) && t < start(i) + 0.28
-  const lit = (i: number) => t > start(i) + 0.28 && t < 0.92
-  const badge = 1 + 0.16 * (pulse(t, 0.0, 0.08, 0.12, 0.2) + pulse(t, 0.5, 0.58, 0.62, 0.7))
-  const BASE = 296
-  const dev: { x: number; top: number; art: (on: boolean) => ReactNode }[] = [
-    { x: 140, top: BASE - 88, art: (on) => <ClayLaptop w={128} lit={on} /> },
-    { x: 296, top: BASE - 74, art: (on) => <ClayTablet w={104} lit={on} /> },
-    { x: 432, top: BASE - 92, art: (on) => <ClayPhone w={46} lit={on} /> },
-  ]
-  /* review 2026-10-26 (connections): out of the cloud's underside, onto each device's top */
-  const SRC: [number, number][] = [[288, 158], [317, 162], [346, 158]]
+  const t = useLoop(8000, { mode: 'sawtooth', still: 0.62 })
+  const start = (i: number) => 0.06 + i * 0.13
+  const going = (i: number) => t >= start(i) && t < start(i) + 0.26
+  const lit = (i: number) => t > start(i) + 0.26 && t < 0.94
+  const pop = (i: number) => within(t, start(i) + 0.26, start(i) + 0.34) * (1 - within(t, 0.92, 0.98))
+  const BASE = 344
+  const MON = { x: 150, w: 170 }
+  const PH = { x: 326, w: 56 }
+  const LAP = { x: 482, w: 176 }
+  const monH = (MON.w * 124) / 150
+  const phH = (PH.w * 114) / 56
+  const lapH = (LAP.w * 110) / 160
+  const tops = [BASE - monH, BASE - phH, BASE - lapH]
+  const xs = [MON.x, PH.x, LAP.x]
+  const SRC: [number, number][] = [[282, 160], [317, 166], [352, 160]]
+  const ms = MON.w / 150
+  const ls = LAP.w / 160
+  const fill = (i: number): CSSProperties => ({ opacity: pop(i), transform: `scale(${0.85 + 0.15 * pop(i)})`, transition: `opacity 300ms ${EASE}` })
   return (
     <>
+      <div aria-hidden className="absolute rounded-[22px]" style={{ left: 34, top: 226, width: 566, height: 130, background: `linear-gradient(180deg, ${LAB.lavender}, rgba(45,99,251,0.10))`, boxShadow: 'inset 0 0 0 1px rgba(45,99,251,0.12)' }} />
       <At x={317} y={24} cx>
         <Label size={18} strong tone="solid">
           SaaS
         </Label>
       </At>
-      <At x={317} y={60} cx>
+      <At x={317} y={58} cx>
         <RichCloud w={156} />
       </At>
-      <At x={136} y={112} cx cy>
-        <Label size={15} strong tone="brand">
-          Finished application
-        </Label>
-      </At>
-      <At x={502} y={64} cx>
-        <div className="flex flex-col items-center gap-2">
-          <div style={{ transform: `scale(${badge})` }}>
-            <Icon3D name="update" w={44} shadow={false} />
-          </div>
-          <Label size={15} strong tone="good">
-            Automatic updates
-          </Label>
+      {xs.map((x, i) => (
+        <Arrow key={`a-${i}`} x1={SRC[i][0]} y1={SRC[i][1]} x2={x} y2={tops[i] - 4} dashed tone={going(i) || lit(i) ? colors.brand : colors.line} />
+      ))}
+      {xs.map((x, i) => (
+        <Traveller key={`t-${i}`} path={[SRC[i], [x, tops[i] - 10]]} run={going(i)} k={i} size={12} tone={colors.brand} dur={2.1} />
+      ))}
+      {/* the desktop, a folder on its screen */}
+      <At x={MON.x} y={BASE} cx>
+        <div style={{ transform: 'translateY(-100%)' }}>
+          <ClayMonitor w={MON.w} lit={lit(0)} />
         </div>
       </At>
-      {dev.map((d, i) => (
-        <Arrow key={`a-${i}`} x1={SRC[i][0]} y1={SRC[i][1]} x2={d.x} y2={d.top - 2} tone={going(i) || lit(i) ? colors.brand : colors.line} />
-      ))}
-      {dev.map((d, i) => (
-        <Traveller key={`t-${i}`} path={[SRC[i], [d.x, d.top - 8]]} run={going(i)} k={i} size={12} tone={colors.brand} dur={2.1} />
-      ))}
-      {dev.map((d, i) => (
-        <At key={`d-${i}`} x={d.x} y={BASE} cx>
-          <div style={{ transform: 'translateY(-100%)' }}>{d.art(lit(i))}</div>
-        </At>
-      ))}
-      <At x={548} y={BASE} cx>
-        <div className="flex flex-col items-center gap-2" style={{ transform: 'translateY(-58px)' }}>
-          <ClayParcel w={56} tone={CUSTOMER} />
-          <Label size={15} strong tone="warn">
-            Your data
-          </Label>
+      <At x={MON.x - MON.w / 2 + 12 * ms} y={tops[0] + 27 * ms}>
+        <div className="grid place-items-center rounded-[5px] bg-white" style={{ width: 126 * ms, height: 59 * ms }}>
+          <div style={fill(0)}>
+            <Icon3D name="folder" w={66} shadow={false} />
+          </div>
+        </div>
+      </At>
+      {/* the phone, a check badge on it */}
+      <At x={PH.x} y={BASE} cx>
+        <div style={{ transform: 'translateY(-100%)' }}>
+          <ClayPhone w={PH.w} lit={lit(1)} />
+        </div>
+      </At>
+      <At x={PH.x + 24} y={tops[1] + phH * 0.62} cx cy>
+        <div className="grid place-items-center rounded-full" style={{ width: 32, height: 32, background: colors.brand, boxShadow: `0 0 0 3px ${colors.white}, 0 8px 16px -8px ${colors.brand}`, ...fill(1) }}>
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden>
+            <path d="M3 8.5 L6.5 12 L13 4.5" fill="none" stroke="#FFFFFF" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+      </At>
+      {/* the laptop, connected users on its screen, a download beside it */}
+      <At x={LAP.x} y={BASE} cx>
+        <div style={{ transform: 'translateY(-100%)' }}>
+          <ClayLaptop w={LAP.w} lit={lit(2)} />
+        </div>
+      </At>
+      <At x={LAP.x - LAP.w / 2 + 26 * ls} y={tops[2] + 12 * ls}>
+        <div className="grid place-items-center rounded-[6px] bg-white" style={{ width: 108 * ls, height: 68 * ls }}>
+          <div style={fill(2)}>
+            <Icon3D name="teamwork" w={86} shadow={false} />
+          </div>
+        </div>
+      </At>
+      <At x={LAP.x + 64} y={tops[2] - 18} cx>
+        <div style={fill(2)}>
+          <Icon3D name="download" w={42} shadow={false} />
         </div>
       </At>
     </>
@@ -740,6 +802,17 @@ const BOY_S = 0.28
 /** where the rig's hands are in the held reach, on the lab's canvas (measured): the reaching hand and the hand at the side */
 const toStage = (x: number, cx: number, cy: number, floor: number): [number, number] => [x + (cx - BOY_CROP.x0) * BOY_S, floor - (BOY_CROP.y1 - cy) * BOY_S]
 
+/** The finished pizza in its box (2026-10-27, the TR: a finished pizza box handed over): a flat box, the lid's front lip, a round seal. */
+function PizzaBox({ w }: { w: number }) {
+  const h = w * 0.34
+  return (
+    <div className="relative" style={{ width: w, height: h, borderRadius: 4, background: `linear-gradient(180deg, #5C8BFF 0%, ${colors.brand} 55%, ${colors.brandDark} 100%)`, boxShadow: '0 8px 14px -8px rgba(16,32,58,0.55), inset 0 1.5px 0 rgba(255,255,255,0.55)' }}>
+      <div className="absolute inset-x-0" style={{ top: h * 0.42, height: 1.5, background: 'rgba(255,255,255,0.45)' }} />
+      <div className="absolute rounded-full" style={{ left: w / 2 - h * 0.2, top: h * 0.1, width: h * 0.4, height: h * 0.25, background: '#FFFFFF', opacity: 0.85 }} />
+    </div>
+  )
+}
+
 /**
  * A delivery truck (provider blue) drives up the road with the boxed pizza; the customer, holding only
  * an order slip (amber), reaches out and the box comes into his hand.
@@ -779,10 +852,15 @@ function DeliveryScene() {
       <At x={SIDE[0] - 14} y={SIDE[1] - 9}>
         <ClayTicket w={30} />
       </At>
-      <At x={HAND[0] - 20} y={HAND[1] - 30}>
+      <At x={HAND[0] - 30} y={HAND[1] - 22}>
         <div style={{ opacity: inCab ? 0 : fo, transform: `translate(${bx}px, ${by}px)` }}>
-          <ClayParcel w={40} tone={colors.brand} />
+          <PizzaBox w={60} />
         </div>
+      </At>
+      <At x={HAND[0] - 36} y={HAND[1] - 50} cx cy style={{ opacity: hand > 0.95 ? fo : 0, transition: `opacity 300ms ${EASE}` }}>
+        <Label size={15} strong tone="brand">
+          Application
+        </Label>
       </At>
       <At x={378} y={FLOOR} cx>
         <div style={{ transform: 'translateY(-100%)' }}>
@@ -800,8 +878,8 @@ export function SaasAnalogy({ lesson }: { lesson: string }) {
       kicker="SaaS Explained"
       lesson={lesson}
       everyday={{ label: 'A ready-made pizza', scene: <DeliveryScene /> }}
+      text="A ready-made pizza is ordered directly from Domino's with no kitchen work at all, just as the SaaS provider manages the entire stack while the customer only uses the finished application."
       cloud={{ label: 'SaaS', scene: <Stack4 owners={['P', 'P', 'P', 'P']} arrive={[SAAS_IN, SAAS_IN + 0.03, SAAS_IN + 0.06, SAAS_IN + 0.09]} data /> }}
-      claim="You bring nothing but an order"
     />
   )
 }
