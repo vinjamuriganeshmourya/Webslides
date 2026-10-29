@@ -357,7 +357,7 @@ function TwoProvidersScene() {
 }
 
 export function MultiAnalogy({ lesson }: { lesson: string }) {
-  return <IsoAnalogy id="multicloud-analogy" kicker="Multi-Cloud Defined" lesson={lesson} everyday={{ label: 'Two banks for your savings', scene: <BanksScene /> }} text="Spreading savings across two different banks guards against one bank freezing withdrawals or raising fees, just as multi-cloud spreads workloads across providers so one outage or price hike does not stop operations." cloud={{ label: 'Multi-cloud', scene: <TwoProvidersScene /> }} />
+  return <IsoAnalogy id="multicloud-analogy" kicker="Multi-Cloud Defined" lesson={lesson} everyday={{ label: 'Two banks for your savings', scene: <BanksScene /> }} text="Keeping money across two banks reduces dependence on a single bank: if one has an outage or access issue, the other remains available. Similarly, multi-cloud uses multiple cloud providers so an organisation is not dependent on a single provider." cloud={{ label: 'Multi-cloud', scene: <TwoProvidersScene /> }} />
 }
 
 /* ================================================================== 21 · motivations */

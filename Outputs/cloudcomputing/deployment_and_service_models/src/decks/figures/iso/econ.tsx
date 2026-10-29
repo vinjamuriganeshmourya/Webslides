@@ -647,7 +647,7 @@ function ServerTcoScene() {
 }
 
 export function TcoAnalogy({ lesson }: { lesson: string }) {
-  return <IsoAnalogy id="tco-analogy" kicker="Total Cost Ownership" lesson={lesson} text="A smartphone's price tag ignores the data plan, repairs and accessories bought over its life, just as a server's purchase price ignores the staffing, power and downtime that TCO adds back in." everyday={{ label: "A phone's price tag", scene: <PhoneTagScene /> }} cloud={{ label: 'Server TCO', scene: <ServerTcoScene /> }} />
+  return <IsoAnalogy id="tco-analogy" kicker="Total Cost Ownership" lesson={lesson} text="The price of a smartphone is not its total cost: you may also spend money on data, repairs, and accessories over time. Similarly, the purchase price of a server does not show its total cost of ownership, which also includes power, maintenance, staffing, and downtime." everyday={{ label: "A phone's price tag", scene: <PhoneTagScene /> }} cloud={{ label: 'Server TCO', scene: <ServerTcoScene /> }} />
 }
 
 /* ================================================================== 49 · the steps */
@@ -710,7 +710,7 @@ export function Pricing({ lesson }: { lesson: string }) {
       title="On-Demand To Spot"
       lead="Providers meter usage but let buyers trade commitment for discount; three payment patterns cover most cloud spend"
       lesson={lesson}
-      points={['On-demand: metered pay-as-used rate, zero commitment', 'Committed use: one to three-year term for lower fixed rate', 'Spot: spare capacity at a steep discount; can be reclaimed at short notice', 'Trade-off across all three: flexibility versus price']}
+      points={['On-demand: metered pay-as-used rate, zero commitment', 'Committed use: longer-term commitment for lower rates, depending on the provider and plan.', 'Spot: spare capacity at a steep discount; can be reclaimed at short notice', 'Trade-off across all three: flexibility versus price']}
       figure={<RampScene />}
     />
   )

@@ -65,7 +65,7 @@ export function Install5({ lesson }: { lesson: string }) {
 
 export function Wizard1({ lesson }: { lesson: string }) {
   return (
-    <Shots id="wizard-1" kicker={WIZARD} title={WALK} lesson={lesson}>
+    <Shots id="wizard-1" kicker={WIZARD} title={WALK} lead="Screens from creating an Ubuntu 26.04.1 LTS VM, shown here for reference — trainer walks through each live rather than reading the captions below." lesson={lesson}>
       <Shot n={1} name="vbox-10-manager-home" caption="VirtualBox Manager home: click New (Ctrl+N)" />
       <Shot n={2} name="vbox-11-name-and-iso" caption="Name the VM, select ISO, confirm guest OS type" />
     </Shots>

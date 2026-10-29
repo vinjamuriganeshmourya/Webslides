@@ -77,7 +77,11 @@ function ringPts(x: number, y: number, w: number, h: number, r: number): Pt[] {
 }
 
 /** A packet at a point, moved by transform only. */
+const MOVING_DOTS = false
+
 function Pkt({ at, tone = colors.accent, size = 12, on = true, square = false }: { at: Pt; tone?: string; size?: number; on?: boolean; square?: boolean }) {
+  /* moving dots off deck-wide (user, 2026-10-28: "remove the moving dots") */
+  if (!MOVING_DOTS) return null
   return (
     <span
       aria-hidden
@@ -511,7 +515,7 @@ export function Network({ lesson }: { lesson: string }) {
     <FigureOnly
       id="Network"
       kicker="Network Virtualization"
-      title="Logical Nets Over Physical"
+      title="Logical Networks Over Physical"
       lead={['Network virtualization uses software to create multiple separate virtual networks on top of one shared physical network.', 'Each virtual network has its own addressing and settings.']}
       lesson={lesson}
       h={NW_H}
@@ -724,10 +728,10 @@ function VirtualNetsBody({ lit }: { lit: number }) {
   )
 }
 
-/* ================================================================== 14 · the everyday card: the supplied infographic */
+/* ================================================================== 14 · the supplied infographic (replaced 2026-10-29; kept, not mounted) */
 
 /**
- * The user's own picture for slide 14's EVERYDAY card (2026-10-27): `Apartment Utility Management
+ * The user's own picture for slide 14's EVERYDAY card (2026-10-27, replaced by the drawn metered building below on 2026-10-29): `Apartment Utility Management
  * Infographic.png`, its empty margin trimmed, fitted to the whole card box at its own shape (contained,
  * never stretched; its white ground multiplied into the plate). Static, on the user's word: no motion.
  */
@@ -737,7 +741,7 @@ const AU_RATIO = 1323 / 792
 const AU_W = Math.min(AU_BOX_W, AU_BOX_H * AU_RATIO)
 const AU_H = AU_W / AU_RATIO
 
-function ApartmentUtilityScene(lit: number) {
+export function ApartmentUtilityScene(lit: number) {
   /* markers on the picture, in its own fractions: 1 the supply line into the building, 2 a unit, 3 its meter */
   const at = (fx: number, fy: number) => ({ left: (AU_BOX_W - AU_W) / 2 + fx * AU_W - 15, top: (AU_BOX_H - AU_H) / 2 + fy * AU_H - 15 })
   return (
@@ -750,6 +754,248 @@ function ApartmentUtilityScene(lit: number) {
   )
 }
 
+/* ================================================================== 14 · the everyday card: one supply, a meter for each tenant */
+
+/**
+ * The user's picture for slide 14's EVERYDAY card, 2026-10-29: "a multi-storey building in isometric 3D with
+ * several distinct units (differently coloured), ONE main electricity supply (utility pole or transformer, single
+ * thick cable) entering the building, a meter panel on the wall with separate, individually labelled meters
+ * (Tenant A, Tenant B, Tenant C), each wired to its own unit; the single shared connection clearly splitting into
+ * per-tenant meters". The speaker notes carry the TR sentence it draws.
+ *
+ * Drawn as a cabinet projection (the front face square, the side and the roof receding at 30 degrees at half
+ * depth, the way an architect's block drawing does it) rather than a true isometric, because the three nameplates
+ * on the cabinet are DOM text (course lesson 7, rule 17) and have to read straight on. One pole with its
+ * transformer, one thick cable into the main box; inside the cabinet one bus bar feeds three meters in the three
+ * tenants' colours (the same three tones as the virtual networks on the right); each meter's wire climbs the riser
+ * duct on the facade and ends at a lamp in its own unit. `lit` (the pair clock) picks the tenant whose meter is
+ * reading: its needle swings up and its lamp and windows glow. No travelling dots (user, 2026-10-28).
+ */
+const MB_X0 = 206 // the facade's left edge
+const MB_X1 = 436 // and right edge, where the side face starts
+const MB_DX = 26 // the receding axis: 30 degrees, half depth
+const MB_DY = -15
+const MB_TOP = 56 // unit A's top; the parapet sits above it
+const MB_UNIT_H = 38
+const MB_BASE = 236 // the ground line
+const MB_TONES = WIFI_TONES
+const MB_METER_CX = [261, 319, 377]
+const MB_RISER_X = [214, 219, 224]
+const MB_LANE_Y = [182, 178, 174]
+const MB_USE = [0.35, 0.62, 0.48]
+const mbUnitTop = (i: number) => MB_TOP + i * MB_UNIT_H
+const MB_PLINTH = mbUnitTop(3) // 170
+const MB_CAB = { x: 212, y: 186, w: 190, h: 49 }
+/** The receding side of a front-face rectangle whose right edge is `x`, and the top face of a block. */
+const mbSide = (x: number, y0: number, y1: number) => `M ${x} ${y0} L ${x + MB_DX} ${y0 + MB_DY} L ${x + MB_DX} ${y1 + MB_DY} L ${x} ${y1} Z`
+const mbTop = (x0: number, x1: number, y: number) => `M ${x0} ${y} L ${x1} ${y} L ${x1 + MB_DX} ${y + MB_DY} L ${x0 + MB_DX} ${y + MB_DY} Z`
+/** A window on the side face, between `t0` and `t1` of the depth. */
+const mbSideWindow = (y0: number, y1: number, t0 = 0.3, t1 = 0.7) => `M ${MB_X1 + t0 * MB_DX} ${y0 + t0 * MB_DY} L ${MB_X1 + t1 * MB_DX} ${y0 + t1 * MB_DY} L ${MB_X1 + t1 * MB_DX} ${y1 + t1 * MB_DY} L ${MB_X1 + t0 * MB_DX} ${y1 + t0 * MB_DY} Z`
+
+function MeteredBuildingScene(lit: number) {
+  return <MeteredBuildingBody lit={lit} />
+}
+
+function MeteredBuildingBody({ lit }: { lit: number }) {
+  const id = useId().replace(/:/g, '')
+  const g = (k: string) => `url(#${id}-${k})`
+  const T = `all 420ms ${EASE}`
+  /* the service cable: from the transformer's terminal, sagging to the main box on the facade */
+  const cable = `M 84 112 C 128 192, 176 214, ${MB_CAB.x + 6} 208`
+  return (
+    <>
+      <svg aria-hidden className="pointer-events-none absolute left-0 top-0" width={500} height={270} viewBox="0 0 500 270">
+        <defs>
+          <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#CFE1FF" stopOpacity="0.95" />
+            <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id={`${id}-ground`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#DDE6F4" />
+            <stop offset="1" stopColor="#C2CFE6" />
+          </linearGradient>
+          <linearGradient id={`${id}-wood`} x1="0" x2="1">
+            <stop offset="0" stopColor="#E2B386" />
+            <stop offset="1" stopColor="#9A6338" />
+          </linearGradient>
+          <linearGradient id={`${id}-steel`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#D5DDEC" />
+            <stop offset="1" stopColor="#7D8AAA" />
+          </linearGradient>
+          <linearGradient id={`${id}-front`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#FBF3E7" />
+            <stop offset="1" stopColor="#EEDFC9" />
+          </linearGradient>
+          <linearGradient id={`${id}-plinth`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#EAEFF8" />
+            <stop offset="1" stopColor="#D3DCEC" />
+          </linearGradient>
+          <linearGradient id={`${id}-cab`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#FFFFFF" />
+            <stop offset="1" stopColor="#DCE4F2" />
+          </linearGradient>
+          <linearGradient id={`${id}-glass`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#E3EEFF" />
+            <stop offset="1" stopColor="#9CC1F5" />
+          </linearGradient>
+          <linearGradient id={`${id}-door`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#4A5EB8" />
+            <stop offset="1" stopColor={LAB.navy} />
+          </linearGradient>
+          <radialGradient id={`${id}-shade`}>
+            <stop offset="0" stopColor="rgba(31,64,140,0.32)" />
+            <stop offset="1" stopColor="rgba(31,64,140,0)" />
+          </radialGradient>
+          <radialGradient id={`${id}-shrub`} cx="35%" cy="30%" r="70%">
+            <stop offset="0" stopColor="#8FD19E" />
+            <stop offset="0.6" stopColor={LAB.sage} />
+            <stop offset="1" stopColor="#3E8A57" />
+          </radialGradient>
+        </defs>
+        {/* the sky, two clouds, the ground plane with the horizon behind the block */}
+        <rect x={0} y={0} width={500} height={224} fill={g('sky')} />
+        {[
+          [118, 34, 30],
+          [474, 44, 24],
+        ].map(([cx, cy, r]) => (
+          <g key={cx} fill="#FFFFFF" opacity={0.9}>
+            <ellipse cx={cx} cy={cy} rx={r} ry={r * 0.36} />
+            <circle cx={cx - r * 0.35} cy={cy - r * 0.28} r={r * 0.42} />
+            <circle cx={cx + r * 0.2} cy={cy - r * 0.4} r={r * 0.5} />
+          </g>
+        ))}
+        <rect x={0} y={222} width={500} height={48} fill={g('ground')} />
+        <rect x={0} y={222} width={500} height={1.5} fill="#FFFFFF" opacity={0.7} />
+        {/* the block's shadow on the ground, cast along the receding axis */}
+        <path d={`M ${MB_X0 - 4} ${MB_BASE + 1} L ${MB_X1 + 6} ${MB_BASE + 1} L ${MB_X1 + MB_DX + 20} ${MB_BASE + MB_DY} L ${MB_X0 + MB_DX + 20} ${MB_BASE + MB_DY} Z`} fill="rgba(31,64,140,0.14)" />
+        {/* the pole: a graded post, the crossbar and its insulators, the transformer drum on its bracket */}
+        <ellipse cx={58} cy={241} rx={18} ry={4.5} fill={g('shade')} />
+        <rect x={54} y={58} width={8} height={184} rx={3} fill={g('wood')} />
+        <rect x={38} y={66} width={40} height={6} rx={3} fill={g('wood')} />
+        {[43, 73].map((cx) => (
+          <g key={cx}>
+            <rect x={cx - 3.5} y={58} width={7} height={9} rx={2.5} fill={LAB.sky} />
+            <circle cx={cx - 1} cy={60} r={1.4} fill="#FFFFFF" opacity={0.8} />
+          </g>
+        ))}
+        <path d="M 0 52 Q 20 60 43 59" stroke="#5B6B8F" strokeWidth={1.5} fill="none" />
+        <path d="M 43 59 Q 58 64 73 59" stroke="#5B6B8F" strokeWidth={1.5} fill="none" />
+        <path d="M 73 60 V 94" stroke="#5B6B8F" strokeWidth={1.5} fill="none" />
+        <rect x={60} y={96} width={4} height={30} fill="#5B6B8F" />
+        <rect x={62} y={92} width={24} height={34} rx={4} fill={g('steel')} />
+        {[0, 1, 2].map((k) => (
+          <rect key={k} x={86} y={98 + k * 9} width={5} height={4} rx={1.5} fill="#7D8AAA" />
+        ))}
+        <rect x={66} y={95} width={16} height={2} rx={1} fill="#FFFFFF" opacity={0.6} />
+        {/* the one service cable, thick, into the main box */}
+        <path d={cable} stroke="#2A3A5E" strokeWidth={6} fill="none" strokeLinecap="round" />
+        <path d={cable} stroke="#7B8EB8" strokeWidth={1.6} fill="none" strokeLinecap="round" opacity={0.7} />
+        {/* the block: the plinth, three units, the parapet and roof, each with its receding side */}
+        <path d={mbSide(MB_X1, MB_PLINTH, MB_BASE)} fill="#B9C5DC" />
+        <rect x={MB_X0} y={MB_PLINTH} width={MB_X1 - MB_X0} height={MB_BASE - MB_PLINTH} fill={g('plinth')} />
+        {[0, 1, 2].map((i) => {
+          const y0 = mbUnitTop(i)
+          const on = lit === i
+          const tone = MB_TONES[i]
+          return (
+            <g key={i}>
+              <path d={mbSide(MB_X1, y0, y0 + MB_UNIT_H)} fill="#D9C9B0" />
+              <path d={mbSide(MB_X1, y0, y0 + MB_UNIT_H)} fill={tone} opacity={0.5} />
+              <rect x={MB_X0} y={y0} width={MB_X1 - MB_X0} height={MB_UNIT_H} fill={g('front')} />
+              <rect x={MB_X0} y={y0} width={MB_X1 - MB_X0} height={MB_UNIT_H} fill={tone} opacity={0.22} />
+              {/* the floor slab under the unit */}
+              <rect x={MB_X0} y={y0 + MB_UNIT_H - 3} width={MB_X1 - MB_X0} height={3} fill="#C9B79A" />
+              <path d={mbSide(MB_X1, y0 + MB_UNIT_H - 3, y0 + MB_UNIT_H)} fill="#A89477" />
+              {/* three windows on the front, one on the side; warm while this tenant is reading */}
+              {[256, 304, 352].map((x) => (
+                <g key={x}>
+                  <rect x={x} y={y0 + 8} width={34} height={20} rx={3} fill={g('glass')} />
+                  <rect x={x} y={y0 + 8} width={34} height={20} rx={3} fill="#FFE29A" opacity={on ? 0.85 : 0} style={{ transition: T }} />
+                  <rect x={x} y={y0 + 8} width={34} height={20} rx={3} fill="none" stroke="#FFFFFF" strokeWidth={2.5} />
+                  <rect x={x + 16} y={y0 + 8} width={2} height={20} fill="#FFFFFF" />
+                  <rect x={x - 2} y={y0 + 28} width={38} height={2.5} rx={1} fill="#B98A5E" />
+                </g>
+              ))}
+              <path d={mbSideWindow(y0 + 8, y0 + 28)} fill="#7FA6E0" />
+              <path d={mbSideWindow(y0 + 8, y0 + 28)} fill="none" stroke="#FFFFFF" strokeWidth={1.5} />
+              {/* the unit's lamp: where its own meter's wire ends */}
+              <circle cx={239} cy={y0 + 19} r={11} fill={tone} opacity={on ? 0.35 : 0} style={{ transition: T }} />
+              <rect x={232} y={y0 + 13} width={14} height={12} rx={3} fill={tone} />
+              <rect x={234} y={y0 + 14.5} width={10} height={2} rx={1} fill="#FFFFFF" opacity={0.6} />
+            </g>
+          )
+        })}
+        {/* the parapet, the roof top, a water tank on it */}
+        <path d={mbTop(MB_X0, MB_X1, MB_TOP - 6)} fill="#E6EDF9" />
+        <path d={mbSide(MB_X1, MB_TOP - 6, MB_TOP)} fill="#8E9DBE" />
+        <rect x={MB_X0} y={MB_TOP - 6} width={MB_X1 - MB_X0} height={6} fill="#C9D3E8" />
+        <rect x={MB_X0} y={MB_TOP - 6} width={MB_X1 - MB_X0} height={1.5} fill="#FFFFFF" opacity={0.8} />
+        <rect x={398} y={30} width={26} height={16} rx={3} fill={g('steel')} />
+        <ellipse cx={411} cy={30} rx={13} ry={4} fill="#E9EEF8" />
+        <ellipse cx={411} cy={46} rx={13} ry={4} fill="#7D8AAA" />
+        <rect x={398} y={30} width={26} height={16} fill={g('steel')} />
+        <ellipse cx={411} cy={30} rx={13} ry={4} fill="#E9EEF8" />
+        {/* the entrance, on the plinth beside the cabinet */}
+        <rect x={408} y={196} width={22} height={40} rx={3} fill={g('door')} />
+        <rect x={411} y={200} width={16} height={18} rx={2} fill={g('glass')} opacity={0.8} />
+        <rect x={404} y={234} width={30} height={3} rx={1.5} fill="#B9C5DC" />
+        {/* the riser duct up the facade, and the three wires in it, each to its own unit */}
+        <rect x={210} y={MB_TOP + 2} width={18} height={MB_PLINTH + 14 - MB_TOP} rx={3} fill="rgba(255,255,255,0.5)" stroke="#D7C7AE" strokeWidth={1} />
+        {/* the meter cabinet: its door open on three meters fed by one bus bar from the main box */}
+        <rect x={MB_CAB.x} y={MB_CAB.y} width={MB_CAB.w} height={MB_CAB.h} rx={5} fill={g('cab')} stroke="#AEBBD6" strokeWidth={2} />
+        <rect x={MB_CAB.x + 2} y={MB_CAB.y + 2} width={MB_CAB.w - 4} height={2} rx={1} fill="#FFFFFF" />
+        <rect x={218} y={196} width={18} height={24} rx={3} fill={g('door')} />
+        <circle cx={227} cy={203} r={2.6} fill={LAB.yellow} />
+        <rect x={222} y={210} width={10} height={5} rx={1.5} fill="#8FA3D6" />
+        {/* the bus bar: one line through all three meters */}
+        <path d={`M 236 208 H ${MB_METER_CX[2]}`} stroke="#2A3A5E" strokeWidth={4} strokeLinecap="round" fill="none" />
+        {[0, 1, 2].map((i) => {
+          const cx = MB_METER_CX[i]
+          const tone = MB_TONES[i]
+          const on = lit === i
+          const value = MB_USE[i] + (on ? 0.2 : 0)
+          const a = -110 + Math.max(0, Math.min(1, value)) * 220
+          const y0 = mbUnitTop(i)
+          return (
+            <g key={i}>
+              {/* the wire out of the meter: up to its lane, left to the duct, up the duct, into its unit's lamp */}
+              <path d={`M ${cx} 195 V ${MB_LANE_Y[i]} H ${MB_RISER_X[i]} V ${y0 + 19} H 232`} stroke={tone} strokeWidth={2.5} fill="none" strokeLinejoin="round" strokeLinecap="round" opacity={on ? 1 : 0.75} style={{ transition: T }} />
+              <rect x={cx - 13} y={195} width={26} height={26} rx={4} fill="#FFFFFF" stroke={on ? tone : '#B9C7E3'} strokeWidth={on ? 2 : 1.5} style={{ transition: T }} />
+              <rect x={cx - 13} y={195} width={26} height={5} rx={2} fill={tone} />
+              <circle cx={cx} cy={210} r={7} fill="#F7F9FE" stroke="#C9D5EC" strokeWidth={1} />
+              <path d={`M ${cx - 5} 212 A 5.4 5.4 0 1 1 ${cx + 5} 212`} fill="none" stroke={tone} strokeWidth={2} strokeLinecap="round" opacity={0.45} />
+              <line x1={cx} y1={210} x2={cx} y2={204.5} stroke={LAB.charcoal} strokeWidth={1.6} strokeLinecap="round" style={{ transformBox: 'view-box', transformOrigin: `${cx}px 210px`, transform: `rotate(${a}deg)`, transition: `transform 700ms ${EASE}` }} />
+              <circle cx={cx} cy={210} r={1.6} fill={LAB.charcoal} />
+              <circle cx={cx + 9} cy={218} r={1.8} fill={on ? colors.success : '#C9D5EC'} style={{ transition: T }} />
+            </g>
+          )
+        })}
+        {/* shrubs at the foot of the block */}
+        {[
+          [204, 232],
+          [446, 230],
+        ].map(([cx, cy]) => (
+          <circle key={cx} cx={cx} cy={cy} r={11} fill={g('shrub')} />
+        ))}
+      </svg>
+      {/* the nameplates under the meters, one per tenant */}
+      {[0, 1, 2].map((i) => (
+        <At key={i} x={MB_METER_CX[i] - 27} y={223} w={54}>
+          <span className="block whitespace-nowrap rounded-[3px] text-center font-heading text-[11px] font-bold leading-[12px]" style={{ color: MB_TONES[i], background: '#FFFFFF', boxShadow: `inset 0 0 0 1px ${MB_TONES[i]}55` }}>
+            Tenant {['A', 'B', 'C'][i]}
+          </span>
+        </At>
+      ))}
+      {/* the supply, named once, at the foot of the pole */}
+      <At x={66} y={226}>
+        <span className="block whitespace-nowrap rounded-md px-2 py-0.5 font-heading text-[12px] font-bold" style={{ background: '#FFF1D6', color: '#9A5B00' }}>
+          One shared supply
+        </span>
+      </At>
+    </>
+  )
+}
+
 export function NetworkAnalogy({ lesson }: { lesson: string }) {
   return (
     <PairAnalogy
@@ -757,13 +1003,10 @@ export function NetworkAnalogy({ lesson }: { lesson: string }) {
       kicker="Network Virtualization"
       title="A Wi-Fi For Each Company"
       lesson={lesson}
-      everyday={{ label: 'An office building', scene: ApartmentUtilityScene }}
+      everyday={{ label: 'An office building', scene: MeteredBuildingScene }}
       cloud={{ label: 'Network virtualization', scene: VirtualNetsScene }}
-      pairs={[
-        ['One cable into the building', 'One physical network'],
-        ["Each company's own Wi-Fi", 'Its own virtual network'],
-        ['Its own password', 'No reach into other networks'],
-      ]}
+      /* the three pair cards are not in the TR (review 2026-10-28): removed, and the scenes' markers with them */
+      pairs={[]}
     />
   )
 }

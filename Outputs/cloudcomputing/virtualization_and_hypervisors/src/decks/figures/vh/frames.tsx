@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react'
+import { createContext, useContext, type CSSProperties, type ReactNode } from 'react'
 import { colors } from '@/design/tokens'
 import { Callout } from '@/ui'
 import { BOX_W, Card, Label, Num, Stage, useCycle, STILL } from '../scene'
@@ -65,7 +65,11 @@ export const PA_H = 270
 const PA_MID = BOX_W - PA_W * 2
 
 /** A numbered marker on an analogy scene; `on` when its pair is the lit one. Place it with `At`. */
+/** False inside an analogy that shows no pair cards: a numbered marker would point at nothing. */
+const MarkersShown = createContext(true)
+
 export function Marker({ n, on }: { n: number; on: boolean }) {
+  if (!useContext(MarkersShown)) return null
   return (
     <span
       className="grid place-items-center rounded-full font-heading text-[15px] font-bold"
@@ -115,8 +119,9 @@ export function PairAnalogy({
   cloud: { label: string; scene: (lit: number) => ReactNode }
   pairs: [string, string][]
 }) {
-  const lit = useCycle(pairs.length, 3200, 1)
+  const lit = useCycle(pairs.length || 3, 3200, 1)
   return (
+    <MarkersShown.Provider value={pairs.length > 0}>
     <Card id={id} kicker={kicker} title={title} lesson={lesson}>
       <div className="flex items-end" style={{ width: BOX_W }}>
         <div className="flex flex-col gap-2.5" style={{ width: PA_W }}>
@@ -153,6 +158,7 @@ export function PairAnalogy({
           </Stage>
         </div>
       </div>
+      {pairs.length > 0 && (
       <div className="mt-4 grid grid-cols-3 gap-4" style={{ width: BOX_W }}>
         {pairs.map(([a, b], i) => (
           <div
@@ -177,7 +183,9 @@ export function PairAnalogy({
           </div>
         ))}
       </div>
+      )}
     </Card>
+    </MarkersShown.Provider>
   )
 }
 

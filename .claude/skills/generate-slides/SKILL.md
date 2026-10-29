@@ -286,6 +286,15 @@ print FILE SAVE OK.
 Why: the edits lived in `localStorage` only, one browser's memory, so the deck the user shared
 showed none of them, and the user believed the feature was broken.
 
+**Check it first, on every deck you touch** (user, 2026-10-28: *"the 2nd point need to be applied
+for all the decks from now on"*). Before the first edit of a fix pass, a review pass or a new build:
+`ls src/deck/fileSave.ts`. If it is missing, port it before anything else (the files listed above,
+`src/decks/slideEdits.ts`, `file-save-check.mjs`), and report the port. Why: Cloud Computing
+session 2 (`deployment_and_service_models`) had a full TR-comparison fix pass on 2026-10-27, the day
+this rule was written, without the port; the user shared its HTML the next day and every skip and
+delete was gone. Until the kit template carries the player (a kit PR, section 6), a deck copied
+from the kit does not have it, so this check is the only thing that catches it.
+
 ## 2c. Fixed slide types and chrome: the quiz slide, Key Takeaways, the progress bar, arrows to labels
 
 Four things the user fixed on 2026-10-22 as permanent rules for every

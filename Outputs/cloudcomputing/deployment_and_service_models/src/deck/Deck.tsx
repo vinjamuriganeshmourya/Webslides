@@ -26,6 +26,8 @@ import { ContinuityContext, computeContinuity, NO_CONTINUITY } from '@/motion/co
 import { usePresenterState, detectView, downloadStudent, type DeckView } from './presenter'
 import { SlideMenu } from './SlideMenu'
 import { EditLayer } from './EditLayer'
+import { FileSaveBadge } from './FileSaveBadge'
+import { canSaveFile } from './fileSave'
 import { useComments } from './comments'
 import { CommentsPanel } from './CommentsPanel'
 import { isHarness } from './presenter'
@@ -488,6 +490,30 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
     [gotoSlide],
   )
   const toggleEditing = useCallback(() => setEditing((e) => !e), [])
+
+  /*
+    UNDO AND REDO FOR TEXT EDITS (2026-10-27): Ctrl+Z, and Ctrl+Y or Ctrl+Shift+Z (Cmd on a Mac).
+    Presenter view only, and never while the marker is open (its own undo has the key then) or in a
+    real text field (the comments box keeps the browser's undo). Captured before the browser's own
+    contenteditable undo, which knew nothing of the saved edits and fought them.
+  */
+  const annActive = ann.active
+  useEffect(() => {
+    if (!presenter) return
+    const onKey = (e: KeyboardEvent) => {
+      if (annActive || !(e.ctrlKey || e.metaKey) || e.altKey) return
+      const k = e.key.toLowerCase()
+      const isUndo = k === 'z' && !e.shiftKey
+      const isRedo = k === 'y' || (k === 'z' && e.shiftKey)
+      if (!isUndo && !isRedo) return
+      const t = e.target as HTMLElement | null
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return
+      if (isUndo ? actions.undo() : actions.redo()) e.preventDefault()
+      else if (t?.isContentEditable) e.preventDefault()
+    }
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
+  }, [presenter, annActive, actions])
   const download = useCallback(() => downloadStudent(title, pst), [title, pst])
 
   /*
@@ -740,7 +766,7 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
                   </InstantContext.Provider>
                 </PresenceContext.Provider>
                 {/* LAST, so its layout effect sees the slide's committed DOM (see `EditLayer`) */}
-                <EditLayer slideId={current?.id ?? String(index)} edits={pst.edits} editing={presenter && editing} onEdit={actions.setEdit} />
+                <EditLayer slideId={current?.id ?? String(index)} edits={pst.edits} editing={presenter && editing} onEdit={actions.setEdit} onRename={actions.renameEdit} />
               </motion.div>
             </AnimatePresence>
 
@@ -778,6 +804,8 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
             {(ann.active || ann.hasInk) && <AnnotationLayer ann={ann} />}
           </SlideStage>
         </div>
+        {/* inside the root, so it still shows in fullscreen: is the open file holding the changes (`fileSave.ts`) */}
+        {presenter && canSaveFile() && <FileSaveBadge />}
         {showComments && (
           <CommentsPanel
             slides={active}

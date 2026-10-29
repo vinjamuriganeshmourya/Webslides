@@ -8,7 +8,9 @@ import { Idling, FACE_WHOLE } from '../Cast'
 import { ARJUN, TENANTS } from '../people'
 import { ClayBar, ClayMeter, ClayMonitor, ClayNo, ClayOsWindow, ElectricMeter, Icon3D, LAB } from '../d3/kit'
 import { lead, PointsFigure } from '../iso/frames'
-import { Logo, Marker, PairAnalogy } from './frames'
+import { Logo, Marker, PA_H, PA_W, PairAnalogy } from './frames'
+import apartmentLeak from './img/apartment-utilities-leak.png'
+import { CpuChip } from './tech'
 
 /**
  * SECTION 2 · HYPERVISORS (reference frames 19 to 24), in session 2's 3D
@@ -173,6 +175,41 @@ const L19 = 'A hypervisor, also called a Virtual Machine Monitor (VMM), is a thi
  * the hypervisor's gears, three arrows out to three OS screens. A call runs
  * the path and lights each screen in turn.
  */
+/**
+ * The physical hardware, drawn (review 2026-10-28: a new hardware visual, the
+ * server-stack render left as it was): a board carrying the CPU, two memory
+ * sticks and a disk, the three things a hypervisor hands out.
+ */
+function HardwareBoard() {
+  const ram = (
+    <span aria-hidden className="relative block rounded-[3px]" style={{ width: 13, height: 58, background: 'linear-gradient(90deg, #2FA36B 0%, #1E7A4F 100%)', boxShadow: '0 4px 8px -4px rgba(16,32,58,0.6)' }}>
+      {[8, 20, 32, 44].map((y) => (
+        <span key={y} className="absolute rounded-[1.5px]" style={{ left: 3, top: y, width: 7, height: 7, background: '#1B2A4A' }} />
+      ))}
+      <span className="absolute inset-x-0 bottom-0 h-[4px] rounded-b-[3px]" style={{ background: LAB.yellow }} />
+    </span>
+  )
+  return (
+    <div className="flex flex-col items-center">
+      <div className="relative rounded-[14px]" style={{ width: 136, height: 104, background: `linear-gradient(160deg, #2C4FA8 0%, ${colors.brandDeep} 100%)`, boxShadow: '0 16px 24px -14px rgba(16,32,58,0.7), inset 0 1px 0 rgba(255,255,255,0.25)' }}>
+        <svg aria-hidden className="absolute inset-0" width={136} height={104} viewBox="0 0 136 104">
+          <path d="M 12 20 H 30 V 34 M 12 84 H 30 V 70 M 76 52 H 88 M 100 88 H 124" stroke="#5B7FD6" strokeWidth={1.6} fill="none" opacity={0.7} />
+        </svg>
+        <div className="absolute" style={{ left: 12, top: 18 }}>
+          <CpuChip s={64} lit />
+        </div>
+        <div className="absolute flex gap-[5px]" style={{ left: 88, top: 12 }}>
+          {ram}
+          {ram}
+        </div>
+        <span aria-hidden className="absolute rounded-[5px]" style={{ left: 86, top: 78, width: 40, height: 16, background: 'linear-gradient(180deg, #E4ECFC 0%, #AFC0DE 100%)', boxShadow: '0 3px 6px -3px rgba(16,32,58,0.6)' }}>
+          <span className="absolute rounded-full" style={{ right: 5, top: 5, width: 6, height: 6, background: colors.success }} />
+        </span>
+      </div>
+    </div>
+  )
+}
+
 function VmmScene() {
   const k = useCycle(3, 2400, 1)
   const HX = 92 // hardware centre
@@ -182,13 +219,13 @@ function VmmScene() {
   const CY = 166
   return (
     <>
-      <At x={HX} y={96} cx>
-        <Icon3D name="server-stack" w={104} alt="Hardware" />
+      <At x={HX} y={92} cx>
+        <HardwareBoard />
       </At>
       <At x={HX} y={232} cx>
         <span className="font-heading text-[18px] font-bold" style={{ color: colors.ink }}>Hardware</span>
       </At>
-      <Arrow x1={152} y1={CY} x2={222} y2={CY} tone={colors.ink} />
+      <Arrow x1={166} y1={CY} x2={226} y2={CY} tone={colors.ink} />
       <At x={GX} y={100} cx>
         <div className="relative" style={{ width: 130, height: 126 }}>
           <div className="absolute" style={{ left: 0, top: 10 }}>
@@ -340,12 +377,24 @@ export function VmmRole({ lesson }: { lesson: string }) {
  * URLs and thumbnails never stall.
  */
 
-const AN = { x: 60, y: 24, w: 380, roof: 24, pad: 8, rowH: 38, rowGap: 7, baseH: 42 }
-const RISER_X = 9
-const ROW_L = 18
-const rowTop = (i: number) => AN.pad + i * (AN.rowH + AN.rowGap)
-const BASE_TOP = rowTop(3) + 3
-const BODY_H = BASE_TOP + AN.baseH + AN.pad
+/*
+ * Review 2026-10-28: the everyday side redrawn as an actual apartment building
+ * (roof, facade, windows, balconies, the management office on the ground floor
+ * with its door and sign, a meter on the wall of every flat), and the cloud
+ * side drawn to match it floor for floor: the same three storeys are three VMs
+ * in one server, the ground floor is the hypervisor, the wall meters are the
+ * VM meters, the supply pipe is the hypervisor's allocation line.
+ */
+
+const BX = 96 // building / server left
+const BW = 308 // building / server width
+const ROOF_Y = 14
+const WALL_Y = 30
+const FL_H = 48
+const flTop = (i: number) => WALL_Y + 8 + i * (FL_H + 6)
+const GF_Y = flTop(3) + 2 // ground floor top
+const GF_H = 50
+const BASE_Y = GF_Y + GF_H // pavement / feet
 const TENANT_CFG = [TENANTS[0], TENANTS[1], TENANTS[3]]
 
 /** A tenant's face in a small round frame: white ring, soft shadow, head and hair whole. */
@@ -375,102 +424,114 @@ function Leak({ fall, on }: { fall: number; on: boolean }) {
   )
 }
 
-/** One row of either scene: a raised tile with its own stripe, contents, and the meter at its right end. */
-function Row({ i, stripe, children, meter, ring }: { i: number; stripe: string; children: ReactNode; meter: ReactNode; ring: boolean }) {
+/** A framed window: white frame, sky glass, a sill under it. */
+function Window({ w = 54, h = 36, children }: { w?: number; h?: number; children?: ReactNode }) {
   return (
-    <div
-      className="absolute flex items-center gap-2.5 rounded-[10px] pl-3 pr-1.5"
-      style={{
-        left: ROW_L,
-        top: rowTop(i),
-        width: AN.w - ROW_L - AN.pad,
-        height: AN.rowH,
-        background: 'linear-gradient(180deg, #FFFFFF 0%, #EDF3FD 100%)',
-        boxShadow: `inset 4px 0 0 ${stripe}, inset 0 0 0 ${ring ? 2.5 : 1}px ${ring ? colors.accent : '#CFDCF5'}, 0 6px 12px -10px rgba(16,32,58,0.6)`,
-        transition: `box-shadow 420ms ${EASE}`,
-      }}
-    >
-      {children}
-      <div className="ml-auto">{meter}</div>
+    <div className="relative" style={{ width: w, height: h + 4 }}>
+      <div className="relative grid place-items-center overflow-hidden rounded-[5px]" style={{ width: w, height: h, background: 'linear-gradient(160deg, #DDEBFF 0%, #9CC1F5 100%)', boxShadow: 'inset 0 0 0 3px #FFFFFF, 0 3px 6px -3px rgba(16,32,58,0.5)' }}>
+        <span aria-hidden className="absolute" style={{ left: 5, top: 4, width: w * 0.35, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.7)' }} />
+        {children}
+      </div>
+      <span aria-hidden className="absolute rounded-[2px]" style={{ left: -3, right: -3, bottom: 0, height: 4, background: '#B98A5E' }} />
     </div>
   )
 }
 
-/** The riser from the bottom row to every row; a bead climbs it while pair 1 is lit. */
-function Riser({ on, t, tone }: { on: boolean; t: number; tone: string }) {
-  const y0 = BASE_TOP + AN.baseH / 2
-  const y1 = rowTop(0) + AN.rowH / 2
+/** The supply line up the left wall, from the ground floor into every storey; a bead climbs it while pair 1 is lit. */
+function Supply({ on, t, tone, w = 4 }: { on: boolean; t: number; tone: string; w?: number }) {
+  const x = 14
+  const y0 = GF_Y + GF_H / 2
+  const y1 = flTop(0) + FL_H / 2
   const y = y0 - (y0 - y1) * t
   return (
-    <svg aria-hidden className="absolute" style={{ left: 0, top: 0, overflow: 'visible' }} width={ROW_L} height={BODY_H}>
-      <path d={`M ${RISER_X} ${y0} V ${y1}`} stroke={tone} strokeWidth={3} strokeLinecap="round" opacity={0.75} />
+    <svg aria-hidden className="pointer-events-none absolute" style={{ left: 0, top: 0, overflow: 'visible' }} width={x + 14} height={BASE_Y}>
+      <path d={`M ${x} ${y0} V ${y1}`} stroke={tone} strokeWidth={w} strokeLinecap="round" />
       {[0, 1, 2].map((r) => (
-        <path key={r} d={`M ${RISER_X} ${rowTop(r) + AN.rowH / 2} H ${ROW_L}`} stroke={tone} strokeWidth={3} strokeLinecap="round" opacity={0.75} />
+        <path key={r} d={`M ${x} ${flTop(r) + FL_H / 2} H ${x + 12}`} stroke={tone} strokeWidth={w} strokeLinecap="round" />
       ))}
-      {on && <circle cx={RISER_X} cy={y} r={5.5} fill={colors.accent} stroke="#FFFFFF" strokeWidth={2} />}
+      {on && <circle cx={x} cy={y} r={6} fill={colors.accent} stroke="#FFFFFF" strokeWidth={2} />}
     </svg>
   )
 }
 
-const STRIPES = [LAB.sky, LAB.periwinkle, LAB.sage]
 const meterValue = (lit: number, t: number, i: number) => (lit === 1 ? 0.2 + 0.6 * ((t + i * 0.37) % 1) : 0.3 + i * 0.18)
+const ring = (on: boolean, tone = colors.accent) => ({ boxShadow: on ? `0 0 0 3px ${tone}` : '0 0 0 0 transparent', transition: `box-shadow 420ms ${EASE}` })
 
-function ApartmentScene({ lit }: { lit: number }) {
+/** The drawn apartment building (replaced on slide 21 by the user's picture, 2026-10-29; kept, not mounted). */
+export function ApartmentScene({ lit }: { lit: number }) {
   const t = useLoop(2400, { mode: 'sawtooth', still: 0.6 })
   return (
     <>
-      <At x={AN.x} y={AN.y}>
-        <div className="relative" style={{ width: AN.w, height: AN.roof + BODY_H }}>
-          <svg aria-hidden width={AN.w} height={AN.roof} viewBox={`0 0 ${AN.w} ${AN.roof}`} style={{ display: 'block' }}>
-            <defs>
-              <linearGradient id="vh21-roof" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="#FFB067" />
-                <stop offset="1" stopColor="#E9782A" />
-              </linearGradient>
-            </defs>
-            <path d={`M 4 ${AN.roof} L ${AN.w / 2} 2 L ${AN.w - 4} ${AN.roof} Z`} fill="url(#vh21-roof)" />
-            <path d={`M 4 ${AN.roof} L ${AN.w / 2} 2 L ${AN.w / 2 + 8} 5 L 22 ${AN.roof} Z`} fill="#FFFFFF" opacity={0.3} />
-          </svg>
-          <div className="relative rounded-b-[14px] rounded-t-[4px]" style={{ width: AN.w, height: BODY_H, background: 'linear-gradient(180deg, #E2B386 0%, #C98A55 100%)', boxShadow: '0 16px 26px -16px rgba(16,32,58,0.55), inset 0 1px 0 rgba(255,255,255,0.35)' }}>
-            <Riser on={lit === 0} t={t} tone="#8A5A33" />
-            {[0, 1, 2].map((i) => (
-              <Row key={i} i={i} stripe={STRIPES[i]} ring={lit === 2 && i === 1} meter={<ElectricMeter w={27} value={meterValue(lit, t, i)} />}>
-                <FaceDisc cfg={TENANT_CFG[i]} seed={70 + i} />
-                <span aria-hidden className="h-[18px] w-[26px] rounded-[4px]" style={{ background: `linear-gradient(135deg, #CFE2FF 0%, ${LAB.sky} 100%)` }} />
-                <span aria-hidden className="h-[18px] w-[26px] rounded-[4px]" style={{ background: `linear-gradient(135deg, #CFE2FF 0%, ${LAB.sky} 100%)` }} />
-                {i === 1 && (
-                  <div className="ml-6">
-                    <Leak fall={lit === 2 ? t : 0} on={lit === 2} />
-                  </div>
-                )}
-              </Row>
-            ))}
-            <div
-              className="absolute flex items-center gap-3 rounded-[10px] px-3"
-              style={{
-                left: ROW_L,
-                top: BASE_TOP,
-                width: AN.w - ROW_L - AN.pad,
-                height: AN.baseH,
-                background: 'linear-gradient(180deg, #E4ECFC 0%, #C9D8F5 100%)',
-                boxShadow: `inset 0 0 0 ${lit === 0 ? 2.5 : 1}px ${lit === 0 ? colors.accent : '#B9CCF2'}, 0 6px 12px -10px rgba(16,32,58,0.6)`,
-                transition: `box-shadow 420ms ${EASE}`,
-              }}
-            >
-              <FaceDisc cfg={ARJUN} d={34} seed={74} />
-              <span aria-hidden className="h-[16px] w-[96px] rounded-[5px]" style={{ background: `linear-gradient(180deg, #4A5EB8 0%, ${LAB.navy} 100%)`, boxShadow: '0 5px 8px -5px rgba(16,32,58,0.6)' }} />
-              <span aria-hidden className="ml-auto mr-2 h-[34px] w-[22px] rounded-t-[6px] rounded-b-[2px]" style={{ background: `linear-gradient(180deg, #4A5EB8 0%, ${LAB.navy} 100%)` }} />
+      {/* the pavement and two shrubs */}
+      <div aria-hidden className="absolute rounded-full" style={{ left: BX - 40, top: BASE_Y, width: BW + 80, height: 8, background: 'linear-gradient(180deg, #CBD6EA, #AFC0DE)' }} />
+      {[BX - 30, BX + BW + 2].map((x) => (
+        <span key={x} aria-hidden className="absolute rounded-full" style={{ left: x, top: BASE_Y - 24, width: 28, height: 26, background: `radial-gradient(circle at 35% 30%, #8FD19E, ${LAB.sage} 60%, #3E8A57)` }} />
+      ))}
+      <At x={BX} y={0}>
+        <div className="relative" style={{ width: BW, height: BASE_Y }}>
+          {/* roof: parapet and a water tank */}
+          <span aria-hidden className="absolute rounded-[3px]" style={{ left: BW - 78, top: ROOF_Y - 12, width: 34, height: 14, background: `linear-gradient(180deg, #9AA9C9, #5E6E94)` }} />
+          <span aria-hidden className="absolute rounded-[4px]" style={{ left: -8, top: ROOF_Y, width: BW + 16, height: WALL_Y - ROOF_Y, background: 'linear-gradient(180deg, #E9782A 0%, #C45F1C 100%)', boxShadow: '0 6px 10px -6px rgba(16,32,58,0.6)' }} />
+          {/* the facade */}
+          <div className="absolute rounded-b-[6px]" style={{ left: 0, top: WALL_Y, width: BW, height: BASE_Y - WALL_Y, background: 'linear-gradient(180deg, #F6E3CC 0%, #E9C9A4 100%)', boxShadow: '0 18px 26px -16px rgba(16,32,58,0.55)' }} />
+          {/* floor slabs between storeys */}
+          {[0, 1, 2, 3].map((i) => (
+            <span key={i} aria-hidden className="absolute" style={{ left: 0, top: flTop(i) - 4, width: BW, height: 3, background: '#D7B188' }} />
+          ))}
+          <Supply on={lit === 0} t={t} tone="#B4683A" />
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="absolute rounded-[8px]" style={{ left: 30, top: flTop(i), width: BW - 40, height: FL_H, ...ring(lit === 2 && i === 1) }}>
+              <div className="absolute" style={{ left: 4, top: 4 }}>
+                <Window>
+                  <FaceDisc cfg={TENANT_CFG[i]} d={30} seed={70 + i} ring="#FFFFFF" />
+                </Window>
+              </div>
+              <div className="absolute" style={{ left: 72, top: 4 }}>
+                <Window>
+                  <span aria-hidden className="absolute inset-y-[3px] left-[3px] w-[14px] rounded-[2px]" style={{ background: i === 1 ? '#F4B8C4' : '#FFE29A' }} />
+                </Window>
+              </div>
+              {/* the flat's balcony rail */}
+              <span aria-hidden className="absolute" style={{ left: 66, top: FL_H - 10, width: 70, height: 8, borderTop: '2.5px solid #8A5A33', backgroundImage: 'repeating-linear-gradient(90deg, #8A5A33 0 2px, transparent 2px 9px)' }} />
+              {i === 1 ? (
+                <div className="absolute" style={{ left: 150, top: 8 }}>
+                  <Leak fall={lit === 2 ? t : 0} on={lit === 2} />
+                </div>
+              ) : (
+                <div className="absolute" style={{ left: 146, top: 4 }}>
+                  <Window w={44} />
+                </div>
+              )}
+              {/* the flat's own meter, on the wall */}
+              <div className="absolute rounded-[6px] p-[3px]" style={{ right: 4, top: 6, background: '#FFFFFF', boxShadow: '0 3px 6px -3px rgba(16,32,58,0.5)' }}>
+                <ElectricMeter w={30} value={meterValue(lit, t, i)} />
+              </div>
             </div>
+          ))}
+          {/* the ground floor: the management office */}
+          <div className="absolute rounded-[8px]" style={{ left: 30, top: GF_Y, width: BW - 40, height: GF_H - 2, background: 'linear-gradient(180deg, #E4ECFC 0%, #C9D8F5 100%)', ...ring(lit === 0) }}>
+            <div className="absolute" style={{ left: 4, top: 6 }}>
+              <Window w={54} h={34}>
+                <FaceDisc cfg={ARJUN} d={28} seed={74} ring="#FFFFFF" />
+              </Window>
+            </div>
+            <span className="absolute rounded-[4px] px-2 font-heading text-[11px] font-bold tracking-[0.1em]" style={{ left: 92, top: 4, background: colors.brandDeep, color: '#FFFFFF' }}>
+              OFFICE
+            </span>
+            <span aria-hidden className="absolute rounded-t-[6px]" style={{ left: 104, top: 22, width: 40, height: GF_H - 24, background: `linear-gradient(180deg, #4A5EB8 0%, ${LAB.navy} 100%)`, boxShadow: 'inset 0 0 0 3px #FFFFFF' }}>
+              <span className="absolute rounded-full" style={{ right: 7, top: 12, width: 5, height: 5, background: LAB.yellow }} />
+            </span>
+            <span aria-hidden className="absolute rounded-[4px]" style={{ right: 10, top: 10, width: 74, height: 26, background: 'repeating-linear-gradient(180deg, #FFFFFF 0 4px, #DCE6FA 4px 8px)', boxShadow: '0 3px 6px -3px rgba(16,32,58,0.5)' }} />
           </div>
         </div>
       </At>
-      <At x={24} y={AN.y + AN.roof + BASE_TOP + 6}>
+      <At x={BX - 50} y={GF_Y + 10}>
         <Marker n={1} on={lit === 0} />
       </At>
-      <At x={AN.x + AN.w + 8} y={AN.y + AN.roof + rowTop(0) + 4}>
+      <At x={BX + BW + 10} y={flTop(0) + 8}>
         <Marker n={2} on={lit === 1} />
       </At>
-      <At x={24} y={AN.y + AN.roof + rowTop(1) + 4}>
+      <At x={BX - 50} y={flTop(1) + 8}>
         <Marker n={3} on={lit === 2} />
       </At>
     </>
@@ -479,37 +540,83 @@ function ApartmentScene({ lit }: { lit: number }) {
 
 function HypervisorScene({ lit }: { lit: number }) {
   const t = useLoop(2400, { mode: 'sawtooth', still: 0.6 })
-  const top = AN.y + AN.roof
   return (
     <>
-      <At x={AN.x} y={top}>
-        <div className="relative rounded-[14px]" style={{ width: AN.w, height: BODY_H, background: `linear-gradient(180deg, #1B4A7E 0%, ${HW} 100%)`, boxShadow: '0 16px 26px -16px rgba(16,32,58,0.65), inset 0 1px 0 rgba(255,255,255,0.22)' }}>
-          <Riser on={lit === 0} t={t} tone={LAB.sky} />
+      <div aria-hidden className="absolute rounded-full" style={{ left: BX - 40, top: BASE_Y, width: BW + 80, height: 8, background: 'linear-gradient(180deg, #CBD6EA, #AFC0DE)' }} />
+      <At x={BX} y={0}>
+        <div className="relative" style={{ width: BW, height: BASE_Y }}>
+          {/* the server's top bezel, vents where the roof is */}
+          <div aria-hidden className="absolute flex items-center gap-[5px] rounded-[4px] px-3" style={{ left: -8, top: ROOF_Y, width: BW + 16, height: WALL_Y - ROOF_Y, background: 'linear-gradient(180deg, #34477E 0%, #1B2A4A 100%)', boxShadow: '0 6px 10px -6px rgba(16,32,58,0.6)' }}>
+            {Array.from({ length: 22 }, (_, i) => (
+              <span key={i} className="block h-[4px] w-[8px] rounded-full" style={{ background: 'rgba(255,255,255,0.22)' }} />
+            ))}
+            <span className="ml-auto block h-[7px] w-[7px] rounded-full" style={{ background: colors.success, boxShadow: `0 0 6px ${colors.success}` }} />
+          </div>
+          {/* the chassis */}
+          <div className="absolute rounded-b-[8px]" style={{ left: 0, top: WALL_Y, width: BW, height: BASE_Y - WALL_Y, background: `linear-gradient(180deg, #1B4A7E 0%, ${HW} 100%)`, boxShadow: '0 18px 26px -16px rgba(16,32,58,0.65)' }} />
+          <Supply on={lit === 0} t={t} tone={LAB.sky} />
           {[0, 1, 2].map((i) => (
-            <Row key={i} i={i} stripe={STRIPES[i]} ring={lit === 2 && i === 1} meter={<ClayMeter w={30} value={meterValue(lit, t, i)} />}>
+            <div key={i} className="absolute flex items-center gap-2.5 rounded-[8px] pl-2 pr-1" style={{ left: 30, top: flTop(i), width: BW - 40, height: FL_H, background: 'linear-gradient(180deg, #FFFFFF 0%, #EDF3FD 100%)', ...ring(lit === 2 && i === 1) }}>
               <ClayOsWindow w={40} k={i} />
-              <span aria-hidden className="h-[8px] w-[70px] rounded-full" style={{ background: '#D6E3FB' }} />
+              <span className="font-heading text-[14px] font-bold" style={{ color: colors.ink }}>
+                VM {i + 1}
+              </span>
+              <span className="flex flex-col gap-[5px]">
+                <span aria-hidden className="block h-[6px] w-[54px] rounded-full" style={{ background: '#D6E3FB' }} />
+                <span aria-hidden className="block h-[6px] w-[38px] rounded-full" style={{ background: '#D6E3FB' }} />
+              </span>
               {i === 1 && (
-                <div className="ml-4" style={{ transform: lit === 2 ? 'scale(1.12)' : 'none', transition: `transform 420ms ${EASE}` }}>
-                  <ClayNo w={26} />
+                <div style={{ transform: lit === 2 ? 'scale(1.12)' : 'none', transition: `transform 420ms ${EASE}` }}>
+                  <ClayNo w={24} />
                 </div>
               )}
-            </Row>
+              <div className="ml-auto rounded-[6px] p-[3px]" style={{ background: '#FFFFFF', boxShadow: '0 3px 6px -3px rgba(16,32,58,0.5)' }}>
+                <ClayMeter w={30} value={meterValue(lit, t, i)} />
+              </div>
+            </div>
           ))}
-          <div className="absolute" style={{ left: ROW_L, top: BASE_TOP, borderRadius: 12, boxShadow: lit === 0 ? `0 0 0 2.5px ${colors.accent}` : 'none', transition: `box-shadow 420ms ${EASE}` }}>
-            <ClayBar w={AN.w - ROW_L - AN.pad} h={AN.baseH} fill={HYP} />
+          <div className="absolute rounded-[12px]" style={{ left: 30, top: GF_Y, ...ring(lit === 0) }}>
+            <ClayBar w={BW - 40} h={GF_H - 2} fill={HYP}>
+              <span className="font-heading text-[16px] font-bold text-white">Hypervisor</span>
+            </ClayBar>
           </div>
         </div>
       </At>
-      <At x={24} y={top + BASE_TOP + 6}>
+      <At x={BX - 50} y={GF_Y + 10}>
         <Marker n={1} on={lit === 0} />
       </At>
-      <At x={AN.x + AN.w + 8} y={top + rowTop(0) + 4}>
+      <At x={BX + BW + 10} y={flTop(0) + 8}>
         <Marker n={2} on={lit === 1} />
       </At>
-      <At x={24} y={top + rowTop(1) + 4}>
+      <At x={BX - 50} y={flTop(1) + 8}>
         <Marker n={3} on={lit === 2} />
       </At>
+    </>
+  )
+}
+
+/* ================================================================== 21 · the everyday card: the supplied picture */
+
+/**
+ * The user's own picture for slide 21's EVERYDAY card (2026-10-29): `Apartment Utilities with Isolated Leak.png`,
+ * its white margin trimmed (`img/apartment-utilities-leak.png`), fitted to the card box at its own shape (contained,
+ * never stretched; its white ground multiplied into the plate), imported so the single file inlines it. The three
+ * markers sit on the picture where the pairs point: 1 the management office, 2 the meters on the wall of every
+ * flat, 3 the leak held inside one flat.
+ */
+const AL_RATIO = 1467 / 913
+const AL_W = Math.min(PA_W, PA_H * AL_RATIO)
+const AL_H = AL_W / AL_RATIO
+
+function ApartmentPictureScene({ lit }: { lit: number }) {
+  /* whole pixels: a fractional offset drifts under Firefox's zoom at 1.5x (fit-check, 2026-10-29) */
+  const at = (fx: number, fy: number) => ({ left: Math.round((PA_W - AL_W) / 2 + fx * AL_W - 15), top: Math.round((PA_H - AL_H) / 2 + fy * AL_H - 15) })
+  return (
+    <>
+      <img src={apartmentLeak} alt="An apartment building with its management office, an electricity meter and a water meter for each flat, and a leak kept inside one flat" draggable={false} className="absolute inset-0 block h-full w-full select-none" style={{ objectFit: 'contain', mixBlendMode: 'multiply' }} />
+      <div className="absolute" style={at(0.06, 0.4)}><Marker n={1} on={lit === 0} /></div>
+      <div className="absolute" style={at(0.66, 0.1)}><Marker n={2} on={lit === 1} /></div>
+      <div className="absolute" style={at(0.47, 0.31)}><Marker n={3} on={lit === 2} /></div>
     </>
   )
 }
@@ -527,7 +634,7 @@ export function VmmAnalogy({ lesson }: { lesson: string }) {
       kicker={'Hypervisor And VMM'}
       title={'An Apartment Management Office'}
       lesson={lesson}
-      everyday={{ label: 'An apartment building', scene: (lit) => <ApartmentScene lit={lit} /> }}
+      everyday={{ label: 'An apartment building', scene: (lit) => <ApartmentPictureScene lit={lit} /> }}
       cloud={{ label: 'A hypervisor', scene: (lit) => <HypervisorScene lit={lit} /> }}
       pairs={PAIRS}
     />
@@ -567,7 +674,7 @@ export function Type1({ lesson }: { lesson: string }) {
       lead={L22}
       lesson={lesson}
       pointsW={500}
-      points={['Examples: VMware ESXi, Microsoft Hyper-V, KVM', 'AWS EC2 runs on the Nitro hypervisor (KVM-based)', 'Direct hardware access gives near-native performance', 'Standard choice for production data centres and cloud platforms', 'Requires dedicated server hardware, not a desktop OS']}
+      points={['Examples: VMware ESXi, Microsoft Hyper-V, KVM', 'AWS EC2 runs on the Nitro hypervisor (KVM-based)', 'Direct hardware access gives near-native performance', 'Standard choice for production data centres and cloud platforms', 'Installed directly on the machine, not on top of an existing operating system']}
       figure={<Type1Scene />}
       figH={340}
     />

@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type ViteDevServer } from 'vite'
 import react from '@vitejs/plugin-react'
 import { fileURLToPath, URL } from 'node:url'
-import { readFileSync } from 'node:fs'
+import { readFileSync, renameSync, writeFileSync } from 'node:fs'
 
 /**
  * The browser-tab title, from `deck.config.json`.
@@ -25,10 +25,57 @@ function deckTitle() {
   }
 }
 
+/**
+ * TEXT EDITS GO TO SOURCE (session-local, 2026-10-27). The Edit button used to keep what the
+ * presenter typed in `localStorage` only: one origin's memory, so the built HTML, another port or
+ * another machine never saw it and the words "reverted". Under `npm run dev` the deck now PUTs its
+ * edits here and this writes them to `src/decks/slideEdits.ts`, which the build bakes in.
+ * The file is written atomically and its HMR is swallowed: the page that saved it already shows it.
+ */
+function deckEdits() {
+  const file = fileURLToPath(new URL('./src/decks/slideEdits.ts', import.meta.url))
+  const valid = (v: unknown): v is Record<string, Record<string, string>> =>
+    !!v && typeof v === 'object' && !Array.isArray(v) &&
+    Object.values(v).every((m) => !!m && typeof m === 'object' && !Array.isArray(m) && Object.values(m).every((h) => typeof h === 'string'))
+  const source = (edits: Record<string, Record<string, string>>) =>
+    readFileSync(file, 'utf8').replace(/export const SLIDE_EDITS: SlideEdits = [\s\S]*$/, `export const SLIDE_EDITS: SlideEdits = ${JSON.stringify(edits, null, 2)}\n`)
+  return {
+    name: 'deck-edits',
+    apply: 'serve' as const,
+    configureServer(server: ViteDevServer) {
+      server.middlewares.use('/__deck/edits', (req, res) => {
+        if (req.method !== 'PUT' && req.method !== 'POST') {
+          res.statusCode = 405
+          res.end()
+          return
+        }
+        let body = ''
+        req.on('data', (c) => (body += c))
+        req.on('end', () => {
+          try {
+            const edits = JSON.parse(body)
+            if (!valid(edits)) throw new Error('not a slide-edits map')
+            const tmp = `${file}.tmp`
+            writeFileSync(tmp, source(edits))
+            renameSync(tmp, file)
+            res.setHeader('content-type', 'application/json')
+            res.end('{"ok":true}')
+          } catch (e) {
+            res.statusCode = 400
+            res.end(String(e))
+          }
+        })
+      })
+    },
+    handleHotUpdate(ctx: { file: string }) {
+      if (ctx.file === file) return []
+    },
+  }
+}
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), deckTitle()],
+  plugins: [react(), deckTitle(), deckEdits()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

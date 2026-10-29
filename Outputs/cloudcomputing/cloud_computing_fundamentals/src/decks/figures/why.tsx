@@ -80,7 +80,7 @@ export function WhyCloud({ lesson }: { lesson: string }) {
           </At>
           <At x={246} y={92} w={270}>
             <div className="flex flex-col items-start gap-2.5">
-              <Label tone="lift" size={15} raised icon={<ServerIcon />}>{`${OWNED} servers bought on a guess`}</Label>
+              <Label tone="lift" size={15} raised icon={<ServerIcon />}>{'5 servers bought on a guess'}</Label>
               <Fade on={idle > 0}>
                 <Label tone="warn" size={15} raised icon={<Clock />}>{`${idle} paid, idle`}</Label>
               </Fade>

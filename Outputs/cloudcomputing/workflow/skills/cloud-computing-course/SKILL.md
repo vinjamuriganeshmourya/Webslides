@@ -9,7 +9,7 @@ description: Build rules and the running feedback log for every session of the C
 | | |
 |---|---|
 | Course | `Outputs/cloudcomputing/`, one folder per session |
-| Sessions | `cloud_computing_fundamentals` (session 1, port 5270), `deployment_and_service_models` (session 2, port 5271), `setting_up_your_aws_account` (session 3, port 5272), `virtualization_and_hypervisors` (port 5273) |
+| Sessions | `cloud_computing_fundamentals` (session 1, port 5270), `deployment_and_service_models` (session 2, port 5271), `setting_up_your_aws_account` (session 3, port 5272), `virtualization_and_hypervisors` (port 5273), `containers_vs_virtual_machines` (session 4, port 5274) |
 | Plans | `Outputs/cloudcomputing/session_plans/<session>/plan.md` |
 | Start a new session from | the latest cloud computing session, not the kit: the player options below live in session-local kit files |
 
@@ -60,6 +60,37 @@ and a screenshot BEFORE writing the plan; the on-slide strings are the
 reference's verbatim, and the Visual Guidance is the spec for every figure.
 Session 2's dump scripts are in that day's scratchpad (`ref2/dump.mjs`,
 `ref2/notes.mjs`); re-create them from the description above if gone.
+
+## R3. Analogy slides carry no text about the picture
+
+**Feedback, 2026-10-28, on session 4 (Containers vs Virtual Machines):** *"Remove any text that describes or
+explains the visual. Keep only the visual and the tags inside it."*
+
+- An analogy slide is the kicker, the title and the two pictures. No analogy sentence as a lead, no caption
+  pill under either stage, no `SAME IDEA` words (the arrow between the stages stays).
+- `IsoAnalogy` takes `bare` for exactly this, and `h` for a taller stage so the pictures use the freed space.
+
+Why: the sentence and captions described what the pictures already show, and the room read instead of looking.
+
+## R4. Screenshot highlights are orange, and screenshots are served sharp
+
+**Feedback, 2026-10-28, on session 4:** *"Change all red highlights to orange and increase screenshot clarity
+(higher resolution, sharper rendering)."*
+
+- The highlight ring on a screenshot is the template orange (`colors.accent`), never red.
+- A screenshot is served from a 2x Lanczos upscale with a light unsharp mask (session 4's `figures/cv/shots-hd/`),
+  so the browser never blur-scales a small source. Crops stay in source pixels.
+
+Why: red read as an error on a step that had gone right, and the small TR captures looked soft once enlarged.
+
+## R5. Recap, agenda and Key Takeaways show the main points only
+
+**Feedback, 2026-10-28, on session 4:** the recap, the agenda and the takeaways lost their sub-text; *"keep
+only the points, consistent with Sessions 1, 2, and the earlier sessions."* This holds even when a request says
+"use the text verbatim": the sub lines stay in the source, not on these frames (it confirms lesson 4 below).
+
+Why: session 4 was first built with the TR's full lines on these frames because the request said "do not
+shorten", and the user asked for them back to titles only.
 
 ## Lessons carried from session 1's reviews (so they are not repeated)
 

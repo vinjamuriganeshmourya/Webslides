@@ -33,7 +33,11 @@ function within(t: number, a: number, b: number) {
 }
 
 /** A packet on a polyline at phase `u` (0..1): moved by transform only, fading at both ends. */
+const MOVING_DOTS = false
+
 function Pkt({ path, u, tone = colors.brand, size = 12 }: { path: [number, number][]; u: number; tone?: string; size?: number }) {
+  /* moving dots off deck-wide (user, 2026-10-28: "remove the moving dots") */
+  if (!MOVING_DOTS) return null
   const segs = path.slice(1).map((p, i) => Math.hypot(p[0] - path[i][0], p[1] - path[i][1]))
   const total = segs.reduce((a, b) => a + b, 0) || 1
   let d = Math.max(0, Math.min(1, u)) * total
@@ -498,7 +502,7 @@ export function ServerZoom({ lesson }: { lesson: string }) {
       title="Full OS For Each VM"
       lesson={lesson}
       figH={396}
-      points={['Introduced to end one-app-per-server hardware waste', 'Guest OS is fully independent of host OS', 'Common use: dev/test environments, legacy app hosting', 'AWS example: Amazon EC2 (Elastic Compute Cloud) launches VM instances']}
+      points={['Introduced to end one-app-per-server hardware waste', 'Each guest OS runs independently, isolated from other VMs on the same hardware', 'Common use: dev/test environments, legacy app hosting', 'AWS example: Amazon EC2 (Elastic Compute Cloud) launches VM instances']}
       figure={<ZoomScene />}
     />
   )
