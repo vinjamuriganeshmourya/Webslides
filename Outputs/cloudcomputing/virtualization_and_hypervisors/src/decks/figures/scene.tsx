@@ -366,11 +366,14 @@ export function Arrow({ x1, y1, x2, y2, on = true, tone = colors.brand, dashed =
   )
 }
 
+const MOVING_DOTS = false
+
 /** A dot that travels a list of stage points while `run` is true, then rests on the last one. */
 export function Traveller({ path, run, k, tone = colors.accent, size = 16, dur = 2.4 }: { path: [number, number][]; run: boolean; k: string | number; tone?: string; size?: number; dur?: number }) {
   const instant = useInstant()
   const end = path[path.length - 1]
-  if (!run) return null
+  /* moving dots off in this deck (user, 2026-10-28: "remove the moving dots") */
+  if (!run || !MOVING_DOTS) return null
   return (
     <motion.span
       key={k}

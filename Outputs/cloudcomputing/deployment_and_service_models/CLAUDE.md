@@ -209,3 +209,60 @@ wrappers below the stage on 27, 28, 30, 31, 32 (no text clipped; the class was i
   (from `slidestraining/Presentation Icon.png`, 2:3 like the student) in the same 270x405 box.
 - **Chef (30, 32)**: `presentRight` at `amplitude={0.3}`, crop `x1` 360 -> 400 (the hand clipped);
   the recipe-card chips above the counter removed.
+
+## 2026-10-28: feedback slides removed, save-into-file ported (59 slides)
+
+- Both feedback frames (the kit `FeedbackSlide` and `FeedbackCard`) removed on the user's word;
+  `FeedbackCard` stays unused in `figures/variants.tsx`.
+- The deck now saves edits, skips and deletes INTO the shared HTML (generate-slides 2d): `src/deck/`
+  `Deck.tsx`, `EditLayer.tsx`, `presenter.ts`, `fileSave.ts`, `FileSaveBadge.tsx`, `vite.config.ts`,
+  `src/decks/slideEdits.ts` and `file-save-check.mjs` copied from `setting_up_your_aws_account`
+  (this deck's copies were older versions of the same files, nothing session-only lost).
+  `node file-save-check.mjs` printed FILE SAVE OK. Chrome and Edge only.
+
+## 2026-10-29: eight corrections to the shared file `dist-single/Session 1deployment-and-service-models 1.html`
+
+The user handed a list of slide-specific corrections for THAT file (57 slides on screen). Its source is
+NOT this folder's `src/`: the 2026-10-28 session built it from a scratchpad copy of this deck in which the
+review pairs (`agenda-columns`, `quiz-mid-card`, `quiz-close-card`) were dropped, slide 6 was split into
+`deploy-intro` + the map, 11 carried pictures over its table (`PrivateHeads`), the houses on 12 and the
+PaaS diagram on 30 were redrawn to the TR, and `IsoAnalogy` stopped drawing the TR sentence. None of that
+was ported here. This pass therefore worked on a copy of THAT source, rebuilt it, and wrote the result over
+the same file name; `src/` here is untouched. **The source of the shipped file is the zip**
+`../versions/deployment_and_service_models-2026-10-29-session1-corrections.zip` (unzip, symlink
+`node_modules` to this folder's, `npm run build:html`). The pre-pass file is in that zip's sibling scratchpad
+backup only; the file itself is the deliverable.
+
+What changed, by the on-screen number: 11 the pictures over the table removed, the table re-centred by `Card`
+(nothing added); 15 the kitchen and the banquet hall drawn as rooms (`figures/iso/rooms.tsx`: `Room`,
+`RealOven` with knob panel, bar handle, glass door, rack and tray, `SteelCounter`, `UtensilRail`,
+`RoundTable`, `Chandelier`, `BuffetTable`); 29 an empty shell with meter, wiring, socket, pipe and tap,
+the owner with a clipboard, equipment dropping in, two staff hired, food cooked (`ShellScene`); 30 code
+file -> PaaS cloud over the `OS, Runtime, Scaling, Patching` box -> browser window (`CodeFile`,
+`BrowserWindow`); 31 a fully equipped kitchen, the chef holding a recipe card (`EquippedKitchenScene`);
+33 a dining room, the diner with the menu, the chef in the pass, the waiter serving the plate
+(`DiningScene`); 35 the stair reordered IaaS, PaaS, FaaS, AI/ML, SaaS from the bottom (`X0` 160 -> 170 so
+the long FaaS label clears the axis label); 39 the supplied picture, white border cropped, 1000px wide,
+imported so the build inlines it (`figures/img/hospital-specialist.png`). The captions under 29, 31 and
+33 were reworded to match the new scenes (the old ones named dough and a pizza box). The replaced
+drawings (`Oven`, `PrivateHeads`, `ClayOven`, `ClayCounter`, `Kitchen`, `ConsultScene`) stay exported, unused.
+
+Two things the harnesses taught: a figure placed with `At` + an inner `translateY(-100%)` keeps its layout
+box below the stage and box-overflow reports the group (use `Stand`, the transform on the anchor itself);
+and a room with an inset ring is a "box" to overlap-check, which then reports every drawn object inside it
+as an arrow over it (`Room` draws its rim inside its own svg). Sweep on the shipped file: qa (the three
+hero frames NO LOGO), video-safe, align, mixed-align, controls-clear, gesture, phone-nav, autohide,
+agenda, ligature, nav-stress, file-save all clean; box-overflow and overlap report only the pre-existing
+findings on 28, 32, 36, 52 and the cloud side of 15 (identical to the file before this pass).
+
+### 2026-10-29, later: the review pairs added to the shared file (60 slides)
+
+The user: add agenda1 beside agenda0 and quiz1 beside each quiz0 in the same shared file, nothing else.
+`agenda-columns` (`AgendaColumns`, the five titles only, no TR lines under them, on the user's word) is
+slide 5; `quiz-mid-card` and `quiz-close-card` (`QuizCard`) are 26 and 56. Every slide from the old 5
+moves +1, from the old 25 moves +2, from the old 54 moves +3 (the eight corrected slides are now 12, 16,
+31, 32, 33, 35, 37, 41). `slideCount` 60 in the zip's `deck.config.json`; the zip above was refreshed.
+One build in this pass came out without the fonts (`inline-fonts` printed SKIPPED, the Google Fonts fetch
+failed once): always read that line, a 7.25 MB build is one that needs a network. Sweep on the shipped
+60-slide file: every check clean as before, box-overflow and overlap only the pre-existing findings
+(now on 30, 34 and 13, 15, 16, 34, 38, 54), none on the three new frames.

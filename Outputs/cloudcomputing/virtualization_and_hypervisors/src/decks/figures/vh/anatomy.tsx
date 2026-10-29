@@ -66,7 +66,11 @@ function Head({ children, tone = colors.ink, className = '' }: { children: strin
 }
 
 /** A packet on a straight link from `a` to `b` at phase `t` (0..1), fading at both ends. */
+const MOVING_DOTS = false
+
 function Pkt({ a, b, t, tone = colors.brand, size = 12, square = false }: { a: [number, number]; b: [number, number]; t: number; tone?: string; size?: number; square?: boolean }) {
+  /* moving dots off deck-wide (user, 2026-10-28: "remove the moving dots") */
+  if (!MOVING_DOTS) return null
   const x = a[0] + (b[0] - a[0]) * t
   const y = a[1] + (b[1] - a[1]) * t
   const fade = Math.max(0, Math.min(1, t * 6, (1 - t) * 6))
@@ -466,7 +470,7 @@ export function DiskNic({ lesson }: { lesson: string }) {
         'Common virtual disk formats: VMDK, VHD/VHDX, QCOW2, VDI (VirtualBox native)',
         'Disk modes: fixed-size pre-allocated or dynamically growing',
         'Virtual NIC is assigned its own virtual MAC address',
-        'Virtual switch or bridge connects vNIC to the physical network. Common vNIC modes: NAT, bridged, host-only',
+        'vNIC modes: NAT and bridged reach the physical network; host-only reaches only the host',
       ]}
       figure={<DiskNicScene />}
     />
@@ -475,34 +479,44 @@ export function DiskNic({ lesson }: { lesson: string }) {
 
 /* ================================================================== 40 · images, templates and snapshots */
 
-/** A stack of three glossy discs: the machine image (the TR's disk-stack icon). */
+/*
+ * Review 2026-10-28: the three icons redrawn to say what each artifact holds.
+ * Machine image: an install disc carrying an OS window (the OS plus base
+ * software, nothing running). Template: a blueprint with that disc and a CPU
+ * drawn on it (the image plus a fixed hardware spec). Snapshot: a camera with a
+ * clock badge (the state of a running VM at one point in time).
+ */
+
+/** An install disc with an OS window on it: the machine image. */
 function DiskStackIcon({ w = 40 }: { w?: number }) {
   const id = useId().replace(/:/g, '')
   return (
     <svg width={w} height={w} viewBox="0 0 40 40" aria-hidden style={{ display: 'block', overflow: 'visible' }}>
       <defs>
-        <linearGradient id={`${id}-d`} x1="0" x2="1">
-          <stop offset="0" stopColor={LAB.sky} />
+        <radialGradient id={`${id}-d`} cx="0.35" cy="0.3" r="0.8">
+          <stop offset="0" stopColor="#FFFFFF" />
+          <stop offset="0.55" stopColor={LAB.lavender} />
+          <stop offset="1" stopColor={LAB.sky} />
+        </radialGradient>
+        <linearGradient id={`${id}-w`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#3B6FF0" />
           <stop offset="1" stopColor={LAB.cobalt} />
         </linearGradient>
-        <linearGradient id={`${id}-t`} x1="0" x2="1">
-          <stop offset="0" stopColor="#FFFFFF" />
-          <stop offset="1" stopColor={LAB.lavender} />
-        </linearGradient>
       </defs>
-      <ellipse cx={20} cy={37} rx={15} ry={2.5} fill="rgba(31,64,140,0.22)" />
-      {[24, 16, 8].map((y) => (
-        <g key={y}>
-          <path d={`M 5 ${y} L 5 ${y + 6} A 15 5 0 0 0 35 ${y + 6} L 35 ${y} Z`} fill={`url(#${id}-d)`} />
-          <ellipse cx={20} cy={y} rx={15} ry={5} fill={`url(#${id}-t)`} stroke={LAB.lavDeep} strokeWidth={0.8} />
-        </g>
-      ))}
-      <ellipse cx={14} cy={7} rx={4} ry={1.3} fill="#FFFFFF" opacity={0.8} />
+      <ellipse cx={20} cy={38} rx={14} ry={2.2} fill="rgba(31,64,140,0.22)" />
+      <circle cx={16} cy={18} r={15} fill={`url(#${id}-d)`} stroke={LAB.lavDeep} strokeWidth={0.8} />
+      <circle cx={16} cy={18} r={9} fill="none" stroke="#FFFFFF" strokeWidth={1.2} opacity={0.7} />
+      <circle cx={16} cy={18} r={3.4} fill="#FFFFFF" stroke={LAB.lavDeep} strokeWidth={0.8} />
+      <rect x={20} y={20} width={18} height={15} rx={2.5} fill="#FFFFFF" stroke={LAB.lavDeep} strokeWidth={0.8} />
+      <rect x={20} y={20} width={18} height={4.5} rx={2} fill={`url(#${id}-w)`} />
+      <rect x={22.5} y={26.5} width={5} height={3.5} rx={0.8} fill={LAB.yellow} />
+      <rect x={29.5} y={26.5} width={5} height={3.5} rx={0.8} fill={LAB.sky} />
+      <rect x={22.5} y={31} width={12} height={1.6} rx={0.8} fill={LAB.lavDeep} opacity={0.6} />
     </svg>
   )
 }
 
-/** A rolled blueprint sheet with a drawn plan: the template. */
+/** A blueprint sheet with the image disc and a CPU drawn on it: the template (image plus fixed hardware spec). */
 function BlueprintIcon({ w = 40 }: { w?: number }) {
   const id = useId().replace(/:/g, '')
   return (
@@ -513,16 +527,21 @@ function BlueprintIcon({ w = 40 }: { w?: number }) {
           <stop offset="1" stopColor={LAB.cobalt} />
         </linearGradient>
       </defs>
-      <ellipse cx={20} cy={37} rx={15} ry={2.5} fill="rgba(31,64,140,0.22)" />
-      <rect x={4} y={5} width={32} height={28} rx={4} fill={`url(#${id}-b)`} />
-      <path d="M 9 10 H 31 M 9 28 H 31 M 9 10 V 28 M 31 10 V 28 M 9 19 H 21 V 28 M 21 14 V 19" stroke="#FFFFFF" strokeWidth={1.4} fill="none" opacity={0.9} />
-      <rect x={4} y={5} width={4} height={28} rx={2} fill={LAB.navy} opacity={0.5} />
-      <path d="M 6 7 L 18 7 L 6 20 Z" fill="#FFFFFF" opacity={0.22} />
+      <ellipse cx={20} cy={38} rx={15} ry={2.2} fill="rgba(31,64,140,0.22)" />
+      <rect x={3} y={4} width={34} height={30} rx={4} fill={`url(#${id}-b)`} />
+      <path d="M 7 4 V 34 M 3 9 H 37" stroke="#FFFFFF" strokeWidth={0.6} opacity={0.35} />
+      <circle cx={13} cy={20} r={6.5} fill="none" stroke="#FFFFFF" strokeWidth={1.4} />
+      <circle cx={13} cy={20} r={1.8} fill="#FFFFFF" />
+      <rect x={22} y={14} width={11} height={11} rx={1.5} fill="none" stroke="#FFFFFF" strokeWidth={1.4} />
+      <rect x={25} y={17} width={5} height={5} rx={0.8} fill="#FFFFFF" />
+      <path d="M 24.5 12 V 14 M 27.5 12 V 14 M 30.5 12 V 14 M 24.5 25 V 27 M 27.5 25 V 27 M 30.5 25 V 27 M 20 16.5 H 22 M 20 19.5 H 22 M 20 22.5 H 22 M 33 16.5 H 35 M 33 19.5 H 35 M 33 22.5 H 35" stroke="#FFFFFF" strokeWidth={1} strokeLinecap="round" />
+      <path d="M 9 29.5 H 33" stroke="#FFFFFF" strokeWidth={1} strokeDasharray="2 2" opacity={0.8} />
+      <path d="M 5 6 L 18 6 L 5 19 Z" fill="#FFFFFF" opacity={0.18} />
     </svg>
   )
 }
 
-/** A camera with a lit lens: the snapshot. */
+/** A camera with a clock badge: the snapshot, a running VM's state at one point in time. */
 function CameraIcon({ w = 40 }: { w?: number }) {
   const id = useId().replace(/:/g, '')
   return (
@@ -537,14 +556,15 @@ function CameraIcon({ w = 40 }: { w?: number }) {
           <stop offset="1" stopColor={LAB.cobalt} />
         </radialGradient>
       </defs>
-      <ellipse cx={20} cy={37} rx={15} ry={2.5} fill="rgba(31,64,140,0.22)" />
-      <rect x={13} y={7} width={14} height={6} rx={2} fill={LAB.charcoal} />
-      <rect x={4} y={11} width={32} height={22} rx={6} fill={`url(#${id}-c)`} />
-      <circle cx={20} cy={22} r={8} fill="#E8EEFC" />
-      <circle cx={20} cy={22} r={6} fill={`url(#${id}-l)`} />
-      <circle cx={18} cy={20} r={1.8} fill="#FFFFFF" opacity={0.85} />
-      <circle cx={31} cy={15.5} r={1.6} fill={LAB.yellow} />
-      <path d="M 7 13 L 16 13 L 7 21 Z" fill="#FFFFFF" opacity={0.18} />
+      <ellipse cx={20} cy={38} rx={15} ry={2.2} fill="rgba(31,64,140,0.22)" />
+      <rect x={10} y={6} width={12} height={5} rx={2} fill={LAB.charcoal} />
+      <rect x={2} y={9} width={30} height={21} rx={5} fill={`url(#${id}-c)`} />
+      <circle cx={16} cy={19.5} r={7.5} fill="#E8EEFC" />
+      <circle cx={16} cy={19.5} r={5.6} fill={`url(#${id}-l)`} />
+      <circle cx={14.2} cy={17.6} r={1.6} fill="#FFFFFF" opacity={0.85} />
+      <circle cx={27.5} cy={13} r={1.5} fill={LAB.yellow} />
+      <circle cx={31} cy={30} r={7.5} fill="#FFFFFF" stroke={colors.brand} strokeWidth={1.6} />
+      <path d="M 31 25.5 V 30 L 34 32" stroke={colors.brand} strokeWidth={1.6} fill="none" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -576,9 +596,9 @@ export function Artifacts({ lesson }: { lesson: string }) {
         { label: 'Typical Use', weight: 1.1 },
       ]}
       rows={[
-        [<ArtifactCell key="i" icon={<DiskStackIcon w={32} />}>Machine image</ArtifactCell>, 'OS plus base software; no runtime state', 'Launch new VM instances'],
-        [<ArtifactCell key="t" icon={<BlueprintIcon w={32} />}>Template</ArtifactCell>, 'Image plus fixed hardware spec', 'Standardise repeated VM deployments'],
-        [<ArtifactCell key="s" icon={<CameraIcon w={32} />}>Snapshot</ArtifactCell>, 'Point-in-time state of a running VM', 'Rollback or pre-change backup'],
+        [<ArtifactCell key="i" icon={<DiskStackIcon w={36} />}>Machine image</ArtifactCell>, 'OS plus base software; no runtime state', 'Launch new VM instances'],
+        [<ArtifactCell key="t" icon={<BlueprintIcon w={36} />}>Template</ArtifactCell>, 'Image plus fixed hardware spec', 'Standardise repeated VM deployments'],
+        [<ArtifactCell key="s" icon={<CameraIcon w={36} />}>Snapshot</ArtifactCell>, 'Point-in-time state of a running VM', 'Rollback or pre-change backup'],
       ]}
     />
   )
@@ -618,7 +638,7 @@ export function CreateVm({ lesson }: { lesson: string }) {
             </div>
           ))}
         </div>
-        <ImportantNote width={NOTE_W} vbox>VirtualBox is used here only to build a basic understanding of how a VM is created. Creating Virtual Machines on a Cloud Platform will be covered in later sessions.</ImportantNote>
+        <ImportantNote width={NOTE_W} vbox>VirtualBox is used here only to build a basic understanding of how a VM is created.</ImportantNote>
       </div>
     </Card>
   )

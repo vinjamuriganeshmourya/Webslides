@@ -2,8 +2,7 @@ import type { DeckMeta, SlideDef } from '@/deck/types'
 import { AgendaSlide, BrandSlide, NextSessionSlide, SectionBreakerSlide, ThankYouSlide, WelcomeSlide } from '@/slides'
 import { ClassroomQuiz } from '@/ui/foundations/ClassroomQuiz'
 import { Takeaways } from './figures/closing'
-import { AgendaColumns, QuizCard, FeedbackCard } from './figures/variants'
-import { FeedbackSlide } from '@/slides/FeedbackSlide'
+import { AgendaColumns, QuizCard } from './figures/variants'
 import { installSpecKeys } from '@/ui/foundations/keys'
 import { AUTOPLAY_ON_BY_DEFAULT } from '@/ui/foundations/autoplay'
 import { revealEveryStep } from '@/motion/Stepper'
@@ -57,7 +56,7 @@ export const deployMeta: DeckMeta = {
 export const AGENDA = [
   { title: 'Cloud Deployment Models', sub: 'Public cloud; private cloud: on-premise vs hosted; hybrid & cloud bursting; community cloud' },
   { title: 'Multi-Cloud', sub: 'Motivations: resilience, negotiation & regulation; operational cost of multiple platforms' },
-  { title: 'Service Models', sub: 'IaaS, PaaS & SaaS: what each provides & abstracts; representative services' },
+  { title: 'Service Models', sub: 'IaaS, PaaS & SaaS: what each provides & abstracts; representative services (for example, EC2 for IaaS, AWS Elastic Beanstalk for PaaS)' },
   { title: 'Beyond the Big Three', sub: 'Function as a Service (FaaS) & serverless; AI/ML-as-a-Service; responsibility boundaries across models' },
   { title: 'Cloud Economics & Providers', sub: 'CapEx vs OpEx; total cost of ownership (TCO); pricing: on-demand, committed use & spot; AWS, Azure, GCP & Indian providers' },
 ]
@@ -154,8 +153,6 @@ export const deployDeck: SlideDef[] = [
   { id: 'quiz-close-card', section: 'Closing', label: 'Quiz time (layout 1)', transition: 'zoom', element: <QuizCard lesson={SESSION} />, notes: 'REVIEW PAIR (user, 2026-10-28): quiz1 beside quiz0 (the previous frame). Keep one and delete the other.' },
   { id: 'takeaways', section: 'Closing', label: 'Key takeaways', element: <Takeaways lesson={SESSION} items={AGENDA} />, notes: "The TR's Key Takeaways list, which is its agenda word for word; the five titles, as the agenda frame shows them." },
   { id: 'next-session', section: 'Closing', label: 'Next session', transition: 'zoom', element: <NextSessionSlide title="Virtualization & Hypervisors" lesson={SESSION} />, notes: "The TR's own upcoming-session line, named by title, not by number (content rule 2b)." },
-  { id: 'feedback', section: 'Closing', label: 'Feedback', element: <FeedbackSlide lesson={SESSION} />, notes: 'REVIEW PAIR (user, 2026-10-28): feedback0, the deck\'s standard feedback slide (QR, link, form), restored beside feedback1 for comparison. Keep one and delete the other.' },
-  { id: 'feedback-card', section: 'Closing', label: 'Feedback (layout 1)', transition: 'zoom', element: <FeedbackCard lesson={SESSION} />, notes: 'REVIEW PAIR (user, 2026-10-28): feedback1, the title card from slidestraining/Feedbackslide, beside feedback0 (the previous frame).' },
   { id: 'thank-you', section: 'Closing', label: 'Thank you', transition: 'zoom', element: <ThankYouSlide title="Thank You" lesson={SESSION} /> },
   { id: 'all-the-best', section: 'Closing', label: 'All the Best', transition: 'zoom', element: <ThankYouSlide title="All the Best" lesson={SESSION} /> },
 ]

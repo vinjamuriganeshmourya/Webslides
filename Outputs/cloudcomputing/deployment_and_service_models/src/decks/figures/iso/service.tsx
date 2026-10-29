@@ -565,7 +565,7 @@ export function IaasAnalogy({ lesson }: { lesson: string }) {
       id="iaas-analogy"
       kicker="IaaS Explained"
       lesson={lesson}
-      text="Domino's kitchen space and oven are used, but the dough, sauce and toppings are supplied separately and the pizza is cooked from scratch, just as the IaaS provider manages only the physical infrastructure while the customer manages the operating system, runtime and application."
+      text="You use Domino’s kitchen space and oven, but you are responsible for choosing and preparing the ingredients and making the pizza. Similarly, with IaaS, the provider manages the physical infrastructure, while the customer manages the operating system, runtime, applications, and data."
       everyday={{ label: 'Kitchen space only', scene: <Kitchen equipment="Infrastructure" cards={[{ text: 'OS', at: IAAS_IN[0] }, { text: 'Runtime', at: IAAS_IN[1] }, { text: 'App', at: IAAS_IN[2] }]} doughReady={false} stageAt={[[IAAS_IN[0] + 0.14, 0], [IAAS_IN[1] + 0.14, 1], [IAAS_IN[2] + 0.14, 2], [IAAS_IN[2] + 0.18, 3]]} /> }}
       cloud={{ label: 'IaaS', scene: <Stack4 owners={['P', 'C', 'C', 'C']} arrive={[null, ...IAAS_IN]} /> }}
     />
@@ -662,7 +662,7 @@ export function PaasAnalogy({ lesson }: { lesson: string }) {
       id="paas-analogy"
       kicker="PaaS Explained"
       lesson={lesson}
-      text="Domino's kitchen, oven and ready dough are already set up, so only assembling and baking the pizza on that setup remains, just as the PaaS provider manages infrastructure, operating system and runtime while the customer manages only the application."
+      text="Domino's kitchen, oven and ready dough are already set up, so only assembling and baking the pizza on that setup remains, just as the PaaS provider manages infrastructure, operating system and runtime while the customer manages only the application & data."
       everyday={{ label: 'Kitchen and dough ready', scene: <Kitchen equipment="Platform" cards={[{ text: 'Application Code', at: PAAS_IN }]} doughReady stageAt={[[PAAS_IN + 0.14, 1], [PAAS_IN + 0.18, 2], [PAAS_IN + 0.22, 3]]} /> }}
       cloud={{ label: 'PaaS', scene: <Stack4 owners={['P', 'P', 'P', 'C']} arrive={[null, null, null, PAAS_IN]} /> }}
     />

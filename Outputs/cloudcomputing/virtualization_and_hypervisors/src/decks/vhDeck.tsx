@@ -126,7 +126,7 @@ export const vhDeck: SlideDef[] = [
   slide('techniques', S[2], 'Three techniques', Techniques),
   slide('full', S[2], 'Full virtualization', Full),
   slide('full-path', S[2], 'Full virtualization: the path', FullPath),
-  slide('full-analogy', S[2], 'Analogy: a live interpreter', FullAnalogy),
+  slide('full-analogy', S[2], 'Analogy: a hotel key card', FullAnalogy),
   slide('para', S[2], 'Para-virtualization', Para),
   slide('para-path', S[2], 'Para-virtualization: hypercalls', ParaPath),
   slide('para-analogy', S[2], 'Analogy: a service bell', ParaAnalogy),

@@ -2,7 +2,10 @@ import { useId, type CSSProperties, type ReactNode } from 'react'
 import { colors } from '@/design/tokens'
 import { Callout, DataTable } from '@/ui'
 import { Arrow, At, B, BOX_W, Card, Stage, Traveller, useCycle, useLoop } from '../scene'
-import { ClayBar, ClayBell, ClayOsWindow, GroundShadow, Icon3D, LAB } from '../d3/kit'
+import { ClayBar, ClayBell, ClayOsWindow, ClayPlate, GroundShadow, Icon3D, LAB } from '../d3/kit'
+import { ClayMessCounter } from '../clay-c'
+import { BAKER, Posed } from '../Cast'
+import { TENANTS } from '../people'
 import { PointsFigure, Points, lead } from '../iso/frames'
 import { Logo, Marker, PairAnalogy } from './frames'
 
@@ -62,7 +65,7 @@ function Dot({ at, tone, size = 14, on = true }: { at: [number, number]; tone: s
 /* ------------------------------------------------------------------ the drawn objects */
 
 /** The physical CPU: a front-facing package, navy body lit from the upper left, pins on four sides, a die that glows when it runs. */
-function CpuChip({ s, lit = false }: { s: number; lit?: boolean }) {
+export function CpuChip({ s, lit = false }: { s: number; lit?: boolean }) {
   const id = useId().replace(/:/g, '')
   const pins = [28, 42, 58, 72]
   return (
@@ -539,76 +542,7 @@ export function ParaPath({ lesson }: { lesson: string }) {
 
 /* ================================================================== 30, 33 · the analogies */
 
-/** A speech bubble with three wavy lines; the middle one in `mid` (a changed word is green, an original one amber). */
-function Bubble({ mid, lit }: { mid: string; lit: boolean }) {
-  const wave = (y: number) => `M 12 ${y} q 9 -7 18 0 t 18 0 t 18 0 t 18 0`
-  return (
-    <div className="relative" style={{ width: 100, height: 64 }}>
-      <svg width={100} height={64} viewBox="0 0 100 64" aria-hidden style={{ overflow: 'visible' }}>
-        <path d="M 10 2 H 90 Q 98 2 98 10 V 42 Q 98 50 90 50 H 56 L 48 60 L 42 50 H 10 Q 2 50 2 42 V 10 Q 2 2 10 2 Z" fill="#FFFFFF" stroke={lit ? colors.brand : '#C3D3F0'} strokeWidth={2} style={{ transition: `stroke 420ms ${EASE}` }} />
-        <path d={wave(15)} fill="none" stroke={LAB.sky} strokeWidth={3} strokeLinecap="round" />
-        <path d={wave(27)} fill="none" stroke={mid} strokeWidth={3.5} strokeLinecap="round" />
-        <path d={wave(39)} fill="none" stroke={LAB.sky} strokeWidth={3} strokeLinecap="round" />
-      </svg>
-    </div>
-  )
-}
-
 const lift = (on: boolean): CSSProperties => ({ transform: on ? 'translateY(-6px)' : 'none', transition: `transform 420ms ${EASE}` })
-
-/** Everyday: a visitor speaks as usual, an interpreter changes some words, the shopkeeper behind the counter hears the result. */
-function InterpreterScene({ lit }: { lit: number }) {
-  return (
-    <>
-      <At x={30} y={22}>
-        <div style={lift(lit === 0)}>
-          <Bubble mid={TRAP} lit={lit === 0} />
-        </div>
-      </At>
-      <At x={42} y={104}>
-        <div style={lift(lit === 0)}>
-          <Icon3D name="man-idea" w={110} />
-        </div>
-      </At>
-      <At x={178} y={22}>
-        <div style={lift(lit === 1)}>
-          <Bubble mid={colors.success} lit={lit === 1} />
-        </div>
-      </At>
-      <At x={200} y={92}>
-        <div style={lift(lit === 1)}>
-          <Icon3D name="woman-pro" w={68} />
-        </div>
-      </At>
-      {/* the shop: a shelf of goods, the shopkeeper, the counter in front */}
-      <At x={346} y={24}>
-        <div className="flex flex-col gap-1" style={{ width: 128 }}>
-          <span className="block h-[7px] rounded-full" style={{ background: LAB.lavDeep }} />
-          <div className="flex justify-between px-2">
-            {[LAB.red, LAB.yellow, LAB.sage, LAB.sky].map((c) => (
-              <span key={c} className="block h-[22px] w-[20px] rounded-[4px]" style={{ background: c, boxShadow: 'inset 0 -4px 0 rgba(0,0,0,0.12)' }} />
-            ))}
-          </div>
-          <span className="block h-[7px] rounded-full" style={{ background: LAB.lavDeep }} />
-        </div>
-      </At>
-      <At x={380} y={88}>
-        <div style={lift(lit === 2)}>
-          <Icon3D name="man-pro" w={60} shadow={false} />
-        </div>
-      </At>
-      <At x={346} y={176}>
-        <ClayBar w={128} h={56} fill={LAB.wood} />
-        <GroundShadow w={128} />
-      </At>
-      <Arrow x1={146} y1={222} x2={196} y2={222} tone={colors.brandDark} dashed />
-      <Arrow x1={282} y1={222} x2={336} y2={222} tone={colors.brandDark} dashed />
-      <At x={18} y={14}><Marker n={1} on={lit === 0} /></At>
-      <At x={166} y={14}><Marker n={2} on={lit === 1} /></At>
-      <At x={452} y={14}><Marker n={3} on={lit === 2} /></At>
-    </>
-  )
-}
 
 /** Cloud: the unmodified guest OS sends its instructions as usual, the hypervisor translates some, the physical CPU runs the result. */
 function FullCloudScene({ lit }: { lit: number }) {
@@ -645,20 +579,18 @@ function FullCloudScene({ lit }: { lit: number }) {
   )
 }
 
+/* The TR's analogies are the pictures alone (user 2026-10-28): no pair cards and no sentence under the stages. The TR's wording is in the speaker notes. */
+
 export function FullAnalogy({ lesson }: { lesson: string }) {
   return (
     <PairAnalogy
       id="FullAnalogy"
       kicker={'Full Virtualization'}
-      title={'A Live Interpreter'}
+      title={'A Hotel Key Card'}
       lesson={lesson}
-      everyday={{ label: 'A live interpreter', scene: (lit) => <InterpreterScene lit={lit} /> }}
+      everyday={{ label: 'A hotel', scene: (lit) => <HotelScene lit={lit} /> }}
       cloud={{ label: 'Full virtualization', scene: (lit) => <FullCloudScene lit={lit} /> }}
-      pairs={[
-        ['Visitor speaks as usual', 'Unmodified guest OS'],
-        ['Interpreter changes some words', 'Hypervisor translates instructions'],
-        ['Shopkeeper hears the result', 'Physical CPU runs it'],
-      ]}
+      pairs={[]}
     />
   )
 }
@@ -674,59 +606,186 @@ function KeyCard() {
 }
 
 /**
- * Everyday (the TR's analogy, user 2026-10-27): a hotel guest holds a key card,
- * taps it on the room door's reader, and the lock system works behind the
- * scenes, drawn as a ghosted cut-away wall panel beside the door.
+ * Everyday, full virtualization (the TR's analogy, moved from 33 to 30 on 2026-10-28; redrawn 2026-10-29 on the
+ * user's word: "a hotel corridor in 3D: a guest holding a key card, tapping it on a door lock, and a numbered room
+ * door opening; a cutaway of the wall beside the door showing the hidden locking system (lock controller, wiring,
+ * central hotel server), visually dimmed"). The corridor is a box in one-point perspective: the ceiling with its
+ * downlights, both side walls, the carpet running to the far wall. The far wall carries room 204's door, hinged on
+ * the right with the lock's reader by the handle, and beside it the wall opened on the lock controller, the cable
+ * run and the hotel's server, behind a veil and a dashed edge, the part the guest never sees. The guest is a
+ * Character Lab figure (slide 33's grammar) holding the card out.
+ *   lit 0  the guest holds the card up, the lock's lamp is red
+ *   lit 1  the card meets the reader, the lamp turns green
+ *   lit 2  the door swings in on the lit room; behind the wall the controller, the cable and the server light up
  */
+const DOOR = { x: 172, y: 58, w: 82, h: 154 } // room 204's leaf, hinged on the right
+const CUT = { x: 288, y: 50, w: 150, h: 156 } // the wall opened beside the door
+const GUEST_CROP = { x0: 90, y0: 30, x1: 470, y1: 600 } // the whole standing figure, past the reaching hand (presentRight)
+const CARD_HOME: [number, number] = [128, 134] // the card in the guest's hand
+const CARD_READER: [number, number] = [DOOR.x, DOOR.y + 74] // the card on the lock's reader
+
 function HotelScene({ lit }: { lit: number }) {
+  const id = useId().replace(/:/g, '')
+  const g = (k: string) => `url(#${id}-${k})`
   const tap = lit === 1
-  const open = lit >= 1
+  const read = lit >= 1
+  const open = lit === 2
+  const T = `all 420ms ${EASE}`
   return (
     <>
-      {/* the guest, holding the key card */}
-      <At x={26} y={70}>
-        <div style={lift(lit === 0)}>
-          <Icon3D name="man-idea" w={90} />
+      <svg aria-hidden className="pointer-events-none absolute left-0 top-0" width={500} height={270} viewBox="0 0 500 270">
+        <defs>
+          <linearGradient id={`${id}-wall`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#FBF4E8" />
+            <stop offset="1" stopColor="#EADFCB" />
+          </linearGradient>
+          <linearGradient id={`${id}-side`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#EEE3D1" />
+            <stop offset="1" stopColor="#D6C7AE" />
+          </linearGradient>
+          <linearGradient id={`${id}-ceil`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#FFFDF8" />
+            <stop offset="1" stopColor="#EFE5D3" />
+          </linearGradient>
+          <linearGradient id={`${id}-carpet`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#3A4C9E" />
+            <stop offset="1" stopColor={LAB.navy} />
+          </linearGradient>
+          <linearGradient id={`${id}-cavity`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#555B75" />
+            <stop offset="1" stopColor="#2F3346" />
+          </linearGradient>
+          <linearGradient id={`${id}-steel`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#DCE3F0" />
+            <stop offset="1" stopColor="#8E9AB8" />
+          </linearGradient>
+          <linearGradient id={`${id}-server`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#3B4A6E" />
+            <stop offset="1" stopColor="#1F2A44" />
+          </linearGradient>
+          <radialGradient id={`${id}-glow`}>
+            <stop offset="0" stopColor="#FFE9A8" stopOpacity="0.95" />
+            <stop offset="1" stopColor="#FFE9A8" stopOpacity="0" />
+          </radialGradient>
+          <pattern id={`${id}-weave`} width="14" height="14" patternUnits="userSpaceOnUse">
+            <circle cx="7" cy="7" r="1.6" fill="#FFFFFF" opacity="0.16" />
+          </pattern>
+        </defs>
+        {/* the corridor: ceiling, side walls, far wall, carpet with its runner */}
+        <path d="M 0 0 H 500 L 444 30 H 56 Z" fill={g('ceil')} />
+        <path d="M 0 0 L 56 30 V 212 L 0 270 Z" fill={g('side')} />
+        <path d="M 500 0 L 444 30 V 212 L 500 270 Z" fill={g('side')} />
+        <rect x={56} y={30} width={388} height={182} fill={g('wall')} />
+        <path d="M 56 212 H 444 L 500 270 H 0 Z" fill={g('carpet')} />
+        <path d="M 56 212 H 444 L 500 270 H 0 Z" fill={g('weave')} />
+        <path d="M 150 212 H 350 L 396 270 H 104 Z" fill="#FFFFFF" opacity={0.08} />
+        <rect x={56} y={206} width={388} height={6} fill="#C9B89C" />
+        <rect x={56} y={30} width={388} height={3} fill="#DCCFB8" />
+        {/* three downlights and their pools */}
+        {[130, 250, 370].map((x) => (
+          <g key={x}>
+            <ellipse cx={x} cy={16} rx={30} ry={10} fill={g('glow')} />
+            <ellipse cx={x} cy={16} rx={7} ry={2.6} fill="#FFF6D6" />
+          </g>
+        ))}
+        {/* the room number on the wall by the door */}
+        <rect x={DOOR.x - 50} y={DOOR.y + 4} width={36} height={16} rx={3} fill="#D9A93A" />
+        {/* the architrave and the dark reveal behind the leaf */}
+        <rect x={DOOR.x - 6} y={DOOR.y - 6} width={DOOR.w + 12} height={DOOR.h + 6} rx={3} fill="#8A5A33" />
+        {/* the lock's cable, hidden in the wall: from the hinge side of the frame into the opening */}
+        <path d={`M ${DOOR.x + DOOR.w + 6} 126 H ${CUT.x}`} stroke={open ? colors.accent : colors.muted} strokeWidth={2} strokeDasharray="4 5" fill="none" style={{ transition: T }} />
+        {/* the wall opened: the cut plaster edge, the cavity, two studs, the cable tray, the controller, the cable, the server */}
+        <rect x={CUT.x - 4} y={CUT.y - 4} width={CUT.w + 8} height={CUT.h + 8} rx={12} fill="#E6D9C3" />
+        <rect x={CUT.x} y={CUT.y} width={CUT.w} height={CUT.h} rx={10} fill={g('cavity')} />
+        {[352, 380].map((x) => (
+          <rect key={x} x={x} y={CUT.y + 26} width={6} height={CUT.h - 30} fill="#8A7F6D" />
+        ))}
+        <rect x={CUT.x + 10} y={80} width={CUT.w - 20} height={9} rx={2} fill={g('steel')} />
+        {[0, 1, 2, 3, 4, 5, 6].map((k) => (
+          <rect key={k} x={CUT.x + 18 + k * 19} y={82} width={10} height={5} rx={1} fill="#6E7A98" opacity={0.5} />
+        ))}
+        {/* the controller: fed from the door, cabled to the tray */}
+        <path d={`M ${CUT.x} 126 H 304`} stroke={open ? colors.accent : '#9AA7C7'} strokeWidth={2.5} fill="none" style={{ transition: T }} />
+        <path d="M 326 108 V 89" stroke={open ? colors.accent : '#9AA7C7'} strokeWidth={2.5} fill="none" style={{ transition: T }} />
+        <rect x={304} y={108} width={44} height={36} rx={4} fill={g('steel')} />
+        <rect x={310} y={114} width={32} height={14} rx={2} fill="#1F2A44" />
+        {[0, 1, 2].map((k) => (
+          <rect key={k} x={313 + k * 10} y={118} width={6} height={2} rx={1} fill={open ? colors.success : '#5E6E94'} style={{ transition: T }} />
+        ))}
+        <circle cx={316} cy={136} r={2.6} fill={open ? colors.success : '#5E6E94'} style={{ transition: T }} />
+        <circle cx={326} cy={136} r={2.6} fill={open ? colors.accent : '#5E6E94'} style={{ transition: T }} />
+        {/* the hotel's server, cabled from the tray */}
+        <path d="M 410 89 V 150" stroke={open ? colors.accent : '#9AA7C7'} strokeWidth={2.5} fill="none" style={{ transition: T }} />
+        <rect x={386} y={150} width={48} height={50} rx={4} fill={g('server')} />
+        {[0, 1, 2].map((k) => (
+          <g key={k}>
+            <rect x={390} y={154 + k * 15} width={40} height={12} rx={2} fill="#2E3D5F" />
+            <rect x={394} y={158 + k * 15} width={18} height={4} rx={1} fill="#4D5F8E" />
+            <circle cx={420} cy={160 + k * 15} r={2} fill={open ? (k === 1 ? colors.accent : colors.success) : '#5E6E94'} style={{ transition: T }} />
+            <circle cx={426} cy={160 + k * 15} r={2} fill={open ? colors.success : '#5E6E94'} style={{ transition: T }} />
+          </g>
+        ))}
+      </svg>
+      {/* room 204 behind the leaf: the lit room, its bed and bedside lamp, seen when the door swings in */}
+      <div className="absolute overflow-hidden rounded-[3px]" style={{ left: DOOR.x, top: DOOR.y, width: DOOR.w, height: DOOR.h, background: 'linear-gradient(180deg, #FFF3D6 0%, #F6CC8E 100%)' }}>
+        <span aria-hidden className="absolute rounded-full" style={{ left: 42, top: 44, width: 34, height: 34, background: 'radial-gradient(circle, rgba(255,233,168,0.95), rgba(255,233,168,0))' }} />
+        <span aria-hidden className="absolute rounded-[3px]" style={{ left: 56, top: 60, width: 10, height: 8, background: LAB.yellow }} />
+        <span aria-hidden className="absolute" style={{ left: 54, top: 68, width: 14, height: 30, background: '#C98A55' }} />
+        <span aria-hidden className="absolute rounded-t-[6px]" style={{ left: 6, top: 96, width: 46, height: 24, background: '#FFFFFF' }} />
+        <span aria-hidden className="absolute rounded-[3px]" style={{ left: 6, top: 112, width: 46, height: 30, background: `linear-gradient(180deg, ${LAB.sky} 0%, #4A7BFF 100%)` }} />
+        <span aria-hidden className="absolute" style={{ left: 0, right: 0, bottom: 0, height: 14, background: '#A86F3F' }} />
+      </div>
+      {/* the leaf: wood, two panels, the brass number plate, the handle, the lock's reader; it swings in on the right hinge */}
+      <div className="absolute" style={{ left: DOOR.x, top: DOOR.y, width: DOOR.w, height: DOOR.h, perspective: 520 }}>
+        <div
+          className="absolute inset-0 rounded-[3px]"
+          style={{
+            background: `linear-gradient(90deg, #D9A066 0%, ${LAB.wood} 55%, #A86F3F 100%)`,
+            boxShadow: 'inset 0 0 0 2px rgba(0,0,0,0.08), 0 10px 18px -12px rgba(16,32,58,0.6)',
+            transformOrigin: '100% 50%',
+            transform: open ? 'rotateY(-62deg)' : 'rotateY(0deg)',
+            transition: `transform 900ms ${EASE}`,
+          }}
+        >
+          <span aria-hidden className="absolute rounded-[3px]" style={{ left: 12, top: 32, width: DOOR.w - 24, height: 40, background: 'rgba(255,255,255,0.14)', boxShadow: 'inset 0 1px 0 rgba(0,0,0,0.12)' }} />
+          <span aria-hidden className="absolute rounded-[3px]" style={{ left: 12, top: 106, width: DOOR.w - 24, height: 36, background: 'rgba(255,255,255,0.14)', boxShadow: 'inset 0 1px 0 rgba(0,0,0,0.12)' }} />
+          <span className="absolute grid place-items-center rounded-[3px] font-heading text-[11px] font-bold tracking-[0.08em]" style={{ left: (DOOR.w - 36) / 2, top: 8, width: 36, height: 16, background: 'linear-gradient(180deg, #FFE39A 0%, #D9A93A 100%)', color: '#5A3A00' }}>
+            204
+          </span>
+          <span aria-hidden className="absolute rounded-full" style={{ left: 30, top: 92, width: 20, height: 6, background: 'linear-gradient(180deg, #FFE39A, #C9962E)' }} />
+          {/* the lock's reader: the dark panel the card is tapped on, its lamp red until a card is read */}
+          <span className="absolute grid place-items-center rounded-[5px]" style={{ left: 8, top: 70, width: 18, height: 30, background: `linear-gradient(180deg, #34477E 0%, ${colors.brandDeep} 100%)`, boxShadow: '0 3px 6px -3px rgba(16,32,58,0.6)' }}>
+            <span className="block rounded-full" style={{ width: 7, height: 7, background: read ? colors.success : colors.danger, boxShadow: `0 0 7px ${read ? colors.success : colors.danger}`, transition: T }} />
+          </span>
         </div>
+      </div>
+      {/* the room number on the wall */}
+      <At x={DOOR.x - 50} y={DOOR.y + 4} w={36}>
+        <span className="block text-center font-heading text-[11px] font-bold leading-[16px] tracking-[0.08em]" style={{ color: '#5A3A00' }}>
+          204
+        </span>
       </At>
-      {/* the room door, its card reader beside the handle */}
-      <At x={176} y={24}>
-        <div className="relative" style={{ width: 100, height: 150 }}>
-          <ClayBar w={100} h={150} fill={LAB.wood} />
-          <span aria-hidden className="absolute rounded-md" style={{ left: 14, top: 14, width: 72, height: 48, background: 'rgba(255,255,255,0.14)' }} />
-          <span aria-hidden className="absolute rounded-md" style={{ left: 14, top: 76, width: 72, height: 60, background: 'rgba(255,255,255,0.14)' }} />
-          <span aria-hidden className="absolute rounded-full" style={{ left: 74, top: 86, width: 16, height: 6, background: LAB.yellow }} />
-          <div className="absolute grid place-items-center rounded-[6px]" style={{ left: 40, top: 68, width: 26, height: 40, background: `linear-gradient(180deg, #34477E 0%, ${colors.brandDeep} 100%)`, ...lift(tap) }}>
-            <span className="block rounded-full" style={{ width: 8, height: 8, background: open ? colors.success : colors.danger, boxShadow: `0 0 8px ${open ? colors.success : colors.danger}`, transition: `all 420ms ${EASE}` }} />
-          </div>
-        </div>
-        <GroundShadow w={100} />
+      {/* the veil over the opening, with its dashed edge and its label: what the guest never sees */}
+      <div className="absolute rounded-[10px]" style={{ left: CUT.x, top: CUT.y, width: CUT.w, height: CUT.h, background: 'rgba(238,242,250,0.42)', boxShadow: `inset 0 0 0 2px ${LAB.lavDeep}`, outline: `2px dashed ${LAB.lavDeep}`, outlineOffset: -6 }}>
+        <span className="absolute left-1/2 block -translate-x-1/2 whitespace-nowrap rounded-md px-2 py-0.5 font-heading text-[12px] font-bold" style={{ top: 8, background: 'rgba(255,255,255,0.92)', color: colors.muted, boxShadow: `inset 0 0 0 1.5px ${LAB.lavDeep}` }}>
+          Locking system (hidden)
+        </span>
+      </div>
+      {/* the guest, holding the card out to the lock */}
+      <At x={56} y={70}>
+        <Posed cfg={TENANTS[2]} scale={0.27} crop={GUEST_CROP} gesture="presentRight" amplitude={0.95} at={1.0} seed={83} expression={tap ? 'excited' : 'happy'} alive />
       </At>
-      {/* the key card, in the guest's hand; tapped on the reader while pair 2 is lit */}
-      <At x={112} y={104}>
-        <div style={{ transform: tap ? 'translate(68px, -2px)' : 'none', transition: `transform 620ms ${EASE}` }}>
+      {/* the key card: in the guest's hand, on the reader while the lock reads it */}
+      <At x={CARD_HOME[0]} y={CARD_HOME[1]}>
+        <div style={{ transform: tap ? `translate(${CARD_READER[0] - CARD_HOME[0]}px, ${CARD_READER[1] - CARD_HOME[1]}px)` : 'none', transition: `transform 620ms ${EASE}` }}>
           <KeyCard />
         </div>
       </At>
-      {/* the wire from the reader into the wall */}
-      <div aria-hidden className="absolute" style={{ left: 278, top: 112, width: 56, height: 0, borderTop: `2px dashed ${colors.muted}` }} />
-      {/* behind the scenes: the lock system, ghosted in a cut-away wall panel */}
-      <At x={336} y={24}>
-        <div className="relative rounded-xl" style={{ width: 140, height: 150, background: 'rgba(211,225,251,0.45)', border: `2px dashed ${LAB.lavDeep}`, opacity: lit === 2 ? 1 : 0.6, ...lift(lit === 2), transition: `all 420ms ${EASE}` }}>
-          <div className="absolute" style={{ left: 40, top: 14 }}>
-            <Icon3D name="gear" w={56} shadow={false} />
-          </div>
-          <span aria-hidden className="absolute rounded-md" style={{ left: 18, top: 84, width: 100, height: 14, background: LAB.lavDeep }} />
-          <span aria-hidden className="absolute rounded-md" style={{ left: 10, top: 108, width: 70, height: 16, background: `linear-gradient(180deg, #9AA9C9 0%, #5E6E94 100%)`, transform: open ? 'translateX(30px)' : 'none', transition: `transform 620ms ${EASE}` }} />
-        </div>
-      </At>
-      <At x={22} y={46}><Marker n={1} on={lit === 0} /></At>
-      <At x={244} y={40}><Marker n={2} on={lit === 1} /></At>
-      <At x={446} y={14}><Marker n={3} on={lit === 2} /></At>
-      <At x={20} y={190} w={460}>
-        <p className="text-[15px] leading-[1.3]" style={{ color: colors.ink }}>
-          A hotel guest uses the same key card to access their room without knowing how the hotel's locking system works behind the scenes.
-        </p>
+      {/* the label of the side the guest sees (the hidden side's label is on its veil above) */}
+      <At x={24} y={36}>
+        <span className="block whitespace-nowrap rounded-md px-2 py-0.5 font-heading text-[12px] font-bold" style={{ background: '#FFFFFF', color: colors.brandDark, boxShadow: `inset 0 0 0 1.5px ${colors.brand}` }}>
+          Guest uses key card
+        </span>
       </At>
     </>
   )
@@ -775,6 +834,83 @@ function ParaCloudScene({ lit }: { lit: number }) {
   )
 }
 
+/*
+ * Everyday, para-virtualization (the TR's analogy; redrawn 2026-10-28 with the
+ * Character Lab, the user: "create the restaurant environment"): a diner at a
+ * laid table rings the service bell instead of waiting for the staff to
+ * notice, and the staff behind the serving counter answer it straight away.
+ * The room is the restaurant: a warm wall with two pendant lamps and the menu
+ * board, a tiled floor, the table under its cloth, the counter with its pots.
+ *   lit 0  the diner lifts (the one who knows the bell)
+ *   lit 1  the bell rings and the call line reaches the counter
+ *   lit 2  the staff lift and wave back
+ */
+const DINER_CROP = { x0: 90, y0: 30, x1: 380, y1: 392 } // past the pointing hand
+const STAFF_CROP = { x0: 20, y0: -20, x1: 310, y1: 392 } // past the waving hand and over the cap
+const FLOOR_Y = 200
+
+function Lamp({ x }: { x: number }) {
+  return (
+    <svg aria-hidden className="pointer-events-none absolute" style={{ left: x - 16, top: 0 }} width={32} height={60} viewBox="0 0 32 60">
+      <path d="M 16 0 V 24" stroke={LAB.charcoal} strokeWidth={2} />
+      <path d="M 6 42 L 11 24 H 21 L 26 42 Z" fill={LAB.orange} />
+      <path d="M 6 42 L 11 24 H 15 L 12 42 Z" fill="#FFFFFF" opacity={0.25} />
+      <ellipse cx={16} cy={44} rx={7} ry={3.5} fill={LAB.yellow} />
+      <ellipse cx={16} cy={50} rx={13} ry={8} fill={LAB.yellow} opacity={0.18} />
+    </svg>
+  )
+}
+
+function RestaurantScene({ lit }: { lit: number }) {
+  return (
+    <>
+      {/* the room */}
+      <div aria-hidden className="absolute inset-x-0" style={{ top: 0, height: FLOOR_Y, background: 'linear-gradient(180deg, #FFF7EC 0%, #F9E9D3 100%)' }} />
+      <div aria-hidden className="absolute inset-x-0" style={{ top: FLOOR_Y, height: 270 - FLOOR_Y, background: 'repeating-conic-gradient(#E4D2BC 0% 25%, #F2E6D4 0% 50%) 0 0 / 28px 28px', boxShadow: 'inset 0 3px 0 #D9C3A6' }} />
+      <Lamp x={176} />
+      <Lamp x={306} />
+      <div className="absolute grid place-items-center rounded-[6px]" style={{ left: 206, top: 16, width: 90, height: 54, background: `linear-gradient(180deg, #3A4A6E 0%, ${LAB.navy} 100%)`, boxShadow: `0 0 0 3px ${LAB.wood}, 0 8px 14px -8px rgba(16,32,58,0.6)` }}>
+        <span className="font-heading text-[16px] font-bold tracking-[0.14em]" style={{ color: LAB.yellow }}>
+          MENU
+        </span>
+      </div>
+      {/* the diner, seated at the table, pointing at the bell */}
+      <At x={28} y={54}>
+        <div style={lift(lit === 0)}>
+          <Posed cfg={TENANTS[1]} scale={0.38} crop={DINER_CROP} gesture="presentRight" amplitude={0.9} at={1.0} seed={81} expression={lit === 1 ? 'excited' : 'happy'} alive />
+        </div>
+      </At>
+      {/* the table: its cloth to the floor, the wooden top, the plate, the bell */}
+      <div aria-hidden className="absolute" style={{ left: 30, top: 152, width: 226, height: FLOOR_Y - 152, background: 'linear-gradient(180deg, #FFFFFF 0%, #EADFCF 100%)', borderRadius: '4px 4px 10px 10px', boxShadow: '0 10px 16px -12px rgba(16,32,58,0.5)' }} />
+      <At x={22} y={140}>
+        <ClayBar w={242} h={16} fill={LAB.wood} />
+      </At>
+      <At x={38} y={112}>
+        <ClayPlate w={60} portions={3} />
+      </At>
+      <At x={118} y={96}>
+        <div style={lift(lit === 1)}>
+          <ClayBell w={44} ringing={lit === 1} />
+        </div>
+      </At>
+      {/* the call: from the bell straight to the counter */}
+      <Arrow x1={170} y1={112} x2={306} y2={100} tone={colors.brandDeep} width={3.5} on={lit >= 1} />
+      {/* the staff behind the serving counter, waving back */}
+      <At x={330} y={26}>
+        <div style={lift(lit === 2)}>
+          <Posed cfg={BAKER} props scale={0.38} crop={STAFF_CROP} gesture="presentLeft" amplitude={1} at={1.0} seed={82} expression={lit === 2 ? 'grin' : 'happy'} alive />
+        </div>
+      </At>
+      <At x={304} y={126}>
+        <ClayMessCounter w={172} served={1} />
+      </At>
+      <At x={18} y={40}><Marker n={1} on={lit === 0} /></At>
+      <At x={156} y={66}><Marker n={2} on={lit === 1} /></At>
+      <At x={452} y={14}><Marker n={3} on={lit === 2} /></At>
+    </>
+  )
+}
+
 export function ParaAnalogy({ lesson }: { lesson: string }) {
   return (
     <PairAnalogy
@@ -782,13 +918,9 @@ export function ParaAnalogy({ lesson }: { lesson: string }) {
       kicker={'Para-Virtualization'}
       title={'A Service Bell'}
       lesson={lesson}
-      everyday={{ label: 'A hotel', scene: (lit) => <HotelScene lit={lit} /> }}
+      everyday={{ label: 'A restaurant', scene: (lit) => <RestaurantScene lit={lit} /> }}
       cloud={{ label: 'Para-virtualization', scene: (lit) => <ParaCloudScene lit={lit} /> }}
-      pairs={[
-        ['A diner who knows the bell', 'Modified guest OS'],
-        ['Pressing the bell', 'A hypercall'],
-        ['Staff who answer it', 'Hypervisor'],
-      ]}
+      pairs={[]}
     />
   )
 }

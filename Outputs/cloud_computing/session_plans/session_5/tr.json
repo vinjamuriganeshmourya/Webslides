@@ -1,0 +1,906 @@
+{
+ "source": "tr.docx",
+ "title": "Session 5 : Cloud Networking & VPC",
+ "recap": {
+  "heading": "RECAP: Session 4 : Containers vs Virtual Machines",
+  "items": [
+   "1. Container Fundamentals: Process-level isolation; Linux namespaces & control groups (cgroups); union filesystem & layered images",
+   "2. Docker Architecture: Client, daemon, images, containers & registries; image vs container; layers & build caching",
+   "3. Containers vs VMs: Boot time, memory footprint, image size & density; isolation strength & security trade-offs",
+   "4. Choosing Between Them: Container use cases; VM use cases; decision criteria",
+   "5. Tooling & Registries: VirtualBox, KVM, Hyper-V & VMware; Docker, Podman & containerd; public vs private registries; tagging strategy"
+  ]
+ },
+ "agenda": {
+  "heading": "Agenda for Today's Session",
+  "items": [
+   "1. Cloud Networking Overview: The network as the deployment boundary; core building blocks",
+   "2. Virtual Private Cloud (VPC): Logically isolated networks; VPC concepts across providers",
+   "3. Subnets & IP Addressing: CIDR notation & subnet sizing; public vs private subnets; availability-zone placement",
+   "4. Routing & Gateways: Route tables; internet gateway; NAT gateway; VPC peering & private connectivity",
+   "5. Network Security Controls: Security groups (stateful) vs network ACLs (stateless); least-privilege network design"
+  ]
+ },
+ "sections": [
+  {
+   "number": 1,
+   "title": "1. Cloud Networking Overview: The network as the deployment boundary; core building blocks",
+   "slides": [
+    {
+     "number": 1,
+     "tr_title": "Cloud Networking As Deployment Boundary",
+     "heading": "Deployment Boundary",
+     "subheading": "Why Networking Matters",
+     "content": [
+      {
+       "line": "Every cloud resource needs connectivity rules deciding what it can reach and what can reach it. This connectivity layer, called cloud networking, is the deployment boundary — the line deciding whether a launched resource is reachable at all."
+      },
+      {
+       "line": "An instance with no route, gateway or security rule is deployed but entirely unreachable."
+      },
+      {
+       "line": "The deployment boundary decides what traffic reaches a resource and what traffic it can send out."
+      },
+      {
+       "line": "Isolation, addressing, routing and security rules in this session all exist to control this one boundary."
+      },
+      {
+       "image": "tr_images/slide-01-1.png"
+      }
+     ],
+     "analogy": "A school has gates, corridors, and entry rules that decide who can enter, which rooms they can access, and where they can go — just as cloud networking controls how traffic reaches cloud resources and which resources it can access.",
+     "visual_guidance": "Simple box diagram: a cloud resource inside a dashed boundary line, with arrows showing allowed traffic crossing and blocked traffic stopped at the line."
+    },
+    {
+     "number": 2,
+     "tr_title": "Core Building Blocks Of Cloud Networking",
+     "heading": "Core Building Blocks",
+     "subheading": "The Network Map",
+     "content": [
+      {
+       "line": "The deployment boundary is built from a small set of pieces that together control where traffic starts, stops and crosses isolation lines. On AWS (Amazon Web Services), all of them are configured from the VPC (Virtual Private Cloud) console."
+      },
+      {
+       "line": "All of it runs on software-defined networking (SDN) — the model where a control plane makes routing and security decisions in software, then pushes them onto hardware shared across many customers, so creating a VPC is an API call, not a cabling job"
+      },
+      {
+       "line": "The isolated network container groups all resources that should share one private address space."
+      },
+      {
+       "line": "Subnets subdivide that container into smaller address ranges placed in specific availability zones."
+      },
+      {
+       "line": "Gateways and route tables decide which subnets can reach the internet or other private networks."
+      },
+      {
+       "line": "Security groups and network access control lists filter traffic allowed in and out of each resource."
+      },
+      {
+       "line": "SDN separates the control plane (deciding where traffic should go) from the data plane (hardware actually forwarding packets) — this split is what makes every building block above configurable instead of physically wired"
+      }
+     ],
+     "visual_guidance": "Diagram: a large box labelled VPC containing two smaller boxes (public subnet, private subnet), arrows to gateway icons, and a lock icon for security controls — a simplified preview of the full VPC diagram built in later slides."
+    }
+   ]
+  },
+  {
+   "number": 2,
+   "title": "2. Virtual Private Cloud (VPC): Logically isolated networks; VPC concepts across providers",
+   "slides": [
+    {
+     "number": 3,
+     "tr_title": "What A VPC Actually Is",
+     "heading": "What Is A VPC",
+     "subheading": "The Private Boundary",
+     "content": [
+      {
+       "line": "Public cloud infrastructure is shared by many customers, so each needs an isolated network. A VPC (Virtual Private Cloud) provides a logically isolated network with its own IP address range and traffic rules. Resources such as servers and databases commonly use a VPC to communicate securely."
+      },
+      {
+       "line": "Subnets divide the VPC into smaller address blocks for grouping resources."
+      },
+      {
+       "line": "Route tables decide where traffic leaving each subnet is sent next."
+      },
+      {
+       "line": "Gateways, such as an internet gateway or NAT gateway, connect the VPC to outside networks."
+      },
+      {
+       "line": "Security groups and network ACLs filter traffic allowed in or out of resources."
+      }
+     ],
+     "analogy": "A large gated residential society gives each resident association its own gate, internal roads and boundary wall inside one bigger campus — just as a VPC gives a customer its own addressed, routed and walled-off section of the provider's shared network.",
+     "visual_guidance": "Diagram: one VPC box containing labelled sub-boxes for subnets, a route table, an internet gateway and a NAT gateway."
+    },
+    {
+     "number": 4,
+     "tr_title": "Default Vs Custom VPC",
+     "heading": "Default Vs Custom VPC",
+     "subheading": "Isolation In Practice",
+     "content": [
+      {
+       "line": "Isolation is enforced entirely in software: a provider's switches carry traffic for every tenant, but each VPC's address space and routing stay mathematically separate from the next. AWS gives two starting points for building one."
+      },
+      {
+       "line": "A default VPC is created automatically in every AWS region, with one public subnet per Availability Zone ready to use."
+      },
+      {
+       "line": "A custom VPC is built from scratch, letting an engineer choose the address range, subnet layout and route tables deliberately."
+      },
+      {
+       "line": "The VPC's own CIDR (Classless Inter-Domain Routing) block, for example 10.0.0.0/16, sets the outer address range every subnet inside it must fit within."
+      },
+      {
+       "line": "Production workloads generally use a custom VPC, since the default one does not enforce least-privilege network design."
+      }
+     ],
+     "visual_guidance": "Side-by-side diagram: an AWS region box with an automatic default VPC on the left, a hand-built custom VPC with chosen CIDR on the right."
+    },
+    {
+     "number": 5,
+     "tr_title": "VPC Concepts Across Providers",
+     "heading": "Vpc Across Providers",
+     "subheading": "Same Idea Renamed",
+     "content": [
+      {
+       "line": "Every major provider offers the same isolation model under a different name, so the mental model built for one cloud transfers directly to another."
+      },
+      {
+       "table": {
+        "columns": [
+         "Concept",
+         "AWS",
+         "Azure",
+         "GCP"
+        ],
+        "rows": [
+         [
+          "Isolated network",
+          "VPC (Virtual Private Cloud)",
+          "VNet (Virtual Network)",
+          "VPC Network"
+         ],
+         [
+          "Default on signup",
+          "One default VPC per region",
+          "No general-purpose VNet created automatically",
+          "One default VPC, global scope"
+         ],
+         [
+          "Cross-network link",
+          "VPC peering",
+          "VNet peering",
+          "VPC network peering"
+         ],
+         [
+          "Address range unit",
+          "CIDR block on the VPC",
+          "CIDR block on the VNet",
+          "Subnet-level CIDR only"
+         ]
+        ]
+       }
+      }
+     ],
+     "visual_guidance": "Four-row table on screen comparing AWS, Azure and GCP; highlight the GCP global-scope row."
+    },
+    {
+     "number": 6,
+     "tr_title": "From VPC To Subnets",
+     "heading": "From Vpc To Subnets",
+     "subheading": "What Comes Next",
+     "content": [
+      {
+       "line": "A VPC provides an isolated network with its own address range. This range is divided into smaller subnets to organize and place resources."
+      },
+      {
+       "line": "Logical isolation separates each customer's traffic in software, even while sharing physical switches and cables."
+      },
+      {
+       "line": "The same boundary concept appears as AWS VPC, Azure VNet and GCP VPC Network with minor differences."
+      },
+      {
+       "line": "That one large CIDR block must now be split into smaller subnets placed across Availability Zones."
+      }
+     ],
+     "visual_guidance": "Arrow diagram: one VPC box splitting into several smaller labelled subnet boxes."
+    }
+   ]
+  },
+  {
+   "number": 3,
+   "title": "3. Subnets & IP Addressing: CIDR notation & subnet sizing; public vs private subnets; availability-zone placement",
+   "slides": [
+    {
+     "number": 7,
+     "tr_title": "Subnets Inside A VPC",
+     "heading": "Subnets Overview",
+     "subheading": "CIDR Type Zone",
+     "content": [
+      {
+       "line": "A virtual private cloud's address block is split into subnets, smaller ranges sized using CIDR (Classless Inter-Domain Routing) notation, so that different resources can sit in different zones with different internet access rules."
+      },
+      {
+       "line": "A larger slice kept for a subnet means fewer subnets can be carved from the same VPC block."
+      },
+      {
+       "line": "Public subnets have a route to an internet gateway; private subnets do not."
+      },
+      {
+       "line": "Every subnet is created inside exactly one availability zone, a physically separate data centre."
+      },
+      {
+       "line": "Subnet type and size together decide how many resources a zone can host and how exposed they are."
+      },
+      {
+       "image": "tr_images/slide-07-1.png"
+      }
+     ],
+     "visual_guidance": "Diagram: one VPC box containing four subnet boxes, two labelled Public and two Private, grouped under two Availability Zone headers side by side."
+    },
+    {
+     "number": 8,
+     "tr_title": "Sizing Subnets With CIDR",
+     "heading": "CIDR Subnet Sizing",
+     "subheading": "Reserved Address Cost",
+     "content": [
+      {
+       "line": "Sizing a subnet means choosing its prefix length, the /number in its CIDR (Classless Inter-Domain Routing) range. The bigger the number, the smaller the subnet, and every subnet pays a fixed address tax before any host gets an IP."
+      },
+      {
+       "line": "AWS reserves five addresses per subnet for network, router, DNS, future use, and broadcast functions."
+      },
+      {
+       "line": "A /24 subnet provides 256 addresses but only 251 remain usable after these reservations."
+      },
+      {
+       "line": "A /28 is the smallest subnet AWS allows. It has 16 addresses but only 11 usable, so it saves VPC space but can run out of IPs quickly."
+      },
+      {
+       "line": "A subnet's CIDR range cannot change after creation,so plan for extra space from the start."
+      }
+     ],
+     "visual_guidance": "Table-style graphic: a /24 block shown as 256 small squares, with 5 shaded squares labelled as AWS-reserved and the rest labelled usable."
+    },
+    {
+     "number": 9,
+     "tr_title": "Splitting A VPC Into Subnets",
+     "heading": "Worked Subnet Split",
+     "subheading": "Two Zones Four Subnets",
+     "content": [
+      {
+       "line": "A VPC block of 10.0.0.0/16 is split into four /24 subnets, pairing one public and one private subnet inside each of two availability zones for fault isolation."
+      },
+      {
+       "table": {
+        "columns": [
+         "Subnet CIDR",
+         "Availability Zone",
+         "Type"
+        ],
+        "rows": [
+         [
+          "10.0.1.0/24",
+          "ap-south-1a",
+          "Public"
+         ],
+         [
+          "10.0.2.0/24",
+          "ap-south-1a",
+          "Private"
+         ],
+         [
+          "10.0.3.0/24",
+          "ap-south-1b",
+          "Public"
+         ],
+         [
+          "10.0.4.0/24",
+          "ap-south-1b",
+          "Private"
+         ]
+        ]
+       }
+      },
+      {
+       "line": "Each /24 subnet carries 251 usable addresses after AWS reservations, so the four subnets together offer 1004 usable addresses out of the 65,536 the /16 block holds."
+      }
+     ],
+     "visual_guidance": "Diagram: VPC 10.0.0.0/16 box split into four labelled subnet boxes arranged in two columns (zone 1a, zone 1b), public subnets on top row, private on bottom row."
+    },
+    {
+     "number": 10,
+     "tr_title": "Public Versus Private Subnets",
+     "heading": "Public Vs Private",
+     "subheading": "Classification By Route",
+     "content": [
+      {
+       "line": "A subnet is labelled public or private by what its route table sends internet-bound traffic to, not by any setting on the subnet itself."
+      },
+      {
+       "table": {
+        "columns": [
+         "Aspect",
+         "Public Subnet",
+         "Private Subnet"
+        ],
+        "rows": [
+         [
+          "Internet-bound route",
+          "Points to an internet gateway",
+          "No direct internet gateway route"
+         ],
+         [
+          "Typical resources",
+          "Load balancers, bastion hosts",
+          "Databases, internal application servers"
+         ],
+         [
+          "Public IP exposure",
+          "Instances can hold a public IP",
+          "Instances cannot be reached directly from the internet"
+         ],
+         [
+          "Zone pairing",
+          "Mirrored in every AZ used",
+          "Mirrored in every AZ used"
+         ]
+        ]
+       }
+      }
+     ],
+     "visual_guidance": "Side-by-side VPC diagram: public subnet icon connected upward to an internet gateway symbol; private subnet icon with no outward arrow."
+    },
+    {
+     "number": 11,
+     "tr_title": "Placing Subnets Across Zones",
+     "heading": "AZ Placement",
+     "subheading": "High Availability Design",
+     "content": [
+      {
+       "line": "Availability zones are physically separate locations within one region, each made up of one or more data centres, so spreading subnet pairs across them keeps an application reachable even if one zone loses power or network."
+      },
+      {
+       "line": "Production designs duplicate the public-private subnet pair in every zone that is used."
+      },
+      {
+       "line": "The VPC console's Subnets page lists each subnet's assigned availability zone and CIDR."
+      },
+      {
+       "line": "If one zone goes down, only the resources in that zone stop working, so a two-zone design keeps running on the other zone."
+      }
+     ],
+     "visual_guidance": "Map-style diagram: a region box containing two availability-zone boxes, each holding a public and private subnet, with a broken-link icon over one zone to show it still works."
+    }
+   ]
+  },
+  {
+   "number": 4,
+   "title": "4. Routing & Gateways: Route tables; internet gateway; NAT gateway; VPC peering & private connectivity",
+   "slides": [
+    {
+     "number": 13,
+     "tr_title": "Routing And Gateways Map",
+     "heading": "Connectivity Building Blocks",
+     "subheading": "Four Core Pieces",
+     "content": [
+      {
+       "line": "Subnets in a VPC reach each other through a built-in local route. Traffic leaving the VPC follows a route table to the right exit: an internet gateway, a NAT gateway, or a direct link to another network."
+      },
+      {
+       "line": "Route tables decide the next hop for every outgoing packet, subnet by subnet."
+      },
+      {
+       "line": "An internet gateway gives public subnets two-way access to the public internet."
+      },
+      {
+       "line": "A NAT gateway lets private subnets reach the internet without accepting inbound connections."
+      },
+      {
+       "line": "VPC peering and private connectivity link two networks directly, bypassing the public internet."
+      }
+     ],
+     "visual_guidance": "Diagram: VPC box with public subnet connected to an Internet Gateway, private subnet connected to a NAT Gateway sitting inside the public subnet, route-table icons beside each subnet, and a dashed line to a second VPC labelled Peering."
+    },
+    {
+     "number": 14,
+     "tr_title": "Route Tables Direct Traffic",
+     "heading": "Route Tables",
+     "subheading": "Next-Hop Rules",
+     "content": [
+      {
+       "line": "A route table is a subnet’s rulebook for where traffic goes next. Each entry pairs a destination range with a target, such as local, a gateway, or a peering link, and the most specific match wins"
+      },
+      {
+       "line": "A local route keeps all traffic inside the VPC's own CIDR block, added automatically."
+      },
+      {
+       "line": "A default route of 0.0.0.0/0 sends everything else to a gateway target."
+      },
+      {
+       "line": "Each subnet associates with exactly one route table, though one table can serve many subnets."
+      },
+      {
+       "line": "Longest-prefix-match order decides which entry wins when destinations overlap."
+      }
+     ],
+     "analogy": "A route table works like a postal sorting hub that reads only the pincode on a parcel and sends it to the correct delivery van, never opening the parcel itself — just as a route table reads only the destination address and forwards the packet without touching what it carries.",
+     "visual_guidance": "Show a two-row table on screen: Destination | Target, with 10.0.0.0/16 -> local and 0.0.0.0/0 -> igw-id, and an arrow from an incoming packet to the matching row."
+    },
+    {
+     "number": 15,
+     "tr_title": "Internet Gateway Mechanism",
+     "heading": "Internet Gateway",
+     "subheading": "Public Two-Way Access",
+     "content": [
+      {
+       "line": "A subnet becomes public only when its route table sends outside-bound traffic to an internet gateway, the VPC component attached once per VPC that translates between a resource's private address and a public one. Without that route entry, even an instance holding a public IP stays unreachable."
+      },
+      {
+       "image": "tr_images/slide-15-1.png"
+      },
+      {
+       "line": "Attaches at the VPC level, not inside any single subnet."
+      },
+      {
+       "line": "Performs one-to-one network address translation between private and public IP addresses."
+      },
+      {
+       "line": "A subnet is called public precisely because this route exists, nothing else makes it so."
+      },
+      {
+       "line": "An instance also needs a public or elastic IP address for the translation to have something to map."
+      }
+     ],
+     "visual_guidance": "Highlight the Internet Gateway icon attached to the VPC boundary, with an arrow from the public subnet route table's 0.0.0.0/0 row into it, then out to a public internet cloud icon."
+    },
+    {
+     "number": 16,
+     "tr_title": "NAT Gateway For Private Subnets",
+     "heading": "NAT Gateway",
+     "subheading": "Outbound-Only Access",
+     "content": [
+      {
+       "line": "A private subnet still needs to download updates or call external services, but it must never accept an unsolicited inbound connection. A NAT (Network Address Translation) gateway, placed in a public subnet, lets private instances start outbound connections while blocking anything started from outside."
+      },
+      {
+       "line": "Deployed inside a public subnet so it can itself reach the internet gateway."
+      },
+      {
+       "line": "Private subnet's route table sends 0.0.0.0/0 to the NAT gateway, not the internet gateway."
+      },
+      {
+       "line": "Translates many private source addresses to the gateway's own single public address."
+      },
+      {
+       "line": "Billed per hour running plus per gigabyte processed, so an idle NAT gateway still costs money."
+      }
+     ],
+     "analogy": "A NAT gateway works like a ticket counter at a venue. Visitors inside can go out and return using their tickets, but outsiders cannot enter through the exit without permission.",
+     "visual_guidance": "Diagram: private subnet's route table entry 0.0.0.0/0 -> nat-gateway-id, NAT gateway sitting inside the public subnet, arrow onward to the internet gateway, with a blocked (X) mark on any inbound arrow from the internet."
+    },
+    {
+     "number": 17,
+     "tr_title": "VPC Peering Private Links",
+     "heading": "VPC Peering",
+     "subheading": "Direct Network Link",
+     "content": [
+      {
+       "line": "Two VPCs that need to exchange data privately, without the traffic ever touching the public internet, connect through VPC peering, a one-to-one networking connection between two VPCs' private address spaces. Each side still adds its own route table entries pointing the peer's CIDR block at the peering connection."
+      },
+      {
+       "line": "Works between VPCs in the same account or across accounts, same region or across regions."
+      },
+      {
+       "line": "Non-transitive: a peering connection does not extend automatically to a third VPC."
+      },
+      {
+       "line": "Overlapping CIDR blocks between the two VPCs cannot be peered."
+      },
+      {
+       "line": "Costs only data-transfer charges, far cheaper than routing the same traffic through NAT and the internet."
+      },
+      {
+       "line": "A Site-to-Site VPN connects a VPC to an on-premises network instead of another VPC — encrypted over the public internet using IPsec, anchored by a virtual private gateway on the AWS side and a customer gateway on the on-premises side."
+      }
+     ],
+     "analogy": "VPC peering is like a private telephone line installed directly between two offices, bypassing the public telephone exchange entirely — just as peered traffic moves straight between the two VPCs without touching the public internet.",
+     "visual_guidance": "Two VPC boxes side by side joined by a dashed line labelled Peering Connection, with each VPC's route table showing an entry that points the other VPC's CIDR at the peering connection id."
+    },
+    {
+     "number": 18,
+     "tr_title": "Gateways And Peering Compared",
+     "heading": "Routing Options Compared",
+     "subheading": "Side By Side",
+     "content": [
+      {
+       "line": "Route tables decide where traffic goes, while each remaining piece answers the same question differently: reach the public internet, go out only, reach another VPC directly, or reach an on-premises network."
+      },
+      {
+       "table": {
+        "columns": [
+         "Component",
+         "Direction",
+         "Typical Cost Driver"
+        ],
+        "rows": [
+         [
+          "Internet Gateway",
+          "Two-way, public",
+          "No hourly charge, only data transfer"
+         ],
+         [
+          "NAT Gateway",
+          "Outbound only",
+          "Hourly charge plus data processed"
+         ],
+         [
+          "VPC Peering",
+          "Two-way, VPC-to-VPC",
+          "Data transfer only, no hourly charge"
+         ],
+         [
+          "VPN (Site-to-Site)",
+          "Two-way, to on-premises",
+          "Hourly charge per connection, plus standard data-transfer rates"
+         ]
+        ]
+       }
+      },
+      {
+       "line": "Together these pieces route traffic from a subnet to the internet or to another VPC; whether a packet is allowed to leave or enter at all is a separate decision, made by the network's security controls."
+      }
+     ],
+     "visual_guidance": "Simple three-row comparison table on screen; highlight the NAT Gateway cost cell to flag it as the most expensive routing option."
+    }
+   ]
+  },
+  {
+   "number": 5,
+   "title": "5. Network Security Controls: Security groups (stateful) vs network ACLs (stateless); least-privilege network design",
+   "slides": [
+    {
+     "number": 19,
+     "tr_title": "Network Security Layers in a VPC",
+     "heading": "Network Security Layers",
+     "subheading": "Two Control Types",
+     "content": [
+      {
+       "line": "Inside a VPC, the local route makes every resource reachable from every other, so filters must decide which traffic is allowed. Two controls do this at different points in the network"
+      },
+      {
+       "line": "Security groups filter traffic at the individual instance's network interface."
+      },
+      {
+       "line": "Network ACLs (Access Control Lists) filter traffic at the subnet boundary."
+      },
+      {
+       "line": "Least-privilege design combines both controls so only the traffic a workload truly needs is allowed."
+      }
+     ],
+     "analogy": "A security group is like a two-way door with an electronic access system: once an allowed connection is established, its response traffic can pass back automatically. A network ACL is like a security checkpoint at the entrance and exit of a campus, where each packet is checked against the rules independently.",
+     "visual_guidance": "Diagram of a VPC box with an inner instance (security group ring) inside a subnet (ACL boundary ring around it), two concentric layers."
+    },
+    {
+     "number": 20,
+     "tr_title": "Security Groups: The Stateful Filter",
+     "heading": "Security Groups Explained",
+     "subheading": "Stateful Instance Filter",
+     "content": [
+      {
+       "line": "A security group attaches to an instance's network interface and acts as a virtual firewall for that instance . Being stateful, it automatically permits the return traffic of a connection it already allowed, without needing a matching reverse rule."
+      },
+      {
+       "line": "Only allow rules exist; inbound traffic is blocked unless a rule permits it, while a new group allows all outbound traffic by default."
+      },
+      {
+       "line": "All rules in a group are evaluated together, not checked in a fixed order."
+      },
+      {
+       "line": "Reply traffic for an already-permitted request is tracked and let through automatically."
+      },
+      {
+       "line": "Managed on the EC2 Security Groups console page, attached per instance or interface."
+      },
+      {
+       "line": "Multiple security groups can attach to one instance, and their allowed rules combine."
+      },
+      {
+       "image": "tr_images/slide-20-1.png"
+      }
+     ],
+     "visual_guidance": "Instance box with an inbound rule table (port, source, allow) and an arrow showing the automatic return path."
+    },
+    {
+     "number": 21,
+     "tr_title": "Network ACLs: The Stateless Filter",
+     "heading": "Network ACLs Explained",
+     "subheading": "Stateless Subnet Filter",
+     "content": [
+      {
+       "line": "A network ACL sits at the subnet boundary and inspects every packet entering or leaving it, independent of any earlier traffic. Being stateless, it must explicitly allow both a request and its reply, since it keeps no memory of the connection."
+      },
+      {
+       "line": "Support both allow and deny rules, so specific traffic can be blocked outright."
+      },
+      {
+       "line": "Rules are numbered and checked in order; the first matching rule decides the outcome."
+      },
+      {
+       "line": "Outbound reply traffic needs its own separate rule because no connection state is kept."
+      },
+      {
+       "line": "Applied to an entire subnet, so every instance inside shares the same rule set."
+      },
+      {
+       "line": "Managed on the VPC console's Network ACLs page, separate from security groups."
+      },
+      {
+       "image": "tr_images/slide-21-1.png"
+      }
+     ],
+     "visual_guidance": "Subnet boundary box with a numbered rule list (rule number, allow/deny, port) and separate arrows for inbound and outbound packets."
+    },
+    {
+     "number": 22,
+     "tr_title": "Security Groups Versus Network ACLs",
+     "heading": "Groups Vs ACLs",
+     "subheading": "Side By Side",
+     "content": [
+      {
+       "line": "Security groups and network ACLs operate at different layers, so a workload normally passes through both as a two-tier filter rather than relying on just one."
+      },
+      {
+       "table": {
+        "columns": [
+         "Aspect",
+         "Security Group",
+         "Network ACL"
+        ],
+        "rows": [
+         [
+          "Scope",
+          "Instance / interface",
+          "Entire subnet"
+         ],
+         [
+          "State",
+          "Stateful, return traffic automatic",
+          "Stateless, needs rule each way"
+         ],
+         [
+          "Rule type",
+          "Allow only",
+          "Allow and deny"
+         ],
+         [
+          "Evaluation",
+          "All rules together",
+          "Numbered, first match wins"
+         ],
+         [
+          "Default",
+          "Inbound denied, all outbound allowed",
+          "Default ACL allows all; a new custom ACL denies all"
+         ]
+        ]
+       }
+      }
+     ],
+     "visual_guidance": "Two-column table rendered large; highlight the State and Rule type rows as the two biggest exam-tested differences."
+    },
+    {
+     "number": 23,
+     "tr_title": "Designing for Least Privilege",
+     "heading": "Least Privilege Design",
+     "subheading": "Combining Both Layers",
+     "content": [
+      {
+       "line": "Least-privilege design means granting a workload only the network access it genuinely needs, nothing wider. Security groups and network ACLs together implement this by narrowing both the instance-level and subnet-level entry points."
+      },
+      {
+       "line": "Open only the exact ports a workload needs, such as port 443 for a web tier."
+      },
+      {
+       "line": "Restrict allowed sources to specific IP ranges or security group IDs, not open to all."
+      },
+      {
+       "line": "Use a network ACL as a subnet-wide backstop to explicitly deny traffic a group might miss."
+      },
+      {
+       "line": "Review rules periodically, since an unused open port is a common cause of breaches."
+      },
+      {
+       "line": "--------------------------------------- PRACTICAL HANDS-ON: Building a Cloud Network with AWS VPC ---------------------------------------"
+      }
+     ],
+     "visual_guidance": "Funnel diagram narrowing from 'all traffic' through security group rules then ACL rules down to 'allowed traffic only'."
+    },
+    {
+     "number": 24,
+     "tr_title": "Lab Overview And Major Steps",
+     "heading": "Lab Overview",
+     "subheading": "What We Will Do",
+     "content": [
+      {
+       "line": "This practical builds a small custom network in the AWS VPC console and shows that a subnet is public because of its route table, not its name."
+      },
+      {
+       "line": "Create a VPC (10.0.0.0/16) in the Mumbai Region."
+      },
+      {
+       "line": "Create a public subnet (10.0.1.0/24) and a private subnet (10.0.2.0/24)."
+      },
+      {
+       "line": "Create an Internet Gateway and attach it to the VPC."
+      },
+      {
+       "line": "Create a public route table (default route to the Internet Gateway) and a private route table (local route only, no route to the internet), and associate each with its subnet."
+      },
+      {
+       "line": "Create a security group and inspect the network ACL."
+      },
+      {
+       "line": "Verify the VPC, subnets, Internet Gateway and route tables in the console."
+      },
+      {
+       "line": "Important Note: No EC2 instance, NAT Gateway or load balancer is launched, so only the network configuration is verified, not live connectivity. The resources created here should not be deleted, as they will be used in future sessions."
+      }
+     ]
+    },
+    {
+     "number": 25,
+     "tr_title": "Creating The VPC",
+     "heading": "VPC Created",
+     "subheading": "Address Range Confirmed",
+     "content": [
+      {
+       "line": "The VPC s5-cloud-network-vpc is created first, with CIDR 10.0.0.0/16. Every subnet, gateway and route table that follows must belong to it."
+      },
+      {
+       "image": "tr_images/slide-25-1.png"
+      },
+      {
+       "line": "s5-cloud-network-vpc: state Available, IPv4 CIDR 10.0.0.0/16"
+      }
+     ]
+    },
+    {
+     "number": 26,
+     "tr_title": "Creating The Subnets",
+     "heading": "Subnets Created",
+     "subheading": "Public And Private",
+     "content": [
+      {
+       "line": "Two non-overlapping subnets are created in ap-south-1a.Until a route to the Internet Gateway is added, both subnets are private, whatever their names say."
+      },
+      {
+       "image": "tr_images/slide-26-1.png"
+      },
+      {
+       "line": "s5-public-subnet (10.0.1.0/24) created and Available"
+      },
+      {
+       "image": "tr_images/slide-26-2.png"
+      },
+      {
+       "line": "s5-private-subnet (10.0.2.0/24) created and Available"
+      }
+     ]
+    },
+    {
+     "number": 27,
+     "tr_title": "Attaching The Internet Gateway",
+     "heading": "Internet Gateway",
+     "subheading": "Created And Attached",
+     "content": [
+      {
+       "line": "The Internet Gateway s5-igw is created and attached to the VPC. Attaching it does not make any subnet public; a route table must point to it."
+      },
+      {
+       "image": "tr_images/slide-27-1.png"
+      },
+      {
+       "line": "s5-igw in Attached state, linked to s5-cloud-network-vpc"
+      }
+     ]
+    },
+    {
+     "number": 28,
+     "tr_title": "Creating The Route Tables",
+     "heading": "Route Tables",
+     "subheading": "Public Versus Private",
+     "content": [
+      {
+       "line": "One route table is created for each subnet. The only difference is the default route to the Internet Gateway."
+      },
+      {
+       "table": {
+        "columns": [
+         "Route Table",
+         "Destination",
+         "Target",
+         "Associated Subnet"
+        ],
+        "rows": [
+         [
+          "s5-public-rt",
+          "10.0.0.0/16",
+          "local",
+          "s5-public-subnet"
+         ],
+         [
+          "s5-public-rt",
+          "0.0.0.0/0",
+          "s5-igw",
+          "s5-public-subnet"
+         ],
+         [
+          "s5-private-rt",
+          "10.0.0.0/16",
+          "local",
+          "s5-private-subnet"
+         ]
+        ]
+       }
+      },
+      {
+       "image": "tr_images/slide-28-1.png"
+      },
+      {
+       "line": "Creating s5-public-rt"
+      },
+      {
+       "image": "tr_images/slide-28-2.png"
+      },
+      {
+       "line": "Creating s5-private-rt"
+      },
+      {
+       "line": "Important Note: Select s5-cloud-network-vpc in the VPC drop-down, not the default VPC."
+      }
+     ]
+    },
+    {
+     "number": 29,
+     "tr_title": "Exploring Network Security",
+     "heading": "Network Security",
+     "subheading": "Security Group And Network ACL",
+     "content": [
+      {
+       "line": "The last part of the practical looks at the two filtering layers of the VPC, without launching any resource."
+      },
+      {
+       "line": "Security group: create s5-demo-sg in the VPC with no inbound rules, and inspect its rules. It is stateful and applies to resources."
+      },
+      {
+       "line": "Network ACL: inspect the inbound and outbound rules of the VPC's network ACL without changing them. It is stateless and applies to a whole subnet."
+      },
+      {
+       "line": "Important Note: In the VPC field, select s5-cloud-network-vpc. The default VPC is pre-selected."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "takeaways": {
+  "heading": "Key Takeaways",
+  "items": [
+   "1. Cloud Networking Overview: The network as the deployment boundary; core building blocks",
+   "2. Virtual Private Cloud (VPC): Logically isolated networks; VPC concepts across providers",
+   "3. Subnets & IP Addressing: CIDR notation & subnet sizing; public vs private subnets; availability-zone placement",
+   "4. Routing & Gateways: Route tables; internet gateway; NAT gateway; VPC peering & private connectivity",
+   "5. Network Security Controls: Security groups (stateful) vs network ACLs (stateless); least-privilege network design"
+  ]
+ },
+ "extras": [],
+ "next_session": "Load Balancing & CDN",
+ "closing": [
+  "Thank You | All the Best"
+ ],
+ "loose": [],
+ "dropped": {
+  "speaker_notes": 22
+ }
+}
