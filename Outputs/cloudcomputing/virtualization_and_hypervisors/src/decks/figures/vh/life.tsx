@@ -245,7 +245,14 @@ function AwsResIcon({ name, h }: { name: keyof typeof AWS_RES; h: number }) {
 function OnAws({ mark, children }: { mark: 'ec2' | 'ebsSnapshot' | 'ec2Ami'; children: string }) {
   return (
     <span className="inline-flex items-center gap-3">
-      {mark === 'ec2' ? <Logo name={mark} h={40} style={{ flexShrink: 0 }} /> : <AwsResIcon name={mark} h={40} />}
+      {mark === 'ec2' ? (
+        <Logo name={mark} h={40} style={{ flexShrink: 0 }} />
+      ) : mark === 'ebsSnapshot' ? (
+        /* the user's own EBS service icon (2026-10-30: "replace the icon of ebs slide 54 ... this is the only change"), `marks/ebs-service.png` */
+        <Logo name="ebsService" h={40} style={{ flexShrink: 0 }} />
+      ) : (
+        <AwsResIcon name={mark} h={40} />
+      )}
       <span>{children}</span>
     </span>
   )

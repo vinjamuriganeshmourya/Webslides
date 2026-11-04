@@ -9,7 +9,7 @@ import { ARJUN, TENANTS } from '../people'
 import { ClayBar, ClayMeter, ClayMonitor, ClayNo, ClayOsWindow, ElectricMeter, Icon3D, LAB } from '../d3/kit'
 import { lead, PointsFigure } from '../iso/frames'
 import { Logo, Marker, PA_H, PA_W, PairAnalogy } from './frames'
-import apartmentLeak from './img/apartment-utilities-leak.png'
+import apartmentCutaway from './img/apartment-isometric-cutaway.png'
 import { CpuChip } from './tech'
 
 /**
@@ -598,13 +598,14 @@ function HypervisorScene({ lit }: { lit: number }) {
 /* ================================================================== 21 · the everyday card: the supplied picture */
 
 /**
- * The user's own picture for slide 21's EVERYDAY card (2026-10-29): `Apartment Utilities with Isolated Leak.png`,
- * its white margin trimmed (`img/apartment-utilities-leak.png`), fitted to the card box at its own shape (contained,
- * never stretched; its white ground multiplied into the plate), imported so the single file inlines it. The three
- * markers sit on the picture where the pairs point: 1 the management office, 2 the meters on the wall of every
- * flat, 3 the leak held inside one flat.
+ * The user's own picture for slide 21's EVERYDAY card (2026-10-30, replacing the 2026-10-29 leak picture on the
+ * user's word: "replace the left side image ... don't add anything else"): `Isometric Smart Apartment Utilities
+ * Cutaway.png`, its white margin trimmed (`img/apartment-isometric-cutaway.png`, 1513 x 1001), fitted to the card box
+ * at its own shape (contained, never stretched; its white ground multiplied into the plate), imported so the single
+ * file inlines it. The three markers sit on the picture where the pairs point: 1 the management office, 2 the meters
+ * on the wall of every flat, 3 one flat (this picture draws no leak, so the marker sits inside one flat).
  */
-const AL_RATIO = 1467 / 913
+const AL_RATIO = 1513 / 1001
 const AL_W = Math.min(PA_W, PA_H * AL_RATIO)
 const AL_H = AL_W / AL_RATIO
 
@@ -613,10 +614,10 @@ function ApartmentPictureScene({ lit }: { lit: number }) {
   const at = (fx: number, fy: number) => ({ left: Math.round((PA_W - AL_W) / 2 + fx * AL_W - 15), top: Math.round((PA_H - AL_H) / 2 + fy * AL_H - 15) })
   return (
     <>
-      <img src={apartmentLeak} alt="An apartment building with its management office, an electricity meter and a water meter for each flat, and a leak kept inside one flat" draggable={false} className="absolute inset-0 block h-full w-full select-none" style={{ objectFit: 'contain', mixBlendMode: 'multiply' }} />
-      <div className="absolute" style={at(0.06, 0.4)}><Marker n={1} on={lit === 0} /></div>
-      <div className="absolute" style={at(0.66, 0.1)}><Marker n={2} on={lit === 1} /></div>
-      <div className="absolute" style={at(0.47, 0.31)}><Marker n={3} on={lit === 2} /></div>
+      <img src={apartmentCutaway} alt="An apartment building cutaway with its management office, an electricity meter and a water meter for each flat, and the mains outside" draggable={false} className="absolute inset-0 block h-full w-full select-none" style={{ objectFit: 'contain', mixBlendMode: 'multiply' }} />
+      <div className="absolute" style={at(0.05, 0.38)}><Marker n={1} on={lit === 0} /></div>
+      <div className="absolute" style={at(0.64, 0.12)}><Marker n={2} on={lit === 1} /></div>
+      <div className="absolute" style={at(0.5, 0.4)}><Marker n={3} on={lit === 2} /></div>
     </>
   )
 }

@@ -1,11 +1,13 @@
 import type { CSSProperties, ReactNode } from 'react'
-import { Tag } from 'lucide-react'
+import { Briefcase, Cog, Layers, ListChecks, Monitor, SquareTerminal, Tag, Target, UserCheck, Wrench } from 'lucide-react'
 import { colors } from '@/design/tokens'
-import { DataTable, type TableColumn } from '@/ui'
-import { Arrow, At, BOX_W, Card, Label, STILL, useCycle, useLoop } from '../scene'
+import { Arrow, At, BOX_W, Card, Label, Stage, STILL, useCycle, useLoop } from '../scene'
 import { ClayPadlock, ClayTerminal, Icon3D, LAB } from '../d3/kit'
 import { IsoAnalogy, PointsFigure, lead } from '../iso/frames'
 import { Logo, Mono, Tile, type MarkName } from './frames'
+import { AwsMark, Badge, CvIcon, fx } from './fx'
+import { VisualTable, type VCol } from './vtable'
+import { Posed, RAHUL, type Crop as CastCrop } from '../Cast'
 
 /**
  * SECTION 6 · TOOLING (TR slides 21 to 26, and the heads-up block): the tool
@@ -161,12 +163,6 @@ export function ToolingMap({ lesson }: { lesson: string }) {
 
 /* ------------------------------------------------------------------ T22-1 · slide 56 */
 
-/**
- * The kit table sets its header in capitals by CSS; the spec's column heads are
- * mixed case (`Typical Use`, `containerd`) and every string stays the spec's, so
- * these two tables keep the heads as written.
- */
-const HEAD_CASE_CSS = `.cv-tbl > div:first-child > div { text-transform: none; letter-spacing: 0.01em; }`
 
 /** A tool's name with its vendor logo beside it. */
 function ToolName({ mark, name }: { mark: MarkName; name: string }) {
@@ -182,32 +178,33 @@ function ToolName({ mark, name }: { mark: MarkName; name: string }) {
 }
 
 export function Hypervisors({ lesson }: { lesson: string }) {
-  const columns: TableColumn[] = [
-    { label: 'Tool', weight: 1.15 },
-    { label: 'Type', weight: 1.2 },
-    { label: 'Platform', weight: 1.6 },
-    { label: 'Typical Use', weight: 1.25 },
+  /* a visual build (user, 2026-11-03): one product per row with its vendor mark, the heads with their icons */
+  const columns: VCol[] = [
+    { label: 'Tool', icon: <Wrench size={16} />, weight: 1.15 },
+    { label: 'Type', icon: <Layers size={16} />, weight: 1.2 },
+    { label: 'Platform', icon: <Monitor size={16} />, weight: 1.6 },
+    { label: 'Typical Use', icon: <Briefcase size={16} />, weight: 1.25 },
   ]
   return (
     <Card id="T22-1" kicker="VM Tooling Compared" title="Four Hypervisor Products" lead={lead('Each virtualization product fits a different deployment, from a laptop test lab to a production data centre')} lesson={lesson}>
       <div style={{ width: BOX_W }}>
-        <style>{HEAD_CASE_CSS}</style>
-        <DataTable
-          className="cv-tbl"
+        <VisualTable
           columns={columns}
           rows={[
-        [<ToolName mark="virtualbox" name="VirtualBox" />, 'Type 2 hosted', 'Windows macOS Linux', 'Desktop testing, dev labs'],
-        [
-          <ToolName mark="kvm" name="KVM" />,
-          'Type 1, kernel module',
-          'Linux hosts',
-          <>
-            <span className="block">AWS Nitro, Google Cloud,</span>
-            <span className="block">OpenStack clouds</span>
-          </>,
-        ],
-        [<ToolName mark="hyperv" name="Hyper-V" />, 'Type 1 bare-metal', 'Windows Server, 10/11 Pro', 'Microsoft Azure, enterprise'],
-        [<ToolName mark="vmware" name="VMware" />, 'Type 1 (ESXi) / Type 2 (Workstation)', 'Bare-metal (ESXi); Windows, Linux, macOS (Workstation/Fusion)', 'Enterprise data centres'],
+            { cells: [<ToolName mark="virtualbox" name="VirtualBox" />, 'Type 2 hosted', 'Windows macOS Linux', 'Desktop testing, dev labs'] },
+            {
+              cells: [
+                <ToolName mark="kvm" name="KVM" />,
+                'Type 1, kernel module',
+                'Linux hosts',
+                <>
+                  <span className="block">AWS Nitro, Google Cloud,</span>
+                  <span className="block">OpenStack clouds</span>
+                </>,
+              ],
+            },
+            { cells: [<ToolName mark="hyperv" name="Hyper-V" />, 'Type 1 bare-metal', 'Windows Server, 10/11 Pro', 'Microsoft Azure, enterprise'] },
+            { cells: [<ToolName mark="vmware" name="VMware" />, 'Type 1 (ESXi) / Type 2 (Workstation)', 'Bare-metal (ESXi); Windows, Linux, macOS (Workstation/Fusion)', 'Enterprise data centres'] },
           ]}
         />
       </div>
@@ -322,57 +319,141 @@ export function Podman({ lesson }: { lesson: string }) {
 
 /* ------------------------------------------------------------------ drawn objects for the two analogies */
 
-/** A bus depot: a shed with a wide open bay. */
-function Depot({ w = 120 }: { w?: number }) {
+/** A wheel that turns while its vehicle moves: tyre, rim and five spokes. */
+function Wheel({ cx, cy, r, turning }: { cx: number; cy: number; r: number; turning: boolean }) {
+  return (
+    <g>
+      <circle cx={cx} cy={cy} r={r} fill="#25252B" />
+      <circle cx={cx} cy={cy} r={r * 0.58} fill="#C8D2E6" />
+      <g className={turning ? fx('spin-fast', 0, 0.55).className : ''} style={{ ...(turning ? fx('spin-fast', 0, 0.55).style : {}), transformBox: 'fill-box', transformOrigin: 'center' }}>
+        <circle cx={cx} cy={cy} r={r * 0.58} fill="none" />
+        {[0, 72, 144, 216, 288].map((a) => (
+          <line key={a} x1={cx} y1={cy} x2={cx + Math.cos((a * Math.PI) / 180) * r * 0.55} y2={cy + Math.sin((a * Math.PI) / 180) * r * 0.55} stroke="#7A879E" strokeWidth={1.6} strokeLinecap="round" />
+        ))}
+      </g>
+      <circle cx={cx} cy={cy} r={r * 0.16} fill="#5B6478" />
+    </g>
+  )
+}
+
+/**
+ * A BUS DEPOT (slide 64, user 2026-11-03: "more real-life detail, not abstract"): an
+ * arched shed on its forecourt, a bay whose roller shutter lifts when a trip is
+ * dispatched, the dispatcher in the booth window, a bus sign over the bay and a
+ * signal post that turns from red to green to send the bus out.
+ */
+function Depot({ w = 160, shutter = 0, go = false }: { w?: number; shutter?: number; go?: boolean }) {
+  return (
+    <svg width={w} height={w * 0.75} viewBox="0 0 160 120" aria-hidden>
+      <defs>
+        <clipPath id="cv-depot-bay"><rect x="34" y="58" width="92" height="56" /></clipPath>
+      </defs>
+      <ellipse cx="80" cy="116" rx="76" ry="4" fill="#1F408C" opacity="0.18" />
+      <rect x="2" y="108" width="156" height="8" rx="2" fill="#C9D3E3" />
+      <rect x="8" y="36" width="140" height="74" rx="3" fill={LAB.lavender} />
+      <path d="M2 42 Q80 -2 154 42 L154 46 Q80 6 2 46 Z" fill={LAB.navy} />
+      <path d="M8 40 Q80 4 148 40 L148 44 Q80 10 8 44 Z" fill="#FFFFFF" opacity="0.15" />
+      {/* the bay, the dark inside, the shutter rolling up */}
+      <rect x="34" y="58" width="92" height="52" fill="#2A2D38" />
+      <g clipPath="url(#cv-depot-bay)">
+        <g style={{ transform: `translateY(${-shutter * 50}px)`, transition: 'transform 500ms cubic-bezier(0.65,0,0.35,1)' }}>
+          <rect x="34" y="58" width="92" height="52" fill="#B7C3D8" />
+          {Array.from({ length: 9 }, (_, i) => (
+            <rect key={i} x="34" y={61 + i * 5.6} width="92" height="1.4" fill="#8E9BB5" />
+          ))}
+        </g>
+      </g>
+      <rect x="32" y="56" width="96" height="3" fill={LAB.navy} />
+      {/* the sign over the bay: a bus pictogram */}
+      <rect x="62" y="44" width="36" height="9" rx="2" fill={colors.white} stroke={LAB.lavDeep} />
+      <rect x="69" y="46" width="22" height="5" rx="1.5" fill={colors.brand} />
+      {/* the dispatcher's booth */}
+      <rect x="12" y="64" width="16" height="20" rx="2" fill="#DCE8FF" stroke={LAB.lavDeep} />
+      <circle cx="20" cy="73" r="3.2" fill="#C98A55" />
+      <path d="M15 84 Q20 76 25 84 Z" fill={colors.brand} />
+      {/* the signal post */}
+      <rect x="140" y="58" width="3" height="50" fill="#5B6478" />
+      <rect x="135" y="44" width="13" height="24" rx="3" fill="#25252B" />
+      <circle cx="141.5" cy="50.5" r="3.6" fill={LAB.red} opacity={go ? 0.25 : 1} style={{ transition: 'opacity 300ms' }} />
+      <circle cx="141.5" cy="61" r="3.6" fill={LAB.green} opacity={go ? 1 : 0.25} style={{ transition: 'opacity 300ms' }} />
+    </svg>
+  )
+}
+
+/** A city bus, side on, facing right: route board, passengers at the windows, the door, a headlight, wheels that turn while it drives. */
+function Bus({ w = 150, moving = false }: { w?: number; moving?: boolean }) {
+  return (
+    <svg width={w} height={w * 0.5} viewBox="0 0 160 80" aria-hidden>
+      <ellipse cx="80" cy="77" rx="72" ry="3" fill="#1F408C" opacity="0.18" />
+      <g className={moving ? fx('bob', 0, 0.38).className : ''} style={moving ? fx('bob', 0, 0.38).style : undefined}>
+        <rect x="4" y="8" width="150" height="56" rx="10" fill={colors.brand} />
+        <rect x="4" y="8" width="150" height="10" rx="8" fill="#FFFFFF" opacity="0.16" />
+        <rect x="4" y="46" width="150" height="4" fill={LAB.yellow} />
+        <rect x="4" y="50" width="150" height="14" rx="6" fill="#1D4FD8" />
+        {/* the route board: a lit LED strip */}
+        <rect x="40" y="11" width="62" height="5" rx="1.5" fill="#1B2433" />
+        {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+          <rect key={i} x={43 + i * 7.3} y="12.5" width="4" height="2" rx="1" fill="#FFB547" opacity="0.9" />
+        ))}
+        {/* the windows, a passenger in three */}
+        {[10, 32, 54, 76, 98].map((x, i) => (
+          <g key={x}>
+            <rect x={x} y="20" width="19" height="20" rx="3" fill="#DCE8FF" />
+            {i % 2 === 0 && (
+              <>
+                <circle cx={x + 9.5} cy="30" r="3.4" fill="#4A5B74" />
+                <path d={`M${x + 4} 40 Q${x + 9.5} 32 ${x + 15} 40 Z`} fill="#4A5B74" />
+              </>
+            )}
+            <path d={`M${x + 1} ${21} L${x + 8} 21 L${x + 1} 30 Z`} fill="#FFFFFF" opacity="0.5" />
+          </g>
+        ))}
+        {/* the door */}
+        <rect x="121" y="20" width="16" height="30" rx="2" fill="#B9CCF2" />
+        <line x1="129" y1="20" x2="129" y2="50" stroke="#7E95C4" strokeWidth="1" />
+        {/* the windscreen and the headlight */}
+        <path d="M140 18 L150 18 Q154 18 154 24 L154 42 L140 42 Z" fill="#DCE8FF" />
+        <circle cx="151" cy="55" r="3" fill={LAB.yellow} className={fx('glow', 0, 1.4).className} style={fx('glow', 0, 1.4).style} />
+        <rect x="155" y="22" width="3" height="9" rx="1.5" fill="#25252B" />
+      </g>
+      <Wheel cx={34} cy={64} r={10} turning={moving} />
+      <Wheel cx={124} cy={64} r={10} turning={moving} />
+    </svg>
+  )
+}
+
+/**
+ * An Indian auto-rickshaw, side on, facing right: the black canvas hood, the yellow
+ * cab with its open side, the green nose with the headlamp, the driver at the
+ * handlebar, one front wheel and the rear wheels, turning while it drives.
+ */
+function Rickshaw({ w = 120, moving = false }: { w?: number; moving?: boolean }) {
   return (
     <svg width={w} height={w * 0.72} viewBox="0 0 120 86" aria-hidden>
-      <ellipse cx="60" cy="83" rx="56" ry="3.5" fill="#1F408C" opacity="0.18" />
-      <path d="M6 32 L60 6 L114 32 Z" fill={LAB.navy} />
-      <path d="M6 32 L60 6 L60 14 L14 34 Z" fill="#FFFFFF" opacity="0.18" />
-      <rect x="12" y="30" width="96" height="52" rx="4" fill={LAB.lavender} />
-      <rect x="12" y="30" width="96" height="8" fill={LAB.lavDeep} opacity="0.6" />
-      <rect x="26" y="44" width="68" height="38" rx="3" fill={LAB.charcoal} />
-      {[50, 58, 66].map((y) => (
-        <rect key={y} x="26" y={y} width="68" height="1.6" fill="#FFFFFF" opacity="0.12" />
-      ))}
-    </svg>
-  )
-}
-
-/** A city bus, side on. */
-function Bus({ w = 132 }: { w?: number }) {
-  return (
-    <svg width={w} height={w * 0.5} viewBox="0 0 132 66" aria-hidden>
-      <ellipse cx="66" cy="63" rx="60" ry="3" fill="#1F408C" opacity="0.18" />
-      <rect x="4" y="6" width="124" height="46" rx="10" fill={colors.brand} />
-      <rect x="4" y="6" width="124" height="14" rx="10" fill="#FFFFFF" opacity="0.14" />
-      {[12, 34, 56, 78, 100].map((x) => (
-        <rect key={x} x={x} y="14" width="18" height="14" rx="3" fill="#DCE8FF" />
-      ))}
-      <rect x="114" y="14" width="10" height="26" rx="3" fill="#DCE8FF" />
-      <rect x="4" y="38" width="124" height="4" fill={LAB.yellow} />
-      <circle cx="30" cy="52" r="9" fill={LAB.charcoal} />
-      <circle cx="30" cy="52" r="3.5" fill="#C8D2E6" />
-      <circle cx="104" cy="52" r="9" fill={LAB.charcoal} />
-      <circle cx="104" cy="52" r="3.5" fill="#C8D2E6" />
-    </svg>
-  )
-}
-
-/** An auto-rickshaw, side on: a yellow cab under a dark canopy, three wheels. */
-function Rickshaw({ w = 96 }: { w?: number }) {
-  return (
-    <svg width={w} height={w * 0.72} viewBox="0 0 96 69" aria-hidden>
-      <ellipse cx="48" cy="66" rx="42" ry="3" fill="#1F408C" opacity="0.18" />
-      <path d="M14 10 Q14 4 22 4 L70 4 Q80 4 84 14 L88 30 L14 30 Z" fill={LAB.charcoal} />
-      <path d="M10 30 L90 30 Q92 30 92 34 L92 52 L8 52 L8 34 Q8 30 10 30 Z" fill={LAB.yellow} />
-      <path d="M8 44 L92 44 L92 52 L8 52 Z" fill={LAB.sage} />
-      <rect x="22" y="12" width="26" height="18" rx="3" fill="#DCE8FF" opacity="0.85" />
-      <path d="M58 12 L74 12 L82 30 L58 30 Z" fill="#DCE8FF" opacity="0.85" />
-      <circle cx="24" cy="56" r="8" fill={LAB.charcoal} />
-      <circle cx="24" cy="56" r="3" fill="#C8D2E6" />
-      <circle cx="78" cy="56" r="8" fill={LAB.charcoal} />
-      <circle cx="78" cy="56" r="3" fill="#C8D2E6" />
+      <ellipse cx="62" cy="83" rx="54" ry="3" fill="#1F408C" opacity="0.18" />
+      <g className={moving ? fx('bob', 0.1, 0.3).className : ''} style={moving ? fx('bob', 0.1, 0.3).style : undefined}>
+        {/* the hood */}
+        <path d="M14 42 L16 16 Q18 4 34 4 L86 4 Q100 4 104 16 L108 42 Z" fill="#2B2B30" />
+        <path d="M18 14 Q20 7 34 7 L86 7 Q96 7 100 14 Z" fill="#FFFFFF" opacity="0.12" />
+        {/* the open side: the bench seat inside */}
+        <path d="M22 18 L62 18 L62 42 L20 42 Z" fill="#F4F0E6" opacity="0.85" />
+        <rect x="24" y="32" width="30" height="8" rx="3" fill="#8A3B2E" />
+        <rect x="22" y="18" width="2.5" height="24" fill="#2B2B30" />
+        {/* the driver at the handlebar */}
+        <circle cx="80" cy="22" r="5.2" fill="#C98A55" />
+        <path d="M74 20 Q80 13 86 20 Z" fill="#2B2B30" />
+        <path d="M72 42 Q72 29 80 29 Q88 29 88 42 Z" fill={LAB.sky} />
+        <line x1="86" y1="34" x2="98" y2="30" stroke="#25252B" strokeWidth="2.2" strokeLinecap="round" />
+        {/* the windscreen */}
+        <path d="M92 10 L100 10 Q104 18 104 30 L94 30 Z" fill="#DCE8FF" opacity="0.9" />
+        {/* the yellow cab and the green nose */}
+        <path d="M10 42 L92 42 L92 66 L14 66 Q8 66 8 58 L8 46 Q8 42 10 42 Z" fill={LAB.yellow} />
+        <path d="M92 42 L106 42 Q116 46 114 64 L92 66 Z" fill="#2E9D5B" />
+        <rect x="8" y="54" width="84" height="3" fill="#2B2B30" opacity="0.7" />
+        <circle cx="111" cy="50" r="3" fill="#FFF3B0" className={fx('glow', 0.3, 1.4).className} style={fx('glow', 0.3, 1.4).style} />
+      </g>
+      <Wheel cx={28} cy={70} r={10} turning={moving} />
+      <Wheel cx={102} cy={72} r={8.5} turning={moving} />
     </svg>
   )
 }
@@ -453,36 +534,50 @@ function ImageChip() {
 const COL = { l: 84, m: 234, r: 384 } as const
 /** The analogy stages' height (user, 2026-10-28: analogies carry no lead, no captions, so the pictures take the space). */
 const AN_STAGE_H = 392
+/** The passenger, whole: head to feet on the lab's 400 x 600 canvas (ground y 580). */
+const PASSENGER: CastCrop = { x0: 0, y0: 20, x1: 330, y1: 590 }
 const ROW = { top: 22, bot: 214 } as const
 
+/**
+ * THE FAMILIAR SIDE, IN TWO PRESSES (slide 64): 1 the depot dispatches: the signal turns
+ * green, the bay's shutter rolls up and the bus drives out of the depot, wheels turning;
+ * 2 the auto-rickshaw drives straight to the passenger, who is hailing it, with no depot
+ * in between.
+ */
 function BusScene() {
-  const t = useLoop(6000, { mode: 'sawtooth', still: 0.98 })
-  const bus = within(t, 0.08, 0.42)
+  const t = useLoop(6000, { mode: 'sawtooth', still: 0.98, beats: [0.45, 0.92] })
+  const go = STILL || t > 0.06
+  const shutter = STILL ? 1 : within(t, 0.06, 0.16)
+  const bus = within(t, 0.16, 0.45)
   const ride = within(t, 0.55, 0.9)
+  const busMoving = !STILL && bus > 0.01 && bus < 0.99
+  const rideMoving = !STILL && ride > 0.01 && ride < 0.99
   return (
     <>
-      <At x={COL.m} y={ROW.top + 4} cx>
-        <Depot w={146} />
+      {/* the bus first, so it drives OUT from behind the depot's front */}
+      <At x={COL.r + 6} y={ROW.top + 46} cx style={{ transform: `translateX(calc(-50% - ${(1 - bus) * 190}px))` }}>
+        <Bus w={150} moving={busMoving} />
       </At>
-      <At x={COL.r} y={ROW.top + 38} cx style={{ transform: `translateX(calc(-50% - ${(1 - bus) * 130}px))`, opacity: STILL ? 1 : 0.25 + bus * 0.75 }}>
-        <Bus w={150} />
+      <At x={COL.m - 34} y={ROW.top} cx>
+        <Depot w={164} shutter={shutter} go={go} />
       </At>
-      <At x={COL.m} y={ROW.top + 120} cx>
+      <At x={COL.m - 34} y={ROW.top + 130} cx>
         <Label tone="muted" size={15}>Depot</Label>
       </At>
-      <At x={COL.r} y={ROW.top + 120} cx>
+      <At x={COL.r + 6} y={ROW.top + 130} cx>
         <Label tone="muted" size={15}>City bus</Label>
       </At>
 
-      <At x={COL.l + ride * 136} y={ROW.bot + 40} cx>
-        <div className="flex flex-col items-center gap-[12px]">
-          <Rickshaw w={114} />
+      <At x={COL.l + ride * 132} y={ROW.bot + 34} cx>
+        <div className="flex flex-col items-center gap-[10px]">
+          <Rickshaw w={124} moving={rideMoving} />
           <Label tone="muted" size={15}>Auto-rickshaw</Label>
         </div>
       </At>
-      <At x={COL.r} y={ROW.bot} cx>
+      <At x={COL.r + 10} y={ROW.bot - 8} cx>
         <div className="flex flex-col items-center gap-[6px]">
-          <Icon3D name="man-pro" w={74} shadow={false} />
+          {/* the passenger is a Character Lab figure (user, 2026-10-30), hailing the rickshaw with one held arm */}
+          <Posed cfg={RAHUL} scale={0.2} crop={PASSENGER} expression="happy" gesture="presentLeft" amplitude={0.8} at={1.2} alive />
           <Label tone="muted" size={15}>Passenger</Label>
         </div>
       </At>
@@ -491,7 +586,8 @@ function BusScene() {
 }
 
 function DaemonScene() {
-  const t = useLoop(6000, { mode: 'sawtooth', still: 0.98 })
+  /* the concept side's two presses come after the familiar side's (spec: never the concept first) */
+  const t = useLoop(6000, { mode: 'sawtooth', still: 0.98, beats: [0.45, 0.92] })
   const a = within(t, 0.08, 0.42)
   const b = within(t, 0.55, 0.9)
   const yT = ROW.top + 62
@@ -566,18 +662,11 @@ function Head({ mark, name }: { mark: MarkName; name: string }) {
   )
 }
 
-/** The Primary role row lit in the template's orange (the card: "a contrasting colour"). */
-const ENGINE_CSS = `
-.cv-engines > div:nth-child(2) > div:nth-child(4) {
-  background: linear-gradient(135deg, #FFF4E6 0%, #FFE6CC 100%) !important;
-  box-shadow: inset 4px 0 0 0 ${colors.accent}, inset 0 1px 0 0 #FFFFFF !important;
-}
-.cv-engines > div:nth-child(2) > div:nth-child(4) > div { color: ${colors.ink}; font-weight: 600; }
-`
 
 export function Engines({ lesson }: { lesson: string }) {
-  const columns: TableColumn[] = [
-    { label: 'Aspect', weight: 1 },
+  /* a visual build (user, 2026-11-03): the three engines' marks on the heads, an icon per aspect moving the way it works, the Primary role row still in the template's orange */
+  const columns: VCol[] = [
+    { label: 'Aspect', icon: <ListChecks size={16} />, weight: 1 },
     { label: <Head mark="docker" name="Docker" />, weight: 1.05 },
     { label: <Head mark="podman" name="Podman" />, weight: 1.2 },
     { label: <Head mark="containerd" name="containerd" />, weight: 1.55 },
@@ -585,16 +674,14 @@ export function Engines({ lesson }: { lesson: string }) {
   return (
     <Card id="T24-1" kicker="Engines Compared" title="Architecture And Role" lead={lead('The three tools sit at different layers of one stack, and that layering decides which one fits a given deployment')} lesson={lesson}>
       <div style={{ width: BOX_W }}>
-        <style>{HEAD_CASE_CSS + ENGINE_CSS}</style>
-        <DataTable
-          className="cv-tbl cv-engines"
+        <VisualTable
           columns={columns}
-          highlight={[4]}
+          highlight={[3]}
           rows={[
-            ['Daemon required', 'Yes, dockerd', 'No', 'Yes, lower-level service'],
-            ['Rootless by default', 'No', 'Yes, when run as a normal user', 'No, root-level service'],
-            ['Native CLI', 'Yes, full-featured', 'Yes, Docker-compatible', 'Minimal (ctr, for debugging); nerdctl for Docker-like use'],
-            ['Primary role', 'Dev workstation, CI', 'Secure, rootless hosts', 'Kubernetes CRI runtime (EKS, GKE)'],
+            { icon: <span className={fx('spin', 0, 5).className} style={{ ...fx('spin', 0, 5).style, display: 'grid' }}><Cog size={18} /></span>, cells: ['Daemon required', 'Yes, dockerd', 'No', 'Yes, lower-level service'] },
+            { icon: <UserCheck size={18} />, cells: ['Rootless by default', 'No', 'Yes, when run as a normal user', 'No, root-level service'] },
+            { icon: <span className={fx('blink', 0, 1).className} style={{ ...fx('blink', 0, 1).style, display: 'grid' }}><SquareTerminal size={18} /></span>, cells: ['Native CLI', 'Yes, full-featured', 'Yes, Docker-compatible', 'Minimal (ctr, for debugging); nerdctl for Docker-like use'] },
+            { icon: <Target size={18} />, cells: ['Primary role', 'Dev workstation, CI', 'Secure, rootless hosts', 'Kubernetes CRI runtime (EKS, GKE)'] },
           ]}
         />
       </div>
@@ -928,16 +1015,102 @@ export function Tagging({ lesson }: { lesson: string }) {
    empty string would leave a divider struck through the title: pass no kicker at all. */
 const NO_KICKER = undefined as unknown as string
 
+/**
+ * SLIDE 68, RE-LAID (user, 2026-11-03: "the layout looks empty; use a different layout that
+ * fills the space with visuals, without adding content"). The TR's one note, word for word,
+ * in a tall card on the left under the AWS mark; on the right its sentence drawn as a path,
+ * no words added: the account set up on a laptop, AWS on its screen (setup is required);
+ * the hourglass turning beside a clock (verification may take a day or more); the shield
+ * with its check (the account verified); the student at work (Practicals). One stop per
+ * press, the path drawing itself between them.
+ */
+const HU_STOPS: { icon: ReactNode; x: number; y: number }[] = [
+  { icon: null, x: 162, y: 112 },
+  { icon: null, x: 472, y: 112 },
+  { icon: null, x: 472, y: 300 },
+  { icon: null, x: 162, y: 300 },
+]
+
+function HeadsUpPath({ k }: { k: number }) {
+  const R = 64
+  const stop = (i: number, child: ReactNode) => {
+    const on = k > i
+    const now = !STILL && k === i + 1
+    return (
+      <At key={i} x={HU_STOPS[i].x} y={HU_STOPS[i].y} cx cy>
+        <div
+          className="grid place-items-center rounded-full"
+          style={{
+            width: R * 2,
+            height: R * 2,
+            background: 'linear-gradient(180deg, #FFFFFF 0%, #EAF1FF 100%)',
+            boxShadow: `inset 0 0 0 ${now ? 3 : 1.5}px ${now ? colors.accent : on ? colors.brand : '#CFDCF5'}, 0 18px 30px -20px rgba(16,32,58,0.55)`,
+            opacity: on ? 1 : 0.28,
+            transform: on ? 'scale(1)' : 'scale(0.86)',
+            transition: `all 520ms cubic-bezier(0.34,1.4,0.64,1)`,
+          }}
+        >
+          {child}
+        </div>
+      </At>
+    )
+  }
+  const seg = (i: number, x1: number, y1: number, x2: number, y2: number) => <Arrow key={`a${i}`} x1={x1} y1={y1} x2={x2} y2={y2} on={k > i + 1} />
+  return (
+    <>
+      {seg(0, 162 + R + 8, 112, 472 - R - 8, 112)}
+      {seg(1, 472, 112 + R + 8, 472, 300 - R - 8)}
+      {seg(2, 472 - R - 8, 300, 162 + R + 8, 300)}
+      {stop(
+        0,
+        <span className="relative block" style={{ width: 96, height: 68 }}>
+          <CvIcon name="laptop-front" w={96} />
+          <span className="absolute" style={{ left: 30, top: 15 }}>
+            <AwsMark w={36} />
+          </span>
+        </span>,
+      )}
+      {stop(
+        1,
+        <span className="flex items-center gap-1.5">
+          <span className={k >= 2 && k < 4 ? fx('flip', 0, 2.4).className : ''} style={{ ...(k >= 2 && k < 4 ? fx('flip', 0, 2.4).style : {}), display: 'block' }}>
+            <CvIcon name="hourglass" w={34} />
+          </span>
+          <CvIcon name="clock" w={50} />
+        </span>,
+      )}
+      {stop(
+        2,
+        <span className="relative block">
+          <CvIcon name="shield-closed" w={70} />
+          <span className="absolute -bottom-1 -right-2">
+            <Badge on={k >= 3} size={28} ring={colors.success}>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7.5l2.5 2.5L11 4.5" stroke={colors.success} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </Badge>
+          </span>
+        </span>,
+      )}
+      {stop(3, <CvIcon name="coder" w={104} />)}
+    </>
+  )
+}
+
 export function HeadsUp({ lesson }: { lesson: string }) {
+  const k = useCycle(6, 1300, 4, 4)
   return (
     <Card id="X1" kicker={NO_KICKER} title="Heads-Up: Start Your AWS Account Setup Now" lesson={lesson}>
-      <div className="flex items-center gap-6 rounded-[22px] px-8 py-7" style={{ width: BOX_W, background: 'linear-gradient(135deg, #FFF7EC 0%, #FFEBD4 100%)', boxShadow: `inset 6px 0 0 0 ${colors.accent}, inset 0 0 0 1px #F8D9B4, 0 16px 32px -22px rgba(229,115,42,0.55)` }}>
-        <span className="grid h-[84px] w-[84px] shrink-0 place-items-center rounded-[20px]" style={{ background: colors.white, boxShadow: 'inset 0 0 0 1px #F8D9B4, 0 8px 18px -12px rgba(16,32,58,0.4)' }}>
-          <Logo name="aws" h={56} />
-        </span>
-        <p className="m-0 text-[22px] leading-relaxed" style={{ color: colors.ink }}>
-          Why now: AWS account setup is required before Practicals. Account verification may take a day or more. A free-tier account is sufficient
-        </p>
+      <div className="flex items-stretch" style={{ width: BOX_W, gap: 24 }}>
+        <div className="flex flex-col justify-center gap-6 rounded-[22px] px-8 py-8" style={{ width: 452, background: 'linear-gradient(160deg, #FFF7EC 0%, #FFEBD4 100%)', boxShadow: `inset 6px 0 0 0 ${colors.accent}, inset 0 0 0 1px #F8D9B4, 0 16px 32px -22px rgba(229,115,42,0.55)` }}>
+          <span className="grid h-[96px] w-[96px] shrink-0 place-items-center rounded-[22px]" style={{ background: colors.white, boxShadow: 'inset 0 0 0 1px #F8D9B4, 0 8px 18px -12px rgba(16,32,58,0.4)' }}>
+            <AwsMark w={66} />
+          </span>
+          <p className="m-0 text-[22px] leading-relaxed" style={{ color: colors.ink }}>
+            Why now: AWS account setup is required before Practicals. Account verification may take a day or more. A free-tier account is sufficient
+          </p>
+        </div>
+        <Stage w={BOX_W - 452 - 24} h={420} active={false}>
+          <HeadsUpPath k={k} />
+        </Stage>
       </div>
     </Card>
   )

@@ -27,6 +27,8 @@ interface Handlers {
   openPicker: () => void
   /** Replay the current slide's entrance and build from the top. */
   replay: () => void
+  /** Auto animation on / off (`autoAnim.ts`), the `P` key. */
+  toggleAuto?: () => void
   /** The marker. Its keys only bind while `ann.active`, except the toggle. */
   ann: Annotate
   /** False while something else owns the keyboard, e.g. the slide picker. */
@@ -284,6 +286,13 @@ export function useKeyboardNav(h: Handlers) {
           if (e.ctrlKey) return
           e.preventDefault()
           h.ann.toggle()
+          break
+        case 'p':
+        case 'P':
+          /* P for play: `A` is taken (the ink scope in the marker, the slide picker in the spec keys) */
+          if (e.ctrlKey || !h.toggleAuto) return
+          e.preventDefault()
+          h.toggleAuto()
           break
         case 'r':
         case 'R':

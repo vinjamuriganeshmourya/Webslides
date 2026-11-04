@@ -1,9 +1,8 @@
 import type React from 'react'
 import type { DeckMeta, SlideDef } from '@/deck/types'
-import { AgendaSlide, BrandSlide, NextSessionSlide, SectionBreakerSlide, ThankYouSlide, WelcomeSlide } from '@/slides'
-import { FeedbackSlide } from '@/slides/FeedbackSlide'
-import { ClassroomQuiz } from '@/ui/foundations/ClassroomQuiz'
+import { BrandSlide, NextSessionSlide, SectionBreakerSlide, ThankYouSlide, WelcomeSlide } from '@/slides'
 import { Takeaways } from './figures/closing'
+import { AgendaColumns, QuizCard } from './figures/variants'
 import { installSpecKeys } from '@/ui/foundations/keys'
 import { AUTOPLAY_ON_BY_DEFAULT } from '@/ui/foundations/autoplay'
 import { revealEveryStep } from '@/motion/Stepper'
@@ -88,13 +87,15 @@ const note = (id: string) => NOTES[id] ?? ''
 const breaker = (i: number): SlideDef => ({ id: `s${i + 1}`, section: S[i], label: 'Section divider', transition: 'zoom', element: <SectionBreakerSlide index={i + 1} title={S[i]} lesson={SESSION} />, notes: `TR section ${i + 1}. The title only.` })
 const slide = (id: string, section: string, label: string, El: (p: { lesson: string }) => React.ReactElement): SlideDef => ({ id, section, label, element: <El lesson={SESSION} />, notes: note(id) })
 const WALK = 'Trainer walks through each screen live rather than reading the captions (the TR\'s own instruction).'
+/** The review pairs (user, 2026-10-30): version 1 of the agenda and the two quiz frames, each directly beside its version 0; the user keeps one of each. */
+const PAIR = (which: string, other: string) => `REVIEW PAIR (user, 2026-10-30): ${which}, beside ${other}. Keep one and delete the other.`
 
 export const vhDeck: SlideDef[] = [
   /* ── OPENING ─────────────────────────────────────────────────────────── */
   { id: 'brand', section: 'Opening', label: 'Brand', transition: 'fade', element: <BrandSlide greeting="Welcome!" lesson={SESSION} />, notes: note('brand') },
   { id: 'welcome', section: 'Opening', label: 'Welcome', transition: 'zoom', element: <WelcomeSlide minimal title={SESSION} lesson={SESSION} />, notes: note('welcome') },
-  { id: 'recap', section: 'Opening', label: 'Recap', element: <Takeaways id="recap" kicker="Recap" title="Deployment & Service Models" lesson={SESSION} items={PREVIOUS} />, notes: note('recap') },
-  { id: 'agenda', section: 'Opening', label: 'Agenda', element: <AgendaSlide kicker={SESSION} title="Agenda" lesson={SESSION} items={AGENDA.map(({ title }) => ({ title }))} />, notes: note('agenda') },
+  { id: 'recap', section: 'Opening', label: 'Recap', element: <Takeaways id="recap" kicker="Recap" title="Deployment & Service Models" lesson={SESSION} items={PREVIOUS} art="/assets/takeaways/presenter.png" />, notes: note('recap') },
+  { id: 'agenda-1', section: 'Opening', label: 'Agenda (layout 1)', element: <AgendaColumns kicker={SESSION} lesson={SESSION} items={AGENDA.map(({ title }) => ({ title }))} />, notes: PAIR('agenda1, the column layout (titles only, course lesson 4)', 'agenda0, the kit agenda (the previous frame)') },
 
   /* ── 1 · VIRTUALIZATION BASICS ───────────────────────────────────────── */
   breaker(0),
@@ -119,7 +120,7 @@ export const vhDeck: SlideDef[] = [
   slide('type1', S[1], 'Type 1 hypervisor', Type1),
   slide('type2', S[1], 'Type 2 hypervisor', Type2),
   slide('type-compare', S[1], 'Bare-metal vs hosted', TypeCompare),
-  { id: 'quiz-mid', section: S[1], label: 'Quiz time', transition: 'zoom', element: <ClassroomQuiz lesson={SESSION} />, notes: `${note('quiz-mid')} Open the quiz on the portal, everyone answers alone, then go through the answers together.` },
+  { id: 'quiz-mid-1', section: S[1], label: 'Quiz time (layout 1)', transition: 'zoom', element: <QuizCard lesson={SESSION} title="Quiz Time!" />, notes: PAIR('quiz1, the title card with the question cube', 'quiz0, the course quiz frame (the previous frame)') },
 
   /* ── 3 · VIRTUALIZATION TECHNIQUES ───────────────────────────────────── */
   breaker(2),
@@ -160,10 +161,9 @@ export const vhDeck: SlideDef[] = [
   slide('cost', S[4], 'Cost of full VMs', Cost),
 
   /* ── CLOSING ─────────────────────────────────────────────────────────── */
-  { id: 'quiz-close', section: 'Closing', label: 'Quiz time', transition: 'zoom', element: <ClassroomQuiz lesson={SESSION} />, notes: note('quiz-close') },
+  { id: 'quiz-close-1', section: 'Closing', label: 'Quiz time (layout 1)', transition: 'zoom', element: <QuizCard lesson={SESSION} title="Quiz Time!" />, notes: PAIR('quiz1, the title card with the question cube', 'quiz0, the course quiz frame (the previous frame)') },
   { id: 'takeaways', section: 'Closing', label: 'Key takeaways', element: <Takeaways lesson={SESSION} items={AGENDA} />, notes: note('takeaways') },
   { id: 'next-session', section: 'Closing', label: 'Next session', transition: 'zoom', element: <NextSessionSlide title="Containers vs Virtual Machines" lesson={SESSION} />, notes: note('next-session') },
-  { id: 'feedback', section: 'Closing', label: 'Feedback', element: <FeedbackSlide lesson={SESSION} />, notes: note('feedback') },
   { id: 'thank-you', section: 'Closing', label: 'Thank you', transition: 'zoom', element: <ThankYouSlide title="Thank you!" lesson={SESSION} />, notes: note('thank-you') },
   { id: 'all-the-best', section: 'Closing', label: 'All the Best', transition: 'zoom', element: <ThankYouSlide title="All the Best" lesson={SESSION} /> },
 ]

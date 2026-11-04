@@ -693,7 +693,7 @@ function SaasScene() {
   const lapH = (LAP.w * 110) / 160
   const tops = [BASE - monH, BASE - phH, BASE - lapH]
   const xs = [MON.x, PH.x, LAP.x]
-  const SRC: [number, number][] = [[282, 160], [317, 166], [352, 160]]
+  const SRC: [number, number][] = [[282, 160], [PH.x, 166], [352, 160]] /* the phone's connector drops straight: it starts at the phone's own x (2026-10-30) */
   const ms = MON.w / 150
   const ls = LAP.w / 160
   const fill = (i: number): CSSProperties => ({ opacity: pop(i), transform: `scale(${0.85 + 0.15 * pop(i)})`, transition: `opacity 300ms ${EASE}` })

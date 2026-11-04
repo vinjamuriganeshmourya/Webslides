@@ -32,6 +32,12 @@ content verbatim in the session 1 and 2 format, plan and execute in one run, as 
    `slide-kit/assets/aws/` first (rule 13), imported from `figures/vh/marks/` so the single file inlines them.
 7. **Thank you and All the Best are two frames**, as session 2 (62 reference frames, 63 slides).
 
+4. **Review pairs and the recap art (user, 2026-10-30, after sign-off):** `agenda-1` (`AgendaColumns`, titles
+   only) sits directly after `agenda`; `quiz-mid-1` and `quiz-close-1` (`QuizCard "Quiz Time!"`) directly after
+   `quiz-mid` and `quiz-close`; the user keeps one of each pair. The recap frame shows the presenter illustration
+   (course rule R6). The table below keeps its signed-off numbering; the deck is 66 slides while both of each
+   pair stand.
+
 ## Slides
 
 | # | id | Reference | Frame |

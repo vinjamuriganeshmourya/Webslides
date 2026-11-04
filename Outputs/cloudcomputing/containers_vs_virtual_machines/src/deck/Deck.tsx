@@ -31,6 +31,8 @@ import { canSaveFile } from './fileSave'
 import { useComments } from './comments'
 import { CommentsPanel } from './CommentsPanel'
 import { isHarness } from './presenter'
+import { getAutoAnim, toggleAutoAnim, useAutoAnim } from './autoAnim'
+import { advanceStep, backStep, resetSteps } from './animSteps'
 
 function hashIndex(total: number): number {
   if (typeof window === 'undefined') return 0
@@ -120,6 +122,8 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
   */
   const [replay, setReplay] = useState(0)
   const { isFullscreen, toggle: toggleFullscreen } = useFullscreen(rootRef)
+  /* AUTO ANIMATION ON / OFF (user, 2026-11-03): ON by default in the presenter view, OFF in the student view; `autoAnim.ts` */
+  const autoAnim = useAutoAnim()
   /*
     WHAT THE SESSION ASKED OF THE PLAYER. `meta` is the one session-owned object
     that reaches this component, so the player's options ride on it rather than
@@ -205,6 +209,8 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
   const gotoSlide = useCallback(
     (i: number, dir: number, opts: { cut?: boolean } = {}) => {
       const clamped = Math.min(Math.max(i, 0), total - 1)
+      /* the animation steps of the slide about to mount (`animSteps.ts`): from the top, or all shown on a landing that is fully revealed */
+      if (clamped !== indexRef.current) resetSteps({ full: pendingFull.current })
       idRef.current = activeRef.current[clamped]?.id
       setDirection(dir)
       setCut(opts.cut ?? false)
@@ -234,6 +240,7 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
     if (to < 0) return
     idRef.current = active[to].id
     pendingFull.current = true
+    resetSteps({ full: true })
     setDirection(1)
     setCut(false)
     setIndex(to)
@@ -245,6 +252,11 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
   // "Next" (Ctrl+→): reveal the next fragment, or advance to the next slide with
   // the deck's transition.
   const next = useCallback(() => {
+    /* auto animation OFF: a press plays the slide's next animation step first (`autoAnim.ts`) */
+    if (!getAutoAnim() && advanceStep()) {
+      announce('step', 1)
+      return
+    }
     if (stepRef.current < maxRef.current) {
       setStep(stepRef.current + 1)
       announce('step', 1)
@@ -254,6 +266,10 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
   // "Prev" (Ctrl+←): hide the last fragment, or go back a slide with the
   // transition, landing revealed.
   const prev = useCallback(() => {
+    if (!getAutoAnim() && backStep()) {
+      announce('step', -1)
+      return
+    }
     if (stepRef.current > 0) {
       setStep(stepRef.current - 1)
       announce('step', -1)
@@ -266,6 +282,10 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
   // "Prev slide" (←): one slide back as a cut, landing with the build already
   // revealed. This is the key that gets tapped while presenting.
   const prevSlide = useCallback(() => {
+    if (!getAutoAnim() && backStep()) {
+      announce('step', -1)
+      return
+    }
     if (indexRef.current > 0) {
       pendingFull.current = true
       gotoSlide(indexRef.current - 1, -1, { cut: true })
@@ -275,11 +295,20 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
   // "Next slide" (→): mirror of prevSlide — one slide forward as a cut, skipping
   // the build steps and landing revealed.
   const nextSlide = useCallback(() => {
+    /* auto animation OFF: the press plays the next animation step; past the last one it moves on, landing at step 0 */
+    if (!getAutoAnim()) {
+      if (advanceStep()) {
+        announce('step', 1)
+        return
+      }
+      if (indexRef.current < total - 1) gotoSlide(indexRef.current + 1, 1, { cut: true })
+      return
+    }
     if (indexRef.current < total - 1) {
       pendingFull.current = true
       gotoSlide(indexRef.current + 1, 1, { cut: true })
     }
-  }, [total, gotoSlide])
+  }, [total, gotoSlide, announce])
 
   /*
     REPLAY THE CURRENT SLIDE, AS A CUT, FROM STEP ZERO.
@@ -301,6 +330,7 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
     first press after a replay.
   */
   const replaySlide = useCallback(() => {
+    resetSteps()
     setCut(true)
     maxRef.current = 0
     setMaxStep(0)
@@ -423,6 +453,7 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
     toggleArrowMode,
     openPicker,
     replay: replaySlide,
+    toggleAuto: toggleAutoAnim,
     ann,
     /* the menu owns Up, Down, Enter and Escape while it is open, like the picker owns the arrows */
     enabled: !pickerOpen && !menuOpen,
@@ -462,6 +493,7 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
       actions.toggleSkip(id)
       setPickerOpen(false)
       pendingFull.current = true
+      resetSteps({ full: true })
       idRef.current = id
       setDirection(1)
       setCut(true)
@@ -838,6 +870,8 @@ export function Deck({ slides, meta, transition = 'slide' }: DeckProps) {
           hideModeSwitch={modeLocked}
           openPicker={openPicker}
           replay={replaySlide}
+          autoAnim={autoAnim}
+          toggleAutoAnim={toggleAutoAnim}
           markerActive={ann.active}
           toggleMarker={ann.toggle}
           hasInk={ann.hasInk}

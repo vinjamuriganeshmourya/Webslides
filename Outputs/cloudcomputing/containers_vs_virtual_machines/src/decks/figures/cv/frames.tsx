@@ -87,6 +87,21 @@ export const SHOT_SIZE: Record<string, [number, number]> = {
 export type Rect = [x: number, y: number, w: number, h: number]
 
 /**
+ * THE SCREENSHOT SLIDES' FRAME (user, 2026-11-04). The step, the capture and its explanation are one
+ * group, centred on the slide (x 640 on the 1280 canvas = 576 from the Card body's left edge at 64),
+ * and the group fits the body between its top (221) and 16px above the player bar's top (664, so 648).
+ * The explanation box is at least `SHOT_MIN_G` wide so it stays on one or two lines and leaves the height
+ * to the capture. A capture is never drawn larger than its source (scale at most 1), never cropped,
+ * never clipped at the corners.
+ */
+export const SHOT_MID = 576
+export const SHOT_GROUP_H = 425
+export const SHOT_MIN_G = 960
+export const SHOT_MAX_W = 1060
+/** About how many lines a 17px semibold explanation of `chars` characters takes in a box `w` wide (84px of it is padding and the icon). */
+export const textLines = (chars: number, w: number) => Math.max(1, Math.ceil((chars * 8.8) / (w - 84)))
+
+/**
  * A screenshot cropped to the part the caption names (content rule 11), scaled
  * to fit `maxW` x `maxH`, never redrawn. `crop` and `highlight` are in SOURCE
  * pixels; the highlight is the red ring the walkthroughs of session 3 used.
@@ -98,8 +113,8 @@ export function Crop({ name, crop, highlight, maxW, maxH, alt, bg = colors.white
   const s = Math.min(maxW / w, maxH / h)
   const rings = highlight ? (Array.isArray(highlight[0]) ? (highlight as Rect[]) : [highlight as Rect]) : []
   return (
-    <div className="relative overflow-hidden rounded-xl" style={{ width: Math.round(w * s), height: Math.round(h * s), boxShadow: '0 18px 36px -22px rgba(16,32,58,0.55), inset 0 0 0 1px rgba(16,32,58,0.08)', background: bg }}>
-      {/* the crop is a background, so the element IS the visible window (an oversized clipped <img> read as overflow to qa and video-safe) */}
+    <div className="relative" style={{ width: Math.round(w * s), height: Math.round(h * s), boxShadow: '0 18px 36px -22px rgba(16,32,58,0.55), inset 0 0 0 1px rgba(16,32,58,0.08)', background: bg }}>
+      {/* square corners (user, 2026-11-04: no screenshot clipped in any way). The crop is a background, so the element IS the visible window (an oversized clipped <img> read as overflow to qa and video-safe) */}
       <div role="img" aria-label={alt} className="absolute inset-0 select-none" style={{ backgroundImage: `url(${shot(name)})`, backgroundSize: `${W * s}px ${H * s}px`, backgroundPosition: `${-x * s}px ${-y * s}px`, backgroundRepeat: 'no-repeat' }} />
       {rings.map(([hx, hy, hw, hh], i) => (
         <span
@@ -114,34 +129,35 @@ export function Crop({ name, crop, highlight, maxW, maxH, alt, bg = colors.white
 }
 
 /**
- * One screenshot card (spec figure `AnnotatedShot`): the kit header, then the
- * step label and its lines in a column on the left, the cropped screenshot on
- * the right, its caption under it. `lines` are any extra spec lines (a step
- * line, a note) shown under the label, in the spec's order.
+ * One screenshot card (spec figure `AnnotatedShot`), in the layout of slide 35
+ * (user, 2026-10-30: "the step, the screenshot and the explanation separated"):
+ * the kit header, then the step label with its lines in a band across the top,
+ * a rule, and under it the screenshot on the left with its caption beside it.
+ * `lines` are any extra spec lines (a step line, a note) shown under the
+ * label, in the spec's order.
  */
 export function ShotCard({
-  id, kicker, title, lesson, lead, step, lines = [], caption, name, crop, highlight, side, maxH = 380, colW = 380, bg, ring,
+  id, kicker, title, lesson, lead, step, lines = [], caption, name, crop, highlight, side, maxH = 320, shotW = 640, bg, ring,
 }: {
   id: string; kicker: string; title: string; lesson: string; lead?: ReactNode; step: ReactNode; lines?: ReactNode[]; caption: ReactNode
-  name: string; crop?: Rect; highlight?: Rect | Rect[]; side?: ReactNode; maxH?: number; colW?: number; bg?: string; ring?: number
+  name: string; crop?: Rect; highlight?: Rect | Rect[]; side?: ReactNode; maxH?: number; shotW?: number; bg?: string; ring?: number
 }) {
-  const gap = 36
-  const shotW = BOX_W - colW - gap
+  const gap = 28
   return (
     <Card id={id} kicker={kicker} title={title} lead={lead} lesson={lesson}>
-      <div className="flex items-center" style={{ width: BOX_W, gap }}>
-        <div className="flex flex-col gap-4" style={{ width: colW }}>
+      <div className="flex flex-col" style={{ width: BOX_W, gap: 12 }}>
+        <div className="flex flex-col gap-3">
           <StepLabel>{step}</StepLabel>
           {lines.map((l, i) => (
-            <p key={i} className="text-[18px] leading-snug" style={{ color: colors.ink }}>
+            <p key={i} className="m-0 text-[18px] leading-snug" style={{ color: colors.ink }}>
               {l}
             </p>
           ))}
           {side}
         </div>
-        <figure className="m-0 flex flex-col items-center gap-3" style={{ width: shotW }}>
+        <figure className="m-0 flex items-center" style={{ gap, borderTop: `1px solid ${colors.line}`, paddingTop: 12 }}>
           <Crop name={name} crop={crop} highlight={highlight} maxW={shotW} maxH={maxH} bg={bg} ring={ring} alt={typeof caption === 'string' ? caption : ''} />
-          <figcaption className="text-center text-[17px] font-semibold leading-snug" style={{ color: colors.ink }}>
+          <figcaption className="text-[17px] font-semibold leading-snug" style={{ color: colors.ink, width: BOX_W - shotW - gap }}>
             {caption}
           </figcaption>
         </figure>

@@ -1,314 +1,353 @@
 import type { CSSProperties, ReactNode } from 'react'
-import { DoorClosed, DoorOpen } from 'lucide-react'
+import {
+  ArrowLeftRight, Building2, Cable, Check, Cloud, Cog, Globe, LayoutDashboard, LayoutGrid, Lock as LockIco, MousePointer2, Network, Plus, Route, Router as RouterIco,
+  Server, ServerOff, ShieldCheck, SlidersHorizontal, Split, SquareDashed, Table2, Target, Unplug, UserRound, Users, Warehouse, Waypoints, Hash,
+} from 'lucide-react'
 import { colors } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
-import { Arrow, At, Fade, Label, Traveller, useCycle } from '../scene'
+import { Arrow, At, Label, STILL, Traveller } from '../scene'
 import { TILE_SKIN } from '../card'
-import { ClayInstitution, Icon3D } from '../d3/kit'
-import { AN_W, IsoAnalogy, PointsFigure } from '../iso/frames'
-import { Boundary, G, Gateway, LockBadge, Logo, NET, NoMark, Resource, RouteChip, SubnetBox } from './frames'
+import { Icon3D, RichCloud } from '../d3/kit'
+import { Badge, fx, LitFigure, Ripple } from './fx'
+import { BG, BigVpc, Boundary, Gateway, LockBadge, Logo, NET, NoMark, Resource, SubnetBox, ZigZag } from './frames'
+import { OV_MOTION_CSS, run, shown, useWalk } from './overview-motion'
+import vpcIcon from './icons/overview-aws-vpc.svg'
+
+export { SchoolAnalogy } from './overview-school'
 
 /**
- * SECTION 1 · CLOUD NETWORKING OVERVIEW (T01-1 to T02-3). The deployment
- * boundary (`Boundary`, the dashed line the whole deck reuses for a VPC), the
- * school analogy, the pieces inside the boundary, the one VPC drawing built a
- * block at a time at `G`'s numbers, and the two planes.
+ * SECTION 1 · CLOUD NETWORKING OVERVIEW (T01-1 to T02-3), visual pass 2026-11-04
+ * (Session 4's design: `LitFigure` with a subject icon on every point, the point the
+ * figure is acting out lit; every figure built state by state, one press per state
+ * with auto animation off; ambient motion that says what each object does).
  *
- * Each figure runs ONE loop whose motion is the card's press sequence, and
- * holds its most complete state on harness URLs (the `still` argument):
- *   T01-1   the resource, the line, the blocked arrow, the allowed arrows, the four labels
- *   T01-AN  the pairs light in turn on one clock: gates and entry rules beside how
- *           traffic reaches cloud resources; corridors and rooms beside which resources
- *   T02-1   the slots, then the AWS logo and the console chip, then the control plane
- *           over the shared hardware
- *   T02-2   the VPC box, the subnets, the gateway with its route tables, the locks,
- *           each lit for its beat
- *   T02-3   the two layers, the two labels, the four blocks small inside the control plane
+ *   T01-1   the TR's "Cloud Networking" diagram, built as the description reads
+ *           (useWalk): the user host, its router and the network cloud, the
+ *           provider's router and cloud, the servers; then the four points walk:
+ *           the boundary ring and a packet down the whole link; one server with
+ *           no route goes dark behind a stop; traffic in and out; the four
+ *           controls (isolation, addressing, routing, security) pop on the ring
+ *   T01-AN  `overview-school.tsx`
+ *   T02-1   the VPC console (a real console window, the cursor clicks create),
+ *           the API call into the control plane, pushed onto shared racks with a
+ *           customer on each; the cabling job crossed out
+ *   T02-2   the one VPC drawing (`BigVpc`) built one block per point: the
+ *           container, the subnets, the gateways and route tables (traffic on
+ *           their lines), the locks
+ *   T02-3   the control plane deciding (the four blocks as configuration tiles
+ *           with switches), pushed down to the data plane where packets are
+ *           actually forwarded rack to rack; the physical cable crossed out
  */
 
 const EASE = 'cubic-bezier(0.22,1,0.36,1)'
-const FIG_W = 634
 const FIG_H = 380
 
 /* ------------------------------------------------------------------ shared drawings */
 
-/** A row of empty dashed slots inside a boundary (T02-1, and T02-2's empty stage). */
-function Slots({ x, y, w, h, n = 4, gap = 14, on = true }: { x: number; y: number; w: number; h: number; n?: number; gap?: number; on?: boolean }) {
-  const slotW = (w - gap * (n - 1)) / n
+/** A word of a diagram, as a chip with its subject icon. */
+function Word({ children, on = true, tone = 'plain', delay = 0, icon, size = 14 }: { children: ReactNode; on?: boolean; tone?: 'plain' | 'brand' | 'solid' | 'dark'; delay?: number; icon?: ReactNode; size?: number }) {
   return (
-    <>
-      {Array.from({ length: n }, (_, i) => (
-        <At key={i} x={x + i * (slotW + gap)} y={y}>
-          <Fade on={on} lift={6} delay={i * 60}>
-            <div className="rounded-[14px]" style={{ width: slotW, height: h, border: `2px dashed ${colors.line}`, background: 'rgba(255,255,255,0.4)' }} />
-          </Fade>
-        </At>
-      ))}
-    </>
-  )
-}
-
-/** The control plane: a solid-rimmed box in the gateway tone; its label is placed by the card (it lands on its own press on T02-3). */
-function PlaneBox({ w, h, children }: { w: number; h: number; children?: ReactNode }) {
-  return (
-    <Boundary w={w} h={h} solid tone={NET.gateway} fill={TILE_SKIN.background as string} radius={16} style={{ boxShadow: TILE_SKIN.boxShadow }}>
-      {children}
-    </Boundary>
-  )
-}
-
-/** The row of shared hardware: a tile with server stacks across it; the label and the chip are the card's. */
-function HardwareRow({ w, h, racks = 3, rackW = 36, rackX, gap = 8, children, style }: { w: number; h: number; racks?: number; rackW?: number; rackX: number; gap?: number; children?: ReactNode; style?: CSSProperties }) {
-  return (
-    <div className="relative rounded-[16px]" style={{ width: w, height: h, ...TILE_SKIN, ...style }}>
-      {Array.from({ length: racks }, (_, i) => (
-        <At key={i} x={rackX + i * (rackW + gap)} y={h / 2} cy>
-          <Icon3D name="server-stack" w={rackW} h={rackW + 4} shadow={false} />
-        </At>
-      ))}
-      {children}
+    <div style={shown(on, delay, 6)}>
+      <Label size={size} strong tone={tone} raised icon={icon}>
+        {children}
+      </Label>
     </div>
   )
 }
 
-/** A box's corner label, placed where `Boundary` puts its own, so a card can fade it in on its press. */
-function CornerLabel({ x, y, on = true, tone = 'brand', children }: { x: number; y: number; on?: boolean; tone?: 'brand' | 'dark' | 'plain'; children: ReactNode }) {
+/** A plain line on the stage, no head; it draws on from its first end. */
+function Line({ x1, y1, x2, y2, tone = NET.boundary, width = 2.5, on = true, delay = 0 }: { x1: number; y1: number; x2: number; y2: number; tone?: string; width?: number; on?: boolean; delay?: number }) {
+  const instant = useInstant()
+  const minX = Math.floor(Math.min(x1, x2) - width)
+  const minY = Math.floor(Math.min(y1, y2) - width)
+  const maxX = Math.ceil(Math.max(x1, x2) + width)
+  const maxY = Math.ceil(Math.max(y1, y2) + width)
   return (
-    <At x={x + 12} y={y - 13}>
-      <Fade on={on} lift={6}>
-        <Label size={14} strong tone={tone} raised>
-          {children}
-        </Label>
-      </Fade>
-    </At>
+    <svg aria-hidden className="pointer-events-none absolute" style={{ left: minX, top: minY, overflow: 'visible' }} width={maxX - minX} height={maxY - minY}>
+      <path
+        d={`M ${x1 - minX} ${y1 - minY} L ${x2 - minX} ${y2 - minY}`}
+        stroke={tone}
+        strokeWidth={width}
+        strokeLinecap="round"
+        fill="none"
+        pathLength={1}
+        strokeDasharray="1"
+        style={{ strokeDashoffset: on ? 0 : 1, opacity: on ? 1 : 0, transition: instant ? 'none' : on ? `stroke-dashoffset 520ms ${EASE} ${delay}ms, opacity 160ms ${delay}ms, stroke 420ms` : `stroke-dashoffset 360ms ${EASE}, opacity 200ms 300ms, stroke 420ms` }}
+      />
+    </svg>
+  )
+}
+
+/** A status light on a machine: it blinks while the machine works. */
+const Led = ({ x, y, tone = colors.success, delay = 0 }: { x: number; y: number; tone?: string; delay?: number }) => (
+  <span aria-hidden className={`absolute rounded-full ${run(true, 'ov-led') ?? ''}`} style={{ left: x - 3, top: y - 3, width: 6, height: 6, background: tone, boxShadow: '0 0 0 1.5px #fff', animationDelay: `${delay}s` }} />
+)
+
+/** An icon on a white disc, ringed in a tone (a badge on a drawing, no words). */
+function IconDisc({ children, tone = colors.brand, size = 30, style, className }: { children: ReactNode; tone?: string; size?: number; style?: CSSProperties; className?: string }) {
+  return (
+    <span aria-hidden className={`grid place-items-center rounded-full ${className ?? ''}`} style={{ width: size, height: size, background: '#fff', color: tone, boxShadow: `inset 0 0 0 2px ${tone}, 0 6px 14px -8px rgba(16,32,58,0.55)`, ...style }}>
+      {children}
+    </span>
   )
 }
 
 /* ===== T01-1 · The deployment boundary */
 
+/* the first point cut at the TR's own colon (round 2, BRIEF2 rule 1: every word kept, in order, none added) */
 const T011_POINTS = [
-  'This connectivity layer, called cloud networking, is the deployment boundary: the line deciding whether a launched resource is reachable at all',
+  'This connectivity layer, called cloud networking, is the deployment boundary:',
+  'the line deciding whether a launched resource is reachable at all',
   'An instance with no route, gateway or security rule is deployed but entirely unreachable',
   'The deployment boundary decides what traffic reaches a resource and what traffic it can send out',
   'Isolation, addressing, routing and security rules in this session all exist to control this one boundary',
 ]
+const T011_ICONS = [<Waypoints key="a" />, <Target key="t" />, <ServerOff key="b" />, <ArrowLeftRight key="c" />, <ShieldCheck key="d" />]
 
-/* the boundary and the resource, on the 634 x 380 stage; every arrow end is computed from these */
-const B1 = { x: 150, y: 88, w: 340, h: 230 }
-const B1_R = B1.x + B1.w
-const B1_B = B1.y + B1.h
-const R1 = { cx: B1.x + B1.w / 2, top: 158, s: 60 }
-const R1_CY = R1.top + R1.s / 2
-const NO = 24
+/*
+  THE TR'S DIAGRAM (slide 1's image, "Cloud Networking"), element for element
+  on the 634 x 380 stage: the Cloud User Host (three monitors on a line and two
+  under it, "Enterprise"), the line to a router, a zigzag link to the Network
+  Cloud, a zigzag on to the provider's router, the Cloud Service Provider's
+  cloud with the servers in it, "Cloud Vendor's Infrastructure" under them.
+*/
+const D = {
+  title: { cx: 317, cy: 22 },
+  host: { cx: 122, cy: 52 },
+  mon: { w: 44, h: 44, row1: { y: 76, xs: [46, 100, 154] }, row2: { y: 150, xs: [73, 127] } },
+  bus: { y: 136, x1: 60, x2: 236 },
+  enterprise: { cx: 106, cy: 218 },
+  router1: { cx: 240, cy: 180, w: 50 },
+  net: { x: 292, y: 112, w: 124 },
+  router2: { cx: 472, cy: 100, w: 50 },
+  provider: { x: 404, y: 166, w: 226 },
+  srv: { w: 30, h: 40, row1: { y: 216, xs: [504, 545, 586] }, row2: { y: 264, xs: [524, 565] } },
+} as const
+const NET_CLOUD_H = Math.round((D.net.w * 150) / 220)
+const PROV_H = Math.round((D.provider.w * 150) / 220)
+const PROV_CX = D.provider.x + D.provider.w / 2
+const SERVERS: [number, number][] = [...D.srv.row1.xs.map((x) => [x, D.srv.row1.y] as [number, number]), ...D.srv.row2.xs.map((x) => [x, D.srv.row2.y] as [number, number])]
+/* the ring the deployment boundary draws round the vendor's servers */
+const RING = { x: 462, y: 172, w: 160, h: 140 }
+/* the one server with no route: the last on the second row */
+const DARK = 4
+/* the link, end to end: the bus, the router, the network cloud, the provider's router, down into the servers */
+const LINK: [number, number][] = [
+  [D.bus.x2 - 60, D.bus.y],
+  [D.bus.x2, D.bus.y],
+  [D.router1.cx, D.router1.cy - 6],
+  [D.net.x + D.net.w / 2, D.net.y + NET_CLOUD_H * 0.55],
+  [D.router2.cx, D.router2.cy],
+  [D.router2.cx + 18, RING.y + 12],
+  [SERVERS[0][0] + D.srv.w / 2, SERVERS[0][1] + D.srv.h / 2],
+]
+const OUT_PATH: [number, number][] = [
+  [SERVERS[1][0] + D.srv.w / 2, SERVERS[1][1] + 8],
+  [D.router2.cx + 22, RING.y + 10],
+  [D.router2.cx, D.router2.cy],
+  [D.net.x + D.net.w / 2, D.net.y + NET_CLOUD_H * 0.45],
+]
+const STOP_PATH: [number, number][] = [
+  [D.router2.cx, D.router2.cy],
+  [RING.x + RING.w - 30, RING.y - 2],
+]
 
-function BoundaryScene() {
-  /* the press order: the resource alone, the line, the blocked arrow, the allowed arrows, the four labels; held complete */
-  const k = useCycle(5, 2400, 4)
-  const chips: { t: string; x: number; y: number }[] = [
-    { t: 'isolation', x: B1.x + B1.w * 0.76, y: B1.y },
-    { t: 'addressing', x: B1_R, y: B1.y + B1.h * 0.76 },
-    { t: 'routing', x: B1.x + B1.w / 2, y: B1_B },
-    { t: 'security', x: B1.x, y: B1.y + B1.h * 0.76 },
-  ]
+/** The four controls the session teaches, one icon each, popping onto the boundary ring (point 4). */
+const CONTROLS = [<SquareDashed key="i" size={15} />, <Hash key="a" size={15} />, <Route key="r" size={15} />, <LockIco key="s" size={15} />]
+
+/** What the diagram shows: `k` the build (0-3), then each point's part of the picture. */
+type NetView = { k: number; ring?: boolean; link?: boolean; reach?: boolean; dark?: boolean; stop?: boolean; inout?: boolean; controls?: boolean }
+
+function CloudNetworkingScene({ v }: { v: NetView }) {
+  const { k } = v
+  const netCx = D.net.x + D.net.w / 2
+  const lineTone = v.link ? colors.accent : NET.boundary
   return (
     <>
-      <At x={B1.x} y={B1.y}>
-        <Fade on={k >= 1} lift={0}>
-          <Boundary w={B1.w} h={B1.h} label="deployment boundary" />
-        </Fade>
+      <At x={D.title.cx} y={D.title.cy} cx cy>
+        <Word size={15} tone="brand" icon={<Network />}>Cloud Networking</Word>
       </At>
-      <At x={R1.cx} y={R1.top} cx>
-        <Resource size={R1.s} label="instance" />
+      {/* 0 · the cloud user host: five monitors on one line, the enterprise */}
+      <At x={D.host.cx} y={D.host.cy} cx cy>
+        <Word size={15} icon={<Users />}>Cloud User Host</Word>
       </At>
-      {/* blocked: from outside, stopped dead at the line */}
-      <Arrow x1={40} y1={133} x2={B1.x - NO / 2 - 2} y2={133} on={k >= 2} tone={NET.blocked} />
-      <At x={B1.x} y={133} cx cy>
-        <NoMark size={NO} on={k >= 2} />
-      </At>
-      {/* allowed: across the line into the resource, and out of it across the line */}
-      <Arrow x1={40} y1={R1_CY} x2={R1.cx - R1.s / 2} y2={R1_CY} on={k >= 3} tone={NET.public} />
-      <Arrow x1={R1.cx + R1.s / 2} y1={R1_CY} x2={FIG_W - 34} y2={R1_CY} on={k >= 3} tone={NET.public} delay={200} />
-      {/* the four labels on the line, together: the session map */}
-      {chips.map((c) => (
-        <At key={c.t} x={c.x} y={c.y} cx cy>
-          <Fade on={k >= 4} lift={6}>
-            <Label size={14} strong tone="solid" raised>
-              {c.t}
-            </Label>
-          </Fade>
+      {D.mon.row1.xs.map((x, i) => (
+        <At key={`a${x}`} x={x} y={D.mon.row1.y}>
+          <div style={shown(true, i * 60)}>
+            <Icon3D name="desktop" w={D.mon.w} h={D.mon.h} shadow={false} />
+          </div>
         </At>
       ))}
+      {D.mon.row1.xs.map((x) => (
+        <Line key={`l${x}`} x1={x + D.mon.w / 2} y1={D.mon.row1.y + D.mon.h} x2={x + D.mon.w / 2} y2={D.bus.y} tone={lineTone} />
+      ))}
+      <Line x1={D.bus.x1} y1={D.bus.y} x2={D.bus.x2} y2={D.bus.y} width={3} tone={lineTone} />
+      {D.mon.row2.xs.map((x) => (
+        <Line key={`m${x}`} x1={x + D.mon.w / 2} y1={D.bus.y} x2={x + D.mon.w / 2} y2={D.mon.row2.y} tone={lineTone} />
+      ))}
+      {D.mon.row2.xs.map((x) => (
+        <At key={`b${x}`} x={x} y={D.mon.row2.y}>
+          <Icon3D name="desktop" w={D.mon.w} h={D.mon.h} shadow={false} />
+        </At>
+      ))}
+      <At x={D.enterprise.cx} y={D.enterprise.cy} cx cy>
+        <Word size={15} icon={<Building2 />}>Enterprise</Word>
+      </At>
+      {/* 1 · the router at the end of the line, the zigzag link to the network cloud */}
+      <Line x1={D.bus.x2} y1={D.bus.y} x2={D.bus.x2} y2={D.router1.cy - 20} on={k >= 1} tone={lineTone} />
+      <Ripple x={D.router1.cx} y={D.router1.cy - 8} r={26} tone={colors.brand} on={k >= 1} n={2} dur={2.4} />
+      <At x={D.router1.cx} y={D.router1.cy} cx cy>
+        <div style={shown(k >= 1, 120)}>
+          <Icon3D name="router" w={D.router1.w} shadow={false} />
+        </div>
+      </At>
+      <At x={D.router1.cx - 2} y={D.router1.cy + 36} cx cy>
+        <Word size={15} on={k >= 1} delay={160} icon={<RouterIco />}>Router</Word>
+      </At>
+      <ZigZag x1={D.router1.cx + 26} y1={D.router1.cy - 4} x2={D.net.x + 8} y2={D.net.y + NET_CLOUD_H * 0.6} on={k >= 1} delay={260} tone={lineTone} />
+      <At x={D.net.x} y={D.net.y}>
+        <div style={shown(k >= 1, 520)}>
+          <div {...fx('lift', 0, 3.2)}>
+            <RichCloud w={D.net.w} />
+          </div>
+        </div>
+      </At>
+      <At x={netCx + 18} y={D.net.y + NET_CLOUD_H + 14} cx cy>
+        <Word size={15} on={k >= 1} delay={620} icon={<Globe />}>
+          Network Cloud
+        </Word>
+      </At>
+      {/* 2 · the zigzag on to the provider's router, the provider's cloud */}
+      <ZigZag x1={D.net.x + D.net.w - 22} y1={D.net.y + NET_CLOUD_H * 0.24} x2={D.router2.cx - 26} y2={D.router2.cy + 8} on={k >= 2} tone={lineTone} teeth={3} />
+      <Ripple x={D.router2.cx} y={D.router2.cy - 8} r={26} tone={colors.brand} on={k >= 2} n={2} dur={2.4} />
+      <At x={D.router2.cx} y={D.router2.cy} cx cy>
+        <div style={shown(k >= 2, 240)}>
+          <Icon3D name="router" w={D.router2.w} shadow={false} />
+        </div>
+      </At>
+      <At x={D.router2.cx + 34} y={D.router2.cy} cy>
+        <Word size={15} on={k >= 2} delay={280} icon={<RouterIco />}>
+          Router
+        </Word>
+      </At>
+      <At x={D.provider.x} y={D.provider.y}>
+        <div style={shown(k >= 4, 0)}>
+          <RichCloud w={D.provider.w} />
+        </div>
+      </At>
+      <At x={PROV_CX + 6} y={D.provider.y - 12} cx cy>
+        <Word size={15} on={k >= 3} delay={120} icon={<Cloud />}>
+          Cloud Service Provider
+        </Word>
+      </At>
+      {/* the deployment boundary, ringed round the vendor's servers from point 1 on */}
+      <At x={RING.x} y={RING.y}>
+        <div style={{ width: RING.w, height: RING.h, borderRadius: 18, border: `2.5px dashed ${colors.accent}`, background: 'rgba(255,138,61,0.06)', ...shown(!!v.ring, 0, 0) }} />
+      </At>
+      {/* 3 · the servers drop in one by one, their lights working */}
+      <At x={RING.x + RING.w / 2 + 14} y={D.srv.row1.y - 20} cx cy>
+        <Word size={15} on={k >= 3} delay={260} icon={<Server />}>Server</Word>
+      </At>
+      {SERVERS.map(([x, y], i) => {
+        const dark = i === DARK && !!v.dark
+        return (
+          <At key={i} x={x} y={y}>
+            <div style={{ ...shown(k >= 3, 300 + i * 90, -14), filter: dark ? 'grayscale(1)' : 'none' }}>
+              <div style={{ opacity: dark ? 0.4 : 1, transition: `opacity 420ms ${EASE}` }}>
+                <Icon3D name="server-stack" w={D.srv.w} h={D.srv.h} shadow={false} />
+              </div>
+            </div>
+            {k >= 3 && !dark && <Led x={D.srv.w - 3} y={4} delay={i * 0.23} />}
+          </At>
+        )
+      })}
+      {/* 5 · the server with no route: deployed, but nothing reaches it */}
+      <At x={SERVERS[DARK][0] + D.srv.w + 2} y={SERVERS[DARK][1] - 2} cx cy>
+        <NoMark size={22} on={!!v.dark} />
+      </At>
+      <At x={PROV_CX - 30} y={D.provider.y + PROV_H + 16} cx cy>
+        <Word size={15} on={k >= 3} delay={700} icon={<Warehouse />}>
+          Cloud Vendor's Infrastructure
+        </Word>
+      </At>
+      {/* 7 · isolation, addressing, routing, security: the four controls on the ring */}
+      {CONTROLS.map((ic, i) => (
+        <At key={i} x={RING.x + 21} y={RING.y + 24 + i * 31} cx cy>
+          <Badge on={!!v.controls} size={28} ring={colors.accent} style={{ transitionDelay: v.controls ? `${i * 140}ms` : '0ms' }}>
+            <span className="grid place-items-center" style={{ color: colors.accentDark }}>
+              {ic}
+            </span>
+          </Badge>
+        </At>
+      ))}
+      {/* the traffic each point is about */}
+      <Traveller path={LINK} run={!!v.reach && !STILL} k="link" tone={colors.accent} size={13} dur={2.2} />
+      {v.reach && !STILL && <Ripple x={SERVERS[0][0] + D.srv.w / 2} y={SERVERS[0][1] + D.srv.h / 2} r={24} tone={colors.accent} n={1} dur={2.2} />}
+      <Traveller path={STOP_PATH} run={!!v.stop && !STILL} k="stop" tone={NET.blocked} size={12} dur={1.2} />
+      <Traveller path={LINK} run={!!v.inout && !STILL} k="in" tone={colors.brand} size={13} dur={2.2} />
+      <Traveller path={OUT_PATH} run={!!v.inout && !STILL} k="out" tone={colors.accent} size={13} dur={1.8} />
     </>
   )
 }
 
-export function Boundary1({ lesson }: { lesson: string }) {
+/*
+  THE SLIDE IS SPLIT IN TWO (round 2, the review: "split this slide into two slides"): the same diagram on
+  both halves, at the same place and scale, the points column wide enough that every point is at most two
+  lines. T01-1 builds the diagram and walks the first three points; T01-1b opens on the whole diagram and
+  walks the last two.
+*/
+const S5_POINTS_W = 500
+const S5_SCALE = (1110 - S5_POINTS_W - 24) / 634
+const S5_FIG_H = Math.round(380 * S5_SCALE)
+
+/** The 634 x 380 diagram, scaled into the narrower stage the wider points column leaves. */
+function Scaled({ children, scale = S5_SCALE }: { children: ReactNode; scale?: number }) {
   return (
-    <PointsFigure
+    <div className="absolute left-0 top-0" style={{ width: 634, height: 380, transform: `scale(${scale})`, transformOrigin: '0 0' }}>
+      {children}
+    </div>
+  )
+}
+
+export function Boundary1({ lesson }: { lesson: string }) {
+  /* 0 host, 1 router and network cloud, 2 provider's router, 3 provider's cloud and its servers;
+     4 the boundary ring and the lit link (point 1), 5 a packet reaches a server through it (point 2),
+     6 the server with no route goes dark behind a stop (point 3); 7 rest */
+  const k = useWalk(8, 4, 1600)
+  const v: NetView = { k: Math.min(k, 3), link: k === 4, ring: k >= 4, reach: k === 5, dark: k >= 6, stop: k === 6 }
+  return (
+    <LitFigure
       id="T01-1"
       kicker="Deployment Boundary"
       title="Why Networking Matters"
       lead="Every cloud resource needs connectivity rules deciding what it can reach and what can reach it"
       lesson={lesson}
-      points={T011_POINTS}
-      figure={<BoundaryScene />}
+      points={T011_POINTS.slice(0, 3).map((text, i) => ({ icon: T011_ICONS[i], text }))}
+      lit={k >= 4 && k <= 6 ? k - 4 : -1}
+      figure={<Scaled><CloudNetworkingScene v={v} /></Scaled>}
+      figH={S5_FIG_H}
+      pointsW={S5_POINTS_W}
+      pointSize={17}
     />
   )
 }
 
-/* ===== T01-AN · Analogy: A school's gates and corridors */
-
-const AN_H = 390
-
-/** A tag inside an analogy picture, in the TR's words; solid while its pair is the one lit. */
-function Tag({ children, lit, style }: { children: ReactNode; lit: boolean; style?: CSSProperties }) {
+/** T01-1b, the second half: the whole diagram (boundary ring, the dark server), then traffic in and out (point 4), then the four controls (point 5). */
+export function Boundary1b({ lesson }: { lesson: string }) {
+  const k = useWalk(4, 1, 1900)
+  const v: NetView = { k: 3, ring: true, dark: true, inout: k === 1, controls: k >= 2 }
   return (
-    <Label size={14} strong tone={lit ? 'solid' : 'plain'} raised style={style}>
-      {children}
-    </Label>
-  )
-}
-
-/** The pairs light in turn on one clock both scenes read: the gate pair, then the corridor pair, then a hold with none lit. */
-function useAnalogyPair() {
-  return useCycle(3, 2400, 2)
-}
-
-/* the school: the wall with its gate (row A), the corridor with its room doors (row B) */
-const WALL_X = 110
-const WALL = { top: 62, bottom: 192, gapTop: 122, gapBottom: 158 }
-const ROW_A = (WALL.gapTop + WALL.gapBottom) / 2
-const SCHOOL = { x: 290, y: 56, w: 150 }
-const CORRIDOR = { x: 60, y: 300, w: 380, h: 40 }
-const DOORS = [170, 270, 370]
-const DOOR = { y: 252, s: 40 }
-
-function Post({ x, y }: { x: number; y: number }) {
-  return (
-    <At x={x} y={y} cx cy>
-      <span aria-hidden className="block rounded-[4px]" style={{ width: 14, height: 14, background: colors.brandDark, boxShadow: `0 0 0 2.5px ${colors.white}, 0 6px 12px -6px rgba(16,32,58,0.6)` }} />
-    </At>
-  )
-}
-
-function SchoolScene() {
-  const k = useAnalogyPair()
-  const a = k === 0
-  const b = k === 1
-  const wall = (top: number, bottom: number) => <span aria-hidden className="absolute rounded-full" style={{ left: WALL_X - 2.5, top, width: 5, height: bottom - top, background: colors.brandDeep }} />
-  return (
-    <>
-      {/* row A: the wall, its gate opening, the entry rule on the gate, the way in */}
-      {wall(WALL.top, WALL.gapTop - 8)}
-      {wall(WALL.gapBottom + 8, WALL.bottom)}
-      <Post x={WALL_X} y={WALL.gapTop - 8} />
-      <Post x={WALL_X} y={WALL.gapBottom + 8} />
-      <At x={WALL_X} y={WALL.top - 14} cx cy>
-        <Tag lit={a}>entry rules</Tag>
-      </At>
-      <At x={WALL_X} y={WALL.bottom + 14} cx cy>
-        <Tag lit={a}>gates</Tag>
-      </At>
-      <At x={SCHOOL.x} y={SCHOOL.y}>
-        <ClayInstitution w={SCHOOL.w} />
-      </At>
-      <Arrow x1={24} y1={ROW_A} x2={SCHOOL.x + 14} y2={ROW_A} tone={a ? colors.brand : colors.muted} />
-      <At x={(WALL_X + SCHOOL.x) / 2} y={ROW_A + 28} cx cy>
-        <Tag lit={a}>who can enter</Tag>
-      </At>
-      {/* row B: the corridor, the room doors on it, where the corridor leads */}
-      <At x={DOORS[1]} y={DOOR.y - 22} cx cy>
-        <Tag lit={b}>which rooms they can access</Tag>
-      </At>
-      {DOORS.map((x, i) => (
-        <At key={x} x={x} y={DOOR.y + DOOR.s / 2} cx cy>
-          <span className="relative block" style={{ width: DOOR.s, height: DOOR.s, color: i === 2 ? colors.muted : colors.brandDark }}>
-            {i === 2 ? <DoorClosed size={DOOR.s} strokeWidth={1.8} /> : <DoorOpen size={DOOR.s} strokeWidth={1.8} />}
-            {i === 2 && (
-              <span className="absolute" style={{ right: -10, top: -8 }}>
-                <NoMark size={18} />
-              </span>
-            )}
-          </span>
-        </At>
-      ))}
-      <At x={CORRIDOR.x} y={CORRIDOR.y}>
-        <div className="relative rounded-[12px]" style={{ width: CORRIDOR.w, height: CORRIDOR.h, ...TILE_SKIN }}>
-          <At x={10} y={CORRIDOR.h / 2} cy>
-            <Tag lit={b}>corridors</Tag>
-          </At>
-        </div>
-      </At>
-      <Traveller path={[[CORRIDOR.x + 112, CORRIDOR.y + CORRIDOR.h / 2], [CORRIDOR.x + CORRIDOR.w - 20, CORRIDOR.y + CORRIDOR.h / 2]]} run={b} k={k} tone={colors.brand} size={14} dur={2.0} />
-      <At x={DOORS[1] + 60} y={CORRIDOR.y + CORRIDOR.h + 18} cx cy>
-        <Tag lit={b}>where they can go</Tag>
-      </At>
-    </>
-  )
-}
-
-/* the concept: T01-1's boundary, smaller, on the 470 x 390 stage; row A is the way in, row B the resources inside */
-const BN = { x: 150, y: 44, w: 300, h: 326 }
-const CR1 = { cx: 400, top: 104, s: 56 }
-const CR2 = { cx: 250, top: 264, s: 48 }
-const CR3 = { cx: 400, top: 264, s: 48 }
-const CROW_A = CR1.top + CR1.s / 2
-
-function CloudScene() {
-  const k = useAnalogyPair()
-  const a = k === 0
-  const b = k === 1
-  const r1b = CR1.top + CR1.s
-  return (
-    <>
-      <At x={BN.x} y={BN.y}>
-        <Boundary w={BN.w} h={BN.h} label="cloud networking" />
-      </At>
-      {/* row A: traffic crosses the line into a resource */}
-      <At x={BN.x + 14} y={72}>
-        <Tag lit={a}>how traffic reaches cloud resources</Tag>
-      </At>
-      <At x={CR1.cx} y={CR1.top} cx>
-        <Resource size={CR1.s} />
-      </At>
-      <Arrow x1={24} y1={CROW_A} x2={CR1.cx - CR1.s / 2} y2={CROW_A} tone={a ? colors.brand : colors.muted} />
-      {/* row B: from there it reaches one resource and is stopped before another */}
-      <At x={CR2.cx} y={CR2.top} cx>
-        <Resource size={CR2.s} />
-      </At>
-      <At x={CR3.cx} y={CR3.top} cx>
-        <Resource size={CR3.s} />
-      </At>
-      <Arrow x1={CR1.cx - 14} y1={r1b} x2={CR2.cx + 12} y2={CR2.top} tone={b ? colors.brand : colors.muted} />
-      <Arrow x1={CR3.cx} y1={r1b} x2={CR3.cx} y2={CR3.top - 34} tone={b ? NET.blocked : colors.muted} />
-      <At x={CR3.cx} y={CR3.top - 21} cx cy>
-        <NoMark size={NO} />
-      </At>
-      <At x={BN.x + BN.w / 2} y={CR2.top + CR2.s + 26} cx cy>
-        <Tag lit={b}>which resources it can access</Tag>
-      </At>
-    </>
-  )
-}
-
-/**
- * The analogy rule (course R3, the user: "analogies represented exactly"):
- * `IsoAnalogy` `bare`, the familiar picture left, the concept picture right,
- * every clause of the TR's sentence a tag inside the picture it describes,
- * matched pairs at the same height, one clock for both.
- */
-export function SchoolAnalogy({ lesson }: { lesson: string }) {
-  void AN_W
-  return (
-    <IsoAnalogy
-      id="T01-AN"
+    <LitFigure
+      id="T01-1b"
       kicker="Deployment Boundary"
-      title="A school's gates, corridors and entry rules"
+      title="Why Networking Matters"
       lesson={lesson}
-      bare
-      h={AN_H}
-      everyday={{ label: "A school's gates, corridors and entry rules", scene: <SchoolScene /> }}
-      cloud={{ label: 'Cloud networking controls traffic to resources', scene: <CloudScene /> }}
+      points={T011_POINTS.slice(3).map((text, i) => ({ icon: T011_ICONS[i + 3], text }))}
+      lit={k === 1 || k === 2 ? k - 1 : -1}
+      figure={<Scaled><CloudNetworkingScene v={v} /></Scaled>}
+      figH={S5_FIG_H}
+      pointsW={S5_POINTS_W}
+      pointSize={17}
     />
   )
 }
@@ -318,74 +357,159 @@ export function SchoolAnalogy({ lesson }: { lesson: string }) {
 const T021_LEAD = 'The deployment boundary is built from a small set of pieces that together control where traffic starts, stops and crosses isolation lines'
 const T021_POINTS = [
   'On AWS (Amazon Web Services), all of them are configured from the VPC (Virtual Private Cloud) console',
-  'All of it runs on software-defined networking (SDN): the model where a control plane makes routing and security decisions in software, then pushes them onto hardware shared across many customers, so creating a VPC is an API call, not a cabling job',
+  /* the SDN point cut at the TR's own clause boundaries (round 2: "too large, split it into smaller points"); every word kept, in order */
+  'All of it runs on software-defined networking (SDN):',
+  'the model where a control plane makes routing and security decisions in software,',
+  'then pushes them onto hardware shared across many customers,',
+  'so creating a VPC is an API call, not a cabling job',
 ]
+const T021_ICONS = [<LayoutDashboard key="a" />, <Network key="b" />, <Route key="c" />, <Users key="d" />, <Unplug key="e" />]
+const S7_POINTS_W = 540
 
-/* the two layers and the boundary between them, on the 634 x 380 stage */
+/*
+  THE CARD'S OWN EXPLANATION on the 634 x 380 stage: the VPC console on AWS
+  (a console window: the service's pages down the side, the cursor clicking
+  create), the API call down into the control plane (routing and security
+  decisions in software, its gear turning), pushed onto the hardware shared
+  across many customers (racks, a customer on each); and what it is not, a
+  cabling job, crossed out beside the console.
+*/
+/* laid out for the 546px stage beside the wider points column */
 const P = {
-  plane: { x: 24, y: 24, w: 470, h: 50 },
-  bound: { x: 24, y: 100, w: 350, h: 176 },
-  hw: { x: 24, y: 300, w: 470, h: 60 },
-  lane: 440,
-  logo: 562,
+  console: { x: 20, y: 12, w: 300, h: 112 },
+  cable: { cx: 436, cy: 66 },
+  plane: { x: 16, y: 156, w: 514, h: 82 },
+  hw: { x: 16, y: 280, w: 514, h: 86 },
+  lane: 170,
+} as const
+const CUSTOMERS = [colors.brand, colors.accent, colors.teal, '#8B5CF6']
+
+function ConsoleWindow({ click }: { click: boolean }) {
+  const side = [<img key="v" src={vpcIcon} alt="" className="block h-[16px] w-[16px]" />, <Network key="n" size={14} />, <Table2 key="t" size={14} />, <LockIco key="l" size={14} />]
+  return (
+    <div className="relative overflow-hidden rounded-[14px]" style={{ width: P.console.w, height: P.console.h, ...TILE_SKIN }}>
+      {/* the title bar: the window's dots, the AWS mark, the console's name */}
+      <div className="flex items-center gap-2 px-3" style={{ height: 34, background: 'linear-gradient(180deg, #232F3E 0%, #1B2532 100%)' }}>
+        {['#FF5F57', '#FEBC2E', '#28C840'].map((c) => (
+          <span key={c} aria-hidden className="block h-[8px] w-[8px] rounded-full" style={{ background: c }} />
+        ))}
+        <span className="ml-2 grid h-[22px] place-items-center rounded-[6px] bg-white px-1.5">
+          <Logo name="aws" h={14} />
+        </span>
+        <span className="font-heading text-[15px] font-semibold text-white">VPC console</span>
+      </div>
+      {/* the service's pages down the side, the page body with a create button */}
+      <div className="absolute flex flex-col items-center gap-1 py-2" style={{ left: 0, top: 34, bottom: 0, width: 40, background: '#EEF3FB', color: colors.brandDark, boxShadow: 'inset -1px 0 0 #CFDCF5' }}>
+        {side.map((s, i) => (
+          <span key={i} className="grid h-[14px] place-items-center" style={{ opacity: i === 0 ? 1 : 0.7 }}>
+            {s}
+          </span>
+        ))}
+      </div>
+      <div className="absolute" style={{ left: 54, top: 46, right: 14 }}>
+        {[0.62, 0.86, 0.48].map((w, i) => (
+          <span key={i} aria-hidden className="mb-2 block h-[7px] rounded-full" style={{ width: `${w * 100}%`, background: i === 0 ? '#C9D7F2' : '#E2E9F6' }} />
+        ))}
+      </div>
+      <span aria-hidden className={`absolute grid place-items-center rounded-[8px] ${run(click, 'ov-click') ?? ''}`} style={{ right: 16, bottom: 12, width: 38, height: 26, background: colors.accent, color: '#fff', boxShadow: '0 6px 12px -6px rgba(229,115,42,0.8)' }}>
+        <Plus size={16} strokeWidth={3} />
+      </span>
+      {/* the cursor, moving onto create and pressing it */}
+      <span aria-hidden className="absolute" style={{ right: click ? 12 : 120, bottom: click ? 2 : 20, color: colors.ink, transition: `right 700ms ${EASE}, bottom 700ms ${EASE}`, filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.25))' }}>
+        <MousePointer2 size={20} fill="#fff" strokeWidth={2} />
+      </span>
+    </div>
+  )
 }
 
-function PiecesScene() {
-  /* the press order: the slots, the logo and the console chip, the control plane over the hardware; held complete */
-  const k = useCycle(3, 2400, 2)
-  const instant = useInstant()
-  const ease = instant ? 'none' : `opacity 480ms ${EASE}`
+function PiecesScene({ k }: { k: number }) {
+  const consoleBottom = P.console.y + P.console.h
+  const planeBottom = P.plane.y + P.plane.h
+  const racks = 4
+  const rackX = (i: number) => 128 + i * 38
   return (
     <>
-      {/* the boundary with its four empty slots */}
-      <At x={P.bound.x} y={P.bound.y}>
-        <Boundary w={P.bound.w} h={P.bound.h} label="deployment boundary" />
+      {/* 0 · the VPC console, on AWS */}
+      <At x={P.console.x} y={P.console.y}>
+        <ConsoleWindow click={k >= 1} />
       </At>
-      <Slots x={P.bound.x + 22} y={P.bound.y + 30} w={P.bound.w - 44} h={P.bound.h - 56} />
-      {/* the provider and its console */}
-      <At x={P.logo} y={128} cx>
-        <Fade on={k >= 1} lift={8}>
-          <Logo name="aws" h={30} caption="AWS" />
-        </Fade>
-      </At>
-      <At x={P.logo} y={198} cx>
-        <Fade on={k >= 1} lift={8} delay={120}>
-          <Label size={14} strong raised>
-            VPC console
+      {/* 3 · not a cabling job */}
+      <At x={P.cable.cx} y={P.cable.cy} cx cy>
+        <div className="flex flex-col items-center gap-2" style={shown(k >= 3, 0)}>
+          <span className="relative">
+            <IconDisc tone={colors.muted} size={56}>
+              <Cable size={28} strokeWidth={2} />
+            </IconDisc>
+            <span className="absolute" style={{ right: -8, top: -6 }}>
+              <NoMark size={24} on={k >= 4} />
+            </span>
+          </span>
+          <Label size={14} strong tone="muted" raised style={{ textDecoration: 'line-through', textDecorationThickness: 2, textDecorationColor: NET.blocked }}>
+            a cabling job
           </Label>
-        </Fade>
+        </div>
       </At>
-      {/* the control plane above, the shared hardware below, one arrow down */}
+      {/* 1 · the API call, down into the control plane */}
+      <Arrow x1={P.lane} y1={consoleBottom + 4} x2={P.lane} y2={P.plane.y - 1} on={k >= 1} />
+      <Traveller path={[[P.lane, consoleBottom + 6], [P.lane, P.plane.y - 6]]} run={k >= 1 && !STILL} k="api" tone={colors.accent} size={11} dur={1.2} />
+      <At x={P.lane + 16} y={(consoleBottom + P.plane.y) / 2} cy>
+        <Word on={k >= 1} tone="brand" delay={500}>
+          API call
+        </Word>
+      </At>
       <At x={P.plane.x} y={P.plane.y}>
-        <Fade on={k >= 2} lift={8}>
-          <PlaneBox w={P.plane.w} h={P.plane.h} />
-        </Fade>
+        <div style={shown(k >= 1, 300)}>
+          <Boundary w={P.plane.w} h={P.plane.h} solid tone={NET.gateway} fill={TILE_SKIN.background as string} radius={16} style={{ boxShadow: TILE_SKIN.boxShadow }} label="control plane" labelTone="dark">
+            <At x={P.plane.w / 2} y={P.plane.h / 2 + 4} cx cy>
+              <span className="inline-flex items-center gap-3" style={shown(k >= 2, 0)}>
+                <IconDisc tone={colors.brand} size={34}>
+                  <Route size={17} />
+                </IconDisc>
+                <Label size={14} strong raised icon={<span className={run(k >= 2, 'cvx cvx-spin')} style={{ display: 'grid' }}><Cog size={14} /></span>}>
+                  routing and security decisions in software
+                </Label>
+                <IconDisc tone={colors.brand} size={34}>
+                  <ShieldCheck size={17} />
+                </IconDisc>
+              </span>
+            </At>
+          </Boundary>
+        </div>
       </At>
-      <CornerLabel x={P.plane.x} y={P.plane.y} on={k >= 2} tone="dark">
-        control plane
-      </CornerLabel>
-      <At x={P.plane.x + P.plane.w + 18} y={P.plane.y + P.plane.h / 2} cy>
-        <Fade on={k >= 2} lift={8} delay={120}>
-          <Label size={14} strong raised>
-            API call
-          </Label>
-        </Fade>
+      {/* 2 · pushed onto the hardware, shared across many customers */}
+      <Arrow x1={P.lane} y1={planeBottom + 4} x2={P.lane} y2={P.hw.y - 1} on={k >= 3} />
+      <Traveller path={[[P.lane, planeBottom + 6], [P.lane, P.hw.y - 6]]} run={k >= 3 && !STILL} k="push" tone={colors.brand} size={11} dur={1.2} />
+      <At x={P.lane + 16} y={(planeBottom + P.hw.y) / 2} cy>
+        <Word on={k >= 3} tone="brand" delay={500}>
+          pushes them onto
+        </Word>
       </At>
-      <Arrow x1={P.lane} y1={P.plane.y + P.plane.h} x2={P.lane} y2={P.hw.y} on={k >= 2} delay={240} />
       <At x={P.hw.x} y={P.hw.y}>
-        <div style={{ opacity: k >= 2 ? 1 : 0, transition: ease }}>
-          <HardwareRow w={P.hw.w} h={P.hw.h} rackW={32} rackX={108}>
-            <At x={12} y={P.hw.h / 2} cy>
-              <Label size={14} strong tone="brand">
-                hardware
-              </Label>
+        <div className="relative rounded-[16px]" style={{ width: P.hw.w, height: P.hw.h, ...TILE_SKIN, ...shown(k >= 3, 300) }}>
+          <At x={14} y={P.hw.h / 2} cy>
+            <Label size={14} strong tone="brand">
+              hardware
+            </Label>
+          </At>
+          {Array.from({ length: racks }, (_, i) => (
+            <At key={i} x={rackX(i)} y={P.hw.h / 2 + 8} cx cy>
+              <div className="relative">
+                <Icon3D name="server-stack" w={30} h={36} shadow={false} />
+                <Led x={26} y={6} delay={i * 0.3} />
+                {/* a customer on every rack: one machine, many customers */}
+                <span className="absolute" style={{ left: 13, top: -18, ...shown(k >= 3, 600 + i * 120, -6) }}>
+                  <IconDisc tone={CUSTOMERS[i]} size={22}>
+                    <UserRound size={12} strokeWidth={2.6} />
+                  </IconDisc>
+                </span>
+              </div>
             </At>
-            <At x={P.hw.w - 12} y={P.hw.h / 2} cy style={{ transform: 'translate(-100%, -50%)' }}>
-              <Label size={14} strong>
-                shared across many customers
-              </Label>
-            </At>
-          </HardwareRow>
+          ))}
+          <At x={P.hw.w - 14} y={P.hw.h / 2} cy style={{ transform: 'translate(-100%, -50%)' }}>
+            <Label size={14} strong>
+              shared across many customers
+            </Label>
+          </At>
         </div>
       </At>
     </>
@@ -393,7 +517,23 @@ function PiecesScene() {
 }
 
 export function Pieces({ lesson }: { lesson: string }) {
-  return <PointsFigure id="T02-1" kicker="Core Building Blocks" title="The Network Map" lead={T021_LEAD} lesson={lesson} points={T021_POINTS} figure={<PiecesScene />} />
+  /* 0 the console (point 1); 1 the click, the API call, the control plane (point 2); 2 its routing and security
+     decisions (point 3); 3 pushed onto the shared hardware (point 4); 4 the cabling job crossed (point 5); 5 rest */
+  const k = useWalk(6, 5, 1700)
+  return (
+    <LitFigure
+      id="T02-1"
+      kicker="Core Building Blocks"
+      title="The Network Map"
+      lead={T021_LEAD}
+      lesson={lesson}
+      points={T021_POINTS.map((text, i) => ({ icon: T021_ICONS[i], text }))}
+      lit={k <= 4 ? k : -1}
+      figure={<PiecesScene k={k} />}
+      pointsW={S7_POINTS_W}
+      pointSize={17}
+    />
+  )
 }
 
 /* ===== T02-2 · The four building blocks */
@@ -404,92 +544,70 @@ const T022_POINTS = [
   'Gateways and route tables decide which subnets can reach the internet or other private networks',
   'Security groups and network access control lists filter traffic allowed in and out of each resource',
 ]
+const T022_ICONS = [<SquareDashed key="a" />, <LayoutGrid key="b" />, <RouterIco key="c" />, <ShieldCheck key="d" />]
 
-/** Where a ray from a disc's centre leaves it, towards (tx, ty). */
-function discEdge(cx: number, cy: number, r: number, tx: number, ty: number): [number, number] {
-  const a = Math.atan2(ty - cy, tx - cx)
-  return [cx + Math.cos(a) * r, cy + Math.sin(a) * r]
-}
-
-const IGW_R = 23
-/* the drawing's own width inside the stage, centred: the VPC box spans G.vpc, nothing sits to its right on this card */
-const DX = Math.round((FIG_W - G.vpc.w) / 2 - G.vpc.x)
-
-/**
- * THE ONE VPC DRAWING, built a block per beat: the same pieces at the same
- * numbers as `VpcScene` (`G`), each wrapped so it eases in on its press and is
- * lit for that beat; every later card draws it with `VpcScene` and lights a part.
- */
-function BlocksScene() {
-  /* 0 the empty boundary with its slots; 1 the VPC box; 2 the subnets; 3 the gateway, its route tables and arrows; 4 the locks; 5 everything, nothing lit (held) */
-  const k = useCycle(6, 2400, 5)
-  const [ax, ay] = discEdge(G.igw.cx, G.igw.cy, IGW_R, G.pri.x + G.pri.w / 2, G.pri.y)
+/** THE ONE VPC DRAWING at the size that fills the stage, one block per point, lit on its beat: the container, the subnets, the gateways with their route tables, the locks. */
+function BlocksScene({ k }: { k: number }) {
+  const igwPath: [number, number][] = [
+    [BG.igw.cx, BG.igw.cy + BG.igw.r + 2],
+    [BG.igw.cx, BG.pub.y + 30],
+    [BG.instPub.cx + 30, BG.instPub.cy - 10],
+  ]
+  const natPath: [number, number][] = [
+    [BG.instPri.cx - 30, BG.instPri.cy + 12],
+    [BG.pri.x - 2, BG.nat.cy],
+    [BG.nat.cx + BG.nat.r + 2, BG.nat.cy],
+  ]
   return (
-    <div className="absolute" style={{ left: DX, top: 0, width: G.W, height: G.H }}>
-      <At x={G.vpc.x} y={G.vpc.y}>
-        <Boundary w={G.vpc.w} h={G.vpc.h} lit={k === 1} />
+    <>
+      {/* 0 · the container already groups the resources: the two instances stand in it before the subnets divide it */}
+      {k === 0 &&
+        [BG.instPub, BG.instPri].map((p, i) => (
+          <At key={i} x={p.cx} y={p.cy} cx cy>
+            <Resource size={56} />
+          </At>
+        ))}
+      <BigVpc subnets={k >= 1} instances igw={k >= 2} nat={k >= 2} routeTables={k >= 2} locks={k >= 3} lit={{ public: k === 1, private: k === 1, igw: k === 2, nat: k === 2, routeTables: k === 2, locks: k === 3 }} />
+      {/* the container: the AWS VPC mark on its corner */}
+      <At x={BG.vpc.x + 96} y={BG.vpc.y + 24} cx cy>
+        <span className="grid place-items-center rounded-[10px] bg-white p-1" style={{ boxShadow: k === 0 && !STILL ? `0 0 0 3px ${NET.lit}, 0 8px 16px -8px rgba(16,32,58,0.5)` : '0 8px 16px -8px rgba(16,32,58,0.5)', transition: `box-shadow 420ms ${EASE}` }}>
+          <img src={vpcIcon} alt="" aria-hidden className="block h-[30px] w-[30px]" />
+        </span>
       </At>
-      <CornerLabel x={G.vpc.x} y={G.vpc.y} on={k >= 1}>
-        VPC
-      </CornerLabel>
-      <Slots x={G.vpc.x + 22} y={G.pub.y} w={G.vpc.w - 44} h={G.pub.h} on={k === 0} />
-      {/* the subnets */}
-      <At x={G.pub.x} y={G.pub.y}>
-        <Fade on={k >= 2} lift={8}>
-          <SubnetBox w={G.pub.w} h={G.pub.h} kind="public" label="Public subnet" lit={k === 2} />
-        </Fade>
-      </At>
-      <At x={G.pri.x} y={G.pri.y}>
-        <Fade on={k >= 2} lift={8} delay={120}>
-          <SubnetBox w={G.pri.w} h={G.pri.h} kind="private" label="Private subnet" lit={k === 2} />
-        </Fade>
-      </At>
-      {/* the gateway on the VPC edge, its arrows to the subnets, the route tables */}
-      <At x={G.igw.cx} y={G.igw.cy} cx cy>
-        <Fade on={k >= 3} lift={8}>
-          <Gateway kind="igw" lit={k === 3} />
-        </Fade>
-      </At>
-      <At x={G.igw.cx} y={G.igw.cy - 42} cx cy>
-        <Fade on={k >= 3} lift={6}>
-          <Label size={14} strong tone={k === 3 ? 'solid' : 'plain'} raised>
-            gateway
-          </Label>
-        </Fade>
-      </At>
-      <Arrow x1={G.igw.cx} y1={G.igw.cy + IGW_R} x2={G.igw.cx} y2={G.pub.y - 2} on={k >= 3} delay={200} tone={k === 3 ? NET.lit : colors.brand} />
-      <Arrow x1={ax} y1={ay} x2={G.pri.x + G.pri.w / 2} y2={G.pri.y - 2} on={k >= 3} delay={300} tone={k === 3 ? NET.lit : colors.brand} />
-      <At x={G.rtPub.x} y={G.rtPub.y} w={G.rtPub.w}>
-        <Fade on={k >= 3} lift={6} delay={200}>
-          <div className="grid place-items-center" style={{ height: G.rtPub.h }}>
-            <RouteChip lit={k === 3} />
-          </div>
-        </Fade>
-      </At>
-      <At x={G.rtPri.x} y={G.rtPri.y} w={G.rtPri.w}>
-        <Fade on={k >= 3} lift={6} delay={300}>
-          <div className="grid place-items-center" style={{ height: G.rtPri.h }}>
-            <RouteChip lit={k === 3} />
-          </div>
-        </Fade>
-      </At>
-      {/* the locks on each subnet */}
-      <At x={G.lockPub.cx} y={G.lockPub.cy} cx cy>
-        <Fade on={k >= 4} lift={6}>
-          <LockBadge lit={k === 4} />
-        </Fade>
-      </At>
-      <At x={G.lockPri.cx} y={G.lockPri.cy} cx cy>
-        <Fade on={k >= 4} lift={6} delay={120}>
-          <LockBadge lit={k === 4} />
-        </Fade>
-      </At>
-    </div>
+      {/* the locks filter: each shackle snaps shut as its pair is lit */}
+      {k === 3 &&
+        !STILL &&
+        [BG.pub, BG.pri].map((b, i) => (
+          <span key={i} aria-hidden className="ov-ring pointer-events-none absolute rounded-full" style={{ left: b.x + b.w - 22, top: b.y - 22, width: 44, height: 44, border: `2.5px solid ${NET.lit}`, animationDelay: `${i * 0.3}s` }} />
+        ))}
+      {/* traffic on the gateways' lines, from the gateways' beat on */}
+      <Traveller path={igwPath} run={k >= 2 && !STILL} k="igw" tone={NET.public} size={12} dur={2} />
+      <Traveller path={natPath} run={k >= 2 && !STILL} k="nat" tone={NET.private} size={12} dur={2.2} />
+    </>
   )
 }
 
+/* round 2 (the review: "reduce the right illustration slightly, widen the left points so every point fits in two lines") */
+const S8_POINTS_W = 510
+const S8_SCALE = (1110 - S8_POINTS_W - 24) / 634
+
 export function FourBlocks({ lesson }: { lesson: string }) {
-  return <PointsFigure id="T02-2" kicker="Core Building Blocks" title="The Network Map" lesson={lesson} points={T022_POINTS} figure={<BlocksScene />} />
+  /* 0 the container, 1 the subnets, 2 the gateways and route tables, 3 the locks, 4 rest */
+  const k = useWalk(5, 4, 1700)
+  return (
+    <LitFigure
+      id="T02-2"
+      kicker="Core Building Blocks"
+      title="The Network Map"
+      lesson={lesson}
+      points={T022_POINTS.map((text, i) => ({ icon: T022_ICONS[i], text }))}
+      lit={k <= 3 ? k : -1}
+      figure={<Scaled scale={S8_SCALE}><BlocksScene k={k} /></Scaled>}
+      figH={Math.round(380 * S8_SCALE)}
+      pointsW={S8_POINTS_W}
+      pointSize={17}
+    />
+  )
 }
 
 /* ===== T02-3 · Control plane and data plane */
@@ -499,67 +617,136 @@ const T023_POINTS = [
   'This split is what makes every building block above configurable instead of physically wired',
 ]
 
+/*
+  THE TWO PLANES on the 634 x 380 stage: the control plane on top holds the four
+  building blocks of T02-2 as configuration tiles, each with its switch, and a
+  turning gear (deciding where traffic should go); its decisions drop down the
+  arrow onto the data plane, five racks on one lane where packets are actually
+  forwarded rack to rack. Point 2: every switch flips (configurable) and the
+  physical cable is crossed out beside the data plane.
+*/
 const Q = {
-  plane: { x: 40, y: 30, w: 554, h: 190 },
-  hw: { x: 40, y: 262, w: 554, h: 80 },
-  lane: FIG_W / 2,
+  plane: { x: 24, y: 24, w: 586, h: 170 },
+  hw: { x: 24, y: 246, w: 586, h: 104 },
+  lane: 317,
 }
-/* the four blocks, small, in a row inside the control plane */
-const MINI_Y = Q.plane.y + 58
-const MINI_H = 104
-const MINI_X = [Q.plane.x + 34, Q.plane.x + 170, Q.plane.x + 330, Q.plane.x + 456]
+const TILE = { w: 104, h: 112, y: 40 }
+const TILE_X = [118, 236, 354, 472]
 
-function PlanesScene() {
-  /* the press order: the two layers, the two labels, the four blocks inside the control plane; held complete */
-  const k = useCycle(3, 2400, 2)
-  /* the packets' lane runs inside the hardware tile, so its points are the tile's own coordinates */
-  const lane = (y: number): [number, number][] => [[24, y], [Q.hw.w - 24, y]]
+/** One building block as a configuration tile: the block's drawing, a switch under it. */
+function ConfigTile({ children, on, flip, delay }: { children: ReactNode; on: boolean; flip: boolean; delay: number }) {
+  return (
+    <div className="relative flex flex-col items-center justify-between rounded-[14px] py-2.5" style={{ width: TILE.w, height: TILE.h, ...TILE_SKIN, ...shown(on, delay) }}>
+      <div className="grid flex-1 place-items-center">{children}</div>
+      {/* the switch: off, then flipped on by software */}
+      <span aria-hidden className="relative block rounded-full" style={{ width: 36, height: 18, background: flip ? colors.success : '#C9D3E3', transition: `background 380ms ${EASE} ${delay}ms` }}>
+        <span className="absolute block rounded-full bg-white" style={{ top: 2, left: 2, width: 14, height: 14, boxShadow: '0 1px 3px rgba(0,0,0,0.3)', transform: flip ? 'translateX(18px)' : 'none', transition: `transform 380ms ${EASE} ${delay}ms` }} />
+      </span>
+    </div>
+  )
+}
+
+function PlanesScene({ k }: { k: number }) {
+  const flip = k >= 2
+  const rackXs = [70, 180, 290, 400, 510]
+  const laneY = Q.hw.h / 2 + 6
   return (
     <>
+      {/* 0 · the control plane: the gear deciding, the four blocks as configuration */}
       <At x={Q.plane.x} y={Q.plane.y}>
-        <PlaneBox w={Q.plane.w} h={Q.plane.h} />
+        <Boundary w={Q.plane.w} h={Q.plane.h} solid tone={NET.gateway} fill={TILE_SKIN.background as string} radius={16} style={{ boxShadow: TILE_SKIN.boxShadow }} label="control plane" labelTone="dark">
+          <At x={50} y={Q.plane.h / 2 + 4} cx cy>
+            <div className="flex flex-col items-center gap-2">
+              <IconDisc tone={colors.brand} size={46}>
+                <span className={`grid place-items-center ${fx('spin', 0, 6).className}`} style={fx('spin', 0, 6).style}>
+                  <Cog size={24} />
+                </span>
+              </IconDisc>
+              <IconDisc tone={colors.brand} size={34}>
+                <Route size={17} />
+              </IconDisc>
+            </div>
+          </At>
+          {[
+            <Boundary key="v" w={62} h={60} radius={10} />,
+            <div key="s" className="flex" style={{ gap: 6 }}>
+              <SubnetBox w={30} h={60} kind="public" />
+              <SubnetBox w={30} h={60} kind="private" />
+            </div>,
+            <Gateway key="g" kind="igw" size={50} />,
+            <LockBadge key="l" size={44} />,
+          ].map((b, i) => (
+            <At key={i} x={TILE_X[i] - Q.plane.x} y={TILE.y - 8}>
+              <ConfigTile on flip={flip} delay={i * 140}>
+                {b}
+              </ConfigTile>
+            </At>
+          ))}
+        </Boundary>
       </At>
-      <CornerLabel x={Q.plane.x} y={Q.plane.y} on={k >= 1} tone="dark">
-        control plane
-      </CornerLabel>
-      {/* the four building blocks of T02-2, small, where they are configured */}
-      <At x={MINI_X[0]} y={MINI_Y}>
-        <Fade on={k >= 2} lift={8}>
-          <Boundary w={110} h={MINI_H} radius={12} />
-        </Fade>
-      </At>
-      <At x={MINI_X[1]} y={MINI_Y}>
-        <Fade on={k >= 2} lift={8} delay={100}>
-          <div className="flex" style={{ gap: 10 }}>
-            <SubnetBox w={52} h={MINI_H} kind="public" />
-            <SubnetBox w={52} h={MINI_H} kind="private" />
-          </div>
-        </Fade>
-      </At>
-      <At x={MINI_X[2]} y={MINI_Y + MINI_H / 2} cy>
-        <Fade on={k >= 2} lift={8} delay={200}>
-          <Gateway kind="igw" size={56} />
-        </Fade>
-      </At>
-      <At x={MINI_X[3]} y={MINI_Y + MINI_H / 2} cy>
-        <Fade on={k >= 2} lift={8} delay={300}>
-          <LockBadge size={48} />
-        </Fade>
-      </At>
-      {/* software decides, hardware carries: one arrow down */}
-      <Arrow x1={Q.lane} y1={Q.plane.y + Q.plane.h} x2={Q.lane} y2={Q.hw.y} />
+      {/* 1 · the decisions pushed down onto the data plane */}
+      <Arrow x1={Q.lane} y1={Q.plane.y + Q.plane.h + 4} x2={Q.lane} y2={Q.hw.y - 1} on={k >= 1} />
+      <Traveller path={[[Q.lane, Q.plane.y + Q.plane.h + 6], [Q.lane, Q.hw.y - 6]]} run={k >= 1 && !STILL} k="down" tone={colors.accent} size={11} dur={1.1} />
       <At x={Q.hw.x} y={Q.hw.y}>
-        <HardwareRow w={Q.hw.w} h={Q.hw.h} racks={5} rackW={40} gap={56} rackX={(Q.hw.w - (5 * 40 + 4 * 56)) / 2} style={{ height: Q.hw.h }}>
-          <Traveller path={lane(Q.hw.h - 14)} run k={k} tone={colors.brand} size={12} dur={2.2} />
-        </HardwareRow>
+        <div style={shown(k >= 1, 300)}>
+          <Boundary w={Q.hw.w} h={Q.hw.h} solid tone={NET.gateway} fill={TILE_SKIN.background as string} radius={16} style={{ boxShadow: TILE_SKIN.boxShadow }} label="data plane" labelTone="dark">
+            {/* the lane the packets are forwarded along */}
+            <span aria-hidden className="absolute rounded-full" style={{ left: rackXs[0], right: Q.hw.w - rackXs[4], top: laneY - 1.5, height: 3, background: '#C9D7F2' }} />
+            {rackXs.map((x, i) => (
+              <At key={i} x={x} y={laneY} cx cy>
+                <div className="relative">
+                  <Icon3D name="server-stack" w={38} h={44} shadow={false} />
+                  <Led x={33} y={7} delay={i * 0.27} />
+                </div>
+              </At>
+            ))}
+            <Traveller path={rackXs.map((x) => [x, laneY + 26] as [number, number])} run={k >= 1 && !STILL} k="fw1" tone={colors.brand} size={11} dur={2.6} />
+          </Boundary>
+        </div>
       </At>
-      <CornerLabel x={Q.hw.x} y={Q.hw.y} on={k >= 1} tone="dark">
-        data plane
-      </CornerLabel>
+      {/* 2 · configurable, not physically wired: the cable crossed out */}
+      <At x={Q.lane + 84} y={(Q.plane.y + Q.plane.h + Q.hw.y) / 2} cx cy>
+        <span className="relative block" style={shown(k >= 2, 300)}>
+          <IconDisc tone={colors.muted} size={38}>
+            <Cable size={19} />
+          </IconDisc>
+          <span className="absolute" style={{ right: -9, top: -7 }}>
+            <NoMark size={20} on={k >= 2} />
+          </span>
+        </span>
+      </At>
+      <At x={Q.lane - 84} y={(Q.plane.y + Q.plane.h + Q.hw.y) / 2} cx cy>
+        <span className="relative block" style={shown(k >= 2, 150)}>
+          <IconDisc tone={colors.success} size={38}>
+            <SlidersHorizontal size={19} />
+          </IconDisc>
+          <span className="absolute" style={{ right: -8, top: -7 }}>
+            <Badge on={k >= 2} size={20} ring={colors.success} tone={colors.success}>
+              <Check size={12} color="#fff" strokeWidth={3.4} />
+            </Badge>
+          </span>
+        </span>
+      </At>
     </>
   )
 }
 
 export function Planes({ lesson }: { lesson: string }) {
-  return <PointsFigure id="T02-3" kicker="Core Building Blocks" title="The Network Map" lesson={lesson} points={T023_POINTS} figure={<PlanesScene />} figH={FIG_H} />
+  /* 0 the control plane, 1 the push and the data plane forwarding, 2 the switches flip and the cable is crossed, 3 rest */
+  const k = useWalk(4, 3, 1900)
+  return (
+    <LitFigure
+      id="T02-3"
+      kicker="Core Building Blocks"
+      title="The Network Map"
+      lesson={lesson}
+      points={T023_POINTS.map((text, i) => ({ icon: i === 0 ? <Split /> : <SlidersHorizontal />, text }))}
+      lit={k <= 1 ? 0 : k === 2 ? 1 : -1}
+      figure={<PlanesScene k={k} />}
+      figH={FIG_H}
+    />
+  )
 }
+
+/** This section's micro-animations (visual pass, 2026-11-04), appended to the deck's CSS by `netDeck.tsx`. */
+export const OVERVIEW_CSS = OV_MOTION_CSS

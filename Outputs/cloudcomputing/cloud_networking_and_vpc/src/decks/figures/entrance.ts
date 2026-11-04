@@ -1,4 +1,6 @@
 import { STILL } from './scene'
+import { getAutoAnim } from '@/deck/autoAnim'
+import { isFull, localStep, registerTrack, stepGen, subscribeSteps } from '@/deck/animSteps'
 
 /**
  * EVERY ELEMENT ON EVERY SLIDE ENTERS (user, 2026-10-15).
@@ -37,19 +39,30 @@ import { STILL } from './scene'
  * Thumbnails in the slide picker (inside the dialog) are skipped, as are the
  * harness URLs that hold every loop still.
  *
- * THE KIT'S OWN ENTRANCES ARE HELD TO THE SAME 1.5s. The agenda's items, the
+ * THE KIT'S OWN ENTRANCES ARE HELD TO THE SAME 1.0s. The agenda's items, the
  * section divider's number and the quiz frame stagger in for up to 2.05s. Two
  * frames after a slide mounts (when those have started), any finite animation
  * inside it that would end past 1.5s is played faster, by exactly the factor
  * that makes it end on time. Its curve and its order are unchanged.
  */
 
+/*
+  FAST, AND A BOX NEVER LOOKS EMPTY (user, 2026-10-30, G4: "speed up the
+  appearance of inner elements, so that containers never look empty while
+  content loads; use a fast, clean entry animation throughout"): the units
+  enter in 420ms, the first at 150ms, the last done by 1000ms, and a unit
+  that sits INSIDE a top-level unit (a label in a box, a resource in a
+  subnet on a stage) starts INSIDE_GAP ms after that top-level unit, whatever
+  its depth or place in the reading order, so a box and everything in it
+  read as one arrival.
+*/
 const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)'
-const DUR = 550
-const RISE = 26
-const FIRST = 250
-const LAST_END = 1500
-const MAX_STEP = 60
+const DUR = 420
+const RISE = 18
+const FIRST = 150
+const LAST_END = 1000
+const MAX_STEP = 45
+const INSIDE_GAP = 40
 
 const PICTURE = new Set(['svg', 'img', 'canvas', 'iframe', 'video'])
 
@@ -146,15 +159,133 @@ function holdToBudget(section: Element, t0: number) {
   }
 }
 
+/**
+ * STEP-BY-STEP (auto animation OFF, user 2026-11-03): the units are gathered into BLOCKS, a block being
+ * a unit no other unit contains (the lead, one point of a rail, a whole stage or table with everything
+ * in it), in reading order; one press brings in one block. The figure inside a stage then builds on the
+ * presses after (`useCycle`), so a slide walks: lead, points, picture, then the picture's own steps.
+ * Each unit gets a paused entrance, played forward when its block's press arrives and backward on Back.
+ */
+function enterStepped(section: Element, units: Element[]) {
+  const blocks: Element[][] = []
+  for (const el of units) {
+    const owner = blocks.find((b) => b[0] !== el && b[0].contains(el))
+    if (owner) owner.push(el)
+    else blocks.push([el])
+  }
+  /* side by side, the left column first: a block beside a taller one (a point beside the stage) comes before it */
+  const rect = new Map(blocks.map((b) => [b, b[0].getBoundingClientRect()]))
+  blocks.sort((a, b) => {
+    const ra = rect.get(a)!
+    const rb = rect.get(b)!
+    const overlap = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top)
+    if (overlap > 8 && (ra.right <= rb.left + 4 || rb.right <= ra.left + 4)) return ra.left - rb.left
+    return ra.top - rb.top || ra.left - rb.left
+  })
+  const anims: Animation[][] = blocks.map((b) =>
+    b.flatMap((el) => {
+      const cs = getComputedStyle(el)
+      const own = parseFloat(cs.opacity)
+      if (!(own > 0)) return []
+      const move = cs.translate === 'none' || cs.translate === '' || cs.translate === '0px'
+      /*
+        ONLY THE START KEYFRAME (2026-11-04, session 5): the end is implicit, the element's own live opacity and
+        translate. With an explicit `{ opacity: own }` end and fill 'both', a shown block was pinned at the opacity
+        it had at mount, so a figure's later fade (a pair lit, the rest dimmed: G4) never reached the screen.
+      */
+      const frames: Keyframe[] = move ? [{ opacity: 0, translate: `0 ${RISE}px`, offset: 0 }] : [{ opacity: 0, offset: 0 }]
+      const a = el.animate(frames, { duration: DUR, easing: EASE, fill: 'both' })
+      a.pause()
+      a.currentTime = 0
+      return [a]
+    }),
+  )
+  const mine = stepGen()
+  registerTrack('entrance', blocks.length, mine)
+  let shown = -1
+  const sync = () => {
+    if (!section.isConnected) {
+      off()
+      anims.flat().forEach((a) => a.cancel())
+      return
+    }
+    /* the deck moved on: this slide is leaving, it keeps what it shows (no reverse play while it fades out) */
+    if (stepGen() !== mine) return
+    const n = isFull() ? blocks.length : localStep('entrance')
+    if (n === shown) return
+    const instant = shown < 0
+    anims.forEach((group, i) =>
+      group.forEach((a) => {
+        const want = i < n
+        if (instant) {
+          a.currentTime = want ? DUR : 0
+          return
+        }
+        /*
+          ONLY A BLOCK THAT IS NOT ALREADY WHERE IT SHOULD BE MOVES (round 2, change 5: "all content
+          appears at once, then appears again one step at a time"). `play()` on a FINISHED animation
+          auto-rewinds it: a shown block (at its end, rate 1) restarted from opacity 0 and came back,
+          and a hidden one (at 0, rate -1) jumped to its END, fully visible, then faded out again.
+          Every press did that to every block of the slide. A block already at its target is left alone.
+        */
+        const t = Number(a.currentTime ?? 0)
+        a.playbackRate = want ? 1 : -1
+        if (want ? t >= DUR : t <= 0) {
+          /* already there: hold it, never `play()` (that would rewind it) */
+          a.pause()
+          a.currentTime = want ? DUR : 0
+          return
+        }
+        a.play()
+      }),
+    )
+    shown = n
+  }
+  const off = subscribeSteps(sync)
+  sync()
+}
+
 function enter(section: Element) {
+  if (!getAutoAnim()) {
+    const content = section.querySelector(':scope > div.z-10') ?? section
+    enterStepped(section, collect(content))
+    return
+  }
   const t0 = performance.now()
   requestAnimationFrame(() => requestAnimationFrame(() => holdToBudget(section, t0)))
   const content = section.querySelector(':scope > div.z-10') ?? section
   const units = collect(content)
   if (!units.length) return
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const step = Math.min(MAX_STEP, (LAST_END - DUR - FIRST) / Math.max(1, units.length - 1))
-  units.forEach((el, i) => {
+  /* the top-level units (those inside no other unit) set the pace; a unit inside a box follows its box */
+  const set = new Set(units)
+  const boxOf = (el: Element): Element | null => {
+    let p = el.parentElement
+    while (p && p !== content) {
+      if (set.has(p)) return p
+      p = p.parentElement
+    }
+    return null
+  }
+  const top = units.filter((u) => !boxOf(u))
+  const step = Math.min(MAX_STEP, (LAST_END - DUR - FIRST) / Math.max(1, top.length - 1))
+  const delays = new Map<Element, number>()
+  top.forEach((el, i) => delays.set(el, FIRST + i * step))
+  /* a unit inside a top-level unit follows THAT unit, whatever its depth: a stage and everything on it arrive as one */
+  const delayOf = (el: Element): number => {
+    const d = delays.get(el)
+    if (d !== undefined) return d
+    let box = boxOf(el)
+    let root = box
+    while (box) {
+      root = box
+      box = boxOf(box)
+    }
+    const v = root ? (delays.get(root) ?? FIRST) + INSIDE_GAP : FIRST
+    delays.set(el, v)
+    return v
+  }
+  units.forEach((el) => {
     const cs = getComputedStyle(el)
     const own = parseFloat(cs.opacity)
     if (!(own > 0)) return
@@ -162,7 +293,7 @@ function enter(section: Element) {
     const frames: Keyframe[] = move
       ? [{ opacity: 0, translate: `0 ${RISE}px` }, { opacity: own, translate: '0 0' }]
       : [{ opacity: 0 }, { opacity: own }]
-    const delay = FIRST + i * step
+    const delay = delayOf(el)
     el.animate(frames, {
       duration: reduce ? 400 : DUR,
       delay: reduce ? 0 : delay,

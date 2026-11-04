@@ -147,13 +147,10 @@ and 2026-10-06, for every deck from then on; none is a choice the plan makes):
   One gesture, one slide, never over an on-slide control. The kit's
   `src/deck/useGestureNav.ts` does it (in the kit since 2026-10-14); a deck
   adds nothing. Section 7 says how it is checked on the built file.
-- **The standard feedback slide** (content rule 41): the kit's
-  `<FeedbackSlide lesson={SESSION} />` with id `feedback`, nothing copied. It
-  has the QR code, the form link and the Google Form in a frame. The close is
-  fixed: Next Session, then feedback, then Thank You, then All the Best
-  (`ThankYouSlide title="All the Best"`). Never redrawn: the source of truth
-  is the kit's built gallery, and `feedback-check.mjs` (in the kit) must
-  report an exact copy on the built deck.
+- **No feedback slide** (content rule 41, retired 2026-10-30): the kit's
+  `FeedbackSlide` is version 0 and is not used. A deck closes on Next Session,
+  Thank You, All the Best. The user will specify the version 1 feedback slide;
+  until then none is added, not the kit's and not a variants card.
 
 **On every built card, the step controls and autoplay pacing are fixed too**
 (user, 2026-10-07, on Python session 23, "global rules … including slides

@@ -1,9 +1,8 @@
 import type React from 'react'
 import type { DeckMeta, SlideDef } from '@/deck/types'
 import type { SectionBreakerProps } from '@/slides/types'
-import { AgendaSlide, BrandSlide, NextSessionSlide, SectionBreakerSlide, ThankYouSlide } from '@/slides'
-import { FeedbackSlide } from '@/slides/FeedbackSlide'
-import { ClassroomQuiz } from '@/ui/foundations/ClassroomQuiz'
+import { BrandSlide, NextSessionSlide, SectionBreakerSlide, ThankYouSlide } from '@/slides'
+import { AgendaColumns, QuizCard } from './figures/variants'
 import { Takeaways } from './figures/closing'
 import { installSpecKeys } from '@/ui/foundations/keys'
 import { revealEveryStep } from '@/motion/Stepper'
@@ -12,11 +11,18 @@ import { MOTION_CSS } from './figures/motion'
 import { SCENE_CSS, STILL } from './figures/scene'
 import { ART_CSS, mountClayDefs } from './figures/art'
 import { NET_CSS } from './figures/net/frames'
+import { FX_CSS, FX_CSS_2, FX_CSS_3 } from './figures/net/fx'
+import { OVERVIEW_CSS, Boundary1b } from './figures/net/overview'
+import { VPC_CSS, VpcToSubnets2 } from './figures/net/vpc'
+import { SUBNETS_CSS } from './figures/net/subnets'
+import { ROUTING_CSS } from './figures/net/routing'
+import { SECURITY_CSS, NetworkAcl2 } from './figures/net/security'
+import { LAB_CSS, ExploreSecurity2 } from './figures/net/lab'
 import { Boundary1, SchoolAnalogy, Pieces, FourBlocks, Planes } from './figures/net/overview'
-import { WhatIsVpc, FourParts, SocietyAnalogy, DefaultCustom, Providers, VpcToSubnets } from './figures/net/vpc'
-import { SubnetsOverview, CidrSizing, WorkedSplit, SplitTotals, PublicPrivate, ZonePlacement } from './figures/net/subnets'
-import { FourPieces, RouteTables, PostalAnalogy, InternetGateway, NatGateway, TicketAnalogy, Peering, SiteToSiteVpn, PhoneLineAnalogy, RoutingCompared, RoutingNotPermission } from './figures/net/routing'
-import { TwoFilters, DoorCheckpointAnalogy, SecurityGroup, SecurityGroupStacking, NetworkAcl, AclWholeSubnet, GroupsVsAcls, LeastPrivilege } from './figures/net/security'
+import { WhatIsVpc, FourParts, SocietyAnalogy, DefaultCustom, DefaultCustom2, Providers, VpcToSubnets } from './figures/net/vpc'
+import { SubnetsOverview, SubnetsOverview2, CidrSizing, CidrSizing2, WorkedSplit, SplitTotals, PublicPrivate, ZonePlacement, ZonePlacement2 } from './figures/net/subnets'
+import { FourPieces, FourPieces2, RouteTables, RouteTables2, PostalAnalogy, InternetGateway, NatGateway, NatGateway2, TicketAnalogy, Peering, Peering2, SiteToSiteVpn, PhoneLineAnalogy, RoutingCompared, RoutingNotPermission, InternetGateway2 } from './figures/net/routing'
+import { TwoFilters, DoorCheckpointAnalogy, SecurityGroup, SecurityGroup2, SecurityGroup3, SecurityGroupStacking, NetworkAcl, AclWholeSubnet, GroupsVsAcls, LeastPrivilege, LeastPrivilege2 } from './figures/net/security'
 import { LabSteps1, LabSteps2, VpcCreated, PublicSubnetCreated, PrivateSubnetCreated, IgwAttached, RouteTablesTable, PublicRtCreated, PrivateRtCreated, ExploreSecurity } from './figures/net/lab'
 
 /**
@@ -34,6 +40,12 @@ import { LabSteps1, LabSteps2, VpcCreated, PublicSubnetCreated, PrivateSubnetCre
  * held still on harness URLs. No builds (`revealEveryStep`): every element
  * enters in reading order (`figures/entrance.ts`), which is how the spec's
  * press order reaches the screen. Section files: `figures/net/`.
+ *
+ * REVISED 2026-10-30 on the user's correction list (TR fidelity, 3D analogies,
+ * no empty space, fast build-once motion, arrows that never leave, dense
+ * cards split, full screenshots): the split cards carry the card id with a
+ * letter (`T04-1b`), agenda1 and quiz1 replace the kit frames, and there is no
+ * feedback slide (content rule 41).
  */
 
 export const SESSION = 'Cloud Networking & VPC'
@@ -77,7 +89,7 @@ if (typeof document !== 'undefined' && !document.getElementById('cc-css')) {
   const el = document.createElement('style')
   el.id = 'cc-css'
   /* table heads read as the spec writes them (`Subnet CIDR`, `Typical Cost Driver`), not in the kit's capitals: the source text exactly */
-  el.textContent = ART_CSS + SCENE_CSS + MOTION_CSS + NET_CSS + `[data-spec] .grid.items-end > .uppercase.tracking-wider { text-transform: none; letter-spacing: 0.01em }`
+  el.textContent = ART_CSS + SCENE_CSS + MOTION_CSS + NET_CSS + FX_CSS + FX_CSS_2 + FX_CSS_3 + OVERVIEW_CSS + VPC_CSS + SUBNETS_CSS + ROUTING_CSS + SECURITY_CSS + LAB_CSS + `[data-spec] .grid.items-end > .uppercase.tracking-wider { text-transform: none; letter-spacing: 0.01em }`
   document.head.appendChild(el)
   if (STILL) document.documentElement.classList.add('cc-still')
   if (document.body) mountClayDefs()
@@ -102,11 +114,13 @@ export const netDeck: SlideDef[] = [
   /* ── OPENING ─────────────────────────────────────────────────────────── */
   { id: 'S-WELCOME', section: 'Opening', label: 'Welcome', transition: 'fade', element: <BrandSlide greeting="Welcome!" lesson={SESSION} /> },
   { id: 'S-RECAP', section: 'Opening', label: 'Recap', element: <Takeaways id="S-RECAP" kicker="Recap" title="Containers vs Virtual Machines" lesson={SESSION} items={PREVIOUS.map(({ title }) => ({ title }))} art="/assets/takeaways/presenter.png" /> },
-  { id: 'S-AGENDA', section: 'Opening', label: 'Agenda', element: <AgendaSlide kicker={SESSION} title="Agenda" lesson={SESSION} items={AGENDA.map(({ title }) => ({ title }))} /> },
+  /* agenda1, the column layout (user, 2026-10-30: "replace Agenda0 with Agenda1"), titles only (course rule R5) */
+  { id: 'S-AGENDA', section: 'Opening', label: 'Agenda', element: <AgendaColumns kicker={SESSION} lesson={SESSION} items={AGENDA.map(({ title }) => ({ title }))} /> },
 
   /* ── 1 · CLOUD NETWORKING OVERVIEW ───────────────────────────────────── */
   breaker(0),
   slide('T01-1', S[0], 'The deployment boundary', Boundary1),
+  slide('T01-1b', S[0], 'The deployment boundary, traffic and controls', Boundary1b),
   slide('T01-AN', S[0], "Analogy: A school's gates and corridors", SchoolAnalogy),
   slide('T02-1', S[0], 'Pieces, configured in software', Pieces),
   slide('T02-2', S[0], 'The four building blocks', FourBlocks),
@@ -118,27 +132,37 @@ export const netDeck: SlideDef[] = [
   slide('T03-2', S[1], 'Four parts of a VPC', FourParts),
   slide('T03-AN', S[1], 'Analogy: A gated society', SocietyAnalogy),
   slide('T04-1', S[1], 'Default VPC or custom VPC', DefaultCustom),
+  slide('T04-1b', S[1], 'Default VPC or custom VPC, the CIDR', DefaultCustom2),
   slide('T05-1', S[1], 'Same idea, three names', Providers),
   slide('T06-1', S[1], 'From one VPC to its subnets', VpcToSubnets),
+  slide('T06-1b', S[1], 'From VPC to subnets: names and zones', VpcToSubnets2),
 
   /* ── 3 · SUBNETS & IP ADDRESSING ─────────────────────────────────────── */
   breaker(2),
-  slide('T07-1', S[2], 'Subnets: size, type, zone', SubnetsOverview),
+  slide('T07-1', S[2], 'Subnets: size and type', SubnetsOverview),
+  slide('T07-1b', S[2], 'Subnets: zone', SubnetsOverview2),
   slide('T08-1', S[2], 'The reserved address cost', CidrSizing),
+  slide('T08-1b', S[2], 'The smallest subnet', CidrSizing2),
   slide('T09-1', S[2], 'The worked split, row by row', WorkedSplit),
   slide('T09-2', S[2], 'What the split adds up to', SplitTotals),
   slide('T10-1', S[2], 'Public or private, by route', PublicPrivate),
-  slide('T11-1', S[2], 'Two zones keep it running', ZonePlacement),
+  slide('T11-1', S[2], 'Two zones', ZonePlacement),
+  slide('T11-1b', S[2], 'One zone goes down', ZonePlacement2),
 
   /* ── 4 · ROUTING & GATEWAYS ──────────────────────────────────────────── */
   breaker(3),
-  slide('T13-1', S[3], 'The four connectivity pieces', FourPieces),
+  slide('T13-1', S[3], 'The route tables', FourPieces),
+  slide('T13-1b', S[3], 'The three exits', FourPieces2),
   slide('T14-1', S[3], 'A route table, entry by entry', RouteTables),
+  slide('T14-1b', S[3], 'A route table, the default route', RouteTables2),
   slide('T14-AN', S[3], 'Analogy: A postal sorting hub', PostalAnalogy),
   slide('T15-1', S[3], 'The internet gateway', InternetGateway),
+  slide('T15-1c', S[3], 'The internet gateway, translation and public IP', InternetGateway2),
   slide('T16-1', S[3], 'The NAT gateway', NatGateway),
+  slide('T16-1b', S[3], 'The NAT gateway, its route and cost', NatGateway2),
   slide('T16-AN', S[3], 'Analogy: A ticket counter', TicketAnalogy),
   slide('T17-1', S[3], 'VPC peering', Peering),
+  slide('T17-1b', S[3], 'VPC peering, its limits and cost', Peering2),
   slide('T17-2', S[3], 'Site-to-Site VPN', SiteToSiteVpn),
   slide('T17-AN', S[3], 'Analogy: A private telephone line', PhoneLineAnalogy),
   slide('T18-1', S[3], 'Four routing options compared', RoutingCompared),
@@ -149,11 +173,15 @@ export const netDeck: SlideDef[] = [
   slide('T19-1', S[4], 'Two filters, two places', TwoFilters),
   slide('T19-AN', S[4], 'Analogy: A door and a checkpoint', DoorCheckpointAnalogy),
   slide('T20-1', S[4], 'How a security group filters', SecurityGroup),
+  slide('T20-1b', S[4], 'Allow rules, evaluated together', SecurityGroup2),
+  slide('T20-1c', S[4], 'The reply, let through', SecurityGroup3),
   slide('T20-2', S[4], 'Where it is managed, and stacking', SecurityGroupStacking),
   slide('T21-1', S[4], 'How a network ACL filters', NetworkAcl),
+  slide('T21-1b', S[4], 'How a network ACL filters, rule order', NetworkAcl2),
   slide('T21-2', S[4], 'Whole subnet, VPC console', AclWholeSubnet),
   slide('T22-1', S[4], 'Groups and ACLs, side by side', GroupsVsAcls),
   slide('T23-1', S[4], 'Least privilege, both layers', LeastPrivilege),
+  slide('T23-1b', S[4], 'Least privilege, the rules', LeastPrivilege2),
 
   /* ── PRACTICAL HANDS-ON (inside section 5, where the TR puts it) ─────── */
   { id: 'D-LAB', section: S[4], label: 'Practical divider', transition: 'zoom', element: <LabBreaker kicker="Practical Hands-On" title="Building a Cloud Network with AWS VPC" lesson={SESSION} /> },
@@ -167,12 +195,13 @@ export const netDeck: SlideDef[] = [
   slide('T28-2', S[4], 'Creating the public route table', PublicRtCreated),
   slide('T28-3', S[4], 'Creating the private route table', PrivateRtCreated),
   slide('T29-1', S[4], 'Security group and network ACL', ExploreSecurity),
+  slide('T29-1b', S[4], 'Network ACL: inspect without changing', ExploreSecurity2),
 
   /* ── CLOSING ─────────────────────────────────────────────────────────── */
-  { id: 'S-QUIZ', section: 'Closing', label: 'Quiz Time', transition: 'zoom', element: <ClassroomQuiz lesson={SESSION} /> },
+  /* quiz1, the title card with the question cube (user, 2026-10-30: "replace the quiz slide with the Quizslide 1 version") */
+  { id: 'S-QUIZ', section: 'Closing', label: 'Quiz Time', transition: 'zoom', element: <QuizCard lesson={SESSION} title="Quiz Time!" /> },
   { id: 'S-TAKEAWAYS', section: 'Closing', label: 'Key Takeaways', element: <Takeaways id="S-TAKEAWAYS" lesson={SESSION} items={AGENDA.map(({ title }) => ({ title }))} /> },
   { id: 'S-NEXT', section: 'Closing', label: 'Next session', transition: 'zoom', element: <NextSessionSlide title="Load Balancing & CDN" lesson={SESSION} /> },
-  { id: 'feedback', section: 'Closing', label: 'Feedback', element: <FeedbackSlide lesson={SESSION} /> },
   { id: 'S-THANKS', section: 'Closing', label: 'Thank You', transition: 'zoom', element: <ThankYouSlide title="Thank You" lesson={SESSION} /> },
   { id: 'S-BEST', section: 'Closing', label: 'All the Best', transition: 'zoom', element: <ThankYouSlide title="All the Best" lesson={SESSION} /> },
 ]
