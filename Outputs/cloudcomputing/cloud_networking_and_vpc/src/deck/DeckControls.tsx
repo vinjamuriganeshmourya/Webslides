@@ -25,6 +25,9 @@ interface Props {
   openPicker: () => void
   /** Play the current slide's entrance and build again from the top. */
   replay: () => void
+  /** Auto animation on or off (`autoAnim.ts`), and its toggle: a Play / Pause button beside replay, on every slide. */
+  autoAnim?: boolean
+  toggleAutoAnim?: () => void
   /** Whether the marker is currently open. */
   markerActive: boolean
   toggleMarker: () => void
@@ -501,6 +504,8 @@ export function DeckControls({
   hideModeSwitch = false,
   openPicker,
   replay,
+  autoAnim = true,
+  toggleAutoAnim,
   markerActive,
   toggleMarker,
   hasInk,
@@ -630,6 +635,27 @@ export function DeckControls({
       </svg>
     </Btn>
   )
+
+  /*
+    AUTO ANIMATION (user, 2026-11-03). The icon shows the state: Pause while the slides play
+    themselves (press to stop and step by hand), Play while they wait for the arrow (press to let
+    them play). Latched like the marker, so the state also reads from its tint. Key: P.
+  */
+  const auto = toggleAutoAnim ? (
+    <Btn big={big} label={autoAnim ? 'Auto animation is on: press to turn it off and reveal each step with the right arrow (P)' : 'Auto animation is off: each right arrow press plays the next step. Press to turn auto animation on (P)'} onClick={act(toggleAutoAnim)} on={autoAnim}>
+      {autoAnim ? (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+          <rect x="6" y="5" width="4" height="14" rx="1.2" />
+          <rect x="14" y="5" width="4" height="14" rx="1.2" />
+        </svg>
+      ) : (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+          <path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.2-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" />
+        </svg>
+      )}
+      <span className="sr-only">Auto animation</span>
+    </Btn>
+  ) : null
 
   const jump = (
     <Btn big={big} label="Jump to a slide (G)" onClick={act(openPicker)}>
@@ -776,6 +802,7 @@ export function DeckControls({
           {back}
           {fwd}
           {again}
+          {auto}
           <Divide />
           {jump}
           {mode}
@@ -840,6 +867,7 @@ export function DeckControls({
             </div>
             <div className="flex items-center justify-center gap-1">
               {again}
+          {auto}
               {jump}
               {marker}
               {edit}
@@ -859,6 +887,7 @@ export function DeckControls({
             {back}
             {fwd}
             {again}
+          {auto}
             <Divide />
             {jump}
             {mode}

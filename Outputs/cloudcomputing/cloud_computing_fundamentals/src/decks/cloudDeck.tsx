@@ -9,6 +9,7 @@ import {
 } from '@/slides'
 import { ClassroomQuiz } from '@/ui/foundations/ClassroomQuiz'
 import { Takeaways } from './figures/closing'
+import { AgendaColumns, QuizCard } from './figures/variants'
 import { installSpecKeys } from '@/ui/foundations/keys'
 import { AUTOPLAY_ON_BY_DEFAULT } from '@/ui/foundations/autoplay'
 import { revealEveryStep } from '@/motion/Stepper'
@@ -121,6 +122,7 @@ export const cloudDeck: SlideDef[] = [
   { id: 'brand', section: 'Opening', label: 'Brand', transition: 'fade', element: <BrandSlide greeting="Welcome!" lesson={SESSION} />, notes: 'The opening mark.' },
   { id: 'welcome', section: 'Opening', label: 'Welcome', transition: 'zoom', element: <WelcomeSlide minimal title={SESSION} lesson={SESSION} />, notes: 'The session name.' },
   { id: 'agenda', section: 'Opening', label: 'Agenda', element: <AgendaSlide kicker={SESSION} title="Agenda" lesson={SESSION} items={AGENDA.map(({ title }) => ({ title }))} />, notes: "The TR's own agenda: five points, one line each, no sub-points (review 2026-10-16). The sub lines are still the section dividers' subtitles and the Key Takeaways." },
+  { id: 'agenda-columns', section: 'Opening', label: 'Agenda (layout 1)', element: <AgendaColumns kicker={SESSION} lesson={SESSION} items={AGENDA.map(({ title }) => ({ title }))} />, notes: 'REVIEW PAIR (user, 2026-10-30): agenda1, the column layout from slidestraining/agendaslides, beside agenda0 (the previous frame). Keep one and delete the other. The five TR titles only, as agenda0 shows them.' },
 
   /* ── 1 · CLOUD COMPUTING BASICS ──────────────────────────────────────── */
   { id: 's1', section: AGENDA[0].title, label: 'Section divider', transition: 'zoom', element: <SectionBreakerSlide index={1} title={AGENDA[0].title} lesson={SESSION} /> },
@@ -149,6 +151,7 @@ export const cloudDeck: SlideDef[] = [
   { id: 'evolution-table', section: AGENDA[1].title, label: 'Evolution at a glance', element: <EraStatement lesson={SESSION} />, notes: 'The claim the table proves, before the table.' },
   { id: 'evolution-rows', section: AGENDA[1].title, label: 'Evolution: the table', element: <EraTable lesson={SESSION} />, notes: say('This table is a frequent interview question on cloud history. Ask learners to match each precursor model to the cloud characteristic it most resembles.') },
   { id: 'quiz-mid', section: AGENDA[1].title, label: 'Quiz time', transition: 'zoom', element: <ClassroomQuiz lesson={SESSION} />, notes: 'Open the quiz on the portal, everyone answers alone, then go through the answers together. Everything from here on assumes the room can already read mainframe, time-sharing, hypervisor and grid.' },
+  { id: 'quiz-mid-card', section: AGENDA[1].title, label: 'Quiz time (layout 1)', transition: 'zoom', element: <QuizCard lesson={SESSION} />, notes: 'REVIEW PAIR (user, 2026-10-30): quiz1, the title card from slidestraining/quizslide, beside quiz0 (the previous frame). Keep one and delete the other.' },
 
   /* ── 3 · ESSENTIAL CHARACTERISTICS - I ───────────────────────────────── */
   { id: 's3', section: AGENDA[2].title, label: 'Section divider', transition: 'zoom', element: <SectionBreakerSlide index={3} title={AGENDA[2].title} lesson={SESSION} /> },
@@ -194,6 +197,7 @@ export const cloudDeck: SlideDef[] = [
 
   /* ── CLOSING ─────────────────────────────────────────────────────────── */
   { id: 'quiz-close', section: 'Closing', label: 'Quiz time', transition: 'zoom', element: <ClassroomQuiz lesson={SESSION} />, notes: 'The last chance to find out whether the room believes the takeaways, while the session is still in the room.' },
+  { id: 'quiz-close-card', section: 'Closing', label: 'Quiz time (layout 1)', transition: 'zoom', element: <QuizCard lesson={SESSION} />, notes: 'REVIEW PAIR (user, 2026-10-30): quiz1 beside quiz0 (the previous frame). Keep one and delete the other.' },
   { id: 'takeaways', section: 'Closing', label: 'Key takeaways', element: <Takeaways lesson={SESSION} items={AGENDA} />, notes: "The TR's Key Takeaways list, which is its agenda word for word." },
   { id: 'next-session', section: 'Closing', label: 'Next session', transition: 'zoom', element: <NextSessionSlide title="Deployment & Service Models" lesson={SESSION} />, notes: "The TR's own upcoming-session line." },
   /* the feedback slide was deleted on the user's word (2026-10-22, "Feedback slide: Delete it"); content rule 41 is overridden for this deck only */

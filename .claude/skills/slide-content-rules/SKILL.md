@@ -1340,9 +1340,31 @@ render as merged glyphs in code. Build this into the template."* Nine slides
 of 17 and five of 18 showed a joined `==` or `>=`; the whole course had been
 teaching comparison with a glyph no keyboard has.
 
-## 41. Every deck closes with the kit's feedback slide, then Thank You, then All the Best
+## 41. The kit's feedback slide (version 0) is retired: no feedback slide until the user specifies version 1
 
-**Hard rule.** Every session ends with the standard feedback slide, the kit's
+**Hard rule, every deck, every course, from 2026-10-30.** The kit's
+`FeedbackSlide` (the QR, link and framed Google Form slide described below) is
+**version 0** and is not used on any deck created or edited from this date.
+A deck closes on the Next Session signpost, then Thank You, then All the Best,
+and carries **no feedback slide at all** until the user hands over the
+version 1 feedback slide and says where it goes. Never add a feedback slide on
+your own, neither the kit's nor a card from `figures/variants.tsx`
+(`FeedbackCard` was a review candidate on session 4, not the chosen version).
+`feedback-check.mjs` reports no `feedback` slide on such a deck; that is the
+expected result, not a defect, and the harness is left alone until version 1
+exists.
+
+Why: user, 2026-10-30, on Virtualization & Hypervisors, after having the
+version 0 agenda and quiz frames deleted in favour of their version 1 layouts:
+*"remove the slide 61, from now on this is the global rule: the current
+feedback slide is version 0 and it must not be used from now on, you need to
+use the other feedback slide which is version 1, that also I will specify the
+requirement, just don't add randomly."* Decks delivered before this date keep
+their version 0 slide (a new rule never re-opens a delivered deck).
+
+**The retired rule, kept as the record of what version 0 is:**
+
+Every session ends with the standard feedback slide, the kit's
 `FeedbackSlide`, used as `<FeedbackSlide lesson={SESSION} />` with the id
 `feedback`, then `ThankYouSlide`, then `ThankYouSlide title="All the Best"`
 as the last frame, with the Next Session signpost before the feedback slide.
@@ -1633,3 +1655,32 @@ not only for the cloud computing." Applied there, and in the kit's
 `SlideBase.tsx` so every deck started after it carries the size. Decks
 delivered before that date keep their 36px mark (rule: a new rule never
 re-opens a delivered deck).
+
+## 51. A highlight on a screenshot is orange, never red, and so is any red frame the capture carries
+
+**Hard rule, every deck, every course.** A box, ring, underline or filled
+selection that calls out a spot on a screenshot is the template orange
+(`colors.accent`, `#FF8A3D`), never red (`colors.danger` or any red hex). This
+covers both forms a highlight takes:
+
+- the ring the deck draws over the capture (`Shot`'s `highlight` prop, its
+  `vh-ring` glow, any `<span>` or svg frame over an `<img>`);
+- red that is baked into the supplied capture itself: a box the TR author drew,
+  and the accent-coloured frames a Windows machine with a red accent paints on
+  default buttons, checked boxes, the selected row, a focused field and a
+  progress bar. Those
+  read as highlights on a slide, so they are shifted to the same orange in the
+  PNG (hue to 24 degrees, saturation and value kept) before the capture is
+  used. The untouched original stays in `<course>/workflow/captures/`.
+
+Red that carries data is not a highlight and stays: a chart series, a
+slider's over-allocation zone, a warning heading the app itself prints.
+
+Why: user, 2026-10-30, on Virtualization & Hypervisors
+(`Outputs/cloudcomputing/virtualization_and_hypervisors`, slides 42 and 47 to
+51): "wherever in the screenshot is highlighted with red turn that into orange,
+remember this rule for the further sessions, just orange." The same
+correction had arrived on 2026-10-28 for Containers vs VMs (course rule R4),
+and this deck, built the day before that, still shipped a red ring and nine
+red-framed captures. Red reads as an error on a step that went right.
+

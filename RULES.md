@@ -81,7 +81,7 @@ shipped with that exact mistake.
 | 38 | One alignment per slide: the lead, the text, the code boxes and their captions share it. Left for text, lists and code; centred, first line included, for a diagram or a single statement |
 | 39 | The agenda mark says `Agenda`, large, over the session name, small; a long name shrinks to fit and is never clipped or truncated. The points sit on the arc, the group centred on the mark's centre line (y 366) with equal gaps, extending past the ring equally when there are many, never under the speaker box, never off the slide |
 | 40 | Code never shows a ligature: `==`, `===`, `>=`, `<=`, `!=` are separate characters. Ligatures are off on every code surface in the kit's `index.css`; never fixed slide by slide |
-| 41 | Every session ends with the kit's `FeedbackSlide` (the standard slide since 2026-10-14; source of truth the kit's built gallery), after the Next Session signpost, followed only by Thank You and then All the Best. Never recreated or redesigned. `feedback-check.mjs` compares the rendered slide markup |
+| 41 | The kit's `FeedbackSlide` is version 0 and retired since 2026-10-30: a deck closes on Next Session, Thank You, All the Best with NO feedback slide until the user specifies the version 1 slide. Never add one unasked. Delivered decks keep theirs |
 | 42 | An arrow, cursor or connector never overlaps a box at any build step or state; its ends stay attached to the right boxes. Fixed in the component. `overlap-check.mjs` on the built file |
 | 43 | A highlight (glow, ring, tint, outline) matches the exact bounds of the element it highlights, never the width of its parent or container. `overlap-check.mjs` on the built file |
 | 44 | The agenda is static, exactly like Python session 19's: no step-through, no active or selected point, no highlight box or circle, no Next or Replay buttons; it advances with the deck's navigation only |
@@ -91,6 +91,7 @@ shipped with that exact mistake.
 | 48 | Every slide sits on one of the kit's three grounds (paper, closing gradient, welcome mesh); a slide never paints its own wash, blur, orb or background; the hero frames put the white mark on stage and the words in a glass pill |
 | 49 | No underlines anywhere: no underlined text, phrase, heading or link. Emphasis is colour and weight. The kicker's gradient divider is template, not an underline, and always stays |
 | 50 | The footer NxtWave mark is half size: 18px tall (`h-[18px]`, was 36px `h-9`) on every slide of every deck; still present, still bottom-right, still white on a dark ground |
+| 51 | A highlight on a screenshot is orange (`colors.accent`), never red: the ring the deck draws and any red frame baked into the capture itself (buttons, checked boxes, selected rows, progress bars, a drawn box). Red that carries data stays |
 
 ## Process rules
 

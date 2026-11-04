@@ -83,6 +83,16 @@ Why: the sentence and captions described what the pictures already show, and the
 
 Why: red read as an error on a step that had gone right, and the small TR captures looked soft once enlarged.
 
+**Second arrival, 2026-10-30, on Virtualization & Hypervisors (slides 42, 47 to 51):** *"wherever in the
+screenshot is highlighted with red turn that into orange ... remember this rule for the further sessions, just
+orange."* That deck was built on 2026-10-27, the day before R4, and still shipped the red ring. Two additions:
+
+- The rule now covers red **inside** the capture too: the TR author's drawn boxes, and the red accent frames a
+  Windows machine with a red accent paints on default buttons, checked boxes, the selected VM row, a focused
+  field and a progress bar. They are shifted to the template orange in the PNG (hue 24, saturation and value kept); the untouched
+  originals stay in `../captures/`. Red that carries data (a chart series, a slider's warning zone) stays.
+- It is content rule 51 now, so every course gets it, not only this one.
+
 ## R5. Recap, agenda and Key Takeaways show the main points only
 
 **Feedback, 2026-10-28, on session 4:** the recap, the agenda and the takeaways lost their sub-text; *"keep
@@ -91,6 +101,49 @@ only the points, consistent with Sessions 1, 2, and the earlier sessions."* This
 
 Why: session 4 was first built with the TR's full lines on these frames because the request said "do not
 shorten", and the user asked for them back to titles only.
+
+## R6. The recap frame shows the presenter illustration
+
+**Feedback, 2026-10-30, on Virtualization & Hypervisors:** *"replace the current illustration with this one, I am
+giving session 2 as reference, use the image of recap, and remember that rule: use this illustration from now on
+for all the future sessions' recap slide."* The reference is session 2's shared file
+`deployment_and_service_models/dist-single/Session 1deployment-and-service-models 1.html`, slide 3.
+
+- The recap frame (`Takeaways` with `kicker="Recap"`, `figures/closing.tsx`) takes
+  `art="/assets/takeaways/presenter.png"`: the presenter with the pointer and books, 2:3, in the same box the
+  student illustration fills on Key Takeaways. The file is `public/assets/takeaways/presenter.png`, the same
+  bytes in session 2, session 4 and this deck.
+- Key Takeaways keeps the student (`art` default). Only the recap changes.
+
+Why: session 2 and session 4 already showed the presenter on the recap (the user's 2026-10-28 request on session
+2); this deck was built from the older reference and still showed the student, so the user asked a second time.
+
+## R7. The FS team's review standard (every slide, every session)
+
+**Feedback, 2026-11-04, on session 5 (Cloud Networking & VPC), the FS team's review
+(`cloud_networking_and_vpc/dist-single/fs-team-ppt-session-5-review-prompt.md`, Part 1):** *"The global rules in
+Part 1 apply to every slide in this session and to all subsequent sessions."*
+
+1. **Human figures are realistic.** No abstract or flat 2D people: use the detailed 3D library renders
+   (`assets/icons/Icons`: `Boy with a laptop`, `Student along with a bag`, `Male Professional/*`,
+   `Female Professional/*`, the teachers and presenters), the same source on every slide of a deck, analogies above all.
+2. **Nothing overlaps:** icons, chips, arrows, illustrations, borders and parent boxes all keep clear, with padding.
+3. **Every arrow is checked:** the head renders, faces the right way and lands on its target. Broken or misaligned
+   heads are the most repeated defect; check every arrow, every session.
+4. **Few, thin dotted lines.** Prefer a thin solid line or a tint where a dashed border adds nothing.
+5. **Split for density:** split a slide or a point rather than crowd it.
+6. **Balance:** left points and right picture in proportion; no large empty areas, no crowded stage.
+7. **Explain with the picture:** icons, elements and connections, not text, carry a technical visual.
+8. **Motion with purpose; logos never move.** A visual keeps a quiet loop after its build so it never looks frozen.
+9. **Configuration screenshots:** one sharp, enlarged capture with the highlight rings on it; no zoomed copies,
+   no number badges, no blur. (This replaces session 4's two-picture zoom pattern from G9 for these decks.)
+10. **One visual language** across the deck: spacing, illustration quality, technical drawing.
+
+Point wording on a split stays the TR's (user, 2026-11-04: "keep only in tr doc but if it needed split it"): a long
+point is cut at the TR's own clause boundaries, never reworded.
+
+Why: the FS team's review of session 5 found abstract people, overlapping chips, broken arrowheads, heavy dotted
+boxes, empty stages and zoomed screenshot pairs across the deck, after two visual passes.
 
 ## Lessons carried from session 1's reviews (so they are not repeated)
 
@@ -113,8 +166,9 @@ mistakes from session 1"):
 5. **The lead and the body are one block** (`Card` in `scene.tsx`): a figure
    never floats away from its lead, and a points column sits directly under
    the lead.
-6. **The feedback slide stays** (content rule 41); its deletion was for
-   session 1 only, on the user's word.
+6. **No feedback slide** (content rule 41 as retired on 2026-10-30, on Virtualization &
+   Hypervisors): the kit's slide is version 0 and is gone from every deck edited since; the
+   user will specify version 1. Session 4's `FeedbackCard` was a review candidate, not it.
 7. **Labels are DOM text**, never svg `<text>`: the harnesses, the text audit
    and the presenter's edit mode all read DOM text.
 8. **Check the port before trusting a screenshot.** A stale dev server from a

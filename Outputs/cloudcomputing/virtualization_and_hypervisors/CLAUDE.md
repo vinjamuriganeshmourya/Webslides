@@ -40,4 +40,14 @@ Session 2's current style (session 1's 3D finish): `Card`, `PointsFigure`/`Figur
 
 1. Agenda, Key Takeaways and the recap show the five titles only (course lesson 4); the TR's sub-lines are in
    the gap list.
-2. Breakers carry the title only. Two `ClassroomQuiz` frames where the reference has them. Feedback slide kept.
+2. Breakers carry the title only. Two quiz frames where the reference has them. The feedback slide was
+   removed on 2026-10-30 (content rule 41 retired: version 0, the user will specify version 1); 62 slides,
+   closing on Next Session, Thank You, All the Best. `feedback-check.mjs` reports no slide, as expected.
+3. **Agenda and quiz are the version 1 frames (user, 2026-10-30):** agenda1 `AgendaColumns` (4, titles only)
+   and quiz1 `QuizCard "Quiz Time!"` (25, 58), from session 4's `figures/variants.tsx` with
+   `public/assets/quiz/quiz-cube.png`. They were first built beside the version 0 frames (the kit `AgendaSlide`,
+   `ClassroomQuiz` twice) as review pairs; later the same day the user had the version 0 frames deleted
+   (`agenda`, `quiz-mid`, `quiz-close`). 63 slides. `agenda-check.mjs` (AGENDA_SLIDE=4) now meets the column
+   layout, not the kit agenda.
+4. **The recap shows the presenter** (course rule R6, 2026-10-30): `Takeaways art="/assets/takeaways/presenter.png"`
+   on `recap`, the file from session 2; the `art` prop ported into `figures/closing.tsx` for it.

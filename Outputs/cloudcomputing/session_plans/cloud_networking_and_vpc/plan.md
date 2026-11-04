@@ -55,6 +55,12 @@ the TR's order unchanged, every analogy drawn exactly as the TR describes it).
     in a point as much as in a table cell.
 12. **Nothing the TR does not give goes into a figure:** no invented rule number, port, address or price; a rule
     list the TR gives no values for is drawn as a shape with its column heads only (T21-1).
+13. **Section 4 (`net/routing.tsx`), built 2026-10-30** after the 2026-10-29 session ended with it as a stub. The
+    route entries on T16-1 and T17-1 are chip stacks (destination, an arrow, the target) rather than a full
+    table, as the spec's play for T17-1 allows and because `nat-gateway-id` does not fit a table beside the
+    drawing; T14-1 and T15-1 draw the real two-row table. T17-2 carries the AWS mark beside `AWS side` on the
+    VPC box because the point names AWS (content rule 12). On T16-1 the subnet names sit at the foot of each
+    box so the NAT gateway's lines run clear of them.
 
 ## Slides
 

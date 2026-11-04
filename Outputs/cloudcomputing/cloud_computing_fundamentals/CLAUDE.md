@@ -567,3 +567,53 @@ The same fixes were mirrored here so the next build carries them:
   ticket) is gone; the remaining box is centred in the 416px the pair filled.
 - Slides 17 (the book) and 18 (the third point) were already done here on
   2026-10-23; only the supplied file needed them.
+
+## 2026-10-30: agenda1 and quiz1 added beside agenda0 and quiz0 (shared file, 71 slides)
+
+The user: add agenda1 and quiz1 as the first version of the Agenda and Quiz
+slides, next to the existing agenda0 and quiz0, in the shared
+`dist-single/1__Cloud Computing Fundamentals.html`, "just add the slides, don't
+build it from scratch". That file is the hand-patched student download (it got
+the presenter runtime by a splice on 2026-10-29 and is never rebuilt from
+`src/`), so the pair went in the same way:
+
+- **What was added.** `agenda-columns` (`AgendaColumns`, the five TR titles
+  only, as agenda0 shows them) right after `agenda`; `quiz-mid-card` and
+  `quiz-close-card` (`QuizCard`, the yellow cube over `Quiz Time`) right after
+  `quiz-mid` and `quiz-close`. Labels `Agenda (layout 1)` and `Quiz time
+  (layout 1)`; notes say REVIEW PAIR, keep one and delete the other. With the
+  file's two deletions the deck shows 69; the harness (`?all`) sees 71, the new
+  frames at 4, 29 and 67. agenda0, quiz0 and every other slide are untouched
+  (text of all 68 compared slide by slide: identical).
+- **How.** The two components (deployment's `figures/variants.tsx`, cube PNG
+  inlined) compiled with esbuild as a cjs chunk with `react`, `react/jsx-runtime`,
+  `framer-motion`, SlideBase, tokens and Card left external; wrapped as
+  `window.__deckVariants(libs)` in a classic `<script>` right after the runtime
+  one; a lazy bridge `NX_V` in the module (React `F`, jsx `t`, `motion` `Ft`,
+  `SlideBase` `Ci`, `Card` `Wt`, `BOX_W` `Pt`, token literals) resolved at
+  render time, so it needs no ordering inside the bundle; the three entries use
+  `t.jsx(NX_A1|NX_Q1, …)`. Every Tailwind class the pair needs was already in
+  the bundle. The pre-splice file is kept at
+  `../versions/1__Cloud Computing Fundamentals.2026-10-30-before-agenda1-quiz1.html`.
+- **Verified in Chrome** on the shipped file: order, picker (69 Skip buttons,
+  three `layout 1` tiles), no page errors, `?view=student` carries the pair,
+  save-into-file keeps the chunk and the entries, the saved copy reopens with
+  them. The frames match the deployment build's pixel for pixel but for this
+  deck's own 36px footer mark.
+- **Repo source mirrored, not built:** `src/decks/figures/variants.tsx`
+  (agenda1 + quiz1 only; feedback1 left out because this deck's feedback slide
+  was deleted on 2026-10-22), the three entries in `cloudDeck.tsx`,
+  `public/assets/quiz/quiz-cube.png`, `slideCount` 71. Typecheck clean.
+  `AGENDA_SLIDE=3` for agenda-check is still right (agenda0 did not move).
+- **Known, pre-existing:** `?view=student` on this presenter file shows all 71
+  because the query form reads `hidden` and the file holds `deleted`; the
+  Download button still writes `hidden` correctly.
+
+**2026-10-30, later: the user picked layout 1.** Slides 3, 28 and 66 of the
+full order (`agenda`, `quiz-mid`, `quiz-close`: agenda0 and both quiz0 frames)
+removed from the shared file's bundle on the user's word, no checks run (the
+user asked for the one change only). The file lists 68 slides, 66 shown with
+its two deletions; `agenda-columns` is now 3, `quiz-mid-card` 27,
+`quiz-close-card` 64. The repo `src/` still carries both frames of each pair;
+mirror the deletion there before any build. The file before this edit is in the
+scratchpad only.

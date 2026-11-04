@@ -39,9 +39,10 @@ import workspaces from './marks/workspaces.svg'
 import appstream from './marks/appstream.png'
 import ebsSnapshot from './marks/ebs-snapshot.svg'
 import ec2Ami from './marks/ec2-ami.svg'
+import ebsService from './marks/ebs-service.png'
 
 /** Every mark the reference draws, by what it names. `aws` is the reference's AppStream 2.0 and Nitro mark. */
-export const MARK = { vmware, hyperv, kvm, virtualbox, parallels, xen, intel, amd, aws, ec2, ebs, vpc, workspaces, appstream, ebsSnapshot, ec2Ami } as const
+export const MARK = { vmware, hyperv, kvm, virtualbox, parallels, xen, intel, amd, aws, ec2, ebs, vpc, workspaces, appstream, ebsSnapshot, ec2Ami, ebsService } as const
 export type MarkName = keyof typeof MARK
 
 /** One mark at a height, its name under it when given (the reference's `ESXi`, `KVM`, `Nitro` captions). */
@@ -199,7 +200,8 @@ export const shot = (name: string) => SHOTS[`./shots/${name}.png`]
 /**
  * One screenshot in a white frame with its numbered caption, the reference's
  * `Lo`: the image fits a `w` x `h` box keeping its own shape; `highlight` is
- * the reference's red box, in percent of the image.
+ * the reference's box, in percent of the image, drawn in the template orange
+ * (content rule 51, course rule R4: a screenshot highlight is never red).
  */
 export function Shot({ n, name, caption, highlight, w = 540, h = 372 }: { n: number; name: string; caption: string; highlight?: { left: number; top: number; width: number; height: number }; w?: number; h?: number }) {
   return (
@@ -211,7 +213,7 @@ export function Shot({ n, name, caption, highlight, w = 540, h = 372 }: { n: num
             <span
               aria-hidden
               className={`absolute rounded-md ${STILL ? '' : 'vh-ring'}`}
-              style={{ left: `${highlight.left}%`, top: `${highlight.top}%`, width: `${highlight.width}%`, height: `${highlight.height}%`, border: `3px solid ${colors.danger}`, boxShadow: `0 0 0 4px ${colors.danger}30` }}
+              style={{ left: `${highlight.left}%`, top: `${highlight.top}%`, width: `${highlight.width}%`, height: `${highlight.height}%`, border: `3px solid ${colors.accent}`, boxShadow: `0 0 0 4px ${colors.accent}30` }}
             />
           )}
         </div>
@@ -253,7 +255,7 @@ export function Shots({ id, kicker, title, lead, lesson, side, children }: { id:
 
 /** The highlight ring breathes, once a second and a half, so the eye finds it. */
 export const VH_CSS = `
-@keyframes vh-ring { 0%, 100% { box-shadow: 0 0 0 4px rgba(229,72,77,0.19) } 50% { box-shadow: 0 0 0 9px rgba(229,72,77,0.08) } }
+@keyframes vh-ring { 0%, 100% { box-shadow: 0 0 0 4px rgba(255,138,61,0.22) } 50% { box-shadow: 0 0 0 9px rgba(255,138,61,0.09) } }
 .vh-ring { animation: vh-ring 1.6s cubic-bezier(0.22,1,0.36,1) infinite }
 @media (prefers-reduced-motion: reduce) { .vh-ring { animation: none } }
 .cc-still .vh-ring, .deck-thumb .vh-ring { animation: none }

@@ -202,3 +202,17 @@ screenshots read by eye at step 0, mid-run and fully revealed.
 - Deck-wide: no step builds, no Next or Autoplay; every element enters in
   reading order within 1.5s; every slide change is the one smooth transition;
   the slide picker shows live thumbnails. Details in the session CLAUDE.md.
+
+## 2026-10-30 addendum: review pairs for Agenda and Quiz
+
+Added beside the existing frames, on the user's word, in the shared file and in
+the deck source (71 slides). The user picks one of each pair later and deletes
+the other.
+
+| after | id | content |
+|---|---|---|
+| 3 `agenda` (agenda0, `AgendaSlide`) | `agenda-columns` | agenda1: `AgendaColumns`, the same five titles, no sub lines |
+| 27 `quiz-mid` (quiz0, `ClassroomQuiz`) | `quiz-mid-card` | quiz1: `QuizCard`, the cube over `Quiz Time` |
+| 64 `quiz-close` (quiz0, `ClassroomQuiz`) | `quiz-close-card` | quiz1: `QuizCard` |
+
+Numbers are the shared file's own order before this pass. Nothing else changed.

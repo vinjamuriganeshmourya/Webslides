@@ -2,6 +2,8 @@ import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type 
 import { motion } from 'framer-motion'
 import { colors, easing } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
+import { SPEED, useAutoAnim } from '@/deck/autoAnim'
+import { useTrack } from '@/deck/animSteps'
 import { Panel, Group } from '@/ui/foundations/common'
 import { Press } from '@/ui/foundations/motion'
 import { TILE_SKIN } from './card'
@@ -351,26 +353,43 @@ export function Arrow({ x1, y1, x2, y2, on = true, tone = colors.brand, dashed =
   const minY = Math.floor(Math.min(...ys) - width / 2)
   const maxX = Math.ceil(Math.max(...xs) + width / 2)
   const maxY = Math.ceil(Math.max(...ys) + width / 2)
-  const t = instant ? 'none' : `stroke-dashoffset 860ms cubic-bezier(0.65,0,0.35,1) ${delay}ms, opacity 200ms ${delay}ms`
+  /* G8 (session 4 corrections, carried 2026-11-04): ENTRY the line draws tail to head, then the head appears; EXIT the head goes first, then the line retracts head to tail */
+  const t = instant ? 'none' : on ? `stroke-dashoffset 860ms cubic-bezier(0.65,0,0.35,1) ${delay}ms, opacity 200ms ${delay}ms` : `stroke-dashoffset 520ms cubic-bezier(0.65,0,0.35,1) 220ms, opacity 200ms 640ms`
+  const headT = (d: number) => (instant ? 'none' : on ? `opacity 240ms ${delay + d}ms` : 'opacity 180ms 0ms')
   return (
-    <svg aria-hidden className="pointer-events-none absolute" style={{ left: minX, top: minY, overflow: 'visible' }} width={maxX - minX} height={maxY - minY}>
+    <svg aria-hidden className="pointer-events-none absolute" style={{ left: minX, top: minY, overflow: 'visible', zIndex: 3 }} width={maxX - minX} height={maxY - minY}>
       <g transform={`translate(${-minX} ${-minY})`}>
         {/* a dashed arrow keeps user-unit lengths (no pathLength), so its '7 7' pattern (period 14) travels two periods per mo-dash lap with no jump */}
         <path d={`M ${sx} ${sy} L ${ex} ${ey}`} stroke={tone} strokeWidth={width} strokeLinecap="round" fill="none" pathLength={dashed ? undefined : 1} strokeDasharray={dashed ? undefined : '1'} className={dashed ? 'mo mo-dash' : undefined} style={{ strokeDashoffset: dashed ? undefined : on ? 0 : 1, opacity: on ? 1 : 0, transition: t, ...(dashed ? { strokeDasharray: '7 7' } : {}) }} />
         {/* the motion layer (2026-10-16): a lighter dash rides the line from source to target, so the direction of flow is always readable */}
-        {!dashed && <path d={`M ${sx} ${sy} L ${ex} ${ey}`} stroke={colors.white} strokeWidth={Math.max(1, width * 0.45)} strokeLinecap="round" fill="none" strokeDasharray="5 9" className="mo mo-dash" style={{ opacity: on ? 0.75 : 0, transition: instant ? 'none' : `opacity 300ms ${delay + 700}ms`, '--mo-delay': `${-((x1 * 7 + y1 * 3) % 16) / 10}s` } as CSSProperties} />}
-        <path d={head(x2, y2, ang)} fill={tone} style={{ opacity: on ? 1 : 0, transition: instant ? 'none' : `opacity 300ms ${delay + (dashed ? 200 : 700)}ms` }} />
-        {both && <path d={head(x1, y1, ang + Math.PI)} fill={tone} style={{ opacity: on ? 1 : 0, transition: instant ? 'none' : `opacity 300ms ${delay + 700}ms` }} />}
+        {!dashed && <path d={`M ${sx} ${sy} L ${ex} ${ey}`} stroke={colors.white} strokeWidth={Math.max(1, width * 0.45)} strokeLinecap="round" fill="none" strokeDasharray="5 9" className="mo mo-dash" style={{ opacity: on ? 0.75 : 0, transition: instant ? 'none' : on ? `opacity 300ms ${delay + 860}ms` : 'opacity 160ms 0ms', '--mo-delay': `${-((x1 * 7 + y1 * 3) % 16) / 10}s` } as CSSProperties} />}
+        {/* the head lands once the line has reached it (G5, 2026-10-30): after the 860ms draw, or after a dashed line's fade */}
+        <path d={head(x2, y2, ang)} fill={tone} style={{ opacity: on ? 1 : 0, transition: headT(dashed ? 200 : 860) }} />
+        {both && <path d={head(x1, y1, ang + Math.PI)} fill={tone} style={{ opacity: on ? 1 : 0, transition: headT(dashed ? 200 : 860) }} />}
       </g>
     </svg>
   )
 }
 
-/** A dot that travels a list of stage points while `run` is true, then rests on the last one. */
-export function Traveller({ path, run, k, tone = colors.accent, size = 16, dur = 2.4 }: { path: [number, number][]; run: boolean; k: string | number; tone?: string; size?: number; dur?: number }) {
+/**
+ * A dot that travels a list of stage points while `run` is true, over and
+ * over: it fades in at the first point, rides to the last, fades out there and
+ * sets off again after a short pause (user, 2026-10-30, G5: loops continuous
+ * and smooth, no visible restart). `once` rides a single time and rests on the
+ * last point instead.
+ */
+export function Traveller({ path, run, k, tone = colors.accent, size = 16, dur = 2.4, once = false }: { path: [number, number][]; run: boolean; k: string | number; tone?: string; size?: number; dur?: number; once?: boolean }) {
   const instant = useInstant()
   const end = path[path.length - 1]
   if (!run) return null
+  /* the ride, with a still beat at each end for the fade: [start, start, ...path, end, end] */
+  const n = path.length
+  const xs = once ? path.map((p) => p[0]) : [path[0][0], path[0][0], ...path.slice(1, -1).map((p) => p[0]), end[0], end[0]]
+  const ys = once ? path.map((p) => p[1]) : [path[0][1], path[0][1], ...path.slice(1, -1).map((p) => p[1]), end[1], end[1]]
+  const m = xs.length
+  const FADE = 0.1
+  const times = once ? path.map((_, i) => i / Math.max(1, n - 1)) : xs.map((_, i) => (i === 0 ? 0 : i === m - 1 ? 1 : FADE + ((1 - 2 * FADE) * (i - 1)) / Math.max(1, m - 3)))
+  const ops = once ? undefined : xs.map((_, i) => (i === 0 || i === m - 1 ? 0 : 1))
   return (
     <motion.span
       key={k}
@@ -378,9 +397,9 @@ export function Traveller({ path, run, k, tone = colors.accent, size = 16, dur =
       data-cc-after=""
       className="pointer-events-none absolute rounded-full"
       style={{ width: size, height: size, background: tone, boxShadow: `0 0 0 4px ${tone}40`, left: -size / 2, top: -size / 2 }}
-      initial={instant ? { x: end[0], y: end[1] } : { x: path[0][0], y: path[0][1] }}
-      animate={{ x: path.map((p) => p[0]), y: path.map((p) => p[1]) }}
-      transition={{ duration: instant ? 0 : dur, ease: 'easeInOut' }}
+      initial={instant ? { x: end[0], y: end[1] } : { x: xs[0], y: ys[0], opacity: once ? 1 : 0 }}
+      animate={{ x: xs, y: ys, ...(ops ? { opacity: ops } : {}) }}
+      transition={{ duration: instant ? 0 : dur, ease: 'easeInOut', times, ...(once || instant ? {} : { repeat: Infinity, repeatDelay: 0.6 }) }}
     />
   )
 }
@@ -478,19 +497,26 @@ export function useTicker(on: boolean, ms = 600, still = 0): number {
  * on harness URLs and under InstantContext (a picker thumbnail), or the
  * screenshot stalls. The deck's one loop duration: a lap every 8s.
  */
-export function useLoop(periodMs = 8000, opts: { mode?: 'pingpong' | 'sawtooth'; still?: number; on?: boolean; steps?: number } = {}): number {
-  const { mode = 'pingpong', still = 0.25, on = true, steps = 240 } = opts
+export function useLoop(periodMs = 8000, opts: { mode?: 'pingpong' | 'sawtooth'; still?: number; on?: boolean; steps?: number; beats?: number[] } = {}): number {
+  const { mode = 'pingpong', still = 0.25, on = true, steps = 240, beats } = opts
   const instant = useInstant()
+  const auto = useAutoAnim()
   const held = STILL || REDUCED || instant || !on
-  const [t, setT] = useState(still)
+  /* AUTO ANIMATION OFF (session 4, 2026-11-03): a loop with `beats` becomes a build, one press per beat, the phase
+     easing from the last beat to the next; a loop without them holds its complete frame (`still`) */
+  const stepped = !held && !auto
+  const s = useTrack(beats ? beats.length : 0, stepped && !!beats)
+  const target = beats ? (s === 0 ? 0 : beats[s - 1]) : still
+  const period = periodMs * SPEED
+  const [t, setT] = useState(() => (stepped ? (beats ? 0 : still) : held ? still : 0))
   useEffect(() => {
-    if (held) return
+    if (held || stepped) return
     let raf = 0
     let last = -1
     const t0 = performance.now()
     const tick = (now: number) => {
       /* the phase is quantised to `steps` per lap, so a slide re-renders only when it has moved (about 30 times a second at 8s) */
-      const q = Math.floor((((now - t0) / periodMs) % 1) * steps)
+      const q = Math.floor((((now - t0) / period) % 1) * steps)
       if (q !== last) {
         last = q
         const u = q / steps
@@ -500,14 +526,87 @@ export function useLoop(periodMs = 8000, opts: { mode?: 'pingpong' | 'sawtooth';
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [held, periodMs, mode, steps])
-  return held ? still : t
+  }, [held, stepped, period, mode, steps])
+  /* a press: tween to the beat at the loop's own speed */
+  const tRef = useRef(t)
+  tRef.current = t
+  useEffect(() => {
+    if (!stepped || !beats) return
+    const from = tRef.current
+    const span = Math.abs(target - from)
+    if (span < 1e-4) return
+    const dur = Math.max(260, span * period)
+    let raf = 0
+    const t0 = performance.now()
+    const tick = (now: number) => {
+      const k = Math.min(1, (now - t0) / dur)
+      setT(from + (target - from) * k)
+      if (k < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [stepped, target, period, beats])
+  if (held) return still
+  if (stepped) return beats ? t : still
+  return t
 }
 
-/** A step index that advances by itself every `ms`, 0 to n-1 and round again (a scene that had a Next or a button). The deck's one step duration: 2400ms. */
-export function useCycle(n: number, ms = 2400, still = 0): number {
-  const k = useTicker(true, ms, still)
+/**
+ * A step index that advances by itself every `ms`, 0 to n-1 and round again (a scene that had a Next or a button). The deck's one step duration: 2400ms, times `SPEED`.
+ * AUTO ANIMATION OFF (session 4, 2026-11-03): the index is the slide's press count for this figure instead, 0 to n-1, one state per right-arrow press, and it holds there (`animSteps.ts`).
+ */
+export function useCycle(n: number, ms = 2400, still = 0, presses = n - 1): number {
+  const instant = useInstant()
+  const auto = useAutoAnim()
+  const held = STILL || REDUCED || instant
+  const stepped = !held && !auto
+  /* `presses`: how many states the build walks by hand (a loop's resting beats after the full state are not presses) */
+  const s = useTrack(Math.max(0, presses), stepped)
+  const k = useTicker(!stepped, Math.round(ms * SPEED), still)
+  if (stepped) return Math.min(n - 1, s)
   return n > 0 ? k % n : 0
+}
+
+/**
+ * A BUILD THAT RUNS ONCE AND HOLDS (user, 2026-10-30, G4 and G5: "speed up the
+ * appearance of inner elements, so that containers never look empty while
+ * content loads", "no out-animation, arrowheads and lines must not disappear
+ * at the end of a cycle"). The step index rises from 0 to n-1 once, `lead` ms
+ * after the slide mounts (so the stage has entered first) and `ms` per step,
+ * then stays at n-1: nothing ever leaves the picture, and the motion that
+ * carries on (the flow on every arrow, the packets) is continuous. Held at
+ * n-1 on harness URLs, under reduced motion and in picker thumbnails.
+ */
+export const BUILD_MS = 380
+export const BUILD_LEAD = 360
+export function useBuild(n: number, ms = BUILD_MS, lead = BUILD_LEAD): number {
+  const instant = useInstant()
+  const auto = useAutoAnim()
+  const held = STILL || REDUCED || instant
+  const last = Math.max(0, n - 1)
+  /* AUTO ANIMATION OFF (session 4, 2026-11-03): one press per state, 0 to n-1, and it holds there */
+  const stepped = !held && !auto
+  const s = useTrack(last, stepped)
+  const [k, setK] = useState(0)
+  useEffect(() => {
+    if (held || stepped || last === 0) return
+    let raf = 0
+    let cur = 0
+    const t0 = performance.now()
+    const tick = (now: number) => {
+      const next = Math.min(last, Math.max(0, Math.floor((now - t0 - lead) / ms) + 1))
+      if (next !== cur) {
+        cur = next
+        setK(next)
+      }
+      if (cur < last) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [held, stepped, last, ms, lead])
+  if (held) return last
+  if (stepped) return Math.min(last, s)
+  return k
 }
 
 /** Local state that resets to `init` whenever the beat changes (a press shows the beat's own picture). */

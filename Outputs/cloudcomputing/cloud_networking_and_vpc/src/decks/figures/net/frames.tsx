@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from 'react'
 import { ArrowLeftRight, Building2, Database, Globe, Lock, Router, Server, Table2, Waypoints, X } from 'lucide-react'
 import { colors } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
-import { BOX_W, Card, Label, Num, STILL } from '../scene'
+import { Arrow, BOX_W, Card, Label, Num, STILL } from '../scene'
 import { TILE_SKIN } from '../card'
 import { RichCloud } from '../clay-c'
 
@@ -106,37 +106,37 @@ export function Crop({ name, crop, highlight, maxW, maxH, alt, bg = colors.white
 }
 
 /**
- * One screenshot card (spec figure `AnnotatedShot`): the kit header, then the
- * step label and its lines in a column on the left, the cropped screenshot on
- * the right, its caption under it. `lines` are any extra spec lines (a point,
- * a note) shown under the label, in the spec's order.
+ * One screenshot card (spec figure `AnnotatedShot`), relaid on 2026-10-30
+ * (G7: "the screenshot is cropped, with random alignment and hierarchy
+ * issues"): the FULL TR capture, never cropped, on the left of the body at the
+ * largest size that fits, and its words in one column on the right whose top
+ * sits on the capture's top edge: the caption first (what the picture shows,
+ * bold), then any extra line, then the Important Note. One row, one top line.
  */
 export function ShotCard({
-  id, kicker, title, lesson, lead, step, lines = [], caption, name, crop, highlight, side, maxH = 380, colW = 380, bg, ring,
+  id, kicker, title, lesson, lead, step, lines = [], caption, name, crop, highlight, side, maxH = 330, colW = 360, bg, ring,
 }: {
   id: string; kicker: string; title: string; lesson: string; lead?: ReactNode; step?: ReactNode; lines?: ReactNode[]; caption: ReactNode
   name: string; crop?: Rect; highlight?: Rect | Rect[]; side?: ReactNode; maxH?: number; colW?: number; bg?: string; ring?: number
 }) {
-  const gap = 36
+  const gap = 28
   const shotW = BOX_W - colW - gap
   return (
     <Card id={id} kicker={kicker} title={title} lead={lead} lesson={lesson}>
-      <div className="flex items-center" style={{ width: BOX_W, gap }}>
+      <div className="flex items-start" style={{ width: BOX_W, gap }}>
+        <Crop name={name} crop={crop} highlight={highlight} maxW={shotW} maxH={maxH} bg={bg} ring={ring} alt={typeof caption === 'string' ? caption : ''} />
         <div className="flex flex-col gap-4" style={{ width: colW }}>
           {step && <StepLabel>{step}</StepLabel>}
+          <p className="text-[18px] font-semibold leading-snug" style={{ color: colors.ink }}>
+            {caption}
+          </p>
           {lines.map((l, i) => (
-            <p key={i} className="text-[18px] leading-snug" style={{ color: colors.ink }}>
+            <p key={i} className="text-[17px] leading-snug" style={{ color: colors.ink }}>
               {l}
             </p>
           ))}
           {side}
         </div>
-        <figure className="m-0 flex flex-col items-center gap-3" style={{ width: shotW }}>
-          <Crop name={name} crop={crop} highlight={highlight} maxW={shotW} maxH={maxH} bg={bg} ring={ring} alt={typeof caption === 'string' ? caption : ''} />
-          <figcaption className="text-center text-[17px] font-semibold leading-snug" style={{ color: colors.ink }}>
-            {caption}
-          </figcaption>
-        </figure>
       </div>
     </Card>
   )
@@ -617,6 +617,182 @@ export function VpcScene({
         </>
       )}
       {children}
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ the instances glyph */
+
+/**
+ * The AWS architecture icon for "instances" (the TR's slides 15, 20 and 21
+ * draw it): three small squares stacked on a diagonal. Three small tiles, the
+ * front one whole, in the instance tone; DOM only.
+ */
+export function InstanceStack({ size = 44, tone = colors.brandDark, lit = false, dim = false }: { size?: number; tone?: string; lit?: boolean; dim?: boolean }) {
+  const instant = useInstant()
+  const sq = Math.round(size * 0.58)
+  const step = Math.round((size - sq) / 2)
+  return (
+    <span aria-hidden className="relative block" style={{ width: size, height: size, opacity: dim ? 0.4 : 1, transition: instant ? 'none' : `opacity 420ms ${EASE}` }}>
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          className="absolute rounded-[5px]"
+          style={{ left: i * step, top: (2 - i) * step, width: sq, height: sq, background: 'linear-gradient(180deg, #FFFFFF 0%, #EEF3FD 100%)', boxShadow: litRing(lit && i === 2, `inset 0 0 0 2px ${tone}, 0 6px 12px -8px rgba(16,32,58,0.5)`), transition: instant ? 'none' : `box-shadow 420ms ${EASE}` }}
+        >
+          {i === 2 && <Server size={Math.round(sq * 0.6)} strokeWidth={2} style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', color: tone }} />}
+        </span>
+      ))}
+    </span>
+  )
+}
+
+/* ------------------------------------------------------------------ a zigzag link */
+
+/** A WAN link drawn as the TR's zigzag (slide 1's image): a lightning-shaped polyline between two stage points, no head. */
+export function ZigZag({ x1, y1, x2, y2, tone = NET.boundary, width = 2.5, on = true, teeth = 4, amp = 9, delay = 0 }: { x1: number; y1: number; x2: number; y2: number; tone?: string; width?: number; on?: boolean; teeth?: number; amp?: number; delay?: number }) {
+  const instant = useInstant()
+  const dx = x2 - x1
+  const dy = y2 - y1
+  const len = Math.hypot(dx, dy) || 1
+  const nx = -dy / len
+  const ny = dx / len
+  const n = teeth * 2
+  const points: [number, number][] = [[x1, y1]]
+  for (let i = 1; i < n; i++) {
+    const t = i / n
+    const side = i % 2 === 1 ? 1 : -1
+    points.push([x1 + dx * t + nx * amp * side, y1 + dy * t + ny * amp * side])
+  }
+  points.push([x2, y2])
+  const minX = Math.floor(Math.min(...points.map((p) => p[0])) - width)
+  const minY = Math.floor(Math.min(...points.map((p) => p[1])) - width)
+  const maxX = Math.ceil(Math.max(...points.map((p) => p[0])) + width)
+  const maxY = Math.ceil(Math.max(...points.map((p) => p[1])) + width)
+  const d = points.map(([a, b], i) => `${i ? 'L' : 'M'} ${a - minX} ${b - minY}`).join(' ')
+  return (
+    <svg aria-hidden className="pointer-events-none absolute" style={{ left: minX, top: minY, overflow: 'visible', zIndex: 3 }} width={maxX - minX} height={maxY - minY}>
+      <path d={d} stroke={tone} strokeWidth={width} strokeLinecap="round" strokeLinejoin="round" fill="none" pathLength={1} strokeDasharray="1" style={{ strokeDashoffset: on ? 0 : 1, opacity: on ? 1 : 0, transition: instant ? 'none' : `stroke-dashoffset 860ms cubic-bezier(0.65,0,0.35,1) ${delay}ms, opacity 200ms ${delay}ms` }} />
+    </svg>
+  )
+}
+
+/* ------------------------------------------------------------------ the one VPC drawing, filling its stage */
+
+/**
+ * THE GEOMETRY of the VPC drawing at the size that fills a 634 x 380 stage
+ * (user, 2026-10-30, G3: "no empty space or unused padding inside visuals").
+ * The same parts as `G`, bigger, with an instance in each subnet; the cards
+ * that show the VPC alone (T02-2, T03-2) draw at these numbers.
+ */
+export const BG = {
+  W: 634,
+  H: 380,
+  vpc: { x: 24, y: 58, w: 586, h: 306 },
+  pub: { x: 48, y: 104, w: 250, h: 184 },
+  pri: { x: 336, y: 104, w: 250, h: 184 },
+  rt: { y: 300, h: 40 },
+  igw: { cx: 173, cy: 58, r: 23 },
+  nat: { cx: 236, cy: 232, r: 18 },
+  instPub: { cx: 128, cy: 196 },
+  instPri: { cx: 461, cy: 196 },
+  local: { y: 176 },
+} as const
+
+type BigPart = 'public' | 'private' | 'igw' | 'nat' | 'locks' | 'routeTables' | 'instances' | 'local'
+
+/**
+ * THE VPC DRAWING AT `BG`'S NUMBERS: the dashed VPC box holding a public and a
+ * private subnet, an instance in each, the internet gateway on the top edge
+ * over the public subnet with its two-way line, the NAT gateway inside the
+ * public subnet with the private subnet's line into it (the part inside the
+ * public subnet is that subnet's child), a route table chip under each
+ * subnet, a lock on each subnet's corner. Every part is switched on by a flag
+ * and `lit` rings the part a card is about; `arrows` draws the gateway lines.
+ */
+export function BigVpc({ subnets = true, instances = true, igw = false, nat = false, locks = false, routeTables = false, local = false, arrows = true, lit = {}, igwLabel = 'Internet Gateway', natLabel = 'NAT Gateway', publicLabel = 'Public subnet', privateLabel = 'Private subnet', children }: {
+  subnets?: boolean; instances?: boolean; igw?: boolean; nat?: boolean; locks?: boolean; routeTables?: boolean; local?: boolean; arrows?: boolean
+  lit?: Partial<Record<BigPart, boolean>>; igwLabel?: ReactNode; natLabel?: ReactNode; publicLabel?: ReactNode; privateLabel?: ReactNode; children?: ReactNode
+}) {
+  const instant = useInstant()
+  const ease = instant ? 'none' : `opacity 420ms ${EASE}`
+  const show = (on: boolean): CSSProperties => ({ opacity: on ? 1 : 0, transition: ease })
+  const rel = (p: { cx: number; cy: number }, box: { x: number; y: number }) => ({ cx: p.cx - box.x, cy: p.cy - box.y })
+  const natIn = rel(BG.nat, BG.pub)
+  const instPubIn = rel(BG.instPub, BG.pub)
+  const instPriIn = rel(BG.instPri, BG.pri)
+  const vpcRel = (v: number, o: number) => v - o
+  return (
+    <div className="absolute inset-0" style={{ width: BG.W, height: BG.H }}>
+      <div style={{ position: 'absolute', left: BG.vpc.x, top: BG.vpc.y }}>
+        <Boundary w={BG.vpc.w} h={BG.vpc.h} label="VPC">
+          {/* the public subnet, with its instance, the NAT gateway and the lines that end inside it */}
+          <div style={{ position: 'absolute', left: vpcRel(BG.pub.x, BG.vpc.x), top: vpcRel(BG.pub.y, BG.vpc.y), ...show(subnets) }}>
+            <SubnetBox w={BG.pub.w} h={BG.pub.h} kind="public" label={publicLabel} lit={!!lit.public}>
+              {instances && (
+                <div style={{ position: 'absolute', left: instPubIn.cx, top: instPubIn.cy, transform: 'translate(-50%, -50%)' }}>
+                  <Resource size={56} lit={!!lit.instances} />
+                </div>
+              )}
+              {nat && (
+                <div style={{ position: 'absolute', left: natIn.cx, top: natIn.cy, transform: 'translate(-50%, -50%)' }}>
+                  <Gateway kind="nat" size={BG.nat.r * 2} lit={!!lit.nat} label={natLabel} />
+                </div>
+              )}
+              {/* the private subnet's line, the part inside this subnet, to the NAT's rim */}
+              {nat && arrows && <Arrow x1={BG.pub.w - 2} y1={natIn.cy} x2={natIn.cx + BG.nat.r + 2} y2={natIn.cy} tone={lit.nat ? NET.lit : NET.private} />}
+            </SubnetBox>
+          </div>
+          {/* the private subnet with its instance */}
+          <div style={{ position: 'absolute', left: vpcRel(BG.pri.x, BG.vpc.x), top: vpcRel(BG.pri.y, BG.vpc.y), ...show(subnets) }}>
+            <SubnetBox w={BG.pri.w} h={BG.pri.h} kind="private" label={privateLabel} lit={!!lit.private}>
+              {instances && (
+                <div style={{ position: 'absolute', left: instPriIn.cx, top: instPriIn.cy, transform: 'translate(-50%, -50%)' }}>
+                  <Resource size={56} lit={!!lit.instances} />
+                </div>
+              )}
+            </SubnetBox>
+          </div>
+          {/* the built-in local line between the subnets */}
+          {local && (
+            <>
+              <span aria-hidden className="absolute rounded-full" style={{ left: vpcRel(BG.pub.x + BG.pub.w, BG.vpc.x) + 2, top: vpcRel(BG.local.y, BG.vpc.y) - 1.5, width: BG.pri.x - (BG.pub.x + BG.pub.w) - 4, height: 3, background: lit.local ? NET.lit : NET.boundary, transition: ease }} />
+              <div style={{ position: 'absolute', left: vpcRel((BG.pub.x + BG.pub.w + BG.pri.x) / 2, BG.vpc.x), top: vpcRel(BG.local.y, BG.vpc.y) + 22, transform: 'translate(-50%, -50%)' }}>
+                <Label size={14} strong tone={lit.local ? 'solid' : 'plain'} raised>
+                  local
+                </Label>
+              </div>
+            </>
+          )}
+          {/* the private subnet's line to the NAT, the part between the subnets */}
+          {nat && arrows && (
+            <span aria-hidden className="absolute rounded-full" style={{ left: vpcRel(BG.pub.x + BG.pub.w, BG.vpc.x) + 2, top: vpcRel(BG.nat.cy, BG.vpc.y) - 1.25, width: BG.pri.x - (BG.pub.x + BG.pub.w) - 4, height: 2.5, background: lit.nat ? NET.lit : NET.private, transition: ease }} />
+          )}
+          {/* a route table chip under each subnet */}
+          {[BG.pub, BG.pri].map((b, i) => (
+            <div key={i} className="grid place-items-center" style={{ position: 'absolute', left: vpcRel(b.x, BG.vpc.x), top: vpcRel(BG.rt.y, BG.vpc.y), width: b.w, height: BG.rt.h, ...show(routeTables) }}>
+              <RouteChip lit={!!lit.routeTables} />
+            </div>
+          ))}
+          {/* a lock on each subnet's top-right corner */}
+          {[BG.pub, BG.pri].map((b, i) => (
+            <div key={i} style={{ position: 'absolute', left: vpcRel(b.x + b.w, BG.vpc.x), top: vpcRel(b.y, BG.vpc.y), transform: 'translate(-50%, -50%)', ...show(locks) }}>
+              <LockBadge lit={!!lit.locks} />
+            </div>
+          ))}
+          {/* the internet gateway on the VPC's top edge, over the public subnet, its two-way line down to the subnet */}
+          <div style={{ position: 'absolute', left: vpcRel(BG.igw.cx, BG.vpc.x), top: 0, transform: 'translate(-50%, -50%)', ...show(igw) }}>
+            <Gateway kind="igw" lit={!!lit.igw} />
+          </div>
+          {igw && arrows && <Arrow x1={vpcRel(BG.igw.cx, BG.vpc.x)} y1={BG.igw.r + 2} x2={vpcRel(BG.igw.cx, BG.vpc.x)} y2={vpcRel(BG.pub.y, BG.vpc.y) - 2} both tone={lit.igw ? NET.lit : NET.public} />}
+          {children}
+        </Boundary>
+      </div>
+      <div style={{ position: 'absolute', left: BG.igw.cx, top: BG.igw.cy - 42, transform: 'translate(-50%, -50%)', ...show(igw) }}>
+        <Label size={14} strong tone={lit.igw ? 'solid' : 'plain'} raised>
+          {igwLabel}
+        </Label>
+      </div>
     </div>
   )
 }

@@ -3,7 +3,7 @@ import { ImportantNote, Shot, Shots } from './frames'
 /**
  * SLIDES 42 TO 51: the VirtualBox walkthrough. Every caption, lead and note is
  * the reference's; the captures are the TR's own (pages 17 to 26), named as the
- * reference names them, and the two red boxes are the reference's own numbers.
+ * reference names them, and the two highlight boxes (orange, rule 51) are the reference's own numbers.
  * Two captures a frame, as the reference pairs them.
  */
 

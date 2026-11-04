@@ -1,8 +1,6 @@
 import type React from 'react'
 import type { DeckMeta, SlideDef } from '@/deck/types'
-import { AgendaSlide, BrandSlide, NextSessionSlide, SectionBreakerSlide, ThankYouSlide } from '@/slides'
-import { FeedbackSlide } from '@/slides/FeedbackSlide'
-import { ClassroomQuiz } from '@/ui/foundations/ClassroomQuiz'
+import { BrandSlide, NextSessionSlide, SectionBreakerSlide, ThankYouSlide } from '@/slides'
 import { Takeaways } from './figures/closing'
 import { AgendaColumns, QuizCard, FeedbackCard } from './figures/variants'
 import { installSpecKeys } from '@/ui/foundations/keys'
@@ -13,13 +11,20 @@ import { SCENE_CSS, STILL } from './figures/scene'
 import { ART_CSS, mountClayDefs } from './figures/art'
 import { VH_CSS } from './figures/vh/frames'
 import { CV_CSS } from './figures/cv/frames'
+import { FX_CSS, FX_CSS_2, FX_CSS_3 } from './figures/cv/fx'
+import { FUNDAMENTALS_CSS } from './figures/cv/fundamentals'
+import { INSTALL_CSS } from './figures/cv/install'
+import { DOCKER_CSS } from './figures/cv/docker'
+import { BUILD_CSS } from './figures/cv/build'
+import { COMPARE_CSS } from './figures/cv/compare'
+import { CHOOSE_CSS } from './figures/cv/choose'
 import { Container, FlatsAnalogy, Namespaces, Cgroups, UnionFs } from './figures/cv/fundamentals'
-import { DockerParts, SetupPerOs, InstallStep1, InstallStep2, InstallStep3, InstallStep4, InstallStep5, InstallStep6, InstallStep7, InstallStep8 } from './figures/cv/install'
-import { ImageVsContainer, RecipeAnalogy, PullRun, PartA1, PartA2, RunCommand, CheckStopRemove, DockerfileLayers, BuildCache, HouseAnalogy } from './figures/cv/docker'
+import { DockerParts, SetupPerOs, InstallStep1, InstallStep2, InstallStep3, InstallStep4, InstallStep5, InstallStep6, InstallStep7, InstallStep8, InstallStep8b } from './figures/cv/install'
+import { ImageVsContainer, RecipeAnalogy, PullRun, PullRun2, PartA1, PartA2, RunCommand, CheckStopRemove, DockerfileLayers, BuildCache, HouseAnalogy } from './figures/cv/docker'
 import { PartB1, PartB1b, PartB2, PartB3, PartB4, PartB5, PartB6, PartB7, PartB8 } from './figures/cv/build'
 import { TwoStacks, TwoStacksPoints, BootMemory, WhyGap, SizeDensity, DensityBuys, Isolation, Isolation2, BlastRadius, BlastRadius2 } from './figures/cv/compare'
 import { FourCriteria, ContainerUses, VmUses, DecisionTable, BothTogether } from './figures/cv/choose'
-import { ToolingMap, Hypervisors, Containerd, Podman, BusAnalogy, Engines, Registries, LibraryAnalogy, Tagging, HeadsUp } from './figures/cv/tooling'
+import { ToolingMap, Hypervisors, Containerd, Podman, BusAnalogy, Engines, Registries, Tagging, HeadsUp } from './figures/cv/tooling'
 
 /**
  * CLOUD COMPUTING · "Containers vs Virtual Machines" (session 4)
@@ -37,8 +42,10 @@ import { ToolingMap, Hypervisors, Containerd, Podman, BusAnalogy, Engines, Regis
  * enters in reading order (`figures/entrance.ts`), which is how the spec's
  * press order reaches the screen. Section files: `figures/cv/`.
  *
- * REVIEW PAIRS (user, 2026-10-28): agenda, quiz and feedback each appear in
- * layout 0 and layout 1, side by side, so the user can delete one of each.
+ * REVIEW PAIRS (user, 2026-10-28) RESOLVED 2026-10-30: the user kept agenda1
+ * (titles only), quiz1 and feedback1 and had agenda0, agenda1 (full lines),
+ * quiz0 and feedback0 deleted, with the library analogy (T25-AN). The same
+ * correction pass split T05-S8 and T07-1 in two each: 74 slides.
  */
 
 export const SESSION = 'Containers vs Virtual Machines'
@@ -82,7 +89,7 @@ if (typeof document !== 'undefined' && !document.getElementById('cc-css')) {
   const el = document.createElement('style')
   el.id = 'cc-css'
   /* table heads read as the spec writes them (`Namespace`, `Favours VM`), not in the kit's capitals: the user asked for the source text exactly */
-  el.textContent = ART_CSS + SCENE_CSS + MOTION_CSS + VH_CSS + CV_CSS + `[data-spec] .grid.items-end > .uppercase.tracking-wider { text-transform: none; letter-spacing: 0.01em }`
+  el.textContent = ART_CSS + SCENE_CSS + MOTION_CSS + VH_CSS + CV_CSS + FX_CSS + FX_CSS_2 + FX_CSS_3 + FUNDAMENTALS_CSS + INSTALL_CSS + DOCKER_CSS + BUILD_CSS + COMPARE_CSS + CHOOSE_CSS + `[data-spec] .grid.items-end > .uppercase.tracking-wider { text-transform: none; letter-spacing: 0.01em }`
   document.head.appendChild(el)
   if (STILL) document.documentElement.classList.add('cc-still')
   if (document.body) mountClayDefs()
@@ -95,15 +102,13 @@ installEntrances()
 const S = AGENDA.map((a) => a.title)
 const breaker = (i: number): SlideDef => ({ id: `D${i + 1}`, section: S[i], label: 'Section divider', transition: 'zoom', element: <SectionBreakerSlide index={i + 1} title={S[i]} lesson={SESSION} /> })
 const slide = (id: string, section: string, label: string, El: (p: { lesson: string }) => React.ReactElement): SlideDef => ({ id, section, label, element: <El lesson={SESSION} /> })
-const PAIR = (which: string, other: string) => `REVIEW PAIR (user, 2026-10-28): ${which}, beside ${other}. Keep one and delete the other.`
 
 export const cvDeck: SlideDef[] = [
   /* ── OPENING ─────────────────────────────────────────────────────────── */
   { id: 'S-WELCOME', section: 'Opening', label: 'Welcome', transition: 'fade', element: <BrandSlide greeting="Welcome!" lesson={SESSION} /> },
   { id: 'S-RECAP', section: 'Opening', label: 'Recap', element: <Takeaways id="S-RECAP" kicker="Recap" title="Virtualization & Hypervisors" lesson={SESSION} items={PREVIOUS.map(({ title }) => ({ title }))} art="/assets/takeaways/presenter.png" /> },
-  { id: 'S-AGENDA', section: 'Opening', label: 'Agenda (layout 0)', element: <AgendaSlide kicker={SESSION} title="Agenda" lesson={SESSION} items={AGENDA.map(({ title }) => ({ title }))} />, notes: PAIR('agenda0, the kit agenda', 'agenda1 (the next frame)') },
-  { id: 'S-AGENDA-1', section: 'Opening', label: 'Agenda (layout 1)', element: <AgendaColumns kicker={SESSION} lesson={SESSION} items={AGENDA} />, notes: PAIR('agenda1, the column layout from slidestraining/agendaslides, with the TR sub lines', 'agenda0 (two frames back)') },
-  { id: 'S-AGENDA-1B', section: 'Opening', label: 'Agenda (layout 1, titles only)', element: <AgendaColumns kicker={SESSION} lesson={SESSION} items={AGENDA.map(({ title }) => ({ title }))} />, notes: PAIR('agenda1 titles only (user, 2026-10-28: the same columns, the main points only)', 'agenda0 and agenda1 (the previous frames)') },
+  /* agenda1, titles only: the frame the user kept (2026-10-30); agenda0 and the full-line agenda1 were deleted */
+  { id: 'S-AGENDA-1B', section: 'Opening', label: 'Agenda', element: <AgendaColumns kicker={SESSION} lesson={SESSION} items={AGENDA.map(({ title }) => ({ title }))} /> },
 
   /* ── 1 · CONTAINER FUNDAMENTALS ──────────────────────────────────────── */
   breaker(0),
@@ -124,10 +129,13 @@ export const cvDeck: SlideDef[] = [
   slide('T05-S5', S[1], 'Step 5: back to the app', InstallStep5),
   slide('T05-S6', S[1], 'Step 6: allow the redirect', InstallStep6),
   slide('T05-S7', S[1], 'Step 7: Docker Desktop opens', InstallStep7),
+  /* user, 2026-11-04: the two halves swapped, the commands first */
+  slide('T05-S8b', S[1], 'Step 8: the two commands and the Linux note', InstallStep8b),
   slide('T05-S8', S[1], 'Step 8: verify from the terminal', InstallStep8),
   slide('T06-1', S[1], 'Image vs container', ImageVsContainer),
   slide('T06-AN', S[1], 'Analogy: One recipe, many cakes', RecipeAnalogy),
-  slide('T07-1', S[1], 'Pull and run', PullRun),
+  slide('T07-1', S[1], 'Pull and run: the two commands', PullRun),
+  slide('T07-1b', S[1], 'Pull and run: socket, cache, repeat run', PullRun2),
   slide('T08-1', S[1], 'Part A, steps 1 to 5', PartA1),
   slide('T08-2', S[1], 'Part A, steps 6 to 10', PartA2),
   slide('T09-1', S[1], 'The run command, slot by slot', RunCommand),
@@ -141,7 +149,7 @@ export const cvDeck: SlideDef[] = [
   slide('T11-3', S[1], 'Part B: the Dockerfile', PartB3),
   slide('T11-4', S[1], 'Part B: build and list', PartB4),
   slide('T11-5', S[1], 'Part B: container started', PartB5),
-  slide('T11-6', S[1], 'Part B: port mapping', PartB6),
+  slide('T11-6', S[1], 'Part B: port mapping confirmed', PartB6),
   slide('T11-7', S[1], 'Part B: the custom page', PartB7),
   slide('T11-8', S[1], 'Part B: clean up', PartB8),
 
@@ -175,17 +183,16 @@ export const cvDeck: SlideDef[] = [
   slide('T23-AN', S[4], 'Analogy: A bus depot or an auto-rickshaw', BusAnalogy),
   slide('T24-1', S[4], 'Docker, Podman, containerd', Engines),
   slide('T25-1', S[4], 'Public and private registries', Registries),
-  slide('T25-AN', S[4], 'Analogy: A library or an office cupboard', LibraryAnalogy),
   slide('T26-1', S[4], 'Tagging strategy', Tagging),
   slide('X1', S[4], 'Heads-up: AWS account', HeadsUp),
 
   /* ── CLOSING ─────────────────────────────────────────────────────────── */
-  { id: 'S-QUIZ', section: 'Closing', label: 'Quiz Time (layout 0)', transition: 'zoom', element: <ClassroomQuiz lesson={SESSION} />, notes: PAIR('quiz0, the course quiz frame', 'quiz1 (the next frame)') },
-  { id: 'S-QUIZ-1', section: 'Closing', label: 'Quiz Time (layout 1)', transition: 'zoom', element: <QuizCard lesson={SESSION} title="Quiz Time!" />, notes: PAIR('quiz1, the title card from slidestraining/quizslide', 'quiz0 (the previous frame)') },
+  /* quiz1: the frame the user kept (2026-10-30); quiz0 was deleted */
+  { id: 'S-QUIZ-1', section: 'Closing', label: 'Quiz Time', transition: 'zoom', element: <QuizCard lesson={SESSION} title="Quiz Time!" /> },
   { id: 'S-TAKEAWAYS', section: 'Closing', label: 'Key Takeaways', element: <Takeaways id="S-TAKEAWAYS" lesson={SESSION} items={AGENDA.map(({ title }) => ({ title }))} /> },
+  /* feedback1: the frame the user kept (2026-10-30); feedback0 was deleted */
+  { id: 'feedback-card', section: 'Closing', label: 'Feedback', transition: 'zoom', element: <FeedbackCard lesson={SESSION} /> },
   { id: 'S-NEXT', section: 'Closing', label: 'Next session', transition: 'zoom', element: <NextSessionSlide title="Cloud Networking & VPC" lesson={SESSION} /> },
-  { id: 'feedback', section: 'Closing', label: 'Feedback (layout 0)', element: <FeedbackSlide lesson={SESSION} />, notes: PAIR("feedback0, the deck's standard feedback slide (QR, link, form)", 'feedback1 (the next frame)') },
-  { id: 'feedback-card', section: 'Closing', label: 'Feedback (layout 1)', transition: 'zoom', element: <FeedbackCard lesson={SESSION} />, notes: PAIR('feedback1, the title card from slidestraining/Feedbackslide', 'feedback0 (the previous frame)') },
   { id: 'S-THANKS', section: 'Closing', label: 'Thank You', transition: 'zoom', element: <ThankYouSlide title="Thank You" lesson={SESSION} /> },
   { id: 'S-BEST', section: 'Closing', label: 'All the Best', transition: 'zoom', element: <ThankYouSlide title="All the Best" lesson={SESSION} /> },
 ]

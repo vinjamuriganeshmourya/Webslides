@@ -1,4 +1,6 @@
 import { STILL } from './scene'
+import { SPEED, getAutoAnim } from '@/deck/autoAnim'
+import { isFull, localStep, registerTrack, stepGen, subscribeSteps } from '@/deck/animSteps'
 
 /**
  * EVERY ELEMENT ON EVERY SLIDE ENTERS (user, 2026-10-15).
@@ -45,10 +47,11 @@ import { STILL } from './scene'
  */
 
 const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)'
-const DUR = 550
+/* AUTO ANIMATION (user, 2026-11-03): every number times `SPEED`, a little quicker than before */
+const DUR = Math.round(550 * SPEED)
 const RISE = 26
-const FIRST = 250
-const LAST_END = 1500
+const FIRST = Math.round(250 * SPEED)
+const LAST_END = Math.round(1500 * SPEED)
 const MAX_STEP = 60
 
 const PICTURE = new Set(['svg', 'img', 'canvas', 'iframe', 'video'])
@@ -146,7 +149,93 @@ function holdToBudget(section: Element, t0: number) {
   }
 }
 
+/**
+ * STEP-BY-STEP (auto animation OFF, user 2026-11-03): the units are gathered into BLOCKS, a block being
+ * a unit no other unit contains (the lead, one point of a rail, a whole stage or table with everything
+ * in it), in reading order; one press brings in one block. The figure inside a stage then builds on the
+ * presses after (`useCycle`), so a slide walks: lead, points, picture, then the picture's own steps.
+ * Each unit gets a paused entrance, played forward when its block's press arrives and backward on Back.
+ */
+function enterStepped(section: Element, units: Element[]) {
+  const blocks: Element[][] = []
+  for (const el of units) {
+    const owner = blocks.find((b) => b[0] !== el && b[0].contains(el))
+    if (owner) owner.push(el)
+    else blocks.push([el])
+  }
+  /* side by side, the left column first: a block beside a taller one (a point beside the stage) comes before it */
+  const rect = new Map(blocks.map((b) => [b, b[0].getBoundingClientRect()]))
+  blocks.sort((a, b) => {
+    const ra = rect.get(a)!
+    const rb = rect.get(b)!
+    const overlap = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top)
+    if (overlap > 8 && (ra.right <= rb.left + 4 || rb.right <= ra.left + 4)) return ra.left - rb.left
+    return ra.top - rb.top || ra.left - rb.left
+  })
+  const anims: Animation[][] = blocks.map((b) =>
+    b.flatMap((el) => {
+      const cs = getComputedStyle(el)
+      const own = parseFloat(cs.opacity)
+      if (!(own > 0)) return []
+      const move = cs.translate === 'none' || cs.translate === '' || cs.translate === '0px'
+      const frames: Keyframe[] = move ? [{ opacity: 0, translate: `0 ${RISE}px` }, { opacity: own, translate: '0 0' }] : [{ opacity: 0 }, { opacity: own }]
+      const a = el.animate(frames, { duration: DUR, easing: EASE, fill: 'both' })
+      a.pause()
+      a.currentTime = 0
+      return [a]
+    }),
+  )
+  const mine = stepGen()
+  registerTrack('entrance', blocks.length, mine)
+  let shown = -1
+  const sync = () => {
+    if (!section.isConnected) {
+      off()
+      anims.flat().forEach((a) => a.cancel())
+      return
+    }
+    /* the deck moved on: this slide is leaving, it keeps what it shows (no reverse play while it fades out) */
+    if (stepGen() !== mine) return
+    const n = isFull() ? blocks.length : localStep('entrance')
+    if (n === shown) return
+    const instant = shown < 0
+    anims.forEach((group, i) =>
+      group.forEach((a) => {
+        const want = i < n
+        if (instant) {
+          a.currentTime = want ? DUR : 0
+          return
+        }
+        /*
+          ONLY A BLOCK THAT IS NOT ALREADY WHERE IT SHOULD BE MOVES (round 2, change 5: "all content
+          appears at once, then appears again one step at a time"). `play()` on a FINISHED animation
+          auto-rewinds it: a shown block (at its end, rate 1) restarted from opacity 0 and came back,
+          and a hidden one (at 0, rate -1) jumped to its END, fully visible, then faded out again.
+          Every press did that to every block of the slide. A block already at its target is left alone.
+        */
+        const t = Number(a.currentTime ?? 0)
+        a.playbackRate = want ? 1 : -1
+        if (want ? t >= DUR : t <= 0) {
+          /* already there: hold it, never `play()` (that would rewind it) */
+          a.pause()
+          a.currentTime = want ? DUR : 0
+          return
+        }
+        a.play()
+      }),
+    )
+    shown = n
+  }
+  const off = subscribeSteps(sync)
+  sync()
+}
+
 function enter(section: Element) {
+  if (!getAutoAnim()) {
+    const content = section.querySelector(':scope > div.z-10') ?? section
+    enterStepped(section, collect(content))
+    return
+  }
   const t0 = performance.now()
   requestAnimationFrame(() => requestAnimationFrame(() => holdToBudget(section, t0)))
   const content = section.querySelector(':scope > div.z-10') ?? section
