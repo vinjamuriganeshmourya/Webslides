@@ -318,7 +318,7 @@ export function Gateway({ kind, label, lit = false, dim = false, size = 46, labe
 }
 
 /** The route table beside a subnet, as one chip with the table icon. `lit` lights it. */
-export function RouteChip({ label = 'route table', lit = false, dim = false, size = 14 }: { label?: ReactNode; lit?: boolean; dim?: boolean; size?: number }) {
+export function RouteChip({ label = 'Route Table', lit = false, dim = false, size = 14 }: { label?: ReactNode; lit?: boolean; dim?: boolean; size?: number }) {
   const instant = useInstant()
   return (
     <span style={{ display: 'inline-block', opacity: dim ? 0.4 : 1, transition: instant ? 'none' : `opacity 420ms ${EASE}` }}>
@@ -413,7 +413,7 @@ export function Resource({ kind = 'instance', label, lit = false, dim = false, s
 }
 
 /** The public internet outside the VPC: session 1's rich cloud with its label under it. */
-export function InternetCloud({ w = 110, label = 'internet', lit = false, dim = false, labelSize = 14 }: { w?: number; label?: ReactNode; lit?: boolean; dim?: boolean; labelSize?: number }) {
+export function InternetCloud({ w = 110, label = 'Internet', lit = false, dim = false, labelSize = 14 }: { w?: number; label?: ReactNode; lit?: boolean; dim?: boolean; labelSize?: number }) {
   const instant = useInstant()
   return (
     <div className="flex flex-col items-center" style={{ gap: 0, opacity: dim ? 0.4 : 1, transition: instant ? 'none' : `opacity 420ms ${EASE}` }}>
@@ -495,7 +495,7 @@ export type VpcPart = 'vpc' | 'public' | 'private' | 'igw' | 'nat' | 'locks' | '
 export function VpcScene({
   label = 'VPC', subnets = true, publicLabel = 'Public subnet', privateLabel = 'Private subnet', publicCidr, privateCidr,
   igw = false, nat = false, locks = false, routeTables = false, internet = false, peer = false, local = false, instances = false,
-  igwLabel = 'Internet Gateway', natLabel = 'NAT Gateway', peerLabel = 'Peering', peerVpcLabel = 'VPC', internetLabel = 'internet', localLabel = 'local', routeLabel = 'route table',
+  igwLabel = 'Internet Gateway', natLabel = 'NAT Gateway', peerLabel = 'Peering', peerVpcLabel = 'VPC', internetLabel = 'Internet', localLabel = 'local', routeLabel = 'Route Table',
   lit = {}, dim = {}, faint = {}, slots = 0, children, vpcTone,
 }: {
   label?: ReactNode; subnets?: boolean; publicLabel?: ReactNode; privateLabel?: ReactNode; publicCidr?: ReactNode; privateCidr?: ReactNode

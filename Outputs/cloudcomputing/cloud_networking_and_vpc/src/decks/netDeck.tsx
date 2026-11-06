@@ -1,7 +1,7 @@
 import type React from 'react'
 import type { DeckMeta, SlideDef } from '@/deck/types'
 import type { SectionBreakerProps } from '@/slides/types'
-import { BrandSlide, NextSessionSlide, SectionBreakerSlide, ThankYouSlide } from '@/slides'
+import { BrandSlide, NextSessionSlide, SectionBreakerSlide, ThankYouSlide, WelcomeSlide } from '@/slides'
 import { AgendaColumns, QuizCard } from './figures/variants'
 import { Takeaways } from './figures/closing'
 import { installSpecKeys } from '@/ui/foundations/keys'
@@ -12,7 +12,7 @@ import { SCENE_CSS, STILL } from './figures/scene'
 import { ART_CSS, mountClayDefs } from './figures/art'
 import { NET_CSS } from './figures/net/frames'
 import { FX_CSS, FX_CSS_2, FX_CSS_3 } from './figures/net/fx'
-import { OVERVIEW_CSS, Boundary1b } from './figures/net/overview'
+import { OVERVIEW_CSS, Boundary1b, Pieces2 } from './figures/net/overview'
 import { VPC_CSS, VpcToSubnets2 } from './figures/net/vpc'
 import { SUBNETS_CSS } from './figures/net/subnets'
 import { ROUTING_CSS } from './figures/net/routing'
@@ -21,7 +21,7 @@ import { LAB_CSS, ExploreSecurity2 } from './figures/net/lab'
 import { Boundary1, SchoolAnalogy, Pieces, FourBlocks, Planes } from './figures/net/overview'
 import { WhatIsVpc, FourParts, SocietyAnalogy, DefaultCustom, DefaultCustom2, Providers, VpcToSubnets } from './figures/net/vpc'
 import { SubnetsOverview, SubnetsOverview2, CidrSizing, CidrSizing2, WorkedSplit, SplitTotals, PublicPrivate, ZonePlacement, ZonePlacement2 } from './figures/net/subnets'
-import { FourPieces, FourPieces2, RouteTables, RouteTables2, PostalAnalogy, InternetGateway, NatGateway, NatGateway2, TicketAnalogy, Peering, Peering2, SiteToSiteVpn, PhoneLineAnalogy, RoutingCompared, RoutingNotPermission, InternetGateway2 } from './figures/net/routing'
+import { FourPieces, FourPieces2, RouteTables, RouteTables2, PostalAnalogy, InternetGateway, NatGateway, NatGateway2, TicketAnalogy, Peering, Peering2, SiteToSiteVpn, PhoneLineAnalogy, RoutingCompared, RoutingNotPermission } from './figures/net/routing'
 import { TwoFilters, DoorCheckpointAnalogy, SecurityGroup, SecurityGroup2, SecurityGroup3, SecurityGroupStacking, NetworkAcl, AclWholeSubnet, GroupsVsAcls, LeastPrivilege, LeastPrivilege2 } from './figures/net/security'
 import { LabSteps1, LabSteps2, VpcCreated, PublicSubnetCreated, PrivateSubnetCreated, IgwAttached, RouteTablesTable, PublicRtCreated, PrivateRtCreated, ExploreSecurity } from './figures/net/lab'
 
@@ -112,7 +112,9 @@ const slide = (id: string, section: string, label: string, El: (p: { lesson: str
 
 export const netDeck: SlideDef[] = [
   /* ── OPENING ─────────────────────────────────────────────────────────── */
-  { id: 'S-WELCOME', section: 'Opening', label: 'Welcome', transition: 'fade', element: <BrandSlide greeting="Welcome!" lesson={SESSION} /> },
+  { id: 'S-WELCOME', section: 'Opening', label: 'Welcome', transition: 'fade', element: <BrandSlide greeting="Welcome" lesson={SESSION} /> },
+  /* the session title frame (course rule R9, user 2026-11-04: a title slide after the welcome slide in every session) */
+  { id: 'S-TITLE', section: 'Opening', label: 'Session name', transition: 'zoom', element: <WelcomeSlide minimal title={SESSION} lesson={SESSION} /> },
   { id: 'S-RECAP', section: 'Opening', label: 'Recap', element: <Takeaways id="S-RECAP" kicker="Recap" title="Containers vs Virtual Machines" lesson={SESSION} items={PREVIOUS.map(({ title }) => ({ title }))} art="/assets/takeaways/presenter.png" /> },
   /* agenda1, the column layout (user, 2026-10-30: "replace Agenda0 with Agenda1"), titles only (course rule R5) */
   { id: 'S-AGENDA', section: 'Opening', label: 'Agenda', element: <AgendaColumns kicker={SESSION} lesson={SESSION} items={AGENDA.map(({ title }) => ({ title }))} /> },
@@ -123,6 +125,7 @@ export const netDeck: SlideDef[] = [
   slide('T01-1b', S[0], 'The deployment boundary, traffic and controls', Boundary1b),
   slide('T01-AN', S[0], "Analogy: A school's gates and corridors", SchoolAnalogy),
   slide('T02-1', S[0], 'Pieces, configured in software', Pieces),
+  slide('T02-1b', S[0], 'Pieces, pushed onto shared hardware', Pieces2),
   slide('T02-2', S[0], 'The four building blocks', FourBlocks),
   slide('T02-3', S[0], 'Control plane and data plane', Planes),
 
@@ -157,7 +160,7 @@ export const netDeck: SlideDef[] = [
   slide('T14-1b', S[3], 'A route table, the default route', RouteTables2),
   slide('T14-AN', S[3], 'Analogy: A postal sorting hub', PostalAnalogy),
   slide('T15-1', S[3], 'The internet gateway', InternetGateway),
-  slide('T15-1c', S[3], 'The internet gateway, translation and public IP', InternetGateway2),
+  /* T15-1c merged into T15-1 (review 2026-11-05, slides 38 and 39 into one) */
   slide('T16-1', S[3], 'The NAT gateway', NatGateway),
   slide('T16-1b', S[3], 'The NAT gateway, its route and cost', NatGateway2),
   slide('T16-AN', S[3], 'Analogy: A ticket counter', TicketAnalogy),
@@ -199,7 +202,7 @@ export const netDeck: SlideDef[] = [
 
   /* ── CLOSING ─────────────────────────────────────────────────────────── */
   /* quiz1, the title card with the question cube (user, 2026-10-30: "replace the quiz slide with the Quizslide 1 version") */
-  { id: 'S-QUIZ', section: 'Closing', label: 'Quiz Time', transition: 'zoom', element: <QuizCard lesson={SESSION} title="Quiz Time!" /> },
+  { id: 'S-QUIZ', section: 'Closing', label: 'Quiz Time', transition: 'zoom', element: <QuizCard lesson={SESSION} title="Quiz Time" /> },
   { id: 'S-TAKEAWAYS', section: 'Closing', label: 'Key Takeaways', element: <Takeaways id="S-TAKEAWAYS" lesson={SESSION} items={AGENDA.map(({ title }) => ({ title }))} /> },
   { id: 'S-NEXT', section: 'Closing', label: 'Next session', transition: 'zoom', element: <NextSessionSlide title="Load Balancing & CDN" lesson={SESSION} /> },
   { id: 'S-THANKS', section: 'Closing', label: 'Thank You', transition: 'zoom', element: <ThankYouSlide title="Thank You" lesson={SESSION} /> },

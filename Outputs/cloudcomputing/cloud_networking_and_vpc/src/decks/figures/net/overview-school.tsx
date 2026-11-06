@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react'
 import { IdCard, ShieldCheck, Check } from 'lucide-react'
 import { colors } from '@/design/tokens'
-import { Arrow, At, Label, STILL, useCycle } from '../scene'
+import { useInstant } from '@/motion/instant'
+import { SPEED, useAutoAnim } from '@/deck/autoAnim'
+import { Arrow, At, Label, REDUCED, STILL, useCycle } from '../scene'
 import { Icon3D } from '../d3/kit'
 import { AN_W, IsoAnalogy } from '../iso/frames'
 import { Box, FACE_STROKE, ISO, IsoAt, IsoScene, IsoSvg, P, Quad, Shadow, pts, shade } from '../iso/iso'
@@ -371,24 +373,24 @@ function SchoolScene({ pair, u }: { pair: number; u: number }) {
       {/* the tags, in the TR's words, each by the thing it names */}
       <div style={opA}>
         <IsoAt x={PLOT.w + 0.1} y={GATE.y2 + 0.45} z={0.1} dx={6} dy={-2} cx={false}>
-          <Tag lit={focus === 0} tone="warn">gates</Tag>
+          <Tag lit={focus === 0} tone="warn">Gates</Tag>
         </IsoAt>
         <IsoAt x={SIGN.x + SIGN.w / 2 - 0.2} y={SIGN.y} z={1.15} dy={-34}>
-          <Tag lit={focus === 0} tone="warn">entry rules</Tag>
+          <Tag lit={focus === 0} tone="warn">Entry Rules</Tag>
         </IsoAt>
         <IsoAt x={ROAD.x2 - 0.5} y={GATE.y2} dy={16}>
-          <Tag lit={focus === 0} tone="warn">who can enter</Tag>
+          <Tag lit={focus === 0} tone="warn">Who Can Enter</Tag>
         </IsoAt>
       </div>
       <div style={opB}>
         <IsoAt x={BLD.x} y={CORR.y + CORR.d} z={STOREY + 0.2} dx={-6} cx={false} style={{ transform: 'translateX(-100%)' }}>
-          <Tag lit={focus === 1} tone="good">corridors</Tag>
+          <Tag lit={focus === 1} tone="good">Corridors</Tag>
         </IsoAt>
         <IsoAt x={2.6} y={0.6} z={2 * STOREY + 1.0} dy={-40}>
-          <Tag lit={focus === 1} tone="good">which rooms they can access</Tag>
+          <Tag lit={focus === 1} tone="good">Which Rooms They Can Access</Tag>
         </IsoAt>
         <IsoAt x={3.1} y={3.85} dy={-4}>
-          <Tag lit={focus === 1} tone="good">where they can go</Tag>
+          <Tag lit={focus === 1} tone="good">Where They Can Go</Tag>
         </IsoAt>
       </div>
     </IsoScene>
@@ -437,7 +439,7 @@ function CloudScene({ pair, u }: { pair: number; u: number }) {
   return (
     <>
       <At x={BN.x} y={BN.y}>
-        <Boundary w={BN.w} h={BN.h} label="cloud networking" />
+        <Boundary w={BN.w} h={BN.h} label="Cloud Networking" />
       </At>
       {/* A, amber: the user outside, the checkpoint on the boundary, the line in to the first server */}
       <div style={opA}>
@@ -446,7 +448,7 @@ function CloudScene({ pair, u }: { pair: number; u: number }) {
         </At>
         <Arrow x1={USER.cx + 40} y1={USER.cy} x2={R1.cx - SRV / 2 - 4} y2={R1.cy} tone={AMBER} />
         <At x={BN.x + BN.w / 2} y={BN.y + 34} cx cy>
-          <Tag lit={focus === 0} tone="warn">how traffic reaches cloud resources</Tag>
+          <Tag lit={focus === 0} tone="warn">How Traffic Reaches Cloud Resources</Tag>
         </At>
       </div>
       {/* the checkpoint sits OVER the line (review: the arrow passes behind the shield): its own layer above the arrows, an opaque disc */}
@@ -474,7 +476,7 @@ function CloudScene({ pair, u }: { pair: number; u: number }) {
         <Server at={R2} ping={focus === 1 && u > 0.6 && u < 0.95} tone={GREEN} />
         <Server at={R3} ping={false} tone={NET.blocked} />
         <At x={BN.x + BN.w / 2} y={BN.y + BN.h - 24} cx cy>
-          <Tag lit={focus === 1} tone="good">which resources it can access</Tag>
+          <Tag lit={focus === 1} tone="good">Which Resources It Can Access</Tag>
         </At>
       </div>
       <Server at={R1} ping={focus === 0 && u > 0.84} tone={AMBER} />
@@ -491,22 +493,31 @@ function CloudScene({ pair, u }: { pair: number; u: number }) {
  * corridor pair, 3 the whole picture at rest. Auto: it loops; off: one press per pair, then the rest.
  */
 function useSchoolPair() {
-  const k = useCycle(4, 4200, 3, 3)
+  const instant = useInstant()
+  const auto = useAutoAnim()
+  const held = STILL || REDUCED || instant
+  /* one state lasts exactly one phase (PHASE ms after SPEED), so each pair starts the moment the last one ends */
+  const k = useCycle(4, PHASE / SPEED, 3, 3)
+  if (held) return 2
+  /* auto ON (round 3, 5.md: "loop continuously, the next cycle immediately"): the gate pair and the corridor pair
+     alternate with no rest beat; auto OFF keeps the four presses: whole picture, gate pair, corridor pair, rest */
+  if (auto) return k % 2
   return k === 0 ? 2 : k - 1
 }
+const PHASE = 3400
 
 export function SchoolAnalogy({ lesson }: { lesson: string }) {
   const pair = useSchoolPair()
-  const u = usePhase(pair, 3400)
+  const u = usePhase(pair, PHASE)
   return (
     <IsoAnalogy
       id="T01-AN"
       kicker="Deployment Boundary"
-      title="A school's gates, corridors and entry rules"
+      title="A School's Gates, Corridors and Entry Rules"
       lesson={lesson}
       bare
       h={AN_H}
-      everyday={{ label: "A school's gates, corridors and entry rules", scene: <SchoolScene pair={pair} u={u} /> }}
+      everyday={{ label: "A School's Gates, Corridors and Entry Rules", scene: <SchoolScene pair={pair} u={u} /> }}
       cloud={{ label: 'Cloud networking controls traffic to resources', scene: <CloudScene pair={pair} u={u} /> }}
     />
   )

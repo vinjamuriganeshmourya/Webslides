@@ -1,8 +1,9 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { BrickWall, Building2, DoorOpen, MapPin, Network, Route, Server, Trees, Users, Waypoints, X } from 'lucide-react'
-import { SPEED } from '@/deck/autoAnim'
+import { SPEED, useAutoAnim } from '@/deck/autoAnim'
+import { useInstant } from '@/motion/instant'
 import { colors } from '@/design/tokens'
-import { At, STILL, useCycle } from '../scene'
+import { At, REDUCED, STILL, useCycle } from '../scene'
 import { LAB } from '../clay-b'
 import { AN_W, IsoAnalogy } from '../iso/frames'
 import { Box, ISO, IsoAt, IsoScene, IsoSvg, P, Quad, Shadow, pts, shade, useIso } from '../iso/iso'
@@ -19,12 +20,12 @@ import { CvIcon, Ripple, fx } from './fx'
  * it names, and ONE clock (`useCycle`) walking the matched pairs, one pair per
  * press with auto animation off:
  *
- *   0  campus (violet)     one bigger campus            provider's shared network
+ *   0  campus (violet)     one bigger campus            Provider's Shared Network
  *   1  association (blue)  gated residential society,   VPC
  *                          resident association
- *   2  gate (amber)        own gate                     addressed
+ *   2  gate (amber)        own gate                     Addressed
  *   3  roads (teal)        internal roads               routed
- *   4  wall (red)          boundary wall                walled-off section
+ *   4  wall (red)          boundary wall                Walled-Off Section
  *   5  the whole picture at rest (harness URLs hold this frame)
  *
  * Each pair has its own colour on both sides (G4); the lit pair is the only one
@@ -411,22 +412,22 @@ function CampusScene({ focus }: { focus: number }) {
 
       {/* the tags, in the TR's words, beside what they name */}
       <IsoAt x={PLOT.x + PLOT.w / 2 + 0.2} y={PLOT.y} z={1.6} dy={-30}>
-        <PairTag pair={ASSOC_P} focus={focus} icon={<Users />}>resident association</PairTag>
+        <PairTag pair={ASSOC_P} focus={focus} icon={<Users />}>Resident Association</PairTag>
       </IsoAt>
       <At x={wallMid[0] + OX - 52} y={wallMid[1] + OY - 58} cx cy>
-        <PairTag pair={WALL_P} focus={focus} icon={<BrickWall />}>boundary wall</PairTag>
+        <PairTag pair={WALL_P} focus={focus} icon={<BrickWall />}>Boundary Wall</PairTag>
       </At>
       <At x={roadEnd[0] + OX + 92} y={roadEnd[1] + OY - 84} cx cy>
-        <PairTag pair={ROADS_P} focus={focus} icon={<Route />}>internal roads</PairTag>
+        <PairTag pair={ROADS_P} focus={focus} icon={<Route />}>Internal Roads</PairTag>
       </At>
       <At x={gatePost[0] + OX - 30} y={gatePost[1] + OY + 40} cx>
-        <PairTag pair={GATE_P} focus={focus} icon={<DoorOpen />}>own gate</PairTag>
+        <PairTag pair={GATE_P} focus={focus} icon={<DoorOpen />}>Own Gate</PairTag>
       </At>
       <IsoAt x={PX2 + 0.7} y={CAMPUS.d} dy={18}>
-        <PairTag pair={ASSOC_P} focus={focus} icon={<Building2 />}>gated residential society</PairTag>
+        <PairTag pair={ASSOC_P} focus={focus} icon={<Building2 />}>Gated Residential Society</PairTag>
       </IsoAt>
       <IsoAt x={CAMPUS.x + CAMPUS.w} y={CAMPUS.y + CAMPUS.d} dy={12}>
-        <PairTag pair={CAMPUS_P} focus={focus} icon={<Trees />}>one bigger campus</PairTag>
+        <PairTag pair={CAMPUS_P} focus={focus} icon={<Trees />}>One Bigger Campus</PairTag>
       </IsoAt>
     </IsoScene>
   )
@@ -498,7 +499,7 @@ function ProviderScene({ focus }: { focus: number }) {
         {/* the tag sits inside the box, clear of its rim (FS review 2026-11-04: a faded tag over the border read as overlapping it) */}
         <div className="absolute" style={{ left: 12, top: 10, zIndex: 2 }}>
           <PairTag pair={CAMPUS_P} focus={focus} icon={<Network />}>
-            provider's shared network
+            Provider's Shared Network
           </PairTag>
         </div>
 
@@ -557,7 +558,7 @@ function ProviderScene({ focus }: { focus: number }) {
             </div>
             <div className="absolute" style={{ right: 10, top: 10 }}>
               <PairTag pair={WALL_P} focus={focus} icon={<BrickWall />}>
-                walled-off section
+                Walled-Off Section
               </PairTag>
             </div>
             {/* the routed line: server, a hop, database */}
@@ -581,7 +582,7 @@ function ProviderScene({ focus }: { focus: number }) {
             </div>
             <div className="absolute" style={{ left: HOP.cx, top: HOP.cy + 52, transform: 'translate(-50%, -50%)' }}>
               <PairTag pair={ROADS_P} focus={focus} icon={<Route />}>
-                routed
+                Routed
               </PairTag>
             </div>
             {/* its address, on its edge */}
@@ -591,7 +592,7 @@ function ProviderScene({ focus }: { focus: number }) {
             </div>
             <div className="absolute" style={{ left: DISC.cx + DISC.r + 8, top: DISC.cy + 22, transform: 'translateY(-50%)' }}>
               <PairTag pair={GATE_P} focus={focus} icon={<MapPin />}>
-                addressed
+                Addressed
               </PairTag>
             </div>
           </div>
@@ -620,17 +621,22 @@ function ProviderScene({ focus }: { focus: number }) {
  * wall, then the whole picture; it loops in auto mode, one press per pair by hand.
  */
 export function SocietyAnalogy({ lesson }: { lesson: string }) {
-  const k = useCycle(6, DUR * 1000, 5, 5)
-  const focus = STILL || k >= 5 ? -1 : k
+  /* R8.1 (round 3): in auto mode the five pairs loop with no rest beat between laps; by hand the sixth press
+     still shows the whole picture, and harness URLs, thumbnails and reduced motion hold it */
+  const auto = useAutoAnim()
+  const instant = useInstant()
+  const held = STILL || REDUCED || instant
+  const k = useCycle(auto && !held ? 5 : 6, DUR * 1000, 5, 5)
+  const focus = held || k >= 5 ? -1 : k
   return (
     <IsoAnalogy
       id="T03-AN"
       kicker="What Is A VPC"
-      title="A gated society inside one campus"
+      title="A Gated Society Inside One Campus"
       lesson={lesson}
       bare
       h={AN_SH}
-      everyday={{ label: 'A gated society inside one campus', scene: <CampusScene focus={focus} /> }}
+      everyday={{ label: 'A Gated Society Inside One Campus', scene: <CampusScene focus={focus} /> }}
       cloud={{ label: "A VPC inside the provider's shared network", scene: <ProviderScene focus={focus} /> }}
     />
   )

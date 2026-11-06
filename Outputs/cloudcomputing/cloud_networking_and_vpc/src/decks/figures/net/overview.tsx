@@ -96,11 +96,11 @@ function IconDisc({ children, tone = colors.brand, size = 30, style, className }
 
 /* the first point cut at the TR's own colon (round 2, BRIEF2 rule 1: every word kept, in order, none added) */
 const T011_POINTS = [
-  'This connectivity layer, called cloud networking, is the deployment boundary:',
-  'the line deciding whether a launched resource is reachable at all',
+  'This connectivity layer, called cloud networking, is the deployment boundary',
+  'The line deciding whether a launched resource is reachable at all',
   'An instance with no route, gateway or security rule is deployed but entirely unreachable',
   'The deployment boundary decides what traffic reaches a resource and what traffic it can send out',
-  'Isolation, addressing, routing and security rules in this session all exist to control this one boundary',
+  'Isolation, addressing, routing and security rules in a cloud network all exist to control this one boundary',
 ]
 const T011_ICONS = [<Waypoints key="a" />, <Target key="t" />, <ServerOff key="b" />, <ArrowLeftRight key="c" />, <ShieldCheck key="d" />]
 
@@ -358,10 +358,10 @@ const T021_LEAD = 'The deployment boundary is built from a small set of pieces t
 const T021_POINTS = [
   'On AWS (Amazon Web Services), all of them are configured from the VPC (Virtual Private Cloud) console',
   /* the SDN point cut at the TR's own clause boundaries (round 2: "too large, split it into smaller points"); every word kept, in order */
-  'All of it runs on software-defined networking (SDN):',
-  'the model where a control plane makes routing and security decisions in software,',
-  'then pushes them onto hardware shared across many customers,',
-  'so creating a VPC is an API call, not a cabling job',
+  'All of it runs on software-defined networking (SDN)',
+  'The model where a control plane makes routing and security decisions in software',
+  'Then pushes them onto hardware shared across many customers',
+  'So creating a VPC is an API call, not a cabling job',
 ]
 const T021_ICONS = [<LayoutDashboard key="a" />, <Network key="b" />, <Route key="c" />, <Users key="d" />, <Unplug key="e" />]
 const S7_POINTS_W = 540
@@ -384,10 +384,10 @@ const P = {
 } as const
 const CUSTOMERS = [colors.brand, colors.accent, colors.teal, '#8B5CF6']
 
-function ConsoleWindow({ click }: { click: boolean }) {
+function ConsoleWindow({ click, w = P.console.w, h = P.console.h }: { click: boolean; w?: number; h?: number }) {
   const side = [<img key="v" src={vpcIcon} alt="" className="block h-[16px] w-[16px]" />, <Network key="n" size={14} />, <Table2 key="t" size={14} />, <LockIco key="l" size={14} />]
   return (
-    <div className="relative overflow-hidden rounded-[14px]" style={{ width: P.console.w, height: P.console.h, ...TILE_SKIN }}>
+    <div className="relative overflow-hidden rounded-[14px]" style={{ width: w, height: h, ...TILE_SKIN }}>
       {/* the title bar: the window's dots, the AWS mark, the console's name */}
       <div className="flex items-center gap-2 px-3" style={{ height: 34, background: 'linear-gradient(180deg, #232F3E 0%, #1B2532 100%)' }}>
         {['#FF5F57', '#FEBC2E', '#28C840'].map((c) => (
@@ -396,7 +396,7 @@ function ConsoleWindow({ click }: { click: boolean }) {
         <span className="ml-2 grid h-[22px] place-items-center rounded-[6px] bg-white px-1.5">
           <Logo name="aws" h={14} />
         </span>
-        <span className="font-heading text-[15px] font-semibold text-white">VPC console</span>
+        <span className="font-heading text-[15px] font-semibold text-white">VPC Console</span>
       </div>
       {/* the service's pages down the side, the page body with a create button */}
       <div className="absolute flex flex-col items-center gap-1 py-2" style={{ left: 0, top: 34, bottom: 0, width: 40, background: '#EEF3FB', color: colors.brandDark, boxShadow: 'inset -1px 0 0 #CFDCF5' }}>
@@ -422,82 +422,90 @@ function ConsoleWindow({ click }: { click: boolean }) {
   )
 }
 
-function PiecesScene({ k }: { k: number }) {
-  const consoleBottom = P.console.y + P.console.h
-  const planeBottom = P.plane.y + P.plane.h
-  const racks = 4
-  const rackX = (i: number) => 128 + i * 38
+/** The control plane box with its decisions row (`decide` shows the row); shared by both halves of T02-1. */
+function ControlPlane({ w, h, decide }: { w: number; h: number; decide: boolean }) {
+  return (
+    <Boundary w={w} h={h} solid tone={NET.gateway} fill={TILE_SKIN.background as string} radius={16} style={{ boxShadow: TILE_SKIN.boxShadow }} label="Control Plane" labelTone="dark">
+      <At x={w / 2} y={h / 2 + 4} cx cy>
+        <span className="inline-flex items-center gap-3" style={shown(decide, 0)}>
+          <IconDisc tone={colors.brand} size={34}>
+            <Route size={17} />
+          </IconDisc>
+          <Label size={14} strong raised icon={<span className={run(decide, 'cvx cvx-spin')} style={{ display: 'grid' }}><Cog size={14} /></span>}>
+            Routing and Security Decisions in Software
+          </Label>
+          <IconDisc tone={colors.brand} size={34}>
+            <ShieldCheck size={17} />
+          </IconDisc>
+        </span>
+      </At>
+    </Boundary>
+  )
+}
+
+/*
+  T02-1 IS SPLIT IN TWO (round 3, 5.md: "split into two slides to reduce density"), each half with its own
+  picture on the 546 x 380 stage:
+    A  the VPC console on AWS, the cursor clicking create; the API call down into the control plane,
+       which makes its routing and security decisions in software
+    B  the control plane pushing them onto hardware shared across many customers; the cabling job crossed out
+*/
+const PA = { console: { x: 93, y: 26, w: 360, h: 132 }, plane: { x: 16, y: 230, w: 514, h: 118 }, lane: 273 } as const
+const PB = { plane: { x: 16, y: 24, w: 514, h: 96 }, hw: { x: 16, y: 190, w: 514, h: 100 }, cable: { cy: 336 }, lane: 273 } as const
+
+function PiecesSceneA({ k }: { k: number }) {
+  const consoleBottom = PA.console.y + PA.console.h
   return (
     <>
       {/* 0 · the VPC console, on AWS */}
-      <At x={P.console.x} y={P.console.y}>
-        <ConsoleWindow click={k >= 1} />
-      </At>
-      {/* 3 · not a cabling job */}
-      <At x={P.cable.cx} y={P.cable.cy} cx cy>
-        <div className="flex flex-col items-center gap-2" style={shown(k >= 3, 0)}>
-          <span className="relative">
-            <IconDisc tone={colors.muted} size={56}>
-              <Cable size={28} strokeWidth={2} />
-            </IconDisc>
-            <span className="absolute" style={{ right: -8, top: -6 }}>
-              <NoMark size={24} on={k >= 4} />
-            </span>
-          </span>
-          <Label size={14} strong tone="muted" raised style={{ textDecoration: 'line-through', textDecorationThickness: 2, textDecorationColor: NET.blocked }}>
-            a cabling job
-          </Label>
-        </div>
+      <At x={PA.console.x} y={PA.console.y}>
+        <ConsoleWindow click={k >= 1} w={PA.console.w} h={PA.console.h} />
       </At>
       {/* 1 · the API call, down into the control plane */}
-      <Arrow x1={P.lane} y1={consoleBottom + 4} x2={P.lane} y2={P.plane.y - 1} on={k >= 1} />
-      <Traveller path={[[P.lane, consoleBottom + 6], [P.lane, P.plane.y - 6]]} run={k >= 1 && !STILL} k="api" tone={colors.accent} size={11} dur={1.2} />
-      <At x={P.lane + 16} y={(consoleBottom + P.plane.y) / 2} cy>
+      <Arrow x1={PA.lane} y1={consoleBottom + 4} x2={PA.lane} y2={PA.plane.y - 1} on={k >= 1} />
+      <Traveller path={[[PA.lane, consoleBottom + 6], [PA.lane, PA.plane.y - 6]]} run={k >= 1 && !STILL} k="api" tone={colors.accent} size={11} dur={1.2} />
+      <At x={PA.lane + 16} y={(consoleBottom + PA.plane.y) / 2} cy>
         <Word on={k >= 1} tone="brand" delay={500}>
-          API call
+          API Call
         </Word>
       </At>
-      <At x={P.plane.x} y={P.plane.y}>
+      <At x={PA.plane.x} y={PA.plane.y}>
         <div style={shown(k >= 1, 300)}>
-          <Boundary w={P.plane.w} h={P.plane.h} solid tone={NET.gateway} fill={TILE_SKIN.background as string} radius={16} style={{ boxShadow: TILE_SKIN.boxShadow }} label="control plane" labelTone="dark">
-            <At x={P.plane.w / 2} y={P.plane.h / 2 + 4} cx cy>
-              <span className="inline-flex items-center gap-3" style={shown(k >= 2, 0)}>
-                <IconDisc tone={colors.brand} size={34}>
-                  <Route size={17} />
-                </IconDisc>
-                <Label size={14} strong raised icon={<span className={run(k >= 2, 'cvx cvx-spin')} style={{ display: 'grid' }}><Cog size={14} /></span>}>
-                  routing and security decisions in software
-                </Label>
-                <IconDisc tone={colors.brand} size={34}>
-                  <ShieldCheck size={17} />
-                </IconDisc>
-              </span>
-            </At>
-          </Boundary>
+          <ControlPlane w={PA.plane.w} h={PA.plane.h} decide={k >= 2} />
         </div>
       </At>
-      {/* 2 · pushed onto the hardware, shared across many customers */}
-      <Arrow x1={P.lane} y1={planeBottom + 4} x2={P.lane} y2={P.hw.y - 1} on={k >= 3} />
-      <Traveller path={[[P.lane, planeBottom + 6], [P.lane, P.hw.y - 6]]} run={k >= 3 && !STILL} k="push" tone={colors.brand} size={11} dur={1.2} />
-      <At x={P.lane + 16} y={(planeBottom + P.hw.y) / 2} cy>
-        <Word on={k >= 3} tone="brand" delay={500}>
-          pushes them onto
+    </>
+  )
+}
+
+function PiecesSceneB({ k }: { k: number }) {
+  const planeBottom = PB.plane.y + PB.plane.h
+  const racks = 4
+  const rackX = (i: number) => 52 + i * 50
+  return (
+    <>
+      {/* 0 · the control plane, deciding */}
+      <At x={PB.plane.x} y={PB.plane.y}>
+        <ControlPlane w={PB.plane.w} h={PB.plane.h} decide />
+      </At>
+      {/* 1 · pushed onto the hardware, shared across many customers */}
+      <Arrow x1={PB.lane} y1={planeBottom + 4} x2={PB.lane} y2={PB.hw.y - 1} on={k >= 1} />
+      <Traveller path={[[PB.lane, planeBottom + 6], [PB.lane, PB.hw.y - 6]]} run={k >= 1 && !STILL} k="push" tone={colors.brand} size={11} dur={1.2} />
+      <At x={PB.lane + 16} y={(planeBottom + PB.hw.y) / 2} cy>
+        <Word on={k >= 1} tone="brand" delay={500}>
+          Pushes Them Onto
         </Word>
       </At>
-      <At x={P.hw.x} y={P.hw.y}>
-        <div className="relative rounded-[16px]" style={{ width: P.hw.w, height: P.hw.h, ...TILE_SKIN, ...shown(k >= 3, 300) }}>
-          <At x={14} y={P.hw.h / 2} cy>
-            <Label size={14} strong tone="brand">
-              hardware
-            </Label>
-          </At>
+      <At x={PB.hw.x} y={PB.hw.y}>
+        <div style={shown(k >= 1, 300)}>
+          <Boundary w={PB.hw.w} h={PB.hw.h} solid tone={NET.gateway} fill={TILE_SKIN.background as string} radius={16} style={{ boxShadow: TILE_SKIN.boxShadow }} label="Hardware" labelTone="dark">
           {Array.from({ length: racks }, (_, i) => (
-            <At key={i} x={rackX(i)} y={P.hw.h / 2 + 8} cx cy>
+            <At key={i} x={rackX(i)} y={PB.hw.h / 2 + 10} cx cy>
               <div className="relative">
-                <Icon3D name="server-stack" w={30} h={36} shadow={false} />
-                <Led x={26} y={6} delay={i * 0.3} />
+                <Icon3D name="server-stack" w={32} h={38} shadow={false} />
+                <Led x={28} y={6} delay={i * 0.3} />
                 {/* a customer on every rack: one machine, many customers */}
-                <span className="absolute" style={{ left: 13, top: -18, ...shown(k >= 3, 600 + i * 120, -6) }}>
+                <span className="absolute" style={{ left: 14, top: -20, ...shown(k >= 1, 600 + i * 120, -6) }}>
                   <IconDisc tone={CUSTOMERS[i]} size={22}>
                     <UserRound size={12} strokeWidth={2.6} />
                   </IconDisc>
@@ -505,11 +513,28 @@ function PiecesScene({ k }: { k: number }) {
               </div>
             </At>
           ))}
-          <At x={P.hw.w - 14} y={P.hw.h / 2} cy style={{ transform: 'translate(-100%, -50%)' }}>
+          <At x={PB.hw.w - 18} y={PB.hw.h / 2 + 4} cy style={{ transform: 'translate(-100%, -50%)' }}>
             <Label size={14} strong>
-              shared across many customers
+              Shared Across Many Customers
             </Label>
           </At>
+          </Boundary>
+        </div>
+      </At>
+      {/* 2 · not a cabling job */}
+      <At x={PB.lane} y={PB.cable.cy} cx cy>
+        <div className="flex items-center gap-4" style={shown(k >= 2, 0)}>
+          <span className="relative">
+            <IconDisc tone={colors.muted} size={48}>
+              <Cable size={24} strokeWidth={2} />
+            </IconDisc>
+            <span className="absolute" style={{ right: -9, top: -7 }}>
+              <NoMark size={22} on={k >= 2} />
+            </span>
+          </span>
+          <Label size={14} strong tone="muted" raised style={{ textDecoration: 'line-through', textDecorationThickness: 2, textDecorationColor: NET.blocked }}>
+            A Cabling Job
+          </Label>
         </div>
       </At>
     </>
@@ -517,9 +542,8 @@ function PiecesScene({ k }: { k: number }) {
 }
 
 export function Pieces({ lesson }: { lesson: string }) {
-  /* 0 the console (point 1); 1 the click, the API call, the control plane (point 2); 2 its routing and security
-     decisions (point 3); 3 pushed onto the shared hardware (point 4); 4 the cabling job crossed (point 5); 5 rest */
-  const k = useWalk(6, 5, 1700)
+  /* 0 the console (point 1); 1 the click, the API call, the control plane (point 2); 2 its routing and security decisions (point 3); 3 rest */
+  const k = useWalk(4, 3, 1700)
   return (
     <LitFigure
       id="T02-1"
@@ -527,9 +551,27 @@ export function Pieces({ lesson }: { lesson: string }) {
       title="The Network Map"
       lead={T021_LEAD}
       lesson={lesson}
-      points={T021_POINTS.map((text, i) => ({ icon: T021_ICONS[i], text }))}
-      lit={k <= 4 ? k : -1}
-      figure={<PiecesScene k={k} />}
+      points={T021_POINTS.slice(0, 3).map((text, i) => ({ icon: T021_ICONS[i], text }))}
+      lit={k <= 2 ? k : -1}
+      figure={<PiecesSceneA k={k} />}
+      pointsW={S7_POINTS_W}
+      pointSize={17}
+    />
+  )
+}
+
+/** T02-1b, the second half: the control plane, then the push onto the shared hardware (point 4), then the cabling job crossed out (point 5). */
+export function Pieces2({ lesson }: { lesson: string }) {
+  const k = useWalk(4, 3, 1700)
+  return (
+    <LitFigure
+      id="T02-1b"
+      kicker="Core Building Blocks"
+      title="The Network Map"
+      lesson={lesson}
+      points={T021_POINTS.slice(3).map((text, i) => ({ icon: T021_ICONS[i + 3], text }))}
+      lit={k === 1 || k === 2 ? k - 1 : -1}
+      figure={<PiecesSceneB k={k} />}
       pointsW={S7_POINTS_W}
       pointSize={17}
     />
@@ -567,7 +609,10 @@ function BlocksScene({ k }: { k: number }) {
             <Resource size={56} />
           </At>
         ))}
-      <BigVpc subnets={k >= 1} instances igw={k >= 2} nat={k >= 2} routeTables={k >= 2} locks={k >= 3} lit={{ public: k === 1, private: k === 1, igw: k === 2, nat: k === 2, routeTables: k === 2, locks: k === 3 }} />
+      {/* `ov-caps`: the shared drawing's chips in Title Case (R8.4: its route table chip has no label prop, so the case is set by CSS, which DOM text reads too) */}
+      <div className="ov-caps absolute inset-0">
+        <BigVpc subnets={k >= 1} instances igw={k >= 2} nat={k >= 2} routeTables={k >= 2} locks={k >= 3} lit={{ public: k === 1, private: k === 1, igw: k === 2, nat: k === 2, routeTables: k === 2, locks: k === 3 }} publicLabel="Public Subnet" privateLabel="Private Subnet" />
+      </div>
       {/* the container: the AWS VPC mark on its corner */}
       <At x={BG.vpc.x + 96} y={BG.vpc.y + 24} cx cy>
         <span className="grid place-items-center rounded-[10px] bg-white p-1" style={{ boxShadow: k === 0 && !STILL ? `0 0 0 3px ${NET.lit}, 0 8px 16px -8px rgba(16,32,58,0.5)` : '0 8px 16px -8px rgba(16,32,58,0.5)', transition: `box-shadow 420ms ${EASE}` }}>
@@ -654,7 +699,7 @@ function PlanesScene({ k }: { k: number }) {
     <>
       {/* 0 · the control plane: the gear deciding, the four blocks as configuration */}
       <At x={Q.plane.x} y={Q.plane.y}>
-        <Boundary w={Q.plane.w} h={Q.plane.h} solid tone={NET.gateway} fill={TILE_SKIN.background as string} radius={16} style={{ boxShadow: TILE_SKIN.boxShadow }} label="control plane" labelTone="dark">
+        <Boundary w={Q.plane.w} h={Q.plane.h} solid tone={NET.gateway} fill={TILE_SKIN.background as string} radius={16} style={{ boxShadow: TILE_SKIN.boxShadow }} label="Control Plane" labelTone="dark">
           <At x={50} y={Q.plane.h / 2 + 4} cx cy>
             <div className="flex flex-col items-center gap-2">
               <IconDisc tone={colors.brand} size={46}>
@@ -689,7 +734,7 @@ function PlanesScene({ k }: { k: number }) {
       <Traveller path={[[Q.lane, Q.plane.y + Q.plane.h + 6], [Q.lane, Q.hw.y - 6]]} run={k >= 1 && !STILL} k="down" tone={colors.accent} size={11} dur={1.1} />
       <At x={Q.hw.x} y={Q.hw.y}>
         <div style={shown(k >= 1, 300)}>
-          <Boundary w={Q.hw.w} h={Q.hw.h} solid tone={NET.gateway} fill={TILE_SKIN.background as string} radius={16} style={{ boxShadow: TILE_SKIN.boxShadow }} label="data plane" labelTone="dark">
+          <Boundary w={Q.hw.w} h={Q.hw.h} solid tone={NET.gateway} fill={TILE_SKIN.background as string} radius={16} style={{ boxShadow: TILE_SKIN.boxShadow }} label="Data Plane" labelTone="dark">
             {/* the lane the packets are forwarded along */}
             <span aria-hidden className="absolute rounded-full" style={{ left: rackXs[0], right: Q.hw.w - rackXs[4], top: laneY - 1.5, height: 3, background: '#C9D7F2' }} />
             {rackXs.map((x, i) => (

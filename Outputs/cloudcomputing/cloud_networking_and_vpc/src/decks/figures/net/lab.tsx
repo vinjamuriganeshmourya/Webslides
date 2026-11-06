@@ -79,12 +79,7 @@ export function LabSteps1({ lesson }: { lesson: string }) {
               vpcLabel={<>10.0.0.0/16</>}
               pubLabel="10.0.1.0/24"
               priLabel="10.0.2.0/24"
-              aws={
-                <span className="inline-flex items-center gap-2">
-                  <AwsMark w={46} />
-                  <span className="text-[14px] font-medium leading-tight" style={{ color: colors.muted }}>AWS</span>
-                </span>
-              }
+              aws={<AwsMark w={46} />}
             />
           </Stage>
         </div>
@@ -112,8 +107,8 @@ export function LabSteps2({ lesson }: { lesson: string }) {
                 text: (
                   <>
                     <span className="block">Create a public route table (default route to the Internet Gateway)</span>
-                    <Sub>and a private route table (local route only, no route to the internet),</Sub>
-                    <Sub>and associate each with its subnet</Sub>
+                    <Sub>And a private route table (local route only, no route to the internet)</Sub>
+                    <Sub>And associate each with its subnet</Sub>
                   </>
                 ),
                 glyph: stepGlyph(3),
@@ -159,13 +154,13 @@ function NoteList({ items, width = BOX_W, size = 17 }: { items: { icon: ReactNod
  * centred, the card's other words in a box under it.
  */
 function LabShot({ id, kicker, title, lesson, leadText, glyph, step, alt, name, rings, maxH, box }: {
-  id: string; kicker: string; title: string; lesson: string; leadText?: ReactNode; glyph: ReactNode; step: ReactNode; alt: string
+  id: string; kicker: string; title: string; lesson: string; leadText?: ReactNode; glyph?: ReactNode; step?: ReactNode; alt: string
   name: string; rings: Rect[]; maxH: number; box?: ReactNode
 }) {
   return (
     <Card id={id} kicker={kicker} title={title} lead={leadText} lesson={lesson}>
       <div className="flex flex-col" style={{ width: BOX_W, gap: 14 }}>
-        <StepHead glyph={glyph}>{step}</StepHead>
+        {step && <StepHead glyph={glyph}>{step}</StepHead>}
         <ShotOne name={name} highlight={rings} alt={alt} maxH={maxH} />
         {box}
       </div>
@@ -173,9 +168,10 @@ function LabShot({ id, kicker, title, lesson, leadText, glyph, step, alt, name, 
   )
 }
 
-/** the capture's height: the body (418) less the step label and the box, or less the label alone */
+/** the capture's height: the body (418) less the step label and the box, or less the label alone, or less the box alone */
 const SHOT_H_BOX = 284
 const SHOT_H_FULL = 348
+const SHOT_H_NOSTEP = 340
 
 /* ===== T25-1 · The VPC, created */
 
@@ -187,12 +183,11 @@ export function VpcCreated({ lesson }: { lesson: string }) {
       title="Address Range Confirmed"
       lesson={lesson}
       leadText={<>The VPC <Mono>s5-cloud-network-vpc</Mono> is created first, with CIDR <Mono>10.0.0.0/16</Mono></>}
-      glyph={stepGlyph(0, 28)}
-      step={<><Mono>s5-cloud-network-vpc</Mono>: state Available, IPv4 CIDR <Mono>10.0.0.0/16</Mono></>}
-      alt="s5-cloud-network-vpc: state Available, IPv4 CIDR 10.0.0.0/16"
+      /* the step label under the lead removed (user, 2026-11-05); the capture grows into its room */
+      alt="The VPC s5-cloud-network-vpc in the console, state Available, IPv4 CIDR 10.0.0.0/16"
       name="slide-25-1"
       rings={[[405, 205, 120, 32], [780, 345, 110, 32]]}
-      maxH={SHOT_H_BOX}
+      maxH={SHOT_H_NOSTEP}
       box={<ExplainBox icon={<Network />}>Every subnet, gateway and route table that follows must belong to it</ExplainBox>}
     />
   )
@@ -416,7 +411,7 @@ export function ExploreSecurity({ lesson }: { lesson: string }) {
             lit={lit}
             items={[
               { icon: <ShieldCheck />, text: <>Security group: create <Mono>s5-demo-sg</Mono> in the VPC</> },
-              { icon: <Ban />, text: 'with no inbound rules, and inspect its rules' },
+              { icon: <Ban />, text: 'With no inbound rules, and inspect its rules' },
               { icon: <Server />, text: 'It is stateful and applies to resources' },
             ]}
           />
@@ -451,7 +446,7 @@ export function ExploreSecurity2({ lesson }: { lesson: string }) {
           lit={lit}
           items={[
             { icon: <ListChecks />, text: "Network ACL: inspect the inbound and outbound rules of the VPC's network ACL" },
-            { icon: <Lock />, text: 'without changing them' },
+            { icon: <Lock />, text: 'Without changing them' },
             { icon: <Network />, text: 'It is stateless and applies to a whole subnet' },
           ]}
         />

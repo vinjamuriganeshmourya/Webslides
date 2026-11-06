@@ -399,7 +399,7 @@ export function Traveller({ path, run, k, tone = colors.accent, size = 16, dur =
       style={{ width: size, height: size, background: tone, boxShadow: `0 0 0 4px ${tone}40`, left: -size / 2, top: -size / 2 }}
       initial={instant ? { x: end[0], y: end[1] } : { x: xs[0], y: ys[0], opacity: once ? 1 : 0 }}
       animate={{ x: xs, y: ys, ...(ops ? { opacity: ops } : {}) }}
-      transition={{ duration: instant ? 0 : dur, ease: 'easeInOut', times, ...(once || instant ? {} : { repeat: Infinity, repeatDelay: 0.6 }) }}
+      transition={{ duration: instant ? 0 : dur, ease: 'easeInOut', times, ...(once || instant ? {} : { repeat: Infinity, repeatDelay: 0 }) }}
     />
   )
 }

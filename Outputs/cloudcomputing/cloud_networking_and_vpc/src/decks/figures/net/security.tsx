@@ -35,7 +35,7 @@ import {
 } from 'lucide-react'
 import { colors } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
-import { Arrow, At, BOX_W, Card, Fade, Label, REDUCED, STILL, useBuild } from '../scene'
+import { Arrow, At, BOX_W, Card, Fade, Label, REDUCED, Stage, STILL, useBuild } from '../scene'
 import { lead } from '../iso/frames'
 import { TILE_SKIN } from '../card'
 import { Badge, CvIcon, LitFigure } from './fx'
@@ -69,7 +69,7 @@ export { DoorCheckpointAnalogy } from './security-analogy'
  *           the reply is checked rule by rule, 1, 2, then 3, its own separate rule
  *   T21-2   the shape; one ACL's rules reach every instance of its subnet; the console page
  *   T22-1   `VisualTable`, row by row
- *   T23-1   the funnel's mouth; its two stages (instance level, subnet level); port 443
+ *   T23-1   the funnel's mouth; its two stages (subnet level on top, instance level below); port 443
  *   T23-1b  the whole funnel; the sources; the explicit deny; the review
  * Ambient packets ride CSS `offset-path` loops (transform and opacity only), held
  * off on harness URLs, thumbnails and under reduced motion.
@@ -103,10 +103,10 @@ const DROP_X = ping('dropx', [[0, 0.4, 0], [76, 0.4, 0], [80, 1.15, 1], [84, 1, 
 const T19_ACL_AT = 55.6
 const T19_SG_AT = 92.7
 const T19_OK = ride('t19ok', [[0, 0, 0], [3, 0, 1], [14, T19_ACL_AT, 1], [22, T19_ACL_AT, 1], [31, T19_SG_AT, 1], [39, T19_SG_AT, 1], [43, 100, 1], [47, 100, 0], [100, 100, 0]])
-const T19_NO = ride('t19no', [[0, 0, 0], [50, 0, 0], [53, 0, 1], [63, 51, 1], [77, 51, 1], [80, 51, 0], [100, 51, 0]])
+const T19_NO = ride('t19no', [[0, 0, 0], [50, 0, 0], [53, 0, 1], [66, 51, 1], [94, 51, 1], [99, 51, 0], [100, 51, 0]])
 const T19_PING_ACL = ping('t19pa', [[0, 0.5, 0], [13, 0.5, 0], [15, 1.15, 1], [17, 1, 1], [22, 1, 1], [25, 1, 0], [100, 1, 0]])
 const T19_PING_SG = ping('t19ps', [[0, 0.5, 0], [30, 0.5, 0], [32, 1.15, 1], [34, 1, 1], [39, 1, 1], [42, 1, 0], [100, 1, 0]])
-const T19_PING_NO = ping('t19pn', [[0, 0.5, 0], [62, 0.5, 0], [64, 1.15, 1], [66, 1, 1], [77, 1, 1], [80, 1, 0], [100, 1, 0]])
+const T19_PING_NO = ping('t19pn', [[0, 0.5, 0], [65, 0.5, 0], [67, 1.15, 1], [69, 1, 1], [94, 1, 1], [99, 1, 0], [100, 1, 0]])
 
 /** The section's micro-animations, appended to the deck's CSS by `netDeck.tsx`. */
 const BASE_CSS = `
@@ -362,13 +362,13 @@ function TwoFiltersScene({ k }: { k: number }) {
         <Boundary w={T19.vpc.w} h={T19.vpc.h} label="VPC" style={{ border: `1.5px dashed ${NET.boundary}`, background: `${NET.boundary}08` }} />
       </At>
       <At x={T19.sub.x} y={T19.sub.y}>
-        <SubnetBox w={T19.sub.w} h={T19.sub.h} label="subnet" />
+        <SubnetBox w={T19.sub.w} h={T19.sub.h} label="Subnet" />
       </At>
       {/* the local route: every resource reaches every other */}
       <span aria-hidden className="absolute rounded-full" style={{ left: lineX1, top: T19.inst.cy - 1.5, width: lineX2 - lineX1, height: 3, background: NET.boundary }} />
       <At x={(aclX + lineX2) / 2} y={T19.inst.cy + 14} cx>
         <Label size={14} strong raised icon={<Network />}>
-          local route
+          Local Route
         </Label>
       </At>
       <At x={T19.other.cx} y={T19.other.cy} cx cy>
@@ -384,14 +384,14 @@ function TwoFiltersScene({ k }: { k: number }) {
       <Fade on={innerSolid} className="absolute" style={{ left: sgX, top: T19.inner.y - 14 }}>
         <div style={{ transform: 'translateX(-50%)' }}>
           <ToneLabel tone={SG} ink={colors.brandDark} lit={innerSolid && !outerSolid} icon={<Shield />}>
-            security group
+            Security Group
           </ToneLabel>
         </div>
       </Fade>
       <Fade on={outerSolid} className="absolute" style={{ left: T19.outer.x + T19.outer.w / 2, top: T19.outer.y + T19.outer.h - 14 }}>
         <div style={{ transform: 'translateX(-50%)' }}>
           <ToneLabel tone={ACL} ink={ACL_D} lit={outerSolid && !both} icon={<ListOrdered />}>
-            network ACL
+            Network ACL
           </ToneLabel>
         </div>
       </Fade>
@@ -433,11 +433,13 @@ export function TwoFilters({ lesson }: { lesson: string }) {
  * 2026-11-04: "keep only in tr doc but if it needed split it"). `at` is the text the first piece ends with (its
  * trailing comma and space dropped at the cut); the second piece is the rest, every word kept, in order.
  */
-function cut(point: string, at: string): [string, string] {
+function cut(point: string, at: string, cap = false): [string, string] {
   const i = point.indexOf(at)
   if (i < 0) throw new Error(`cut: "${at}" not in "${point}"`)
   const head = point.slice(0, i + at.length).replace(/[,;]\s*$/, '')
-  return [head, point.slice(i + at.length)]
+  const tail = point.slice(i + at.length)
+  /* `cap` (R8.4): the second piece is a point of its own, so it starts with a capital (T20-1b keeps its piece as the user's reference) */
+  return [head, cap ? tail.charAt(0).toUpperCase() + tail.slice(1) : tail]
 }
 
 /* ===== T20-1 / T20-1c · How a security group filters */
@@ -450,7 +452,21 @@ const T20_POINTS = [
 ]
 
 /* the instance in its group's ring (top left), the outside (top right), the two lanes between; the group's rules in one box below */
-const T20 = {
+type SgGeo = {
+  tag: number
+  ring: { x: number; y: number; w: number; h: number }
+  inst: { x: number; y: number; size: number }
+  laneTop: number
+  laneBot: number
+  from: number
+  to: number
+  globe: { x: number; y: number; w: number }
+  box: { x: number; y: number; w: number; h: number }
+  inbound: { x: number; y: number; w: number }
+  outbound: { x: number; y: number; w: number }
+}
+const T20_GEO: SgGeo = {
+  tag: 14,
   ring: { x: 24, y: 44, w: 116, h: 104 },
   inst: { x: 40, y: 64, size: 64 },
   laneTop: 80,
@@ -461,7 +477,39 @@ const T20 = {
   box: { x: 16, y: 200, w: 602, h: 166 },
   inbound: { x: 30, y: 220, w: 282 },
   outbound: { x: 324, y: 220, w: 280 },
-} as const
+}
+
+/*
+  T20-1c ON TOP, ITS ONE POINT BELOW (user, 2026-11-05: "use a top-and-bottom layout: the visual on top (enlarged)
+  and the points at the bottom, using the full width"). The same drawing laid wide: the lanes run the slide's width,
+  the two rule tables side by side under them, the whole scene drawn at T20W_S so every part is larger than on the
+  half-width card. Its height is what Space-1 leaves above one full-width point (the body starts at y 221, the
+  player bar at 664), so the scene's own padding is trimmed instead.
+*/
+const T20W_S = 1.08
+const T20W_GAP = 14
+const T20W_H = 330
+const T20W_W = Math.round(BOX_W / T20W_S)
+const T20W: SgGeo = (() => {
+  const W = T20W_W
+  const globeW = 74
+  /* the box a little lower than the ring's shield disc reaches, so the disc keeps clear of the box's label */
+  const box = { x: 16, y: 172, w: W - 32, h: 146 }
+  const tw = (box.w - 14 * 3) / 2
+  return {
+    tag: 10,
+    ring: { x: 24, y: 40, w: 116, h: 100 },
+    inst: { x: 40, y: 58, size: 64 },
+    laneTop: 74,
+    laneBot: 106,
+    from: 146,
+    to: W - 24 - globeW - 12,
+    globe: { x: W - 24 - globeW, y: 53, w: globeW },
+    box,
+    inbound: { x: box.x + 14, y: box.y + 18, w: tw },
+    outbound: { x: box.x + 28 + tw, y: box.y + 18, w: tw },
+  }
+})()
 
 /**
  * `dir` 'out' (T20-1): the instance sends a request OUT (the outbound rule allows
@@ -469,7 +517,7 @@ const T20 = {
  * `dir` 'in' (T20-1c): a request comes IN (the inbound rule matches), its reply
  * goes back OUT, marked automatic.
  */
-function SecurityGroupScene({ k, dir }: { k: number; dir: 'out' | 'in' }) {
+function SecurityGroupScene({ k, dir, g: T20 = T20_GEO }: { k: number; dir: 'out' | 'in'; g?: SgGeo }) {
   const request = k >= 1
   const reply = k >= 2
   /* the top lane runs out (to the right), the bottom lane in (to the left) */
@@ -482,9 +530,9 @@ function SecurityGroupScene({ k, dir }: { k: number; dir: 'out' | 'in' }) {
   const outRows = dir === 'out' ? lit(SG1_OUT(), 0, request, REQ, <Tick tone={REQ} />) : SG1_OUT()
   return (
     <>
-      <At x={T20.ring.x} y={14}>
+      <At x={T20.ring.x} y={T20.tag}>
         <Label size={14} strong raised icon={<Link2 />}>
-          network interface
+          Network Interface
         </Label>
       </At>
       <Ring {...T20.ring} tone={SG} glow={request} radius={20} />
@@ -510,20 +558,20 @@ function SecurityGroupScene({ k, dir }: { k: number; dir: 'out' | 'in' }) {
             <History size={15} strokeWidth={2.4} />
           </Badge>
           <Label size={14} strong tone="good" raised>
-            automatic
+            Automatic
           </Label>
         </div>
       </Fade>
       {/* the group attaches to the interface; its rules sit in one box */}
       <DrawLine x1={T20.ring.x + 40} y1={T20.ring.y + T20.ring.h + 2} x2={T20.ring.x + 40} y2={T20.box.y - 2} tone={SG} dashed />
       <At x={T20.box.x} y={T20.box.y}>
-        <Boundary w={T20.box.w} h={T20.box.h} solid tone={SG} label="security group" fill={`${SG}08`} />
+        <Boundary w={T20.box.w} h={T20.box.h} solid tone={SG} label="Security Group" fill={`${SG}08`} />
       </At>
       <At x={T20.inbound.x} y={T20.inbound.y}>
-        <RuleTable title="inbound" titleIcon={<ArrowDown />} titleTone={SG} heads={IN_HEADS} rows={inRows} w={T20.inbound.w} cols="1.75fr 1fr 0.75fr" marks />
+        <RuleTable title="Inbound" titleIcon={<ArrowDown />} titleTone={SG} heads={IN_HEADS} rows={inRows} w={T20.inbound.w} cols="1.75fr 1fr 0.75fr" marks />
       </At>
       <At x={T20.outbound.x} y={T20.outbound.y}>
-        <RuleTable title="outbound" titleIcon={<ArrowDown style={{ transform: 'rotate(180deg)' }} />} titleTone={SG} heads={OUT_HEADS} rows={outRows} w={T20.outbound.w} cols="1.75fr 1fr 0.75fr" marks />
+        <RuleTable title="Outbound" titleIcon={<ArrowDown style={{ transform: 'rotate(180deg)' }} />} titleTone={SG} heads={OUT_HEADS} rows={outRows} w={T20.outbound.w} cols="1.75fr 1fr 0.75fr" marks />
       </At>
     </>
   )
@@ -539,7 +587,7 @@ export function SecurityGroup({ lesson }: { lesson: string }) {
       title="Stateful Instance Filter"
       lead="A security group attaches to an instance's network interface and acts as a virtual firewall for that instance"
       lesson={lesson}
-      points={cut(T20_POINTS[0], 'allowed, ').map((text, i) => ({ icon: i ? <ListX /> : <History />, text }))}
+      points={cut(T20_POINTS[0], 'allowed, ', true).map((text, i) => ({ icon: i ? <ListX /> : <History />, text }))}
       lit={k - 1}
       figure={<SecurityGroupScene k={k} dir="out" />}
       pointSize={16}
@@ -640,19 +688,44 @@ export function SecurityGroup2({ lesson }: { lesson: string }) {
   )
 }
 
+/** The full-width point under T20-1c's drawing: the deck's point tile (`LitPoints`' look), its icon and text centred in it. */
+function WidePoint({ icon, text, on }: { icon: ReactNode; text: ReactNode; on: boolean }) {
+  const lit = on && !STILL
+  const ease = useInstant() ? 'none' : 'all 420ms cubic-bezier(0.22,1,0.36,1)'
+  return (
+    <div
+      className="flex items-center justify-center gap-3 rounded-2xl px-3.5 py-2.5"
+      style={{
+        width: BOX_W,
+        ...TILE_SKIN,
+        boxShadow: lit ? `inset 0 0 0 2px ${colors.brand}, 0 12px 24px -14px ${colors.brand}` : TILE_SKIN.boxShadow,
+        background: lit ? 'linear-gradient(180deg, #F4F8FF 0%, #E3ECFD 100%)' : TILE_SKIN.background,
+        transition: ease,
+      }}
+    >
+      <span aria-hidden className="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-[11px] [&>svg]:h-[20px] [&>svg]:w-[20px]" style={{ background: lit ? colors.brand : colors.surface2, color: lit ? colors.white : colors.brand, transition: ease }}>
+        {icon}
+      </span>
+      <span className="leading-snug" style={{ fontSize: 16, color: colors.ink }}>
+        {text}
+      </span>
+    </div>
+  )
+}
+
 export function SecurityGroup3({ lesson }: { lesson: string }) {
   const k = useBuild(3, 900)
   return (
-    <LitFigure
-      id="T20-1c"
-      kicker="Security Groups Explained"
-      title="Stateful Instance Filter"
-      lesson={lesson}
-      points={[{ icon: <Reply />, text: T20_POINTS[3] }]}
-      lit={k >= 1 ? 0 : -1}
-      figure={<SecurityGroupScene k={k} dir="in" />}
-      pointSize={16}
-    />
+    <Card id="T20-1c" kicker="Security Groups Explained" title="Stateful Instance Filter" lesson={lesson}>
+      <div className="flex flex-col items-center" style={{ width: BOX_W, gap: T20W_GAP }}>
+        <Stage w={BOX_W} h={Math.round(T20W_H * T20W_S)} active={false}>
+          <div className="absolute left-0 top-0" style={{ width: T20W_W, height: T20W_H, transform: `scale(${T20W_S})`, transformOrigin: '0 0' }}>
+            <SecurityGroupScene k={k} dir="in" g={T20W} />
+          </div>
+        </Stage>
+        <WidePoint icon={<Reply />} text={T20_POINTS[3]} on={k >= 1} />
+      </div>
+    </Card>
   )
 }
 
@@ -699,13 +772,13 @@ function StackingScene({ k }: { k: number }) {
         </Badge>
       </span>
       <At x={T20B.g1.x} y={T20B.g1.y}>
-        <Boundary w={T20B.g1.w} h={T20B.g1.h} solid tone={SG} label={<span className="inline-flex items-center gap-1.5"><Shield size={14} strokeWidth={2.4} aria-hidden />Security group 1</span>} />
+        <Boundary w={T20B.g1.w} h={T20B.g1.h} solid tone={SG} label={<span className="inline-flex items-center gap-1.5"><Shield size={14} strokeWidth={2.4} aria-hidden />Security Group 1</span>} />
       </At>
       <At x={T20B.table.x} y={T20B.g1.y + 12}>
         <RuleTable heads={IN_HEADS} rows={rows1} w={T20B.table.w} />
       </At>
       <Fade on={second} className="absolute" style={{ left: T20B.g2.x, top: T20B.g2.y }}>
-        <Boundary w={T20B.g2.w} h={T20B.g2.h} solid tone={SG} label={<span className="inline-flex items-center gap-1.5"><Shield size={14} strokeWidth={2.4} aria-hidden />Security group 2</span>} />
+        <Boundary w={T20B.g2.w} h={T20B.g2.h} solid tone={SG} label={<span className="inline-flex items-center gap-1.5"><Shield size={14} strokeWidth={2.4} aria-hidden />Security Group 2</span>} />
       </Fade>
       <Fade on={second} className="absolute" style={{ left: T20B.table.x, top: T20B.g2.y + 12 }}>
         <RuleTable heads={IN_HEADS} rows={rows2} w={T20B.table.w} />
@@ -715,14 +788,14 @@ function StackingScene({ k }: { k: number }) {
         <div className="flex items-center gap-2">
           <Logo name="aws" h={18} />
           <Label size={14} strong raised icon={<LayoutDashboard />}>
-            EC2 Security Groups console page
+            EC2 Security Groups Console Page
           </Label>
         </div>
       </Fade>
       <Fade on={combined} className="absolute" style={{ left: 340, top: T20B.chipY }}>
         <div>
           <ToneLabel tone={SG} ink={colors.brandDark} lit icon={<Combine />}>
-            their allowed rules combine
+            Their Allowed Rules Combine
           </ToneLabel>
         </div>
       </Fade>
@@ -767,16 +840,16 @@ const T21 = {
   rowH: 30,
 } as const
 
-/** The allow or deny column, once the card has said both words exist: both, neither chosen (the TR gives no values). */
-function AllowDeny({ on }: { on: boolean }) {
+/**
+ * A rule's one action (user, 2026-11-05: "each row must show only one value"): Allow or Deny, shown once the card has
+ * said both words exist. T21-1 and T21-1b share the rows (Allow, Deny ... as each card's list says).
+ */
+function RuleAction({ allow, on }: { allow: boolean; on: boolean }) {
   const instant = useInstant()
   return (
-    <span className="inline-flex items-center gap-1" style={{ opacity: on ? 1 : 0, transition: instant ? 'none' : `opacity 420ms ${EASE}` }}>
-      <Label size={14} tone="good">
-        allow
-      </Label>
-      <Label size={14} tone="bad">
-        deny
+    <span className="inline-flex items-center" style={{ opacity: on ? 1 : 0, transition: instant ? 'none' : `opacity 420ms ${EASE}` }}>
+      <Label size={14} tone={allow ? 'good' : 'bad'}>
+        {allow ? 'Allow' : 'Deny'}
       </Label>
     </span>
   )
@@ -818,10 +891,13 @@ function NetworkAclScene({ k, part }: { k: number; part: 0 | 1 }) {
   const aclTop = T21.acl.y - 2
   const aclBottom = T21.acl.y + T21.acl.h + 2
   const subTop = T21.sub.y - 2
+  /* one action per rule (user, 2026-11-05): T21-1 Allow, Allow, Deny; T21-1b Allow (the request's match), Deny, Allow (the reply's own rule).
+     No Port column: it held no port values (the TR gives none), only T21-1b's match ticks, which now sit at the end of the action cell */
+  const acts = part === 0 ? [true, true, false] : [true, false, true]
   const rows: RuleRow[] = [
-    { cells: ['1', <AllowDeny key="w" on={words} />, ' '], lit: first, tone: REQ, mark: <Tick tone={REQ} on={first} /> },
-    { cells: ['2', <AllowDeny key="w" on={words} />, ' '] },
-    { cells: ['3', <AllowDeny key="w" on={words} />, ' '], lit: own, tone: REP, mark: <Tick tone={REP} on={own} /> },
+    { cells: ['1', <RuleAction key="w" allow={acts[0]} on={words} />], lit: first, tone: REQ, mark: <Tick tone={REQ} on={first} /> },
+    { cells: ['2', <RuleAction key="w" allow={acts[1]} on={words} />] },
+    { cells: ['3', <RuleAction key="w" allow={acts[2]} on={words} />], lit: own, tone: REP, mark: <Tick tone={REP} on={own} /> },
   ]
   const rowY = (i: number) => T21.list.y + T21.rowH + i * T21.rowH + T21.rowH / 2
   const checking = part === 0 ? k >= 1 && k <= 2 : k >= 1
@@ -864,28 +940,28 @@ function NetworkAclScene({ k, part }: { k: number; part: 0 | 1 }) {
       )}
       <At x={T21.acl.x + T21.acl.w + 12} y={T21.acl.y - 28}>
         <ToneLabel tone={ACL} ink={ACL_D} lit={checking}>
-          network ACL
+          Network ACL
         </ToneLabel>
       </At>
       <At x={4} y={204}>
         <Label size={14} strong raised style={{ color: colors.ink, boxShadow: `inset 0 0 0 1.5px ${REQ}` }}>
-          request
+          Request
         </Label>
       </At>
       <At x={T21.laneOut + 14} y={204}>
         <Label size={14} strong raised style={{ color: colors.ink, boxShadow: `inset 0 0 0 1.5px ${REP}` }}>
-          reply
+          Reply
         </Label>
       </At>
       <At x={T21.sub.x} y={T21.sub.y}>
-        <SubnetBox w={T21.sub.w} h={T21.sub.h} label="subnet" />
+        <SubnetBox w={T21.sub.w} h={T21.sub.h} label="Subnet" />
       </At>
       <At x={T21.inst.cx} y={T21.inst.cy} cx cy>
         <Resource size={T21.inst.size} />
       </At>
       {/* the rule list: its heads, the rows marked by their order; the check walks it from the top */}
       <At x={T21.list.x} y={T21.list.y}>
-        <RuleTable heads={['rule number', 'allow or deny', 'port']} rows={rows} w={T21.list.w} cols="1.05fr 1.5fr 0.75fr" marks />
+        <RuleTable heads={['Rule Number', 'Allow or Deny']} rows={rows} w={T21.list.w} cols="1fr 1fr" marks />
       </At>
       {part === 1 && (
         <>
@@ -911,12 +987,12 @@ function NetworkAclScene({ k, part }: { k: number; part: 0 | 1 }) {
           </span>
           <Fade on={first} className="absolute" style={{ left: T21.list.x, top: T21.list.y - 40 }}>
             <Label size={14} strong raised icon={<Check />} style={{ color: colors.ink, boxShadow: `inset 0 0 0 1.5px ${REQ}, 0 8px 16px -10px rgba(16,32,58,0.35)` }}>
-              first matching rule decides
+              First Matching Rule Decides
             </Label>
           </Fade>
           <Fade on={own} className="absolute" style={{ left: T21.list.x, top: T21.list.y + T21.rowH * 4 + 14 }}>
             <Label size={14} strong raised icon={<Reply />} style={{ color: colors.ink, boxShadow: `inset 0 0 0 1.5px ${REP}, 0 8px 16px -10px rgba(16,32,58,0.35)` }}>
-              its own separate rule
+              Its Own Separate Rule
             </Label>
           </Fade>
         </>
@@ -973,7 +1049,8 @@ const T21B_POINTS = [
 
 /* the TR image's shape: the router at the top, two subnets below, each with its own ACL on the line into it */
 const T21B = {
-  router: { cx: 317, cy: 70, size: 46 },
+  /* the router a little smaller and lower, so the console chip above it keeps its padding (5.md, slide 56) */
+  router: { cx: 317, cy: 80, size: 40 },
   junctionY: 136,
   aclA: { cx: 250, cy: 265, size: 42 },
   aclB: { cx: 384, cy: 265, size: 42 },
@@ -1054,7 +1131,7 @@ function AclWholeSubnetScene({ k }: { k: number }) {
       <Fade on={shared} className="absolute" style={{ left: T21B.sub1.x + T21B.sub1.w / 2, top: T21B.sub1.y + T21B.sub1.h + 8 }}>
         <div style={{ transform: 'translateX(-50%)' }}>
           <ToneLabel tone={ACL} ink={ACL_D} lit icon={<ScrollText />}>
-            same rule set
+            Same Rule Set
           </ToneLabel>
         </div>
       </Fade>
@@ -1062,7 +1139,7 @@ function AclWholeSubnetScene({ k }: { k: number }) {
         <div className="flex items-center gap-2">
           <Logo name="aws" h={18} />
           <Label size={14} strong raised icon={<LayoutDashboard />}>
-            VPC console's Network ACLs page
+            VPC Console's Network ACLs Page
           </Label>
         </div>
       </Fade>
@@ -1116,7 +1193,7 @@ export function GroupsVsAcls({ lesson }: { lesson: string }) {
           rows={[
             { icon: <Crosshair />, cells: ['Scope', ICON_CELL(<Server />, 'Instance / interface', SG), ICON_CELL(<Network />, 'Entire subnet', ACL_D)] },
             { icon: <History />, cells: ['State', 'Stateful, return traffic automatic', 'Stateless, needs rule each way'] },
-            { icon: <ListFilter />, cells: ['Rule type', ICON_CELL(<Check />, 'Allow only', colors.success), ICON_CELL(<Ban />, 'Allow and deny', colors.danger)] },
+            { icon: <ListFilter />, cells: ['Rule Type', ICON_CELL(<Check />, 'Allow only', colors.success), ICON_CELL(<Ban />, 'Allow and deny', colors.danger)] },
             { icon: <Scale />, cells: ['Evaluation', 'All rules together', 'Numbered, first match wins'] },
             { icon: <Settings2 />, cells: ['Default', 'Inbound denied, all outbound allowed', 'Default ACL allows all; a new custom ACL denies all'] },
           ]}
@@ -1138,10 +1215,16 @@ const T23_POINTS = [
 ]
 
 type Stage = { y: number; h: number; top: number; bot: number }
-/** The funnel at a centre and a scale: the mouth, the group's stage, the ACL's stage. */
+/**
+ * The funnel at a centre and a scale: the mouth, then the ACL's stage, then the group's stage (user, 2026-11-05:
+ * "put ACL Rules where Security Group Rules are, and Security Group Rules where ACL Rules are"; traffic meets the
+ * subnet's ACL before the instance's group). Each layer moved whole: its colour, label, icon and side tile go with
+ * it. The group's stage keeps the taller band because two chips point at it; the sides keep one straight narrowing.
+ */
 function funnel(cx: number, s: number) {
   const st = (y: number, h: number, top: number, bot: number): Stage => ({ y, h, top: top * s, bot: bot * s })
-  return { cx, mouth: st(40, 62, 340, 288), sg: st(106, 86, 288, 214), acl: st(196, 74, 214, 140), outlet: 270 }
+  /* the sides narrow less steeply than before the swap: the group's long label now sits on the lowest stage and must still fit inside it */
+  return { cx, mouth: st(40, 62, 340, 304), acl: st(106, 74, 304, 276), sg: st(184, 86, 276, 246), outlet: 270 }
 }
 type Fun = ReturnType<typeof funnel>
 
@@ -1171,11 +1254,12 @@ function edgeAt(f: Fun, s: Stage, y: number, side: 1 | -1 = 1) {
 /** Traffic poured into the funnel: most of it stopped at a stage (a red cross where it stops), one packet through to the outlet. */
 function FunnelTraffic({ f, on }: { f: Fun; on: boolean }) {
   const drops: { dx: number; to: number; dur: number; delay: number; stop: boolean }[] = [
-    { dx: -0.36, to: f.sg.y + 10, dur: 2.6, delay: 0, stop: true },
+    /* the wide drops stop at the upper layer (the ACL), the near-centre ones at the lower (the group), so every cross sits inside the funnel */
+    { dx: -0.36, to: f.acl.y + 10, dur: 2.6, delay: 0, stop: true },
     { dx: 0, to: f.outlet + 22, dur: 3.4, delay: 0.5, stop: false },
-    { dx: 0.3, to: f.acl.y + 12, dur: 3.0, delay: 1.2, stop: true },
-    { dx: -0.16, to: f.acl.y + 12, dur: 3.0, delay: 2.1, stop: true },
-    { dx: 0.38, to: f.sg.y + 10, dur: 2.6, delay: 1.7, stop: true },
+    { dx: 0.3, to: f.sg.y + 12, dur: 3.0, delay: 1.2, stop: true },
+    { dx: -0.16, to: f.sg.y + 12, dur: 3.0, delay: 2.1, stop: true },
+    { dx: 0.38, to: f.acl.y + 10, dur: 2.6, delay: 1.7, stop: true },
   ]
   return (
     <>
@@ -1199,15 +1283,15 @@ function FunnelTraffic({ f, on }: { f: Fun; on: boolean }) {
 function FunnelBody({ f, stages }: { f: Fun; stages: boolean }) {
   return (
     <>
-      <FunnelStage f={f} s={f.mouth} fill={`${colors.brand}22`} on label="all traffic" icon={<Globe />} tone="brand" />
-      <FunnelStage f={f} s={f.sg} fill={SG} on={stages} label="security group rules" icon={<Shield />} />
-      <FunnelStage f={f} s={f.acl} fill={ACL} on={stages} label="ACL rules" icon={<ListOrdered />} />
+      <FunnelStage f={f} s={f.mouth} fill={`${colors.brand}22`} on label="All Traffic" icon={<Globe />} tone="brand" />
+      <FunnelStage f={f} s={f.acl} fill={ACL} on={stages} label="ACL Rules" icon={<ListOrdered />} />
+      <FunnelStage f={f} s={f.sg} fill={SG} on={stages} label="Security Group Rules" icon={<Shield />} />
       <FunnelTraffic f={f} on={stages} />
       <Arrow x1={f.cx} y1={f.outlet + 4} x2={f.cx} y2={f.outlet + 26} on={stages} tone={colors.success} />
       <Fade on={stages} className="absolute" style={{ left: f.cx, top: f.outlet + 30 }}>
         <div style={{ transform: 'translateX(-50%)' }}>
           <Label size={14} strong tone="good" raised icon={<ShieldCheck />}>
-            allowed traffic only
+            Allowed Traffic Only
           </Label>
         </div>
       </Fade>
@@ -1215,7 +1299,7 @@ function FunnelBody({ f, stages }: { f: Fun; stages: boolean }) {
   )
 }
 
-/** A level marker beside a stage (T23-1: the instance level beside the group's stage, the subnet level beside the ACL's). */
+/** A level marker beside a stage (T23-1: the subnet level beside the ACL's stage on top, the instance level beside the group's below). */
 function LevelTile({ x, y, tone, on, children }: { x: number; y: number; tone: string; on: boolean; children: ReactNode }) {
   return (
     <Fade on={on} className="absolute" style={{ left: x - 26, top: y - 26 }}>
@@ -1242,7 +1326,7 @@ function PortChip({ on = true }: { on?: boolean }) {
     <>
       <Fade on={on} className="absolute" style={{ left: chipX, top: portY - 14 }}>
         <Label size={14} strong raised icon={<Lock />}>
-          port <Mono>443</Mono>
+          Port <Mono>443</Mono>
         </Label>
       </Fade>
       <Arrow x1={chipX - 4} y1={portY} x2={edgeAt(f, f.sg, portY) + 4} y2={portY} on={on} />
@@ -1273,10 +1357,10 @@ function LeastPrivilegeScene({ k }: { k: number }) {
       <PortChip on={port} />
       {/* the next card's three chips, held hidden here as they always were on this card (its DOM text is unchanged; they show on T23-1b) */}
       <div aria-hidden className="pointer-events-none absolute flex flex-col" style={{ left: 196, top: 266, opacity: 0 }}>
-        <Label size={14}>specific IP ranges or security group IDs</Label>
-        <Label size={14}>explicit deny</Label>
-        <Label size={14}>review</Label>
-        <Label size={14}>unused open port</Label>
+        <Label size={14}>Specific IP Ranges or Security Group IDs</Label>
+        <Label size={14}>Explicit Deny</Label>
+        <Label size={14}>Review</Label>
+        <Label size={14}>Unused Open Port</Label>
       </div>
     </>
   )
@@ -1295,7 +1379,7 @@ function LeastPrivilegeScene2({ k }: { k: number }) {
       {/* the allowed sources: the one long chip wraps to two lines in the right column, its arrow on the first line */}
       <Fade on={sources} className="absolute" style={{ left: chipX, top: srcY - 14 }}>
         <Label size={14} strong raised icon={<Crosshair />} style={{ whiteSpace: 'normal', width: 206, alignItems: 'flex-start', borderRadius: 14, paddingTop: 4, paddingBottom: 4 }}>
-          specific IP ranges or security group IDs
+          Specific IP Ranges or Security Group IDs
         </Label>
       </Fade>
       <Arrow x1={chipX - 4} y1={srcY} x2={edgeAt(f, f.sg, srcY) + 4} y2={srcY} on={sources} />
@@ -1304,7 +1388,7 @@ function LeastPrivilegeScene2({ k }: { k: number }) {
         <span className="inline-flex items-center gap-2">
           <NoMark size={24} on={deny} />
           <Label size={14} strong tone="bad" raised>
-            explicit deny
+            Explicit Deny
           </Label>
         </span>
       </Fade>
@@ -1313,10 +1397,10 @@ function LeastPrivilegeScene2({ k }: { k: number }) {
       <Fade on={review} className="absolute" style={{ left: 16, top: f.outlet + 66 }}>
         <span className="inline-flex items-center gap-2">
           <Label size={14} strong tone="brand" raised icon={<SearchCheck />}>
-            review
+            Review
           </Label>
           <Label size={14} tone="muted" raised style={{ textDecoration: 'line-through', textDecorationThickness: 2, textDecorationColor: NET.blocked }}>
-            unused open port
+            Unused Open Port
           </Label>
           <NoMark size={22} on={review} />
         </span>

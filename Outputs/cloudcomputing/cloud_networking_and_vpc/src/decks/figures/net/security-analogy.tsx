@@ -2,7 +2,8 @@ import type { CSSProperties } from 'react'
 import { KeyRound, ScanSearch, ShieldCheck } from 'lucide-react'
 import { colors } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
-import { At, Label, useCycle } from '../scene'
+import { At, Label, REDUCED, STILL, useCycle } from '../scene'
+import { useAutoAnim } from '@/deck/autoAnim'
 import { AN_W, IsoAnalogy } from '../iso/frames'
 import { Box, ISO, IsoAt, IsoScene, IsoSvg, P, Quad, Shadow, pts, shade } from '../iso/iso'
 import { Badge, CvIcon, iconUrl } from './fx'
@@ -236,24 +237,24 @@ function CampusScene({ k }: { k: number }) {
         </svg>
         <At x={DOOR_TAG.x} y={DOOR_TAG.y}>
           <Label size={14} strong style={lit(sg, SG_TONE)} raised>
-            two-way door
+            Two-Way Door
           </Label>
         </At>
         <At x={READER_TAG.x} y={READER_TAG.y}>
           <Label size={14} strong style={lit(sg, SG_TONE)} raised>
-            electronic access system
+            Electronic Access System
           </Label>
         </At>
       </div>
       <div style={{ opacity: opAcl, transition: fadeT }}>
         <IsoAt x={BOOTH.x + BOOTH.w} y={BOOTH.y + BOOTH.d / 2} dx={44} dy={-2} cx={false}>
           <Label size={14} strong style={lit(acl, ACL_TONE)} raised>
-            security checkpoint
+            Security Checkpoint
           </Label>
         </IsoAt>
         <At x={14} y={ENTRY_TAG_Y}>
           <Label size={14} strong style={lit(acl, ACL_TONE)} raised>
-            entrance and exit of a campus
+            Entrance and Exit of a Campus
           </Label>
         </At>
       </div>
@@ -351,12 +352,12 @@ function SubnetScene({ k }: { k: number }) {
       {/* the TR's tags */}
       <div className="absolute" style={{ left: C.ring.x + C.ring.w - 18, top: C.ring.y - 13, opacity: opSg, transition: fadeT }}>
         <Label size={14} strong raised style={sg ? { background: SG_TONE, color: colors.white, boxShadow: `inset 0 0 0 1.5px ${SG_TONE}` } : { color: colors.brandDark, boxShadow: `inset 0 0 0 1.5px ${SG_TONE}, 0 8px 16px -10px rgba(16,32,58,0.35)` }}>
-          security group
+          Security Group
         </Label>
       </div>
       <div className="absolute" style={{ left: C.gate.x - 132, top: gateY - 34, opacity: opAcl, transition: fadeT }}>
         <Label size={14} strong raised style={acl ? { background: ACL_TONE, color: colors.white, boxShadow: `inset 0 0 0 1.5px ${ACL_TONE}` } : { color: colors.tealDark, boxShadow: `inset 0 0 0 1.5px ${ACL_TONE}, 0 8px 16px -10px rgba(16,32,58,0.35)` }}>
-          network ACL
+          Network ACL
         </Label>
       </div>
     </>
@@ -374,9 +375,17 @@ function ServerGlyph({ size }: { size: number }) {
   )
 }
 
-/** The one clock (one step track) both pictures read. */
+/**
+ * The one clock (one step track) both pictures read. Auto animation OFF (and on harness URLs): the whole
+ * picture, then one press per part. Auto ON (R8.1, loops restart at once): the four parts only, round and round,
+ * with no resting whole-picture beat between laps; that clock registers no presses.
+ */
 function useWalk() {
-  return useCycle(5, 2600, 0, 4)
+  const instant = useInstant()
+  const auto = useAutoAnim()
+  const stepped = useCycle(5, 2600, 0, 4)
+  const lap = useCycle(4, 2600, 3, 0)
+  return STILL || REDUCED || instant || !auto ? stepped : lap + 1
 }
 
 export function DoorCheckpointAnalogy({ lesson }: { lesson: string }) {
@@ -385,11 +394,11 @@ export function DoorCheckpointAnalogy({ lesson }: { lesson: string }) {
     <IsoAnalogy
       id="T19-AN"
       kicker="Network Security Layers"
-      title="A two-way access door, and a campus checkpoint"
+      title="A Two-Way Access Door, and a Campus Checkpoint"
       lesson={lesson}
       bare
       h={AH}
-      everyday={{ label: 'A two-way access door, and a campus checkpoint', scene: <CampusScene k={k} /> }}
+      everyday={{ label: 'A Two-Way Access Door, and a Campus Checkpoint', scene: <CampusScene k={k} /> }}
       cloud={{ label: 'A security group, and a network ACL', scene: <SubnetScene k={k} /> }}
     />
   )

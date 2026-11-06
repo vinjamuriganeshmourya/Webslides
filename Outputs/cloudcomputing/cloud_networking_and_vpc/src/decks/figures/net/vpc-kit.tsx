@@ -4,7 +4,7 @@ import { colors } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
 import { Label, REDUCED, STILL } from '../scene'
 import { fx } from './fx'
-import { NET, litRing } from './frames'
+import { NET } from './frames'
 import { vars } from './vpc-society'
 
 /**
@@ -17,6 +17,13 @@ import { vars } from './vpc-society'
  */
 
 export const EASE = 'cubic-bezier(0.22,1,0.36,1)'
+
+/**
+ * THE CURRENT-PART RING IS BLUE here (round 3, 5.md rule 2: "no excessive orange"): orange stays for the one
+ * thing a card highlights; a box that is merely the step's subject gets a soft brand ring.
+ */
+export const LIT_RING = `0 0 0 3px ${colors.brand}33, 0 10px 22px -12px ${colors.brand}`
+export const LIT = colors.brand
 
 /** A harness URL, reduced motion or a picker thumbnail: the build holds its complete frame and nothing is lit as current. */
 export function useHeld() {
@@ -69,9 +76,9 @@ export function Frame({ w, h, label, labelIcon, dashed = false, tone = NET.bound
         width: w,
         height: h,
         borderRadius: 16,
-        border: `1.5px ${dashed ? 'dashed' : 'solid'} ${lit ? NET.lit : tone}`,
+        border: `1.5px ${dashed ? 'dashed' : 'solid'} ${lit ? colors.brand : tone}`,
         background: fill ?? `${tone}0A`,
-        boxShadow: litRing(lit),
+        boxShadow: lit ? LIT_RING : 'none',
         transition: instant ? 'none' : `box-shadow 420ms ${EASE}, border-color 420ms ${EASE}`,
         ...style,
       }}
@@ -97,7 +104,7 @@ export function Frame({ w, h, label, labelIcon, dashed = false, tone = NET.bound
 export function Tint({ label, labelIcon, lit = false, children, style }: { label: ReactNode; labelIcon?: ReactNode; lit?: boolean; children?: ReactNode; style?: CSSProperties }) {
   const instant = useInstant()
   return (
-    <div className="relative flex flex-col gap-2 rounded-[14px] p-2" style={{ background: lit ? '#FFF1E6' : 'rgba(45,99,251,0.07)', boxShadow: lit ? `inset 0 0 0 1.5px ${NET.lit}` : 'none', transition: instant ? 'none' : `background 420ms ${EASE}, box-shadow 420ms ${EASE}`, ...style }}>
+    <div className="relative flex flex-col gap-2 rounded-[14px] p-2" style={{ background: lit ? 'rgba(45,99,251,0.14)' : 'rgba(45,99,251,0.07)', boxShadow: lit ? `inset 0 0 0 1.5px ${colors.brand}` : 'none', transition: instant ? 'none' : `background 420ms ${EASE}, box-shadow 420ms ${EASE}`, ...style }}>
       <div className="flex">
         <Label size={14} strong tone={lit ? 'solid' : 'plain'} icon={labelIcon}>
           {label}

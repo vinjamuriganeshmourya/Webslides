@@ -11,9 +11,9 @@ The session deck for Cloud Networking & VPC. Read this before editing it. The ki
   shortening, summarising, reordering, correcting, nothing added), in the TR's order. The spec's strings are the
   TR's apart from its documented edits (spaced dash to colon/comma, final full stop dropped, `Vpc` to `VPC`,
   three typos, one split sentence).
-- **Deck file:** `src/decks/netDeck.tsx`, 76 slides: the spec's 60 cards, the 2026-10-30 split halves
+- **Deck file:** `src/decks/netDeck.tsx`, 77 slides (78 until 2026-11-05, when `T15-1c` merged into `T15-1`) (the title frame `S-TITLE` added as slide 2, course R9): the spec's 60 cards, the 2026-10-30 split halves
   (`T04-1b`, `T07-1b`, `T08-1b`, `T11-1b`, `T13-1b`, `T14-1b`, `T16-1b`, `T17-1b`, `T20-1b`, `T20-1c`, `T23-1b`), the
-  2026-11-04 splits `T15-1c`, then `T01-1b`, `T06-1b`, `T21-1b`, `T29-1b` (FS review); no feedback slide (rule 41 retired). Slide ids are the spec card ids (`T01-1` …), stamped as `data-spec`. Port 5275
+  2026-11-04 splits `T15-1c`, then `T01-1b`, `T06-1b`, `T21-1b`, `T29-1b` (FS review), then `T02-1b` (5.md); no feedback slide (rule 41 retired). Slide ids are the spec card ids (`T01-1` …), stamped as `data-spec`. Port 5275
   (`npx vite --port 5275 --strictPort`).
 - **Copied from `containers_vs_virtual_machines`** (course rule R2): the cloud player (no builds, smooth
   transitions, hidden step/slide switch, presenter and student views, comments, saves into its own file).
@@ -101,3 +101,30 @@ The session deck for Cloud Networking & VPC. Read this before editing it. The ki
    - Harness after the round: video-safe CLEAN, box-overflow NO OVERFLOW, controls-clear CLEAR, mixed-align 0,
      AUTO ANIMATION OK (558 presses), AUTO-OFF FLASH CLEAN (T21-1b's back step fixed after the full run), gestures
      pass, FILE SAVE OK; qa flags only the brand/closing frames.
+10. **Review `dist-single/5.md` (user, 2026-11-04; slide numbers there are the 76-slide deck).** Its global rules are
+    course rule R8. Shared fixes by the lead: `VisualTable` lights an arriving row for ~1.1s only (no table keeps its
+    last row marked); `Traveller` loops with no `repeatDelay`; `frames.tsx` defaults `Route Table` / `Internet`
+    (`local` stays: the AWS route target); the six analogy titles in Title Case. Workers: Title Case on every chip,
+    label, tag, header and row label, a capital on every point and split piece (identifiers, CIDRs and route-target
+    keywords untouched), loop rest beats removed, `T02-1b` split (77 slides). Verify items: T05-1 "Default on Signup",
+    T22-1 State/Rule Type, T28-1 `0.0.0.0/0` and T18-1's NAT cost cell are KEPT (spec.json's visual guidance names
+    each); T13-1b and T18-2 gained a two-way gateway-internet arrow; T16-1/T16-1b keep one-way arrows (where a
+    connection may start) with the packet now making the round trip. **T20-1b is the user's case reference and is not
+    edited**, though its "while a new group..." piece and "Security group 1/2" chips do not meet R8.4.
+11. **Correction list (user, 2026-11-05; slide numbers there are the 78-slide deck).** Its three global rules are
+    content rules 36 (widened to every final punctuation mark), 52 (a wordmark logo takes no duplicate label) and 53
+    (sensitive data in a screenshot is blurred). Four parallel workers, one per section.
+    - `T15-1c` merged into `T15-1` (the user's lead and four points, one figure, `useWalk(4)`): 77 slides.
+    - T03-2's VPC drawing replaced by the presenter render `net/icons/vpc-explainer.png` (library `Male Presenter/
+      Explanation Icon-1.png`). T07-1b, T14-1b and T20-1c are figure-on-top with the points beneath (T14-1b's third
+      point centred on row 2). T23-1/T23-1b funnel: ACL Rules on top, Security Group Rules below, each with its icon,
+      connector and chips; the funnel's slope is gentler so the long chip fits.
+    - T16-1/T16-1b: the red inbound path is Internet → IGW → NAT with the ✖ on the NAT; T16-1 gained the private → NAT
+      arrow. T17-2: gateway labels under their discs, `On-Premises Network` above the roof, `AWS Side` → `Side` (rule 52).
+    - T21-1/T21-1b tables: one Allow/Deny pill per row; the Port column removed on both (it never held a port; T21-1b's
+      match ticks sit in the Allow cell).
+    - Lab captures: account and resource IDs blurred in `shots/` and `shots-hd/` (script `blur.py` reads the
+      originals in `../workflow/captures/session5-originals-2026-11-05/`). T25-1's status line removed.
+    - Harness after the round: video-safe CLEAN, box-overflow NO OVERFLOW, controls-clear CLEAR, mixed-align 0, no
+      line-final punctuation on any slide.
+

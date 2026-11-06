@@ -73,7 +73,7 @@ export function WorkedSplit({ lesson }: { lesson: string }) {
                 <Mono>{r.cidr}</Mono>
               </b>,
               <span key="z" className="inline-flex items-center gap-2">
-                <MapPin aria-hidden size={18} strokeWidth={2.4} color={ZONE_TONE[r.zone]} className="cvx cvx-hop" />
+                <MapPin aria-hidden size={18} strokeWidth={2.4} color={ZONE_TONE[r.zone]} className="sb-hop" />
                 <Mono>{r.zone}</Mono>
               </span>,
               <TypeTag key="t" type={r.type} />,
@@ -161,7 +161,7 @@ function SplitTotalsScene({ k }: { k: number }) {
               <At x={8} y={S9.chipY}>
                 <Fade on={each} lift={6} delay={i * 160}>
                   <Cidr size={14} strong>
-                    251 usable
+                    251 Usable
                   </Cidr>
                 </Fade>
               </At>
@@ -187,7 +187,7 @@ function SplitTotalsScene({ k }: { k: number }) {
       <At x={TOTAL.x} y={TOTAL.y}>
         <Fade on={sum} lift={0} delay={sum && !STILL ? 900 : 0}>
           <Cidr tone="solid" strong raised icon={<Calculator />}>
-            1004 usable
+            1004 Usable
           </Cidr>
         </Fade>
       </At>
@@ -227,10 +227,10 @@ export function SplitTotals({ lesson }: { lesson: string }) {
 /* ===== T10-1 · Public or private, by route */
 
 const PP_ROWS = [
-  ['Internet-bound route', 'Points to an internet gateway', 'No direct internet gateway route'],
-  ['Typical resources', 'Load balancers, bastion hosts', 'Databases, internal application servers'],
-  ['Public IP exposure', 'Instances can hold a public IP', 'Instances cannot be reached directly from the internet'],
-  ['Zone pairing', 'Mirrored in every AZ used', 'Mirrored in every AZ used'],
+  ['Internet-Bound Route', 'Points to an internet gateway', 'No direct internet gateway route'],
+  ['Typical Resources', 'Load balancers, bastion hosts', 'Databases, internal application servers'],
+  ['Public IP Exposure', 'Instances can hold a public IP', 'Instances cannot be reached directly from the internet'],
+  ['Zone Pairing', 'Mirrored in every AZ used', 'Mirrored in every AZ used'],
 ]
 const PP_ICONS: ReactNode[] = [<Route key="0" size={18} />, <Server key="1" size={18} />, <Eye key="2" size={18} />, <Layers key="3" size={18} />]
 
@@ -328,7 +328,7 @@ function PublicPrivateScene({ k }: { k: number }) {
       </At>
       <At x={S10.igw.cx} y={S10.igw.cy - 44} cx cy>
         <Label size={14} strong raised>
-          Internet gateway
+          Internet Gateway
         </Label>
       </At>
       <Ripple x={S10.igw.cx} y={S10.igw.cy} r={S10.igw.r} tone={NET.public} on={route} />
@@ -362,7 +362,7 @@ function PublicPrivateScene({ k }: { k: number }) {
 export function PublicPrivate({ lesson }: { lesson: string }) {
   const k = useBuild(5, 1000, 1200)
   return (
-    <Card id="T10-1" kicker="Public Vs Private" title="Classification By Route" lead="A subnet is labelled public or private by what its route table sends internet-bound traffic to, not by any setting on the subnet itself" lesson={lesson}>
+    <Card id="T10-1" kicker="Public Vs Private" title="Classification By Route" lead="A subnet is labelled public or private by what its route table sends internet-bound traffic to, not by its name or tag" lesson={lesson}>
       <div className="flex items-center" style={{ width: BOX_W, gap: 24 }}>
         <div className="shrink-0" style={{ width: TABLE10_W }}>
           <VisualTable

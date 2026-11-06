@@ -1,0 +1,772 @@
+{
+  "engine": 1,
+  "meta": {
+    "title": "Engine Demo",
+    "course": "Cloud Computing",
+    "htmlName": "engine-demo",
+    "previous": {
+      "title": "Containers vs Virtual Machines",
+      "items": [
+        "Container Fundamentals",
+        "Docker Architecture"
+      ]
+    },
+    "agenda": [
+      "Cloud Networking Overview",
+      "Routing & Gateways"
+    ],
+    "next": "Load Balancing & CDN"
+  },
+  "slides": [
+    {
+      "id": "S-WELCOME",
+      "layout": "brand"
+    },
+    {
+      "id": "S-TITLE",
+      "layout": "title"
+    },
+    {
+      "id": "S-RECAP",
+      "layout": "recap"
+    },
+    {
+      "id": "S-AGENDA",
+      "layout": "agenda"
+    },
+    {
+      "id": "D1",
+      "layout": "breaker",
+      "index": 1
+    },
+    {
+      "id": "T01",
+      "layout": "points",
+      "kicker": "NAT Gateway",
+      "title": "Outbound-Only Access",
+      "lead": "A private subnet still needs to download updates, but it must never accept an unsolicited inbound connection",
+      "points": [
+        {
+          "text": "A NAT gateway, placed in a public subnet",
+          "icon": "Waypoints"
+        },
+        {
+          "text": "Lets private instances start outbound connections",
+          "icon": "ArrowUpRight"
+        },
+        {
+          "text": "While blocking anything started from outside",
+          "icon": "ShieldBan"
+        }
+      ],
+      "figure": {
+        "type": "diagram",
+        "w": 600,
+        "h": 360,
+        "boxes": [
+          {
+            "id": "vpc",
+            "label": "VPC",
+            "kind": "vpc",
+            "x": 24,
+            "y": 120,
+            "w": 440,
+            "h": 226
+          },
+          {
+            "id": "pub",
+            "label": "Public Subnet",
+            "kind": "public",
+            "labelAt": "bottom",
+            "x": 44,
+            "y": 166,
+            "w": 180,
+            "h": 164
+          },
+          {
+            "id": "pri",
+            "label": "Private Subnet",
+            "kind": "private",
+            "labelAt": "bottom",
+            "x": 240,
+            "y": 166,
+            "w": 204,
+            "h": 164
+          }
+        ],
+        "nodes": [
+          {
+            "id": "igw",
+            "x": 300,
+            "y": 72,
+            "icon": "Globe",
+            "shape": "disc",
+            "label": "Internet Gateway",
+            "labelPos": "above"
+          },
+          {
+            "id": "net",
+            "x": 530,
+            "y": 72,
+            "icon": "lib:cloud",
+            "shape": "bare",
+            "size": 72,
+            "label": "Internet",
+            "loop": "lift"
+          },
+          {
+            "id": "nat",
+            "x": 134,
+            "y": 222,
+            "icon": "ArrowLeftRight",
+            "shape": "disc",
+            "label": "NAT Gateway"
+          },
+          {
+            "id": "app",
+            "x": 292,
+            "y": 222,
+            "icon": "Server",
+            "label": "Instance"
+          },
+          {
+            "id": "db",
+            "x": 388,
+            "y": 222,
+            "icon": "Database",
+            "label": "Database"
+          }
+        ],
+        "arrows": [
+          {
+            "from": "app",
+            "to": "nat",
+            "tone": "good"
+          },
+          {
+            "from": "nat",
+            "to": "igw",
+            "tone": "good",
+            "bend": "v"
+          },
+          {
+            "from": "igw",
+            "to": "net",
+            "tone": "good"
+          },
+          {
+            "id": "in",
+            "from": "net",
+            "to": "db",
+            "blocked": true
+          }
+        ],
+        "packets": [
+          {
+            "path": [
+              "app",
+              "nat",
+              "igw",
+              "net"
+            ],
+            "tone": "good",
+            "back": true
+          }
+        ],
+        "steps": [
+          {
+            "show": [
+              "nat"
+            ],
+            "lit": [
+              "nat"
+            ]
+          },
+          [
+            "app>nat",
+            "nat>igw",
+            "igw>net",
+            "packet:0"
+          ],
+          {
+            "show": [
+              "in"
+            ],
+            "lit": [
+              "db"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "T01-B",
+      "layout": "points",
+      "kicker": "VPC Peering",
+      "title": "Private Links Between VPCs",
+      "lead": "Peering joins two VPCs one to one, and traffic never crosses the public internet",
+      "points": [
+        {
+          "text": "A peering connection links VPC A and VPC B directly",
+          "icon": "Waypoints"
+        },
+        {
+          "text": "VPC B can peer with VPC C as a separate link",
+          "icon": "Link2"
+        },
+        {
+          "text": "Peering is not transitive: VPC A cannot reach VPC C through VPC B",
+          "icon": "Ban"
+        }
+      ],
+      "figure": {
+        "type": "diagram",
+        "w": 600,
+        "h": 360,
+        "boxes": [
+          {
+            "id": "va",
+            "label": "VPC A",
+            "kind": "vpc",
+            "x": 16,
+            "y": 100,
+            "w": 240,
+            "h": 160
+          },
+          {
+            "id": "vb",
+            "label": "VPC B",
+            "kind": "vpc",
+            "x": 344,
+            "y": 16,
+            "w": 240,
+            "h": 160
+          },
+          {
+            "id": "vc",
+            "label": "VPC C",
+            "kind": "vpc",
+            "labelAt": "bottom",
+            "x": 344,
+            "y": 222,
+            "w": 240,
+            "h": 132
+          }
+        ],
+        "nodes": [
+          {
+            "id": "a",
+            "x": 136,
+            "y": 184,
+            "icon": "Server",
+            "label": "Instance"
+          },
+          {
+            "id": "b",
+            "x": 460,
+            "y": 100,
+            "icon": "Server",
+            "label": "Instance",
+            "labelPos": "right"
+          },
+          {
+            "id": "c",
+            "x": 460,
+            "y": 290,
+            "icon": "Server",
+            "label": "Instance",
+            "labelPos": "right"
+          }
+        ],
+        "arrows": [
+          {
+            "from": "a",
+            "to": "b",
+            "two": true,
+            "label": "Peering"
+          },
+          {
+            "from": "b",
+            "to": "c",
+            "two": true,
+            "label": "Peering",
+            "labelPos": "left"
+          },
+          {
+            "id": "transit",
+            "from": "a",
+            "to": "c",
+            "blocked": true
+          }
+        ],
+        "packets": [
+          {
+            "path": [
+              "a",
+              "b"
+            ],
+            "back": true
+          },
+          {
+            "path": [
+              "b",
+              "c"
+            ],
+            "back": true
+          }
+        ],
+        "steps": [
+          [
+            "a>b",
+            "packet:0"
+          ],
+          [
+            "b>c",
+            "packet:1"
+          ],
+          {
+            "show": [
+              "transit"
+            ],
+            "lit": [
+              "c"
+            ],
+            "dim": [
+              "b",
+              "a>b",
+              "b>c"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "T01-C",
+      "layout": "lead",
+      "kicker": "Availability Zones",
+      "title": "One VPC Across Two Zones",
+      "lead": "Each zone has its own subnets, and the local route joins them inside the VPC",
+      "figW": 850,
+      "figH": 364,
+      "figure": {
+        "type": "diagram",
+        "w": 850,
+        "h": 364,
+        "boxes": [
+          {
+            "id": "region",
+            "label": "Region",
+            "icon": "MapPin",
+            "kind": "region",
+            "x": 10,
+            "y": 10,
+            "w": 830,
+            "h": 350
+          },
+          {
+            "id": "vpc",
+            "label": "VPC",
+            "icon": "Network",
+            "kind": "vpc",
+            "x": 30,
+            "y": 58,
+            "w": 790,
+            "h": 292
+          },
+          {
+            "id": "za",
+            "label": "Availability Zone A",
+            "kind": "zone",
+            "x": 50,
+            "y": 102,
+            "w": 370,
+            "h": 236
+          },
+          {
+            "id": "zb",
+            "label": "Availability Zone B",
+            "kind": "zone",
+            "x": 440,
+            "y": 102,
+            "w": 370,
+            "h": 236
+          },
+          {
+            "id": "pubA",
+            "label": "Public Subnet",
+            "kind": "public",
+            "x": 64,
+            "y": 146,
+            "w": 170,
+            "h": 180
+          },
+          {
+            "id": "priA",
+            "label": "Private Subnet",
+            "kind": "private",
+            "x": 244,
+            "y": 146,
+            "w": 166,
+            "h": 180
+          },
+          {
+            "id": "pubB",
+            "label": "Public Subnet",
+            "kind": "public",
+            "x": 454,
+            "y": 146,
+            "w": 170,
+            "h": 180
+          },
+          {
+            "id": "priB",
+            "label": "Private Subnet",
+            "kind": "private",
+            "x": 634,
+            "y": 146,
+            "w": 166,
+            "h": 180
+          }
+        ],
+        "nodes": [
+          {
+            "id": "webA",
+            "x": 149,
+            "y": 256,
+            "icon": "Globe",
+            "label": "Web Server"
+          },
+          {
+            "id": "appA",
+            "x": 327,
+            "y": 256,
+            "icon": "Server",
+            "label": "App Server",
+            "loop": "pulse"
+          },
+          {
+            "id": "webB",
+            "x": 539,
+            "y": 256,
+            "icon": "Globe",
+            "label": "Web Server"
+          },
+          {
+            "id": "appB",
+            "x": 717,
+            "y": 256,
+            "icon": "Server",
+            "label": "App Server",
+            "loop": "pulse"
+          }
+        ],
+        "arrows": [
+          {
+            "from": "webA",
+            "to": "appA"
+          },
+          {
+            "from": "webB",
+            "to": "appB"
+          },
+          {
+            "id": "local",
+            "from": "appA",
+            "to": "appB",
+            "two": true,
+            "dashed": true,
+            "via": [
+              [
+                327,
+                204
+              ],
+              [
+                717,
+                204
+              ]
+            ],
+            "label": "Local Route",
+            "labelPos": "on"
+          }
+        ],
+        "packets": [
+          {
+            "path": [
+              "appA",
+              "appB"
+            ],
+            "tone": "accent",
+            "back": true
+          }
+        ],
+        "steps": [
+          [
+            "webA>appA",
+            "webB>appB"
+          ],
+          {
+            "show": [
+              "local"
+            ],
+            "lit": [
+              "local"
+            ]
+          },
+          {
+            "show": [
+              "packet:0"
+            ],
+            "dim": [
+              "pubA",
+              "pubB",
+              "webA",
+              "webB",
+              "webA>appA",
+              "webB>appB"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "T01-D",
+      "layout": "points",
+      "kicker": "Security Groups",
+      "title": "Only the Web Tier Reaches the Database",
+      "points": [
+        {
+          "text": "The web server accepts HTTPS from anywhere",
+          "icon": "Globe"
+        },
+        {
+          "text": "The database accepts traffic only from the web server",
+          "icon": "Database"
+        },
+        {
+          "text": "A direct connection from the internet is refused",
+          "icon": "Ban"
+        }
+      ],
+      "figure": {
+        "type": "diagram",
+        "w": 600,
+        "h": 360,
+        "boxes": [
+          {
+            "id": "vpc",
+            "label": "VPC",
+            "kind": "vpc",
+            "labelAt": "bottom",
+            "x": 150,
+            "y": 30,
+            "w": 430,
+            "h": 320
+          },
+          {
+            "id": "pub",
+            "label": "Public Subnet",
+            "kind": "public",
+            "labelAt": "bottom",
+            "x": 170,
+            "y": 78,
+            "w": 190,
+            "h": 226
+          },
+          {
+            "id": "pri",
+            "label": "Private Subnet",
+            "kind": "private",
+            "labelAt": "bottom",
+            "x": 376,
+            "y": 78,
+            "w": 184,
+            "h": 226
+          }
+        ],
+        "nodes": [
+          {
+            "id": "net",
+            "x": 70,
+            "y": 180,
+            "icon": "lib:cloud",
+            "shape": "bare",
+            "size": 72,
+            "label": "Internet",
+            "loop": "lift"
+          },
+          {
+            "id": "web",
+            "x": 265,
+            "y": 180,
+            "icon": "Globe",
+            "label": "Web Server"
+          },
+          {
+            "id": "db",
+            "x": 468,
+            "y": 180,
+            "icon": "Database",
+            "label": "Database",
+            "sub": "Port 5432"
+          }
+        ],
+        "arrows": [
+          {
+            "from": "net",
+            "to": "web",
+            "tone": "good"
+          },
+          {
+            "from": "web",
+            "to": "db",
+            "tone": "good"
+          },
+          {
+            "id": "probe",
+            "from": "net",
+            "to": "db",
+            "blocked": true,
+            "via": [
+              [
+                70,
+                54
+              ],
+              [
+                468,
+                54
+              ]
+            ],
+            "label": "Port `5432`",
+            "labelPos": "on"
+          }
+        ],
+        "packets": [
+          {
+            "path": [
+              "net",
+              "web"
+            ],
+            "tone": "good",
+            "back": true
+          },
+          {
+            "path": [
+              "web",
+              "db"
+            ],
+            "tone": "good",
+            "back": true
+          }
+        ],
+        "steps": [
+          [
+            "net>web",
+            "packet:0"
+          ],
+          [
+            "web>db",
+            "packet:1"
+          ],
+          {
+            "show": [
+              "probe"
+            ],
+            "lit": [
+              "db"
+            ],
+            "dim": [
+              "net>web",
+              "web>db",
+              "web",
+              "packet:0",
+              "packet:1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "T02",
+      "layout": "table",
+      "kicker": "Routing Options Compared",
+      "title": "Side By Side",
+      "table": {
+        "columns": [
+          {
+            "label": "Component",
+            "icon": "Boxes"
+          },
+          {
+            "label": "Direction",
+            "icon": "ArrowLeftRight"
+          }
+        ],
+        "rows": [
+          {
+            "icon": "Globe",
+            "cells": [
+              "Internet Gateway",
+              "Two-way, public"
+            ]
+          },
+          {
+            "icon": "ArrowUpRight",
+            "cells": [
+              "NAT Gateway",
+              "Outbound only"
+            ]
+          }
+        ],
+        "highlight": [
+          1
+        ]
+      }
+    },
+    {
+      "id": "T03",
+      "layout": "screenshot",
+      "kicker": "VPC Created",
+      "title": "Address Range Confirmed",
+      "step": {
+        "text": "`s5-cloud-network-vpc` is Available",
+        "icon": "CircleCheck"
+      },
+      "image": "images/vpc-created.png",
+      "rings": [
+        [
+          40,
+          40,
+          300,
+          60
+        ]
+      ],
+      "note": {
+        "text": "Every subnet that follows must belong to it",
+        "tone": "info"
+      }
+    },
+    {
+      "id": "S-QUIZ",
+      "layout": "quiz"
+    },
+    {
+      "id": "S-TAKEAWAYS",
+      "layout": "takeaways"
+    },
+    {
+      "id": "S-NEXT",
+      "layout": "next",
+      "title": "Load Balancing & CDN"
+    },
+    {
+      "id": "S-THANKS",
+      "layout": "thanks",
+      "title": "Thank You"
+    },
+    {
+      "id": "S-BEST",
+      "layout": "thanks",
+      "title": "All the Best"
+    }
+  ]
+}

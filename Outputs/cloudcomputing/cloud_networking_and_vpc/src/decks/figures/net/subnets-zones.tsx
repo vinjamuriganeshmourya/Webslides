@@ -2,7 +2,7 @@ import { Fragment, type ReactNode } from 'react'
 import { Building2, Check, Copy, LayoutList, MapPin, Unlink, ZapOff } from 'lucide-react'
 import { colors } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
-import { Arrow, At, Label, STILL, useBuild } from '../scene'
+import { Arrow, At, BOX_W, Card, Label, STILL, Stage, useBuild } from '../scene'
 import { CvIcon, fx, LitFigure, Ripple } from './fx'
 import { NET, NoMark, SubnetBox } from './frames'
 import { Disc, EASE, Host, IconText, MiniChip, Packet, ThinBoundary } from './subnets-parts'
@@ -188,7 +188,7 @@ function ZonesScene({ k }: { k: number }) {
 const T11_POINTS: ReactNode[] = [
   'Production designs duplicate the public-private subnet pair in every zone that is used',
   "The VPC console's Subnets page lists each subnet's assigned availability zone and CIDR",
-  'If one zone goes down, only the resources in that zone stop working, so a two-zone design keeps running on the other zone',
+  'If one zone goes down, only the resources in that zone are affected, so a two-zone design keeps running on the other zone',
 ]
 const T11_ICONS: ReactNode[] = [<Copy key="0" size={20} />, <LayoutList key="1" size={20} />, <ZapOff key="2" size={20} />]
 
@@ -217,21 +217,23 @@ export function ZonePlacement({ lesson }: { lesson: string }) {
   )
 }
 
+/**
+ * T11-1b (5.md, 2026-11-04, slide 29: "move the point above the visual; centre the two vertically and horizontally"):
+ * the TR's one point is the description over the map, the two one centred column, as T09-2; its words unchanged.
+ */
 export function ZonePlacement2({ lesson }: { lesson: string }) {
   const k = 3 + useBuild(4, 1700, 1300)
   return (
-    <LitFigure
-      id="T11-1b"
-      kicker="AZ Placement"
-      title="High Availability Design"
-      lesson={lesson}
-      points={T11_POINTS.slice(2).map((text) => ({ icon: T11_ICONS[2], text }))}
-      lit={k >= 5 ? 0 : -1}
-      pointsW={T11_POINTS_W}
-      pointSize={16}
-      figH={S11_H}
-      figure={<ZonesScene k={k} />}
-    />
+    <Card id="T11-1b" kicker="AZ Placement" title="High Availability Design" lesson={lesson}>
+      <div className="flex flex-col items-center" style={{ width: BOX_W, gap: 18 }}>
+        <p className="text-center leading-snug" style={{ maxWidth: 900, fontSize: 20, color: colors.ink }}>
+          {T11_POINTS[2]}
+        </p>
+        <Stage w={BOX_W - T11_POINTS_W - 24} h={S11_H} active={false}>
+          <ZonesScene k={k} />
+        </Stage>
+      </div>
+    </Card>
   )
 }
 

@@ -49,6 +49,11 @@ Outputs/                    EVERY COURSE lives here. A course is one folder.
   python/                     the Python course, sessions numbered 1_, 2_, … 14_
   oops_theory/                the OOPs course
 
+deck-engine/                THE ENGINE every new session deck is built with (from 2026-11-04):
+                            a session = a folder of data (deck.json, images/, optional custom/),
+                            `node deck.mjs build <folder>` → the single HTML. Its CLAUDE.md is the
+                            manual; RULES-REGISTER.md maps every review rule to where it is enforced.
+
 Rules_beta/                 rule and layout sandboxes (zones, header, typography)
 
 review-app/                 the deck review app. One server for the whole repo,

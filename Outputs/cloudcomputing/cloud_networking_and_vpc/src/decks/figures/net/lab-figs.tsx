@@ -118,7 +118,7 @@ export function StepTiles({ items, k, width, size = 18, gap = 10 }: { items: Ste
               {it.text}
             </BulletLine>
             <span aria-hidden className="grid shrink-0 place-items-center rounded-[12px]" style={{ width: 46, height: 40, background: on ? '#FFFFFF' : colors.surface2, boxShadow: on ? `inset 0 0 0 1.5px ${colors.brand}66` : 'none', transition: ease }}>
-              <span className={on ? fx('hop', 0, 1.4).className : ''} style={{ ...(on ? fx('hop', 0, 1.4).style : {}), display: 'grid' }}>
+              <span className={on ? fx('lift', 0, 1.6).className : ''} style={{ ...(on ? fx('lift', 0, 1.6).style : {}), display: 'grid' }}>
                 {it.glyph}
               </span>
             </span>
@@ -235,7 +235,7 @@ export function LabVpc({ parts, regionLabel, vpcLabel, pubLabel, priLabel, aws }
       {/* the private route table: no route to the internet, stopped at the VPC's edge */}
       <Arrow x1={LV.no.cx} y1={Q.y - 3} x2={LV.no.cx} y2={LV.no.cy + 13} on={rtOn} tone={NET.private} dashed delay={320} />
       <div className="absolute" style={{ left: LV.no.cx, top: LV.no.cy, transform: 'translate(-50%, -50%)' }}>
-        <span className={rtOn ? fx('shake', 0.6, 2.4).className : ''} style={{ ...(rtOn ? fx('shake', 0.6, 2.4).style : {}), display: 'grid' }}>
+        <span className={rtOn && !STILL ? 'lab-nudge' : ''} style={{ display: 'grid' }}>
           <NoMark size={24} on={rtOn} />
         </span>
       </div>
@@ -371,12 +371,12 @@ export function SecurityFig({ k, mode }: { k: number; mode: 'sg' | 'acl' }) {
       <Ring x={A.x} y={A.y} w={A.w} h={A.h} solid={acl} now={!isSg && k === 1} radius={22} />
       <At x={A.x + 12} y={A.y + 9}>
         <Label size={14} strong tone={acl ? 'brand' : 'muted'}>
-          network ACL
+          Network ACL
         </Label>
       </At>
       {/* the subnet */}
       <At x={S.x} y={S.y}>
-        <SubnetBox w={S.w} h={S.h} label="subnet" lit={subLit} />
+        <SubnetBox w={S.w} h={S.h} label="Subnet" lit={subLit} />
       </At>
       {/* the security group ring, tight round the resource, its shield inside its corner */}
       <Ring x={G.x} y={G.y} w={G.w} h={G.h} solid={sg} now={isSg && k === 1} />
@@ -394,7 +394,7 @@ export function SecurityFig({ k, mode }: { k: number; mode: 'sg' | 'acl' }) {
       </At>
       <At x={R.cx} y={R.cy + 54} cx cy>
         <Label size={14} strong tone={sg ? 'brand' : 'muted'}>
-          security group
+          Security Group
         </Label>
       </At>
       <At x={R.cx} y={R.cy + 84} cx cy>
@@ -405,7 +405,7 @@ export function SecurityFig({ k, mode }: { k: number; mode: 'sg' | 'acl' }) {
       {/* an inbound packet: through the subnet, stopped just outside the security group (no inbound rules) */}
       <Traveller path={[[A.x + 30, R.cy], [G.x - 34, R.cy]]} run={blocked && isSg && !STILL} k="lab-sg-in" tone={NET.lit} size={13} dur={2.2} />
       <At x={G.x - 17} y={R.cy} cx cy>
-        <span className={blocked && isSg ? fx('shake', 1.1, 2.6).className : ''} style={{ ...(blocked && isSg ? fx('shake', 1.1, 2.6).style : {}), display: 'grid' }}>
+        <span className={blocked && isSg && !STILL ? 'lab-nudge' : ''} style={{ display: 'grid' }}>
           <NoMark size={22} on={blocked} />
         </span>
       </At>
@@ -429,9 +429,12 @@ export function SecurityFig({ k, mode }: { k: number; mode: 'sg' | 'acl' }) {
 export const LAB_FIGS_CSS = `
 @keyframes lab-scan { 0%, 100% { transform: translateX(0) } 50% { transform: translateX(150px) } }
 .lab-scan { animation: lab-scan 5.2s cubic-bezier(0.65,0,0.35,1) infinite; }
-@keyframes lab-read { 0%, 8% { transform: translate(var(--lab-x0), calc(var(--lab-y) - 30px)) } 22% { transform: translate(var(--lab-x0), calc(var(--lab-y) + 4px)) } 38%, 50% { transform: translate(var(--lab-x1), calc(var(--lab-y) - 30px)) } 64% { transform: translate(var(--lab-x1), calc(var(--lab-y) + 4px)) } 82%, 100% { transform: translate(var(--lab-x0), calc(var(--lab-y) - 30px)) } }
-.lab-read { animation: lab-read 6s cubic-bezier(0.65,0,0.35,1) infinite; }
-.cc-still .lab-scan, .deck-thumb .lab-scan, .cc-still .lab-read, .deck-thumb .lab-read { animation: none !important; }
-@media (prefers-reduced-motion: reduce) { .lab-scan, .lab-read { animation: none !important; } }
+@keyframes lab-read { 0% { transform: translate(var(--lab-x0), calc(var(--lab-y) - 30px)) } 22% { transform: translate(var(--lab-x0), calc(var(--lab-y) + 4px)) } 50% { transform: translate(var(--lab-x1), calc(var(--lab-y) - 30px)) } 72% { transform: translate(var(--lab-x1), calc(var(--lab-y) + 4px)) } 100% { transform: translate(var(--lab-x0), calc(var(--lab-y) - 30px)) } }
+.lab-read { animation: lab-read 5.6s ease-in-out infinite; }
+/* the stopped mark breathes, no rest between beats (R8.1: loops restart at once) */
+@keyframes lab-nudge { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.12) } }
+.lab-nudge { animation: lab-nudge 1.4s ease-in-out infinite; }
+.cc-still .lab-scan, .deck-thumb .lab-scan, .cc-still .lab-read, .deck-thumb .lab-read, .cc-still .lab-nudge, .deck-thumb .lab-nudge { animation: none !important; }
+@media (prefers-reduced-motion: reduce) { .lab-scan, .lab-read, .lab-nudge { animation: none !important; } }
 `
 

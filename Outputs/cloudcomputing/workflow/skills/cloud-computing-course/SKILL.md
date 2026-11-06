@@ -44,6 +44,11 @@ happen.
 
 ## R2. A new session starts from the latest session, and the reference is rendered first
 
+> **Superseded for new sessions (user, 2026-11-04):** a new session is a data folder built by `deck-engine/`
+> (`node deck.mjs new|build|check <folder>`, see `deck-engine/CLAUDE.md`), not a copy of the latest session. The
+> engine carries session 5's player, figures and every rule R1-R9 below. The text that follows describes how
+> sessions 1-5 were made and still applies when one of them is edited.
+
 **Standing practice, from session 2 (2026-10-23).** The course's sessions
 carry session-local kit changes (the player options, the quiz frame, the
 takeaways frame, the section bar, the presenter and student views, the
@@ -136,7 +141,9 @@ Part 1 apply to every slide in this session and to all subsequent sessions."*
 7. **Explain with the picture:** icons, elements and connections, not text, carry a technical visual.
 8. **Motion with purpose; logos never move.** A visual keeps a quiet loop after its build so it never looks frozen.
 9. **Configuration screenshots:** one sharp, enlarged capture with the highlight rings on it; no zoomed copies,
-   no number badges, no blur. (This replaces session 4's two-picture zoom pattern from G9 for these decks.)
+   no number badges, no blurred copies. (This replaces session 4's two-picture zoom pattern from G9 for these decks.)
+   Sensitive fields inside the capture (account IDs, resource IDs, emails, keys) ARE blurred: content rule 53
+   (user, 2026-11-05).
 10. **One visual language** across the deck: spacing, illustration quality, technical drawing.
 
 Point wording on a split stays the TR's (user, 2026-11-04: "keep only in tr doc but if it needed split it"): a long
@@ -144,6 +151,44 @@ point is cut at the TR's own clause boundaries, never reworded.
 
 Why: the FS team's review of session 5 found abstract people, overlapping chips, broken arrowheads, heavy dotted
 boxes, empty stages and zoomed screenshot pairs across the deck, after two visual passes.
+
+## R8. Loops, colour, table highlights, capitals, logos (every slide, every session)
+
+**Feedback, 2026-11-04, on session 5 (`cloud_networking_and_vpc/dist-single/5.md`, "Global Rules ... Apply to This
+Session and All Upcoming Sessions"; items 3, 4, 7 and 8 are checks on every slide, not only the listed ones).**
+
+1. **Loops restart at once:** no rest beat or delay between cycles (`Traveller` has `repeatDelay: 0`; a `useCycle`
+   or `useLoop` scene keeps no long still beat at the end).
+2. **Balanced colour:** orange is for one meaning on a slide (the highlight), never the dominant colour.
+3. **Table highlights only for meaning:** never the last row by default (`VisualTable` lights an arriving row for
+   about a second, then clears it); a `highlight` row only when the content says that row matters.
+4. **Capitals:** every sentence, point, chip, label and subtext starts with a capital; multiword chips and labels
+   are Title Case by the kicker rule in `slide-content-rules` (articles and short prepositions lowercase, prepositions
+   of four or more letters capitalised, after a colon capitalised). Identifiers, code, CIDRs and resource names
+   (`s5-demo-sg`, `igw-id`, `ap-south-1a`) keep their own form. This overrides "verbatim" for letter case only.
+5. **Logos keep their aspect ratio:** set one dimension, never both; shrink rather than squeeze.
+6. **Arrows match the concept:** every direction (one-way, two-way, return traffic) checked against the networking
+   fact before it ships.
+7. **Padding everywhere:** no overlap, overflow or clipping between icons, chips, labels, arrows and boxes.
+8. **Quiet continuous loops** on relevant icons and technical parts, never distracting.
+
+Why: the session 5 review after two visual passes still found loops with a pause, orange-heavy slides, last-row
+bars on every table, lowercase chips and points, and a squeezed Google Cloud logo.
+
+## R9. Every session has its title slide right after the welcome slide
+
+**Feedback, 2026-11-04, on session 5 (Cloud Networking & VPC):** *"why it has missed the title slide after welcome
+slide, mandate that for every session title slide is must."*
+
+- Slide 2 of every deck is the session title frame: `{ id: 'S-TITLE', section: 'Opening', label: 'Session name',
+  transition: 'zoom', element: <WelcomeSlide minimal title={SESSION} lesson={SESSION} /> }`, directly after the
+  `BrandSlide "Welcome!"` and before the recap.
+- This holds even when the source spec has no title card. A spec's "no topic on the welcome frame" means the brand
+  frame stays topic-free; the title frame after it still carries the session name.
+
+Why: sessions 1, 2, 3 and Virtualization & Hypervisors have it. Session 4 was built from `spec.json`, whose card list
+starts welcome, recap, agenda with no title card, and session 5 was copied from session 4 (R2), so both shipped
+without it.
 
 ## Lessons carried from session 1's reviews (so they are not repeated)
 

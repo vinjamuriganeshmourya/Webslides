@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { colors } from '@/design/tokens'
 import { STILL, useBuild } from '../scene'
 
@@ -33,6 +33,18 @@ const EASE = 'cubic-bezier(0.22,1,0.36,1)'
 export function VisualTable({ columns, rows, compact = false, ms = 560, className = '', size = 16, shown: given, highlight = [] }: { columns: VCol[]; rows: VRow[]; compact?: boolean; ms?: number; className?: string; size?: number; /** rows shown, when the slide drives the build itself (a figure beside the table follows the same press) */ shown?: number; /** rows (0-based) the card marks in the template's orange, whatever the build */ highlight?: number[] }) {
   const own = useBuild(given === undefined ? rows.length + 1 : 0, ms)
   const shown = given ?? own
+  /*
+    THE ARRIVING ROW IS LIT ONLY WHILE IT ARRIVES (user, 2026-11-04, 5.md global rule 3: "never highlight the last
+    row automatically"): the tint, the orange bar and the sheen used to stay on whichever row came in last, so every
+    finished table kept its last row marked. Now they clear ~1.1s after the row lands; only `highlight` rows stay.
+  */
+  const [fresh, setFresh] = useState(-1)
+  useEffect(() => {
+    if (STILL || shown <= 0) return setFresh(-1)
+    setFresh(shown - 1)
+    const t = window.setTimeout(() => setFresh(-1), 1100)
+    return () => window.clearTimeout(t)
+  }, [shown])
   const grid = columns.map((c) => `${c.weight ?? 1}fr`).join(' ')
   const pad = compact ? 'px-4 py-2' : 'px-4 py-3'
   const color = colors.brand
@@ -66,22 +78,22 @@ export function VisualTable({ columns, rows, compact = false, ms = 560, classNam
       <div className="block">
         {rows.map((row, r) => {
           const on = r < shown
-          const fresh = !STILL && on && r === shown - 1
+          const isFresh = on && r === fresh
           return (
             <div
               key={r}
               className="relative grid items-center gap-x-2 overflow-hidden border-t border-line"
               style={{
                 gridTemplateColumns: grid,
-                background: highlight.includes(r) ? 'linear-gradient(135deg, #FFF4E6 0%, #FFE6CC 100%)' : fresh ? `linear-gradient(135deg, ${color}0c 0%, ${color}1c 100%)` : r % 2 ? '#FBFDFF' : undefined,
-                boxShadow: fresh || highlight.includes(r) ? `inset 4px 0 0 0 ${colors.accent}` : undefined,
+                background: highlight.includes(r) ? 'linear-gradient(135deg, #FFF4E6 0%, #FFE6CC 100%)' : isFresh ? `linear-gradient(135deg, ${color}0c 0%, ${color}1c 100%)` : r % 2 ? '#FBFDFF' : undefined,
+                boxShadow: isFresh || highlight.includes(r) ? `inset 4px 0 0 0 ${colors.accent}` : undefined,
                 opacity: on ? 1 : 0,
                 transform: on ? 'none' : 'translateX(-18px)',
                 transition: `opacity 300ms ${EASE}, transform 340ms ${EASE}, background 420ms ${EASE}, box-shadow 420ms ${EASE}`,
               }}
             >
               {/* the sheen: a soft band that crosses the row once as it arrives */}
-              {fresh && (
+              {isFresh && (
                 <span
                   aria-hidden
                   className="pointer-events-none absolute inset-y-0 left-0 w-[30%] cvx-sheen"
@@ -92,7 +104,7 @@ export function VisualTable({ columns, rows, compact = false, ms = 560, classNam
                 <div key={c} className={`${pad} leading-snug ${c === 0 ? 'font-semibold' : ''}`} style={{ fontSize: size, color: c === 0 ? colors.ink : colors.body }}>
                   {c === 0 && row.icon ? (
                     <span className="flex items-center gap-2.5">
-                      <span aria-hidden className="grid h-[32px] w-[32px] shrink-0 place-items-center rounded-[9px] [&>svg]:h-[18px] [&>svg]:w-[18px]" style={{ background: fresh ? colors.brand : colors.surface2, color: fresh ? colors.white : colors.brand, transition: `all 420ms ${EASE}` }}>
+                      <span aria-hidden className="grid h-[32px] w-[32px] shrink-0 place-items-center rounded-[9px] [&>svg]:h-[18px] [&>svg]:w-[18px]" style={{ background: isFresh ? colors.brand : colors.surface2, color: isFresh ? colors.white : colors.brand, transition: `all 420ms ${EASE}` }}>
                         {row.icon}
                       </span>
                       <span className="min-w-0">{cell}</span>
