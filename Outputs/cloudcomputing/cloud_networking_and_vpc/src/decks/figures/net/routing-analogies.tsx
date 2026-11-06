@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from 'react'
 import { Lock } from 'lucide-react'
 import { colors } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
+import { useAutoAnim } from '@/deck/autoAnim'
 import { Arrow, At, Label, REDUCED, STILL, useLoop } from '../scene'
 import { AN_W, IsoAnalogy } from '../iso/frames'
 import { Boundary, Gateway, InternetCloud, MiniRouteTable, NET, NoMark, Resource, SubnetBox, within } from './frames'
@@ -19,8 +20,9 @@ import { Art3dDefs, Desk3D, Exchange3D, JunctionBox, LibFigure, Office3D, Parcel
  * pair of the analogy; the pair in focus is solid and everything else fades (G4);
  * the motion IS the explanation (a parcel scanned, then sorted down its chute;
  * a visitor going out and back through the counter while an outsider is turned
- * away; a call placed straight down the private line). After the last pair the
- * whole picture rests, which is also the frame harness URLs hold.
+ * away; a call placed straight down the private line). With auto animation ON
+ * the loop starts again right after the last pair (R8.1, `useRestless`); the
+ * whole picture is the last auto-OFF press and the frame harness URLs hold.
  *
  * G4, parallel paths in distinct colours, the same on both sides of a slide:
  *   postal   green = local, blue = the default route to the gateway, violet = peering
@@ -38,6 +40,18 @@ const fadeT = `opacity 460ms ${EASE}`
 function useHeld() {
   const instant = useInstant()
   return STILL || REDUCED || instant
+}
+
+/**
+ * One analogy clock (R8.1, 2026-11-04: loops restart at once). Auto animation ON: the
+ * phase runs 0..`end` (the end of the last pair's action) at the loop's own speed and
+ * starts again immediately, so no rest beat sits between cycles. Auto OFF: the `beats`
+ * are the presses, unchanged, the last one the whole picture (also the harness frame).
+ */
+function useRestless(periodMs: number, beats: number[], end: number) {
+  const auto = useAutoAnim()
+  const raw = useLoop(Math.round(periodMs * end), { mode: 'sawtooth', still: 0.98, beats })
+  return auto ? raw * end : raw
 }
 
 /** A tag inside a picture, in the TR's words; solid while its pair is the one in focus. */
@@ -90,7 +104,7 @@ const CLOSE = { x: 104, y: 226, w: 92 }
 /** The postal clock: 0 the parcel rides in and is scanned; 1 it is sorted down the default chute into its van; 2 it was never opened; then the whole hub. */
 function usePostal() {
   const held = useHeld()
-  const t = useLoop(9600, { mode: 'sawtooth', still: 0.98, beats: [0.32, 0.64, 0.94, 0.98] })
+  const t = useRestless(9600, [0.32, 0.64, 0.94, 0.98], 0.945)
   const focus = held ? -1 : t <= 0.325 ? 0 : t <= 0.645 ? 1 : t <= 0.945 ? 2 : -1
   return { t: held ? 0.98 : t, focus, held }
 }
@@ -216,13 +230,13 @@ function PostalFamiliar({ t, focus }: { t: number; focus: number }) {
       <Ripple x={HUB.scanX} y={HUB.beltY - 11} r={24} tone={colors.accent} on={focus === 0 && t > 0.22} />
 
       <At x={HUB.scanX} y={PR.top} cx cy>
-        <Tag lit={focus === 0}>reads only the pincode on a parcel</Tag>
+        <Tag lit={focus === 0}>Reads Only the Pincode on a Parcel</Tag>
       </At>
       <At x={130} y={PR.sealed} cx cy>
-        <Tag lit={focus === 2}>never opening the parcel itself</Tag>
+        <Tag lit={focus === 2}>Never Opening the Parcel Itself</Tag>
       </At>
       <At x={318} y={PR.send} cx cy>
-        <Tag lit={focus === 1}>sends it to the correct delivery van</Tag>
+        <Tag lit={focus === 1}>Sends It to the Correct Delivery Van</Tag>
       </At>
     </>
   )
@@ -258,7 +272,7 @@ function PostalConcept({ t, focus }: { t: number; focus: number }) {
   return (
     <>
       <At x={235} y={PR.top} cx cy>
-        <Tag lit={reads}>reads only the destination address</Tag>
+        <Tag lit={reads}>Reads Only the Destination Address</Tag>
       </At>
 
       {/* THE PACKET: its header (the destination address) and its sealed body */}
@@ -275,7 +289,7 @@ function PostalConcept({ t, focus }: { t: number; focus: number }) {
           </svg>
         </At>
         <At x={PK.x + PK.w / 2} y={PK.y + PK.h + 20} cx cy>
-          <Tag>packet</Tag>
+          <Tag>Packet</Tag>
         </At>
       </DomPart>
       {/* the seal on its body: nothing inside is touched */}
@@ -309,7 +323,7 @@ function PostalConcept({ t, focus }: { t: number; focus: number }) {
         <div style={{ opacity: target(0), transition: fadeT }}>
           <Arrow x1={JUNCTION_X} y1={rtRowY(0)} x2={TG.cx - 50} y2={TG.local + 6} tone={R.local} />
           <At x={TG.cx - 46} y={TG.local - 26}>
-            <SubnetBox w={92} h={56} kind="public" label="local">
+            <SubnetBox w={92} h={56} kind="public" label="Local">
               <At x={70} y={34} cx cy>
                 <Resource size={26} />
               </At>
@@ -319,13 +333,13 @@ function PostalConcept({ t, focus }: { t: number; focus: number }) {
         <div style={{ opacity: target(1), transition: fadeT }}>
           <Arrow x1={JUNCTION_X} y1={rtRowY(1)} x2={TG.cx - 24} y2={TG.gw} tone={R.gw} width={forwards ? 3.5 : 2.5} />
           <At x={TG.cx} y={TG.gw + 14} cx cy>
-            <Gateway kind="igw" size={40} label="gateway" lit={forwards} />
+            <Gateway kind="igw" size={40} label="Gateway" lit={forwards} />
           </At>
         </div>
         <div style={{ opacity: target(2), transition: fadeT }}>
           <Arrow x1={JUNCTION_X} y1={rtRowY(1) + 8} x2={TG.cx - 24} y2={TG.peer - 2} tone={R.peer} dashed />
           <At x={TG.cx} y={TG.peer + 12} cx cy>
-            <Gateway kind="peer" size={40} label="peering link" />
+            <Gateway kind="peer" size={40} label="Peering Link" />
           </At>
         </div>
         <Ripple x={TG.cx} y={TG.gw} r={28} tone={colors.accent} on={forwards && t > 0.55} />
@@ -333,10 +347,10 @@ function PostalConcept({ t, focus }: { t: number; focus: number }) {
       <PacketChip x={pos[0]} y={pos[1]} on={showChip} tone={t < 0.36 ? colors.accent : R.gw} />
 
       <At x={235} y={PR.sealed} cx cy>
-        <Tag lit={sealed}>without touching what it carries</Tag>
+        <Tag lit={sealed}>Without Touching What It Carries</Tag>
       </At>
       <At x={235} y={PR.send} cx cy>
-        <Tag lit={forwards}>forwards the packet</Tag>
+        <Tag lit={forwards}>Forwards the Packet</Tag>
       </At>
     </>
   )
@@ -348,17 +362,17 @@ export function PostalAnalogy({ lesson }: { lesson: string }) {
     <IsoAnalogy
       id="T14-AN"
       kicker="Route Tables"
-      title="A postal hub reads only the pincode"
+      title="A Postal Hub Reads Only the Pincode"
       lesson={lesson}
       bare
       h={AN_H}
-      everyday={{ label: 'A postal hub reads only the pincode', scene: <PostalFamiliar t={t} focus={focus} /> }}
+      everyday={{ label: 'A Postal Hub Reads Only the Pincode', scene: <PostalFamiliar t={t} focus={focus} /> }}
       cloud={{ label: 'A route table reads only the destination address', scene: <PostalConcept t={t} focus={focus} /> }}
     />
   )
 }
 
-/* ============================================================== T16-AN · A ticket counter at a venue */
+/* ============================================================== T16-AN · A Ticket Counter at a Venue */
 
 const TR = { top: 26, foot: 366 } as const
 const GROUND = 300
@@ -370,13 +384,13 @@ const FIG_H = 84
 const QUEUE = [50, 104] as const
 const QUEUE_X = 160
 const OUT_X = 368
-const OUTSIDER = { from: 428, stop: GATE.x + GATE.len + 32, back: 420 } as const
+const OUTSIDER = { from: 428, stop: GATE.x + GATE.len + 32, back: 428 } as const
 const LAMP_X = 462
 
 /** The ticket clock: 0 a visitor goes out through the counter and comes back; 1 an outsider walks up and is turned away; then the whole venue. */
 function useTicket() {
   const held = useHeld()
-  const t = useLoop(9000, { mode: 'sawtooth', still: 0.98, beats: [0.48, 0.94, 0.98] })
+  const t = useRestless(9000, [0.48, 0.94, 0.98], 0.92)
   const focus = held ? -1 : t <= 0.485 ? 0 : t <= 0.945 ? 1 : -1
   return { t: held ? 0.98 : t, focus }
 }
@@ -507,23 +521,23 @@ function TicketFamiliar({ t, focus }: { t: number; focus: number }) {
       </At>
 
       <At x={180} y={TR.top} cx cy>
-        <Tag lit={focus === 0}>Visitors inside can go out and return</Tag>
+        <Tag lit={focus === 0}>Visitors Inside Can Go Out and Return</Tag>
       </At>
       <At x={BOOTH.x + BOOTH.w / 2} y={BOOTH.top - 34} cx cy>
-        <Tag>ticket counter</Tag>
+        <Tag>Ticket Counter</Tag>
       </At>
       <div style={{ opacity: opOut, transition: fadeT }}>
         <At x={352} y={188} cx cy>
-          <Tag lit={focus === 0}>using their tickets</Tag>
+          <Tag lit={focus === 0}>Using Their Tickets</Tag>
         </At>
       </div>
       <div style={{ opacity: opIn, transition: fadeT }}>
         <At x={384} y={110} cx cy>
-          <Tag lit={focus === 1}>without permission</Tag>
+          <Tag lit={focus === 1}>Without Permission</Tag>
         </At>
       </div>
       <At x={AN_W / 2} y={TR.foot} cx cy>
-        <Tag lit={focus === 1}>outsiders cannot enter through the exit</Tag>
+        <Tag lit={focus === 1}>Outsiders Cannot Enter Through the Exit</Tag>
       </At>
     </>
   )
@@ -549,11 +563,11 @@ function TicketConcept({ t, focus }: { t: number; focus: number }) {
   return (
     <>
       <At x={235} y={TR.top} cx cy>
-        <Tag lit={out}>private instances start outbound connections</Tag>
+        <Tag lit={out}>Private Instances Start Outbound Connections</Tag>
       </At>
       {/* the private subnet: its instances queued like the visitors */}
       <At x={TC.sub.x} y={TC.sub.y}>
-        <SubnetBox w={TC.sub.w} h={TC.sub.h} kind="private" label="Private subnet">
+        <SubnetBox w={TC.sub.w} h={TC.sub.h} kind="private" label="Private Subnet">
           {[0, 1, 2].map((i) => (
             <At key={i} x={i === 0 ? TC.sub.w / 2 : TC.sub.w / 2 - 28 + (i - 1) * 56} y={i === 0 ? 88 : 150} cx cy>
               <Resource size={i === 0 ? 46 : 36} lit={i === 0 && out} dim={i > 0 && focus >= 0} />
@@ -568,7 +582,7 @@ function TicketConcept({ t, focus }: { t: number; focus: number }) {
       <Ripple x={TC.nat.cx} y={TC.nat.cy} r={32} tone={blocked ? NET.blocked : colors.accent} on={(out && (v.out || v.back)) || (blocked && o.stopped)} />
       <At x={TC.cloud.x} y={TC.cloud.y}>
         <span className={fx('lift', 0, 3.2).className} style={{ ...fx('lift', 0, 3.2).style, display: 'block' }}>
-          <InternetCloud w={TC.cloud.w} />
+          <InternetCloud w={TC.cloud.w} label="Internet" />
         </span>
       </At>
       {/* out (blue) and back (green), through the gateway */}
@@ -592,7 +606,7 @@ function TicketConcept({ t, focus }: { t: number; focus: number }) {
       </div>
       <PacketChip x={inPkt[0]} y={inPkt[1]} on={!STILL && blocked && t > 0.52 && t < 0.8} tone={NET.blocked} />
       <At x={235} y={TR.foot} cx cy>
-        <Tag lit={blocked}>blocking anything started from outside</Tag>
+        <Tag lit={blocked}>Blocking Anything Started From Outside</Tag>
       </At>
     </>
   )
@@ -604,11 +618,11 @@ export function TicketAnalogy({ lesson }: { lesson: string }) {
     <IsoAnalogy
       id="T16-AN"
       kicker="NAT Gateway"
-      title="A ticket counter at a venue"
+      title="A Ticket Counter at a Venue"
       lesson={lesson}
       bare
       h={AN_H}
-      everyday={{ label: 'A ticket counter at a venue', scene: <TicketFamiliar t={t} focus={focus} /> }}
+      everyday={{ label: 'A Ticket Counter at a Venue', scene: <TicketFamiliar t={t} focus={focus} /> }}
       cloud={{ label: 'A NAT gateway for a private subnet', scene: <TicketConcept t={t} focus={focus} /> }}
     />
   )
@@ -636,7 +650,7 @@ const LOBBY = [
 /** The phone clock: 0 a call goes straight down the private line and connects; 1 the public exchange sits unused; then the whole picture. */
 function usePhone() {
   const held = useHeld()
-  const t = useLoop(8400, { mode: 'sawtooth', still: 0.98, beats: [0.5, 0.94, 0.98] })
+  const t = useRestless(8400, [0.5, 0.94, 0.98], 0.945)
   const focus = held ? -1 : t <= 0.505 ? 0 : t <= 0.945 ? 1 : -1
   return { t: held ? 0.98 : t, focus }
 }
@@ -722,18 +736,18 @@ function PhoneFamiliar({ t, focus }: { t: number; focus: number }) {
       <Ripple x={LOBBY[1].phone} y={DESK_Y - 16} r={22} tone={colors.accent} on={ringing} />
 
       <At x={235} y={PL.top1} cx cy>
-        <Tag lit={direct}>a private telephone line</Tag>
+        <Tag lit={direct}>A Private Telephone Line</Tag>
       </At>
       <At x={235} y={PL.top2} cx cy>
-        <Tag lit={direct}>installed directly between two offices</Tag>
+        <Tag lit={direct}>Installed Directly Between Two Offices</Tag>
       </At>
       {OFF.fx.map((x) => (
         <At key={x} x={x + OFF.w / 2} y={OFF.foot + 22} cx cy>
-          <Tag>office</Tag>
+          <Tag>Office</Tag>
         </At>
       ))}
       <At x={235} y={PL.foot} cx cy>
-        <Tag lit={bypass}>bypassing the public telephone exchange entirely</Tag>
+        <Tag lit={bypass}>Bypassing the Public Telephone Exchange Entirely</Tag>
       </At>
     </>
   )
@@ -756,10 +770,10 @@ function PhoneConcept({ t, focus }: { t: number; focus: number }) {
   return (
     <>
       <At x={235} y={PL.top1} cx cy>
-        <Tag lit={direct}>peered traffic moves straight</Tag>
+        <Tag lit={direct}>Peered Traffic Moves Straight</Tag>
       </At>
       <At x={235} y={PL.top2} cx cy>
-        <Tag lit={direct}>between the two VPCs</Tag>
+        <Tag lit={direct}>Between the Two VPCs</Tag>
       </At>
       {/* the public internet below, with the routes that would run through it (grey, unused) */}
       <div style={{ opacity: bypass || focus < 0 ? 1 : 0.32, transition: fadeT }}>
@@ -768,7 +782,7 @@ function PhoneConcept({ t, focus }: { t: number; focus: number }) {
           <path d={`M ${VPC_AN.x[1] + 20} ${VPC_AN.y + VPC_AN.h + 2} Q ${VPC_AN.x[1]} ${NETC.y + 30} ${NETC.cx + NETC.w / 2 + 6} ${NETC.y + 30}`} fill="none" stroke="#9AA6B8" strokeWidth={1.5} strokeDasharray="5 5" />
         </svg>
         <At x={NETC.cx} y={NETC.y} cx>
-          <InternetCloud w={NETC.w} label="public internet" />
+          <InternetCloud w={NETC.w} label="Public Internet" />
         </At>
       </div>
       <At x={NETC.cx + 40} y={NETC.y + 8} cx cy style={{ opacity: bypass ? 1 : 0, transition: fadeT, zIndex: 5 }}>
@@ -791,7 +805,7 @@ function PhoneConcept({ t, focus }: { t: number; focus: number }) {
       </div>
       <PacketChip x={pos[0]} y={pos[1]} on={!STILL && moving} tone={colors.brand} />
       <At x={235} y={PL.foot} cx cy>
-        <Tag lit={bypass}>without touching the public internet</Tag>
+        <Tag lit={bypass}>Without Touching the Public Internet</Tag>
       </At>
     </>
   )
@@ -803,11 +817,11 @@ export function PhoneLineAnalogy({ lesson }: { lesson: string }) {
     <IsoAnalogy
       id="T17-AN"
       kicker="VPC Peering"
-      title="A private telephone line between two offices"
+      title="A Private Telephone Line Between Two Offices"
       lesson={lesson}
       bare
       h={AN_H}
-      everyday={{ label: 'A private telephone line between two offices', scene: <PhoneFamiliar t={t} focus={focus} /> }}
+      everyday={{ label: 'A Private Telephone Line Between Two Offices', scene: <PhoneFamiliar t={t} focus={focus} /> }}
       cloud={{ label: 'Peered traffic moves straight between two VPCs', scene: <PhoneConcept t={t} focus={focus} /> }}
     />
   )

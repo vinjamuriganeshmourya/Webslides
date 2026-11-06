@@ -122,8 +122,11 @@ export function Disc({ children, size = 30, tone = colors.brand, fill = colors.w
 
 /** The section's own loops and one-shot moves, prefixed `sb-`; every one held still on harness URLs, in thumbnails and under reduced motion. */
 export const SB_CSS = `
-@keyframes sb-snip { 0%, 100% { transform: rotate(-90deg) } 20% { transform: rotate(-104deg) } 40% { transform: rotate(-84deg) } 55% { transform: rotate(-90deg) } }
-.sb-snip { animation: sb-snip 1.4s cubic-bezier(0.65,0,0.35,1) infinite; }
+/* R8.1 (2026-11-04): every loop runs on with no rest beat between cycles */
+@keyframes sb-snip { 0%, 100% { transform: rotate(-90deg) } 25% { transform: rotate(-104deg) } 75% { transform: rotate(-80deg) } }
+.sb-snip { animation: sb-snip 1.2s ease-in-out infinite; }
+@keyframes sb-hop { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-3px) } }
+.sb-hop { animation: sb-hop 1.6s ease-in-out infinite; }
 @keyframes sb-shackle { 0% { transform: translateY(-6px) } 100% { transform: translateY(0) } }
 .sb-shackle { animation: sb-shackle 640ms cubic-bezier(0.34,1.56,0.64,1) 260ms both; }
 @keyframes sb-gather { 0% { transform: translate(0, 0) scale(1); opacity: 0 } 15% { opacity: 1 } 85% { opacity: 1 } 100% { transform: translate(var(--dx), var(--dy)) scale(0.6); opacity: 0 } }
@@ -140,8 +143,8 @@ export const SB_CSS = `
 .sb-slide { animation: sb-slide 620ms cubic-bezier(0.22,1,0.36,1) both; }
 @keyframes sb-glass { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.12) } }
 .sb-glass { animation: sb-glass 2.4s cubic-bezier(0.45,0,0.55,1) infinite; }
-.cc-still .sb-snip, .cc-still .sb-shackle, .cc-still .sb-bounce, .cc-still .sb-jolt, .cc-still .sb-drop, .cc-still .sb-slide, .cc-still .sb-glass,
-.deck-thumb .sb-snip, .deck-thumb .sb-shackle, .deck-thumb .sb-bounce, .deck-thumb .sb-jolt, .deck-thumb .sb-drop, .deck-thumb .sb-slide, .deck-thumb .sb-glass { animation: none !important; }
+.cc-still .sb-snip, .cc-still .sb-hop, .cc-still .sb-shackle, .cc-still .sb-bounce, .cc-still .sb-jolt, .cc-still .sb-drop, .cc-still .sb-slide, .cc-still .sb-glass,
+.deck-thumb .sb-snip, .deck-thumb .sb-hop, .deck-thumb .sb-shackle, .deck-thumb .sb-bounce, .deck-thumb .sb-jolt, .deck-thumb .sb-drop, .deck-thumb .sb-slide, .deck-thumb .sb-glass { animation: none !important; }
 .cc-still .sb-gather, .cc-still .sb-flash, .deck-thumb .sb-gather, .deck-thumb .sb-flash { display: none; }
-@media (prefers-reduced-motion: reduce) { .sb-snip, .sb-shackle, .sb-bounce, .sb-jolt, .sb-drop, .sb-slide, .sb-glass { animation: none !important; } .sb-gather, .sb-flash { display: none; } }
+@media (prefers-reduced-motion: reduce) { .sb-snip, .sb-hop, .sb-shackle, .sb-bounce, .sb-jolt, .sb-drop, .sb-slide, .sb-glass { animation: none !important; } .sb-gather, .sb-flash { display: none; } }
 `

@@ -2,13 +2,14 @@ import { Fragment, type CSSProperties, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import {
   ArrowLeftRight, ArrowRightLeft, BadgeCheck, Ban, Building2, Cable, Clock, Coins, Crosshair, Globe, HardDrive, House, Link2Off,
-  LockKeyhole, LogOut, MapPin, Merge, Milestone, Network, Route, ShieldAlert, Signpost, Split, Table2, Tag as TagIcon, Unlink, Users, WandSparkles, Waypoints,
+  LockKeyhole, LogOut, MapPin, Merge, Milestone, Network, Route, ShieldAlert, Signpost, Split, Table2, Tag as TagIcon, Users, WandSparkles, Waypoints,
 } from 'lucide-react'
 import { colors } from '@/design/tokens'
 import { Callout } from '@/ui'
 import { useInstant } from '@/motion/instant'
 import { Arrow, At, BOX_W, Card, Fade, Label, REDUCED, STILL, Stage, Traveller, useBuild } from '../scene'
 import { RichCloud } from '../clay-c'
+import { TILE_SKIN } from '../card'
 import { Badge, CvIcon, LitFigure, Ripple, fx } from './fx'
 import { VisualTable } from './vtable'
 import { Boundary, G, Gateway, InstanceStack, InternetCloud, LockBadge, Logo, Mono, NET, NoMark, Resource, RouteChip, SubnetBox } from './frames'
@@ -33,13 +34,17 @@ export { PostalAnalogy, TicketAnalogy, PhoneLineAnalogy } from './routing-analog
  *   T14-1   the table's two heads, then the local row (orange), marked added
  *           automatically
  *   T14-1b  the default row to the gateway, a second subnet on the same table,
- *           the packet pointed at the longer prefix
- *   T15-1   (split, T15-1c) an inbound packet stopped where the route is
- *           missing; the gateway attached on the VPC's border; then the
- *           one-to-one translation (a teal private packet leaves blue), the
- *           public subnet lit, the instance's public IP
- *   T16-1   the NAT lands; its line to the internet gateway; then the route
- *           entry, the many-to-one translation with the blocked inbound, cost
+ *           the packet pointed at the longer prefix (figure on top, the points
+ *           under it in two columns, 2026-11-05)
+ *   T15-1   (one card again, 2026-11-05) an inbound packet stopped where the
+ *           route is missing; the gateway attached on the VPC's border; the
+ *           one-to-one translation glyph; the route (traffic both ways, a teal
+ *           private packet leaves blue, the subnet marked public); the
+ *           instance's public IP
+ *   T16-1   the NAT lands; the private subnet's arrow to it and a packet out;
+ *           the inbound path stopped AT the NAT (✖ on its rim); its line to
+ *           the internet gateway; then (T16-1b) the route entry, the
+ *           many-to-one translation with the same blocked inbound, the cost
  *   T17-1   the route entries with packets crossing; the account and region
  *           tags; then non-transitive, overlapping CIDRs, the cost
  *   T17-2   the tunnel, then IPsec and the two gateways, locked packets inside
@@ -131,7 +136,7 @@ function CurveArrow({ d, head, on, tone = colors.brand, width = 2.5, w, h }: { d
  * rides inside it (a padlock on an encrypted packet). Ambient motion: it only
  * runs while its step is on, and never on harness URLs.
  */
-function Mover({ path, run, k, dur = 2.2, tone = colors.brand, tones, size = 14, glyph, delay = 0, pause = 0.5 }: { path: [number, number][]; run: boolean; k: string; dur?: number; tone?: string; tones?: string[]; size?: number; glyph?: ReactNode; delay?: number; pause?: number }) {
+function Mover({ path, run, k, dur = 2.2, tone = colors.brand, tones, size = 14, glyph, delay = 0, pause = 0 }: { path: [number, number][]; run: boolean; k: string; dur?: number; tone?: string; tones?: string[]; size?: number; glyph?: ReactNode; delay?: number; pause?: number }) {
   const held = useHeld()
   if (!run || held) return null
   const n = path.length
@@ -239,7 +244,7 @@ function RoutingMap({ routeTables = false, igw = false, nat = false, peer = fals
         <Boundary w={M.vpc.w} h={M.vpc.h} label="VPC" style={THIN}>
           {/* the two subnets, an instance in each from the first frame (user, 2026-10-30: no empty containers) */}
           <At x={M.pub.x} y={M.pub.y}>
-            <SubnetBox w={M.pub.w} h={M.pub.h} kind="public" label="Public subnet">
+            <SubnetBox w={M.pub.w} h={M.pub.h} kind="public" label="Public Subnet">
               {instances && (
                 <At x={M.pub.w / 2} y={47} cx cy>
                   <Resource size={40} />
@@ -258,7 +263,7 @@ function RoutingMap({ routeTables = false, igw = false, nat = false, peer = fals
             </SubnetBox>
           </At>
           <At x={M.pri.x} y={M.pri.y}>
-            <SubnetBox w={M.pri.w} h={M.pri.h} kind="private" label="Private subnet">
+            <SubnetBox w={M.pri.w} h={M.pri.h} kind="private" label="Private Subnet">
               {instances && (
                 <At x={M.pri.w / 2} y={50} cx cy>
                   <Resource size={40} />
@@ -277,7 +282,7 @@ function RoutingMap({ routeTables = false, igw = false, nat = false, peer = fals
           <Line x1={M.pub.x + M.pub.w + 2} y1={M.localY} x2={M.pri.x - 2} y2={M.localY} tone={lit.local ? NET.lit : NET.boundary} width={3} />
           <At x={(M.pub.x + M.pub.w + M.pri.x) / 2} y={M.localY + 22} cx cy>
             <Label size={14} strong tone={lit.local ? 'solid' : 'plain'} raised>
-              local
+              Local
             </Label>
           </At>
           {/* the private subnet's line to the NAT, the part between the subnets */}
@@ -287,7 +292,7 @@ function RoutingMap({ routeTables = false, igw = false, nat = false, peer = fals
             <At key={i} x={sb.x} y={M.rt.y} w={sb.w}>
               <Fade on={routeTables} lift={6} delay={i * 120}>
                 <div className="grid place-items-center" style={{ height: M.rt.h }}>
-                  <RouteChip lit={!!lit.routeTables} />
+                  <RouteChip lit={!!lit.routeTables} label="Route Table" />
                 </div>
               </Fade>
             </At>
@@ -351,18 +356,44 @@ function RoutingMap({ routeTables = false, igw = false, nat = false, peer = fals
   )
 }
 
+/** The rim point of the internet gateway's disc facing `to` (stage coordinates of the map). */
+function igwRim(to: { x: number; y: number }, gap = 3): [number, number] {
+  const dx = to.x - S.igw.x
+  const dy = to.y - S.igw.y
+  const l = Math.hypot(dx, dy) || 1
+  return [S.igw.x + (dx / l) * (IGW_R + gap), S.igw.y + (dy / l) * (IGW_R + gap)]
+}
+
+/**
+ * THE INTERNET GATEWAY'S LINK TO THE INTERNET (5.md, slide 32: the cloud and the globe were not joined). An internet
+ * gateway carries traffic both ways (the card: "two-way access to the public internet"), so the link is one arrow with
+ * a head at each end, from the gateway's rim to the cloud's edge. `to` is the cloud's edge point.
+ */
+function IgwLink({ to, on = true, lit = false, tone = NET.public, width = 2 }: { to: { x: number; y: number }; on?: boolean; lit?: boolean; tone?: string; width?: number }) {
+  const [x1, y1] = igwRim(to)
+  return <Arrow x1={x1} y1={y1} x2={to.x} y2={to.y} on={on} both tone={lit ? NET.lit : tone} width={width} />
+}
+
 /** The map's traffic, one flow per exit: two-way through the internet gateway, out only through the NAT, both ways on the peering line. */
 function MapFlows({ igw = false, nat = false, peer = false, local = false, cloud }: { igw?: boolean; nat?: boolean; peer?: boolean; local?: boolean; cloud: { x: number; y: number } }) {
   const peerA: [number, number] = [S.peer.x + NAT_R + 4, S.peer.y]
   const peerB: [number, number] = [G.peer.x + G.peer.w / 2 - 26, S.peer.y]
+  const rim = igwRim(cloud, 1)
   return (
     <>
       {/* the local line's packets ride the gap between the subnets, clear of the subnets' name chips */}
       <Mover k="lo1" run={local} path={[[LOCAL_X[0], S.localY], [LOCAL_X[1], S.localY]]} tone={colors.brand} size={10} dur={1.2} />
       <Mover k="lo2" run={local} path={[[LOCAL_X[1], S.localY], [LOCAL_X[0], S.localY]]} tone={colors.brand} size={10} dur={1.2} delay={0.7} />
-      <Mover k="ig1" run={igw} path={[[S.igw.x, S.instPub.y - 20], [S.igw.x, S.igw.y + IGW_R + 2], [S.igw.x + IGW_R, S.igw.y - 8], [cloud.x, cloud.y]]} tone={NET.public} dur={2.2} />
-      <Mover k="ig2" run={igw} path={[[cloud.x, cloud.y], [S.igw.x + IGW_R, S.igw.y - 8], [S.igw.x, S.igw.y + IGW_R + 2], [S.igw.x, S.instPub.y - 20]]} tone={colors.brand} dur={2.2} delay={1.2} />
-      <Mover k="na1" run={nat} path={[[S.instPri.x, S.nat.y], [S.nat.x + NAT_R + 4, S.nat.y], [S.nat.x + 14, S.nat.y - 18], [S.igw.x + 6, S.igw.y + IGW_R + 4]]} tones={[NET.private, NET.private, NET.public, NET.public]} dur={2.6} />
+      <Mover k="ig1" run={igw} path={[[S.igw.x, S.instPub.y - 20], [S.igw.x, S.igw.y + IGW_R + 2], rim, [cloud.x, cloud.y]]} tone={NET.public} dur={2.2} />
+      <Mover k="ig2" run={igw} path={[[cloud.x, cloud.y], rim, [S.igw.x, S.igw.y + IGW_R + 2], [S.igw.x, S.instPub.y - 20]]} tone={colors.brand} dur={2.2} delay={1.1} />
+      {/* the NAT: a private instance STARTS the connection (out, teal turning green at the NAT), and the reply comes back the same way (green turning teal); nothing starts from outside */}
+      <Mover
+        k="na1"
+        run={nat}
+        path={[[S.instPri.x - 30, S.nat.y], [S.nat.x + NAT_R + 4, S.nat.y], [S.nat.x + 14, S.nat.y - 18], [S.igw.x + 6, S.igw.y + IGW_R + 4], [S.nat.x + 14, S.nat.y - 18], [S.nat.x + NAT_R + 4, S.nat.y + 6], [S.instPri.x - 30, S.nat.y + 6]]}
+        tones={[NET.private, NET.private, NET.public, NET.public, NET.public, NET.private, NET.private]}
+        dur={4}
+      />
       <Mover k="pe1" run={peer} path={[peerA, peerB]} tone={PEER} dur={1.8} />
       <Mover k="pe2" run={peer} path={[peerB, peerA]} tone={PEER} dur={1.8} delay={1} />
     </>
@@ -420,7 +451,7 @@ function FourPiecesSceneA({ k, lit, held }: { k: number; lit: number; held: bool
       <Fade on={exits} lift={0} delay={300}>
         <Cloud x={GHOST_CLOUD.x} y={GHOST_CLOUD.y} w={GHOST_CLOUD.w} dim={!exitsLit} />
       </Fade>
-      <Arrow x1={S.igw.x + 14} y1={S.igw.y - 14} x2={cloudMid.x + 8} y2={cloudMid.y - 4} on={exits} tone={exitsLit ? NET.lit : colors.muted} width={1.5} />
+      <IgwLink to={{ x: cloudMid.x + 8, y: cloudMid.y - 4 }} on={exits} lit={exitsLit} tone={colors.muted} width={1.5} />
       <At x={GHOST_NET.x} y={GHOST_NET.y}>
         <Fade on={exits} lift={0} delay={300}>
           <Boundary w={GHOST_NET.w} h={GHOST_NET.h} tone={exitsLit ? NET.lit : colors.muted} solid style={{ borderWidth: 1.5, opacity: exitsLit ? 1 : 0.7 }} radius={14}>
@@ -433,7 +464,8 @@ function FourPiecesSceneA({ k, lit, held }: { k: number; lit: number; held: bool
           </Boundary>
         </Fade>
       </At>
-      <Arrow x1={S.peer.x + 12} y1={S.peer.y - 14} x2={GHOST_NET.x + GHOST_NET.w / 2} y2={GHOST_NET.y + GHOST_NET.h} on={exits} tone={exitsLit ? NET.lit : colors.muted} width={1.5} />
+      {/* peering carries traffic both ways: a head at each end */}
+      <Arrow x1={S.peer.x + 13} y1={S.peer.y - 13} x2={GHOST_NET.x + GHOST_NET.w / 2} y2={GHOST_NET.y + GHOST_NET.h} on={exits} both tone={exitsLit ? NET.lit : colors.muted} width={1.5} />
       {/* the lead's local line: packets cross it both ways */}
       <MapFlows local={k === 0 || k >= 3} cloud={cloudMid} />
       {/* a packet drops from each subnet to its own route table; a route marker beside each table */}
@@ -449,9 +481,11 @@ function FourPiecesSceneA({ k, lit, held }: { k: number; lit: number; held: bool
 }
 
 /** T13-1b: the internet gateway (two-way traffic to the internet), the NAT gateway (private, out only), the peering link (both ways). */
-const B_CLOUD = { x: 300, y: 4, w: 104 }
+/** T13-1b's internet: right of the gateway's label, above the VPC's edge; the link lands on its lower-left lobe */
+const B_CLOUD = { x: 330, y: 2, w: 104 }
+const B_LINK = { x: 340, y: 54 }
 function FourPiecesSceneB({ k, lit }: { k: number; lit: number }) {
-  const cloudAt = { x: B_CLOUD.x + 20, y: B_CLOUD.y + 46 }
+  const cloudAt = B_LINK
   return (
     <>
       <RoutingMap routeTables igw={k >= 0} nat={k >= 1} peer={k >= 2} lit={{ igw: lit === 0, nat: lit === 1, peer: lit === 2 }} />
@@ -459,6 +493,7 @@ function FourPiecesSceneB({ k, lit }: { k: number; lit: number }) {
       <Ripple x={S.igw.x} y={S.igw.y} r={30} tone={NET.lit} on={lit === 0} />
       <Ripple x={S.nat.x} y={S.nat.y} r={26} tone={NET.lit} on={lit === 1} />
       <Ripple x={S.peer.x} y={S.peer.y} r={26} tone={NET.lit} on={lit === 2} />
+      <IgwLink to={B_LINK} lit={lit === 0} />
       <MapFlows igw nat={k >= 1} peer={k >= 2} cloud={cloudAt} />
     </>
   )
@@ -525,11 +560,12 @@ const T14_POINTS: ReactNode[] = [
 /* FS review (slide 31): the points column widened to 460 (the first point in three lines), the picture narrowed to 626 */
 const T14_PW = 460
 const T14 = {
-  sub: { x: 12, w: 100, h: 68, y: [84, 206] },
-  table: { x: 136, y: 48, w: 290 },
+  sub: { x: 8, w: 96, h: 68, y: [84, 206] },
+  /* 5.md slide 33: the table 270 wide so the Added Automatically chip sits clear of the VPC box and inside the stage */
+  table: { x: 124, y: 48, w: 270 },
   head: 44,
   row: 41,
-  packet: { cx: 548, cy: 26 },
+  packet: { cx: 536, cy: 26 },
 } as const
 const T14_RIGHT = T14.table.x + T14.table.w
 /** the local loop: from under the local cell back up into the subnet's foot; the tip 1px below the subnet's edge, the line ending at the head's base */
@@ -587,7 +623,7 @@ function RouteTableScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number
           <Fragment key={i}>
             <At x={T14.sub.x} y={y}>
               <Fade on={on} lift={8}>
-                <SubnetBox w={T14.sub.w} h={T14.sub.h} label="subnet" lit={sLit}>
+                <SubnetBox w={T14.sub.w} h={T14.sub.h} label="Subnet" lit={sLit}>
                   <At x={T14.sub.w - 10} y={T14.sub.h / 2 + 14} cy style={{ transform: 'translate(-100%, -50%)' }}>
                     <Resource size={30} />
                   </At>
@@ -633,9 +669,9 @@ function RouteTableScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number
         </>
       )}
       {/* the local row's mark */}
-      <At x={T14_RIGHT + 10} y={rowMid(0) + 6} cy>
+      <At x={T14_RIGHT + 24} y={rowMid(0) + 6} cy>
         <Fade on={part === 0 ? k >= 1 : true} lift={6}>
-          <Tag lit={part === 0 && lit === 1} icon={<WandSparkles />}>added automatically</Tag>
+          <Tag lit={part === 0 && lit === 1} icon={<WandSparkles />}>Added Automatically</Tag>
         </Fade>
       </At>
       {/* part 0: the local route keeps a packet inside: out of the subnet, through the table, back */}
@@ -653,14 +689,14 @@ function RouteTableScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number
       {/* the incoming packet, from the top right, pointed at the longer prefix */}
       <At x={T14.packet.cx} y={T14.packet.cy} cx cy>
         <Fade on={packet} lift={6}>
-          <Tag lit={lit === 2}>incoming packet</Tag>
+          <Tag lit={lit === 2}>Incoming Packet</Tag>
         </Fade>
       </At>
       <Arrow x1={packetStart[0]} y1={packetStart[1]} x2={packetEnd[0]} y2={packetEnd[1]} on={packet} tone={lit === 2 ? NET.lit : colors.brand} />
       <Traveller path={[packetStart, packetEnd]} run={packet && part === 1} k="packet" tone={colors.brand} size={14} dur={1.8} />
       <At x={T14.table.x + T14.table.w / 2} y={part === 0 ? T14.table.y + T14.head : T14.table.y + T14.head + T14.row * 2 + 30} cx cy>
         <Fade on={packet} lift={6}>
-          <Tag lit={lit === 2} icon={<Crosshair />}>longest-prefix-match</Tag>
+          <Tag lit={lit === 2} icon={<Crosshair />}>Longest-Prefix-Match</Tag>
         </Fade>
       </At>
     </div>
@@ -689,37 +725,95 @@ export function RouteTables({ lesson }: { lesson: string }) {
   )
 }
 
+/**
+ * THE FIGURE ON TOP, THE POINTS UNDER IT IN TWO COLUMNS (review 2026-11-05, slide 36: "move the visual to the top
+ * and resize it as needed; place the points below it as 2 pairs side by side"). `LitPoints`' tile, laid in a
+ * two-column grid; an odd last tile sits centred under the pair, one column wide, so the rows stay balanced.
+ */
+function LitGridFigure({ id, kicker, title, lesson, points, lit, figure, figH, gap = 10, size = 16 }: { id: string; kicker: string; title: string; lesson: string; points: { icon: ReactNode; text: ReactNode }[]; lit: number; figure: ReactNode; figH: number; gap?: number; size?: number }) {
+  const ease = 'all 420ms cubic-bezier(0.22,1,0.36,1)'
+  const colW = (BOX_W - gap) / 2
+  return (
+    <Card id={id} kicker={kicker} title={title} lesson={lesson}>
+      <div className="flex flex-col" style={{ width: BOX_W, gap: 12 }}>
+        <Stage w={BOX_W} h={figH} active={false}>
+          {figure}
+        </Stage>
+        <div className="grid" style={{ gridTemplateColumns: `repeat(2, ${colW}px)`, gap }}>
+          {points.map((it, i) => {
+            const on = !STILL && i === lit
+            const odd = points.length % 2 === 1 && i === points.length - 1
+            return (
+              <div
+                key={i}
+                className="flex items-center gap-3 rounded-2xl px-3.5 py-2"
+                style={{
+                  ...TILE_SKIN,
+                  ...(odd ? { gridColumn: '1 / span 2', justifySelf: 'center', width: colW } : {}),
+                  boxShadow: on ? `inset 0 0 0 2px ${colors.brand}, 0 12px 24px -14px ${colors.brand}` : TILE_SKIN.boxShadow,
+                  background: on ? 'linear-gradient(180deg, #F4F8FF 0%, #E3ECFD 100%)' : TILE_SKIN.background,
+                  transform: on ? 'translateY(-3px)' : 'none',
+                  transition: ease,
+                }}
+              >
+                <span
+                  aria-hidden
+                  className="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-[11px] [&>svg]:h-[20px] [&>svg]:w-[20px]"
+                  style={{ background: on ? colors.brand : colors.surface2, color: on ? colors.white : colors.brand, transition: ease }}
+                >
+                  {it.icon}
+                </span>
+                <span className="min-w-0 leading-snug" style={{ fontSize: size, color: colors.ink }}>
+                  {it.text}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </Card>
+  )
+}
+
+/**
+ * T14-1b's drawing centred on the full-width stage above the points. Its own extent is about 612 x 262 (the packet tag
+ * at y 13 to the second subnet's foot at 274); the space under a no-lead title is 419px, so the drawing keeps its size
+ * (stage 277 + 12 + the two tile rows 130) rather than growing.
+ */
+const T14B = { scale: 1, w: 612, top: -6, h: 277 } as const
+
 export function RouteTables2({ lesson }: { lesson: string }) {
   const { k, lit } = useWalk(3)
   return (
-    <LitFigure
+    <LitGridFigure
       id="T14-1b"
       kicker="Route Tables"
       title="Next-Hop Rules"
       lesson={lesson}
       lit={lit}
-      pointSize={16}
-      pointsW={T14_PW}
-      figH={300}
+      figH={T14B.h}
       points={[
         { icon: <Milestone />, text: T14_POINTS[2] },
         { icon: <Split />, text: T14_POINTS[3] },
         { icon: <Crosshair />, text: T14_POINTS[4] },
       ]}
-      figure={<RouteTableScene part={1} k={k} lit={lit} />}
+      figure={
+        <div className="absolute" style={{ left: (BOX_W - T14B.w * T14B.scale) / 2, top: T14B.top, width: 0, height: 0, transform: `scale(${T14B.scale})`, transformOrigin: '0 0' }}>
+          <RouteTableScene part={1} k={k} lit={lit} />
+        </div>
+      }
     />
   )
 }
 
-/* ===== T15-1 · The internet gateway (split: T15-1 and T15-1c) */
+/* ===== T15-1 · The internet gateway (review 2026-11-05: T15-1 and T15-1c merged back into one card, the user's lead and four points) */
 
-const T15_LEAD = "A subnet becomes public only when its route table sends outside-bound traffic to an internet gateway, the VPC component attached once per VPC that translates between a resource's private address and a public one"
+const T15_LEAD = 'A subnet is public only when its route table sends outside-bound traffic to an internet gateway (IGW), a VPC component attached once per VPC'
 const T15_POINTS: ReactNode[] = [
-  'Without that route entry, even an instance holding a public IP stays unreachable',
-  'Attaches at the VPC level, not inside any single subnet',
-  'Performs one-to-one network address translation between private and public IP addresses',
-  'A subnet is called public precisely because this route exists, nothing else makes it so',
-  'An instance also needs a public or elastic IP address for the translation to have something to map',
+  'Attaches at the VPC level, not inside a subnet',
+  'Translates between private and public IP addresses (one-to-one NAT)',
+  'The route to the IGW is what makes a subnet public',
+  'The instance also needs a public or Elastic IP, or the route alone won’t make it reachable',
 ]
 
 /*
@@ -757,18 +851,22 @@ const T15S = {
 }
 
 /**
- * Part 0 (T15-1): 0 an instance with a public IP, a packet from the internet
- * stopped where the route is missing; 1 the gateway attaches on the VPC's
- * border (the VPC lights, not a subnet). Part 1 (T15-1c): 0 the route lands
- * and a teal private packet leaves the gateway blue (one-to-one translation);
- * 1 the public subnet lights, public because of that route; 2 the instance's
- * public IP lights and traffic runs both ways.
+ * T15-1, one card (merged 2026-11-05), in step with the four points. The base:
+ * the instance already holds a public IP, but there is no route, so a packet
+ * from the internet is stopped at the gap where the route would be (✖).
+ * 0 the gateway attaches on the VPC's border (the VPC lights, not a subnet);
+ * 1 the one-to-one translation glyph lands on the gateway; 2 the route draws,
+ * the ✖ goes, the public subnet is marked public and traffic runs both ways
+ * (a teal private packet leaves blue, the reply comes back teal); 3 the
+ * instance's public IP lights: without it the route alone reaches nothing.
  */
-function GatewayScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number }) {
-  const routed = part === 1 && k >= 0
-  const now = (p: 0 | 1, i: number) => part === p && lit === i
-  const ipOn = part === 0 || k >= 2
-  const pubLit = now(1, 1)
+function GatewayScene({ k, lit }: { k: number; lit: number }) {
+  const xlate = k >= 1
+  const routed = k >= 2
+  const litAttach = lit === 0
+  const litX = lit === 1
+  const litRoute = lit === 2
+  const litIp = lit === 3
   const instanceStack = (on: boolean) => (
     <At x={T15.inst.cx} y={T15.inst.cy} cx cy>
       <InstanceStack size={T15.inst.size} lit={on} />
@@ -776,17 +874,18 @@ function GatewayScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number })
   )
   const gw = T15S.igw
   const cloudIn: [number, number] = [T15.cloud.x + 6, T15_FLOW_Y]
+  const routeTone = litRoute ? NET.lit : NET.gateway
   return (
     <>
       <At x={T15.region.x} y={T15.region.y}>
         <Boundary w={T15.region.w} h={T15.region.h} label="Region" radius={14} style={THIN}>
           <At x={T15.vpc.x - T15.region.x} y={T15.vpc.y - T15.region.y}>
-            <Boundary w={T15.vpc.w} h={T15.vpc.h} label="VPC" solid tone={NET.public} labelTone="good" radius={12} lit={now(0, 1)} style={{ borderWidth: 2 }}>
+            <Boundary w={T15.vpc.w} h={T15.vpc.h} label="VPC" solid tone={NET.public} labelTone="good" radius={12} lit={litAttach} style={{ borderWidth: 2 }}>
               <At x={T15.zoneA.x} y={T15.zoneA.y}>
                 <Boundary w={T15.zoneA.w} h={T15.zoneA.h} label="Availability Zone A" labelTone="plain" radius={10} style={HAIR()}>
                   <At x={T15.subnet.x} y={T15.subnet.y}>
-                    <SubnetBox w={T15.subnet.w} h={T15.subnet.h} kind="public" label="Public subnet" lit={pubLit}>
-                      {instanceStack(now(1, 2))}
+                    <SubnetBox w={T15.subnet.w} h={T15.subnet.h} kind="public" label="Public Subnet" lit={litRoute}>
+                      {instanceStack(litIp)}
                     </SubnetBox>
                   </At>
                 </Boundary>
@@ -794,33 +893,33 @@ function GatewayScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number })
               <At x={T15.zoneB.x} y={T15.zoneB.y}>
                 <Boundary w={T15.zoneB.w} h={T15.zoneB.h} label="Availability Zone B" labelTone="plain" radius={10} style={HAIR()}>
                   <At x={T15.subnet.x} y={T15.subnet.y}>
-                    <SubnetBox w={T15.subnet.w} h={T15.subnet.h} kind="private" label="Private subnet">
+                    <SubnetBox w={T15.subnet.w} h={T15.subnet.h} kind="private" label="Private Subnet">
                       {instanceStack(false)}
                     </SubnetBox>
                   </At>
                 </Boundary>
               </At>
-              {/* the elbow: from the instances, right, then down into the gateway; a head at each end */}
-              <Arrow x1={T15_IGW.cx - 48} y1={T15_INST_Y} x2={T15_INST_X} y2={T15_INST_Y} on={routed} tone={now(1, 0) ? NET.lit : NET.gateway} />
-              <Line x1={T15_IGW.cx - 48} y1={T15_INST_Y} x2={T15_IGW.cx - 48} y2={T15_INST_Y + 1} on={routed} tone={now(1, 0) ? NET.lit : NET.gateway} />
-              <Arrow x1={T15_IGW.cx - 48} y1={T15_INST_Y} x2={T15_IGW.cx - 48} y2={T15_IGW.cy - 2} on={routed} tone={now(1, 0) ? NET.lit : NET.gateway} delay={200} />
-              <Line x1={T15_IGW.cx - 48} y1={T15_IGW.cy} x2={T15_IGW.cx - IGW_R - 2} y2={T15_IGW.cy} on={routed} tone={now(1, 0) ? NET.lit : NET.gateway} />
+              {/* the route: from the instances, right, then down into the gateway; a head at each end (traffic both ways) */}
+              <Arrow x1={T15_IGW.cx - 48} y1={T15_INST_Y} x2={T15_INST_X} y2={T15_INST_Y} on={routed} tone={routeTone} />
+              <Line x1={T15_IGW.cx - 48} y1={T15_INST_Y} x2={T15_IGW.cx - 48} y2={T15_INST_Y + 1} on={routed} tone={routeTone} />
+              <Arrow x1={T15_IGW.cx - 48} y1={T15_INST_Y} x2={T15_IGW.cx - 48} y2={T15_IGW.cy - 2} on={routed} tone={routeTone} delay={200} />
+              <Line x1={T15_IGW.cx - 48} y1={T15_IGW.cy} x2={T15_IGW.cx - IGW_R - 2} y2={T15_IGW.cy} on={routed} tone={routeTone} />
               {/* the Internet gateway on the VPC's right border */}
               <At x={T15_IGW.cx} y={T15_IGW.cy} cx cy>
-                <Gateway kind="igw" lit={now(0, 1) || now(1, 0)} />
+                <Gateway kind="igw" lit={litAttach || litX} />
               </At>
             </Boundary>
           </At>
         </Boundary>
       </At>
       <At x={T15.vpc.x + T15_IGW.cx} y={T15_FLOW_Y + IGW_R + 22} cx cy>
-        <Label size={14} strong tone={now(0, 1) ? 'solid' : 'plain'} raised>
-          Internet gateway
+        <Label size={14} strong tone={litAttach ? 'solid' : 'plain'} raised>
+          Internet Gateway
         </Label>
       </At>
-      <Ripple x={gw.x} y={gw.y} r={32} tone={NET.lit} on={now(0, 1) || now(1, 0)} />
+      <Ripple x={gw.x} y={gw.y} r={32} tone={NET.lit} on={litAttach} />
       {/* out to the internet, both ways */}
-      <Arrow x1={gw.x + IGW_R + 2} y1={T15_FLOW_Y} x2={T15.cloud.x - 2} y2={T15_FLOW_Y} both tone={now(1, 2) ? NET.lit : NET.gateway} />
+      <Arrow x1={gw.x + IGW_R + 2} y1={T15_FLOW_Y} x2={T15.cloud.x - 2} y2={T15_FLOW_Y} both tone={litRoute ? NET.lit : NET.gateway} />
       <At x={T15.cloud.x} y={T15.cloud.y - 24}>
         <span className={fx('lift', 0, 3.2).className} style={{ ...fx('lift', 0, 3.2).style, display: 'block' }}>
           <RichCloud w={T15.cloud.w} />
@@ -828,49 +927,40 @@ function GatewayScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number })
       </At>
       <At x={T15.cloud.x + T15.cloud.w / 2} y={T15.cloud.y + 62} cx cy>
         <Label size={14} strong raised>
-          internet
+          Internet
         </Label>
       </At>
-      {/* the instance's public IP: a tag badge on the stack */}
-      <Pin x={T15S.subnet.x + 88} y={T15S.subnet.y + 50} on={ipOn} ring={now(1, 2) || now(0, 0) ? NET.lit : colors.brand} size={26}>
-        <TagIcon size={14} color={now(1, 2) || now(0, 0) ? NET.lit : colors.brand} />
+      {/* the instance's public IP: a tag badge on the stack, there from the start (a public IP alone is not enough) */}
+      <Pin x={T15S.subnet.x + 88} y={T15S.subnet.y + 50} on ring={litIp ? NET.lit : colors.brand} size={26}>
+        <TagIcon size={14} color={litIp ? NET.lit : colors.brand} />
       </Pin>
-      {/* part 0: an inbound packet is stopped where the route is missing */}
-      {part === 0 && (
-        <>
-          <At x={T15S.elbowX} y={T15_FLOW_Y} cx cy>
-            <span className={lit === 0 ? fx('shake', 0, 1.4).className : undefined} style={{ ...(lit === 0 ? fx('shake', 0, 1.4).style : {}), display: 'block' }}>
-              <NoMark size={24} />
-            </span>
-          </At>
-          <Mover k="blk" run path={[cloudIn, [gw.x + IGW_R + 4, gw.y], [gw.x - IGW_R - 4, gw.y], [T15S.elbowX + 16, gw.y]]} tone={NET.blocked} dur={2} />
-        </>
-      )}
-      {/* part 1: the translation, a private packet leaves public; then the subnet is public; then both ways */}
-      {part === 1 && (
-        <>
-          <Pin x={gw.x} y={gw.y - 38} on={k >= 0} ring={now(1, 0) ? NET.lit : colors.brand} size={26}>
-            <ArrowLeftRight size={14} color={now(1, 0) ? NET.lit : colors.brand} />
-          </Pin>
-          <Pin x={T15S.subnet.x + T15.subnet.w - 14} y={T15S.subnet.y + 17} on={k >= 1} ring={colors.success} size={24}>
-            <BadgeCheck size={15} color={colors.success} />
-          </Pin>
-          <Mover
-            k="tr"
-            run={k >= 0}
-            path={[[T15S.inst.x + 24, T15S.inst.y], [T15S.elbowX, T15S.inst.y], [T15S.elbowX, gw.y], [gw.x, gw.y], [cloudIn[0], gw.y]]}
-            tones={[NET.private, NET.private, NET.private, colors.brand, colors.brand]}
-            dur={2.6}
-          />
-          <Mover k="back" run={k >= 2} path={[[cloudIn[0], gw.y + 2], [gw.x, gw.y + 2], [T15S.elbowX, gw.y + 2], [T15S.elbowX, T15S.inst.y + 2], [T15S.inst.x + 24, T15S.inst.y + 2]]} tones={[colors.brand, colors.brand, NET.private, NET.private, NET.private]} dur={2.6} delay={1.3} />
-        </>
-      )}
+      {/* the one-to-one translation, at the gateway's upper right (clear of the VPC's border and of the internet arrow) */}
+      <Pin x={gw.x + 28} y={gw.y - 30} on={xlate} ring={litX ? NET.lit : colors.brand} size={26}>
+        <ArrowLeftRight size={14} color={litX ? NET.lit : colors.brand} />
+      </Pin>
+      {/* no route yet: an inbound packet is stopped where the route is missing */}
+      <At x={T15S.elbowX} y={T15_FLOW_Y} cx cy>
+        <NoMark size={24} on={!routed} />
+      </At>
+      <Mover k="blk" run={!routed} path={[cloudIn, [gw.x + IGW_R + 4, gw.y], [gw.x - IGW_R - 4, gw.y], [T15S.elbowX + 16, gw.y]]} tone={NET.blocked} dur={2} />
+      {/* the route: the subnet is public, traffic both ways, translated at the gateway */}
+      <Pin x={T15S.subnet.x + T15.subnet.w - 14} y={T15S.subnet.y + 17} on={routed} ring={colors.success} size={24}>
+        <BadgeCheck size={15} color={colors.success} />
+      </Pin>
+      <Mover
+        k="tr"
+        run={routed}
+        path={[[T15S.inst.x + 24, T15S.inst.y], [T15S.elbowX, T15S.inst.y], [T15S.elbowX, gw.y], [gw.x, gw.y], [cloudIn[0], gw.y]]}
+        tones={[NET.private, NET.private, NET.private, colors.brand, colors.brand]}
+        dur={2.6}
+      />
+      <Mover k="back" run={routed} path={[[cloudIn[0], gw.y + 2], [gw.x, gw.y + 2], [T15S.elbowX, gw.y + 2], [T15S.elbowX, T15S.inst.y + 2], [T15S.inst.x + 24, T15S.inst.y + 2]]} tones={[colors.brand, colors.brand, NET.private, NET.private, NET.private]} dur={2.6} delay={1.3} />
     </>
   )
 }
 
 export function InternetGateway({ lesson }: { lesson: string }) {
-  const { k, lit } = useWalk(2)
+  const { k, lit } = useWalk(4)
   return (
     <LitFigure
       id="T15-1"
@@ -883,33 +973,12 @@ export function InternetGateway({ lesson }: { lesson: string }) {
       figH={T15_H}
       pointsW={T15_PW}
       points={[
-        { icon: <Unlink />, text: T15_POINTS[0] },
-        { icon: <Cable />, text: T15_POINTS[1] },
+        { icon: <Cable />, text: T15_POINTS[0] },
+        { icon: <ArrowRightLeft />, text: T15_POINTS[1] },
+        { icon: <BadgeCheck />, text: T15_POINTS[2] },
+        { icon: <TagIcon />, text: T15_POINTS[3] },
       ]}
-      figure={<GatewayScene part={0} k={k} lit={lit} />}
-    />
-  )
-}
-
-/** T15-1c (split from T15-1, 2026-11-04: a three-line lead and five points on one card): the last three points. */
-export function InternetGateway2({ lesson }: { lesson: string }) {
-  const { k, lit } = useWalk(3)
-  return (
-    <LitFigure
-      id="T15-1c"
-      kicker="Internet Gateway"
-      title="Public Two-Way Access"
-      lesson={lesson}
-      lit={lit}
-      pointSize={16}
-      figH={T15_H}
-      pointsW={T15_PW}
-      points={[
-        { icon: <ArrowRightLeft />, text: T15_POINTS[2] },
-        { icon: <BadgeCheck />, text: T15_POINTS[3] },
-        { icon: <TagIcon />, text: T15_POINTS[4] },
-      ]}
-      figure={<GatewayScene part={1} k={k} lit={lit} />}
+      figure={<GatewayScene k={k} lit={lit} />}
     />
   )
 }
@@ -920,16 +989,15 @@ const T16_LEAD = 'A private subnet still needs to download updates or call exter
 /* FS review (slide 36, BRIEF2 rule 1): the first point cut at the TR's own clause boundaries into three, every word kept, in order */
 const T16_POINTS: ReactNode[] = [
   'A NAT (Network Address Translation) gateway, placed in a public subnet',
-  'lets private instances start outbound connections',
-  'while blocking anything started from outside',
+  'Lets private instances start outbound connections',
+  'While blocking anything started from outside',
   'Deployed inside a public subnet so it can itself reach the internet gateway',
   <>
     Private subnet's route table sends <Mono>0.0.0.0/0</Mono> to the NAT gateway, not the internet gateway
   </>,
   "Translates many private source addresses to the gateway's own single public address",
-  /* cut at the TR's ", so" (FS review rule 8: two lines a point), every word kept */
-  'Billed per hour running plus per gigabyte processed',
-  'so an idle NAT gateway still costs money',
+  /* review 2026-11-05 (slide 40): the two cost pieces merged into one point, in the user's words */
+  'Billed per hour plus per gigabyte processed, so an idle NAT gateway still costs money',
 ]
 
 /* T16-1's own places: the NAT high in the public subnet so its lines run clear of the subnet's name, which sits at the foot on this card */
@@ -947,8 +1015,32 @@ const UP = (() => {
   const cutX = NAT_C.x + dx * ((NAT_C.y - G.pub.y) / -dy)
   return { from, to, cut: { x: cutX, y: G.pub.y } }
 })()
-/* the blocked inbound line runs beside it, just clear of the gateway disc, and stops at the NAT's level */
-const IN_X = G.igw.cx + IGW_R + 1
+/*
+  THE BLOCKED INBOUND PATH (review 2026-11-05, slides 39/40: "end the red inbound arrow at the NAT Gateway and place
+  the ✖ on it"): Internet → internet gateway → NAT gateway, stopped AT the NAT. The first leg runs in from the cloud
+  to the gateway's rim (no head); the second leaves the gateway's lower rim and runs parallel to the NAT's own line,
+  OFF px to its left, its head landing on the ✖, which sits on the NAT disc's rim. An inbound connection from the
+  internet cannot reach the private instances through the NAT.
+*/
+const IN = (() => {
+  const OFF = 16
+  const X = 11
+  const dx = NAT_C.x - G.igw.cx
+  const dy = NAT_C.y - G.igw.cy
+  const l = Math.hypot(dx, dy)
+  const d = { x: dx / l, y: dy / l }
+  const L = { x: -d.y, y: d.x }
+  const s0 = Math.sqrt(IGW_R * IGW_R - OFF * OFF) + 3
+  const start = { x: G.igw.cx + L.x * OFF + d.x * s0, y: G.igw.cy + L.y * OFF + d.y * s0 }
+  const r0 = Math.sqrt(NAT_R * NAT_R - OFF * OFF)
+  const mark = { x: NAT_C.x + L.x * OFF - d.x * r0, y: NAT_C.y + L.y * OFF - d.y * r0 }
+  const end = { x: mark.x - d.x * (X + 2), y: mark.y - d.y * (X + 2) }
+  const t = (G.pub.y - start.y) / d.y
+  const cut = { x: start.x + d.x * t, y: G.pub.y }
+  const y0 = G.igw.cy - 16
+  const rimX = G.igw.cx + Math.sqrt(IGW_R * IGW_R - 16 * 16) + 2
+  return { start, end, cut, mark, size: X * 2, y0, rimX }
+})()
 const COST_Y = G.rtPub.y + G.rtPub.h / 2
 /* the private subnet's route entry and the translation, in the column right of the VPC */
 /** T16-1 (FS review, slide 36: too much empty stage): a wider points column, a 566px stage the drawing fills, centred */
@@ -989,6 +1081,19 @@ function MonoTag({ children, lit = false }: { children: ReactNode; lit?: boolean
 function NatScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number }) {
   const held = useHeld()
   const nat = true
+  /*
+    THE NAT FLOW (5.md, slides 38/39: verify the one-way dot). A NAT gateway lets a private instance START a connection
+    outward, and the replies to that connection come back through it (it keeps the translation); a connection started
+    from outside is dropped. So the packet makes a round trip, out then back, teal (private address) until the NAT,
+    green (the NAT's public address) beyond it, and teal again on the way in; the arrows keep one head, the direction
+    a connection may be STARTED (the TR's table: NAT "Outbound only"); the red arrow is the one started outside.
+  */
+  const OUT_A: [number, number] = [G.pri.x + N16.inst.cx - 24, G.pri.y + N16.inst.cy]
+  const OUT_B: [number, number] = [NAT_C.x + NAT_R + 4, NAT_C.y + 8]
+  const OUT_C: [number, number] = [NAT_C.x + 16, NAT_C.y - 22]
+  const OUT_D: [number, number] = [G.igw.cx + 4, G.igw.cy + IGW_R + 2]
+  const OUT_E: [number, number] = [G.igw.cx + IGW_R + 2, G.igw.cy - 6]
+  const OUT_F: [number, number] = [G.cloud.x + 40, G.cloud.y + 52]
   /* part 0 (T16-1): 0 the NAT lands; 1 a private instance's packet goes out through it; 2 an inbound arrow is stopped; 3 its own line up to the internet gateway */
   const joined = part === 1 || k >= 3
   const outbound = part === 0 && k >= 1
@@ -1002,12 +1107,14 @@ function NatScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number }) {
   const litJoin = part === 0 && lit === 3
   const litRoute = part === 1 && lit === 0
   const litX = part === 1 && lit === 1
-  const litCost = part === 1 && (lit === 2 || lit === 3)
+  const litCost = part === 1 && lit === 2
+  /* the private subnet's arrow to the NAT (review 2026-11-05, slide 39: T16-1 had none): with the outbound packet on T16-1, with the route entry on T16-1b */
+  const priLine = part === 1 ? routed : outbound
+  const litPri = litRoute || litOut
   const pubRel = (p: { x: number; y: number }) => ({ x: p.x - G.pub.x, y: p.y - G.pub.y })
   const vpcRel = (p: { x: number; y: number }) => ({ x: p.x - G.vpc.x, y: p.y - G.vpc.y })
   const upIn = { a: pubRel(UP.from), b: pubRel(UP.cut) }
   const upOut = { a: vpcRel(UP.cut), b: vpcRel(UP.to) }
-  const inX = IN_X - G.pub.x
   const natY = N16.nat.cy
   const COL_CX = part === 0 ? 300 : COL_CX_B
   return (
@@ -1016,12 +1123,12 @@ function NatScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number }) {
       <At x={G.cloud.x} y={G.cloud.y} w={G.cloud.w}>
         <div className="grid place-items-center" style={{ height: G.cloud.h }}>
           <span className={fx('lift', 0, 3.2).className} style={{ ...fx('lift', 0, 3.2).style, display: 'block' }}>
-            <InternetCloud w={100} />
+            <InternetCloud w={100} label="Internet" />
           </span>
         </div>
       </At>
-      {/* an inbound arrow from the internet, towards the gateway */}
-      <Arrow x1={G.cloud.x + 6} y1={G.igw.cy - 16} x2={G.igw.cx + IGW_R + 4} y2={G.igw.cy - 16} on={blocked} tone={NET.blocked} />
+      {/* the blocked inbound path, first leg: from the internet into the gateway's rim (its head is at the NAT) */}
+      <Line x1={G.cloud.x + 6} y1={IN.y0} x2={IN.rimX} y2={IN.y0} on={blocked} tone={NET.blocked} />
       <At x={G.vpc.x} y={G.vpc.y}>
         <Boundary w={G.vpc.w} h={part === 0 ? 228 : G.vpc.h} label="VPC" style={THIN}>
           <At x={M.pub.x} y={M.pub.y}>
@@ -1034,16 +1141,16 @@ function NatScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number }) {
               {/* up to the internet gateway, the part inside this subnet */}
               <Line x1={upIn.a.x} y1={upIn.a.y} x2={upIn.b.x} y2={upIn.b.y} on={joined} tone={litJoin ? NET.lit : NET.public} />
               {/* the private subnet's line, the part inside this subnet, ending at the NAT's rim */}
-              <Arrow x1={M.pub.w - 2} y1={natY} x2={N16.nat.cx + NAT_R + 2} y2={natY} on={routed} tone={litRoute ? NET.lit : NET.private} />
-              {/* the blocked inbound arrow, stopped at the NAT's level */}
-              <Arrow x1={inX} y1={0} x2={inX} y2={natY - 44} on={blocked} tone={NET.blocked} />
-              <At x={inX} y={natY - 32} cx cy>
+              <Arrow x1={M.pub.w - 2} y1={natY} x2={N16.nat.cx + NAT_R + 2} y2={natY} on={priLine} tone={litPri ? NET.lit : NET.private} />
+              {/* the blocked inbound path, last leg inside this subnet: its head lands on the ✖ on the NAT's rim */}
+              <Arrow x1={IN.cut.x - G.pub.x} y1={0} x2={IN.end.x - G.pub.x} y2={IN.end.y - G.pub.y} on={blocked} tone={NET.blocked} />
+              <At x={IN.mark.x - G.pub.x} y={IN.mark.y - G.pub.y} cx cy style={{ zIndex: 6 }}>
                 <span className={litBlock ? fx('shake', 0, 1.4).className : undefined} style={{ ...(litBlock ? fx('shake', 0, 1.4).style : {}), display: 'block' }}>
-                  <NoMark size={22} on={blocked} />
+                  <NoMark size={IN.size} on={blocked} />
                 </span>
               </At>
               <At x={8} y={N16.tagY} style={{ transform: 'translateY(-100%)' }}>
-                <SubnetTag kind="public">Public subnet</SubnetTag>
+                <SubnetTag kind="public">Public Subnet</SubnetTag>
               </At>
             </SubnetBox>
           </At>
@@ -1056,16 +1163,16 @@ function NatScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number }) {
                 <Resource size={40} kind="database" />
               </At>
               <At x={8} y={N16.tagY} style={{ transform: 'translateY(-100%)' }}>
-                <SubnetTag kind="private">Private subnet</SubnetTag>
+                <SubnetTag kind="private">Private Subnet</SubnetTag>
               </At>
             </SubnetBox>
           </At>
           {/* the private subnet's line to the NAT, the part between the subnets */}
-          <Line x1={M.pri.x - 2} y1={M.pub.y + natY} x2={M.pub.x + M.pub.w + 2} y2={M.pub.y + natY} on={routed} tone={litRoute ? NET.lit : NET.private} />
+          <Line x1={M.pri.x - 2} y1={M.pub.y + natY} x2={M.pub.x + M.pub.w + 2} y2={M.pub.y + natY} on={priLine} tone={litPri ? NET.lit : NET.private} />
           {/* up to the internet gateway, the part above the subnet */}
           <Arrow x1={upOut.a.x} y1={upOut.a.y - 2} x2={upOut.b.x} y2={upOut.b.y} on={joined} tone={litJoin ? NET.lit : NET.public} />
-          {/* the blocked inbound line, the part above the subnet */}
-          <Line x1={IN_X - G.vpc.x} y1={G.igw.cy - G.vpc.y + 8} x2={IN_X - G.vpc.x} y2={M.pub.y} on={blocked} tone={NET.blocked} />
+          {/* the blocked inbound path, second leg: out of the gateway's lower rim, down to the public subnet's edge */}
+          <Line x1={IN.start.x - G.vpc.x} y1={IN.start.y - G.vpc.y} x2={IN.cut.x - G.vpc.x} y2={IN.cut.y - G.vpc.y} on={blocked} tone={NET.blocked} />
           {/* the internet gateway, from the previous card */}
           <At x={M.igw.cx} y={M.igw.cy} cx cy>
             <Gateway kind="igw" lit={litJoin} />
@@ -1079,14 +1186,14 @@ function NatScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number }) {
           <At x={M.pub.x} y={COST_Y - G.vpc.y} cy>
             <Fade on={cost} lift={6}>
               <Tag lit={litCost} tone="warn" icon={<Clock className={litCost ? fx('spin', 0, 4).className : undefined} style={litCost ? fx('spin', 0, 4).style : undefined} />}>
-                per hour running
+                Per Hour Running
               </Tag>
             </Fade>
           </At>
           <At x={M.pub.x + 166} y={COST_Y - G.vpc.y} cy>
             <Fade on={cost} lift={6} delay={120}>
               <Tag lit={litCost} tone="warn" icon={<HardDrive />}>
-                per gigabyte processed
+                Per Gigabyte Processed
               </Tag>
             </Fade>
           </At>
@@ -1096,30 +1203,31 @@ function NatScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number }) {
       {cost && !held &&
         [G.pub.x + 60, G.pub.x + 260].map((x, i) => (
           <At key={i} x={x} y={COST_Y - 38} cx cy>
-            <span className={`rt-coin ${litCost ? '' : 'rt-coin-rest'}`} style={{ animationDelay: `${i * 0.5}s`, display: 'grid', color: colors.warning }}>
+            <span className={'rt-coin'} style={{ animationDelay: `${i * 0.5}s`, display: 'grid', color: colors.warning }}>
               <Coins size={18} />
             </span>
           </At>
         ))}
       <Ripple x={NAT_C.x} y={NAT_C.y} r={28} tone={NET.lit} on={litNat} />
+      {/* a packet started outside: in through the internet gateway, stopped at the NAT */}
+      <Mover k="nat-in" run={blocked} path={[[G.cloud.x + 6, IN.y0], [IN.rimX, IN.y0], [IN.start.x, IN.start.y], [IN.end.x, IN.end.y]]} tone={NET.blocked} size={12} dur={2.4} />
       {/* part 0: a private instance's packet leaves through the NAT, up through the internet gateway, out (teal inside, green once translated) */}
       <Mover
         k="nat-out"
-        run={outbound}
-        path={[[G.pri.x + N16.inst.cx - 24, G.pri.y + N16.inst.cy], [NAT_C.x + NAT_R + 4, NAT_C.y + 8], [NAT_C.x + 16, NAT_C.y - 22], [G.igw.cx + 4, G.igw.cy + IGW_R + 2], [G.igw.cx + IGW_R + 2, G.igw.cy - 6], [G.cloud.x + 40, G.cloud.y + 52]]}
-        tones={[NET.private, NET.private, NET.public, NET.public, NET.public, NET.public]}
-        dur={3}
+        run={outbound || xlate}
+        path={[OUT_A, OUT_B, OUT_C, OUT_D, OUT_E, OUT_F, OUT_E, OUT_D, OUT_C, OUT_B, OUT_A]}
+        tones={[NET.private, NET.private, NET.public, NET.public, NET.public, NET.public, NET.public, NET.public, NET.public, NET.private, NET.private]}
+        dur={5.2}
       />
       {/* the many private addresses enter the gateway; one public address leaves it */}
       {[1.4, 1.9, 2.4].map((dur, i) => (
         <Traveller key={i} path={[[G.pri.x + 8, G.pub.y + natY], [NAT_C.x + NAT_R + 6, G.pub.y + natY]]} run={xlate && !held} k={`in${i}`} tone={NET.private} size={12} dur={dur} />
       ))}
-      <Traveller path={[[UP.from.x, UP.from.y], [UP.to.x, UP.to.y]]} run={joined && !held} k="out" tone={NET.public} size={14} dur={2.4} />
       {/* the private subnet's route entry, in the column beside the VPC: the destination, pointed at the NAT gateway's id */}
       <At x={COL_CX} y={ENTRY.title} cx cy>
         <Fade on={routed} lift={6}>
           <Label size={14} strong tone={litRoute ? 'solid' : 'dark'} raised>
-            Private subnet's route table
+            Private Subnet's Route Table
           </Label>
         </Fade>
       </At>
@@ -1137,13 +1245,13 @@ function NatScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number }) {
       {/* the translation, many to one */}
       <At x={COL_CX} y={XLATE.from} cx cy>
         <Fade on={xlate} lift={6}>
-          <Tag lit={litX}>many private source addresses</Tag>
+          <Tag lit={litX}>Many Private Source Addresses</Tag>
         </Fade>
       </At>
       <Arrow x1={COL_CX} y1={XLATE.from + 14} x2={COL_CX} y2={XLATE.to - 14} on={xlate} tone={litX ? NET.lit : colors.brand} />
       <At x={COL_CX} y={XLATE.to} cx cy>
         <Fade on={xlate} lift={6} delay={120}>
-          <Tag lit={litX}>single public address</Tag>
+          <Tag lit={litX}>Single Public Address</Tag>
         </Fade>
       </At>
     </div>
@@ -1175,7 +1283,7 @@ export function NatGateway({ lesson }: { lesson: string }) {
 }
 
 export function NatGateway2({ lesson }: { lesson: string }) {
-  const { k, lit } = useWalk(4)
+  const { k, lit } = useWalk(3)
   return (
     <LitFigure
       id="T16-1b"
@@ -1190,7 +1298,6 @@ export function NatGateway2({ lesson }: { lesson: string }) {
         { icon: <Table2 />, text: T16_POINTS[4] },
         { icon: <Merge />, text: T16_POINTS[5] },
         { icon: <Coins />, text: T16_POINTS[6] },
-        { icon: <Clock />, text: T16_POINTS[7] },
       ]}
       figure={<NatScene part={1} k={k} lit={lit} />}
     />
@@ -1205,7 +1312,7 @@ const T17_POINTS: ReactNode[] = [
   'Works between VPCs in the same account or across accounts, same region or across regions',
   'Non-transitive: a peering connection does not extend automatically to a third VPC',
   'Overlapping CIDR blocks between the two VPCs cannot be peered',
-  'Costs only data-transfer charges, far cheaper than routing the same traffic through NAT and the internet',
+  'No hourly charge, only data-transfer fees, usually cheaper than routing through NAT and the internet',
 ]
 
 /* the 634 x 340 stage: two VPCs on one dashed line, the third VPC under the right one, the crossed CIDRs under the left one */
@@ -1221,6 +1328,8 @@ const P_A_R = P.a.x + P.a.w
 const T17_PW = 500
 /** T17-1b's overlapping ranges: centred under the first VPC's side, between it and the third VPC */
 const CIDR = { cx: 166, y: 262 }
+/** T17-1b's faded NAT-and-internet route with its coins, between the two VPCs' feet */
+const NAT_ROUTE = { x: 202, y: 222 }
 
 /** One VPC's route entry, without a full table: the route table chip, the peer's CIDR block, pointed at the peering connection id. */
 function PeerEntry({ on, lit }: { on: boolean; lit: boolean }) {
@@ -1232,13 +1341,13 @@ function PeerEntry({ on, lit }: { on: boolean; lit: boolean }) {
       </At>
       <At x={74} y={34} cx cy>
         <Fade on={on} lift={6}>
-          <RouteChip lit={lit} />
+          <RouteChip lit={lit} label="Route Table" />
         </Fade>
       </At>
       <At x={90} y={76} cx cy>
         <Fade on={on} lift={6} delay={100}>
           <Tag lit={lit} tone="brand" icon={<Network />}>
-            peer's CIDR block
+            Peer's CIDR Block
           </Tag>
         </Fade>
       </At>
@@ -1246,7 +1355,7 @@ function PeerEntry({ on, lit }: { on: boolean; lit: boolean }) {
       <At x={90} y={122} cx cy>
         <Fade on={on} lift={6} delay={200}>
           <Tag lit={lit} tone="brand">
-            peering connection id
+            Peering Connection ID
           </Tag>
         </Fade>
       </At>
@@ -1262,7 +1371,6 @@ function PeerEntry({ on, lit }: { on: boolean; lit: boolean }) {
  * 2 the data-transfer tag on the line, a coin on it.
  */
 function PeeringScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number }) {
-  const held = useHeld()
   const now = (p: 0 | 1, i: number) => part === p && lit === i
   const entries = true
   const scope = part === 0 && k >= 1
@@ -1289,6 +1397,18 @@ function PeeringScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number })
       <At x={P.mid} y={P.lineY - 29} cx cy>
         <Tag icon={<Waypoints />}>Peering Connection</Tag>
       </At>
+      {/* 5.md slides 41/42 (more explaining icons): the public internet, struck out, over the link (the lead: "without the traffic
+          ever touching the public internet") */}
+      <At x={P.mid} y={44} cx cy>
+        <span className="relative block" style={{ width: 44, height: 44 }}>
+          <span className="grid h-[44px] w-[44px] place-items-center rounded-full" style={{ background: colors.surface, boxShadow: `inset 0 0 0 1.5px ${colors.line}`, color: colors.muted }}>
+            <Globe size={24} strokeWidth={1.8} />
+          </span>
+          <span className="absolute" style={{ right: -6, bottom: -4 }}>
+            <NoMark size={20} />
+          </span>
+        </span>
+      </At>
       <Mover k="ab" run path={[a, b]} tone={PEER} dur={1.8} />
       <Mover k="ba" run path={[b, a]} tone={colors.brand} dur={1.8} delay={1} />
       {/* same or across: an account badge and a region pin under each VPC, in its own colour (two accounts, two regions) */}
@@ -1305,12 +1425,12 @@ function PeeringScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number })
       {/* same or across: account, region */}
       <At x={P.mid} y={250} cx cy>
         <Fade on={scope} lift={6}>
-          <Tag lit={now(0, 1)} icon={<Users />}>same account or across accounts</Tag>
+          <Tag lit={now(0, 1)} icon={<Users />}>Same Account or Across Accounts</Tag>
         </Fade>
       </At>
       <At x={P.mid} y={290} cx cy>
         <Fade on={scope} lift={6} delay={120}>
-          <Tag lit={now(0, 1)} icon={<MapPin />}>same region or across regions</Tag>
+          <Tag lit={now(0, 1)} icon={<MapPin />}>Same Region or Across Regions</Tag>
         </Fade>
       </At>
       {/* a third VPC, joined to one side only */}
@@ -1318,7 +1438,7 @@ function PeeringScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number })
         <Fade on={third} lift={0}>
           <Boundary w={P.c.w} h={P.c.h} label="VPC" lit={now(1, 0)} style={THIN} tone={colors.muted}>
             <At x={90} y={40} cx cy>
-              <Tag lit={now(1, 0)} icon={<Link2Off />}>Non-transitive</Tag>
+              <Tag lit={now(1, 0)} icon={<Link2Off />}>Non-Transitive</Tag>
             </At>
           </Boundary>
         </Fade>
@@ -1337,7 +1457,7 @@ function PeeringScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number })
         <Fade on={overlap} lift={6}>
           <span className={now(1, 1) ? fx('shake', 0, 1.6).className : undefined} style={{ ...(now(1, 1) ? fx('shake', 0, 1.6).style : {}), display: 'block' }}>
             <Tag lit={now(1, 1)} tone="brand">
-              CIDR block
+              CIDR Block
             </Tag>
           </span>
         </Fade>
@@ -1363,31 +1483,42 @@ function PeeringScene({ part, k, lit }: { part: 0 | 1; k: number; lit: number })
         <Fade on={overlap} lift={6} delay={100}>
           <span className={now(1, 1) ? fx('shake', 0.2, 1.6).className : undefined} style={{ ...(now(1, 1) ? fx('shake', 0.2, 1.6).style : {}), display: 'block' }}>
             <Label size={14} strong tone={now(1, 1) ? 'solid' : 'brand'} raised style={{ boxShadow: `inset 0 0 0 1.5px ${PEER}`, color: now(1, 1) ? undefined : PEER }}>
-              CIDR block
+              CIDR Block
             </Label>
           </span>
         </Fade>
       </At>
       <At x={CIDR.cx} y={CIDR.y + 50} cx cy>
         <Fade on={overlap} lift={6} delay={200}>
-          <Tag lit={now(1, 1)} icon={<Ban />}>Overlapping CIDR blocks</Tag>
+          <Tag lit={now(1, 1)} icon={<Ban />}>Overlapping CIDR Blocks</Tag>
         </Fade>
       </At>
       {/* the cost, on the line */}
       <At x={P.mid} y={P.lineY + 29} cx cy>
         <Fade on={cost} lift={6}>
-          <Tag lit={now(1, 2)} tone="warn" icon={<Coins />}>
-            data-transfer charges
+          <Tag lit={now(1, 2)} tone="warn">
+            Data-Transfer Charges
           </Tag>
         </Fade>
       </At>
-      {cost && !held && (
-        <At x={P.mid + 98} y={P.lineY + 8} cx cy>
-          <span className={`rt-coin ${now(1, 2) ? '' : 'rt-coin-rest'}`} style={{ display: 'grid', color: colors.warning }}>
-            <Coins size={18} />
+      {/* far cheaper than NAT and the internet: that route drawn faded beside it, NAT gateway to internet, with a coin stack */}
+      <At x={NAT_ROUTE.x} y={NAT_ROUTE.y} cy>
+        <Fade on={cost} lift={6} delay={150}>
+          <span className="flex items-center gap-1.5" style={{ opacity: 0.75 }}>
+            <Gateway kind="nat" size={30} dim />
+            <span aria-hidden className="block h-[2px] w-[16px]" style={{ background: colors.muted }} />
+            <span className="block" style={{ opacity: 0.6 }}>
+              <RichCloud w={46} />
+            </span>
+            <span aria-hidden className="grid place-items-center rounded-full" style={{ width: 30, height: 30, background: '#FFF4E0', boxShadow: `inset 0 0 0 1.5px ${colors.warning}`, color: '#9A5B00' }}>
+              <Coins size={16} className={fx('hop', 0, 1.6).className} style={fx('hop', 0, 1.6).style} />
+            </span>
+            <span aria-hidden className="grid place-items-center rounded-full" style={{ width: 30, height: 30, background: '#FFF4E0', boxShadow: `inset 0 0 0 1.5px ${colors.warning}`, color: '#9A5B00' }}>
+              <Coins size={16} className={fx('hop', 0.4, 1.6).className} style={fx('hop', 0.4, 1.6).style} />
+            </span>
           </span>
-        </At>
-      )}
+        </Fade>
+      </At>
     </>
   )
 }
@@ -1442,16 +1573,24 @@ const T172_POINTS: ReactNode[] = [
   'A Site-to-Site VPN connects a VPC to an on-premises network instead of another VPC',
   /* FS review (slide 41, BRIEF2 rule 1): cut at the TR's clause boundary, every word kept */
   'Encrypted over the public internet using IPsec',
-  'anchored by a virtual private gateway on the AWS side and a customer gateway on the on-premises side',
+  'Anchored by a virtual private gateway on the AWS side and a customer gateway on the on-premises side',
 ]
 
-/* the 634 x 340 stage: the VPC on the left, the on-premises office on the right, the public internet between, one tunnel across it */
+/*
+  The 586 x 340 stage: the VPC on the left, the on-premises office on the right, the public internet between, one
+  tunnel across it. Review 2026-11-05 (slide 44): each gateway's name sits right under its own disc, in one row under
+  the tunnel, clear of the IPsec chip above it and of each other. To make room, the VPC box ends just under its disc,
+  the office stands 40px higher (its gateway disc on the ground floor's left edge) and its name moves over its roof.
+  `dy` centres the whole drawing on the stage.
+*/
 const V = {
-  vpc: { x: 16, y: 96, w: 194, h: 150 },
-  bld: { x: 420, y: 76, w: 140 },
+  vpc: { x: 16, y: 96, w: 194, h: 120 },
+  bld: { x: 420, y: 36, w: 140 },
   cloud: { cx: 318, cy: 150, w: 140 },
   tunnelY: 176,
-  gwY: 288,
+  ipsecY: 208,
+  gwY: 240,
+  dy: 40,
 } as const
 const V_VPC_R = V.vpc.x + V.vpc.w
 
@@ -1471,25 +1610,26 @@ function VpnScene({ k, lit }: { k: number; lit: number }) {
   const a: [number, number] = [V_VPC_R + 26, V.tunnelY]
   const b: [number, number] = [V.bld.x - 26, V.tunnelY]
   return (
-    <>
+    <div className="absolute" style={{ left: 0, top: V.dy, width: 0, height: 0 }}>
       <At x={V.vpc.x} y={V.vpc.y}>
         <Boundary w={V.vpc.w} h={V.vpc.h} label="VPC" lit={l0} style={THIN}>
+          {/* review 2026-11-05 (global rule 2): the aws mark carries the name, so the chip beside it drops "AWS" */}
           <div className="absolute" style={{ right: 12, top: -13 }}>
             <Label size={14} strong raised icon={<Logo name="aws" h={14} />}>
-              AWS side
+              Side
             </Label>
           </div>
-          <At x={V.vpc.w / 2 - 34} y={V.vpc.h / 2 + 10} cx cy>
+          <At x={V.vpc.w / 2 - 34} y={V.vpc.h / 2 + 12} cx cy>
             <Resource size={46} />
           </At>
-          <At x={V.vpc.w / 2 + 30} y={V.vpc.h / 2 + 10} cx cy>
+          <At x={V.vpc.w / 2 + 30} y={V.vpc.h / 2 + 12} cx cy>
             <Resource size={46} kind="database" />
           </At>
         </Boundary>
       </At>
       <At x={V.cloud.cx} y={V.cloud.cy - 78} cx cy>
         <Label size={14} strong raised icon={<Globe />}>
-          public internet
+          Public Internet
         </Label>
       </At>
       <At x={V.cloud.cx} y={V.cloud.cy} cx cy>
@@ -1500,8 +1640,8 @@ function VpnScene({ k, lit }: { k: number; lit: number }) {
       <At x={V.bld.x} y={V.bld.y}>
         <OnPremOffice w={V.bld.w} lit={l0} />
       </At>
-      <At x={V.bld.x + V.bld.w / 2 - 22} y={V.bld.y + 176} cx cy>
-        <Tag lit={l0} icon={<Building2 />}>on-premises network</Tag>
+      <At x={V.bld.x + V.bld.w / 2 - 22} y={V.bld.y - 22} cx cy>
+        <Tag lit={l0} icon={<Building2 />}>On-Premises Network</Tag>
       </At>
       {/* the tunnel: a wide sleeve across the internet, the flow inside it */}
       <Line x1={a[0]} y1={V.tunnelY} x2={b[0]} y2={V.tunnelY} width={16} tone={`${colors.brand}30`} on={tunnel} />
@@ -1516,7 +1656,7 @@ function VpnScene({ k, lit }: { k: number; lit: number }) {
           </span>
         </Fade>
       </At>
-      <At x={V.cloud.cx} y={V.tunnelY + 36} cx cy>
+      <At x={V.cloud.cx} y={V.ipsecY} cx cy>
         <Fade on={sealed} lift={6}>
           <Tag lit={l1}>IPsec</Tag>
         </Fade>
@@ -1528,9 +1668,9 @@ function VpnScene({ k, lit }: { k: number; lit: number }) {
         </Fade>
       </At>
       <Ripple x={V_VPC_R} y={V.tunnelY} r={30} tone={NET.lit} on={l2} />
-      <At x={V.vpc.x + V.vpc.w / 2} y={V.gwY} cx cy>
+      <At x={V_VPC_R} y={V.gwY} cx cy>
         <Fade on={anchored} lift={6}>
-          <Tag lit={l2} icon={<Waypoints />}>virtual private gateway</Tag>
+          <Tag lit={l2} icon={<Waypoints />}>Virtual Private Gateway</Tag>
         </Fade>
       </At>
       <At x={V.bld.x} y={V.tunnelY} cx cy>
@@ -1539,12 +1679,12 @@ function VpnScene({ k, lit }: { k: number; lit: number }) {
         </Fade>
       </At>
       <Ripple x={V.bld.x} y={V.tunnelY} r={30} tone={NET.lit} on={l2} />
-      <At x={V.bld.x + V.bld.w / 2 - 22} y={V.gwY + 26} cx cy>
+      <At x={V.bld.x} y={V.gwY} cx cy>
         <Fade on={anchored} lift={6} delay={120}>
-          <Tag lit={l2} icon={<Building2 />}>customer gateway</Tag>
+          <Tag lit={l2} icon={<Building2 />}>Customer Gateway</Tag>
         </Fade>
       </At>
-    </>
+    </div>
   )
 }
 
@@ -1632,7 +1772,9 @@ const T182_DX = 120
 const T182_DY = -44
 const SHIELD = { cx: 912, cy: 160, w: 150 }
 /** the internet over the map, right of the gateway's label, inside the stage */
-const T182_CLOUD = { x: 420, y: 52 }
+/** the internet beside the gateway's label (the stage starts 44px into the map), the two-way link on its left lobe */
+const T182_CLOUD = { x: 236, y: 46 }
+const T182_LINK = { x: 242, y: 84 }
 
 /** T18-2: 0 the finished map with traffic on every exit; 1 a lock lands on each subnet, in front of its route table, and the security shield beside the map. */
 function NotPermissionScene({ k, held }: { k: number; held: boolean }) {
@@ -1642,8 +1784,9 @@ function NotPermissionScene({ k, held }: { k: number; held: boolean }) {
     <>
       <div className="absolute" style={{ left: T182_DX, top: T182_DY, width: 0, height: 0 }}>
         <RoutingMap routeTables igw nat peer locks={locks} lit={{ locks: now }} />
-        <Cloud x={T182_CLOUD.x} y={T182_CLOUD.y} w={96} />
-        <MapFlows igw nat peer local cloud={{ x: T182_CLOUD.x + 20, y: T182_CLOUD.y + 44 }} />
+        <Cloud x={T182_CLOUD.x} y={T182_CLOUD.y} w={80} />
+        <IgwLink to={T182_LINK} />
+        <MapFlows igw nat peer local cloud={T182_LINK} />
         {[M.pub, M.pri].map((sb, i) => (
           <Ripple key={i} x={G.vpc.x + sb.x + sb.w / 2} y={G.vpc.y + M.lockY} r={22} tone={NET.lit} on={now} />
         ))}
@@ -1670,7 +1813,7 @@ export function RoutingNotPermission({ lesson }: { lesson: string }) {
         <Stage w={BOX_W} h={T182_H} active={false}>
           <NotPermissionScene k={k} held={held} />
         </Stage>
-        <Callout kind="warning" asStep={false} icon={<ShieldAlert width={20} height={20} />} className="!p-4 [&>div>p:first-child]:hidden [&>div>div]:!mt-0 [&>div>div]:text-[17px]">
+        <Callout kind="warning" title="Watch Out" asStep={false} icon={<ShieldAlert width={20} height={20} />} className="!p-4 [&>div>p:first-child]:hidden [&>div>div]:!mt-0 [&>div>div]:text-[17px]">
           {T182_NOTE}
         </Callout>
       </div>
@@ -1685,7 +1828,6 @@ export const ROUTING_CSS =
   `
 @keyframes rt-coin { 0% { transform: translateY(-16px); opacity: 0 } 25% { transform: translateY(0); opacity: 1 } 70% { transform: translateY(0); opacity: 1 } 100% { transform: translateY(6px); opacity: 0 } }
 .rt-coin { animation: rt-coin 1.8s cubic-bezier(0.34,1.4,0.64,1) infinite; }
-.rt-coin-rest { animation-duration: 3.6s; }
 .cc-still .rt-coin, .deck-thumb .rt-coin { animation: none !important; }
 @media (prefers-reduced-motion: reduce) { .rt-coin { animation: none !important; } }
 `

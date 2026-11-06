@@ -51,7 +51,7 @@ shipped with that exact mistake.
 | 9 | When content changes, chase the dependents |
 | 10 | Verify by rendering, never by reading |
 | 11 | Screenshots are cropped to the point, output highlighted |
-| 12 | A technology named on a slide carries its logo (PNG) |
+| 12 | A technology named on a slide carries its logo (PNG); a wordmark logo takes no duplicate label (rule 52) |
 | 12b | Slide copy is professional and plain: no casual asides, no long words, no session numbers |
 | 13 | Every asset lives in the central library first |
 | 14 | An approved slide type or transition goes into the kit and the registry |
@@ -76,7 +76,7 @@ shipped with that exact mistake.
 | 33 | The header: no tick before the kicker; the kicker 22px Title Case navy; one gradient divider between kicker and title, ALWAYS (never removed, whatever a review says), no edge bars |
 | 34 | Typefaces: the updated template's sheet. Sora SemiBold for session and section titles and hero words, DM Sans SemiBold for headings, DM Sans Medium for kicker and body, Fira Code for code, Ubuntu Mono for code-window title bars; two weights only |
 | 35 | A heading never wraps: shorten the words, never shrink the font or widen the box |
-| 36 | No full stop at the end of a line of slide copy: two sentences on one line go onto two lines |
+| 36 | No punctuation mark (full stop, comma, semicolon, colon, exclamation) at the end of any line, label, chip or heading; questions keep `?`, inner punctuation stays; two sentences on one line go onto two lines |
 | 37 | Template colours only: never a colour from the reference deck. The recap header is brand, like every other header (the kit's `RecapSlide` since 2026-10-14). Headings and body are the template's navy on light slides |
 | 38 | One alignment per slide: the lead, the text, the code boxes and their captions share it. Left for text, lists and code; centred, first line included, for a diagram or a single statement |
 | 39 | The agenda mark says `Agenda`, large, over the session name, small; a long name shrinks to fit and is never clipped or truncated. The points sit on the arc, the group centred on the mark's centre line (y 366) with equal gaps, extending past the ring equally when there are many, never under the speaker box, never off the slide |
@@ -92,6 +92,15 @@ shipped with that exact mistake.
 | 49 | No underlines anywhere: no underlined text, phrase, heading or link. Emphasis is colour and weight. The kicker's gradient divider is template, not an underline, and always stays |
 | 50 | The footer NxtWave mark is half size: 18px tall (`h-[18px]`, was 36px `h-9`) on every slide of every deck; still present, still bottom-right, still white on a dark ground |
 | 51 | A highlight on a screenshot is orange (`colors.accent`), never red: the ring the deck draws and any red frame baked into the capture itself (buttons, checked boxes, selected rows, progress bars, a drawn box). Red that carries data stays |
+| 52 | A logo that already carries the product name (aws, Azure, Google Cloud wordmarks) gets no text label beside it, table column heads included: `AWS VPC` beside the aws mark is `VPC` |
+| 53 | Sensitive data in a screenshot is blurred in the PNG (emails, passwords, IPs, account IDs, keys, resource IDs, any identifying or credential data); originals kept in `workflow/captures/`; names, states and private teaching CIDRs stay readable |
+| 54 | A real product or service in a figure uses its official mark (AWS Architecture Icons; vendor brand kit), never a generic glyph; Load Balancer = Elastic Load Balancing, ALB = Application Load Balancer, NLB = Network Load Balancer; one icon size and style per slide |
+| 55 | Blue is the only text-highlight colour; status colours stay on status marks, not on emphasised words |
+| 56 | Every word of a chip, tag or figure label is capitalised, short words included ("Anyone Off The Street"); sentences keep sentence case, titles keep the TR heading; check-deck strict on chips |
+| 57 | A chip or tag stays inside its card: wrap within the card (hyphenated words whole) or grow the card, never nowrap past an edge; check-deck "chip inside its card" |
+| 58 | People: no duplicate renders on a slide, adult for adult roles, users are a boy/person with a laptop, people face the main visual, acting characters from Character Lab in realistic scenes |
+| 59 | No grid/map-line backgrounds behind figures, no spinning charts; motion of real objects is physical (turning clock hands, damped balance) |
+| 60 | No highlighted table rows or cells unless the user asks for that table (narrows R8.3) |
 
 ## Process rules
 

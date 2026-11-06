@@ -10,6 +10,47 @@ This is the whole procedure. The user asks for slides; **you** supply
 everything below without being told. Never ask them to re-specify what is
 written here.
 
+> **From 2026-11-04 every NEW session deck is built with `deck-engine/`** (user, 2026-11-04: one shared engine,
+> slides as data, the same workflow for the user — they give the input paths). Read `deck-engine/CLAUDE.md` first:
+> the session folder holds `deck.json` (+ `images/`, optional `custom/index.tsx`), not a React project; build with
+> `node deck.mjs build <folder>`, check with `node deck.mjs check <folder>`. Everything below still holds for the
+> plan gate (§0), the rules (§1), the content and pedagogy, and review feedback (§8); where it says "reuse the
+> template / write markup / sync the kit", read "write the slide as data; fix a shared problem once in the engine".
+> Existing sessions built before that date stay React projects and are edited the old way.
+
+> **Standing corrections: apply on EVERY deck without being asked** (user, 2026-11-06, after Load Balancing & CDN:
+> "every deck correction does not need to be repeated again in any future deck"). Build each new deck so none of
+> these comes back as review feedback:
+> 1. **Text:** TR words verbatim, split at TR clause boundaries, never trimmed or reworded; no punctuation mark ends
+>    any line (rule 36); chips/tags/figure labels capitalise EVERY word (rule 56); speaker notes verbatim in `notes`.
+> 2. **Logos:** every real product is its official mark (rule 54): Load Balancer = Elastic Load Balancing, ALB /
+>    NLB their own resource icons, DNS Resolver = Route 53 Resolver, EC2 flat official, NGINX / HAProxy vendor logos;
+>    all in the white tile (Slide 15 style). Fetch a missing one from the official package into `slide-kit/assets/`.
+> 3. **Colour:** blue is the only text highlight (rule 55); no highlighted table rows unless asked (rule 60).
+> 4. **Fit:** nothing overflows, clips or overlaps at any step; a chip stays inside its card, wrapping if needed
+>    (rule 57); points beside a figure take two lines at most.
+> 5. **People:** no duplicate renders on a slide, adults in adult roles, users are a boy/person with a laptop,
+>    everyone faces the main visual (rule 58).
+> 6. **Figures:** clean plate, no grid/map-line backgrounds, no spinning charts, physical motion (rule 59).
+> 7. **Screenshots:** blur every identifier in the PNG, keep originals in `workflow/captures/` (rule 53); explanation
+>    boxes align to the TOP edge of their screenshot with equal spacing for every pair.
+> 8. **Layout:** a note under a wide diagram rather than squeezing it beside; a lead and a card group are visibly
+>    separate groups; long lab step lists get an engaging layout (numbered timeline / zig-zag cards), split if crowded.
+> 9. **Analogies:** the TR's analogy, part for part, matched to the technical side position for position; every
+>    clause a Title Case tag; a real, recognisable scene (Character Lab people, real props). True 3D is available:
+>    `three`, `@react-three/fiber`, `@react-three/drei` are installed in `deck-engine` (import them by bare name).
+> 10. **Libraries** (user, 2026-11-06): use the engine's visual libraries wherever they lift the visual quality,
+>    in one consistent style: Framer Motion (default motion), React Spring (physical springs), GSAP (timelines, SVG
+>    paths), Lottie / Rive (vendored files with licence), Three.js + R3F + drei (+ rapier, postprocessing,
+>    three-vrm) for real 3D, Babylon only alone, zdog for pseudo-3D, React Flow / Mermaid / D3 / Recharts / Rough.js
+>    for diagrams and charts, Radix + shadcn pattern, react-use-measure, use-gesture. The table of when to use each
+>    is in `deck-engine/CLAUDE.md` "Visual libraries"; import by bare name from `custom/`.
+> 11. **Illustration style** (user, 2026-11-06): soft glossy 3D clay, royal blue on white, small warm accents,
+>    soft shadows, friendly big-eyed people; references in `assets/icons/Icons/` (see `deck-engine/CLAUDE.md`
+>    "Reference illustration style"). Every person, icon and scene on a slide in that one style.
+> 12. **Verify:** `node deck.mjs check` 0 FAIL, and screenshot every slide (reload per slide) and read them before
+>    reporting. Record a new correction here and in the rule files, with the user's yes, the day it is given.
+
 ---
 
 ## 0. Gate: is there a signed-off plan?

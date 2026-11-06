@@ -141,12 +141,12 @@ function ClosingLock({ size = 28 }: { size?: number }) {
   )
 }
 
-/* the stage is 590 x 380 (pointsW 496): the /24 frame (238 square) on the left, its zoom or the /28 on the right */
+/* the stage is 546 x 380 (pointsW 540, so every point holds to two lines: R7): the /24 frame (238 square) on the left, its zoom or the /28 on the right */
 const S8 = {
-  big: { x: 36, y: 50 },
+  big: { x: 20, y: 50 },
   labelY: 18,
   chipsY: 302,
-  right: 310,
+  right: 292,
   zoom: { y: 50, size: 238, tile: 46, gap: 8, pad: 15 },
   small: { y: 50 },
   zoom28: { y: 148, tile: 30, gap: 6, pad: 10 },
@@ -253,9 +253,9 @@ function SizingScene({ k }: { k: number }) {
       <At x={S8.big.x} y={S8.chipsY}>
         <Fade on={filled}>
           <div className="flex items-center gap-2">
-            <Cidr>256 addresses</Cidr>
+            <Cidr>256 Addresses</Cidr>
             <Cidr tone="brand" strong>
-              251 usable
+              251 Usable
             </Cidr>
           </div>
         </Fade>
@@ -270,25 +270,25 @@ function SizingScene({ k }: { k: number }) {
       {/* the /28's words, held unshown as they always were on this slide (T08-1b shows them): the slide's text is unchanged */}
       <At x={S8.right} y={S8.labelY}>
         <Fade on={false} lift={0}>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col items-start gap-2">
             <Cidr tone="brand" strong>
               /28
             </Cidr>
-            <Cidr>16 addresses</Cidr>
+            <Cidr>16 Addresses</Cidr>
             <Cidr tone="brand" strong>
-              11 usable
+              11 Usable
             </Cidr>
           </div>
         </Fade>
       </At>
       {/* the legend: what a shaded square and a filled square are */}
-      <At x={S8.right} y={S8.chipsY}>
-        <div className="flex items-center gap-2">
+      <At x={S8.right + S8.zoom.size / 2} y={S8.chipsY} cx>
+        <div className="flex items-center gap-1.5">
           <Fade on={shaded}>
-            <Swatch color={NET.lit}>AWS-reserved</Swatch>
+            <Swatch color={NET.lit}>AWS-Reserved</Swatch>
           </Fade>
           <Fade on={filled}>
-            <Swatch color={colors.brand}>usable</Swatch>
+            <Swatch color={colors.brand}>Usable</Swatch>
           </Fade>
         </div>
       </At>
@@ -357,9 +357,9 @@ function Panel24({ lock }: { lock: boolean }) {
       </At>
       <At x={P24.w / 2} y={58 + BIG + 18} cx>
         <div className="flex items-center gap-2">
-          <Cidr>256 addresses</Cidr>
+          <Cidr>256 Addresses</Cidr>
           <Cidr tone="brand" strong>
-            251 usable
+            251 Usable
           </Cidr>
         </div>
       </At>
@@ -395,9 +395,9 @@ function Panel28({ k }: { k: number }) {
       <At x={18 + s28 + 16} y={60}>
         <Fade on={small}>
           <div className="flex flex-col items-start gap-2">
-            <Cidr>16 addresses</Cidr>
+            <Cidr>16 Addresses</Cidr>
             <Cidr tone="brand" strong>
-              11 usable
+              11 Usable
             </Cidr>
           </div>
         </Fade>
@@ -435,8 +435,8 @@ function Panel28({ k }: { k: number }) {
       </At>
       <At x={P28.w / 2} y={P28.h - 36} cx>
         <div className="flex items-center gap-2">
-          <Swatch color={NET.lit}>AWS-reserved</Swatch>
-          <Swatch color={colors.brand}>usable</Swatch>
+          <Swatch color={NET.lit}>AWS-Reserved</Swatch>
+          <Swatch color={colors.brand}>Usable</Swatch>
         </div>
       </At>
     </>
@@ -471,7 +471,7 @@ export function CidrSizing({ lesson }: { lesson: string }) {
       lesson={lesson}
       points={T08_POINTS.slice(0, 3).map((text, i) => ({ icon: T08_ICONS[i], text }))}
       lit={k - 1}
-      pointsW={496}
+      pointsW={540}
       pointSize={16}
       figH={380}
       figure={<SizingScene k={k} />}

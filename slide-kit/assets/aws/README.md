@@ -90,6 +90,8 @@ Kept deliberately small. Add a file when a deck needs it, not in advance.
 |---|---|
 | `ec2.svg` | Amazon EC2 |
 | `vpc.svg` | Amazon Virtual Private Cloud |
+| `elastic-load-balancing.svg` | Elastic Load Balancing ("Load Balancer", content rule 54), added 2026-11-06 |
+| `route-53.svg` | Amazon Route 53, added 2026-11-06 |
 
 ### `group/` · 32px corner marks for group borders
 
@@ -108,6 +110,9 @@ Kept deliberately small. Add a file when a deck needs it, not in advance.
 | `client.svg` | a browser or client |
 | `users.svg` | people using the service |
 | `server.svg` | a generic server |
+| `application-load-balancer.svg` | an Application Load Balancer ("ALB"), added 2026-11-06 |
+| `network-load-balancer.svg` | a Network Load Balancer ("NLB"), added 2026-11-06 |
+| `route-53-resolver.svg` | the Route 53 Resolver ("DNS Resolver"), added 2026-11-06 |
 
 ## Non-AWS marks
 

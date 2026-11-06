@@ -1,8 +1,8 @@
-import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useLayoutEffect, useState, type CSSProperties, type ReactNode } from 'react'
 import { colors } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
-import { useAutoAnim } from '@/deck/autoAnim'
-import { REDUCED, STILL, useCycle } from '../scene'
+import { SPEED, useAutoAnim } from '@/deck/autoAnim'
+import { REDUCED, STILL, useCycle, useTicker } from '../scene'
 
 /**
  * SECTION 1's MOTION HELPERS (visual pass, 2026-11-04). Nothing here carries words.
@@ -19,15 +19,22 @@ import { REDUCED, STILL, useCycle } from '../scene'
  *   Dot          a packet: a dot with a soft halo, at a stage point
  */
 
-/** `n` states: 0..`build`-1 build the drawing, `build`..n-2 walk the points, n-1 rests on the whole picture. */
+/**
+ * `n` states: 0..`build`-1 build the drawing, `build`..n-2 walk the points, n-1 rests on the whole picture.
+ * Auto OFF: one state per press (`useCycle`). Auto ON: the first lap runs 0..n-1 once; after it the walk states
+ * loop back to back with NO rest beat between cycles (R8.1, 5.md: "restart immediately"); a figure with no walk
+ * states holds the whole picture while its ambient loops run on.
+ */
 export function useWalk(n: number, build: number, ms: number, still = n - 1): number {
   const auto = useAutoAnim()
+  const instant = useInstant()
+  const held = STILL || REDUCED || instant
   const k = useCycle(n, ms, still, n - 1)
-  const done = useRef(false)
-  if (k === n - 1) done.current = true
-  /* after the first lap the build states read as the rest: the drawing holds, the walk loops */
-  if (auto && done.current && k < build) return n - 1
-  return k
+  const t = useTicker(auto && !held, Math.round(ms * SPEED), still)
+  if (held || !auto) return k
+  if (t < n) return t
+  const walk = n - 1 - build
+  return walk > 0 ? build + ((t - n) % walk) : n - 1
 }
 
 /** 0 to 1 over `dur` ms, restarting whenever `key` changes; 1 when the scene is held still. */
@@ -99,6 +106,7 @@ export const focusOp = (on: boolean, faded = 0.28): CSSProperties => ({ opacity:
 
 /** Section 1's keyframes (`ov-`), transform and opacity only, every one held still on harness URLs. */
 export const OV_MOTION_CSS = `
+.ov-caps span { text-transform: capitalize; }
 @keyframes ov-step { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-1.6px) } }
 .ov-step { animation: ov-step 0.36s ease-in-out infinite; }
 @keyframes ov-leg { 0%, 100% { transform: rotate(14deg) } 50% { transform: rotate(-14deg) } }

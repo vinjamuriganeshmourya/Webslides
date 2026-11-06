@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react'
-import { Check, Hash, ShieldCheck, Sparkles, Split, Wrench } from 'lucide-react'
+import { Building2, Check, Cog, Globe, Hash, PencilRuler, ShieldCheck, Sparkles, Split, Wrench } from 'lucide-react'
 import { colors } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
 import { BOX_W, Card, Fade, Label, Stage, useBuild } from '../scene'
 import { AwsMark, Badge, LitFigure, LitPoints, Ripple } from './fx'
 import { Mono, NET, Resource, RouteChip, SubnetBox } from './frames'
-import { Act, EASE, Frame, Status, Tint, useHeld } from './vpc-kit'
+import { Act, EASE, Frame, LIT, Status, Tint, useHeld } from './vpc-kit'
+import { Flow } from './vpc-society'
 
 /**
  * T04-1 and T04-1b · DEFAULT VPC OR CUSTOM VPC (round 2, FS review 2026-11-04:
@@ -31,7 +32,7 @@ import { Act, EASE, Frame, Status, Tint, useHeld } from './vpc-kit'
  * after the build.
  */
 
-const T041_LEAD = "Isolation is enforced entirely in software: a provider's switches carry traffic for every tenant, but each VPC's address space and routing stay mathematically separate from the next"
+const T041_LEAD = "Isolation is enforced entirely in software: a provider's switches carry traffic for every tenant, but each VPC's address space and routing stay logically separate from the next"
 const T041_POINTS_A = [
   { icon: <Split size={20} />, text: 'AWS gives two starting points for building one' },
   { icon: <Sparkles size={20} />, text: 'A default VPC is created automatically in every AWS region, with one public subnet per Availability Zone ready to use' },
@@ -46,13 +47,13 @@ const T041_POINTS_B = [
       </>
     ),
   },
-  { icon: <ShieldCheck size={20} />, text: 'Production workloads generally use a custom VPC, since the default one does not enforce least-privilege network design' },
+  { icon: <ShieldCheck size={20} />, text: 'Production workloads generally use a custom VPC, since the default one is open by design (public subnets), so it is not suited for least-privilege design' },
 ]
 
 const A_POINTS_W = 580
 const A_W = BOX_W - A_POINTS_W - 24
 const A_H = 350
-const B_H = 268
+const B_H = 254
 
 type Lit = 'slots' | 'default' | 'custom' | 'cidr' | 'production' | null
 
@@ -69,7 +70,21 @@ function Instance({ delay = 0 }: { delay?: number }) {
 /** A public subnet (default VPC): its chip left, its running instance right. */
 function PublicSubnet({ w, lit, delay }: { w: number; lit: boolean; delay: number }) {
   return (
-    <SubnetBox w={w} h={48} kind="public" label="public subnet" lit={lit}>
+    <SubnetBox
+      w={w}
+      h={48}
+      kind="public"
+      label={
+        <span className="inline-flex items-center gap-1">
+          {/* public: reachable from the internet, its globe turning slowly */}
+          <Act kind="spin" dur={9} delay={-delay * 3}>
+            <Globe size={13} aria-hidden />
+          </Act>
+          Public Subnet
+        </span>
+      }
+      lit={lit}
+    >
       <div className="absolute" style={{ right: 9, top: 9 }}>
         <Instance delay={delay} />
       </div>
@@ -80,16 +95,20 @@ function PublicSubnet({ w, lit, delay }: { w: number; lit: boolean; delay: numbe
 /** A subnet the engineer built (custom VPC), its route table chip under it. */
 function BuiltSubnet({ w, h = 48, lit, on, delay }: { w: number; h?: number; lit: boolean; on: boolean; delay: number }) {
   return (
-    <div className="flex flex-col items-center gap-1.5">
+    <div className="flex flex-col items-center">
       <Fade on={on} lift={-12} delay={delay}>
-        <SubnetBox w={w} h={h} label="subnet" lit={lit}>
+        <SubnetBox w={w} h={h} label="Subnet" lit={lit}>
           <div className="absolute" style={{ right: 9, top: h - 39 }}>
             <Instance delay={delay / 1000} />
           </div>
         </SubnetBox>
       </Fade>
-      <Fade on={on} lift={-8} delay={delay + 260}>
-        <RouteChip lit={lit} />
+      <Fade on={on} lift={-8} delay={delay + 260} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {/* the route table steers the subnet's traffic: a short link, a dot running down it */}
+        <span aria-hidden className="relative block" style={{ width: 2, height: 12, background: '#AFC2E4' }}>
+          {on && <Flow x1={1} y1={0} x2={1} y2={12} tone={colors.brand} n={1} dur={1.4} size={6} />}
+        </span>
+        <RouteChip label="Route Table" lit={lit} />
       </Fade>
     </div>
   )
@@ -101,7 +120,7 @@ function Slot({ on, lit, children, h }: { on: boolean; lit: boolean; children: R
   return (
     <div className="relative min-w-0 flex-1" style={{ height: h }}>
       <div aria-hidden className="absolute inset-0" style={{ opacity: on ? 0 : 1, transition: instant ? 'none' : `opacity 420ms ${EASE}` }}>
-        <div className="absolute inset-0 rounded-[16px]" style={{ border: `1.5px dashed ${lit ? NET.lit : '#AFC2E4'}`, background: lit ? '#FFF6EE' : 'transparent', transition: instant ? 'none' : `border-color 420ms ${EASE}` }} />
+        <div className="absolute inset-0 rounded-[16px]" style={{ border: `1.5px dashed ${lit ? LIT : '#AFC2E4'}`, background: lit ? 'rgba(45,99,251,0.08)' : 'transparent', transition: instant ? 'none' : `border-color 420ms ${EASE}` }} />
       </div>
       <Fade on={on} lift={10} style={{ position: 'absolute', inset: 0 }}>
         {children}
@@ -114,7 +133,7 @@ function Slot({ on, lit, children, h }: { on: boolean; lit: boolean; children: R
 function RangeBar({ on, lit }: { on: boolean; lit: boolean }) {
   const instant = useInstant()
   return (
-    <div className="relative h-[16px] w-full overflow-hidden rounded-full" style={{ background: colors.white, boxShadow: `inset 0 0 0 1.5px ${lit ? NET.lit : NET.boundary}` }}>
+    <div className="relative h-[16px] w-full overflow-hidden rounded-full" style={{ background: colors.white, boxShadow: `inset 0 0 0 1.5px ${lit ? colors.brandDark : NET.boundary}` }}>
       {[0, 1].map((i) => (
         <span
           key={i}
@@ -142,9 +161,10 @@ function ProductionChip({ on, lit }: { on: boolean; lit: boolean }) {
   return (
     <Fade on={on} lift={6}>
       <span className="relative inline-block">
-        {lit && <Ripple x={58} y={14} r={44} tone={colors.success} on n={2} dur={2} />}
+        {/* once the mark lands it keeps a quiet green pulse, stronger while it is the step's subject */}
+        {on && <Ripple x={15} y={14} r={13} tone={colors.success} on n={lit ? 2 : 1} dur={2} />}
         <Label strong tone="good" raised icon={<Check />} iconRound>
-          production
+          Production
         </Label>
       </span>
     </Fade>
@@ -178,7 +198,7 @@ function RegionScene({ W, H, wide, stage, cidr = false, production = false, lit 
         h={H - 24}
         tone={NET.boundary}
         fill="rgba(45,99,251,0.035)"
-        label="AWS region"
+        label="Region"
         labelIcon={
           <span className="grid h-full w-full place-items-center">
             <AwsMark w={18} />
@@ -192,20 +212,22 @@ function RegionScene({ W, H, wide, stage, cidr = false, production = false, lit 
               w="100%"
               h="100%"
               dashed
-              label="default"
+              label="Default"
+              labelIcon={<Sparkles />}
               lit={litL}
               extra={badge(
                 stage >= 1,
-                colors.warning,
-                <Act kind="glow" dur={1.6}>
-                  <Sparkles size={15} color={colors.warning} />
+                colors.brand,
+                /* created automatically: a gear that keeps turning */
+                <Act kind="spin" dur={5}>
+                  <Cog size={15} color={colors.brand} />
                 </Act>,
               )}
             >
               <div className={`flex ${wide ? 'flex-row' : 'flex-col'} gap-[10px]`} style={{ padding: '10px 10px 0' }}>
                 {[0, 1].map((i) => (
-                  <Tint key={i} label="Availability Zone" lit={litL}>
-                    <PublicSubnet w={subW} lit={litL} delay={i * 0.5} />
+                  <Tint key={i} label="Availability Zone" labelIcon={<Building2 />} lit={litL}>
+                    <PublicSubnet w={subW} lit={false} delay={i * 0.5} />
                   </Tint>
                 ))}
               </div>
@@ -217,7 +239,8 @@ function RegionScene({ W, H, wide, stage, cidr = false, production = false, lit 
               w="100%"
               h="100%"
               dashed
-              label="custom"
+              label="Custom"
+              labelIcon={<PencilRuler />}
               lit={litR}
               extra={
                 <span className="flex items-center gap-2">
@@ -235,7 +258,7 @@ function RegionScene({ W, H, wide, stage, cidr = false, production = false, lit 
               <div className="flex flex-col gap-[10px]" style={{ padding: '10px 10px 0' }}>
                 <div className={`flex ${wide ? 'flex-row justify-between' : 'flex-col'} gap-[10px]`}>
                   {[0, 1].map((i) => (
-                    <BuiltSubnet key={i} w={builtW} h={wide ? 48 : 60} lit={litR || lit === 'cidr'} on={stage >= 2} delay={180 + i * 320} />
+                    <BuiltSubnet key={i} w={builtW} h={wide ? 48 : 52} lit={false} on={stage >= 2} delay={180 + i * 320} />
                   ))}
                 </div>
                 {wide && (
@@ -251,7 +274,7 @@ function RegionScene({ W, H, wide, stage, cidr = false, production = false, lit 
               {!wide && (
                 <div aria-hidden className="pointer-events-none absolute flex gap-2" style={{ left: 10, bottom: 10, opacity: 0 }}>
                   <Label mono size={14}>10.0.0.0/16</Label>
-                  <Label size={14}>production</Label>
+                  <Label size={14}>Production</Label>
                 </div>
               )}
             </Frame>

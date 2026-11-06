@@ -287,6 +287,10 @@ diagram with three named boxes and no marks makes them read all three.
 The logo supports the label; it does not replace it. A mark with no name beside
 it is a guessing game for anyone who does not already know the technology.
 
+**Except when the mark already carries the name** (a wordmark: the AWS, Azure and
+Google Cloud logos, and any logo with the product name lettered in it): then
+the text label beside it is a duplicate and goes. See rule 52.
+
 ## 12b. Slide copy is professional, never casual
 
 **Banned on a slide:** an evaluative aside about how a thing feels. "This is
@@ -1152,11 +1156,21 @@ The user set this on 2026-09-25, when Poppins replaced Sora for headings (rule
 34). Poppins is wider, so headings that fitted in Sora can now wrap, in older
 decks after `sync-kit.mjs --apply` and in every new deck.
 
-## 36. No full stop at the end of a line of slide copy
+## 36. No punctuation mark at the end of a line of slide copy
 
-No line of rendered slide copy ends in a full stop: a narration line, a
-caption, a callout, a bullet, a lead, a hint, a card's sentence. Questions keep
-their question mark, because that mark is part of what the line asks.
+No line of rendered slide copy ends in a punctuation mark: not a full stop, a
+comma, a semicolon, a colon or an exclamation mark. That covers every
+sentence, narration line, caption, callout, bullet, lead, hint, card sentence,
+label, chip, tag, table cell and heading, the frames' own titles included
+(`Welcome`, `Quiz Time`, never `Welcome!`, `Quiz Time!`). Punctuation inside
+the line stays, and so do brackets and apostrophes. Questions keep their
+question mark, because that mark is part of what the line asks.
+
+- A lead that introduces the points below it does not end on a colon.
+- A TR sentence split across two points (or two lines) at its own comma loses
+  the comma at the split.
+- A replacement text the user supplies that ends in punctuation is used
+  without that final mark.
 
 When one line holds two sentences, **split it onto two lines**, each without a
 full stop. Do not delete the mid-line full stop and leave the sentences joined:
@@ -1179,6 +1193,12 @@ keeps whatever the program really holds (course rule R3 in the Python course).
 Why: the user had already asked for this and it was never written down, so
 Python session 15 (`Outputs/python/15_string_methods`) shipped slide 7 with a
 full stop on every narration line. Raised in review on 2026-10-01.
+
+Widened from the full stop to every final mark by the user on 2026-11-05, as
+a global rule for all decks, after Cloud Networking & VPC
+(`Outputs/cloudcomputing/cloud_networking_and_vpc`) shipped a lead ending in
+a colon (slide 6, "is the deployment boundary:"), a point ending in a colon
+(slide 9) and three split points ending in the TR's comma (slides 9, 10, 64).
 
 ## 37. Template colours only: never a colour from the reference deck
 
@@ -1684,3 +1704,159 @@ correction had arrived on 2026-10-28 for Containers vs VMs (course rule R4),
 and this deck, built the day before that, still shipped a red ring and nine
 red-framed captures. Red reads as an error on a step that went right.
 
+## 52. A logo that carries the name gets no text label beside it
+
+**Hard rule, every deck, every course.** Where a logo already spells out the
+product or service name (a wordmark: `aws`, `Azure`, `Google Cloud`, and any
+mark with its name lettered in), remove the text label beside it that says
+the same thing. This includes the blue column-head text next to a logo in a
+table: the column head is the logo alone.
+
+- Remove only the duplicated part: `AWS VPC` beside the aws mark becomes
+  `VPC`, `Azure VNet` beside the Azure mark becomes `VNet`, `GCP VPC Network`
+  beside the Google Cloud mark becomes `VPC Network`, `AWS Region` beside the
+  aws mark becomes `Region`.
+- A sentence that names the provider is not a label and keeps its words
+  ("appears as AWS VPC, Azure VNet and GCP VPC Network").
+- A symbol-only mark (Docker's whale, the Kubernetes wheel) still takes its
+  name beside it: rule 12 holds for those.
+- The logo stays at its own aspect ratio, one dimension set. Give the mark an
+  accessible name (`role="img" aria-label="AWS"`) when the visible text goes.
+
+Why: user, 2026-11-05, a global rule for all decks, after Cloud Networking &
+VPC (`Outputs/cloudcomputing/cloud_networking_and_vpc`) shipped slide 19's
+provider table with every column head shown twice (the aws, Azure and Google
+Cloud wordmarks, each followed by a blue `AWS`, `Azure`, `GCP`) and slide 21's
+drawing with `AWS VPC`, `Azure VNet`, `GCP VPC Network` beside the marks.
+Rule 12's "the logo supports the label" had been read as "always add the
+label".
+
+## 53. Sensitive data in a screenshot is blurred
+
+**Hard rule, every deck, every course.** Before a screenshot goes on a slide,
+blur every piece of sensitive data in it: email addresses, passwords, IP
+addresses, account IDs, access keys and secrets, and any other identifying or
+credential data (cloud resource IDs such as `vpc-0b11…`, `subnet-…`, `igw-…`,
+`rtb-…`, `acl-…`, ARNs, owner IDs, phone numbers, real names of accounts).
+
+- Blur the PNG itself, never with an overlay on the slide: the single HTML
+  ships the image, and a CSS blur can be inspected away. A strong Gaussian on
+  a padded rectangle around the text, illegible at 2x zoom, the UI around it
+  left sharp. When a deck serves a 2x copy (`shots-hd/`), blur both at
+  matching coordinates.
+- Keep the untouched originals in `<course>/workflow/captures/` (not shipped).
+- What the slide teaches stays readable: resource names (`s5-cloud-network-vpc`),
+  states, and private teaching ranges such as `10.0.0.0/16` (RFC 1918 blocks
+  are not sensitive). A public IP, an account's real address or anything that
+  identifies the account is blurred even when the caption mentions it.
+- A highlight ring may still sit on a field whose ID is blurred when the ring
+  points at the readable name beside it.
+- This narrows the "no blur" in the cloud computing course's R7.9, which bans
+  blurred or zoomed copies of a capture, not the blurring of sensitive fields.
+
+Why: user, 2026-11-05, a global rule for all decks, after Cloud Networking &
+VPC (`Outputs/cloudcomputing/cloud_networking_and_vpc`, the lab slides) showed
+the AWS account ID `948…` and every VPC, subnet, gateway and route table ID
+readable in six console captures.
+
+## 54. A real product or service is drawn with its official logo, never a stand-in
+
+**Hard rule, every deck, every course.** Wherever a real product or service
+appears in a figure (AWS Elastic Load Balancing, an Application or Network Load
+Balancer, Route 53, CloudFront, NGINX, HAProxy, any vendor's product), draw it
+with its official mark: the AWS Architecture Icons package for AWS
+(`slide-kit/assets/aws/`, fetched from <https://aws.amazon.com/architecture/icons/>
+when a mark is missing), the vendor's own site or brand kit for everything else.
+Never a generic lucide glyph, a gear, a network-tree icon or a hand-drawn
+approximation standing in for it.
+
+- **The names map to fixed marks.** "Load Balancer" (the generic AWS one) is the
+  Elastic Load Balancing service icon; "ALB" is the Application Load Balancer
+  resource icon; "NLB" is the Network Load Balancer resource icon. An ALB and an
+  NLB on one slide each carry their own mark.
+- One icon size and one style (service icon or resource icon) per slide.
+- **One container for every official mark** (user, 2026-11-06, "Slide 15 is the reference"): the mark in a white
+  rounded tile, corner radius 0.27 x size, mark at 76 % of the tile, 60 px in a diagram (`shape: 'tile'` does
+  exactly this). Keep the size of the icon being replaced.
+- Fixed marks: DNS Resolver = Route 53 Resolver resource icon; Route 53 = Route 53 service icon; EC2 = the flat
+  official EC2 icon (never redrawn in 3D). All are in `slide-kit/assets/aws/`.
+- A part with no official mark (a target group, a security group, a subnet beside official icons) uses the deck's
+  3D library icons (`target-arrow`, `shield-lock`, `network`), one consistent set per slide. A server or database
+  drawn beside an official AWS mark gets a custom icon built like an AWS service icon (80 px flat square, white
+  2 px glyph, square corners, deck colours): `custom-server.svg`, `custom-database.svg` in Session 6's images.
+- When an official mark does not exist, say so and name what was used; never substitute silently.
+- The mark keeps its aspect ratio (R8.5); a wordmark takes no duplicate label
+  beside it (rule 52).
+- A plain part that is not a product (a generic `Server`, `User`, `Browser`)
+  keeps the library render.
+
+Why: user, 2026-11-06, a global rule for all decks, after Load Balancing & CDN
+(`Outputs/cloudcomputing/load_balancing_and_cdn`, the first deck-engine deck)
+drew every load balancer as a generic network-tree glyph on fourteen slides and
+NGINX / HAProxy / AWS ELB as a gear and a cloud on slide 14.
+
+## 55. Blue is the only text-highlight colour
+
+**Hard rule, every deck, every course.** When words inside a card, a point or a
+figure label are emphasised by colour (a question line, a key phrase, a card's
+sub-heading), the colour is the brand blue (`colors.brand` / `brandDark`), never
+green, amber, teal or red. Status colours stay on status marks (a tick, a cross,
+a health chip), not on emphasised text.
+
+Why: user, 2026-11-06, after Load Balancing & CDN slide 35 coloured its three
+cards' questions green, amber and teal, which read as three different meanings
+where there was one.
+
+## 56. Every word of a chip, tag or figure label is capitalised, short words included
+
+**Hard rule, every deck.** A chip, tag, pill, card label or figure label is Title Case with **every** word
+capitalised: "Anyone Off The Street", "Branch Nearest To You", "Only The First Request Travels To The Origin",
+"This Session Focuses On Cloud-Managed", "Software (Like NGINX Or HAProxy)". No short-word exemption on chips.
+Sentences and points keep sentence case (rule 33 / R8.4); kickers and titles keep the TR's own heading.
+`check-deck` R8.4 title-case is strict on chips since 2026-11-06.
+
+Why: user, 2026-11-06, Load Balancing & CDN: "even if it is like lowercase turn them into capital case" after
+chips on slides 7, 14, 17, 18, 33, 45, 48, 52-54 shipped with lowercase "to", "the", "off", "on", "for", "or".
+
+## 57. A chip or tag stays inside the card it sits in
+
+**Hard rule, every deck.** A chip, badge or tag placed on a card never runs past the card's edges. When it does
+not fit, it wraps inside the card's inner width (keep a hyphenated word such as `Cloud-Managed` whole, round the
+corners instead of a pill, centre the lines) or the card grows; never `white-space: nowrap` past an edge.
+`check-deck` "chip inside its card" fails it.
+
+Why: user, 2026-11-06, Load Balancing & CDN slide 14: "This Session Focuses On Cloud-Managed" ran 7px outside its
+card and the overflow check missed it because nothing clipped it.
+
+## 58. People on a slide: distinct, role-appropriate, facing the picture
+
+**Hard rule, every deck.**
+- No two identical character renders on one slide (or one side of an analogy). Each person is a different render.
+- The person fits the role: an adult for a visitor, a customer, an operator; never a child standing in for one.
+- A "user" in a technical figure is a boy (or person) with a laptop from the library (`lib:build-boy-laptop`,
+  `lib:coder`, `lib:student-laptop`), the same family across the deck.
+- People face the main visual: mirror the render when it looks away from the diagram.
+- Characters that act (a patient, customers, a shopkeeper) are built with Character Lab in the clay look; scenes
+  read as a real place at first glance (a hospital room with bed, monitor and IV; a street shop), not boxes.
+
+Why: user, 2026-11-06, Load Balancing & CDN: duplicate users on slides 7 and 33, a child as the visitor on 18,
+female and mixed users replaced by a boy with a laptop on 45, 46, 54, 55, users flipped to face the diagram on
+60 and 72, and the health-check analogy rebuilt as a realistic hospital room.
+
+## 59. Figures sit on a clean plate, and their motion is physical
+
+**Hard rule, every deck.** No grid-line, map-line or "distorted" line background behind a diagram: the figure
+sits on the plain stage plate. No spinning charts (a donut or pie never rotates). Motion that depicts a real
+object behaves like it: clock hands turn continuously, a balance shifts weight and settles with damping, a
+needle sways with the flow; no whole-object wiggle around a pivot.
+
+Why: user, 2026-11-06, Load Balancing & CDN slides 45, 46, 49 (grid backgrounds removed), 47 (donut spin
+removed) and 10 (clock, traffic meter and balance rebuilt with physical motion).
+
+## 60. No highlighted table rows unless the user asks for one
+
+**Hard rule, every deck.** Tables are built with no row or cell highlight. A highlight is added only when the user
+asks for it on that table; "it carries meaning" is not enough on its own (this narrows R8.3).
+
+Why: user, 2026-11-06, Load Balancing & CDN slide 62: the `s6-public-subnet-2` row was highlighted as "the one new
+resource" and the user removed it.

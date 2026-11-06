@@ -1,8 +1,8 @@
 import type React from 'react'
 import type { DeckMeta, SlideDef } from '@/deck/types'
-import { BrandSlide, NextSessionSlide, SectionBreakerSlide, ThankYouSlide } from '@/slides'
+import { BrandSlide, NextSessionSlide, SectionBreakerSlide, ThankYouSlide, WelcomeSlide } from '@/slides'
 import { Takeaways } from './figures/closing'
-import { AgendaColumns, QuizCard, FeedbackCard } from './figures/variants'
+import { AgendaColumns, FeedbackCard } from './figures/variants'
 import { installSpecKeys } from '@/ui/foundations/keys'
 import { revealEveryStep } from '@/motion/Stepper'
 import { installEntrances } from './figures/entrance'
@@ -24,7 +24,7 @@ import { ImageVsContainer, RecipeAnalogy, PullRun, PullRun2, PartA1, PartA2, Run
 import { PartB1, PartB1b, PartB2, PartB3, PartB4, PartB5, PartB6, PartB7, PartB8 } from './figures/cv/build'
 import { TwoStacks, TwoStacksPoints, BootMemory, WhyGap, SizeDensity, DensityBuys, Isolation, Isolation2, BlastRadius, BlastRadius2 } from './figures/cv/compare'
 import { FourCriteria, ContainerUses, VmUses, DecisionTable, BothTogether } from './figures/cv/choose'
-import { ToolingMap, Hypervisors, Containerd, Podman, BusAnalogy, Engines, Registries, Tagging, HeadsUp } from './figures/cv/tooling'
+import { ToolingMap, Hypervisors, Containerd, Podman, Engines, Registries, Tagging, HeadsUp } from './figures/cv/tooling'
 
 /**
  * CLOUD COMPUTING · "Containers vs Virtual Machines" (session 4)
@@ -106,6 +106,7 @@ const slide = (id: string, section: string, label: string, El: (p: { lesson: str
 export const cvDeck: SlideDef[] = [
   /* ── OPENING ─────────────────────────────────────────────────────────── */
   { id: 'S-WELCOME', section: 'Opening', label: 'Welcome', transition: 'fade', element: <BrandSlide greeting="Welcome!" lesson={SESSION} /> },
+  { id: 'S-TITLE', section: 'Opening', label: 'Session name', transition: 'zoom', element: <WelcomeSlide minimal title={SESSION} lesson={SESSION} /> },
   { id: 'S-RECAP', section: 'Opening', label: 'Recap', element: <Takeaways id="S-RECAP" kicker="Recap" title="Virtualization & Hypervisors" lesson={SESSION} items={PREVIOUS.map(({ title }) => ({ title }))} art="/assets/takeaways/presenter.png" /> },
   /* agenda1, titles only: the frame the user kept (2026-10-30); agenda0 and the full-line agenda1 were deleted */
   { id: 'S-AGENDA-1B', section: 'Opening', label: 'Agenda', element: <AgendaColumns kicker={SESSION} lesson={SESSION} items={AGENDA.map(({ title }) => ({ title }))} /> },
@@ -180,15 +181,12 @@ export const cvDeck: SlideDef[] = [
   slide('T22-1', S[4], 'Four hypervisor products', Hypervisors),
   slide('T23-1', S[4], 'containerd', Containerd),
   slide('T23-2', S[4], 'Podman', Podman),
-  slide('T23-AN', S[4], 'Analogy: A bus depot or an auto-rickshaw', BusAnalogy),
   slide('T24-1', S[4], 'Docker, Podman, containerd', Engines),
   slide('T25-1', S[4], 'Public and private registries', Registries),
   slide('T26-1', S[4], 'Tagging strategy', Tagging),
   slide('X1', S[4], 'Heads-up: AWS account', HeadsUp),
 
   /* ── CLOSING ─────────────────────────────────────────────────────────── */
-  /* quiz1: the frame the user kept (2026-10-30); quiz0 was deleted */
-  { id: 'S-QUIZ-1', section: 'Closing', label: 'Quiz Time', transition: 'zoom', element: <QuizCard lesson={SESSION} title="Quiz Time!" /> },
   { id: 'S-TAKEAWAYS', section: 'Closing', label: 'Key Takeaways', element: <Takeaways id="S-TAKEAWAYS" lesson={SESSION} items={AGENDA.map(({ title }) => ({ title }))} /> },
   /* feedback1: the frame the user kept (2026-10-30); feedback0 was deleted */
   { id: 'feedback-card', section: 'Closing', label: 'Feedback', transition: 'zoom', element: <FeedbackCard lesson={SESSION} /> },

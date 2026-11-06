@@ -2,8 +2,8 @@ import { Fragment, type ReactNode } from 'react'
 import { Building2, Cloud, Globe, Lock, MapPin, Ruler, Scale, Scissors } from 'lucide-react'
 import { colors } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
-import { Arrow, At, Fade, Label, useBuild } from '../scene'
-import { Badge, LitFigure, Ripple, type CvIconName } from './fx'
+import { Arrow, At, BOX_W, Card, Fade, Label, Stage, useBuild } from '../scene'
+import { Badge, LitFigure, LitPoints, Ripple, type CvIconName } from './fx'
 import { Gateway, NET, SubnetBox } from './frames'
 import { Cidr, Disc, EASE, Host, IconText, onRim, Packet, SB_CSS, ThinBoundary } from './subnets-parts'
 import { SIZING_CSS } from './subnets-sizing'
@@ -46,23 +46,30 @@ const T07_POINTS: ReactNode[] = [
 ]
 const T07_ICONS: ReactNode[] = [<Ruler key="0" size={20} />, <Globe key="1" size={20} />, <Building2 key="2" size={20} />, <Scale key="3" size={20} />]
 
-/* the stage, 546 x 350 (a three-line lead above it), 14px clear on every side; the VPC block's inner row is 436 wide plus the 14 gap */
+/* the stage, 546 x 350 (a three-line lead above it), 14px clear on every side; the VPC block's inner row is 436 wide plus the 14 gap.
+   `s7(w)` lays the same drawing out on a wider stage (T07-1b, 2026-11-05): the region, the VPC and the two columns widen, every
+   height and every piece's size stays, the two slices keep their 218 : 262 proportion */
 const S7_H = 350
-const S7 = {
-  reg: { x: 14, y: 30, w: 518, h: 304 },
-  vpc: { x: 34, y: 100, w: 478, h: 210 },
-  igw: { cx: 273, cy: 100, r: 22 },
-  headY: 132,
-  zoneTop: 144,
-  rowTop: 164,
-  rowH: 58,
-  rowGap: 8,
-  innerX: 48,
-  innerW: 450,
-  colGap: 14,
-  /** the image's two /25 slices, equal; then one slice widened */
-  equal: 218,
-  wide: 262,
+const S7_W = 546
+function s7(w = S7_W) {
+  const innerW = w - 96
+  const equal = (innerW - 14) / 2
+  return {
+    reg: { x: 14, y: 30, w: w - 28, h: 304 },
+    vpc: { x: 34, y: 100, w: w - 68, h: 210 },
+    igw: { cx: w / 2, cy: 100, r: 22 },
+    headY: 132,
+    zoneTop: 144,
+    rowTop: 164,
+    rowH: 58,
+    rowGap: 8,
+    innerX: 48,
+    innerW,
+    colGap: 14,
+    /** the image's two /25 slices, equal; then one slice widened */
+    equal,
+    wide: Math.round((equal * 262) / 218),
+  }
 }
 /** the points column, wide enough that every point holds to two lines (FS review: max two lines); the stage is 546 */
 const T07_POINTS_W = 540
@@ -94,7 +101,8 @@ function PadBadge({ on }: { on: boolean }) {
  *   3  the two Availability Zones outlined (a thin line on a tint) under their headers
  *   4  the wide column's subnets hold four hosts, the narrow's two; public hosts show a globe (exposed)
  */
-function SubnetsScene({ k }: { k: number }) {
+function SubnetsScene({ k, w = S7_W, centred = false }: { k: number; w?: number; centred?: boolean }) {
+  const S7 = s7(w)
   const instant = useInstant()
   const move = instant ? 'none' : `left 620ms ${EASE}, width 620ms ${EASE}`
   const widthT = instant ? 'none' : `width 620ms ${EASE}`
@@ -158,7 +166,7 @@ function SubnetsScene({ k }: { k: number }) {
       <At x={S7.igw.cx} y={S7.igw.cy - 42} cx cy>
         <Fade on={split}>
           <Label size={14} strong raised>
-            Internet gateway
+            Internet Gateway
           </Label>
         </Fade>
       </At>
@@ -197,7 +205,7 @@ function SubnetsScene({ k }: { k: number }) {
           <At x={c.x} y={S7.rowTop} style={{ transition: move }}>
             <Fade on={split} lift={0} delay={split ? 240 : 0}>
               <SubnetBox w={c.w} h={S7.rowH} kind="public" label="Public" style={{ transition: widthT }}>
-                <At x={c.w - 14} y={S7.rowH / 2 + 2} style={{ transform: 'translate(-100%, -50%)' }}>
+                <At x={centred ? c.w / 2 : c.w - 14} y={S7.rowH / 2 + 2} style={{ transform: centred ? 'translate(-50%, -50%)' : 'translate(-100%, -50%)' }}>
                   {hostRow(i, 'server-stack', 'public')}
                 </At>
               </SubnetBox>
@@ -206,7 +214,7 @@ function SubnetsScene({ k }: { k: number }) {
           <At x={c.x} y={S7.rowTop + S7.rowH + S7.rowGap} style={{ transition: move }}>
             <Fade on={split} lift={0} delay={split ? 360 : 0}>
               <SubnetBox w={c.w} h={S7.rowH} kind="private" label="Private" style={{ transition: widthT }}>
-                <At x={c.w - 14} y={S7.rowH / 2 + 2} style={{ transform: 'translate(-100%, -50%)' }}>
+                <At x={centred ? c.w / 2 : c.w - 14} y={S7.rowH / 2 + 2} style={{ transform: centred ? 'translate(-50%, -50%)' : 'translate(-100%, -50%)' }}>
                   {hostRow(i, 'database', 'private')}
                 </At>
               </SubnetBox>
@@ -255,22 +263,40 @@ export function SubnetsOverview({ lesson }: { lesson: string }) {
   )
 }
 
-/** T07-1b opens on T07-1's split and builds on: the zones, then the hosts each size holds. */
+/**
+ * T07-1b opens on T07-1's split and builds on: the zones, then the hosts each size holds.
+ * Layout (user, 2026-11-05: "enlarge the visual on the right and rework the layout entirely. Keep the visual and adjust
+ * its width to fit. Place the points below it, side by side, at equal width"): the drawing across the full box on top,
+ * laid out on the wider stage and drawn at T07_Z; the two points beneath it in one row, each half the box. The body
+ * with no lead is 418 tall: the stage, the gap and one row of two-line tiles (67) fill it. The drawing's empty top band
+ * (above the Region chip) is cut by T07B_CUT so it is drawn as large as the height allows.
+ */
+const T07B_H = 330
+const T07B_CUT = 10
+const T07_Z = T07B_H / (S7_H - T07B_CUT)
+const T07B_W = Math.round(BOX_W / T07_Z)
+const T07B_GAP = 16
+
 export function SubnetsOverview2({ lesson }: { lesson: string }) {
   const k = 2 + useBuild(3, 1300, 1000)
+  const lit = k - 3
+  const pts = T07_POINTS.slice(2).map((text, i) => ({ icon: T07_ICONS[i + 2], text }))
+  const pointW = (BOX_W - 24) / 2
   return (
-    <LitFigure
-      id="T07-1b"
-      kicker="Subnets Overview"
-      title="CIDR Type Zone"
-      lesson={lesson}
-      points={T07_POINTS.slice(2).map((text, i) => ({ icon: T07_ICONS[i + 2], text }))}
-      lit={k - 3}
-      pointSize={17}
-      pointsW={T07_POINTS_W}
-      figH={S7_H}
-      figure={<SubnetsScene k={k} />}
-    />
+    <Card id="T07-1b" kicker="Subnets Overview" title="CIDR Type Zone" lesson={lesson}>
+      <div className="flex flex-col" style={{ width: BOX_W, gap: T07B_GAP }}>
+        <Stage w={BOX_W} h={T07B_H} active={false}>
+          <div className="absolute left-0" style={{ top: -T07B_CUT * T07_Z, width: T07B_W, height: S7_H, transform: `scale(${T07_Z})`, transformOrigin: '0 0' }}>
+            <SubnetsScene k={k} w={T07B_W} centred />
+          </div>
+        </Stage>
+        <div className="flex items-stretch" style={{ width: BOX_W, gap: 24 }}>
+          {pts.map((p, i) => (
+            <LitPoints key={i} items={[p]} lit={lit === i ? 0 : -1} width={pointW} size={17} />
+          ))}
+        </div>
+      </div>
+    </Card>
   )
 }
 

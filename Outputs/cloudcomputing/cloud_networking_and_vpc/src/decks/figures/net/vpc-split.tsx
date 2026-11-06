@@ -33,9 +33,15 @@ const POINTS_A = [
   { icon: <Split size={20} />, text: 'This range is divided into smaller subnets to organize and place resources' },
   { icon: <Network size={20} />, text: "Logical isolation separates each customer's traffic in software, even while sharing physical switches and cables" },
 ]
+/** T06-1b's two point boxes at one height (user, 2026-11-05: point 2 wraps to exactly three lines and both boxes match): each text sits in a three-line block, centred. */
+const threeLines = (t: string) => (
+  <span className="flex flex-col justify-center" style={{ minHeight: '4.125em' }}>
+    {t}
+  </span>
+)
 const POINTS_B = [
-  { icon: <Cloud size={20} />, text: 'The same boundary concept appears as AWS VPC, Azure VNet and GCP VPC Network with minor differences' },
-  { icon: <Boxes size={20} />, text: 'That one large CIDR block must now be split into smaller subnets placed across Availability Zones' },
+  { icon: <Cloud size={20} />, text: threeLines('The same boundary concept appears as AWS VPC, Azure VNet and GCP VPC Network with minor differences') },
+  { icon: <Boxes size={20} />, text: threeLines('That one large CIDR block must now be split into smaller subnets placed across Availability Zones (in AWS, each subnet sits in one AZ)') },
 ]
 
 const POINTS_W = 576
@@ -68,7 +74,7 @@ function RangeBar({ w, split, lit }: { w: number; split: boolean; lit: boolean }
             width: b.w,
             height: BAR_H,
             borderRadius: split ? 6 : i === 0 ? '6px 0 0 6px' : i === 3 ? '0 6px 6px 0' : 0,
-            background: lit ? NET.lit : NET.boundary,
+            background: lit ? colors.brandDark : NET.boundary,
             opacity: 0.85,
             transition: instant ? 'none' : `left 560ms ${EASE}, width 560ms ${EASE}, background 420ms ${EASE}, border-radius 420ms ${EASE}`,
           }}
@@ -89,7 +95,7 @@ function VpcBox({ w, h, split, litBar, lit, barY, children }: { w: number; h: nu
       lit={lit}
       extra={
         <Label size={14} strong tone="brand" icon={<MapPin />}>
-          address range
+          Address Range
         </Label>
       }
     >
@@ -104,7 +110,7 @@ function VpcBox({ w, h, split, litBar, lit, barY, children }: { w: number; h: nu
 /** A subnet: its chip top-left, its resource centred below it with its light on. */
 function Subnet({ w, h, lit, light, delay = 0 }: { w: number; h: number; lit: boolean; light: boolean; delay?: number }) {
   return (
-    <SubnetBox w={w} h={h} label="subnet" lit={lit}>
+    <SubnetBox w={w} h={h} label="Subnet" lit={lit}>
       <div className="absolute" style={{ left: '50%', bottom: 8, transform: 'translateX(-50%)' }}>
         <span className="relative block">
           <Resource size={28} />
@@ -140,10 +146,10 @@ function SplitScene({ k, held }: { k: number; held: boolean }) {
       {/* the split: each block of the range carried down to its subnet, the head ending on the subnet's top edge */}
       {[0, 1, 2, 3].map((i) => (
         <div key={i}>
-          <Arrow x1={from[i]} y1={A_VPC.y + A_VPC.h + 2} x2={subX(i) + A_SUB.w / 2} y2={A_SUB.y} on={k >= 1} delay={i * 90} width={ARROW_W} tone={now(1) ? NET.lit : NET.boundary} />
+          <Arrow x1={from[i]} y1={A_VPC.y + A_VPC.h + 2} x2={subX(i) + A_SUB.w / 2} y2={A_SUB.y} on={k >= 1} delay={i * 90} width={ARROW_W} tone={now(1) ? colors.brandDark : NET.boundary} />
           <At x={subX(i)} y={A_SUB.y}>
             <Fade on={k >= 1} lift={8} delay={240 + i * 90}>
-              <Subnet w={A_SUB.w} h={A_SUB.h} lit={now(1)} light={k >= 1} delay={i * 0.35} />
+              <Subnet w={A_SUB.w} h={A_SUB.h} lit={false} light={k >= 1} delay={i * 0.35} />
             </Fade>
           </At>
         </div>
@@ -151,7 +157,7 @@ function SplitScene({ k, held }: { k: number; held: boolean }) {
       {/* the shared switches and cables, the VPC's own lane over the shared cable */}
       <Fade on={k >= 2} lift={0}>
         <Line x={cableL} y={A_CABLE_Y} len={cableR - cableL} tone={LAB.lavDeep} thick={6} />
-        <span aria-hidden className="absolute" style={{ left: cableL + 8, top: laneY - 0.75, width: cableR - cableL - 16, height: 0, borderTop: `1.5px dashed ${now(2) ? NET.lit : colors.brand}` }} />
+        <span aria-hidden className="absolute" style={{ left: cableL + 8, top: laneY - 0.75, width: cableR - cableL - 16, height: 0, borderTop: `1.5px dashed ${now(2) ? colors.brandDark : colors.brand}` }} />
         {A_ROUTER.xs.map((x) => (
           <At key={x} x={x} y={A_ROUTER.y}>
             <Icon3D name="router" w={A_ROUTER.w} />
@@ -159,7 +165,7 @@ function SplitScene({ k, held }: { k: number; held: boolean }) {
         ))}
         <At x={W / 2} y={A_CABLE_Y + 16} cx>
           <Label strong tone={now(2) ? 'solid' : 'plain'} raised icon={<Network />}>
-            shared physical switches and cables
+            Shared Physical Switches and Cables
           </Label>
         </At>
       </Fade>
@@ -182,17 +188,18 @@ export function VpcToSubnets({ lesson }: { lesson: string }) {
 
 /* ================================================================== T06-1b */
 
-const B_VPC = { x: 16, y: 12, w: 262, h: 108, barY: 46 }
-const B_NAMES = { x: B_VPC.x + B_VPC.w + 18, ys: [22, 54, 86] }
+const B_VPC = { x: 16, y: 12, w: 240, h: 108, barY: 46 }
+const B_NAMES = { x: B_VPC.x + B_VPC.w + 16, ys: [22, 54, 86] }
 const B_ZONE = { y: 152, w: (W - 32 - 14) / 2, xs: [16, 16 + (W - 32 - 14) / 2 + 14] }
 const B_SUB = { w: 0, h: 70, pad: 10, gap: 10 }
 B_SUB.w = (B_ZONE.w - B_SUB.pad * 2 - B_SUB.gap) / 2
 const B_SUB_Y = B_ZONE.y + B_SUB.pad
 const B_ZONE_H = B_SUB.pad + B_SUB.h + 10 + 26 + 10
 const NAMES: { name: 'aws' | 'azure' | 'gcp'; text: string }[] = [
-  { name: 'aws', text: 'AWS VPC' },
-  { name: 'azure', text: 'Azure VNet' },
-  { name: 'gcp', text: 'GCP VPC Network' },
+  /* the marks carry the provider's name, so the label is the network's name alone (user, 2026-11-05, global rule 2) */
+  { name: 'aws', text: 'VPC' },
+  { name: 'azure', text: 'VNet' },
+  { name: 'gcp', text: 'VPC Network' },
 ]
 
 function ZonesScene({ k, held }: { k: number; held: boolean }) {
@@ -208,7 +215,7 @@ function ZonesScene({ k, held }: { k: number; held: boolean }) {
           <div className="absolute" style={{ left: 10, bottom: 8 }}>
             <Fade on={k >= 2} lift={6}>
               <Label strong tone={now(2) ? 'solid' : 'brand'} raised icon={<Hash />}>
-                one large CIDR block
+                One Large CIDR Block
               </Label>
             </Fade>
           </div>
@@ -219,7 +226,8 @@ function ZonesScene({ k, held }: { k: number; held: boolean }) {
         <At key={n.name} x={B_NAMES.x} y={B_NAMES.ys[i]}>
           <Fade on={k >= 1} lift={6} delay={i * 140}>
             <span className="inline-flex items-center gap-2 whitespace-nowrap font-heading text-[15px] font-semibold leading-none" style={{ color: now(1) ? colors.brand : colors.ink, transition: instant ? 'none' : `color 420ms ${EASE}` }}>
-              <span className="inline-flex w-[58px] shrink-0 justify-center">{n.name === 'aws' ? <AwsMark w={30} /> : <Logo name={n.name} h={n.name === 'gcp' ? 15 : 17} />}</span>
+              {/* each mark at its own aspect ratio: one dimension set, in a column wide enough for the widest (Google Cloud) */}
+              <span className="inline-flex w-[80px] shrink-0 justify-center">{n.name === 'aws' ? <AwsMark w={30} /> : <Logo name={n.name} h={n.name === 'gcp' ? 12 : 16} />}</span>
               {n.text}
             </span>
           </Fade>
@@ -229,7 +237,7 @@ function ZonesScene({ k, held }: { k: number; held: boolean }) {
       {B_ZONE.xs.map((x, i) => (
         <At key={i} x={x} y={B_ZONE.y}>
           <Fade on={k >= 2} lift={0} delay={i * 120}>
-            <div className="relative rounded-[14px]" style={{ width: B_ZONE.w, height: B_ZONE_H, background: now(2) ? '#FFF1E6' : 'rgba(45,99,251,0.07)', boxShadow: now(2) ? `inset 0 0 0 1.5px ${NET.lit}` : 'none', transition: instant ? 'none' : `background 420ms ${EASE}, box-shadow 420ms ${EASE}` }}>
+            <div className="relative rounded-[14px]" style={{ width: B_ZONE.w, height: B_ZONE_H, background: now(2) ? 'rgba(45,99,251,0.14)' : 'rgba(45,99,251,0.07)', boxShadow: now(2) ? `inset 0 0 0 1.5px ${colors.brand}` : 'none', transition: instant ? 'none' : `background 420ms ${EASE}, box-shadow 420ms ${EASE}` }}>
               <div className="absolute" style={{ left: B_SUB.pad, bottom: 10 }}>
                 <Label strong tone={now(2) ? 'solid' : 'brand'} icon={<Boxes />}>
                   Availability Zone
@@ -244,7 +252,7 @@ function ZonesScene({ k, held }: { k: number; held: boolean }) {
         <div key={i}>
           <Arrow x1={from[i]} y1={B_VPC.y + B_VPC.h + 2} x2={subX(i) + B_SUB.w / 2} y2={B_SUB_Y} width={ARROW_W} tone={NET.boundary} />
           <At x={subX(i)} y={B_SUB_Y}>
-            <Subnet w={B_SUB.w} h={B_SUB.h} lit={now(2)} light delay={i * 0.35} />
+            <Subnet w={B_SUB.w} h={B_SUB.h} lit={false} light delay={i * 0.35} />
           </At>
         </div>
       ))}

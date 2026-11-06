@@ -28,9 +28,9 @@ export { VpcToSubnets, VpcToSubnets2 } from './vpc-split'
  *           customer's VPC (a stranger's packet is refused at its rim); its
  *           address range and traffic rules; a server and a database on one
  *           locked line, packets running it
- *   T03-2   the VPC empty; subnets; route tables; gateways (traffic out through
- *           the NAT, the internet gateway signalling); locks (a packet refused)
- *   T04-1   the AWS region with two empty slots; the default VPC made for you;
+ *   T03-2   the four points beside a presenter from the 3D people library, lit
+ *           one by one (2026-11-05: the VPC drawing removed on the user's word)
+ *   T04-1   the region (the aws mark is its label's icon) with two empty slots; the default VPC made for you;
  *           the custom VPC built piece by piece
  *   T04-1b  the custom VPC's CIDR and its range bar the subnets fit inside; the
  *           production mark
@@ -112,10 +112,10 @@ function SharedNetworkScene({ k, held }: { k: number; held: boolean }) {
   const now = (i: number) => !held && k === i
   return (
     <At x={S1_BOX.x} y={S1_BOX.y}>
-      <Boundary w={S1_BOX.w} h={S1_BOX.h} solid tone={LAB.lavDeep} label="Public cloud infrastructure" labelTone="dark">
+      <Boundary w={S1_BOX.w} h={S1_BOX.h} solid tone={LAB.lavDeep} label="Public Cloud Infrastructure" labelTone="dark">
         <div className="absolute" style={{ right: 14, top: 8 }}>
           <Label strong tone="brand" icon={<UserRound />}>
-            shared by many customers
+            Shared by Many Customers
           </Label>
         </div>
         {/* the other customers, each in its own isolated network: a customer mark, a server and a database, their lights on */}
@@ -152,12 +152,12 @@ function SharedNetworkScene({ k, held }: { k: number; held: boolean }) {
               <div className="absolute flex items-center justify-between" style={{ left: 14, right: 22, top: 20 }}>
                 <Fade on={k >= 2} lift={6}>
                   <Label strong tone={now(2) ? 'solid' : 'brand'} raised icon={<MapPin />}>
-                    IP address range
+                    IP Address Range
                   </Label>
                 </Fade>
                 <Fade on={k >= 2} lift={6} delay={120}>
                   <Label strong tone={now(2) ? 'solid' : 'brand'} raised icon={<ListChecks />}>
-                    traffic rules
+                    Traffic Rules
                   </Label>
                 </Fade>
               </div>
@@ -172,14 +172,14 @@ function SharedNetworkScene({ k, held }: { k: number; held: boolean }) {
                     </span>
                   </At>
                   <At x={S1_SRV.cx} y={S1_SRV.cy - 12 - S1_R / 2} cx>
-                    <Resource kind="server" size={S1_R} lit={now(3)} label="servers" />
+                    <Resource kind="server" size={S1_R} lit={now(3)} label="Servers" />
                   </At>
                   <At x={S1_DB.cx} y={S1_DB.cy - 12 - S1_R / 2} cx>
-                    <Resource kind="database" size={S1_R} lit={now(3)} label="databases" />
+                    <Resource kind="database" size={S1_R} lit={now(3)} label="Databases" />
                   </At>
                   <At x={(S1_SRV.cx + S1_DB.cx) / 2} y={170} cx>
                     <Label strong tone={now(3) ? 'solid' : 'plain'} raised>
-                      communicate securely
+                      Communicate Securely
                     </Label>
                   </At>
                 </div>
@@ -187,7 +187,7 @@ function SharedNetworkScene({ k, held }: { k: number; held: boolean }) {
               {/* its isolation, named on its rim */}
               <At x={S1_VPC.w / 2} y={S1_VPC.h} cx cy>
                 <Label strong tone={now(1) ? 'solid' : 'plain'} raised icon={<ShieldCheck />}>
-                  logically isolated network
+                  Logically Isolated Network
                 </Label>
               </At>
             </Boundary>
@@ -215,10 +215,10 @@ export function WhatIsVpc({ lesson }: { lesson: string }) {
 
 const T051_LEAD = 'Every major provider offers the same isolation model under a different name, so the mental model built for one cloud transfers directly to another'
 const T051_ROWS: [string, string, string, string][] = [
-  ['Isolated network', 'VPC (Virtual Private Cloud)', 'VNet (Virtual Network)', 'VPC Network'],
-  ['Default on signup', 'One default VPC per region', 'No general-purpose VNet created automatically', 'One default VPC, global scope'],
-  ['Cross-network link', 'VPC peering', 'VNet peering', 'VPC network peering'],
-  ['Address range unit', 'CIDR block on the VPC', 'CIDR block on the VNet', 'Subnet-level CIDR only'],
+  ['Isolated Network', 'VPC (Virtual Private Cloud)', 'VNet (Virtual Network)', 'VPC Network'],
+  ['Default on Signup', 'One default VPC per region', 'No general-purpose VNet created automatically', 'One default VPC, global scope'],
+  ['Cross-Network Link', 'VPC peering', 'VNet peering', 'VPC network peering'],
+  ['Address Range Unit', 'CIDR block on the VPC', 'CIDR block on the VNet', 'Subnet-level CIDR only'],
 ]
 
 /* each row's subject, acting it out: the shield glows (isolation), the new member hops in (signup), the link lifts (a join), the hash stays (a number) */
@@ -229,13 +229,11 @@ const T051_ICONS: ReactNode[] = [
   <Act key="3" kind="glow" dur={2.6} delay={0.4}><Hash size={18} /></Act>,
 ]
 
-/** A provider's column head: its logo first, then its short name as the header label (the name was screen-reader-only until 2026-11-04, which the overflow check flagged). */
+/** A provider's column head: its logo alone, at its own aspect ratio (user, 2026-11-05: the blue `AWS` / `Azure` / `GCP` beside the mark repeated the name the mark already carries). The name reaches screen readers through the mark's role="img" label. */
 function Head({ name, alt }: { name: 'aws' | 'azure' | 'gcp'; alt: string }) {
   return (
-    <span className="inline-flex items-center gap-2.5" style={{ height: 28 }}>
+    <span className="inline-flex items-center" style={{ height: 28 }} role="img" aria-label={alt}>
       <span className="inline-flex shrink-0 items-center">{name === 'aws' ? <AwsMark w={40} /> : <Logo name={name} h={24} style={{ alignItems: 'flex-start' }} />}</span>
-      {/* the provider's name, visible after its mark (lead, 2026-11-04: a screen-reader-only name clipped its own text) */}
-      <span className="whitespace-nowrap">{alt}</span>
     </span>
   )
 }
@@ -264,7 +262,7 @@ export function Providers({ lesson }: { lesson: string }) {
         <VisualTable
           compact
           columns={[
-            { label: 'Concept', icon: <Layers size={16} />, weight: 0.82 },
+            { label: 'Concept', icon: <Layers size={16} />, weight: 0.95 },
             { label: <Head name="aws" alt="AWS" />, weight: 1 },
             { label: <Head name="azure" alt="Azure" />, weight: 1.12 },
             { label: <Head name="gcp" alt="GCP" />, weight: 1 },
