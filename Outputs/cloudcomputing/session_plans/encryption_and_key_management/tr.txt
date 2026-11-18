@@ -1,0 +1,634 @@
+Session 15 : Encryption & Key Management
+
+
+RECAP: Session 14 : IAM Roles & Least Privilege
+        1. Roles & Temporary Credentials: Assuming a role; session tokens; temporary vs
+        long-lived credentials
+        2. Principle of Least Privilege: Scoping actions & resources; wildcards & their risks;
+        permission boundaries; iterative tightening
+        3. Federation & Single Sign-On: Identity providers; SAML & OIDC; multi-factor
+        authentication (MFA)
+        4. Service & Machine Identity: Instance & workload identities; avoiding embedded
+        keys; non-human identity at scale
+        5. Identity for AI Agents: Scoped, short-lived & revocable credentials; excessive
+        agency as a failure mode
+
+Agenda for Today's Session
+        1. Data States: At rest; in transit; in use
+        2. Cryptography Essentials: Symmetric vs asymmetric encryption; hashing vs
+        encryption
+        3. Encryption in Transit: TLS handshake; certificates & trust chains; enforcing TLS
+        on endpoints
+        4. Encryption at Rest: Volume, bucket & database encryption; client-side vs server-
+        side encryption
+        5. Key Management: Key Management Service (KMS); provider- vs customer-
+        managed keys; envelope encryption; rotation, HSM & BYOK
+
+
+
+--------------------------------------- SECTION 1: 1. Data States: At rest; in transit; in use
+---------------------------------------
+
+Slide 1: Data States In Cloud
+Heading: Three Data States
+
+Subheading: Rest Transit Use
+
+Content:
+
+Data faces a different risk depending on whether it is stored, moving across a network, or
+being processed; cloud security treats each state on its own terms.
+
+●​ At rest: data stored on disk, volume or bucket, idle
+●​ In transit: data moving between systems over a network
+●​ In use: data loaded in memory or CPU during processing
+
+Visual Guidance: Three boxes left to right: a disk icon (at rest), a network link (in transit), a
+CPU/memory icon (in use), connected by one arrow chain.
+
+Speaker Notes: "Walk through how the same piece of data passes through all three states
+during its lifecycle, each needing a different defence. Exam hook: interviewers commonly
+ask to name all three states with one risk each."
+
+
+
+Slide 2: Comparing The Three States
+Heading: State Risk Comparison
+
+Subheading: Risk And Location
+
+Content:
+
+Data State              Primary Risk            AWS Location             Protection Approach
+                                                Example
+At rest                 Stolen disk or          EBS volume, S3           Server-side or
+                        snapshot read           bucket, RDS              client-side
+                        offline                 instance                 encryption
+In transit              Traffic secretly read   TLS endpoint on a        TLS encryption in
+                        or changed on the       load balancer or API     transit
+                        wire
+In use                  Memory peeked into  EC2 instance          Confidential
+                        on a hacked server  memory, Nitro         computing / enclave
+                                            Enclave               isolation
+Visual Guidance: Render as a three-row table aligned under the matching box from the
+previous slide's diagram.
+
+Speaker Notes: "Walk each row, naming the AWS screen only as a pointer — encryption
+mechanics come in the following sections. Call out Nitro Enclaves as AWS's answer for data
+in use, the state learners most often forget."
+
+
+
+
+--------------------------------------- SECTION 2: 2. Cryptography Essentials: Symmetric
+vs asymmetric encryption; hashing vs encryption ---------------------------------------
+
+Slide 3: Cryptography Essentials Overview
+Heading: Cryptography Essentials
+
+Subheading: Three Core Tools
+Content:
+
+Protecting data at each state relies on three cryptographic tools, each solving a different
+problem.
+
+●​ Symmetric encryption: one shared key encrypts and decrypts data
+●​ Asymmetric encryption: a public-private key pair replaces key sharing
+●​ Hashing: a one-way fingerprint checks integrity, not confidentiality
+
+Visual Guidance: Three icons in a row: single key, key pair, fingerprint — labelled
+symmetric, asymmetric, hashing
+
+Speaker Notes: "Explain that each tool answers a different question: who can read, who
+proves identity, whether data changed. Mention AWS KMS and ACM as the services built on
+these primitives. Exam angle: hashing is not encryption because it cannot be reversed."
+
+
+
+Slide 4: Symmetric Vs Asymmetric Keys
+Heading: Symmetric Vs Asymmetric
+
+Subheading: Keys Compared
+
+Content:
+
+Symmetric encryption locks and unlocks data with one shared key, such as AES. Asymmetric
+encryption uses a linked public-private key pair, such as RSA or ECC: the public key encrypts
+and only the private key decrypts.
+
+●​ AES commonly uses a 128-bit or 256-bit key length
+●​ RSA keys are commonly 2048 bits or more, far larger than AES keys
+●​ Asymmetric suits key exchange and digital signatures
+
+Analogy: A shared house key used by every family member is symmetric encryption, while a
+letterbox anyone can post into but only the homeowner's key opens is asymmetric
+encryption — just as a public key locks data for anyone while only the private key unlocks it.
+
+Visual Guidance: Side-by-side icons: single key labelled AES for symmetric, a key pair
+labelled RSA/ECC for asymmetric
+
+Speaker Notes: "AES protects bulk data cheaply while RSA or ECC protect the key itself.
+AWS KMS uses AES-256; ACM issues RSA or ECC certificates."
+
+
+
+Slide 5: Hashing Vs Encryption
+Heading: Hashing Vs Encryption
+Subheading: One-Way Fingerprint
+
+Content:
+
+Hashing converts data into a fixed-length digest, such as a 256-bit SHA-256 value, using a
+one-way function that cannot be reversed. Unlike encryption, standard hashing needs no
+key and proves data unchanged rather than hiding it.
+
+●​ Same input always yields the same fixed digest
+●​ Verifies file integrity; salted, slow hashes also protect stored passwords
+●​ One changed bit alters the entire digest
+
+Analogy: Blending fruits into juice is like hashing — the juice proves fruits were used, but
+nothing turns juice back into whole fruits, just as a digest cannot be reversed into the
+original data.
+
+Visual Guidance: Diagram: data block through a hash-function icon producing a fixed digest
+box labelled SHA-256, with a blocked arrow showing no reverse path
+
+Speaker Notes: "Hashing is one-way, unlike encryption which always has a reverse.
+Passwords are hashed and salted, never encrypted, in identity stores. Exam hook: explain
+why a hash cannot be decrypted."
+
+
+
+
+Slide 7: Crypto Building Blocks Bridge
+Heading: Crypto To TLS Bridge
+
+Subheading: Setting Up Transit
+
+Content:
+
+These three building blocks combine inside TLS (Transport Layer Security): asymmetric
+keys set up trust, a symmetric key then encrypts the session, and authenticated encryption
+checks nothing changed in transit.
+
+●​ Asymmetric cryptography proves the server's identity at connection start
+●​ Symmetric cryptography carries the bulk encrypted traffic afterward
+●​ TLS uses authenticated encryption to protect message confidentiality and integrity
+   throughout the session
+
+Visual Guidance: Arrow flow: asymmetric handshake leads to symmetric session key leads
+to hashed integrity check
+Speaker Notes: "Tie each tool to its exact job inside TLS: authenticate, encrypt, verify. Keep
+the three roles distinct so learners do not confuse hashing with encryption. Exam hook: this
+combination is why TLS is called a hybrid cryptosystem."
+
+
+
+
+--------------------------------------- SECTION 3: 3. Encryption in Transit: TLS
+handshake; certificates & trust chains; enforcing TLS on endpoints
+---------------------------------------
+
+Slide 8: Encryption in Transit Landscape
+Heading: Transit Encryption Map
+
+Subheading: TLS Certs Enforcement
+
+Content:
+
+Traffic moving between a browser, a load balancer and a backend database crosses
+networks nobody fully controls, so it must stay unreadable in flight.
+
+●​ TLS handshake builds a secure channel for one connection
+●​ Certificates and trust chains prove the server's identity
+●​ Enforcement settings close off any plaintext fallback path
+
+Visual Guidance: Diagram: client → encrypted link → load balancer → backend, with a
+padlock icon on the link and a certificate icon at the load balancer.
+
+Speaker Notes: "Frame this as the three pieces the section covers, in order. Stress the order:
+handshake first, then certificates, then enforcement in the cloud setting."
+
+
+
+Slide 9: The TLS Handshake
+Heading: TLS Handshake
+
+Subheading: Building The Secure Channel
+
+Content:
+
+Before any application data flows, the client and server run a short handshake that agrees
+how to encrypt, proves the server's identity and creates a shared session key.
+
+●​   Client hello: the client lists the TLS versions and cipher suites it supports
+●​   Server hello: the server picks one and sends its certificate
+●​   Client checks the certificate chain and that the name matches the server
+●​   Both sides use key exchange to derive the same symmetric session key
+●​ Finished messages confirm the handshake, then traffic is encrypted with the session key
+
+
+Visual Guidance: Sequence diagram: client and server vertical lines with arrows for Client
+Hello, Server Hello with certificate, key exchange and Finished, then a padlocked 'encrypted
+data' arrow.
+
+Speaker Notes: "Walk the five arrows in order. Stress that the certificate proves who the
+server is, while the session key is what actually encrypts the traffic; TLS 1.3 completes the
+handshake in one round trip. Exam hook: ask which key type is used at each stage of the
+handshake."
+
+
+
+Slide 10: TLS Termination at the Edge
+Heading: TLS Termination Points
+
+Subheading: Where Encryption Ends
+
+Content:
+
+A cloud load balancer can decrypt traffic itself before forwarding it, or leave the encrypted
+connection sealed all the way to the backend.
+
+●​   Termination: load balancer decrypts, sends plaintext internally
+●​   Passthrough: encrypted packets reach the backend unopened
+●​   Re-encryption: load balancer decrypts, then re-encrypts onward
+●​   Termination offloads CPU-heavy decryption from backend servers
+
+Analogy: "A security guard at an office gate opens a sealed parcel, checks it, then seals it in a
+fresh envelope before sending it inside — just as re-encryption decrypts traffic at the load
+balancer and encrypts it again before the backend."
+
+Visual Guidance: Three small diagrams side by side labelled Termination, Passthrough, Re-
+encryption, each showing the padlock opening/closing at different points.
+
+Speaker Notes: "Explain why re-encryption is the common production choice for
+compliance. Ask: why does termination reduce backend CPU load?"
+
+
+
+Slide 11: Trust Chains in Cloud Endpoints
+Heading: Trust Chain In Cloud
+
+Subheading: Root To Leaf
+
+Content:
+A cloud certificate manager automates the trust-chain work: issuing a leaf certificate, linking
+it to a trusted root, and renewing it before expiry.
+
+●​   Root CA signs an intermediate CA, which signs the leaf cert
+●​   Public CA path suits internet-facing endpoints trusted by browsers
+●​   Private CA path suits internal services trusted only inside the org
+●​   ACM auto-renews certificates it issues; imported certificates must be renewed manually.
+
+Visual Guidance: Vertical chain diagram: Root CA box, arrow down to Intermediate CA box,
+arrow down to Leaf Certificate box, with a small clock icon for auto-renewal beside the leaf.
+
+Speaker Notes: "Stress that the chain here is managed by a cloud service rather than
+configured by hand. Mention that a broken intermediate link fails the whole chain."
+
+
+
+Slide 12: Enforcing TLS on Cloud Endpoints
+Heading: Enforcing TLS Endpoints
+
+Subheading: AWS Service Map
+
+Content:
+
+Attaching a certificate is only half the job; an endpoint must also be configured to reject any
+connection that does not use it.
+
+●​ AWS Certificate Manager (ACM): issues certificates that load balancers, CloudFront and
+   API Gateway use.
+●​ Load balancer HTTPS listener: terminates TLS; plain HTTP is redirected or removed
+●​ API Gateway: accepts only HTTPS; a custom domain uses an ACM certificate
+●​ S3 bucket policy: denies requests where aws:SecureTransport is false
+●​ Minimum TLS version policy: blocks outdated, weaker protocol versions
+
+Visual Guidance: Screenshot-style mock of the ACM console issuing a certificate, with an
+arrow pointing to a load balancer listener marked HTTPS 443.
+
+Speaker Notes: "Name ACM as the exact AWS console location, since the topic names a
+specific tool. Exam hook: ask why aws:SecureTransport in a bucket policy blocks plaintext
+S3 access."
+--------------------------------------- SECTION 4: 4. Encryption at Rest: Volume, bucket
+& database encryption; client-side vs server-side encryption
+---------------------------------------
+
+Slide 14: Encryption at Rest — The Storage Landscape
+Heading: Encryption At Rest
+
+Subheading: Protecting Stored Data
+
+Content:
+
+A stolen disk, a leaked backup or an exposed snapshot exposes whatever sits on it;
+encryption at rest scrambles that data into ciphertext at the storage layer itself, so a copied
+file reveals nothing without the key.
+
+●​   Block volumes: the attached disk behind a compute instance
+●​   Object buckets: the files written to a storage bucket
+●​   Databases: the underlying storage, backups and replicas
+●​   Each can be encrypted server-side or client-side
+
+Visual Guidance: Three icons in a row — a disk, a bucket, a database — each stamped with
+a closed padlock, labelled Volume, Bucket, Database.
+
+Speaker Notes: "Open by naming the risk: a lost disk or a leaked backup is plaintext unless
+it was encrypted before it left the service. State that three storage types get this treatment
+and a fourth question — where the work happens — cuts across all three."
+
+
+
+Slide 15: Volume Encryption on EBS
+Heading: Volume Encryption
+
+Subheading: EBS At Rest
+
+Content:
+
+Amazon Elastic Block Store (EBS), the block volume attached to an EC2 instance, can be
+encrypted so every block written to it is stored as ciphertext, decrypted transparently as the
+instance reads it.
+
+●​   Encryption is set as a flag at volume creation time
+●​   Snapshots of an encrypted volume stay encrypted automatically
+●​   Data moving between instance and volume is encrypted too
+●​   Existing unencrypted volume needs a snapshot copy to encrypt
+●​   Enabled from the EBS console's Encrypt checkbox at creation
+Visual Guidance: An EC2 instance box connected to an EBS volume icon; the volume is
+shaded and tagged 'ciphertext on disk', with an arrow showing a snapshot inheriting the
+same shading.
+
+Speaker Notes: "Explain that encryption happens below the operating system, so the
+application and OS see plain data while the physical block is unreadable. Flag the common
+exam trap: an existing unencrypted volume cannot be encrypted in place, only via a
+snapshot copy."
+
+
+
+Slide 16: Bucket Encryption on S3
+Heading: Bucket Encryption
+
+Subheading: S3 Default Options
+
+Content:
+
+Amazon S3 can encrypt every object written to a bucket by default, so an upload with no
+encryption header still lands on disk as ciphertext.
+
+●​   SSE-S3: Amazon-managed key, encryption handled entirely by S3
+●​   SSE-KMS: uses an AWS KMS key; key usage is logged in CloudTrail
+●​   Since 2023 S3 applies SSE-S3 by default; a bucket can be switched to SSE-KMS
+●​   Found under the bucket's Properties tab, Default Encryption
+
+Visual Guidance: A bucket icon receiving an uploaded file arrow; inside the bucket the file
+turns into a locked padlock icon labelled 'stored as ciphertext'.
+
+Speaker Notes: "Point out that default encryption removes the need for every uploading
+application to set its own encryption header. Mention that SSE-KMS trades a little latency for
+an auditable trail of key usage, which interviewers often probe."
+
+
+
+Slide 17: Database Encryption on RDS
+Heading: Database Encryption
+
+Subheading: RDS At Creation
+
+Content:
+
+Managed databases such as Amazon RDS and Aurora encrypt the storage volume
+underneath the database engine, and that choice has to be made when the instance is first
+created.
+
+●​ Encrypts storage, automated backups, snapshots and replicas
+●​ Read replicas match the source's encryption; cross-Region replicas use a KMS key in that
+   Region
+●​ Cannot be switched on for an existing instance; restore from an encrypted snapshot
+   copy instead
+●​ Set via the Create Database screen's encryption option
+
+Visual Guidance: A database icon with a padlock on its storage layer, and three smaller
+arrows pointing to labelled boxes: Backup, Snapshot, Replica, each carrying the same
+padlock.
+
+Speaker Notes: "Stress that the encryption decision is permanent at creation, unlike S3's
+bucket-level toggle. Give the workaround for an existing unencrypted database: snapshot it,
+copy the snapshot with encryption enabled, then restore."
+
+
+
+Slide 18: Client-Side vs Server-Side Encryption
+Heading: Client vs Server Side
+
+Subheading: Where Work Happens
+
+Content:
+
+A second question cuts across volumes, buckets and databases alike: whether the storage
+service does the encrypting, or the application does it before the data ever leaves.
+
+Aspect                          Server-Side Encryption         Client-Side Encryption
+Where it happens                Inside the storage service     In the application, before
+                                                               upload
+Key visibility                  Provider or KMS manages        Client controls the key; the
+                                the key, depending on the      storage service never sees it
+                                option chosen
+Setup effort                    A checkbox or bucket policy   Application writes
+                                                              encryption code
+Typical use                     Most volumes, buckets,        Highly regulated or zero-
+                                databases                     trust data
+Visual Guidance: Two parallel flows, each drawn as plaintext to ciphertext via a data key
+step: left shows storage service generating and using the data key internally (server-side);
+right shows the application generating the data key and encrypting before upload (client-
+side).
+
+Speaker Notes: "Stress that server-side is the default across the volume, bucket and
+database cases, while client-side shifts that same job onto the application. Note the trade-off
+for interviews: client-side gives stronger control but loses provider-side features like search
+or indexing on the data."
+--------------------------------------- SECTION 5: 5. Key Management: Key Management
+Service (KMS); provider- vs customer-managed keys; envelope encryption;
+rotation, HSM & BYOK ---------------------------------------
+
+Slide 20: The Key Management Landscape
+Heading: Key Management Landscape
+
+Subheading: Protecting The Keys
+
+Content:
+
+Encryption only protects data if the keys themselves stay protected, so cloud providers offer
+a dedicated service to generate, store and control those keys rather than leaving it to each
+application.
+
+●​   Key Management Service (KMS): central creation, storage and control of keys
+●​   Provider-managed vs customer-managed keys: who sets policy and rotation
+●​   Envelope encryption: a data key encrypts data, a KMS key wraps it
+●​   Rotation, HSM & BYOK: refreshing keys, hardware custody, importing own key material
+
+Visual Guidance: Diagram: applications on the left, a KMS box in the centre holding a vault
+icon, arrows out to S3 buckets, EBS volumes and an RDS database.
+
+Speaker Notes: "Set this as the map for the section before going into KMS itself. Say plainly:
+data gets locked, but who locks the lock. Interview hook: ask why key management is
+treated as a separate concern from encryption itself."
+
+
+
+Slide 21: AWS Key Management Service
+Heading: What Is KMS
+
+Subheading: Managed Key Service
+
+Content:
+
+AWS Key Management Service (KMS) is the managed service that creates, stores and
+controls the cryptographic keys other AWS services use.
+
+●​   Generates keys and controls who may use them through key policies
+●​   Integrates directly with S3, EBS, RDS and other storage services
+●​   Keeps raw key material inside its boundary, never returned to callers
+●​   Key use is recorded in AWS CloudTrail for auditing
+Analogy: A bank keeps every locker's key inside its own guarded room, letting a customer
+use it without ever walking out with the actual key — just as KMS uses a key internally
+without ever releasing the raw key material to the application.
+
+Visual Guidance: Screenshot-style mock of the AWS KMS console showing a key list with
+alias, key ID and rotation status columns.
+
+Speaker Notes: "Open with the bank-locker problem before naming KMS. Point to where a
+key's alias and rotation status appear if a console view is shown. Exam hook: KMS never
+exports plaintext key material by design."
+
+
+
+Slide 22: Provider-Managed vs Customer-Managed Keys
+Heading: Provider Vs Customer Keys
+
+Subheading: Who Controls Keys
+
+Content:
+
+AWS encrypts many services automatically using its own keys, but regulated workloads
+often need direct control over key policy, rotation and audit trail, which is what a customer-
+managed key provides.
+
+Aspect                         Provider-Managed (AWS           Customer-Managed (KMS
+                               managed, aws/*)                 key)
+Who creates it                 AWS, automatically              Account owner, via KMS
+Rotation control               Fixed by AWS                    Owner schedules rotation
+Disable or delete              Not possible                    Owner can disable or
+                                                               schedule deletion
+Key policy                    Set by AWS, cannot be            Owner writes and edits it
+                              edited
+Typical use                   Default EBS encryption,       Compliance, cross-account
+                              SSE-KMS with aws/s3           sharing
+Visual Guidance: Side-by-side icons: a padlock labelled AWS-owned versus a padlock
+labelled customer KMS key, both feeding the same S3 bucket icon.
+
+Speaker Notes: "Explain that the choice is about control and auditability, not strength of
+encryption. Point to the key-policy tab if a console screenshot is on screen. Exam hook: ask
+which option supports revoking access instantly by disabling the key."
+
+
+
+Slide 23: Tracing Envelope Encryption
+Heading: Envelope Encryption Steps
+
+Subheading: Data Key And KMS Key
+Content:
+
+Encrypting a large file directly with a KMS key is impractical, since the Encrypt API accepts
+only 4 KB, so envelope encryption uses a fast local key for the data and calls KMS only to
+protect that smaller key.
+
+●​   KMS generates a 256-bit AES data key and its encrypted copy
+●​   KMS key used: ID 1a2b3c4d-5e6f-7890-abcd-ef1234567890
+●​   Application encrypts a 2 GB file locally with the plaintext data key
+●​   Encrypted data key is stored alongside the ciphertext file
+
+●​ To decrypt, KMS unwraps the encrypted data key and the application decrypts the file
+   locally
+
+Visual Guidance: Flow diagram: KMS key box generates a data key, data key encrypts a file
+icon, encrypted data key travels with the file, reverse arrow for decrypt calling back to KMS.
+
+Speaker Notes: "Walk the five steps in order, stressing that the plaintext data key never
+touches disk. Point to the encrypted-data-key field if a screenshot of an S3 object's metadata
+is shown. Exam hook: this is why KMS can encrypt unlimited data despite API call limits."
+
+
+
+Slide 24: Key Rotation and Hardware Custody
+Heading: Rotation And HSM
+
+Subheading: Refresh And Hardware
+
+Content:
+
+A key that never changes becomes a bigger risk the longer it is used, and software-only
+storage is itself a target, so providers add scheduled rotation and hardware-backed custody
+as two further safeguards.
+
+●​ Automatic rotation: when enabled, AWS KMS rotates eligible customer-managed key
+   material every year by default
+●​ Older key versions are retained to decrypt data encrypted earlier
+●​ Hardware Security Module (HSM): tamper-resistant hardware that never exposes raw
+   keys
+●​ AWS CloudHSM offers single-tenant, dedicated hardware for stricter compliance needs
+
+Visual Guidance: Timeline icon showing a key being replaced each year, next to a padlocked
+hardware box labelled HSM.
+
+Speaker Notes: "Explain rotation as reducing how long a compromised key stays useful, not
+as changing how data already encrypted is read. Mention CloudHSM only as the dedicated-
+hardware option, not a deep dive. Exam hook: rotating a key never re-encrypts old
+ciphertext immediately."
+Slide 25: Bring Own Key (BYOK)
+Heading: Bring Own Key
+
+Subheading: Importing Key Material
+
+Content:
+
+Some organisations must use key material their own systems generated, rather than a key
+AWS creates, for internal compliance; Bring Your Own Key (BYOK) is the process of
+importing that external key material into KMS.
+
+●​ Key material is generated in an on-premises HSM before import
+●​ An import token and wrapping key secure the transfer into KMS
+●​ Imported keys keep policy control like native keys, but cannot rotate automatically
+   (rotation is on demand or manual)
+●​ Owner can delete the imported material, making the key unusable for new operations
+
+Analogy: Bringing your own key to a rented locker instead of using the key provided
+by the locker facility — just as BYOK lets an organisation use its own generated key
+material in AWS KMS instead of relying on AWS-generated key material.
+
+Visual Guidance: Arrow diagram: on-premises HSM box, wrapped key material travelling
+through an import token, landing inside the KMS vault icon.
+
+Speaker Notes: "Clarify BYOK addresses who originates the key, and note AWS does not
+keep imported material as durable as its own, so the owner must keep a copy. If showing the
+console, point to the key-material-origin field marked external. Exam hook: BYOK keys can
+be deleted by the owner to revoke access outside any AWS workflow."
+
+
+
+
+Key Takeaways
+       1. Data States: At rest; in transit; in use
+       2. Cryptography Essentials: Symmetric vs asymmetric encryption; hashing vs
+       encryption
+       3. Encryption in Transit: TLS handshake; certificates & trust chains; enforcing TLS
+       on endpoints
+       4. Encryption at Rest: Volume, bucket & database encryption; client-side vs server-
+       side encryption
+       5. Key Management: Key Management Service (KMS); provider- vs customer-
+       managed keys; envelope encryption; rotation, HSM & BYOK
+Upcoming Session : Cloud Threats & Attacks
+
+                           Thank You | All the Best
+

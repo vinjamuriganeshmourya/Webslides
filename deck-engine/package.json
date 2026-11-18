@@ -8,7 +8,7 @@
     "dev": "vite",
     "gen": "node workflow/export/build-deck-css.mjs",
     "build": "npm run gen && tsc -b && vite build",
-    "build:html": "npm run gen && tsc -b && vite build -c vite.singlefile.config.ts && node scripts/inline-assets.mjs && node scripts/inline-fonts.mjs",
+    "build:html": "npm run gen && tsc -b && vite build -c vite.singlefile.config.ts && node scripts/prune-icons.mjs && node scripts/inline-assets.mjs && node scripts/inline-fonts.mjs",
     "build:review": "npm run gen && vite build -c vite.review.config.ts",
     "preview": "vite preview",
     "typecheck": "npm run gen && tsc -b --noEmit"

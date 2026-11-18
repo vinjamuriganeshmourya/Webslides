@@ -3,6 +3,7 @@ import { colors } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
 import { TILE_SKIN } from '@/decks/figures/card'
 import { Arrow, Label, REDUCED, STILL, useLoop } from '@/decks/figures/scene'
+import { MOTION, motionHeld } from '@/motion/tokens'
 import { litRing } from '@/decks/figures/net/frames'
 import * as K from '@/decks/figures/d3/kit'
 import { Diagram } from '@/engine/Diagram'
@@ -18,7 +19,7 @@ import volMark from '../images/aws-ebs-volume.svg'
  * reduced motion. Styling is inline: an arbitrary Tailwind class written here would not be generated.
  */
 
-const EASE = 'cubic-bezier(0.22,1,0.36,1)'
+const EASE = MOTION.ease
 const held = () => STILL || REDUCED
 
 /** shown from its step on: fade and a 6px rise, the diagram's own reveal */
@@ -285,16 +286,43 @@ function A_T02B({ step }: { step: number }) {
 
 /* ───────────────────────── T07-B · four NFS facts, one card each ───────────────────────── */
 
-function NfsCard({ x, y, on, lit, icon, title, children }: { x: number; y: number; on: boolean; lit: boolean; icon: string; title: string; children: ReactNode }) {
+/**
+ * The card's own picture (user, 2026-11-06, slide 18: "add relevant icons ... Session 6 layout as inspiration"):
+ * one 3D clay render per card, prominent in the header as Session 6's deployment cards lead with theirs. It
+ * settles in ONCE when its card arrives (a small scale-up on the deck's reveal ease), never loops, and is held
+ * whole on harness URLs, thumbnails and reduced motion.
+ */
+function CardArt({ on, delay = 140, children }: { on: boolean; delay?: number; children: ReactNode }) {
+  const still = motionHeld(useInstant())
+  const t = Math.round(MOTION.reveal * 1.5)
+  return (
+    <span
+      style={{
+        display: 'grid',
+        placeItems: 'center',
+        width: 60,
+        height: 56,
+        flexShrink: 0,
+        opacity: on ? 1 : 0,
+        transform: on ? 'none' : 'scale(0.82) translateY(4px)',
+        transition: still ? 'none' : `opacity ${t}ms ${EASE} ${on ? delay : 0}ms, transform ${t}ms ${EASE} ${on ? delay : 0}ms`,
+      }}
+    >
+      {children}
+    </span>
+  )
+}
+
+function NfsCard({ x, y, on, lit, art, title, children }: { x: number; y: number; on: boolean; lit: boolean; art: ReactNode; title: string; children: ReactNode }) {
   const instant = useInstant()
   return (
     <Show on={on} style={{ position: 'absolute', left: x, top: y, width: 279, height: 188 }}>
       <div style={{ position: 'absolute', inset: 0, borderRadius: 16, ...TILE_SKIN, boxShadow: litRing(lit, TILE_SKIN.boxShadow as string), transition: instant ? 'none' : `box-shadow 420ms ${EASE}` }} />
-      <div style={{ position: 'absolute', left: 14, top: 14, right: 14, ...flex(10) }}>
-        <GlyphTile icon={icon} size={36} />
+      <div style={{ position: 'absolute', left: 12, top: 10, right: 14, ...flex(10) }}>
+        <CardArt on={on}>{art}</CardArt>
         <span style={heading(17)}>{title}</span>
       </div>
-      <div style={{ position: 'absolute', left: 14, right: 14, top: 64, bottom: 14 }}>{children}</div>
+      <div style={{ position: 'absolute', left: 14, right: 14, top: 76, bottom: 12 }}>{children}</div>
     </Show>
   )
 }
@@ -318,8 +346,8 @@ function A_T07B({ step }: { step: number }) {
   const lit = (i: number) => step === i && !still
   return (
     <Frame w={586} h={400}>
-      <NfsCard x={6} y={6} on={step >= 1} lit={lit(1)} icon="FileText" title="NFSv3 Stateless">
-        <div style={flex(12, 'column', { alignItems: 'flex-start', paddingTop: 8 })}>
+      <NfsCard x={6} y={6} on={step >= 1} lit={lit(1)} art={<K.Icon3D name="beyond-envelope" w={56} shadow={false} />} title="NFSv3 Stateless">
+        <div style={flex(8, 'column', { alignItems: 'flex-start' })}>
           <Label strong tone="muted" icon={<Icon name="Repeat" size={14} />}>
             Each Request Carries
           </Label>
@@ -327,8 +355,8 @@ function A_T07B({ step }: { step: number }) {
           <Request />
         </div>
       </NfsCard>
-      <NfsCard x={301} y={6} on={step >= 2} lit={lit(2)} icon="ShieldCheck" title="NFSv4 Stateful">
-        <div style={flex(10, 'column', { alignItems: 'flex-start', paddingTop: 4 })}>
+      <NfsCard x={301} y={6} on={step >= 2} lit={lit(2)} art={<Icon name="lib:shield-lock" size={50} />} title="NFSv4 Stateful">
+        <div style={flex(8, 'column', { alignItems: 'flex-start' })}>
           <Label strong tone="brand" icon={<Icon name="Lock" size={14} />}>
             Built-In Locking
           </Label>
@@ -340,40 +368,35 @@ function A_T07B({ step }: { step: number }) {
           </Label>
         </div>
       </NfsCard>
-      <NfsCard x={6} y={206} on={step >= 3} lit={lit(3)} icon="FolderOpen" title="Exports">
-        <div style={flex(14, 'row', { paddingTop: 6 })}>
-          <span style={flex(6, 'column')}>
-            <K.Icon3D name="folder" w={66} />
-          </span>
-          <div style={flex(10, 'column', { alignItems: 'flex-start' })}>
-            <Label strong tone="brand" icon={<Icon name="FolderTree" size={14} />}>
-              Shared Directories
-            </Label>
-            <Label strong tone="brand" icon={<Icon name="KeyRound" size={14} />}>
-              Permissions
-            </Label>
-          </div>
+      <NfsCard x={6} y={206} on={step >= 3} lit={lit(3)} art={<Icon name="lib:data-storage" size={56} />} title="Exports">
+        <div style={flex(10, 'column', { alignItems: 'flex-start', paddingTop: 4 })}>
+          <Label strong tone="brand" icon={<Icon name="FolderTree" size={14} />}>
+            Shared Directories
+          </Label>
+          <Label strong tone="brand" icon={<Icon name="KeyRound" size={14} />}>
+            Permissions
+          </Label>
         </div>
       </NfsCard>
-      <NfsCard x={301} y={206} on={step >= 4} lit={lit(4)} icon="Lock" title="Concurrent Writers">
-        <div style={{ position: 'relative', width: 251, height: 110 }}>
-          <At x={34} y={34}>
-            <GlyphTile icon="PenLine" size={42} />
+      <NfsCard x={301} y={206} on={step >= 4} lit={lit(4)} art={<Icon name="lib:files" size={56} />} title="Concurrent Writers">
+        <div style={{ position: 'relative', width: 251, height: 100 }}>
+          <At x={34} y={26}>
+            <GlyphTile icon="PenLine" size={40} />
           </At>
-          <At x={217} y={34}>
-            <GlyphTile icon="PenLine" size={42} />
+          <At x={217} y={26}>
+            <GlyphTile icon="PenLine" size={40} />
           </At>
-          <At x={125} y={34}>
+          <At x={125} y={26}>
             <span style={{ position: 'relative', display: 'grid', placeItems: 'center' }}>
-              <GlyphTile icon="File" size={50} tone={colors.ink} />
-              <span className={still ? undefined : 'ax-loop ax-lock'} style={{ position: 'absolute', right: -9, bottom: -7, display: 'grid', placeItems: 'center', width: 24, height: 24, borderRadius: 99, background: colors.brand, color: colors.white, boxShadow: `0 0 0 2px ${colors.white}` }}>
+              <GlyphTile icon="File" size={46} tone={colors.ink} />
+              <span style={{ position: 'absolute', right: -9, bottom: -7, display: 'grid', placeItems: 'center', width: 24, height: 24, borderRadius: 99, background: colors.brand, color: colors.white, boxShadow: `0 0 0 2px ${colors.white}` }}>
                 <Icon name="Lock" size={13} />
               </span>
             </span>
           </At>
-          <Arrow x1={60} y1={34} x2={95} y2={34} on={step >= 4} tone={colors.brand} />
-          <Arrow x1={191} y1={34} x2={155} y2={34} on={step >= 4} tone={colors.muted} dashed />
-          <At x={125} y={90}>
+          <Arrow x1={59} y1={26} x2={97} y2={26} on={step >= 4} tone={colors.brand} />
+          <Arrow x1={192} y1={26} x2={153} y2={26} on={step >= 4} tone={colors.muted} dashed />
+          <At x={125} y={80}>
             <Label strong tone="brand" icon={<Icon name="Lock" size={14} />}>
               Explicit Locking
             </Label>

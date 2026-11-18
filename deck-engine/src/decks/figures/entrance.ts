@@ -132,11 +132,20 @@ function readingOrder(units: Element[]): Element[] {
   return out
 }
 
-/** A connector marked `data-draw` draws itself on, from its start, in its slot of the order. */
-function drawOn(el: Element, delay: number, reduce: boolean) {
+/** The paths of a connector marked `data-draw`, with their lengths: a READ, taken with the others (see `enter`). */
+type Drawn = { path: SVGGeometryElement; len: number }[]
+function drawnPaths(el: Element): Drawn {
+  const out: Drawn = []
   for (const path of el.querySelectorAll<SVGGeometryElement>('[data-draw]')) {
     const len = typeof path.getTotalLength === 'function' ? path.getTotalLength() : 0
-    if (!(len > 0)) continue
+    if (len > 0) out.push({ path, len })
+  }
+  return out
+}
+
+/** A connector marked `data-draw` draws itself on, from its start, in its slot of the order. */
+function drawOn(paths: Drawn, delay: number, reduce: boolean) {
+  for (const { path, len } of paths) {
     path.animate(
       [
         { strokeDasharray: `${len} ${len}`, strokeDashoffset: `${len}` },
@@ -182,12 +191,17 @@ function enterStepped(section: Element, units: Element[]) {
     if (overlap > 8 && (ra.right <= rb.left + 4 || rb.right <= ra.left + 4)) return ra.left - rb.left
     return ra.top - rb.top || ra.left - rb.left
   })
+  /* every read before the first write (see `enter`) */
+  const seen = new Map<Element, { own: number; move: boolean }>()
+  for (const b of blocks)
+    for (const el of b) {
+      const cs = getComputedStyle(el)
+      seen.set(el, { own: parseFloat(cs.opacity), move: cs.translate === 'none' || cs.translate === '' || cs.translate === '0px' })
+    }
   const anims: Animation[][] = blocks.map((b) =>
     b.flatMap((el) => {
-      const cs = getComputedStyle(el)
-      const own = parseFloat(cs.opacity)
+      const { own, move } = seen.get(el)!
       if (!(own > 0)) return []
-      const move = cs.translate === 'none' || cs.translate === '' || cs.translate === '0px'
       /*
         ONLY THE START KEYFRAME (2026-11-04, session 5): the end is implicit, the element's own live opacity and
         translate. With an explicit `{ opacity: own }` end and fill 'both', a shown block was pinned at the opacity
@@ -285,11 +299,22 @@ function enter(section: Element) {
     delays.set(el, v)
     return v
   }
-  units.forEach((el) => {
+  /*
+    EVERY READ, THEN EVERY WRITE (low-end pass, 2026-11-13). This loop used to read a unit's computed style and
+    start its animation in one pass. Starting an animation makes the element's style stale, so the next unit's
+    read made the browser bring style up to date again: once per unit, forty times on a full slide, inside the one
+    frame the slide mounts in. A unit's own opacity and translate do not depend on another unit's animation
+    (neither property is inherited), so reading them all first gives the same numbers and costs one pass.
+  */
+  const seen = units.map((el) => {
     const cs = getComputedStyle(el)
     const own = parseFloat(cs.opacity)
-    if (!(own > 0)) return
-    const move = !reduce && (cs.translate === 'none' || cs.translate === '' || cs.translate === '0px')
+    const still = cs.translate === 'none' || cs.translate === '' || cs.translate === '0px'
+    return { el, own, still, drawn: own > 0 && el.tagName.toLowerCase() === 'svg' ? drawnPaths(el) : null }
+  })
+  for (const { el, own, still, drawn } of seen) {
+    if (!(own > 0)) continue
+    const move = !reduce && still
     const frames: Keyframe[] = move
       ? [{ opacity: 0, translate: `0 ${RISE}px` }, { opacity: own, translate: '0 0' }]
       : [{ opacity: 0 }, { opacity: own }]
@@ -300,8 +325,8 @@ function enter(section: Element) {
       easing: EASE,
       fill: 'backwards',
     })
-    if (el.tagName.toLowerCase() === 'svg') drawOn(el, delay, reduce)
-  })
+    if (drawn) drawOn(drawn, delay, reduce)
+  }
 }
 
 let installed = false

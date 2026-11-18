@@ -37,7 +37,7 @@ function Chevrons() {
   )
 }
 
-export function NextSessionSlide({ label = 'Next Session', title, lesson }: NextSessionSlideProps) {
+export function NextSessionSlide({ label = 'Next Session', title, lesson, titleSize }: NextSessionSlideProps) {
   return (
     <SlideBase variant="night" ground="mesh" lesson={lesson} footer padded={false}>
       {/* The chip and the name are one block, centred both ways in the slide
@@ -61,7 +61,7 @@ export function NextSessionSlide({ label = 'Next Session', title, lesson }: Next
         <Reveal dir="up" className="text-center" style={{ width: NAME.width }}>
           <h1
             className="m-0 text-white"
-            style={{ fontFamily: fonts.tplTitle, fontWeight: 600, fontSize: NAME.fontSize, lineHeight: NAME.lineHeight }}
+            style={{ fontFamily: fonts.tplTitle, fontWeight: 600, fontSize: titleSize ?? NAME.fontSize, lineHeight: NAME.lineHeight }}
           >
             {title}
           </h1>

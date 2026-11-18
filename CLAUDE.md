@@ -34,7 +34,11 @@ slide-kit/                  course-independent. Shared by every deck.
   WebSlides_/ pptx_template/
                             reference material (both ignored by git, ~540 MB)
 
-Outputs/                    EVERY COURSE lives here. A course is one folder.
+../Outputdecks/<course>/    OUTSIDE THIS REPO. Every NEW deck project goes here from
+                            2026-11-13 (see "Where a NEW deck project goes" below).
+
+Outputs/                    Every course's plans, skills, reviews and captures, and
+                            every deck built before 2026-11-13. A course is one folder.
   django_deployement_course/  ONE COURSE. Add a sibling folder for another.
     session_plans/            EVERY slide-wise plan. One folder per session.
       deployement_session_3/    plan.md ← the signed-off plan
@@ -157,6 +161,52 @@ In this order. They are short, and they exist because a deck shipped wrong.
    and everything they say about hover, drag and touch does not apply to a deck.
    Never edit a file under `.agents/skills/`; the next `skills add` overwrites
    it.
+
+---
+
+## Where a NEW deck project goes — mandatory (user, 2026-11-13)
+
+**From 2026-11-13 every new deck project is created outside this repo**, in the
+decks folder beside it:
+
+```
+/home/nxtwave/Desktop/webslides/Outputdecks/<course>/<session_name>/
+```
+
+For the cloud computing course:
+
+```
+/home/nxtwave/Desktop/webslides/Outputdecks/cloudcomputing/<session_name>/
+```
+
+The user's words: *"from now on the deck need to be here ... not the built file,
+entire deck project for the deck need to be placed there, every [deck] from now
+on."*
+
+- **The whole project goes there**: `deck.json`, `images/`, `custom/`,
+  `slide-edits.ts` and the built `dist-single/<htmlName>.html`. Not only the
+  built file.
+- **Never create a new deck project under `Outputs/<course>/`.** That is where
+  every deck went until 2026-11-12; a deck started there now is in the wrong
+  place.
+- **The plan stays in this repo**, at the path in the next section
+  (`Outputs/<course>/session_plans/<session_name>/plan.md`). So do the course
+  skill, the reviews and the captures under `Outputs/<course>/workflow/`.
+- **The engine stays in this repo.** Build by pointing it at the outside folder
+  with an absolute path:
+  `node deck.mjs build /home/nxtwave/Desktop/webslides/Outputdecks/<course>/<session_name>`.
+  Proved on 2026-11-13: a deck built from outside the repo is the same size to
+  the byte as the one built inside.
+- **Decks already under `Outputs/` are not moved** unless the user names them.
+- **`Outputdecks/` is its own git repository** (`Presentation_Decks`, published
+  to GitHub Pages on every push to `main`). Nothing placed there is tracked by
+  this repo, and a push there puts a deck in front of viewers. Commit or push
+  in it only when the user asks. A new session is listed in
+  `Outputdecks/<course>/course.json` so the site shows it in order; its
+  `site/README.md` is the manual. Never read `.local-secrets.txt` there.
+
+Everywhere else this file says a session lives at `Outputs/<course>/<session>`,
+read it as that folder for a deck started on or after 2026-11-13.
 
 ---
 

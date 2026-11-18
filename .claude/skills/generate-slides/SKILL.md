@@ -10,6 +10,11 @@ This is the whole procedure. The user asks for slides; **you** supply
 everything below without being told. Never ask them to re-specify what is
 written here.
 
+> **From 2026-11-13 every NEW deck project is created outside this repo** (user, 2026-11-13), the whole folder and
+> not only the built file: `/home/nxtwave/Desktop/webslides/Outputdecks/<course>/<session>/`. The plan stays at
+> `Outputs/<course>/session_plans/<session>/plan.md`. Never start a new deck under `Outputs/<course>/`. Full text:
+> root `CLAUDE.md`, "Where a NEW deck project goes".
+>
 > **From 2026-11-04 every NEW session deck is built with `deck-engine/`** (user, 2026-11-04: one shared engine,
 > slides as data, the same workflow for the user — they give the input paths). Read `deck-engine/CLAUDE.md` first:
 > the session folder holds `deck.json` (+ `images/`, optional `custom/index.tsx`), not a React project; build with
@@ -36,8 +41,9 @@ written here.
 >    boxes align to the TOP edge of their screenshot with equal spacing for every pair.
 > 8. **Layout:** a note under a wide diagram rather than squeezing it beside; a lead and a card group are visibly
 >    separate groups; long lab step lists get an engaging layout (numbered timeline / zig-zag cards), split if crowded.
-> 9. **Analogies:** the TR's analogy, part for part, matched to the technical side position for position; every
->    clause a Title Case tag; a real, recognisable scene (Character Lab people, real props). True 3D is available:
+> 9. **Analogies:** the TR's analogy, part for part, matched to the technical side position for position; few
+>    labels (user, 2026-11-06, Session 7): no tags along the top of a stage, a kept tag paired by number with its
+>    concept tag, a plain scene allowed (cloud course R3 "Lighter labels"); a full, recognisable scene (Character Lab people, real props). True 3D is available:
 >    `three`, `@react-three/fiber`, `@react-three/drei` are installed in `deck-engine` (import them by bare name).
 > 10. **Libraries** (user, 2026-11-06): use the engine's visual libraries wherever they lift the visual quality,
 >    in one consistent style: Framer Motion (default motion), React Spring (physical springs), GSAP (timelines, SVG
@@ -50,6 +56,117 @@ written here.
 >    "Reference illustration style"). Every person, icon and scene on a slide in that one style.
 > 12. **Verify:** `node deck.mjs check` 0 FAIL, and screenshot every slide (reload per slide) and read them before
 >    reporting. Record a new correction here and in the rule files, with the user's yes, the day it is given.
+>
+> 13. **Session 9 global rules** (user, 2026-11-10, Elastic Compute Instances review: "apply to every slide in this deck
+>    AND to all future sessions"; recorded with the user's yes). They supersede item 9's numbered tag pairs and item 11's
+>    clay / isometric look **for analogy scenes**:
+>    - **Animation:** every visual carries loop and micro-animations; nothing is static. Smooth, artifact-free, and the
+>      auto-animation On/Off and `?still` behaviour unchanged (held frames still show the end state, nothing moving).
+>    - **Icons over text** in right-side technical visuals: no chips, no number badges, no connector-line labels, no
+>      explanatory text; a 1-3 word label only where an icon alone is ambiguous. Add icons where a visual looks sparse.
+>    - **Analogies:** a real-time 3D scene (three.js / R3F, perspective camera, people as Character Lab characters per
+>      item 14), never isometric or clay. Every object, person, place and action the TR names, in its real setting,
+>      with loop animation that performs the analogy's action. No text on either card; at most one small tag above a
+>      visual (e.g. `CPU` / `GPU`). Each visual centred in its card.
+>    - **Padding:** every inner card has equal padding on all four sides inside its parent; nothing clips, overflows or
+>      touches a parent edge (widen the parent or shrink the cards); visuals centred in their boxes.
+>    - **Highlights and arrows:** a screenshot ring stays inside the screenshot and sits only on the line it targets;
+>      arrows perfectly straight and aligned to their target.
+>    - TR text is never changed, reworded, truncated or deleted unless a slide's correction says to remove it.
+>
+> 14. **Session 9 craft rules: 3D visuals, people, icons, animation timing, controls** (user, 2026-11-10, rounds 2 and 3
+>    of the Elastic Compute Instances review, then "save all the inputs I have given ... for the future slides, these
+>    need to be implemented too"). Build them in from the first draft:
+>    - **3D scenes:** build with the engine's `@/engine/three-stage` (`ThreeStage`: one shared WebGL renderer copied onto
+>      each card's canvas, so 16+ scenes never hit the browser's context limit; held frame on `?still` / thumbnails).
+>      Never a new `WebGLRenderer` per figure. Scene centred in its card, camera framed so the action fills it.
+>    - **People in 3D:** every person is a Character Lab character placed with `castSprite` (the rig pre-rendered into
+>      frame textures on a depth-tested plane), never modelled primitives or an "abstract human". Each person an
+>      individual (own skin, hair, outfit, glasses/beard), role clothing drawn on the rig (apron, chef cap, hard hat,
+>      vest), and **detailed facial expressions synced to the action** (focused, effort, worried, shocked, proud, shrug).
+>      Standing roles use minimal joint movement (breathing, blinking, one reach). When the rig has no pose for the role
+>      (seated at a laptop), use the project's asset illustration (`assets/icons/Icons/`) instead of a broken pose.
+>    - **Geometry sanity:** check every enclosure against the people in it (heads stay under a car roof, bodies inside
+>      a counter or desk); space people at least one body-width apart so no two overlap from the camera; delete any prop
+>      that has no job in the analogy (Session 9 slide 17's grey "balance rods").
+>    - **Loop timing:** every analogy loop plays its full action and **restarts within 0.3 s** (no long rest at the
+>      end); loops 3-9 s, seamless (last frame matches the first), wall-clock driven, never paused; 60 fps in headed
+>      Chrome. Keep the existing entrance timing (1.5 s version) unless a slide is named.
+>    - **Icons:** every icon carries a micro-animation (pulse, bob, spin of a part, flip); key objects of a slide may be
+>      3D icons (Session 9 slide 43: key, parent, user data); a continuous flip/turn where a card shows two faces. No
+>      chips, number badges or connector labels (item 13).
+>    - **Layout:** no background card wrapping a pair of cards unless it carries meaning (remove it, or give it equal
+>      padding top/bottom/sides); inner boxes get inner padding matching their parent (text never sits on a border);
+>      when a visual holds one card per TR item, the TR text may go inside the card (title + exact description) and the
+>      points beside are dropped, the visual then centred and widened.
+>    - **Interactive controls** (sliders, toggles): standard deck ease, never a spring or overshoot; handles clamped,
+>      never cross; end labels move aside when handles meet; the loop pauses while dragging. Verify in Chrome by
+>      dragging each handle to both extremes and into the other handle.
+>    - **Scope:** "change nothing else on this slide" is literal: touch only the named card. Verify a correction round
+>      with a Chrome pixel diff of every slide against the previous round, so only the named slides changed.
+
+> 15. **Session 10 global rules** (user, 2026-11-10, Serverless Computing review; recorded with the user's yes):
+>    - **Table icons animate:** every icon in a table (header and row icons) carries the same subtle micro-animation
+>      (a gentle float/pulse), one consistent effect across the whole table. Built into the engine's table part.
+>    - **Analogy visuals crisp at 4K:** no blurry 3D scenes. Canvases sized by `devicePixelRatio` (and supersampled
+>      enough that a 4K projector stays sharp), vector or high-resolution assets only, Character Lab sprite textures
+>      rendered at a resolution matching their on-screen size; never an upscaled low-res image.
+>    - **No overlaps:** no icon, illustration, character or object overlaps another element on any slide.
+>    - **Screenshots are never cropped:** each TR screenshot is shown in full at its original aspect ratio (contain,
+>      never cover or a cropped PNG). Highlight rings sit only on their target, inside the screenshot, and touch no
+>      other line or element. (Supersedes Session 10's first build, which cropped captures to make text bigger.)
+>    - Why: Session 10's first build shipped static table icons, soft 3D scenes, overlapping icons and people, and
+>      cropped lab captures.
+>
+> 16. **Session 9 round 4 global rules** (user, 2026-11-10, Elastic Compute Instances "Global changes (all slides)";
+>    recorded under the user's standing word "save all the inputs I have given ... for the future slides"). Table
+>    icons and uncropped screenshots are item 15; in addition:
+>    - **One-word tags under icons:** every right-side technical visual whose icons or elements carry no text gets a
+>      short single-word Title Case tag under or beside each icon naming what it is (e.g. the balance scale: `vCPU`,
+>      `Memory`). This amends item 13's "icons over text": still no chips, badges, connector labels or sentences, but
+>      no icon is left unnamed. Analogy cards stay text-free (item 13), one small tag above a visual at most.
+>    - **Sequential highlights loop:** an orange highlight that walks a sequence (stages, cards, steps) follows the build,
+>      then loops first → last → first forever; it never parks on the last item. Held frames show the full diagram
+>      with nothing highlighted. Session 9 helper: `custom/r4.tsx` `useCycle` (1.4 s per item).
+>    - **Screenshot highlights only where the TR points:** a ring goes only on what the TR's caption or step text names
+>      (e.g. "Health Ok"); no extra rings for emphasis.
+>    - **Duplicate visuals:** a slide whose visual repeats the previous slide's drops it (e.g. a presenter character
+>      pointing at the points instead); a table whose content a following visual already shows is replaced by that
+>      visual under the same lead text.
+>    - **Order of a correction list:** apply every edit first, delete slides last, so numbers do not shift mid-task;
+>      report the new numbering.
+>    - **3D resolution follows the screen, never one fixed size** (user, 2026-11-10: "it need to be dynamic, not fixed on
+>      one resolution, it need to adapt to the screen size"): each 3D canvas is sized to its real device pixels
+>      (on-screen size x devicePixelRatio) and re-measured on resize, fullscreen and monitor changes; each Character Lab
+>      sprite is pre-rendered at its own projected on-screen height and rebuilt when that changes a lot. Reference:
+>      Session 9 `custom/three-stage.tsx` (verified 470 / 705 / 1410 px canvases at 720p / 1080p / 4K, 60 fps).
+>      Raster illustrations too small for the screen get a resampled 4x copy, never a stretched original.
+>    - Why: Session 9 round 3 shipped untagged icon visuals (slide 16 gave no clue which pan was which), highlights that
+>      stopped on the last stage, a ring on a banner the TR never mentioned, and a slide repeating its predecessor.
+>
+> 17. **Session 13 visual standard: 3D icons, plinth cards, padding, right-angle connectors** (user, 2026-11-16, building
+>    Session 16 Cloud Threats & Attacks: "don't repeat the mistakes in session 13 like padding and plain visuals ...
+>    session 13 has improved the icon style and card style for some slides so I need the same improved version for this
+>    session and further sessions"; recorded with the user's yes). Every technical visual is built this way from the
+>    first draft, not left for a correction round:
+>    - **Icons:** glossy vector 3D icons from the engine, `import { Ico3D, Tile3D } from '@/engine/icons3d'` (lit top,
+>      extruded side, specular highlight, contact shadow; sharp at any zoom). Never a bare lucide glyph inside a
+>      technical figure. A name the module lacks is added to the ENGINE module in the same drawing style, never drawn
+>      privately in `custom/`. Include `icons3dCss` in the deck's `custom/index.tsx` `css`.
+>    - **Cards:** every icon sits on a white plinth tile (white-to-pale-blue gradient, 1.5 px inset rim, soft drop
+>      shadow: `Plinth` in `@/engine/figkit`); official AWS marks on the same white tile (rule 54).
+>    - **Padding:** at least 20 design px, equal on all four sides, inside every stage and card; inner padding equals
+>      the parent's; nothing touches a stage edge; no wrapper card round a card pair.
+>    - **Connectors:** orthogonal, 90-degree elbows with soft corners, leaving the source edge and ending with the tip
+>      on the target edge, every point computed from the same constants as the boxes (`Wire` in `@/engine/figkit`).
+>      Never a diagonal line across a box, never a head placed by eye.
+>    - **Motion:** every icon carries a micro-animation, every wire a flow dot (`ride` / `Token`), a lit item walks
+>      first → last → first (`useHot`); all `transform` / `opacity` on an HTML element or root `svg`; held on `?still`.
+>    - **No plain visuals:** where the TR names a thing (a server, a bucket, a key, a chat window), draw the thing, with
+>      technically correct directions; a box with a word in it is not a visual.
+>    - Reference: `Outputdecks/cloudcomputing/iam_fundamentals/custom/c2.tsx` (slides 37, 39, 43, 45 after the
+>      2026-11-16 round). Why: Session 13's first build shipped flat icons, cards touching their stage edges, diagonal
+>      connectors and static plain boxes, and its correction round (G1-G6) rebuilt 20 slides to fix them.
 
 ---
 

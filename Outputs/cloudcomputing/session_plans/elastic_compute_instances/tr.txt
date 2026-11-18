@@ -1,0 +1,769 @@
+Session 9 : Elastic Compute Instances
+
+
+RECAP: Session 8 : Storage Tiering, Backup & DR
+       1. Durability & Availability: Durability vs availability; provider guarantees
+       2. Replication & Consistency: Replication within & across regions; consistency
+       models
+       3. Storage Classes & Tiering: Hot, cool & archive tiers; retrieval time & cost trade-offs
+       4. Lifecycle Policies: Automated transition between tiers; expiration rules
+       5. Backup & Disaster Recovery: Backup strategies; RPO & RTO; DR patterns:
+       backup-restore, pilot light, warm standby
+
+Agenda for Today's Session
+       1. Compute in the Cloud: The instance as the unit of compute; the provisioning
+       model
+       2. Instance Families: General purpose, compute, memory & storage optimized; GPU
+       & accelerator families for AI/ML
+       3. Sizing & Selection: vCPU, memory, network & storage characteristics; right-sizing;
+       VRAM as the AI constraint
+       4. Images & Provisioning: Machine images; user data & bootstrapping; key pairs &
+       instance access
+       5. Scaling: Auto scaling groups & launch templates
+
+
+
+--------------------------------------- SECTION 1: 1. Compute in the Cloud: The instance
+as the unit of compute; the provisioning model ---------------------------------------
+
+Slide 1: The Compute Instance Explained
+Heading: The Compute Instance
+
+Subheading: Unit Of Compute
+
+Content:
+
+A hypervisor is software that creates and runs multiple virtual machines on one physical
+server by sharing its resources. An instance is one such virtual machine — a virtual server in
+the cloud that you rent and pay for as you use it.
+●​   Bundles virtual CPU (vCPU), memory, network and storage together
+●​   Each instance gets a unique instance ID at launch
+●​   Moves through lifecycle states: pending, running, stopped, terminated
+●​   One instance is one isolated compute boundary per workload
+
+Analogy: Similar to drawing electricity from a utility grid, compute capacity is used on
+demand and billed only for the time it is consumed — just as an instance incurs compute
+charges only while it is running.
+
+Visual Guidance: Diagram: a physical host box with a hypervisor layer, one highlighted VM
+box labelled Instance showing vCPU, memory, network and storage icons.
+
+Speaker Notes: "Explain that an instance bundles compute, memory and storage into one
+billable unit. Point out the lifecycle states as a common exam question. Mention EC2 as the
+AWS name for this unit."
+
+
+
+Slide 2: How Provisioning Happens
+Heading: Provisioning Mechanism
+
+Subheading: Request To Running
+
+Content:
+
+Provisioning is the automated path from a request to a running instance — a console click or
+a programmatic call triggers allocation, not weeks of physical setup.
+
+●​   Request names the image, instance type and network settings
+●​   Scheduler picks a physical host with free capacity
+●​   Hypervisor boots the virtual machine from the chosen image
+●​   Instance enters the running state, then status checks confirm it is healthy
+●​ In AWS, this is triggered from the EC2 console or the RunInstances Application
+   Programming Interface (API) call​
+
+Visual Guidance: Left-to-right flow diagram: RRequest, Scheduler, Hypervisor Boot,
+Running, Status Check, with arrows between each stage.
+
+Speaker Notes: "Walk through the four steps from request to a reachable instance. Name
+the EC2 console and the RunInstances API as where this happens in AWS. Ask what happens
+between clicking launch and the instance becoming reachable."
+
+
+
+Slide 3: Provisioning In Practice
+Heading: Provisioning In AWS
+
+Subheading: Where Billing Begins
+
+Content:
+
+This on-demand provisioning is what makes elasticity possible: capacity is requested and
+released in minutes, turning compute into a metered utility rather than a fixed purchase.
+
+●​   Billing starts the moment the instance enters Running state
+●​   Terminating an instance returns its capacity to the shared pool
+●​   Stopped instances stop compute charges but keep storage billed
+●​   No separate fee is charged for provisioning
+
+Visual Guidance: Small mockup of an EC2 console Launch Instance button beside a lifecycle
+bar running from Pending to Running to Stopped to Terminated.
+
+Speaker Notes: "Stress that billing starts only at Running, not Pending. Point to the lifecycle
+bar on the diagram. Ask what happens to cost if an instance is left Stopped rather than
+Terminated."
+
+
+
+Slide 4: Choosing An Instance For A Workload
+Heading: Sizing One Workload
+
+Subheading: Picking An Instance
+
+Content:
+
+A low-traffic web app and a CPU-heavy batch job need different instances, since
+provisioning lets each request exactly the capacity its load demands.
+
+Workload                Instance               vCPU / Memory           Why
+Low-traffic web app    t3.micro               2 vCPU / 1 GB          Light, bursty
+                                                                     requests
+CPU-bound batch job    c5.large               2 vCPU / 4 GB          Sustained compute
+                                                                     load
+​
+t3 instances are burstable and run on CPU credits, while c5 instances deliver full CPU
+performance continuously.​
+​
+Visual Guidance: Side-by-side cards: t3.micro labelled Web App, c5.large labelled Batch Job,
+each showing vCPU and memory values.
+
+Speaker Notes: "Walk through why the batch job needs sustained compute while the web
+app only needs light, bursty capacity. Point to the table's vCPU and memory columns. Ask
+which instance type fits a steady, heavy workload."
+
+
+
+
+--------------------------------------- SECTION 2: 2. Instance Families: General purpose,
+compute, memory & storage optimized; GPU & accelerator families for AI/ML
+---------------------------------------
+
+Slide 5: EC2 Instance Family Landscape
+Heading: Instance Families Overview
+
+Subheading: Five Resource-Based Types
+
+Content:
+
+EC2 instance types are grouped into families, each tuned for a different resource balance —
+compute, memory, storage, or specialised hardware — based on what its workloads need
+most.
+
+●​   General purpose: balanced vCPU-to-memory ratio for mixed workloads
+●​   Compute optimized: high vCPU-to-memory ratio for CPU-bound tasks
+●​   Memory optimized: large RAM-to-vCPU ratio for in-memory workloads
+●​   Storage optimized: fast local disks for I/O-heavy tasks
+●​   GPU & accelerator: dedicated chips for AI/ML training and inference
+Visual Guidance: Five labelled boxes in a row — General Purpose, Compute, Memory,
+Storage, GPU/Accelerator — each with a small icon (scale, chip, RAM stick, disk, GPU).
+
+Speaker Notes: "Present this as the map of families before going into any one of them in
+detail. Mention that AWS, Azure and GCP all group instance types this same way, just with
+different naming letters."
+
+
+
+Slide 6: General Purpose Instances Explained
+Heading: General Purpose Family
+
+Subheading: Balanced Resource Mix
+
+Content:
+
+General purpose instances, AWS’s M and T families, offer a balanced ratio of about 4 GB
+memory per virtual CPU (vCPU), so no single resource is starved for typical mixed
+workloads.
+
+●​ Typical use: web servers, small-to-medium databases, dev environments
+●​ Moderately priced: a sensible default when the main bottleneck is not yet known
+
+Analogy: A general-purpose instance is like a family sedan car — not the fastest, not the
+biggest boot, but balanced for most everyday trips — just as it balances CPU and memory
+instead of maximising either.
+
+Visual Guidance: A balance scale with 'vCPU' on one pan and 'Memory' on the other, level,
+labelled M & T families.
+Speaker Notes: "Explain that balanced does not mean weak; it means no bottleneck is
+designed in advance. Ask: why would a web server rarely need the heaviest memory or CPU
+ratio?"
+
+
+
+Slide 7: Compute Optimized Instances
+Heading: Compute Optimized Family
+
+Subheading: High CPU Ratio
+
+Content:
+
+Compute optimized instances shift the balance toward more vCPU per gigabyte of memory,
+suiting workloads limited mainly by processing speed rather than memory.
+
+●​   Typical use: batch processing, video encoding, gaming servers, scientific simulation
+●​   Resource ratio: about 2 GB memory per vCPU, half of general purpose
+●​   AWS example: the C-family instance types
+●​   Cost: lower price per vCPU than general purpose
+
+Visual Guidance: Same balance-scale image as the general purpose slide, now tilted heavily
+toward the vCPU side, labelled C-family.
+
+Speaker Notes: "Contrast directly with the general purpose ratio shown earlier on the same
+scale image. Point out video encoding and simulation as the canonical interview example of
+a CPU-bound job."
+
+
+
+Slide 8: Memory And Storage Optimized Families
+Heading: Memory & Storage Families
+
+Subheading: RAM And Disk Focus
+
+Content:
+
+Memory optimized instances favour RAM-heavy workloads, while storage optimized
+instances favour fast local-disk access — two separate bottlenecks that general purpose and
+compute families do not target.
+
+Family              Optimized For         AWS Example             Typical Workload
+Memory optimized    Large RAM per         R-family                In-memory caches,
+                    vCPU                                          large databases
+Storage optimized   High-IOPS local       I-family                NoSQL databases,
+                    NVMe disks                                    data warehousing
+Visual Guidance: Two-column spec table rendered directly from the comparison; no extra
+diagram needed.
+Speaker Notes: "Clarify that storage optimized local disks are ephemeral, unlike the
+persistent EBS block volumes used for durable data. Point to this table when contrasting
+memory-heavy and disk-heavy workloads. Exam angle: ask which family suits a
+Cassandra-style database needing heavy disk I/O."
+
+
+
+Slide 9: GPU And Accelerator Families
+Heading: GPU Accelerator Family
+
+Subheading: Built For AI/ML
+
+Content:
+
+GPU and accelerator instances attach a graphics processing unit (GPU) or a purpose-built AI
+chip beside the CPU, giving the massively parallel compute that AI/ML workloads need.
+
+●​ Use case: deep learning training, large-scale inference, rendering
+●​ AWS examples: P-family (GPU training), G-family (GPU inference/graphics), Trn-family
+   (Trainium chip for training), Inf-family (Inferentia chip for inference)
+●​ Cost: priced well above CPU-only families per running hour
+
+Note: Refer to the reading material for instance family selection.
+
+Analogy: A GPU is like an exam hall with hundreds of invigilators checking answer sheets at
+once, instead of one teacher checking them one by one — just as thousands of GPU cores
+process data in parallel instead of a CPU working sequentially.
+
+Visual Guidance: A CPU chip icon next to a larger GPU chip icon made of many small grid
+cells, labelled P, G, Trn and Inf families
+
+Speaker Notes: "Stress that a GPU instance is still an EC2 instance, just with specialised
+hardware attached. The memory constraint this hardware introduces is covered separately
+under sizing."
+
+
+
+
+--------------------------------------- SECTION 3: 3. Sizing & Selection: vCPU, memory,
+network & storage characteristics; right-sizing; VRAM as the AI constraint
+---------------------------------------
+
+Slide 11: Dimensions Of Instance Sizing
+Heading: Sizing Dimensions
+Subheading: Four Key Axes
+
+Content:
+
+Choosing an instance size means balancing four characteristics together, not picking one
+number.
+
+●​   vCPU: virtual CPU threads allocated to the instance (usually 2 vCPU = 1 physical core)
+●​   Memory: RAM available for applications and caches
+●​   Network: bandwidth for data transfer, measured in Gbps
+●​   Storage: IOPS and throughput to attached EBS volumes
+
+Visual Guidance: Four-quadrant diagram: vCPU, Memory, Network, Storage icons arranged
+around a central instance box.
+
+Speaker Notes: "Introduce the four axes learners will size against before taking each one in
+turn. Interview angle: naming all four dimensions when asked how to size an instance."
+
+
+
+Slide 12: vCPU and Memory Explained
+Heading: vCPU & Memory
+
+Subheading: Compute And RAM
+
+Content:
+
+A virtual CPU (vCPU) is a thread of a physical processor core assigned to one instance;
+memory is the RAM it can address directly.
+
+●​   vCPU count sets how many parallel threads the instance runs
+●​   Memory size limits data held in RAM before swapping or failure
+●​   m6i.xlarge offers 4 vCPUs and 16 GiB memory
+●​   Burstable instances (T-family) earn CPU credits to run above a baseline CPU level
+
+Analogy: A vCPU is like one worker at a counter and memory is the counter space available
+— just as more workers need more counter space, more vCPUs need more memory to avoid
+contention.
+
+Visual Guidance: Bar chart comparing vCPU count and memory size for two instance sizes
+side by side.
+
+Speaker Notes: "Explain vCPU as a thread, not a full physical core, and memory as the
+shared workspace it works in. Point to the m6i.xlarge figures as a concrete reference. Exam
+hook: vCPU versus physical core distinction."
+Slide 13: Network and Storage Specs
+Heading: Network & Storage
+
+Subheading: Bandwidth And IOPS
+
+Content:
+
+Network and storage characteristics decide how fast data moves to the instance and its
+attached disks, as a separate limit from vCPU or memory.
+
+●​   Network bandwidth: measured in Gbps, scales with instance size
+●​   Baseline bandwidth can burst higher for short periods
+●​   EBS-optimized throughput: dedicated MB/s bandwidth to attached volumes
+●​   IOPS: input/output operations per second a volume sustains
+
+Visual Guidance: Instance box with two labelled arrows: network bandwidth in Gbps to the
+internet, EBS throughput in MB/s to a disk icon.
+
+Speaker Notes: "Clarify that EBS-optimized bandwidth is separate from general network
+bandwidth, so a storage-heavy job can bottleneck with spare vCPU still free. Exam hook:
+difference between network Gbps and EBS throughput MB/s."
+
+
+
+Slide 14: Right-Sizing An Instance
+Heading: Right-Sizing
+
+Subheading: Matching Size To Load
+
+Content:
+
+Right-sizing means picking the smallest instance that meets sustained CPU, memory,
+network and storage needs, checked against real usage data.
+
+●​   AWS Compute Optimizer analyses CloudWatch metrics for sizing recommendations
+●​   Over-provisioning pays for idle capacity every billing hour
+●​   Under-provisioning causes throttling, swapping or dropped network packets
+●​   Resize by stopping, changing instance type, then restarting
+
+Visual Guidance: Gauge chart with three zones: under-provisioned, right-sized,
+over-provisioned.
+
+Speaker Notes: "Stress that right-sizing is a recurring check as workload patterns shift, not
+a one-time launch decision. Reserved pricing only pays off once utilization stays consistently
+high. Exam hook: name the AWS tool used for sizing recommendations."
+Slide 15: VRAM: The AI Sizing Constraint
+Heading: VRAM Constraint
+
+Subheading: GPU Memory Limit
+
+Content:
+
+Video RAM (VRAM) is the dedicated memory on a GPU that holds model weights and data
+during AI training or inference, separate from the instance's system RAM.
+
+●​   VRAM capacity caps the model size a GPU can load
+●​   Exceeding VRAM causes an out-of-memory failure, not slowdown
+●​   g5.xlarge: one NVIDIA A10G GPU with 24 GB VRAM
+●​   g4dn.xlarge: one NVIDIA T4 GPU with 16 GB VRAM
+
+Analogy: A workbench of fixed size cannot hold a job bigger than itself, however strong the
+worker — just as a model exceeding VRAM cannot load, regardless of GPU speed.
+
+Visual Guidance: Two GPU cards labelled with VRAM capacity, and a model-size bar that
+fits one card and overflows the other.
+
+Speaker Notes: "Emphasise VRAM as a hard ceiling, not a performance dial like vCPU or
+memory. Point to the two GPU figures as sizing references. Exam hook: why VRAM overflow
+fails outright instead of degrading gracefully."
+
+
+
+Slide 16: Sizing A Workload: Worked Case
+Heading: Worked Sizing Case
+
+Subheading: Two Workload Types
+
+Content:
+
+Two workloads illustrate the same sizing method: a web application bound by vCPU and
+memory, and an inference job bound by VRAM.
+
+Workload               Need                   Instance chosen       Why
+Web application        4 vCPU, 16 GiB RAM,    m6i.xlarge            Matches vCPU and
+                       moderate network                             memory, avoids idle
+                                                                    capacity cost
+Model inference, 18    GPU with 18 GB+         g5.xlarge (24 GB     g4dn.xlarge's 16 GB
+GB model               VRAM                    VRAM)                VRAM is insufficient
+Visual Guidance: Two cards side by side: left card shows m6i.xlarge specs for the web app,
+right card shows g5.xlarge specs for the inference job.
+Speaker Notes: "Walk through both rows: the web app fits comfortably on m6i.xlarge, while
+the inference job needs the larger VRAM of the A10G GPU, not just more vCPUs. Exam hook:
+explain why g4dn.xlarge fails the 18 GB model despite having free vCPU capacity."
+
+
+
+
+--------------------------------------- SECTION 4: 4. Images & Provisioning: Machine
+images; user data & bootstrapping; key pairs & instance access
+---------------------------------------
+
+Slide 18: Images Provisioning Landscape
+Heading: Provisioning Building Blocks
+
+Subheading: Three Launch Inputs
+
+Content:
+
+Launching a compute instance needs more than picking a size: it needs a starting operating
+system, a way to run setup automatically, and a way to log in securely.
+
+●​   Machine image: OS and software template the instance boots from
+●​   User data: script that bootstraps the instance on first boot
+●​   Key pair: public/private credential for secure access
+●​   All three are chosen together when the instance is launched
+
+Visual Guidance: Three labelled boxes — Machine Image, User Data, Key Pair — feeding
+into one 'Instance Launch' box.
+
+Speaker Notes: "Frame this as the three decisions made at launch time, beyond just size.
+Ask: which of these three decides what software is already installed? Point out each will get
+its own slide."
+
+
+
+Slide 19: Machine Images Explained
+Heading: What Machine Images Are
+
+Subheading: AMI Template
+
+Content:
+A machine image is a saved template of an operating system plus installed software and
+configuration. On AWS it is called an AMI (Amazon Machine Image), and launching from it
+gives every instance an identical starting state.
+
+
+
+
+●​   Provider images: pre-built, maintained OS templates (Amazon Linux, Ubuntu)
+●​   Custom images: captured from a configured running instance
+●​   Marketplace images: vendor-packaged software bundled with an OS
+●​   Images are tied to one region and must be copied to launch elsewhere
+
+Analogy: A machine image is like a recipe card with every ingredient pre-measured — just
+as every instance launched from it starts in the exact same state, with nothing improvised.
+
+Visual Guidance: One AMI box branching into multiple identical instance boxes, each
+labelled 'same OS, same software'.
+
+Speaker Notes: "Emphasise 'identical starting state' as the exam-testable idea, not just 'it
+has an OS'. Mention that a custom AMI is how a configured server becomes repeatable.
+Interview angle: why would a team build its own AMI instead of using the provider's base
+image?"
+
+
+
+Slide 20: User Data And Bootstrapping
+Heading: User Data Script
+
+Subheading: First-Boot Automation
+
+Content:
+
+User data is a script supplied at launch time that the instance runs automatically once it
+boots, replacing manual setup after the instance appears.
+
+●​ Passed as plain text or shell commands at launch time
+●​ Executed once by the boot-time init process, on first boot only, by default
+●​ Typical use: install packages, pull application code, start a service
+Visual Guidance: Timeline: Launch → First Boot → User Data Script Runs → Application
+Ready; grey out a second 'Reboot' box with 'script skipped'.
+
+Speaker Notes: "Stress 'once, at first boot' — a common exam trap is assuming it reruns on
+every restart. Give the example of a script that installs a web server before anyone connects.
+Ask: how does a team re-run setup if the instance reboots?"
+
+
+
+Slide 21: Key Pairs For Access
+Heading: Key Pair Access
+
+Subheading: Public Private Keys
+
+Content:
+
+Cloud instances replace password login with a key pair, two mathematically linked keys that
+let an owner prove identity without ever sending a password over the network.
+
+●​   Public key: installed into the instance's authorized list at launch
+●​   Private key: downloaded once by the owner, never stored by the provider again
+●​   Password-based login is disabled by default on cloud OS images
+●​   A lost private key means lost access unless a new key is attached
+
+Analogy: A key pair works like a locker whose lock the renter alone can open — the facility
+keeps only the lock pattern, never a copy of the key — just as the instance holds only the
+public key, never the private one.
+
+Visual Guidance: Two padlock icons: Public Key on the instance, Private Key on the user's
+laptop, with a matching arrow between them.
+
+Speaker Notes: "Clarify this is asymmetric cryptography applied to login, not encryption of
+data. Point out the private key download is one-time only. Interview hook: why can't the
+provider recover a lost private key?"
+
+
+
+Slide 22: Provisioning Sequence Combined
+Heading: Launch Sequence
+
+Subheading: Image Data Key
+
+Content:
+
+Launching an instance chains the three building blocks into one sequence: the image
+decides what boots, the key pair decides who can log in, and user data decides what runs
+next.
+Step                           Input Used                     Determines
+Choose template                Machine image                  OS and pre-installed
+                                                              software
+Attach credential           Key pair                          Who can log in, and how
+Supply script               User data                         What gets configured on
+                                                              first boot
+Instance ready              All three combined                A working, reachable
+                                                              instance
+Visual Guidance: Flow arrow left to right across the four table rows, ending in a green
+'Instance Ready' box.
+
+Speaker Notes: "Walk the table row by row as the actual launch order. Note the AWS
+console surfaces all three on the same launch screen. Mention this sequence is identical
+whether the instance is launched manually or by an auto scaling group."
+
+
+
+
+--------------------------------------- SECTION 5: 5. Scaling: Auto scaling groups &
+launch templates ---------------------------------------
+
+Slide 24: Auto Scaling Groups And Launch Templates
+Heading: Scaling The Fleet
+
+Subheading: ASG And Templates
+
+Content:
+
+An auto scaling group (ASG) keeps a fleet of instances at the right size automatically, using a
+launch template as the blueprint for every new instance it starts.
+●​   Scaling policies: rules deciding when to add or remove instances
+●​   Health checks: detect and replace unhealthy instances automatically
+●​   Capacity limits: minimum, maximum and desired instance counts
+●​   Spans multiple availability zones for resilience
+
+Visual Guidance: Diagram: ASG box pulling from a Launch Template, spawning instances
+between Min and Max markers, with a scaling policy arrow and a health-check loop.
+
+Speaker Notes: "Frame the ASG as the fleet manager and the launch template as its recipe
+card. Point out that every part named here gets its own detail on the next slides. Exam hook:
+ASG without a launch template cannot launch anything."
+
+
+
+Slide 25: Launch Templates And Versioning
+Heading: Launch Templates
+
+Subheading: Versioned Blueprint
+
+Content:
+
+Launching instances by hand means repeating the same setup each time. A launch template
+stores that configuration — Amazon Machine Image (AMI), instance type, key pair and
+security group — as a reusable, versioned blueprint the auto scaling group reads whenever
+it starts a new instance.
+
+●​ Each edit creates a new numbered version
+●​ Auto scaling group launches from the version it is set to use: default, latest or a fixed
+   number
+●​ Rolling back means pointing the group at a prior version
+●​ Replaces the older, non-versioned launch configuration format
+
+Analogy: A launch template is like a builder's standard house plan: every house built from it
+gets the same layout and door locks — just as every instance launched gets the same AMI,
+instance type and security group from the template.
+
+Visual Guidance: Show a template box with version tags v1, v2, v3 and an arrow from the
+default version into a newly launched instance.
+
+Speaker Notes: "Stress that editing a template never changes running instances — it only
+affects future launches. Ask: how would a bad new version be rolled back without touching
+live traffic? Mention this is what the ASG actually reads at launch time."
+
+
+
+Slide 26: Capacity Limits And Scaling Policies
+Heading: Scaling Policies
+
+Subheading: How ASG Reacts
+
+Content:
+
+Capacity sits between a minimum and maximum; a scaling policy decides how many
+instances run at any moment inside that range, and a cooldown stops it reacting too fast.
+
+●​   Desired capacity: the current target instance count maintained
+●​   Health check grace period: wait before marking an instance unhealthy
+●​   Cooldown period: pause between scaling actions to let changes settle
+●​   Cost: new capacity is billed only while it actually runs
+
+Policy Type                     Trigger                       Example
+Target tracking                 Keeps a metric near a set     Hold average CPU near 50%
+                                value
+Step scaling                    CloudWatch alarm                Add 2 instances above 70%
+                                thresholds in steps             CPU, 4 above 90%
+Scheduled scaling               A fixed date or time            Scale up every weekday at 9
+                                                                AM
+Visual Guidance: Horizontal bar from Min to Max capacity with a Desired marker sliding
+inside it, three small icons above the table row labelling each policy type.
+
+Speaker Notes: "Walk through why target tracking suits steady load while scheduled
+scaling suits predictable daily patterns. Point at the cooldown bullet when explaining why a
+group does not scale on every single data point. Exam hook: step scaling needs defined step
+adjustments, target tracking does not."
+--------------------------------------- PRACTICAL HANDS-ON: Launching an EC2 Instance
+and Deploying a Flask App on Elastic Beanstalk ---------------------------------------
+
+Slide 27: What Gets Built Today
+Heading: Practical Overview
+
+Subheading: EC2 Plus Beanstalk
+
+Content:
+
+This practical launches a general-purpose EC2 instance and then deploys a small Flask
+application on Elastic Beanstalk, so the instance-as-unit-of-compute idea and the
+managed-platform provisioning model are both seen running live.
+
+       1. Sign in to the AWS console and select the Mumbai region
+       2. Launch an EC2 instance with a chosen AMI, instance type and key pair
+       3. Connect to the instance and run basic verification commands
+       4. Package a small Flask application as a ZIP archive
+       5. Create an Elastic Beanstalk application and environment from the ZIP
+       6. Deploy and verify Version 1, then update to Version 2
+       7. Clean up every resource created to avoid charges
+
+
+
+Slide 28: Launching the EC2 Instance
+Heading: EC2 Instance Launch
+
+Subheading: Image and Sizing Choices
+
+Content:
+
+The instance launches from a machine image on a general-purpose size, with a security
+group allowing only the learner's own IP for remote access.
+
+
+
+
+                   s9-ec2-vm-demo in Running state with 3/3 status checks passed
+●​ AMI Amazon Linux 2023 on a t3.micro instance
+●​ Key pair s9-ec2-key for access
+●​ Security group s9-ec2-sg allowing SSH (port 22) from My IP only
+
+
+
+Slide 29: Connecting and Verifying the VM
+Heading: Instance Connect
+
+Subheading: Confirming Access
+
+Content:
+
+A browser-based terminal opens on the instance through SSH from a local terminal using
+the private key (.pem) file, and basic Linux commands confirm access.
+
+
+
+
+                  whoami, hostname, uname -a and os-release output on the instance
+
+
+
+
+Slide 30: Packaging the Application
+Heading: Application Packaging
+
+Subheading: Files Before Upload
+
+Content:
+
+The Flask application file and dependency list are archived in a ZIP with both files at the
+root, not inside a folder.
+                   application.py and requirements.txt in the s9-paas-demo folder
+
+
+
+
+Slide 31: Deploying Version 1
+Heading: Beanstalk Environment
+
+Subheading: First Deployment Live
+
+Content:
+
+The ZIP is uploaded to a new Elastic Beanstalk environment on the Python platform, which
+provisions and manages the servers for us, unlike the EC2 VM we managed ourselves.​
+​
+Behind the scenes, Beanstalk creates the EC2 instances, an auto scaling group and a launch
+template.
+                                  S9-paas-demo-env with Health Ok
+
+
+
+
+Slide 32: Updating to Version 2
+Heading: Version Update
+
+Subheading: Redeploy and Confirm
+
+Content:
+
+The code is updated, re-zipped as Version 2 and deployed to the same environment, with no
+new server created.
+                        Version 2 page served at the same environment URL
+
+●​ Verify that the Version 2 page loads at the same URL and the running version is the
+   latest upload
+●​ Clean up to avoid charges: terminate the EC2 instance, the Elastic Beanstalk
+   environment and delete the Beanstalk application
+●​ Then delete security group s9-ec2-sg, empty and delete the Beanstalk S3 bucket
+   (elasticbeanstalk-ap-south-1-…), and check for leftover EBS volumes and Elastic IP
+   addresses
+
+Key Takeaways
+       1. Compute in the Cloud: The instance as the unit of compute; the provisioning
+       model
+       2. Instance Families: General purpose, compute, memory & storage optimized; GPU
+       & accelerator families for AI/ML
+       3. Sizing & Selection: vCPU, memory, network & storage characteristics; right-sizing;
+       VRAM as the AI constraint
+       4. Images & Provisioning: Machine images; user data & bootstrapping; key pairs &
+       instance access
+       5. Scaling: Auto scaling groups & launch templates
+
+
+
+Upcoming Session : Serverless Computing
+Thank You | All the Best
+

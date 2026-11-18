@@ -114,6 +114,68 @@ Kept deliberately small. Add a file when a deck needs it, not in advance.
 | `network-load-balancer.svg` | a Network Load Balancer ("NLB"), added 2026-11-06 |
 | `route-53-resolver.svg` | the Route 53 Resolver ("DNS Resolver"), added 2026-11-06 |
 
+### Added 2026-11-11 (Cloud Security & Shared Responsibility), from the Architecture Icons package 07/31/2026
+
+| File | Service |
+|---|---|
+| `service/kms.svg` | AWS Key Management Service (KMS) |
+| `service/cloudtrail.svg` | AWS CloudTrail |
+| `service/waf.svg` | AWS WAF |
+| `service/shield.svg` | AWS Shield |
+| `service/guardduty.svg` | Amazon GuardDuty |
+| `service/trusted-advisor.svg` | AWS Trusted Advisor |
+| `service/well-architected-tool.svg` | AWS Well-Architected Tool |
+| `service/systems-manager.svg` | AWS Systems Manager |
+| `service/inspector.svg` | Amazon Inspector |
+| `service/connect.svg` | Amazon Connect |
+| `service/certificate-manager.svg` | AWS Certificate Manager (TLS certificates) |
+| `resource/iam-access-analyzer.svg` | IAM Access Analyzer |
+| `resource/iam-mfa-token.svg` | IAM MFA token |
+| `resource/iam-permissions.svg` | IAM permissions (a policy) |
+| `resource/iam-encrypted-data.svg` | encrypted data |
+| `resource/systems-manager-patch-manager.svg` | Systems Manager Patch Manager |
+| `resource/trusted-advisor-checklist-security.svg` | Trusted Advisor security checklist |
+| `resource/vpc-network-acl.svg` | VPC network access control list (NACL) |
+| `resource/waf-rule.svg` | a WAF rule |
+| `resource/iam-long-term-security-credential.svg` | IAM long-term security credential (password, access key); added 2026-11-13 for IAM Fundamentals |
+| `resource/iam-temporary-security-credential.svg` | IAM temporary security credential (an STS session token; the package has no separate STS service mark); added 2026-11-13 |
+
+### Added 2026-11-16 (Cloud Threats & Attacks), from the Architecture Icons package 07/31/2026
+
+| File | Service |
+|---|---|
+| `service/cloudfront.svg` | Amazon CloudFront |
+| `service/secrets-manager.svg` | AWS Secrets Manager |
+| `service/security-hub.svg` | AWS Security Hub |
+| `service/config.svg` | AWS Config |
+| `service/ecr.svg` | Amazon Elastic Container Registry (ECR) |
+| `service/bedrock.svg` | Amazon Bedrock (Guardrails are a Bedrock feature; the package has no separate Guardrails mark) |
+| `resource/cloudfront-edge-location.svg` | a CloudFront edge location |
+| `resource/ecr-image.svg` | an ECR container image |
+
+### Added 2026-11-17 (IAM Roles & Least Privilege), from the Architecture Icons package 07/31/2026
+
+| File | Service |
+|---|---|
+| `service/iam-identity-center.svg` | AWS IAM Identity Center |
+| `service/ecs.svg` | Amazon Elastic Container Service (ECS) |
+| `service/organizations.svg` | AWS Organizations |
+| `resource/iam-aws-sts.svg` | AWS Security Token Service (STS), the IAM resource mark |
+| `resource/iam-roles-anywhere.svg` | IAM Roles Anywhere |
+| `resource/ecs-task.svg` | an ECS task |
+
+### Added 2026-11-18 (Encryption & Key Management), from the Architecture Icons package 07/31/2026
+
+| File | Service |
+|---|---|
+| `service/cloudhsm.svg` | AWS CloudHSM |
+| `service/nitro-enclaves.svg` | AWS Nitro Enclaves |
+| `service/private-certificate-authority.svg` | AWS Private Certificate Authority |
+| `resource/acm-certificate-authority.svg` | an ACM certificate authority |
+| `resource/iam-data-encryption-key.svg` | a data encryption key (the IAM resource mark) |
+| `resource/kms-external-key-store.svg` | a KMS external key store (imported / external key material) |
+| `resource/rds-instance.svg` | an RDS database instance |
+
 ## Non-AWS marks
 
 GitHub, Docker, Jenkins and the rest are **not** here. They live in

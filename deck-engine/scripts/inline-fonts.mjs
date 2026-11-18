@@ -6,7 +6,8 @@
 // Run AFTER inline-assets.mjs. Requires network access at build time only.
 // If the fetch fails the CDN <link> is left in place and the build still
 // succeeds — the deck then needs a connection for correct typography.
-import { readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -43,31 +44,66 @@ async function get(url, tries = 3) {
   }
 }
 
-async function main() {
-  const cssUrl = m[1].replace(/&amp;/g, '&')
-  let css = await (await get(cssUrl)).text()
+/*
+  THE FONT SHEET IS THE ENGINE'S OWN COPY, NOT WHATEVER GOOGLE ANSWERS TODAY (2026-11-13, low-end pass).
 
-  const urls = [...new Set(css.match(/https:\/\/fonts\.gstatic\.com\/[^)]+\.woff2/g) ?? [])]
-  let bytes = 0
+  This step used to fetch the stylesheet and its woff2 files from Google on every build and swap each
+  `https://fonts.gstatic.com/....woff2` for a data URI. On 2026-11-13 one build in about twenty got a different
+  answer: the same 41 faces, but DM Sans 500 / 600 and all of Fira Code pointing at `fonts.gstatic.com/l/font?kit=...`,
+  which does not end in `.woff2`. Those 25 faces were left remote and the build said it had succeeded. A deck built
+  at that moment shows its body text in a fallback font on any PC without a connection, which is most classrooms,
+  and nothing checked for it.
+
+  So the sheet with its fonts embedded is kept in `fonts/`, named by a hash of the Google URL in `index.html`, and
+  every build inserts that file. It is the sheet every deck of the course already ships (the same 945,804
+  characters in each of them), so a rebuilt deck is typeset exactly as before, builds no longer need a network, and
+  two builds of one deck are the same file. Only when `index.html` asks for a family the engine has no copy of is
+  Google asked, once: every remote URL in the answer is embedded whatever it looks like, the result is refused if
+  anything remote is left in it, and it is written to `fonts/` for every build after.
+*/
+const withoutComments = (css) => css.replace(/\/\*[\s\S]*?\*\//g, '')
+const remoteLeft = (css) => (withoutComments(css).match(/url\(\s*["']?https?:/g) ?? []).length
+
+async function fetchSheet(cssUrl) {
+  let css = await (await get(cssUrl)).text()
+  const urls = [...new Set([...css.matchAll(/url\(\s*["']?(https?:\/\/[^)"']+)["']?\s*\)/g)].map((x) => x[1]))]
   const fetched = await Promise.all(
     urls.map(async (u) => {
-      const buf = Buffer.from(await (await get(u)).arrayBuffer())
-      bytes += buf.length
-      return [u, `data:font/woff2;base64,${buf.toString('base64')}`]
+      const r = await get(u)
+      const type = (r.headers.get('content-type') || 'font/woff2').split(';')[0]
+      return [u, `data:${type};base64,${Buffer.from(await r.arrayBuffer()).toString('base64')}`]
     }),
   )
   for (const [u, dataUri] of fetched) css = css.split(u).join(dataUri)
+  if (!/@font-face/.test(css)) throw new Error('the answer holds no @font-face rule')
+  if (remoteLeft(css)) throw new Error(`${remoteLeft(css)} font file(s) could not be embedded`)
+  return css
+}
+
+async function main() {
+  const cssUrl = m[1].replace(/&amp;/g, '&')
+  const cacheFile = join(root, 'fonts', `google-${createHash('sha1').update(cssUrl).digest('hex').slice(0, 12)}.css`)
+  let css
+  let from
+  if (existsSync(cacheFile)) {
+    css = readFileSync(cacheFile, 'utf8')
+    from = `the engine's own copy, fonts/${cacheFile.split('/').pop()}`
+  } else {
+    css = await fetchSheet(cssUrl)
+    mkdirSync(join(root, 'fonts'), { recursive: true })
+    writeFileSync(cacheFile, css)
+    from = `fetched from Google and kept as fonts/${cacheFile.split('/').pop()}`
+  }
+  if (remoteLeft(css)) throw new Error(`the font sheet still names ${remoteLeft(css)} remote file(s)`)
 
   // Drop the <link> plus the two preconnect hints it no longer needs.
   html = html
-    .replace(linkRe, `<style>\n${css}\n</style>`)
+    .replace(linkRe, () => `<style>\n${css}\n</style>`)
     .replace(/<link\s+rel="preconnect"[^>]*fonts\.(googleapis|gstatic)\.com"[^>]*\/?>\s*/g, '')
 
   writeFileSync(htmlPath, html)
-  console.log(
-    `inline-fonts: embedded ${fetched.length} woff2 files ` +
-      `(${(bytes / 1024).toFixed(0)} KB raw). Output: ${(html.length / 1024 / 1024).toFixed(2)} MB`,
-  )
+  const files = (css.match(/url\(\s*["']?data:/g) ?? []).length
+  console.log(`inline-fonts: embedded ${files} font files in ${(css.match(/@font-face/g) ?? []).length} faces (${from}). Output: ${(html.length / 1024 / 1024).toFixed(2)} MB`)
   finish(html)
 }
 
@@ -82,6 +118,6 @@ function finish(out) {
 }
 
 main().catch((err) => {
-  console.warn(`inline-fonts: SKIPPED (${err.message}). Deck will need a network for fonts.`)
+  console.warn(`inline-fonts: FONTS NOT EMBEDDED (${err.message}). THIS DECK NEEDS A NETWORK FOR ITS FONTS: do not hand it on, build again.`)
   finish(readFileSync(htmlPath, 'utf8'))
 })

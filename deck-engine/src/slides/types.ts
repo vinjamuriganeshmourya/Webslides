@@ -250,6 +250,8 @@ export interface NextSessionSlideProps extends Base {
   title: ReactNode
   /** The chip label. */
   label?: ReactNode
+  /** the name's font size in px, when a deck's name needs a little less than the template's 84 to fit two lines (Session 11) */
+  titleSize?: number
 }
 
 export interface ThankYouSlideProps extends Base {

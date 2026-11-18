@@ -45,9 +45,21 @@ for (const name of engines) {
     const errs = []
     p.on('pageerror', (e) => errs.push(String(e)))
     const problems = []
+    /*
+      "ONCE THE MOVE HAS SETTLED" IS WAITED FOR, NOT ASSUMED (2026-11-13, low-end pass). The check used to look
+      exactly `settle` ms after the press. Arriving on a 3D slide at 4K under software GL, the OLD engine froze the
+      page for 1.7 to 4.3 s, so the look could only happen once the fade was long over, and it passed. The engine no
+      longer freezes there: the page answers on time, 0.9 s in, with the departing slide still on its way out, and
+      the same check failed a deck for being responsive. A slide that is really left behind stays; so a second layer
+      is given four more seconds to go before it counts.
+    */
     const check = async (what, settle = 900) => {
       await p.waitForTimeout(settle)
-      const s = await state(p)
+      let s = await state(p)
+      for (let i = 0; i < 27 && (s.layers !== 1 || s.opacity[0] < 0.99); i++) {
+        await p.waitForTimeout(150)
+        s = await state(p)
+      }
       if (s.layers !== 1 || s.opacity[0] < 0.99 || !s.onScreen || !s.content) problems.push(`${what} @${s.slide}: ${JSON.stringify(s)}`)
     }
     const key = async (k, n = 1, gap = 120) => { for (let i = 0; i < n; i++) { await p.keyboard.press(k); await p.waitForTimeout(gap) } }

@@ -1,0 +1,732 @@
+Session 13 : IAM Fundamentals
+
+
+RECAP: Session 12 : Cloud Security & Shared Responsibility
+       1. Security Goals: Confidentiality, integrity & availability in the cloud
+       2. Shared Responsibility Model: Security of the cloud vs security in the cloud
+       3. Responsibility by Service Model: Boundary shifts across IaaS, PaaS & SaaS
+       4. Common Misunderstandings: Provider vs customer duties; incidents caused by
+       wrong assumptions
+       5. Defense in Depth: Layered controls: network, identity, data, application &
+       monitoring
+
+Agenda for Today's Session
+       1. Identity in the Cloud: Root & owner account; users; groups
+       2. Authentication vs Authorization: Identity verification vs permission checking;
+       credentials: passwords, access keys & tokens
+       3. Policy Structure: Effect, action, resource & condition; identity-based vs
+       resource-based policies
+       4. Policy Evaluation Logic: Default deny; explicit allow; explicit deny precedence;
+       combining multiple policies
+       5. Reading a Denial: Access-denied messages; audit logs; tracing a denial to its
+       statement
+
+
+
+--------------------------------------- SECTION 1: 1. Identity in the Cloud: Root & owner
+account; users; groups ---------------------------------------
+
+Slide 1: Cloud Identity Landscape
+Heading: Identity Landscape
+
+Subheading: Cloud Identity Types
+
+Content:
+
+Every cloud platform uses identities to identify who is making a request and determine
+what actions they are allowed to perform. Cloud identity is built from three layers: the root
+account, individual users, and groups.
+
+●​ AWS IAM: Identity and Access Management manages identities and controls their
+   permissions.
+●​ Root or owner account: created automatically when the cloud account signs up
+●​ IAM user: a separate identity for one person or application
+●​ Group: a named collection of users sharing one set of permissions
+
+Visual Guidance: Diagram: root account at top, branching down to IAM users, users
+clustered inside groups.
+
+Speaker Notes: "Open by framing identity as the first question any permission check asks.
+Name AWS IAM (Identity and Access Management) as the service managing all three layers.
+Exam angle: distinguishing root account from an IAM user is a frequent interview question."
+
+
+
+Slide 2: The Root Account Explained
+Heading: Root Account
+
+Subheading: Full Account Owner
+
+Content:
+
+The root account is the single identity automatically created when a cloud account is
+opened; it owns the account and starts with unrestricted access to every resource and the
+billing page.
+
+●​ Signs in with the email used to create the account, not a username
+●​ Needed for special tasks such as account closure, changing root credentials, and
+   enabling IAM user billing access.
+●​ AWS recommends enabling multi-factor authentication (MFA) and avoiding daily use
+
+Analogy: A company owner's master key opens every office and controls all important
+operations, so it is kept secure and used only when necessary — just as the root account has
+complete control over AWS resources and should not be used for daily tasks.
+
+Visual Guidance: Icon of a single master key beside a locked cabinet, labelled Root Account.
+
+Speaker Notes: "Stress that root is not meant for daily work; IAM users exist for that. Point
+out that account closure and enabling IAM access to billing are root-only actions. Exam
+angle: why locking away root credentials matters is a common interview question."
+
+
+
+Slide 3: IAM Users And Groups
+Heading: Users And Groups
+
+Subheading: Individual Vs Collective
+
+Content:
+
+Below the root account, an IAM user is a separate identity given to one person or
+application, each with its own credentials and permissions.
+●​ Group: a named bucket of users that share one policy set
+●​ Adding a user to a group grants every group permission at once
+●​ Removing a user from a group revokes those permissions instantly
+
+Visual Guidance: Diagram: three IAM user icons boxed inside one Developers group with a
+shared permission label.
+
+Speaker Notes: "Explain that groups exist so permissions are managed once, not per user.
+Point to the group box absorbing three users as one unit. Exam angle: why groups scale
+better than per-user policies is often asked."
+
+
+
+Slide 4: Choosing The Right Identity
+Heading: Identity Comparison
+
+Subheading: Root Users Groups
+
+Content:
+
+Cloud teams rarely use the root account after initial setup, relying instead on IAM users and
+groups managed from the IAM console's Users and Groups pages.
+
+Identity                Created When           Typical Use            Risk If Compromised
+Root account            At account sign-up     Initial setup and a    Full account
+                                               few root-only tasks,   takeover
+                                               such as account
+                                               closure
+IAM user                Created by an admin    Daily work for a         Limited to assigned
+                                               person or app            permissions
+Group                   Created by an admin    Shared permission        None directly: a
+                                               set for many users       group cannot sign
+                                                                        in; members inherit
+                                                                        its permissions
+Knowing who is asking is the first half of access control; the next step checks whether that
+identity is who it claims to be.
+
+Visual Guidance: Screenshot cue: AWS IAM console with the Users and Groups tabs
+highlighted in the left-hand menu.
+
+Speaker Notes: "Point to the IAM console's Users and Groups tabs as the real screens where
+these identities are managed. Note root account settings sit under the account name
+dropdown, not IAM. Exam angle: matching each identity type to its correct use case is
+commonly tested."
+--------------------------------------- SECTION 2: 2. Authentication vs Authorization:
+Identity verification vs permission checking; credentials: passwords, access keys
+& tokens ---------------------------------------
+
+Slide 5: Two Checks Before Any Cloud Action
+Heading: Verification vs Permission
+
+Subheading: Two Access Checks
+
+Content:
+
+Every cloud request passes through two separate checks before it runs: one confirms who is
+asking, the other confirms what that identity may do.
+
+●​ Credentials carry the proof: passwords, access keys, tokens
+●​ Permission failure returns a different error type than an identity failure
+●​ Identity and permission checks are performed when accessing protected cloud
+   resources, not just at sign-in.
+
+Visual Guidance: Two linked boxes: Credential presented → Authentication (identity) →
+Authorization (permission) → action allowed or denied.
+
+Speaker Notes: "Set up the two-step gate before naming either check in depth. Mention this
+split is exactly what an interviewer tests with 'what is the difference between authentication
+and authorization'."
+
+
+
+Slide 6: Authentication Confirms the Caller's Identity
+Heading: Authentication Explained
+
+Subheading: Verifying Identity First
+
+Content:
+
+Before any action is allowed, the caller's identity must be confirmed. Authentication is this
+first check: proving the caller truly is the identity it claims to be.
+
+●​   Console sign-in needs a username, password and optional MFA code
+●​   Programmatic calls sign each request with an access key pair
+●​   Root account authenticates separately from every IAM user
+●​   Authentication failure stops the request before authorization runs
+
+Analogy: At an exam hall, the invigilator checks the hall ticket and ID card to confirm the
+student is who they claim to be — just as authentication checks credentials to confirm the
+caller's identity.
+Visual Guidance: Diagram: credential box (password / access key) feeding into a gate
+labelled Authentication, with a tick or cross exit.
+
+Speaker Notes: "Explain that this is the sign-in step, not the permission step. Point out the
+root account and IAM user both go through this gate separately, which is a common
+interview trap."
+
+
+
+Slide 7: Authorization Checks What Is Permitted
+Heading: Authorization Explained
+
+Subheading: Checking Granted Permission
+
+Content:
+
+Confirming identity does not say what that identity may do. Authorization is the check that
+follows: whether the now-verified identity holds permission for this action on this resource.
+
+●​   Authorization runs only after authentication succeeds
+●​   Policies attached to an identity define its permissions
+●​   One identity can be allowed here, denied there
+●​   A valid login with no matching policy still gets denied
+
+Analogy: A housing society guard who already confirmed a visitor's identity still checks the
+visitor pass for permitted floors — just as authorization checks a verified identity's
+permissions before allowing a specific action.
+
+Visual Guidance: Diagram continuation: after the Authentication gate, a second gate
+labelled Authorization, branching to Allow or Deny.
+
+Speaker Notes: "Stress the sequence: identity first, permission second, never the reverse.
+Flag that an interviewer often asks for a real example, so mention denying delete while
+allowing read for the same user."
+
+
+
+Slide 8: Passwords, Access Keys and Tokens Compared
+Heading: Credential Types
+
+Subheading: Proving Identity
+
+Content:
+
+Cloud identities present different proof depending on how they connect: a human at the
+console, or code calling an application programming interface (API).
+Credential                    Used For                      Lifetime
+Password                      Console sign-in by a human Long-lived; MFA adds an
+                              user                          extra layer
+Access key (ID + secret)      CLI and SDK programmatic      Long-lived until deactivated,
+                              calls                         deleted, or rotated
+Token (session)               Calls made via an  assumed    Expires automatically
+                              role                          within hours
+Role: an identity with no password or keys of its own; whoever assumes it gets a temporary
+token
+
+Visual Guidance: Three-column table as shown, with a small icon per row: a lock, a key, a
+clock.
+
+Speaker Notes: "Walk the three rows left to right, naming where each credential is issued.
+Note that a leaked access key is a common exam and interview question on cloud security."
+
+
+
+Slide 9: Where Credentials Are Managed in AWS
+Heading: Credentials In AWS
+
+Subheading: Where They Live
+
+Content:
+
+Each credential type is issued and managed from a specific screen inside Identity and Access
+Management, the console section that administers cloud identities.
+
+●​ AWS Security Token Service (STS) issues tokens for an assumed role, valid for 15
+   minutes to 12 hours
+●​ Password policy sets minimum length, rotation and reuse rules
+●​ MFA registration links a virtual authenticator, passkey or hardware device to the user
+●​ Key rotation needs old key deactivated before deletion, not after
+
+Every decision made with these credentials is governed by policies.
+
+Visual Guidance: Screenshot-style callout list of the IAM console menu: Users, Security
+credentials, Account settings, each pointing to the credential it manages.
+
+Speaker Notes: "Name the exact IAM console locations rather than describing them
+generically. This bridges naturally into how a policy document actually decides allow or
+deny."
+--------------------------------------- SECTION 3: 3. Policy Structure: Effect, action,
+resource & condition; identity-based vs resource-based policies
+---------------------------------------
+
+Slide 10: What Is an IAM Policy
+Heading: IAM Policy Defined
+
+Subheading: Rules As Documents
+
+Content:
+
+An IAM policy is a JavaScript Object Notation (JSON) document that states a rule for cloud
+access requests
+
+●​          Allow or Deny is the only outcome a statement can declare
+●​          The operation controlled is named precisely, such as reading a file
+●​          The exact item the operation applies to is always identified
+●​          An extra requirement can narrow when the rule applies
+
+{
+
+    "Version": "2012-10-17",
+
+    "Statement": [
+
+        {
+
+            "Sid": "AllowReadReports",
+
+            "Effect": "Allow",
+
+            "Action": "s3:GetObject",
+
+            "Resource": "arn:aws:s3:::finance-reports/*",
+
+            "Condition": {
+
+                "IpAddress": { "aws:SourceIp": "203.0.113.0/24" }
+
+            }
+
+        }
+
+    ]
+
+}​
+​
+"Version: the policy language version, written as 2012-10-17"
+
+"Statement: holds one or more rules"
+
+"Sid: an optional name for a statement"
+
+
+
+Analogy: A train ticket states exactly what is allowed: travel on one train, in one seat, on one
+date — just as a policy states the effect, the action, the resource and the condition for a
+request.
+
+Visual Guidance: Diagram: a policy document box opening into four labelled parts — Effect,
+Action, Resource, Condition.
+
+Speaker Notes: "Introduce the policy document as the written rule AWS checks before any
+access request. Point out that IAM policies are built in the IAM console's policy editor.
+Interviewers often ask to name all four elements — stress that Condition is optional."
+
+
+
+Slide 11: Effect and Action Fields
+Heading: Effect And Action
+
+Subheading: Outcome And Operation
+
+Content:
+
+Effect sets the policy's outcome, while Action names the exact operation being controlled;
+together they state what is being decided before resource and condition narrow it further.
+
+Field                          Format                         Example
+Effect                         Allow or Deny                  Allow
+Action                         service:operation              s3:GetObject
+●​ Action supports wildcards, e.g. s3:* for all S3 operations
+●​ A single statement can list several actions together
+●​ Effect allows only two values, never a partial grant
+
+Visual Guidance: Highlight the Effect and Action parts in the policy anatomy diagram
+carried over from the previous slide.
+
+Speaker Notes: "Explain that Action always follows service:operation syntax, using S3
+GetObject as the example. Mention the IAM visual editor lets an action be picked from a
+dropdown instead of typed by hand. Exam tip: a wildcard in Action is a common
+least-privilege anti-pattern."
+Slide 12: Resource and Condition Fields
+Heading: Resource And Condition
+
+Subheading: Target And Constraint
+
+Content:
+
+Resource pins the action to one specific item, identified by its Amazon Resource Name
+(ARN), while Condition adds an extra test that must also be true before the effect applies.
+
+●​ ARN format: arn:partition:service:region:account-id:resource (some fields can be empty,
+   as in S3 ARNs)
+●​ An S3 object ARN example is arn:aws:s3:::finance-reports/jan.pdf
+●​ Condition keys check IP address, time window or MFA status
+●​ Resource can use wildcards to cover a group of items
+
+Visual Guidance: Show a real ARN string split into its colon-separated parts, each part
+labelled.
+
+Speaker Notes: "Walk through the ARN example field by field, pointing at the resource
+segment. Note the Resource and Condition fields both sit in the IAM policy JSON tab,
+editable directly. A frequent interview question asks to write an ARN for a specific S3
+object."
+
+
+
+Slide 13: Two Kinds of Policy
+Heading: Two Policy Types
+
+Subheading: Where It Attaches
+
+Content:
+
+Every policy statement is attached somewhere — either to the identity making the request
+or to the resource receiving it. These are the two most common policy types in AWS.
+
+●​ Identity-based: attached to a user, group or role
+●​ Resource-based: attached directly to the resource, e.g. a bucket
+●​ A resource-based policy has one more element, Principal, which names who gets the
+   access
+●​ Resource-based policies can grant access to another AWS account
+●​ Identity-based policies are the default for most access setups
+
+Analogy: An office employee can carry an access card with assigned permissions, or a
+restricted room can have an approved visitor list — just as an identity-based policy is
+attached to a user, while a resource-based policy is attached to the resource.
+Visual Guidance: Two boxes side by side: a user icon with a policy attached, and a bucket
+icon with a policy attached, with an arrow for cross-account access only on the bucket side.
+
+Speaker Notes: "Clarify that identity-based policies travel with the user wherever they go,
+while resource-based policies stay fixed to that one resource. Point to the bucket policy tab
+inside the S3 console as a resource-based example. Interviewers test whether a bucket
+policy or an IAM policy is needed for cross-account sharing."
+
+
+
+Slide 14: Identity vs Resource Policies
+Heading: Policy Types Compared
+
+Subheading: Side By Side
+
+Content:
+
+Choosing between the two types depends on who owns the access decision — the identity
+side or the resource side.
+
+Aspect                           Identity-Based             Resource-Based
+Attached to                      User, group or role        The resource itself, e.g. a
+                                                            bucket
+Cross-account grant           Not directly, needs a role    Supported natively; the
+                                                            other account must also
+                                                            allow it
+Found in console              IAM > Policies                Resource's own permissions
+                                                            tab
+Common example                Admin user policy             S3 bucket policy
+AWS evaluates applicable policies together to determine whether a request is allowed or
+denied
+
+Visual Guidance: Keep the two-box diagram from the previous slide visible beside this
+table for direct reference.
+
+Speaker Notes: "Use this table to contrast where each policy type lives and how
+cross-account access differs. Point to the IAM policy list versus an S3 bucket's permissions
+tab. Mention that the deny-by-default evaluation logic applies identically to both types,
+which comes next."
+--------------------------------------- SECTION 4: 4. Policy Evaluation Logic: Default
+deny; explicit allow; explicit deny precedence; combining multiple policies
+---------------------------------------
+
+Slide 15: Policy Evaluation Logic Overview
+Heading: Evaluation Logic Map
+
+Subheading: Four Decision Steps
+
+Content:
+
+Without a fixed decision path, two conflicting permissions could leave a request's outcome
+unpredictable; cloud providers resolve this with one strict evaluation order.
+
+●​ Combining policies: all attached policies are merged before deciding
+
+●​ Default deny: no access unless a rule allows it
+
+●​ Explicit deny: any deny statement overrides every allow
+●​ Explicit allow: a statement must grant the action​
+
+The IAM Policy Simulator helps test how IAM policies affect access decisions without
+making actual AWS requests
+
+Visual Guidance: Flowchart top to bottom: Start, Default Deny, Explicit Deny check, Explicit
+Allow check, Final Decision; colour the deny branch red.
+
+Speaker Notes: "Walk the flowchart top to bottom before naming each step on its own.
+Point to the deny branch as the override to remember. Exam angle: evaluation order is a
+frequent interview question."
+
+
+
+Slide 16: Default Deny Explained
+Heading: Default Deny Baseline
+
+Subheading: Nothing Allowed First
+
+Content:
+
+Before any rule is checked, identity and access management starts from a closed position: a
+request is rejected unless a policy explicitly permits it.
+
+●​ Default deny: the starting state for every request, except those made by the root user
+●​ Explicit allow: only an Effect Allow statement passes it
+●​ Silence is denial: an unmentioned action is never granted by omission
+This default state is visible in the AWS IAM console, where a new user with no attached
+policy cannot perform any action.
+
+Analogy: A new phone app cannot touch the camera or contacts until the user grants each
+permission — exactly as IAM blocks every request until an explicit allow statement is
+matched.
+
+Visual Guidance: Closed padlock icon opening only once an Allow statement is placed
+beside it.
+
+Speaker Notes: "Stress that silence means denial, a common exam trap. Explain in plain
+words: no rule equals no entry. Ask why default deny is safer than default allow."
+
+
+
+Slide 17: Explicit Deny Always Wins
+Heading: Deny Overrides Allow
+
+Subheading: Precedence Rule
+
+Content:
+
+An explicit deny in any applicable policy beats every allow, even one written with broader
+scope, so a safety rule can never be bypassed by accident.
+
+●​   Evaluation checks for an explicit deny across all matched policies first
+●​   One deny statement blocks the action regardless of how many allows exist
+●​   An allow from an unrelated policy cannot cancel a matching deny
+●​   Used to lock sensitive actions irrespective of other granted permissions
+
+Visual Guidance: Two policy boxes, one Allow and one Deny, arrows converging into a
+single Denied result box.
+
+Speaker Notes: "State the one-line rule: deny beats allow, no matter the source. Point to the
+two boxes collapsing into one denied outcome. Exam angle: this precedence is tested with
+multi-policy scenarios."
+
+
+
+Slide 18: Tracing Combined Policy Decision
+Heading: Combined Policy Trace
+
+Subheading: Identity Plus Resource
+
+Content:
+
+Access decisions often combine an identity-based policy attached to a user with a
+resource-based policy attached to the resource, such as a storage bucket.
+Policy                         Type                            Statement
+Policy A                       Identity-based                  Allow s3:GetObject on
+                                                               arn:aws:s3:::reports-bucket
+                                                               /*
+Policy B                        Resource-based                 Deny s3:GetObject when the
+                                                               source IP is outside
+                                                               203.0.113.0/24
+A request from IP 198.51.100.7 is evaluated: Policy A allows it, but the IP is outside Policy
+B's range, so the deny applies and the request is rejected.
+
+Visual Guidance: Two policy cards feeding a decision box showing the request IP failing
+Policy B's condition, final label Access Denied.
+
+Speaker Notes: "Trace the IP check live: allowed by A, trapped by B's condition. Point to the
+condition clause as the exact cause of denial. Exam angle: combining identity and resource
+policies is common in cross-account questions."
+
+
+
+Slide 19: Combining Policies Summary
+Heading: Policies Combine Fully
+
+Subheading: Union With Deny Override
+
+Content:
+
+All identity-based and resource-based policies that apply to a request are evaluated
+together: allows add up, and an explicit deny overrides them.
+
+●​ Allow permissions from several identity-based policies on one user add together
+●​ Cross-account sharing needs agreement from both the identity side and the resource
+   side
+●​ Within one account, an allow in either the identity-based or the resource-based policy is
+   enough​
+
+Visual Guidance: Overlapping policy circles merging into one allowed region, with a red
+deny slice cutting through it.
+
+Speaker Notes: "Summarise the merge rule in one line: allows add up, one deny removes.
+Point to the IAM Policy Simulator as where this logic is checked in the console. The next
+section traces this logic through a real denial message."
+--------------------------------------- SECTION 5: 5. Reading a Denial: Access-denied
+messages; audit logs; tracing a denial to its statement
+---------------------------------------
+
+Slide 20: Diagnosing an Access Denial
+Heading: Diagnosing Denials
+
+Subheading: Three Pieces Evidence
+
+Content:
+
+A denied request is not a dead end — it leaves three pieces of evidence that together explain
+why it failed.
+
+●​ The denial message: who tried what, on which resource
+●​ The audit log: a timestamped record of the call itself
+●​ The policy statement: the exact rule that produced the deny
+
+Visual Guidance: Diagram: three boxes — Error Message, Audit Log, Policy Statement —
+arrows converging on one magnifying glass labelled Root Cause.
+
+Speaker Notes: "Frame this as detective work: each box narrows down the cause. Mention
+this reasoning is used constantly when debugging IAM in interviews."
+
+
+
+Slide 21: Reading the Denial Message
+Heading: Denial Message Anatomy
+
+Subheading: What AWS Reports
+
+Content:
+
+Cloud providers return a structured error when a request is refused, naming the identity,
+the action and the resource involved — not just the word denied.
+
+●​   The denial message may identify the user or role that made the call.
+●​   The specific operation attempted is reported, such as deleting an object
+●​   The exact target object or service is identified in the message
+●​   A reason hint distinguishes an explicit deny from no matching allow
+
+Sample: User: arn:aws:iam::123456789012:user/alice is not authorized to perform:
+s3:DeleteObject on resource: arn:aws:s3:::finance-reports/q1.csv with an explicit deny in an
+identity-based policy
+Analogy: A failed UPI payment shows who paid, how much, to whom and the reason, such
+as insufficient balance — just as an AWS denial message shows who made the request, the
+action, the resource and why it was denied.
+
+Visual Guidance: Callout on a sample error string, with Principal, Action and Resource
+underlined in three colours.
+
+Speaker Notes: "Read a sample denial message aloud and point to each underlined part.
+Ask: which part tells us WHY, versus just WHAT failed?"
+
+
+
+Slide 22: Audit Logs Beyond the Message
+Heading: Audit Trail Logging
+
+Subheading: Recording API Calls
+
+Content:
+
+The denial message disappears once the screen closes, so AWS CloudTrail records
+management API calls, and data events such as S3 object actions only when a trail logs them.
+
+●​   Logs eventName, errorCode and the calling userIdentity per request
+●​   AccessDenied errorCode isolates failed calls from successful ones
+●​   Found under CloudTrail Event History in the AWS console
+●​   Retained for 90 days by default, longer with a configured trail
+
+Visual Guidance: Screenshot-style mock of a CloudTrail event entry with eventName,
+errorCode and userIdentity fields highlighted.
+
+Speaker Notes: "Point to errorCode as the field that lets filtering find every denial across
+thousands of calls. Exam hook: ask what distinguishes a log from the error message shown
+to the user."
+
+
+
+Slide 23: Tracing a Denial to Its Statement
+Heading: Tracing A Denial
+
+Subheading: From Error To Rule
+
+Content:
+
+User alice (arn:aws:iam::123456789012:user/alice) calls s3:DeleteObject on
+finance-reports/q1.csv from IP 203.0.113.5 and receives AccessDenied; the three evidence
+pieces trace this to one rule.
+
+●​ Message shows principal alice, action DeleteObject, resource q1.csv
+●​ Policy AllowS3ReadWrite permits DeleteObject on the finance-reports bucket
+●​ Policy DenyWithoutMFA denies the action when the user has signed in without MFA
+   (condition aws:MultiFactorAuthPresent is false)
+●​ Statement Sid DenyDeleteWithoutMFA is the one overriding the allow
+
+Evidence                                   What It Shows
+Error message                              Who, what action, which resource
+Audit log                                  Confirms the call, its errorCode and source
+                                           IP (needs a trail that logs S3 data events)
+Policy statement                           The exact Sid causing the deny
+Visual Guidance: Flowchart: Error Message arrow to CloudTrail Event arrow to Policy
+Document arrow to highlighted Sid DenyDeleteWithoutMFA box.
+
+Speaker Notes: "Walk the arrows left to right, ending on the one Sid. Note that an explicit
+deny beats any allow, which is why MFA absence wins here even though another policy
+allows the action."
+
+
+
+Slide 24: From Evidence to a Fix
+Heading: Closing The Trace
+
+Subheading: Evidence To Action
+
+Content:
+
+A traced denial points at one statement, turning a vague failure into a specific, fixable policy
+line rather than a guess.
+
+●​ Message narrows the search to one principal and action
+●​ Audit log confirms the API call was made and records the resulting error
+●​ Fix options: add allow, remove deny, or satisfy its condition
+
+Visual Guidance: Single arrow diagram: Evidence Gathered leads to Statement Identified
+leads to Policy Corrected.
+
+Speaker Notes: "Close by stressing that this trace habit is what separates guessing from
+fixing IAM issues quickly. Common interview question: describe how to debug an
+AccessDenied error end to end."
+
+
+
+Key Takeaways
+        1. Identity in the Cloud: Root & owner account; users; groups
+        2. Authentication vs Authorization: Identity verification vs permission checking;
+        credentials: passwords, access keys & tokens
+       3. Policy Structure: Effect, action, resource & condition; identity-based vs
+       resource-based policies
+       4. Policy Evaluation Logic: Default deny; explicit allow; explicit deny precedence;
+       combining multiple policies
+       5. Reading a Denial: Access-denied messages; audit logs; tracing a denial to its
+       statement
+
+
+
+Upcoming Session : IAM Roles & Least Privilege
+
+                             Thank You | All the Best
+

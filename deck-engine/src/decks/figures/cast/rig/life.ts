@@ -158,13 +158,58 @@ function spring(x: number, v: number, target: number, w: number, z: number): [nu
  * (idle, expression, gesture, talk) at any time.
  */
 export function applyLife(key: object, t: number, rawAt: (t: number) => Pose, o: LifeOptions): Pose {
-  const mass = o.mass ?? 1, lag = o.lag ?? 1, dr = o.drift ?? 1, sec = o.secondary ?? 1, bal = o.balance ?? 1
   const n = Math.max(0, Math.floor(t / STEP))
   let s = cache.get(key)
   if (!s || s.n > n) {
     s = fresh(rawAt(0))
     cache.set(key, s)
   }
+  return advance(s, n, (key as { seed?: number }).seed ?? 1, rawAt, o)
+}
+
+/*
+  THE SAME SIMULATION, KEYED BY VALUE INSTEAD OF BY OBJECT (low-end pass, 2026-11-13).
+
+  A pre-rendered sprite (`castSprite` in `engine/three-stage.tsx`) asks for forty-odd frames of one character,
+  and builds a NEW timeline object for each. The object-keyed cache above never hit, so every frame stepped the
+  springs again from t=0: frame 30 of a 12 s loop cost 2,160 substeps to produce one pose, and a slide with a
+  dozen characters spent about a third of its whole build-up doing that (measured: 4.5 ms of the 14.6 ms a
+  frame took).
+
+  The springs are a pure function of what the timeline SAYS, so a state reached for one timeline is the right
+  starting point for any other timeline that says the same thing. `sig` is that statement written out
+  (`timelineSignature` in compose.ts); `lane` keeps two callers with one signature from rewinding each other.
+  A later frame continues from the earlier one, a seek backwards starts over, and the numbers that come out
+  are the ones `applyLife` gives a fresh object: the same additions in the same order.
+
+  Kept apart from the object cache on purpose. `useCharacter` mutates its one timeline as the scene changes, so
+  the state it owns reflects a history no signature describes; sharing that state by value would hand a sprite
+  somebody else's past.
+*/
+const PURE_MAX = 192
+const pure = new Map<string, State>()
+
+export function applyLifePure(sig: string, lane: string, seed: number, t: number, rawAt: (t: number) => Pose, o: LifeOptions): Pose {
+  const n = Math.max(0, Math.floor(t / STEP))
+  const k = lane + '|' + sig
+  let s = pure.get(k)
+  if (!s || s.n > n) s = fresh(rawAt(0))
+  /* most recently used last, so the oldest lane is the one dropped */
+  pure.delete(k)
+  pure.set(k, s)
+  if (pure.size > PURE_MAX) pure.delete(pure.keys().next().value as string)
+  return advance(s, n, seed, rawAt, o)
+}
+
+/** Forget a lane's states (a sprite that has rendered every frame it needs). */
+export function dropLifeLane(lane: string) {
+  const prefix = lane + '|'
+  for (const k of pure.keys()) if (k.startsWith(prefix)) pure.delete(k)
+}
+
+/** Step `s` forward to substep `n` and read the pose there. */
+function advance(s: State, n: number, seed: number, rawAt: (t: number) => Pose, o: LifeOptions): Pose {
+  const mass = o.mass ?? 1, lag = o.lag ?? 1, dr = o.drift ?? 1, sec = o.secondary ?? 1, bal = o.balance ?? 1
   const { x, v, ring } = s
   while (s.n < n) {
     s.n++
@@ -199,7 +244,6 @@ export function applyLife(key: object, t: number, rawAt: (t: number) => Pose, o:
   const raw = rawAt(time)
   balance(raw, bal)
   const out = { ...raw }
-  const seed = (key as { seed?: number }).seed ?? 1
   for (let i = 0; i < N; i++) {
     const c = CHANNEL_NAMES[i]
     const cls = CLS[i]

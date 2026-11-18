@@ -1,0 +1,3310 @@
+{
+ "meta": {
+  "name": "char",
+  "version": 2,
+  "canvas": [
+   1086,
+   1448
+  ],
+  "ground": 1394,
+  "note": "Angles in degrees. A joint value is anatomical and the same on both sides; each target k maps it to a screen rotation (positive = clockwise). Limits are enforced by rig.js."
+ },
+ "bones": [
+  {
+   "id": "root",
+   "parent": null,
+   "pivot": [
+    531,
+    1394
+   ]
+  },
+  {
+   "id": "pelvis",
+   "parent": "root",
+   "pivot": [
+    531,
+    712
+   ]
+  },
+  {
+   "id": "thigh-r",
+   "parent": "pelvis",
+   "pivot": [
+    479,
+    745
+   ]
+  },
+  {
+   "id": "shin-r",
+   "parent": "thigh-r",
+   "pivot": [
+    456.4,
+    1014.1
+   ]
+  },
+  {
+   "id": "foot-r",
+   "parent": "shin-r",
+   "pivot": [
+    432.9,
+    1294.1
+   ]
+  },
+  {
+   "id": "toes-r",
+   "parent": "foot-r",
+   "pivot": [
+    402.9,
+    1344
+   ]
+  },
+  {
+   "id": "thigh-l",
+   "parent": "pelvis",
+   "pivot": [
+    583,
+    745
+   ]
+  },
+  {
+   "id": "shin-l",
+   "parent": "thigh-l",
+   "pivot": [
+    605.6,
+    1014.1
+   ]
+  },
+  {
+   "id": "foot-l",
+   "parent": "shin-l",
+   "pivot": [
+    629.1,
+    1294.1
+   ]
+  },
+  {
+   "id": "toes-l",
+   "parent": "foot-l",
+   "pivot": [
+    659.1,
+    1344
+   ]
+  },
+  {
+   "id": "spine-1",
+   "parent": "pelvis",
+   "pivot": [
+    531,
+    668
+   ]
+  },
+  {
+   "id": "pocket",
+   "parent": "spine-1",
+   "pivot": [
+    531,
+    576
+   ]
+  },
+  {
+   "id": "hem",
+   "parent": "spine-1",
+   "pivot": [
+    531,
+    652
+   ]
+  },
+  {
+   "id": "spine-2",
+   "parent": "spine-1",
+   "pivot": [
+    531,
+    548
+   ]
+  },
+  {
+   "id": "spine-3",
+   "parent": "spine-2",
+   "pivot": [
+    531,
+    452
+   ]
+  },
+  {
+   "id": "hood-back",
+   "parent": "spine-3",
+   "pivot": [
+    531,
+    320
+   ]
+  },
+  {
+   "id": "neck-1",
+   "parent": "spine-3",
+   "pivot": [
+    531,
+    320
+   ]
+  },
+  {
+   "id": "neck-2",
+   "parent": "neck-1",
+   "pivot": [
+    531,
+    292
+   ]
+  },
+  {
+   "id": "head",
+   "parent": "neck-2",
+   "pivot": [
+    531,
+    262
+   ]
+  },
+  {
+   "id": "hair-back-r",
+   "parent": "head",
+   "pivot": [
+    466,
+    224
+   ]
+  },
+  {
+   "id": "hair-back-l",
+   "parent": "head",
+   "pivot": [
+    596,
+    224
+   ]
+  },
+  {
+   "id": "mouth-inner",
+   "parent": "head",
+   "pivot": [
+    531,
+    246
+   ]
+  },
+  {
+   "id": "jaw",
+   "parent": "head",
+   "pivot": [
+    531,
+    236
+   ]
+  },
+  {
+   "id": "hair-shadow-1",
+   "parent": "head",
+   "pivot": [
+    480,
+    78
+   ]
+  },
+  {
+   "id": "hair-shadow-5",
+   "parent": "head",
+   "pivot": [
+    588,
+    76
+   ]
+  },
+  {
+   "id": "hair-shadow-2",
+   "parent": "head",
+   "pivot": [
+    516,
+    72
+   ]
+  },
+  {
+   "id": "hair-shadow-4",
+   "parent": "head",
+   "pivot": [
+    558,
+    68
+   ]
+  },
+  {
+   "id": "hair-shadow-3",
+   "parent": "head",
+   "pivot": [
+    544,
+    64
+   ]
+  },
+  {
+   "id": "hair-wrap-r",
+   "parent": "head",
+   "pivot": [
+    444,
+    180
+   ]
+  },
+  {
+   "id": "hair-wrap-l",
+   "parent": "head",
+   "pivot": [
+    618,
+    180
+   ]
+  },
+  {
+   "id": "cheek-r",
+   "parent": "head",
+   "pivot": [
+    478,
+    232
+   ]
+  },
+  {
+   "id": "cheek-l",
+   "parent": "head",
+   "pivot": [
+    584,
+    232
+   ]
+  },
+  {
+   "id": "nose",
+   "parent": "head",
+   "pivot": [
+    531,
+    227
+   ]
+  },
+  {
+   "id": "mouth",
+   "parent": "head",
+   "pivot": [
+    531,
+    246
+   ]
+  },
+  {
+   "id": "lip-corner-r",
+   "parent": "mouth",
+   "pivot": [
+    515,
+    246.4
+   ]
+  },
+  {
+   "id": "lip-corner-l",
+   "parent": "mouth",
+   "pivot": [
+    547,
+    246.4
+   ]
+  },
+  {
+   "id": "eye-r",
+   "parent": "head",
+   "pivot": [
+    487,
+    196
+   ]
+  },
+  {
+   "id": "iris-r",
+   "parent": "eye-r",
+   "pivot": [
+    493.7,
+    195.8
+   ]
+  },
+  {
+   "id": "pupil-r",
+   "parent": "iris-r",
+   "pivot": [
+    493.7,
+    195.8
+   ]
+  },
+  {
+   "id": "eyelid-upper-r",
+   "parent": "eye-r",
+   "pivot": [
+    487,
+    179
+   ]
+  },
+  {
+   "id": "eyelid-lower-r",
+   "parent": "eye-r",
+   "pivot": [
+    487,
+    212
+   ]
+  },
+  {
+   "id": "lash-upper-r",
+   "parent": "eye-r",
+   "pivot": [
+    487,
+    179
+   ]
+  },
+  {
+   "id": "eye-l",
+   "parent": "head",
+   "pivot": [
+    575,
+    196
+   ]
+  },
+  {
+   "id": "iris-l",
+   "parent": "eye-l",
+   "pivot": [
+    568.3,
+    195.8
+   ]
+  },
+  {
+   "id": "pupil-l",
+   "parent": "iris-l",
+   "pivot": [
+    568.3,
+    195.8
+   ]
+  },
+  {
+   "id": "eyelid-upper-l",
+   "parent": "eye-l",
+   "pivot": [
+    575,
+    179
+   ]
+  },
+  {
+   "id": "eyelid-lower-l",
+   "parent": "eye-l",
+   "pivot": [
+    575,
+    212
+   ]
+  },
+  {
+   "id": "lash-upper-l",
+   "parent": "eye-l",
+   "pivot": [
+    575,
+    179
+   ]
+  },
+  {
+   "id": "brow-r",
+   "parent": "head",
+   "pivot": [
+    487,
+    162
+   ]
+  },
+  {
+   "id": "brow-outer-r",
+   "parent": "brow-r",
+   "pivot": [
+    487.5,
+    160.8
+   ]
+  },
+  {
+   "id": "brow-inner-r",
+   "parent": "brow-r",
+   "pivot": [
+    487.5,
+    160.8
+   ]
+  },
+  {
+   "id": "brow-l",
+   "parent": "head",
+   "pivot": [
+    575,
+    162
+   ]
+  },
+  {
+   "id": "brow-outer-l",
+   "parent": "brow-l",
+   "pivot": [
+    574.5,
+    160.8
+   ]
+  },
+  {
+   "id": "brow-inner-l",
+   "parent": "brow-l",
+   "pivot": [
+    574.5,
+    160.8
+   ]
+  },
+  {
+   "id": "ear-r",
+   "parent": "head",
+   "pivot": [
+    464,
+    214
+   ]
+  },
+  {
+   "id": "ear-l",
+   "parent": "head",
+   "pivot": [
+    598,
+    214
+   ]
+  },
+  {
+   "id": "hair-front-1",
+   "parent": "head",
+   "pivot": [
+    480,
+    78
+   ]
+  },
+  {
+   "id": "hair-front-5",
+   "parent": "head",
+   "pivot": [
+    588,
+    76
+   ]
+  },
+  {
+   "id": "hair-front-2",
+   "parent": "head",
+   "pivot": [
+    516,
+    72
+   ]
+  },
+  {
+   "id": "hair-front-4",
+   "parent": "head",
+   "pivot": [
+    558,
+    68
+   ]
+  },
+  {
+   "id": "hair-front-3",
+   "parent": "head",
+   "pivot": [
+    544,
+    64
+   ]
+  },
+  {
+   "id": "hair-side-r",
+   "parent": "head",
+   "pivot": [
+    446,
+    140
+   ]
+  },
+  {
+   "id": "hair-side-l",
+   "parent": "head",
+   "pivot": [
+    616,
+    140
+   ]
+  },
+  {
+   "id": "hair-top",
+   "parent": "head",
+   "pivot": [
+    533,
+    61
+   ]
+  },
+  {
+   "id": "hood",
+   "parent": "spine-3",
+   "pivot": [
+    531,
+    320
+   ]
+  },
+  {
+   "id": "drawstring-r-1",
+   "parent": "spine-3",
+   "pivot": [
+    509,
+    354
+   ]
+  },
+  {
+   "id": "drawstring-r-2",
+   "parent": "drawstring-r-1",
+   "pivot": [
+    509,
+    378
+   ]
+  },
+  {
+   "id": "drawstring-r-3",
+   "parent": "drawstring-r-2",
+   "pivot": [
+    509,
+    402
+   ]
+  },
+  {
+   "id": "drawstring-l-1",
+   "parent": "spine-3",
+   "pivot": [
+    553,
+    354
+   ]
+  },
+  {
+   "id": "drawstring-l-2",
+   "parent": "drawstring-l-1",
+   "pivot": [
+    553,
+    378
+   ]
+  },
+  {
+   "id": "drawstring-l-3",
+   "parent": "drawstring-l-2",
+   "pivot": [
+    553,
+    402
+   ]
+  },
+  {
+   "id": "clavicle-r",
+   "parent": "spine-3",
+   "pivot": [
+    497,
+    342
+   ]
+  },
+  {
+   "id": "upper-arm-r",
+   "parent": "clavicle-r",
+   "pivot": [
+    442,
+    362
+   ]
+  },
+  {
+   "id": "forearm-r",
+   "parent": "upper-arm-r",
+   "pivot": [
+    398.4,
+    528.4
+   ]
+  },
+  {
+   "id": "hand-r",
+   "parent": "forearm-r",
+   "pivot": [
+    356.2,
+    688.9
+   ]
+  },
+  {
+   "id": "finger-pinky-prox-r",
+   "parent": "hand-r",
+   "pivot": [
+    325,
+    731.4
+   ]
+  },
+  {
+   "id": "finger-pinky-mid-r",
+   "parent": "finger-pinky-prox-r",
+   "pivot": [
+    318.5,
+    747.1
+   ]
+  },
+  {
+   "id": "finger-pinky-dist-r",
+   "parent": "finger-pinky-mid-r",
+   "pivot": [
+    313.8,
+    758.2
+   ]
+  },
+  {
+   "id": "finger-ring-prox-r",
+   "parent": "hand-r",
+   "pivot": [
+    337,
+    738.7
+   ]
+  },
+  {
+   "id": "finger-ring-mid-r",
+   "parent": "finger-ring-prox-r",
+   "pivot": [
+    330.3,
+    759.6
+   ]
+  },
+  {
+   "id": "finger-ring-dist-r",
+   "parent": "finger-ring-mid-r",
+   "pivot": [
+    325.7,
+    773.9
+   ]
+  },
+  {
+   "id": "finger-middle-prox-r",
+   "parent": "hand-r",
+   "pivot": [
+    349.3,
+    744
+   ]
+  },
+  {
+   "id": "finger-middle-mid-r",
+   "parent": "finger-middle-prox-r",
+   "pivot": [
+    343.2,
+    767.2
+   ]
+  },
+  {
+   "id": "finger-middle-dist-r",
+   "parent": "finger-middle-mid-r",
+   "pivot": [
+    339.2,
+    782.7
+   ]
+  },
+  {
+   "id": "finger-index-prox-r",
+   "parent": "hand-r",
+   "pivot": [
+    362.6,
+    746.4
+   ]
+  },
+  {
+   "id": "finger-index-mid-r",
+   "parent": "finger-index-prox-r",
+   "pivot": [
+    358.6,
+    768.1
+   ]
+  },
+  {
+   "id": "finger-index-dist-r",
+   "parent": "finger-index-mid-r",
+   "pivot": [
+    355.8,
+    782.8
+   ]
+  },
+  {
+   "id": "thumb-meta-r",
+   "parent": "hand-r",
+   "pivot": [
+    371.9,
+    696.2
+   ]
+  },
+  {
+   "id": "thumb-prox-r",
+   "parent": "thumb-meta-r",
+   "pivot": [
+    370.9,
+    730.1
+   ]
+  },
+  {
+   "id": "thumb-dist-r",
+   "parent": "thumb-prox-r",
+   "pivot": [
+    370.3,
+    752.1
+   ]
+  },
+  {
+   "id": "cuff-r",
+   "parent": "forearm-r",
+   "pivot": [
+    366.4,
+    650.2
+   ]
+  },
+  {
+   "id": "clavicle-l",
+   "parent": "spine-3",
+   "pivot": [
+    565,
+    342
+   ]
+  },
+  {
+   "id": "upper-arm-l",
+   "parent": "clavicle-l",
+   "pivot": [
+    620,
+    362
+   ]
+  },
+  {
+   "id": "forearm-l",
+   "parent": "upper-arm-l",
+   "pivot": [
+    663.6,
+    528.4
+   ]
+  },
+  {
+   "id": "hand-l",
+   "parent": "forearm-l",
+   "pivot": [
+    705.8,
+    688.9
+   ]
+  },
+  {
+   "id": "finger-pinky-prox-l",
+   "parent": "hand-l",
+   "pivot": [
+    737,
+    731.4
+   ]
+  },
+  {
+   "id": "finger-pinky-mid-l",
+   "parent": "finger-pinky-prox-l",
+   "pivot": [
+    743.5,
+    747.1
+   ]
+  },
+  {
+   "id": "finger-pinky-dist-l",
+   "parent": "finger-pinky-mid-l",
+   "pivot": [
+    748.2,
+    758.2
+   ]
+  },
+  {
+   "id": "finger-ring-prox-l",
+   "parent": "hand-l",
+   "pivot": [
+    725,
+    738.7
+   ]
+  },
+  {
+   "id": "finger-ring-mid-l",
+   "parent": "finger-ring-prox-l",
+   "pivot": [
+    731.7,
+    759.6
+   ]
+  },
+  {
+   "id": "finger-ring-dist-l",
+   "parent": "finger-ring-mid-l",
+   "pivot": [
+    736.3,
+    773.9
+   ]
+  },
+  {
+   "id": "finger-middle-prox-l",
+   "parent": "hand-l",
+   "pivot": [
+    712.7,
+    744
+   ]
+  },
+  {
+   "id": "finger-middle-mid-l",
+   "parent": "finger-middle-prox-l",
+   "pivot": [
+    718.8,
+    767.2
+   ]
+  },
+  {
+   "id": "finger-middle-dist-l",
+   "parent": "finger-middle-mid-l",
+   "pivot": [
+    722.8,
+    782.7
+   ]
+  },
+  {
+   "id": "finger-index-prox-l",
+   "parent": "hand-l",
+   "pivot": [
+    699.4,
+    746.4
+   ]
+  },
+  {
+   "id": "finger-index-mid-l",
+   "parent": "finger-index-prox-l",
+   "pivot": [
+    703.4,
+    768.1
+   ]
+  },
+  {
+   "id": "finger-index-dist-l",
+   "parent": "finger-index-mid-l",
+   "pivot": [
+    706.2,
+    782.8
+   ]
+  },
+  {
+   "id": "thumb-meta-l",
+   "parent": "hand-l",
+   "pivot": [
+    690.1,
+    696.2
+   ]
+  },
+  {
+   "id": "thumb-prox-l",
+   "parent": "thumb-meta-l",
+   "pivot": [
+    691.1,
+    730.1
+   ]
+  },
+  {
+   "id": "thumb-dist-l",
+   "parent": "thumb-prox-l",
+   "pivot": [
+    691.7,
+    752.1
+   ]
+  },
+  {
+   "id": "cuff-l",
+   "parent": "forearm-l",
+   "pivot": [
+    695.6,
+    650.2
+   ]
+  }
+ ],
+ "joints": [
+  {
+   "id": "neck-1",
+   "group": "Head",
+   "label": "Neck lower tilt",
+   "unit": "deg",
+   "min": -15,
+   "max": 15,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "neck-1",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "neck-2",
+   "group": "Head",
+   "label": "Neck upper tilt",
+   "unit": "deg",
+   "min": -15,
+   "max": 15,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "neck-2",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "head",
+   "group": "Head",
+   "label": "Head tilt",
+   "unit": "deg",
+   "min": -20,
+   "max": 20,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "head",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "head-yaw",
+   "group": "Head",
+   "label": "Head turn (yaw)",
+   "unit": "deg",
+   "min": -70,
+   "max": 70,
+   "default": 0,
+   "targets": []
+  },
+  {
+   "id": "jaw",
+   "group": "Head",
+   "label": "Jaw open",
+   "unit": "deg",
+   "min": 0,
+   "max": 25,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "jaw",
+     "ch": "y",
+     "k": 0.5
+    }
+   ]
+  },
+  {
+   "id": "eyelid-upper-r",
+   "group": "Head",
+   "label": "Upper eyelid R",
+   "unit": "%",
+   "min": 0,
+   "max": 100,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "eyelid-upper-r",
+     "ch": "y",
+     "k": 0.34
+    },
+    {
+     "bone": "lash-upper-r",
+     "ch": "y",
+     "k": 0.34
+    }
+   ]
+  },
+  {
+   "id": "eyelid-lower-r",
+   "group": "Head",
+   "label": "Lower eyelid R",
+   "unit": "%",
+   "min": 0,
+   "max": 100,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "eyelid-lower-r",
+     "ch": "y",
+     "k": -0.1
+    }
+   ]
+  },
+  {
+   "id": "gaze-x-r",
+   "group": "Head",
+   "label": "Iris R left / right",
+   "unit": "px",
+   "min": -6,
+   "max": 6,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "iris-r",
+     "ch": "x",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "gaze-y-r",
+   "group": "Head",
+   "label": "Iris R up / down",
+   "unit": "px",
+   "min": -4,
+   "max": 4,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "iris-r",
+     "ch": "y",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "pupil-r",
+   "group": "Head",
+   "label": "Pupil R size",
+   "unit": "%",
+   "min": -30,
+   "max": 35,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "pupil-r",
+     "ch": "sx",
+     "k": 0.01
+    },
+    {
+     "bone": "pupil-r",
+     "ch": "sy",
+     "k": 0.01
+    }
+   ]
+  },
+  {
+   "id": "brow-r",
+   "group": "Head",
+   "label": "Brow R raise",
+   "unit": "px",
+   "min": -6,
+   "max": 8,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "brow-r",
+     "ch": "y",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "brow-inner-r",
+   "group": "Head",
+   "label": "Brow R inner",
+   "unit": "deg",
+   "min": -25,
+   "max": 25,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "brow-inner-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "brow-outer-r",
+   "group": "Head",
+   "label": "Brow R outer",
+   "unit": "deg",
+   "min": -20,
+   "max": 20,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "brow-outer-r",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "cheek-r",
+   "group": "Head",
+   "label": "Cheek R raise",
+   "unit": "px",
+   "min": 0,
+   "max": 6,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "cheek-r",
+     "ch": "y",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "lip-corner-r",
+   "group": "Head",
+   "label": "Lip corner R",
+   "unit": "deg",
+   "min": -25,
+   "max": 25,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "lip-corner-r",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "ear-r",
+   "group": "Head",
+   "label": "Ear R",
+   "unit": "deg",
+   "min": -10,
+   "max": 10,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "ear-r",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "eyelid-upper-l",
+   "group": "Head",
+   "label": "Upper eyelid L",
+   "unit": "%",
+   "min": 0,
+   "max": 100,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "eyelid-upper-l",
+     "ch": "y",
+     "k": 0.34
+    },
+    {
+     "bone": "lash-upper-l",
+     "ch": "y",
+     "k": 0.34
+    }
+   ]
+  },
+  {
+   "id": "eyelid-lower-l",
+   "group": "Head",
+   "label": "Lower eyelid L",
+   "unit": "%",
+   "min": 0,
+   "max": 100,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "eyelid-lower-l",
+     "ch": "y",
+     "k": -0.1
+    }
+   ]
+  },
+  {
+   "id": "gaze-x-l",
+   "group": "Head",
+   "label": "Iris L left / right",
+   "unit": "px",
+   "min": -6,
+   "max": 6,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "iris-l",
+     "ch": "x",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "gaze-y-l",
+   "group": "Head",
+   "label": "Iris L up / down",
+   "unit": "px",
+   "min": -4,
+   "max": 4,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "iris-l",
+     "ch": "y",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "pupil-l",
+   "group": "Head",
+   "label": "Pupil L size",
+   "unit": "%",
+   "min": -30,
+   "max": 35,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "pupil-l",
+     "ch": "sx",
+     "k": 0.01
+    },
+    {
+     "bone": "pupil-l",
+     "ch": "sy",
+     "k": 0.01
+    }
+   ]
+  },
+  {
+   "id": "brow-l",
+   "group": "Head",
+   "label": "Brow L raise",
+   "unit": "px",
+   "min": -6,
+   "max": 8,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "brow-l",
+     "ch": "y",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "brow-inner-l",
+   "group": "Head",
+   "label": "Brow L inner",
+   "unit": "deg",
+   "min": -25,
+   "max": 25,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "brow-inner-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "brow-outer-l",
+   "group": "Head",
+   "label": "Brow L outer",
+   "unit": "deg",
+   "min": -20,
+   "max": 20,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "brow-outer-l",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "cheek-l",
+   "group": "Head",
+   "label": "Cheek L raise",
+   "unit": "px",
+   "min": 0,
+   "max": 6,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "cheek-l",
+     "ch": "y",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "lip-corner-l",
+   "group": "Head",
+   "label": "Lip corner L",
+   "unit": "deg",
+   "min": -25,
+   "max": 25,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "lip-corner-l",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "ear-l",
+   "group": "Head",
+   "label": "Ear L",
+   "unit": "deg",
+   "min": -10,
+   "max": 10,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "ear-l",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "hair-top",
+   "group": "Head",
+   "label": "Hair top tuft",
+   "unit": "deg",
+   "min": -35,
+   "max": 35,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "hair-top",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "hair-front-1",
+   "group": "Head",
+   "label": "Hair front 1",
+   "unit": "deg",
+   "min": -12,
+   "max": 12,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "hair-front-1",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "hair-front-2",
+   "group": "Head",
+   "label": "Hair front 2",
+   "unit": "deg",
+   "min": -12,
+   "max": 12,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "hair-front-2",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "hair-front-3",
+   "group": "Head",
+   "label": "Hair front 3",
+   "unit": "deg",
+   "min": -12,
+   "max": 12,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "hair-front-3",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "hair-front-4",
+   "group": "Head",
+   "label": "Hair front 4",
+   "unit": "deg",
+   "min": -12,
+   "max": 12,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "hair-front-4",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "hair-front-5",
+   "group": "Head",
+   "label": "Hair front 5",
+   "unit": "deg",
+   "min": -12,
+   "max": 12,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "hair-front-5",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "hair-side-r",
+   "group": "Head",
+   "label": "Hair side R",
+   "unit": "deg",
+   "min": -15,
+   "max": 15,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "hair-side-r",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "hair-back-r",
+   "group": "Head",
+   "label": "Hair back R",
+   "unit": "deg",
+   "min": -15,
+   "max": 15,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "hair-back-r",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "hair-side-l",
+   "group": "Head",
+   "label": "Hair side L",
+   "unit": "deg",
+   "min": -15,
+   "max": 15,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "hair-side-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "hair-back-l",
+   "group": "Head",
+   "label": "Hair back L",
+   "unit": "deg",
+   "min": -15,
+   "max": 15,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "hair-back-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "pelvis",
+   "group": "Torso",
+   "label": "Pelvis tilt",
+   "unit": "deg",
+   "min": -20,
+   "max": 20,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "pelvis",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "spine-1",
+   "group": "Torso",
+   "label": "Spine lower",
+   "unit": "deg",
+   "min": -15,
+   "max": 15,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "spine-1",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "spine-2",
+   "group": "Torso",
+   "label": "Spine middle",
+   "unit": "deg",
+   "min": -12,
+   "max": 12,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "spine-2",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "spine-3",
+   "group": "Torso",
+   "label": "Spine upper (chest)",
+   "unit": "deg",
+   "min": -10,
+   "max": 10,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "spine-3",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "clavicle-r",
+   "group": "Torso",
+   "label": "Clavicle R (shrug)",
+   "unit": "deg",
+   "min": -10,
+   "max": 30,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "clavicle-r",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "clavicle-l",
+   "group": "Torso",
+   "label": "Clavicle L (shrug)",
+   "unit": "deg",
+   "min": -10,
+   "max": 30,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "clavicle-l",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "hood",
+   "group": "Torso",
+   "label": "Hood",
+   "unit": "deg",
+   "min": -8,
+   "max": 8,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "hood",
+     "ch": "r",
+     "k": 1
+    },
+    {
+     "bone": "hood-back",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "drawstring-r-1",
+   "group": "Torso",
+   "label": "Drawstring R 1",
+   "unit": "deg",
+   "min": -60,
+   "max": 60,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "drawstring-r-1",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "drawstring-r-2",
+   "group": "Torso",
+   "label": "Drawstring R 2",
+   "unit": "deg",
+   "min": -60,
+   "max": 60,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "drawstring-r-2",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "drawstring-r-3",
+   "group": "Torso",
+   "label": "Drawstring R 3",
+   "unit": "deg",
+   "min": -60,
+   "max": 60,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "drawstring-r-3",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "drawstring-l-1",
+   "group": "Torso",
+   "label": "Drawstring L 1",
+   "unit": "deg",
+   "min": -60,
+   "max": 60,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "drawstring-l-1",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "drawstring-l-2",
+   "group": "Torso",
+   "label": "Drawstring L 2",
+   "unit": "deg",
+   "min": -60,
+   "max": 60,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "drawstring-l-2",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "drawstring-l-3",
+   "group": "Torso",
+   "label": "Drawstring L 3",
+   "unit": "deg",
+   "min": -60,
+   "max": 60,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "drawstring-l-3",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "hem",
+   "group": "Torso",
+   "label": "Hem",
+   "unit": "deg",
+   "min": -6,
+   "max": 6,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "hem",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "pocket",
+   "group": "Torso",
+   "label": "Pocket",
+   "unit": "deg",
+   "min": -5,
+   "max": 5,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "pocket",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "shoulder-r",
+   "group": "Arms",
+   "label": "Shoulder R",
+   "unit": "deg",
+   "min": -180,
+   "max": 60,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "upper-arm-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "arm-rotation-r",
+   "group": "Arms",
+   "label": "Arm rotation R (in to out)",
+   "unit": "deg",
+   "min": 0,
+   "max": 180,
+   "default": 0,
+   "targets": []
+  },
+  {
+   "id": "elbow-r",
+   "group": "Arms",
+   "label": "Elbow R",
+   "unit": "deg",
+   "min": 0,
+   "max": 145,
+   "default": 6,
+   "targets": []
+  },
+  {
+   "id": "wrist-r",
+   "group": "Arms",
+   "label": "Wrist R",
+   "unit": "deg",
+   "min": -70,
+   "max": 80,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "hand-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "cuff-r",
+   "group": "Arms",
+   "label": "Sleeve cuff R",
+   "unit": "deg",
+   "min": -10,
+   "max": 10,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "cuff-r",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "shoulder-l",
+   "group": "Arms",
+   "label": "Shoulder L",
+   "unit": "deg",
+   "min": -180,
+   "max": 60,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "upper-arm-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "arm-rotation-l",
+   "group": "Arms",
+   "label": "Arm rotation L (in to out)",
+   "unit": "deg",
+   "min": 0,
+   "max": 180,
+   "default": 0,
+   "targets": []
+  },
+  {
+   "id": "elbow-l",
+   "group": "Arms",
+   "label": "Elbow L",
+   "unit": "deg",
+   "min": 0,
+   "max": 145,
+   "default": 6,
+   "targets": []
+  },
+  {
+   "id": "wrist-l",
+   "group": "Arms",
+   "label": "Wrist L",
+   "unit": "deg",
+   "min": -70,
+   "max": 80,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "hand-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "cuff-l",
+   "group": "Arms",
+   "label": "Sleeve cuff L",
+   "unit": "deg",
+   "min": -10,
+   "max": 10,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "cuff-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "finger-index-prox-r",
+   "group": "Hands and fingers",
+   "label": "R index proximal",
+   "unit": "deg",
+   "min": 0,
+   "max": 90,
+   "default": 14,
+   "targets": [
+    {
+     "bone": "finger-index-prox-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "finger-index-mid-r",
+   "group": "Hands and fingers",
+   "label": "R index middle",
+   "unit": "deg",
+   "min": 0,
+   "max": 100,
+   "default": 26,
+   "targets": [
+    {
+     "bone": "finger-index-mid-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "finger-index-dist-r",
+   "group": "Hands and fingers",
+   "label": "R index distal",
+   "unit": "deg",
+   "min": 0,
+   "max": 80,
+   "default": 14,
+   "targets": [
+    {
+     "bone": "finger-index-dist-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "finger-middle-prox-r",
+   "group": "Hands and fingers",
+   "label": "R middle proximal",
+   "unit": "deg",
+   "min": 0,
+   "max": 90,
+   "default": 20,
+   "targets": [
+    {
+     "bone": "finger-middle-prox-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "finger-middle-mid-r",
+   "group": "Hands and fingers",
+   "label": "R middle middle",
+   "unit": "deg",
+   "min": 0,
+   "max": 100,
+   "default": 32,
+   "targets": [
+    {
+     "bone": "finger-middle-mid-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "finger-middle-dist-r",
+   "group": "Hands and fingers",
+   "label": "R middle distal",
+   "unit": "deg",
+   "min": 0,
+   "max": 80,
+   "default": 16,
+   "targets": [
+    {
+     "bone": "finger-middle-dist-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "finger-ring-prox-r",
+   "group": "Hands and fingers",
+   "label": "R ring proximal",
+   "unit": "deg",
+   "min": 0,
+   "max": 90,
+   "default": 26,
+   "targets": [
+    {
+     "bone": "finger-ring-prox-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "finger-ring-mid-r",
+   "group": "Hands and fingers",
+   "label": "R ring middle",
+   "unit": "deg",
+   "min": 0,
+   "max": 100,
+   "default": 38,
+   "targets": [
+    {
+     "bone": "finger-ring-mid-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "finger-ring-dist-r",
+   "group": "Hands and fingers",
+   "label": "R ring distal",
+   "unit": "deg",
+   "min": 0,
+   "max": 80,
+   "default": 18,
+   "targets": [
+    {
+     "bone": "finger-ring-dist-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "finger-pinky-prox-r",
+   "group": "Hands and fingers",
+   "label": "R pinky proximal",
+   "unit": "deg",
+   "min": 0,
+   "max": 90,
+   "default": 32,
+   "targets": [
+    {
+     "bone": "finger-pinky-prox-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "finger-pinky-mid-r",
+   "group": "Hands and fingers",
+   "label": "R pinky middle",
+   "unit": "deg",
+   "min": 0,
+   "max": 100,
+   "default": 44,
+   "targets": [
+    {
+     "bone": "finger-pinky-mid-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "finger-pinky-dist-r",
+   "group": "Hands and fingers",
+   "label": "R pinky distal",
+   "unit": "deg",
+   "min": 0,
+   "max": 80,
+   "default": 20,
+   "targets": [
+    {
+     "bone": "finger-pinky-dist-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "thumb-meta-r",
+   "group": "Hands and fingers",
+   "label": "R thumb base",
+   "unit": "deg",
+   "min": -15,
+   "max": 45,
+   "default": 6,
+   "targets": [
+    {
+     "bone": "thumb-meta-r",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "thumb-prox-r",
+   "group": "Hands and fingers",
+   "label": "R thumb proximal",
+   "unit": "deg",
+   "min": 0,
+   "max": 60,
+   "default": 12,
+   "targets": [
+    {
+     "bone": "thumb-prox-r",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "thumb-dist-r",
+   "group": "Hands and fingers",
+   "label": "R thumb distal",
+   "unit": "deg",
+   "min": -10,
+   "max": 80,
+   "default": 14,
+   "targets": [
+    {
+     "bone": "thumb-dist-r",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "finger-index-prox-l",
+   "group": "Hands and fingers",
+   "label": "L index proximal",
+   "unit": "deg",
+   "min": 0,
+   "max": 90,
+   "default": 14,
+   "targets": [
+    {
+     "bone": "finger-index-prox-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "finger-index-mid-l",
+   "group": "Hands and fingers",
+   "label": "L index middle",
+   "unit": "deg",
+   "min": 0,
+   "max": 100,
+   "default": 26,
+   "targets": [
+    {
+     "bone": "finger-index-mid-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "finger-index-dist-l",
+   "group": "Hands and fingers",
+   "label": "L index distal",
+   "unit": "deg",
+   "min": 0,
+   "max": 80,
+   "default": 14,
+   "targets": [
+    {
+     "bone": "finger-index-dist-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "finger-middle-prox-l",
+   "group": "Hands and fingers",
+   "label": "L middle proximal",
+   "unit": "deg",
+   "min": 0,
+   "max": 90,
+   "default": 20,
+   "targets": [
+    {
+     "bone": "finger-middle-prox-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "finger-middle-mid-l",
+   "group": "Hands and fingers",
+   "label": "L middle middle",
+   "unit": "deg",
+   "min": 0,
+   "max": 100,
+   "default": 32,
+   "targets": [
+    {
+     "bone": "finger-middle-mid-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "finger-middle-dist-l",
+   "group": "Hands and fingers",
+   "label": "L middle distal",
+   "unit": "deg",
+   "min": 0,
+   "max": 80,
+   "default": 16,
+   "targets": [
+    {
+     "bone": "finger-middle-dist-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "finger-ring-prox-l",
+   "group": "Hands and fingers",
+   "label": "L ring proximal",
+   "unit": "deg",
+   "min": 0,
+   "max": 90,
+   "default": 26,
+   "targets": [
+    {
+     "bone": "finger-ring-prox-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "finger-ring-mid-l",
+   "group": "Hands and fingers",
+   "label": "L ring middle",
+   "unit": "deg",
+   "min": 0,
+   "max": 100,
+   "default": 38,
+   "targets": [
+    {
+     "bone": "finger-ring-mid-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "finger-ring-dist-l",
+   "group": "Hands and fingers",
+   "label": "L ring distal",
+   "unit": "deg",
+   "min": 0,
+   "max": 80,
+   "default": 18,
+   "targets": [
+    {
+     "bone": "finger-ring-dist-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "finger-pinky-prox-l",
+   "group": "Hands and fingers",
+   "label": "L pinky proximal",
+   "unit": "deg",
+   "min": 0,
+   "max": 90,
+   "default": 32,
+   "targets": [
+    {
+     "bone": "finger-pinky-prox-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "finger-pinky-mid-l",
+   "group": "Hands and fingers",
+   "label": "L pinky middle",
+   "unit": "deg",
+   "min": 0,
+   "max": 100,
+   "default": 44,
+   "targets": [
+    {
+     "bone": "finger-pinky-mid-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "finger-pinky-dist-l",
+   "group": "Hands and fingers",
+   "label": "L pinky distal",
+   "unit": "deg",
+   "min": 0,
+   "max": 80,
+   "default": 20,
+   "targets": [
+    {
+     "bone": "finger-pinky-dist-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "thumb-meta-l",
+   "group": "Hands and fingers",
+   "label": "L thumb base",
+   "unit": "deg",
+   "min": -15,
+   "max": 45,
+   "default": 6,
+   "targets": [
+    {
+     "bone": "thumb-meta-l",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "thumb-prox-l",
+   "group": "Hands and fingers",
+   "label": "L thumb proximal",
+   "unit": "deg",
+   "min": 0,
+   "max": 60,
+   "default": 12,
+   "targets": [
+    {
+     "bone": "thumb-prox-l",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "thumb-dist-l",
+   "group": "Hands and fingers",
+   "label": "L thumb distal",
+   "unit": "deg",
+   "min": -10,
+   "max": 80,
+   "default": 14,
+   "targets": [
+    {
+     "bone": "thumb-dist-l",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "hip-r",
+   "group": "Legs",
+   "label": "Hip R",
+   "unit": "deg",
+   "min": -120,
+   "max": 30,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "thigh-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "knee-r",
+   "group": "Legs",
+   "label": "Knee R",
+   "unit": "deg",
+   "min": 0,
+   "max": 140,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "shin-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "ankle-r",
+   "group": "Legs",
+   "label": "Ankle R",
+   "unit": "deg",
+   "min": -40,
+   "max": 50,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "foot-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "toes-r",
+   "group": "Legs",
+   "label": "Toes R",
+   "unit": "deg",
+   "min": -10,
+   "max": 40,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "toes-r",
+     "ch": "r",
+     "k": -1
+    }
+   ]
+  },
+  {
+   "id": "hip-l",
+   "group": "Legs",
+   "label": "Hip L",
+   "unit": "deg",
+   "min": -120,
+   "max": 30,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "thigh-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "knee-l",
+   "group": "Legs",
+   "label": "Knee L",
+   "unit": "deg",
+   "min": 0,
+   "max": 140,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "shin-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "ankle-l",
+   "group": "Legs",
+   "label": "Ankle L",
+   "unit": "deg",
+   "min": -40,
+   "max": 50,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "foot-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  },
+  {
+   "id": "toes-l",
+   "group": "Legs",
+   "label": "Toes L",
+   "unit": "deg",
+   "min": -10,
+   "max": 40,
+   "default": 0,
+   "targets": [
+    {
+     "bone": "toes-l",
+     "ch": "r",
+     "k": 1
+    }
+   ]
+  }
+ ],
+ "folds": [
+  {
+   "bone": "forearm-r",
+   "flex": "elbow-r",
+   "twist": "arm-rotation-r",
+   "k": -1
+  },
+  {
+   "bone": "forearm-l",
+   "flex": "elbow-l",
+   "twist": "arm-rotation-l",
+   "k": 1
+  }
+ ],
+ "scapula": [
+  {
+   "shoulder": "shoulder-r",
+   "clavicle": "clavicle-r",
+   "upperArm": "upper-arm-r",
+   "start": 30,
+   "ratio": 0.22,
+   "max": 28,
+   "k": 1
+  },
+  {
+   "shoulder": "shoulder-l",
+   "clavicle": "clavicle-l",
+   "upperArm": "upper-arm-l",
+   "start": 30,
+   "ratio": 0.22,
+   "max": 28,
+   "k": -1
+  }
+ ],
+ "yaw": {
+  "joint": "head-yaw",
+  "gain": 0.6,
+  "earHide": 14,
+  "features": [
+   {
+    "bone": "eye-r",
+    "x": -44,
+    "z": 34
+   },
+   {
+    "bone": "brow-r",
+    "x": -44,
+    "z": 36
+   },
+   {
+    "bone": "cheek-r",
+    "x": -53,
+    "z": 28
+   },
+   {
+    "bone": "ear-r",
+    "x": -80,
+    "z": -10,
+    "ear": true
+   },
+   {
+    "bone": "hair-side-r",
+    "x": -80,
+    "z": 10
+   },
+   {
+    "bone": "hair-wrap-r",
+    "x": -78,
+    "wrap": 20
+   },
+   {
+    "bone": "eye-l",
+    "x": 44,
+    "z": 34
+   },
+   {
+    "bone": "brow-l",
+    "x": 44,
+    "z": 36
+   },
+   {
+    "bone": "cheek-l",
+    "x": 53,
+    "z": 28
+   },
+   {
+    "bone": "ear-l",
+    "x": 80,
+    "z": -10,
+    "ear": true
+   },
+   {
+    "bone": "hair-side-l",
+    "x": 80,
+    "z": 10
+   },
+   {
+    "bone": "hair-wrap-l",
+    "x": 78,
+    "wrap": 20
+   },
+   {
+    "bone": "nose",
+    "x": 0,
+    "z": 52
+   },
+   {
+    "bone": "mouth",
+    "x": 0,
+    "z": 40
+   },
+   {
+    "bone": "mouth-inner",
+    "x": 0,
+    "z": 40
+   },
+   {
+    "bone": "hair-front-1",
+    "x": -62,
+    "z": 50
+   },
+   {
+    "bone": "hair-front-2",
+    "x": -34,
+    "z": 54
+   },
+   {
+    "bone": "hair-front-3",
+    "x": -4,
+    "z": 56
+   },
+   {
+    "bone": "hair-front-4",
+    "x": 38,
+    "z": 54
+   },
+   {
+    "bone": "hair-front-5",
+    "x": 76,
+    "z": 46
+   },
+   {
+    "bone": "hair-top",
+    "x": 4,
+    "z": 14
+   },
+   {
+    "bone": "hair-shadow-1",
+    "x": -62,
+    "z": 50
+   },
+   {
+    "bone": "hair-shadow-2",
+    "x": -34,
+    "z": 54
+   },
+   {
+    "bone": "hair-shadow-3",
+    "x": -4,
+    "z": 56
+   },
+   {
+    "bone": "hair-shadow-4",
+    "x": 38,
+    "z": 54
+   },
+   {
+    "bone": "hair-shadow-5",
+    "x": 76,
+    "z": 46
+   }
+  ]
+ },
+ "ik": {
+  "hand-r": {
+   "label": "Hand R",
+   "upper": "upper-arm-r",
+   "lower": "forearm-r",
+   "end": "hand-r",
+   "joints": {
+    "upper": "shoulder-r",
+    "lower": "elbow-r",
+    "twist": "arm-rotation-r"
+   }
+  },
+  "foot-r": {
+   "label": "Foot R",
+   "upper": "thigh-r",
+   "lower": "shin-r",
+   "end": "foot-r",
+   "joints": {
+    "upper": "hip-r",
+    "lower": "knee-r",
+    "level": "ankle-r"
+   }
+  },
+  "hand-l": {
+   "label": "Hand L",
+   "upper": "upper-arm-l",
+   "lower": "forearm-l",
+   "end": "hand-l",
+   "joints": {
+    "upper": "shoulder-l",
+    "lower": "elbow-l",
+    "twist": "arm-rotation-l"
+   }
+  },
+  "foot-l": {
+   "label": "Foot L",
+   "upper": "thigh-l",
+   "lower": "shin-l",
+   "end": "foot-l",
+   "joints": {
+    "upper": "hip-l",
+    "lower": "knee-l",
+    "level": "ankle-l"
+   }
+  }
+ },
+ "physics": {
+  "springs": {
+   "hair-top": {
+    "joint": "hair-top",
+    "stiffness": 150,
+    "damping": 5,
+    "mass": 0.6,
+    "limit": 28,
+    "length": 46,
+    "dir": [
+     0.5,
+     -0.87
+    ],
+    "gravity": 0
+   },
+   "hair-front-1": {
+    "joint": "hair-front-1",
+    "stiffness": 230,
+    "damping": 9,
+    "mass": 1,
+    "limit": 9,
+    "length": 96,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 0
+   },
+   "hair-front-2": {
+    "joint": "hair-front-2",
+    "stiffness": 240,
+    "damping": 9,
+    "mass": 1,
+    "limit": 9,
+    "length": 92,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 0
+   },
+   "hair-front-3": {
+    "joint": "hair-front-3",
+    "stiffness": 220,
+    "damping": 8,
+    "mass": 1.1,
+    "limit": 10,
+    "length": 104,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 0
+   },
+   "hair-front-4": {
+    "joint": "hair-front-4",
+    "stiffness": 240,
+    "damping": 9,
+    "mass": 1,
+    "limit": 9,
+    "length": 96,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 0
+   },
+   "hair-front-5": {
+    "joint": "hair-front-5",
+    "stiffness": 230,
+    "damping": 9,
+    "mass": 1,
+    "limit": 9,
+    "length": 100,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 0
+   },
+   "hair-side-r": {
+    "joint": "hair-side-r",
+    "stiffness": 200,
+    "damping": 8,
+    "mass": 0.8,
+    "limit": 12,
+    "length": 62,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 0
+   },
+   "hair-side-l": {
+    "joint": "hair-side-l",
+    "stiffness": 200,
+    "damping": 8,
+    "mass": 0.8,
+    "limit": 12,
+    "length": 62,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 0
+   },
+   "hair-back-r": {
+    "joint": "hair-back-r",
+    "stiffness": 180,
+    "damping": 7,
+    "mass": 0.7,
+    "limit": 14,
+    "length": 34,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 0
+   },
+   "hair-back-l": {
+    "joint": "hair-back-l",
+    "stiffness": 180,
+    "damping": 7,
+    "mass": 0.7,
+    "limit": 14,
+    "length": 34,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 0
+   },
+   "hood": {
+    "joint": "hood",
+    "stiffness": 170,
+    "damping": 10,
+    "mass": 2,
+    "limit": 6,
+    "length": 36,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 0
+   },
+   "hem": {
+    "joint": "hem",
+    "stiffness": 180,
+    "damping": 11,
+    "mass": 2,
+    "limit": 5,
+    "length": 30,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 0
+   },
+   "pocket": {
+    "joint": "pocket",
+    "stiffness": 200,
+    "damping": 11,
+    "mass": 1.5,
+    "limit": 4,
+    "length": 70,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 0
+   },
+   "cuff-r": {
+    "joint": "cuff-r",
+    "stiffness": 210,
+    "damping": 9,
+    "mass": 1.2,
+    "limit": 9,
+    "length": 46,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 0
+   },
+   "cuff-l": {
+    "joint": "cuff-l",
+    "stiffness": 210,
+    "damping": 9,
+    "mass": 1.2,
+    "limit": 9,
+    "length": 46,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 0
+   },
+   "spine-2": {
+    "joint": "spine-2",
+    "stiffness": 300,
+    "damping": 24,
+    "mass": 7,
+    "limit": 2.5,
+    "length": 96,
+    "dir": [
+     0,
+     -1
+    ],
+    "gravity": 0
+   },
+   "spine-3": {
+    "joint": "spine-3",
+    "stiffness": 280,
+    "damping": 22,
+    "mass": 6,
+    "limit": 3,
+    "length": 120,
+    "dir": [
+     0,
+     -1
+    ],
+    "gravity": 0
+   },
+   "neck-2": {
+    "joint": "neck-2",
+    "stiffness": 260,
+    "damping": 20,
+    "mass": 3,
+    "limit": 3.5,
+    "length": 30,
+    "dir": [
+     0,
+     -1
+    ],
+    "gravity": 0
+   },
+   "head": {
+    "joint": "head",
+    "stiffness": 230,
+    "damping": 17,
+    "mass": 4.5,
+    "limit": 4.5,
+    "length": 110,
+    "dir": [
+     0,
+     -1
+    ],
+    "gravity": 0
+   },
+   "hand-r": {
+    "joint": "wrist-r",
+    "stiffness": 160,
+    "damping": 10,
+    "mass": 1,
+    "limit": 12,
+    "length": 78,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 0
+   },
+   "hand-l": {
+    "joint": "wrist-l",
+    "stiffness": 160,
+    "damping": 10,
+    "mass": 1,
+    "limit": 12,
+    "length": 78,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 0
+   },
+   "drawstring-r-1": {
+    "joint": "drawstring-r-1",
+    "stiffness": 70,
+    "damping": 4.5,
+    "mass": 0.5,
+    "limit": 55,
+    "length": 24,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 900
+   },
+   "drawstring-r-2": {
+    "joint": "drawstring-r-2",
+    "stiffness": 55,
+    "damping": 4.5,
+    "mass": 0.5,
+    "limit": 55,
+    "length": 24,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 900
+   },
+   "drawstring-r-3": {
+    "joint": "drawstring-r-3",
+    "stiffness": 45,
+    "damping": 4.5,
+    "mass": 0.5,
+    "limit": 55,
+    "length": 24,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 900
+   },
+   "drawstring-l-1": {
+    "joint": "drawstring-l-1",
+    "stiffness": 70,
+    "damping": 4.5,
+    "mass": 0.5,
+    "limit": 55,
+    "length": 24,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 900
+   },
+   "drawstring-l-2": {
+    "joint": "drawstring-l-2",
+    "stiffness": 55,
+    "damping": 4.5,
+    "mass": 0.5,
+    "limit": 55,
+    "length": 24,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 900
+   },
+   "drawstring-l-3": {
+    "joint": "drawstring-l-3",
+    "stiffness": 45,
+    "damping": 4.5,
+    "mass": 0.5,
+    "limit": 55,
+    "length": 24,
+    "dir": [
+     0,
+     1
+    ],
+    "gravity": 900
+   }
+  },
+  "breathing": {
+   "period": 3.8,
+   "chestLift": 2.4,
+   "shoulder": 1.2,
+   "head": 0.5
+  },
+  "blink": {
+   "every": [
+    2.4,
+    5.5
+   ],
+   "close": 0.07,
+   "hold": 0.05,
+   "open": 0.13
+  },
+  "saccade": {
+   "every": [
+    0.7,
+    2.6
+   ],
+   "x": 2.2,
+   "y": 1.2,
+   "time": 0.05
+  },
+  "balance": {
+   "gain": 0.55,
+   "max": 46,
+   "lean": 0.035,
+   "stiffness": 60,
+   "damping": 14
+  },
+  "ground": {
+   "plantTolerance": 2.5
+  }
+ },
+ "masses": [
+  {
+   "bone": "head",
+   "at": [
+    531,
+    170
+   ],
+   "mass": 5
+  },
+  {
+   "bone": "spine-3",
+   "at": [
+    531,
+    400
+   ],
+   "mass": 10
+  },
+  {
+   "bone": "spine-2",
+   "at": [
+    531,
+    505
+   ],
+   "mass": 7
+  },
+  {
+   "bone": "spine-1",
+   "at": [
+    531,
+    610
+   ],
+   "mass": 6
+  },
+  {
+   "bone": "pelvis",
+   "at": [
+    531,
+    722
+   ],
+   "mass": 8
+  },
+  {
+   "bone": "upper-arm-r",
+   "at": [
+    420.2,
+    445.2
+   ],
+   "mass": 2
+  },
+  {
+   "bone": "forearm-r",
+   "at": [
+    356.2,
+    688.9
+   ],
+   "mass": 1.8
+  },
+  {
+   "bone": "thigh-r",
+   "at": [
+    467.7,
+    879.55
+   ],
+   "mass": 6
+  },
+  {
+   "bone": "shin-r",
+   "at": [
+    444.65,
+    1154.1
+   ],
+   "mass": 4
+  },
+  {
+   "bone": "upper-arm-l",
+   "at": [
+    641.8,
+    445.2
+   ],
+   "mass": 2
+  },
+  {
+   "bone": "forearm-l",
+   "at": [
+    705.8,
+    688.9
+   ],
+   "mass": 1.8
+  },
+  {
+   "bone": "thigh-l",
+   "at": [
+    594.3,
+    879.55
+   ],
+   "mass": 6
+  },
+  {
+   "bone": "shin-l",
+   "at": [
+    617.35,
+    1154.1
+   ],
+   "mass": 4
+  }
+ ],
+ "feet": {
+  "r": {
+   "bone": "foot-r",
+   "ankle": [
+    432.9,
+    1294.1
+   ],
+   "sole": [
+    [
+     351.9,
+     1394
+    ],
+    [
+     469.9,
+     1394
+    ]
+   ],
+   "shadow": "ground-shadow-r",
+   "hip": "hip-r",
+   "knee": "knee-r",
+   "chain": "foot-r"
+  },
+  "l": {
+   "bone": "foot-l",
+   "ankle": [
+    629.1,
+    1294.1
+   ],
+   "sole": [
+    [
+     710.1,
+     1394
+    ],
+    [
+     592.1,
+     1394
+    ]
+   ],
+   "shadow": "ground-shadow-l",
+   "hip": "hip-l",
+   "knee": "knee-l",
+   "chain": "foot-l"
+  }
+ },
+ "presets": {
+  "open": {
+   "finger-index-prox": 0,
+   "finger-index-mid": 0,
+   "finger-index-dist": 0,
+   "finger-middle-prox": 0,
+   "finger-middle-mid": 0,
+   "finger-middle-dist": 0,
+   "finger-ring-prox": 0,
+   "finger-ring-mid": 0,
+   "finger-ring-dist": 0,
+   "finger-pinky-prox": 0,
+   "finger-pinky-mid": 0,
+   "finger-pinky-dist": 0,
+   "thumb-meta": -8,
+   "thumb-prox": 0,
+   "thumb-dist": 0
+  },
+  "relaxed": {
+   "finger-index-prox": 14,
+   "finger-index-mid": 26,
+   "finger-index-dist": 14,
+   "finger-middle-prox": 20,
+   "finger-middle-mid": 32,
+   "finger-middle-dist": 16,
+   "finger-ring-prox": 26,
+   "finger-ring-mid": 38,
+   "finger-ring-dist": 18,
+   "finger-pinky-prox": 32,
+   "finger-pinky-mid": 44,
+   "finger-pinky-dist": 20,
+   "thumb-meta": 6,
+   "thumb-prox": 12,
+   "thumb-dist": 14
+  },
+  "fist": {
+   "finger-index-prox": 84,
+   "finger-index-mid": 98,
+   "finger-index-dist": 62,
+   "finger-middle-prox": 88,
+   "finger-middle-mid": 100,
+   "finger-middle-dist": 66,
+   "finger-ring-prox": 90,
+   "finger-ring-mid": 100,
+   "finger-ring-dist": 68,
+   "finger-pinky-prox": 90,
+   "finger-pinky-mid": 100,
+   "finger-pinky-dist": 70,
+   "thumb-meta": 38,
+   "thumb-prox": 46,
+   "thumb-dist": 52
+  }
+ }
+}

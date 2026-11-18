@@ -1,0 +1,717 @@
+Session 16 : Cloud Threats & Attacks
+
+
+RECAP: Session 15 : Encryption & Key Management
+       1. Data States: At rest; in transit; in use
+       2. Cryptography Essentials: Symmetric vs asymmetric encryption; hashing vs
+       encryption
+       3. Encryption in Transit: TLS handshake; certificates & trust chains; enforcing TLS
+       on endpoints
+       4. Encryption at Rest: Volume, bucket & database encryption; client-side vs
+       server-side encryption
+       5. Key Management: Key Management Service (KMS); provider- vs
+       customer-managed keys; envelope encryption; rotation, HSM & BYOK
+
+Agenda for Today's Session
+       1. Denial of Service: DoS vs DDoS; volumetric, protocol & application-layer attacks;
+       mitigation: rate limiting, scrubbing & CDN absorption
+       2. Data Breaches: Exposed credentials; insecure APIs; breach cost & business impact
+       3. Misconfiguration: Public storage buckets; permissive security groups; default
+       credentials
+       4. Insider & Supply-Chain Threats: Malicious & accidental insiders; compromised
+       dependencies & images; phishing, leaked keys & token theft
+       5. AI-Specific Threats: Prompt injection; sensitive information disclosure; vector &
+       embedding weaknesses; unbounded consumption as cost-based DoS
+
+
+
+--------------------------------------- SECTION 1: 1. Denial of Service: DoS vs DDoS;
+volumetric, protocol & application-layer attacks; mitigation: rate limiting,
+scrubbing & CDN absorption ---------------------------------------
+
+Slide 1: DoS and DDoS Attack Landscape
+Heading: DoS DDoS Landscape
+
+Subheading: Attack Layers Mapped
+
+Content:
+
+Denial of Service (DoS) attacks target availability, overwhelming a system's capacity to serve
+legitimate requests; Distributed Denial of Service (DDoS) does the same from many sources
+at once.
+●​ Volumetric attacks (Layer 3 (network) and Layer 4 (transport) ) flood network
+   bandwidth with traffic
+●​ Protocol attacks (Layer 3 (network) and Layer 4 (transport)) exhaust
+   connection-handling state on servers
+●​ Application-layer attacks (Layer 7 (application)) exhaust compute with
+   legitimate-looking requests
+●​ Distinguishing factor between DoS and DDoS: source count​
+
+
+
+
+                                                                                   ​
+     ​
+
+
+
+
+Visual Guidance: Pyramid diagram: volumetric layer at base (bandwidth), protocol layer in
+middle (connection state), application layer at top (compute); DoS single-arrow vs DDoS
+multi-arrow beside it.
+
+Speaker Notes: "Stress that availability, not data theft, is the goal here. Give the everyday
+framing: a shop that cannot open its shutter is still a shop, just unreachable. Interviewers
+often ask which OSI layer each attack type targets — point to this pyramid."
+
+
+
+Slide 2: Why DDoS Scales: Botnets and Amplification
+Heading: Why DDoS Scales
+
+Subheading: Botnets And Amplification
+
+Content:
+
+A botnet is a network of compromised devices an attacker commands remotely to send
+traffic simultaneously, turning one attacker into a distributed flood.
+
+●​   Command-and-control server issues attack instructions to bots
+●​   Reflection attacks spoof the victim's address toward open servers
+●​   Amplification: a small request triggers a far larger reply
+●​   Multi-terabit floods now originate from compromised IoT devices
+Analogy: A single person blocking a building's entrance by repeatedly entering and exiting
+is like a DoS attack. If thousands of people, controlled by one organiser, crowd the same
+entrance at once, it is like a DDoS attack..
+
+Visual Guidance: Diagram: attacker box with arrow to command-and-control server,
+fanning out to many bot icons, all arrows converging on one target server.
+
+Speaker Notes: "Explain command-and-control as the botnet's remote-control channel, and
+amplification as asking a small question that gets a huge answer sent to the victim. A
+common interview question is why amplification attacks use spoofed source addresses."
+
+
+
+Slide 3: DoS vs DDoS: Key Differences
+
+Heading: DoS Vs DDoS
+
+Subheading: Key Differences Compared
+
+Content:
+
+Both attacks aim to make a service unavailable; they differ in how many systems send the
+attack traffic, which changes how hard the attack is to block and trace.
+
+
+
+Aspect​ DoS​   DDoS
+
+Source​ One system, one location​       Many systems, many locations
+
+Traffic volume​ Limited by one machine​          Massive, combined from all sources
+
+Devices used​ A single device or tool​ Many compromised devices (a botnet)
+
+Blocking​      Easier: block the one source​ Hard: too many sources to block one by one
+
+Tracing the attacker​   Easier​ Very difficult
+
+Visual Guidance: Two-column comparison table with DoS on the left and DDoS on the right;
+highlight the "Source" row, since every other row follows from it.
+
+
+
+Speaker Notes: "Read the Source row first and show how each row below is a result of it:
+more sources mean more traffic, harder blocking and harder tracing. Do not re-explain
+botnets here. A common interview question is why blocking one IP address stops a DoS
+attack but not a DDoS attack."
+Slide 3: Volumetric Attacks: Exhausting Bandwidth
+Heading: Volumetric Mechanics
+
+Subheading: Bandwidth Exhaustion
+
+Content:
+
+Volumetric attacks exhaust the bandwidth path into a service, measured in bits per second
+rather than requests per second.
+
+●​   UDP flood: packets arrive faster than the link absorbs
+●​   DNS and NTP amplification: spoofed queries return oversized replies
+●​   Upstream link saturates before the application ever responds
+●​   Defence must sit upstream of the application, not inside it
+
+Visual Guidance: Graph showing incoming traffic (Gbps) rising past the link's rated
+capacity line, with the excess shaded red before it reaches the application box.
+
+Speaker Notes: "Point out that at this layer the application code is innocent — the pipe
+itself is full. Mention this is why volumetric floods are reported in Gbps or Tbps, not
+requests per second, a detail interviewers probe."
+
+
+
+Slide 4: Protocol and Application-Layer Attacks
+Heading: State And Compute Drain
+
+Subheading: Protocol Vs App Layer
+
+Content:
+
+Protocol attacks exhaust the connection state that servers and firewalls track per session,
+familiar from the SYN flood abusing the TCP handshake; application-layer attacks instead
+exhaust compute by mimicking real traffic.
+
+Protocol – SYN flood: many connection requests are sent and never completed, so the
+server's connection table fills up
+
+●​ Protocol – malformed packets: oversized or invalid headers crash parsers
+
+●​ Application – HTTP flood: repeated valid-looking page requests drain compute
+
+●​ Application – Slowloris: many slow, incomplete requests hold connections open
+
+●​ Application-layer attacks are hardest to detect: traffic volume looks normal
+
+Visual Guidance: Two side-by-side icons: a firewall with a full connection table (protocol
+layer) and a web server with a CPU gauge pegged high (application layer).
+Speaker Notes: "Build on the handshake mechanics already known — here the point is the
+half-open connections fill a finite table, a resource limit, not a bandwidth one. Ask: why can
+a 1 Mbps Slowloris attack still take a server down?"
+
+
+
+Slide 5: Mitigation Mechanisms Across Layers
+Heading: Mitigation Mechanisms
+
+Subheading: Rate Limit To Scrub
+
+Content:
+
+Mitigation is matched to the attack layer: extra capacity absorbs volume, inspection filters
+protocol abuse, and request logic throttles application traffic.
+
+Mechanism                      How It Works                   Best Against
+Rate limiting                  Caps requests per client       Application-layer floods
+                               within a time window at the
+                               edge
+Scrubbing                      Redirects traffic to a         Volumetric & protocol
+                               cleaning facility; forwards    floods
+                               only clean traffic
+CDN absorption                 Distributed edge nodes         Volumetric floods
+                               absorb traffic close to its
+                               source
+Visual Guidance: Flow diagram: incoming traffic arrow splits into scrubbing centre, CDN
+edge nodes and a rate-limiting gate, each forwarding only legitimate traffic to the origin
+server.
+
+Speaker Notes: "Walk through the table row by row rather than re-explaining the attacks.
+Note that scrubbing moves the fight away from the origin entirely, while rate limiting works
+right at the application door. A typical exam question pairs each attack layer with its
+best-matched defence."
+
+
+
+Slide 6: DoS Mitigation in AWS
+Heading: Mitigation In AWS
+
+Subheading: Shield WAF CloudFront
+
+Content:
+
+AWS Shield inspects edge traffic for volumetric and protocol floods, while AWS WAF
+enforces rate-based rules against application-layer abuse.
+
+●​ AWS Shield Standard: automatic Layer 3/4 protection, always on
+●​ AWS Shield Advanced: paid tier adding application-layer protection, 24/7 response team
+   support and DDoS cost protection
+●​ AWS WAF: rate-based rules throttle requests per source IP
+●​ Amazon CloudFront: edge locations absorb volumetric traffic before origin
+
+Visual Guidance: AWS console sketch: CloudFront edge locations ringing the globe, feeding
+into Shield, then WAF, before reaching the origin server icon.
+
+Speaker Notes: "Point to where each service sits: Shield at the network edge, WAF in front
+of the application, CloudFront distributing load globally. Interviewers like asking the
+difference between Shield Standard and Shield Advanced."
+
+
+
+
+--------------------------------------- SECTION 2: 2. Data Breaches: Exposed credentials;
+insecure APIs; breach cost & business impact ---------------------------------------
+
+Slide 8: Data Breach Landscape and Its Causes
+Heading: Data Breach Landscape
+
+Subheading: Causes And Impact
+
+Content:
+
+A data breach exposes sensitive data to a party never meant to see it — in a shared cloud
+service, one breach can touch many customers at once.
+
+●​ Exposed credentials: weak, reused or hardcoded login secrets
+●​ Insecure APIs: weakly protected interfaces attackers query directly
+●​ Breach cost & impact: financial, legal and reputational fallout
+
+Visual Guidance: Diagram: attacker icon branching into two paths (stolen credential, API
+call) both leading into a data store icon, with a cost tag below it.
+
+Speaker Notes: "Set up the three angles before going deep on each. Mention that credential
+leaks and API flaws are consistently the top two breach causes in industry incident reports,
+which is a common interview question."
+
+
+
+Slide 9: How Exposed Credentials Lead to Breaches
+Heading: Exposed Credentials
+
+Subheading: How Logins Leak
+Content:
+
+A credential leaks when it is written down, shared or guessed outside its intended use,
+letting an attacker log in as a legitimate user.
+
+●​ Hardcoded secrets: access keys committed into source code or images
+●​ Reused passwords: one leaked password unlocks multiple accounts
+●​ Missing MFA: without Multi-Factor Authentication (MFA), a stolen password alone
+   unlocks the account
+●​ Public exposure: keys posted on forums, repositories or logs
+
+AWS Secrets Manager stores and rotates such keys instead of hardcoding them, and
+GuardDuty flags anomalous use of a stolen one.
+
+Visual Guidance: Flow: a key icon moves from code repository to attacker laptop to AWS
+console login, each step labelled with the leak vector.
+
+Speaker Notes: "Point out that a committed access key in a public repository is the single
+most repeated real-world breach story. Ask: why does rotating a key limit the damage even
+after it leaks?"
+
+
+
+Slide 10: Insecure APIs as an Entry Point
+Heading: Insecure APIs
+
+Subheading: Where Attacks Enter
+
+Content:
+
+Cloud services expose nearly everything through an application programming interface
+(API), so a weakly protected API gives an attacker a direct path to the data behind it.
+
+●​   Broken authentication: endpoint skips or weakly checks caller identity
+●​   Excessive data exposure: response returns more fields than needed
+●​   No rate limiting: endpoint allows unlimited automated requests
+●​   Missing input validation: malformed requests reach backend logic
+
+Amazon API Gateway supports authentication, throttling and request validation, while AWS
+WAF filters malicious requests.
+
+Visual Guidance: Diagram: client box sending requests through an API Gateway icon with a
+shield (WAF) before reaching a backend database icon.
+
+Speaker Notes: "Explain each weakness as a gap the gateway is meant to close, not a flaw in
+the API concept itself. Exam hook: these four map directly to the widely-cited OWASP API
+Security risk list."
+Slide 11: The Real Cost of a Breach
+Heading: Breach Cost Impact
+
+Subheading: Financial And Legal Fallout
+
+Content:
+
+Beyond the technical fix, a breach carries a cost measured in money, law and trust, which is
+why breach prevention is budgeted at leadership level.
+
+Cost Category                                   Driver
+Detection & containment                         Forensics and incident response hours
+Legal & regulatory                              GDPR fines up to 4% global revenue
+Notification                                    Mandatory customer and regulator
+                                                disclosure
+Business impact                                 Customer churn and reputational damage
+Breach cost rises the longer detection takes, so AWS Security Hub and CloudTrail support
+continuous security monitoring and investigation over periodic review.
+
+Visual Guidance: Bar-style diagram: cost rising on the y-axis against time-to-detect on the
+x-axis, with the four cost categories tagged along the bar.
+
+Speaker Notes: "Walk through the table left to right as the breach timeline unfolds. Mention
+the GDPR fine figure as a concrete, commonly-asked compliance number in interviews."
+
+
+
+
+--------------------------------------- SECTION 3: 3. Misconfiguration: Public storage
+buckets; permissive security groups; default credentials
+---------------------------------------
+
+Slide 12: Misconfiguration: The Silent Breach Cause
+Heading: Misconfiguration Landscape
+
+Subheading: Three Common Mistakes
+
+Content:
+
+Most publicised cloud breaches trace back not to broken encryption but to a setting left
+wrong. Misconfiguration is an incorrectly set security control that unintentionally exposes a
+resource.
+
+●​ Public storage buckets: data readable by anyone on the internet
+●​ Permissive security groups: firewall rules opened wider than needed
+●​ Default credentials: factory passwords or keys never changed
+
+Visual Guidance: Three-icon row: an open bucket, a wide-open gate, an unchanged padlock
+key — each labelled with its misconfiguration type.
+
+Speaker Notes: "Open by stating most publicised cloud breaches are misconfiguration, not
+a broken cipher. Ask: why does a correctly encrypted bucket still leak data if its access is
+public? Point to the three categories as this section's roadmap."
+
+
+
+Slide 13: Public Buckets Expose Data
+Heading: Public Storage Buckets
+
+Subheading: Accidental Open Access
+
+Content:
+
+A storage bucket turns public when its access policy lets anyone, not only the account owner,
+read or list its objects — usually through a broad bucket policy, not a deliberate decision.
+
+●​ Root cause: a bucket policy that allows any principal ("Principal": "*"), or an ACL that
+   grants read to 'Everyone (public access)
+●​ Enabler: Amazon S3 Block Public Access, on by default for new buckets, is turned off for
+   the bucket and the account
+●​ Consequence: object listing and direct download without any login
+●​ Scale: automated scanners find exposed buckets within minutes of creation
+
+Analogy:A shop owner accidentally leaves the front door unlocked, allowing anyone to
+walk in and take products. This is like a public S3 bucket exposing stored data to
+anyone on the internet.
+
+Visual Guidance: Diagram: bucket icon with a policy document; arrow from a globe icon
+into the bucket showing unrestricted read access.
+
+Speaker Notes: "Explain the exposure is usually a policy or checkbox mistake, not malice.
+Point to the Amazon S3 console's Block Public Access setting as where this is caught.
+Mention this is the single most common cloud data-breach cause reported."
+
+
+
+Slide 14: Open Rules And Unchanged Keys
+Heading: Groups And Credentials
+
+Subheading: Two More Misconfigurations
+
+Content:
+A security group turns permissive when an inbound rule allows traffic from every address
+on sensitive ports; a default credential is any vendor-shipped password or key never
+rotated.
+
+Misconfiguration                Typical Mistake                 Where Checked
+Permissive security group       SSH or database port open       EC2 Security Groups
+                                to 0.0.0.0/0                    console, inbound rules
+Default credentials             Factory password or sample      Application, database or
+                                key left active                 device admin login; IAM
+                                                                credential report for IAM
+                                                                credentials
+​
+All three mistakes are caught by continuous automated checks, such as AWS Config
+and Trusted Advisor, not a one-time manual review​
+​
+Visual Guidance: Two-row table; highlight the 0.0.0.0/0 cell and the 'left active' cell in red.
+
+Speaker Notes: "Point out 0.0.0.0/0 means every IP address on the internet, so a database
+port opened to it is reachable by anyone. Reference the IAM credential report as where
+administrators audit unrotated or default keys. A common interview question: how to spot
+an open SSH rule — check inbound rules for 0.0.0.0/0 on port 22."
+
+
+
+
+--------------------------------------- SECTION 4: 4. Insider & Supply-Chain Threats:
+Malicious & accidental insiders; compromised dependencies & images;
+phishing, leaked keys & token theft ---------------------------------------
+
+Slide 16: Insider and Supply-Chain Threat Landscape
+Heading: Insider Supply Threats
+
+Subheading: Threat Landscape Map
+
+Content:
+
+Not every breach comes from outside; attackers also enter through trusted people and
+trusted software components already inside the environment.
+
+●​ Insider threats: people with legitimate access misusing it
+●​ Supply-chain threats: compromise riding in via trusted software
+●​ Credential threats: phishing, leaked keys and stolen tokens
+Visual Guidance: Three labelled boxes — Insider, Supply Chain, Credential Theft — arrows
+into one central cloud account icon.
+
+Speaker Notes: "Frame this as the trust-based half of cloud risk, distinct from the earlier
+misconfiguration takeaway. Ask: why can a trusted user bypass a firewall entirely?"
+
+
+
+Slide 17: Malicious vs Accidental Insiders
+Heading: Insider Threats
+
+Subheading: Malicious vs Accidental
+
+Content:
+
+An insider threat is harm caused by someone who already holds authorized access, done
+either on purpose or by mistake.
+
+●​   Malicious insider: deliberately steals or sabotages data for gain
+●​   Accidental insider: misconfigures or exposes data by mistake
+●​   Detection relies on behaviour patterns, not perimeter defences
+●​   AWS CloudTrail: a record of the API calls and console actions made in the account
+●​   Amazon GuardDuty: a service that flags unusual account activity
+
+Analogy: A shop hands its most trusted employee the stockroom's master key; that
+employee can either steal stock deliberately or accidentally leave the shutter open overnight
+— just as an insider threat comes from someone whose legitimate access is misused, on
+purpose or by mistake.
+
+Visual Guidance: Split card: left 'Malicious' with a deliberate arrow to data, right
+'Accidental' with a careless open-padlock icon.
+
+Speaker Notes: "Stress that both types pass every perimeter control because access was
+already granted legitimately. Mention CloudTrail logs every API call an insider makes.
+Interview hook: why is an accidental insider often costlier to catch than a malicious one?"
+
+
+
+Slide 18: Compromised Dependencies and Images
+Heading: Supply Chain Risk
+
+Subheading: Dependencies and Images
+
+Content:
+
+Applications rarely start from scratch; they pull in open-source libraries and container base
+images whose integrity is assumed, not verified, which is itself an attack surface.
+●​   Compromised dependency: a malicious update pulled in automatically
+●​   Compromised image: a tampered base image from a public registry
+●​   Typosquatting: a lookalike package name installed by mistake
+●​   Image scanning: Amazon ECR identifies known vulnerabilities in container images"
+●​   Dependency pinning: locking an exact version instead of 'latest'
+
+Visual Guidance: Flow: public registry/package repo -> build pipeline -> running container,
+with a red flag at the registry step labelled 'tampered'.
+
+Speaker Notes: "Point out this attacks the build pipeline, not the running system directly.
+Explain pinning as locking an exact version instead of 'latest'. Exam hook: ask why
+automatic dependency updates increase this risk."
+
+
+
+Slide 19: Phishing, Leaked Keys and Token Theft
+Heading: Credential Attack Paths
+
+Subheading: Phishing Keys Tokens
+
+Content:
+
+Many cloud breaches begin not with a technical exploit but with a stolen credential that
+walks straight past every other control.
+
+●​   Phishing: a fake login page harvests a user's password
+●​   Leaked keys: access keys accidentally committed to public repositories
+●​   Token theft: a stolen session or API token reused by an attacker
+●​   AWS Secrets Manager: a vault that stores and rotates credentials
+●​   IAM Access Analyzer: a tool that flags overly broad permissions
+
+Trust-based attacks confirm why least-privilege access and key rotation matter more than
+any single perimeter defence.
+
+Visual Guidance: Three icons in a row — fake login page, a public code repo with a visible
+key string, a stolen token ticket — each arrowing into the account.
+
+Speaker Notes: "Connect this back to the key-management session: rotation and scoped
+permissions blunt a leaked key's damage. Point at how a token differs from a password — it
+needs no further login. Interview hook: why does key rotation limit the blast radius of a
+leak?"
+--------------------------------------- SECTION 5: 5. AI-Specific Threats: Prompt
+injection; sensitive information disclosure; vector & embedding weaknesses;
+unbounded consumption as cost-based DoS ---------------------------------------
+
+Slide 20: AI Threats Landscape
+Heading: AI Threats Landscape
+
+Subheading: Four New Risks
+
+Content:
+
+AI-powered applications add a new attack surface beyond the network and storage threats,
+because the model and its data store can themselves be tricked, probed or overloaded.
+
+●​   Prompt injection: malicious input hijacks the model's instructions
+●​   Sensitive information disclosure: model leaks training or context data
+●​   Vector and embedding weaknesses: the retrieval store itself is attacked
+●​   Unbounded consumption: unmetered requests become a billing-based denial of service
+
+Visual Guidance: Diagram of a generative AI pipeline: user prompt to model to vector
+database to response, with one threat label pointing at each stage.
+
+Speaker Notes: "Set the map before going into each risk one at a time. Point out that these
+sit on top of the infrastructure already secured, not in place of it. Exam hook: expect a
+one-line definition question for each of the four."
+
+
+
+Slide 21: Prompt Injection Explained
+Heading: Prompt Injection
+
+Subheading: Hijacking Instructions
+
+Content:
+
+A large language model (LLM), the AI system behind chatbots and assistants, reads its
+instructions and the data it is given as one stream of text, so it cannot reliably tell trusted
+commands apart from untrusted data. Prompt injection hides a malicious instruction inside
+that text so the model obeys it instead of its intended task.
+
+●​ Direct injection: attacker types the malicious instruction into the chat box
+●​ Indirect injection: attacker never touches the chat, text is pre-planted elsewhere
+●​ Goal: override system instructions or leak hidden data
+
+Analogy: An employee receives an official task from a manager, but a hidden message inside
+a document tells them to ignore the manager's instructions and share confidential files.
+Following that hidden message is like prompt injection.
+Visual Guidance: Chat window with a pasted document; the hidden instruction inside the
+document is highlighted in red.
+
+Speaker Notes: "Distinguish direct from indirect by who typed the malicious text. Say an
+email summary tool reading a poisoned attachment is the classic indirect case. Exam hook:
+ask which type does not need the attacker to touch the chat box."
+
+
+
+Slide 22: Sensitive Information Disclosure
+Heading: Sensitive Info Disclosure
+
+Subheading: Model Leaks Data
+
+Content:
+
+A model trained on large datasets, or given private context inside a prompt, can be coaxed
+into repeating that private data back in its answer, exposing information no user was meant
+to see.
+
+●​ Training data leakage: model memorises and repeats snippets of training text
+●​ Context leakage: poor session isolation exposes one user's private context to another
+   user
+●​ Over-permissioned retrieval: model fetches documents the caller should not access
+
+Analogy: A receptionist accidentally gives one visitor another visitor's confidential file
+because the files were not properly separated. This is like sensitive information disclosure
+when an AI system exposes private data to the wrong user.
+
+Visual Guidance: Icon of a private document entering the model and an unrelated private
+snippet coming out in the response box.
+
+Speaker Notes: "Separate the three sources: training memory, session mix-up, over-broad
+retrieval permission. Say this is why output review matters even for a trusted model. Exam
+hook: ask which case is a permissions bug rather than a model flaw."
+
+
+
+Slide 23: Vector Store Attacks
+Heading: Vector Store Risks
+
+Subheading: Embedding Weaknesses
+
+Content:
+
+Many AI applications store documents as embeddings, numeric vectors that capture
+meaning, inside a vector database used to fetch relevant context for an answer; attackers
+can target this store directly, without ever touching the model.
+●​   Embedding inversion: reconstructing original text from its stored vector
+●​   Data poisoning: inserting crafted documents to bias future retrievals
+●​   Unauthorized retrieval: querying the vector store to pull restricted content
+●​   Weak access control: vector database lacks the source data's permissions
+
+Visual Guidance: Flow of documents into embeddings into a vector database, with an
+attacker arrow probing the database directly.
+
+Speaker Notes: "Stress that the vector store is a separate attack surface from the model
+itself. Say poisoning changes future answers while inversion exposes past documents. Exam
+hook: ask why the vector database needs the same access policy as its source files."
+
+
+
+Slide 24: Unbounded Consumption Risk
+Heading: Unbounded Consumption
+
+Subheading: Cost-Based DoS
+
+Content:
+
+Unlike a network flood that exhausts bandwidth, an AI service can be exhausted by
+legitimate-looking requests that each consume expensive compute, turning the provider's
+own billing meter into the attack's damage.
+
+●​ Flood of large or repeated prompts spikes compute and token costs
+●​ No limit on output length lets one request consume disproportionate resources
+●​ Model denial of service: ties up capacity other users need
+
+Analogy: Like a tap left running on a per-litre water bill — just as unmetered AI requests
+keep draining paid compute until the bill itself becomes the damage.
+
+Visual Guidance: Line graph: API call volume climbing on one axis, cloud bill rising on the
+other.
+
+Speaker Notes: "Point out that the resource exhausted here is a billing meter, not a network
+link, unlike a volumetric flood. Say a single unbounded prompt can cost as much as
+thousands of normal ones. Exam hook: ask how this differs from a volumetric attack."
+
+
+
+Slide 25: Defending AI Workloads
+Heading: Defending AI Workloads
+
+Subheading: Controls And Tools
+
+Content:
+Each AI-specific threat is countered by a control placed around the model or its data store,
+applied through guardrail and access-management features on managed AI platforms such
+as Amazon Bedrock.
+
+●​   Guardrails: filter and block injected or unsafe prompts before generation
+●​   Output filtering: scan responses for disclosed secrets before returning them
+●​   Vector store access control: apply the same identity policy as source data
+●​   Rate limiting and quotas: cap tokens and requests per caller
+
+Visual Guidance: Request flow diagram: prompt enters Bedrock Guardrails, then the model,
+then an output filter, then a rate-limited response leaves.
+
+Speaker Notes: "Point to the guardrail stage as the AWS location where prompt filtering
+actually runs. Say each bullet maps back to one of the four risks just taught, in the same
+order. Exam hook: ask which control stops a cost-based attack specifically."
+
+
+
+
+Key Takeaways
+        1. Denial of Service: DoS vs DDoS; volumetric, protocol & application-layer attacks;
+        mitigation: rate limiting, scrubbing & CDN absorption
+        2. Data Breaches: Exposed credentials; insecure APIs; breach cost & business impact
+        3. Misconfiguration: Public storage buckets; permissive security groups; default
+        credentials
+        4. Insider & Supply-Chain Threats: Malicious & accidental insiders; compromised
+        dependencies & images; phishing, leaked keys & token theft
+        5. AI-Specific Threats: Prompt injection; sensitive information disclosure; vector &
+        embedding weaknesses; unbounded consumption as cost-based DoS
+
+
+
+Upcoming Session : Security Practices & Compliance
+
+                              Thank You | All the Best
+
