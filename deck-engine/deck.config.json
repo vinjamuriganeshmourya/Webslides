@@ -1,8 +1,8 @@
 {
-  "name": "encryption_and_key_management",
-  "title": "Encryption & Key Management",
-  "htmlName": "encryption-and-key-management",
-  "slideCount": 50,
+  "name": "elastic_compute_instances",
+  "title": "Elastic Compute Instances",
+  "htmlName": "elastic-compute-instances",
+  "slideCount": 54,
   "devPort": 5290,
-  "deckDir": "/home/nxtwave/Desktop/webslides/Outputdecks/cloudcomputing/encryption_and_key_management"
+  "deckDir": "/home/nxtwave/Desktop/webslides/Outputdecks/cloudcomputing/elastic_compute_instances"
 }
