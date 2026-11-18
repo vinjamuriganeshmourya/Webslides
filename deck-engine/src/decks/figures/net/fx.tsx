@@ -128,12 +128,12 @@ export function Badge({ on, children, tone = colors.white, ring = colors.brand, 
  * The TR's points, each with the icon of its subject in a tile, the one the
  * figure is showing lit. The words are passed in unchanged.
  */
-export function LitPoints({ items, lit = -1, width = 452, size = 18, gap = 10 }: { items: { icon: ReactNode; text: ReactNode }[]; lit?: number; width?: number; size?: number; gap?: number }) {
+export function LitPoints({ items, lit = -1, width = 452, size = 18, gap = 10 }: { items: { icon: ReactNode; text: ReactNode }[]; /** the lit point, or every point sharing the current step (a TR point split at a clause boundary lights as one, 2026-11-11) */ lit?: number | number[]; width?: number; size?: number; gap?: number }) {
   const ease = 'all 420ms cubic-bezier(0.22,1,0.36,1)'
   return (
     <div className="flex shrink-0 flex-col" style={{ width, gap }}>
       {items.map((it, i) => {
-        const on = !STILL && i === lit
+        const on = !STILL && (Array.isArray(lit) ? lit.includes(i) : i === lit)
         return (
           <div
             key={i}
@@ -192,15 +192,25 @@ export function AwsMark({ w, caption }: { w: number; caption?: string }) {
  * The PointsFigure frame with lit points: the TR's points (each with its icon) on
  * the left, the figure on the right, the point the figure is acting out lit.
  */
-export function LitFigure({ id, kicker, title, lead: l, lesson, points, lit, figure, figH = 380, pointsW = 452, pointSize = 18 }: { id: string; kicker: string; title: string; lead?: string; lesson: string; points: { icon: ReactNode; text: ReactNode }[]; lit: number; figure: ReactNode; figH?: number; pointsW?: number; pointSize?: number }) {
+export function LitFigure({ id, kicker, title, lead: l, lesson, points, lit, figure, figH = 380, pointsW = 452, pointSize = 18, note }: { id: string; kicker: string; title: string; lead?: string; lesson: string; points: { icon: ReactNode; text: ReactNode }[]; lit: number | number[]; figure: ReactNode; figH?: number; pointsW?: number; pointSize?: number; /** a TR "Note" line under the points and the figure (engine 2026-11-11, Session 11) */ note?: ReactNode }) {
+  const row = (
+    <div className="flex items-center" style={{ width: BOX_W, gap: 24 }}>
+      <LitPoints items={points} lit={lit} width={pointsW} size={pointSize} />
+      <Stage w={BOX_W - pointsW - 24} h={figH} active={false}>
+        {figure}
+      </Stage>
+    </div>
+  )
   return (
     <Card id={id} kicker={kicker} title={title} lead={l} lesson={lesson}>
-      <div className="flex items-center" style={{ width: BOX_W, gap: 24 }}>
-        <LitPoints items={points} lit={lit} width={pointsW} size={pointSize} />
-        <Stage w={BOX_W - pointsW - 24} h={figH} active={false}>
-          {figure}
-        </Stage>
-      </div>
+      {note ? (
+        <div className="flex flex-col gap-4" style={{ width: BOX_W }}>
+          {row}
+          {note}
+        </div>
+      ) : (
+        row
+      )}
     </Card>
   )
 }

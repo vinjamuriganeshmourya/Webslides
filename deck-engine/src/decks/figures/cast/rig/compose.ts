@@ -6,7 +6,7 @@
 import { ADDITIVE, CHANNEL_NAMES, defaultPose, type Channel, type Pose } from './channels'
 import { sampleAction, type Action } from './track'
 import { idlePose, type IdleOptions } from './idle'
-import { applyLife, type LifeOptions } from './life'
+import { applyLife, applyLifePure, type LifeOptions } from './life'
 
 export type Clip = { action: Action; start: number; stopAt?: number }
 
@@ -152,4 +152,39 @@ export function composeAt(tl: Timeline, t: number): Pose {
 export function poseAt(tl: Timeline, t: number): Pose {
   if (tl.life === 0) return composeAt(tl, t)
   return applyLife(tl, t, (tt) => composeAt(tl, tt), tl.life ?? {})
+}
+
+/*
+  Everything `composeAt` and the life layer read from a timeline, written out as one string, so two timeline
+  objects that say the same thing are recognised as the same (see `applyLifePure` in life.ts).
+
+  An action is named by its CONTENT, not by its object: a session may build one inside its `timeline(t)`
+  (`retime(ACTIONS.wave, 1.5)`), which is a new object on every call and the same motion every time. The text
+  of an action is worked out once per object and remembered.
+*/
+const actionText = new WeakMap<Action, string>()
+const textOf = (a: Action) => {
+  let s = actionText.get(a)
+  if (s === undefined) {
+    s = JSON.stringify(a)
+    actionText.set(a, s)
+  }
+  return s
+}
+const sorted = (o: object) => JSON.stringify(Object.entries(o).filter(([, v]) => v !== undefined).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)))
+const clipText = (c: Clip | undefined) => (c ? `${textOf(c.action)}@${c.start}>${c.stopAt ?? ''}` : '')
+
+export function timelineSignature(tl: Timeline): string {
+  return [tl.seed, sorted(tl.idle ?? {}), sorted(tl.life || {}), clipText(tl.expression), clipText(tl.prevExpression), clipText(tl.gesture), clipText(tl.prevGesture), clipText(tl.talk)].join('\u0001')
+}
+
+/**
+ * `poseAt` for a caller that asks for many frames of one character and builds a fresh timeline for each
+ * (a pre-rendered sprite): the same pose, but a later frame continues from the earlier one instead of
+ * stepping the springs again from zero. The timeline must not be mutated after it is passed in; `lane` is
+ * any string that is the caller's own (two callers with one signature would otherwise rewind each other).
+ */
+export function poseAtPure(tl: Timeline, t: number, lane: string): Pose {
+  if (tl.life === 0) return composeAt(tl, t)
+  return applyLifePure(timelineSignature(tl), lane, tl.seed ?? 1, t, (tt) => composeAt(tl, tt), tl.life ?? {})
 }

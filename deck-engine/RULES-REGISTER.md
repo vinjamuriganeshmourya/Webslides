@@ -236,6 +236,11 @@ Where two sources disagree, which one currently wins and why. Engine decisions n
 | FIG-32 | People distinct, adult in adult roles, facing the visual (rule 58) | HUMAN |
 | FIG-33 | No grid-line backgrounds, no spinning charts, physical motion (rule 59) | HUMAN |
 | ENG-30 | Points-layout figures scale to fit (`Fit`), Tailwind scans `custom/`, bare imports dedupe to the engine | PART (engine) |
+| FIG-34 | Session 9 corrections 13-14: icons over text, text-free 3D analogies on `@/engine/three-stage`, Character Lab people (`castSprite`) with expressions, no overlaps or heads through enclosures, loop restart <= 0.3 s, overshoot-free clamped sliders | PART (engine `three-stage.tsx`) / HUMAN |
+| FIG-35 | Session 10 correction 15: table icons micro-animated (one effect per table), 3D analogies sharp at 4K (DPR + supersampled `ThreeStage`, hi-res `castSprite` textures), no overlaps, screenshots uncropped with rings on target | PART (table part, `three-stage.tsx`) / HUMAN |
+| FIG-36 | Session 9 correction 16: single-word tag under every untagged icon in technical visuals, sequential orange highlights loop forever, screenshot rings only where the TR caption points | HUMAN |
+| FIG-37 | Session 12: a TR that asks for each AWS service's icon beside its name in a table, or for cells shaded by owner, gets official marks inside the cell (`TableCell.icons`, white tiles, the table's float) and owner tints (`TableCell.tone`: customer blue / provider grey / shared half and half), never a text-only table | PART (table part `vtable.tsx`, `cellNode` in `icon.tsx`) |
+| FIG-38 | Session 13 visual standard (correction 17, 2026-11-16): technical visuals use `Ico3D` / `Tile3D` (`@/engine/icons3d`) on white plinth tiles, >= 20 px equal padding, orthogonal elbow connectors from box constants (`@/engine/figkit`), micro-animations and flow dots | PART (`icons3d.tsx`, `figkit.tsx`) / HUMAN |
 
 ## Human review checklist
 
@@ -255,4 +260,8 @@ The 31 HUMAN rows grouped into 14 review questions (row IDs in brackets). Everyt
 - [ ] Screenshots are real, unretouched, prompt and folder kept, originals stored (SHT-06, PRC-13)
 - [ ] Motion explains the concept; interactive elements added where scope allows (MOT-03, MOT-15)
 - [ ] Session 6 standing corrections (content rules 53-60): official marks in the Slide 15 tile, blue-only highlight, no table highlight unless asked, every chip word capitalised, chips inside their cards, distinct adult people facing the visual, clean figure plates with physical motion, screenshot boxes top-aligned (`generate-slides` "Standing corrections")
+- [ ] Session 9 corrections 13-14: every visual loops, icons not text, 3D analogies with Character Lab people showing expressions, loop restart within 0.3 s, people not overlapping or clipping through props, sliders dragged to extremes in Chrome (FIG-34)
+- [ ] Session 10 correction 15: table icons animate, 3D scenes sharp on a 4K screen, nothing overlaps, screenshots whole at their aspect ratio (FIG-35)
+- [ ] Session 9 correction 16: no untagged icon in a technical visual, every sequential highlight loops, rings only on what the TR names (FIG-36)
+- [ ] Session 13 correction 17: every technical icon a 3D icon on a plinth tile, >= 20 px equal padding in every stage and card, connectors orthogonal with tips on target edges, no plain word-in-a-box visual (FIG-38)
 - [ ] Process: branch from main and PR for engine changes, plan signed off, feedback recorded with consent, delivered decks left frozen, reference rendered first, class-level fixes, new types registered (PRC-01 to PRC-04, PRC-06, PRC-08, PRC-12)

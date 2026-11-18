@@ -1,0 +1,110 @@
+{
+ "idle": {
+  "upper arm radius cm, shoulder to elbow": [
+   4.32,
+   4.37,
+   4.49,
+   4.63,
+   4.69,
+   4.72
+  ],
+  "forearm radius cm, elbow to cuff": [
+   4.8,
+   4.83,
+   4.78,
+   4.66,
+   4.2,
+   3.14
+  ],
+  "wrist radius cm": [
+   2.24,
+   2.2
+  ],
+  "palm width, thickness cm": [
+   6.27,
+   3.05
+  ],
+  "finger radius cm": {
+   "finger-index-prox-r": null,
+   "finger-index-mid-r": null,
+   "finger-index-dist-r": 0.56,
+   "finger-middle-prox-r": null,
+   "finger-middle-mid-r": null,
+   "finger-middle-dist-r": 0.57,
+   "finger-ring-prox-r": null,
+   "finger-ring-mid-r": null,
+   "finger-ring-dist-r": 0.56,
+   "finger-pinky-prox-r": null,
+   "finger-pinky-mid-r": null,
+   "finger-pinky-dist-r": 0.49,
+   "thumb-prox-r": null,
+   "thumb-dist-r": 0.77
+  }
+ },
+ "wave": {
+  "upper arm": {
+   "thinnest": 0.9389168845582494,
+   "where": "upper arm 1",
+   "at": 1.467,
+   "all": {
+    "upper arm 1": 0.939,
+    "upper arm 6": 0.997,
+    "upper arm 5": 0.998,
+    "upper arm 4": 1.026,
+    "upper arm 3": 1.084,
+    "upper arm 2": 1.128
+   }
+  },
+  "forearm": {
+   "thinnest": 0.9977023086631582,
+   "where": "forearm 1",
+   "at": 0.783,
+   "all": {
+    "forearm 1": 0.998,
+    "forearm 6": 0.998,
+    "forearm 5": 1.001,
+    "forearm 2": 1.001,
+    "forearm 3": 1.001,
+    "forearm 4": 1.002
+   }
+  },
+  "wrist": {
+   "thinnest": 0.9939118818890341,
+   "where": "wrist 2",
+   "at": 1.217,
+   "all": {
+    "wrist 2": 0.994,
+    "wrist 1": 0.998
+   }
+  },
+  "palm": {
+   "thinnest": 0.9827416504690781,
+   "where": "palm 1",
+   "at": 1.217,
+   "all": {
+    "palm 1": 0.983,
+    "palm 2": 1.001
+   }
+  },
+  "fingers": {
+   "thinnest": 1.0157364492594745,
+   "where": "finger-ring-dist-r",
+   "at": 1.233,
+   "all": {
+    "finger-ring-dist-r": 1.016,
+    "finger-index-dist-r": 1.024,
+    "finger-middle-dist-r": 1.026,
+    "finger-pinky-dist-r": 1.036
+   }
+  },
+  "thumb": {
+   "thinnest": 0.9999513029739732,
+   "where": "thumb-dist-r",
+   "at": 0.908,
+   "all": {
+    "thumb-dist-r": 1
+   }
+  }
+ },
+ "frames": 150
+}

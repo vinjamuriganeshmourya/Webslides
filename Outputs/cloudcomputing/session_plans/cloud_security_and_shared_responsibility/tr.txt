@@ -1,0 +1,605 @@
+Session 12 : Cloud Security & Shared Responsibility
+
+
+RECAP: Session 11 : Cloud Provider Comparison
+        1. Major Cloud Providers: AWS, Azure & GCP as the primary players; IBM Cloud and
+        Oracle Cloud as additional enterprise cloud providers — market position & typical
+        use cases
+        2. Service Equivalents Across Providers: Compute, storage, database & networking
+        — same concept, different names (EC2/VM/Compute Engine; S3/Blob/Cloud
+        Storage; RDS/Azure SQL/Cloud SQL for relational, DynamoDB/Cosmos DB/Firestore
+        for NoSQL)
+        3. Machine Learning Service Comparison: Managed ML/AI offerings across AWS,
+        Azure & GCP at a high level
+        4. Cloud Providers Walkthrough: The AWS console already familiar to students,
+        shown alongside Azure Portal and GCP Console/Cloud Shell — the same task, back
+        to back
+        5. Choosing a Provider: What genuinely differs (pricing, regions, service maturity,
+        skills) vs what's cosmetic (naming, console layout)
+
+Agenda for Today's Session
+        1. Security Goals: Confidentiality, integrity & availability in the cloud
+        2. Shared Responsibility Model: Security of the cloud vs security in the cloud
+        3. Responsibility by Service Model: Boundary shifts across IaaS, PaaS & SaaS
+        4. Common Misunderstandings: Provider vs customer duties; incidents caused by
+        wrong assumptions
+        5. Defense in Depth: Layered controls: network, identity, data, application &
+        monitoring
+
+
+
+--------------------------------------- SECTION 1: 1. Security Goals: Confidentiality,
+integrity & availability in the cloud ---------------------------------------
+
+Slide 1: The CIA Triad Applied To Cloud
+Heading: CIA Triad Cloud
+
+Subheading: Three Security Goals
+
+Content:
+
+Shared, multi-tenant hardware in the cloud raises the stakes for the same three goals:
+confidentiality, integrity and availability (CIA).
+●​ Confidentiality: only authorised identities can read stored or moving data
+●​ Integrity: data and configuration stay unaltered without detection
+●​ Availability: workloads stay reachable despite hardware or zone failure
+
+Analogy: A housing society gives each flat a locked door, a sealed power meter nobody can
+tamper with, and a backup generator that keeps the lift running — just as cloud systems
+lock access, detect tampering and keep running through failure.
+
+Visual Guidance: Three overlapping circles labelled Confidentiality, Integrity, Availability,
+centred on a cloud icon representing shared infrastructure.
+
+Speaker Notes: "Build on the triad already known; frame it as a lock on a flat door, a
+tamper-proof meter, and a backup generator. Ask: why does sharing hardware with other
+tenants raise the stakes for all three goals?"
+
+
+
+Slide 2: Engineering Each Goal In AWS
+Heading: Cloud Native Mechanisms
+
+Subheading: Per Goal Controls
+
+Content:
+
+Providers offer managed services for each goal, but the customer must still enable and
+configure them.
+
+Goal                           Cloud Mechanism                 Where It Lives (AWS)
+Confidentiality             Encryption at rest/in          Key Management Service
+                            transit, access policies       (KMS), S3 bucket policy
+Integrity                   Hashing, object versioning,    S3 Object Versioning,
+                            audit trail                    CloudTrail logs
+Availability                Redundancy across zones,       Multi-AZ RDS, Auto Scaling,
+                            automated recovery             ELB health checks
+Visual Guidance: Three-row table with a small AWS console icon beside each service name
+column.
+
+Speaker Notes: "Point to each row and name the actual console screen — KMS key list, S3
+versioning toggle, Auto Scaling group. Mention that encryption and versioning are
+configured once but checked continuously, which is a common interview question."
+
+
+
+Slide 3: Why Shared Infrastructure Raises The Stakes
+Heading: Multi Tenant Stakes
+
+Subheading: Why It Matters
+
+Content:
+
+Because cloud resources are shared and reachable through internet-facing APIs, one
+misconfiguration or leaked credential can expose far more than a single owned server.
+
+●​ Public storage bucket: one wrong setting exposes data to the internet
+●​ Noisy neighbour workload: can degrade availability if isolation is weak
+●​ Leaked credential: one key can reach many resources through APIs
+
+Visual Guidance: A single cloud outline with three small warning icons pointing at a bucket,
+a server rack, and a key, labelled with each risk.
+
+Speaker Notes: "Use the exposed bucket as the running example for the risk of pooled
+infrastructure. Who configures each of these controls differs by service, which the next idea
+addresses directly."
+
+
+
+
+--------------------------------------- SECTION 2: 2. Shared Responsibility Model:
+Security of the cloud vs security in the cloud ---------------------------------------
+
+Slide 4: Shared Responsibility Model Explained
+Heading: Shared Responsibility Model
+
+Subheading: Who Secures What
+Content:
+
+Cloud security never sits with one side alone. The Shared Responsibility Model (SRM) splits
+duties between provider and customer, so a breach often traces to a gap nobody actually
+owned.
+
+
+
+●​ Security OF the cloud: provider secures physical infrastructure and virtualization
+●​ Security IN the cloud: customer secures data, access and configuration
+●​ The dividing line between the two shifts with the service model chosen
+
+Analogy: A gated housing society's guard secures the main gate and compound walls; each
+resident still locks their own flat door and safe — exactly as the cloud provider secures the
+data centre while the customer secures what is configured inside their own account.
+
+Visual Guidance: Two-column diagram: left labelled 'Provider' with data-centre and
+hardware icons, right labelled 'Customer' with data and settings icons, divided by a vertical
+boundary line.
+
+Speaker Notes: "Explain SRM as a line dividing provider duties from customer duties, not a
+fixed task checklist. Mention that most reported breaches trace back to the customer's half,
+not provider infrastructure failure. Ask: can a learner name one example each of security 'of'
+and 'in' the cloud."
+
+
+
+Slide 5: Boundary and Its Documentation
+Heading: Boundary And Location
+
+Subheading: Where Lines Are Drawn
+
+Content:
+
+The provider secures everything up to the virtualization layer, and the customer secures
+what they place on top. Managed services move this line upward. AWS documents the split
+on its Shared Responsibility Model page.​
+
+
+Security OF the Cloud                          Security IN the Cloud
+Physical data-centre security and hardware     Guest operating-system patching, where
+                                               applicable
+Global network and host infrastructure         Security-group and firewall rule
+                                               configuration
+Hypervisor and virtualization layer            Identity and access management (IAM)
+                                               policies
+Infrastructure-level availability and           Customer data encryption and
+durability                                      classification
+●​ Split is checked per service, not applied as one blanket rule
+●​ Compliance certifications like ISO 27001 cover only the provider's side
+●​ Customer-side failures, such as open storage buckets, stay customer liability
+
+Visual Guidance: Reuse the provider/customer boundary diagram, now with the table's
+four row labels placed on each side of the line.
+
+Speaker Notes: "Point to the table as the generic split, then name the AWS Shared
+Responsibility Model page as the actual reference checked per service. Note that a
+compliance certificate proves only the provider's side. A frequent interview question asks
+for one real misconfiguration caused by misreading this split."
+
+
+
+Slide 6: Why the Boundary Matters
+Heading: Boundary Drives Accountability
+
+Subheading: Impact Of Misapplication
+
+Content:
+
+Confusing provider duties with customer duties leaves protections unapplied, since the
+customer must configure and review every control on their half of the line. The split itself
+stays fixed; only its exact position moves across service models.
+
+●​ Relaxing a default, such as opening a port or making a bucket public, is the customer's
+   decision and risk
+●​ Provider SLAs cover infrastructure uptime, never customer configuration mistakes
+●​ Checking this split per service prevents the most common cloud breaches
+
+Visual Guidance: Single callout graphic: a public storage bucket icon with a red flag,
+captioned 'customer-side gap, not a provider failure'.
+
+Speaker Notes: "Summarise that the split's principle stays constant while its exact position
+moves by service model. Use a public storage bucket left open by a customer as the classic
+example. Ask: whose fault is a public bucket breach, the provider's or the account owner's."
+--------------------------------------- SECTION 3: 3. Responsibility by Service Model:
+Boundary shifts across IaaS, PaaS & SaaS ---------------------------------------
+
+Slide 7: Mapping Security Duties Across IaaS PaaS SaaS
+Heading: Security Boundary Shift
+
+Subheading: IaaS PaaS SaaS
+
+Content:
+
+The shared-responsibility line moves differently for each security duty — patching, network
+rules, encryption keys, access setup — as the stack moves from IaaS toward SaaS.
+
+●​ OS patching is customer-owned only on IaaS
+●​ Network infrastructure shifts to the provider above IaaS, but access rules such as
+   security groups stay with the customer
+●​ Encryption key choice stays with the customer through PaaS; provider-managed keys
+   are the default
+●​ Access setup remains customer-owned across every service model
+
+Visual Guidance: Four-row diagram: duty name on left, three columns IaaS/PaaS/SaaS
+shaded to show which side owns it.
+
+Speaker Notes: "Explain that the earlier IaaS/PaaS/SaaS stack picture now gets a security
+lens, duty by duty. Ask: why does data access never cross to the provider's side?"
+
+
+
+Slide 8: IaaS Security Responsibilities And AWS Example
+Heading: IaaS Security Duties
+
+Subheading: Customer Managed Layers
+
+Content:
+
+On IaaS, the customer runs a guest operating system on provider-managed hardware, so
+almost every security task above the hypervisor falls to the customer.
+
+●​   Patches and hardens the guest OS and installed software
+●​   Configures security groups and network ACLs around the instance
+●​   Manages encryption keys for attached Elastic Block Store volumes
+●​   Sets access permissions for who can reach the instance
+
+Visual Guidance: Stack diagram highlighting hypervisor-and-below as provider zone,
+OS-upward as customer zone, with an EC2 console icon.
+
+Speaker Notes: "Point to security groups as the customer's main configuration duty on
+IaaS. Ask: who patches the EC2 operating system?"
+Slide 9: PaaS Security Responsibilities And AWS Example
+Heading: PaaS Security Duties
+
+Subheading: Shared Mid Layer
+
+Content:
+
+Moving to PaaS, the provider takes over the runtime and OS patching that IaaS left with the
+customer, narrowing the customer's job to code and data.
+
+●​ Provider patches the OS and runtime and applies engine updates in maintenance
+   windows
+●​ Customer secures application code, access configuration and network access rules
+●​ Customer still controls data encryption settings and keys
+●​ Real-world location: Amazon RDS, a managed relational database service
+
+Visual Guidance: Same stack diagram as the IaaS slide, with the provider zone now
+extended up to include OS and runtime.
+
+Speaker Notes: "Contrast this directly with the previous slide: the OS patching bullet that
+was customer-owned on IaaS is now provider-owned here. Mention RDS as the location an
+interviewer might probe for this exact boundary."
+
+
+
+Slide 10: SaaS Security Responsibilities And AWS Example
+Heading: SaaS Security Duties
+
+Subheading: Data And Access
+
+Content:
+
+At SaaS, the provider runs and secures the entire application stack, leaving the customer
+only the data placed inside it and who may access it.
+
+●​   Provider secures infrastructure, application code and underlying platform fully
+●​   Customer classifies and protects the data stored inside the service
+●​   Customer configures user access, multi-factor login and sharing settings
+●​   Real-world location: Amazon Connect administration console, where security profiles
+     set agent permissions
+
+Visual Guidance: Stack diagram with provider zone covering almost the entire stack,
+customer zone reduced to a thin data-and-access band.
+Speaker Notes: "Stress that even on SaaS the customer is never fully off the hook — data
+and access configuration remain theirs. Point to the Amazon Connect console as where this
+duty is actually exercised."
+
+
+
+Slide 11: Security Responsibility Compared Across Service Models
+Heading: Security Across Models
+
+Subheading: Who Secures What
+
+Content:
+
+Every security duty moves toward the provider as the stack rises, except one that never does
+— who controls data and who may access it.
+
+Security Duty         IaaS                    PaaS                     SaaS
+OS Patching           Customer                Provider                 Provider
+Network               Customer                Shared                   Provider
+Configuration
+Application Security  Customer                Customer                 Provider
+Data & Access         Customer                Customer                 Customer
+Control
+Visual Guidance: Single consolidated table from this slide's data, cell shading matching the
+stack diagrams used on the three preceding slides.
+
+Speaker Notes: "Use this table to summarise the whole boundary shift in one glance before
+moving to where teams get this boundary wrong. The data-and-access row is the one worth
+repeating in an interview answer."
+
+
+
+
+--------------------------------------- SECTION 4: 4. Common Misunderstandings:
+Provider vs customer duties; incidents caused by wrong assumptions
+---------------------------------------
+
+Slide 12: Two Patterns Behind Security Incidents
+Heading: Misunderstanding Patterns
+
+Subheading: Two Failure Directions
+
+Content:
+
+The shared responsibility line is clear on paper, but real incidents happen when either side
+assumes the other covers a task nobody actually performed.
+●​ Customer assumes the provider covers it: believing AWS patches or secures customer
+   data
+●​ Provider expects the customer to configure it: AWS documents bucket policies and
+   security groups as customer tasks
+●​ Moving IaaS to PaaS to SaaS shifts the line, confusing which duty moved
+●​ Most breaches trace to a skipped step, not a platform flaw
+
+Visual Guidance: Two-column diagram: left arrow labelled 'Provider assumes customer
+configured it', right arrow labelled 'Customer assumes provider secured it', meeting at a gap
+in the middle.
+
+Speaker Notes: "Stress that the technology rarely fails; a missed assumption on either side
+does. Ask: which service model shift (IaaS to SaaS) most often causes this confusion, and
+why."
+
+
+
+Slide 13: Misconceptions Mapped to Reality
+Heading: Misconception Vs Reality
+
+Subheading: Four Fault Lines
+
+Content:
+
+Certain duties get assumed away more often than others, because the provider's physical
+control of the hardware is mistaken for control of the setting itself.
+
+Misconception                    Actual Duty                 Resulting Risk
+AWS secures the storage          Customer sets bucket access Bucket left publicly readable
+bucket                           policy
+Every RDS database is            Customer enables            Sensitive data stored in
+encrypted automatically          encryption when creating    plaintext
+                                 the database
+OS patches apply themselves Customer patches the guest Unpatched virtual machine
+on IaaS                          OS                          exploited
+No need to review IAM            Customer  manages users     Overly broad permission
+permissions                      and access                  misused
+Visual Guidance: Render the table full-width with the 'Actual Duty' column highlighted,
+since that is the fact most often missed.
+
+Speaker Notes: "Walk through each row as a real scenario for an interview question. Point
+out that every 'Actual Duty' entry sits on the customer side of the responsibility line."
+
+
+
+Slide 14: Tracing a Bucket Misconfiguration
+Heading: Incident Root Cause
+Subheading: Bucket Exposure Traced
+
+Content:
+
+A common breach pattern starts with one wrong assumption about a setting, then
+compounds silently until data is exposed.
+
+        1. Developer creates an S3 bucket for application logs
+        2. Hits an access error and assumes loosening settings is harmless
+        3. S3 Block Public Access is switched off (it is on by default for new buckets)
+        4. Bucket policy grants read access to any user
+        5. Crawlers index the log files, exposing the data
+        6. Root cause: a skipped security-in-the-cloud step
+
+Visual Guidance: Flow diagram of the six steps left to right, with step 3 (Block Public
+Access disabled) circled in red as the turning point.
+
+Speaker Notes: "Walk the chain step by step, pausing on step 3 as the single avoidable
+mistake. This maps directly to a frequent interview question on why S3 breaches recur
+despite provider security."
+
+
+
+Slide 15: Verifying Ownership Before Incidents
+Heading: Checking Ownership
+
+Subheading: Tools And Next Step
+
+Content:
+
+Catching a wrong assumption before it becomes an incident means checking the
+customer-owned settings directly, not trusting that the platform already handled them.
+
+●​ AWS Trusted Advisor flags public buckets and open security groups
+●​ IAM Access Analyzer reviews policies for unintended external access
+●​ AWS Well-Architected security pillar lists customer-owned checks
+
+A single tool catching one misconfiguration is not enough; durable protection needs several
+independent controls across network, identity, data, application and monitoring layers.
+
+Visual Guidance: Show the Trusted Advisor security checks screen alongside an IAM Access
+Analyzer finding, both labelled with what each one is scanning for.
+
+Speaker Notes: "Mention that these checks are detective, not preventive, so a layered set of
+controls is still needed. Tie this to the recurring exam angle: detection tools alone do not fix
+a responsibility gap."
+--------------------------------------- SECTION 5: 5. Defense in Depth: Layered controls:
+network, identity, data, application & monitoring ---------------------------------------
+
+Slide 16: Why Defense in Depth Matters
+Heading: Defense in Depth
+
+Subheading: Layered Security Model
+
+Content:
+
+A single control can fail or be bypassed, so cloud security stacks several independent
+defenses instead of trusting one. Defense in depth spreads protection across network,
+identity, data, application and monitoring layers.
+
+●​   Network: filters traffic at the perimeter and between subnets
+●​   Identity: verifies who or what is making each request
+●​   Data: protects information at rest and in transit
+●​   Application: hardens the code and runtime handling requests
+●​   Monitoring: detects and alerts on suspicious activity
+
+Analogy: Like an airport: a security check at the entrance, a boarding-pass check at the gate,
+locked cockpit doors, and CCTV across the terminal. Passing one check doesn’t get anyone
+everywhere, just as cloud security layers independent controls so breaching one layer does
+not expose the whole system.
+
+Visual Guidance: Five concentric rings labelled Network, Identity, Data, Application,
+Monitoring from outside in, like fort walls.
+
+Speaker Notes: "Introduce defense in depth as the umbrella over all five layers about to be
+covered. Ask: why is one strong firewall not enough on its own? Exam hook: definition plus
+the five standard layers."
+
+
+
+Slide 17: Network and Identity Controls
+Heading: Network And Identity
+
+Subheading: Perimeter And Access
+
+Content:
+
+Network controls stop unwanted traffic from reaching resources at all, while identity
+controls decide what an already-connected caller may do. Together they form the first two
+layers an attacker meets.
+●​   AWS WAF, the Web Application Firewall, blocks common web exploits
+●​   AWS Shield absorbs and mitigates distributed denial-of-service traffic
+●​   Security groups and network ACLs filter traffic by port and source
+●​   Identity and Access Management (IAM) policies grant only needed actions
+●​   Multi-factor authentication adds a second proof beyond a password
+
+Visual Guidance: Diagram: an incoming request passing through WAF/Shield, then security
+group/NACL, then an IAM check, before reaching the resource.
+
+Speaker Notes: "Explain that network filters stop traffic before it is processed, while
+identity decides what it may then do. Point to the AWS WAF and IAM console as the real
+locations for these controls. Exam hook: WAF stops application-layer attacks, Shield stops
+volumetric floods."
+
+
+
+Slide 18: Data and Application Controls
+Heading: Data And Application
+
+Subheading: Protecting The Payload
+
+Content:
+
+Once traffic and identity are verified, the remaining risk sits inside the data itself and the
+application code that processes it. These two layers protect what the earlier layers let
+through.
+
+●​   Encryption at rest: AWS Key Management Service (KMS) manages the keys
+●​   Encryption in transit: TLS protects data moving between client and server
+●​   Input validation: the application rejects malformed or malicious requests
+●​   Patch management: regular updates close known software vulnerabilities
+●​   Secure coding avoids known flaws such as injection attacks
+
+Visual Guidance: Diagram: data flowing through an encryption-lock icon (KMS) into an
+application box with a validation check and a patch icon.
+
+Speaker Notes: "Clarify that data protection covers both stored and moving data, while
+application controls protect the code itself. Point to the KMS console and a sample WAF rule.
+Exam hook: difference between encryption at rest and in transit."
+
+
+
+Slide 19: Monitoring and Detection Layer
+Heading: Monitoring And Detection
+
+Subheading: The Final Layer
+
+Content:
+Even with every other layer in place, something can still slip through, so continuous
+monitoring catches what prevention missed. This layer closes the loop by detecting and
+alerting on real activity.
+
+●​   AWS CloudTrail records API activity in the account: who did what, and when
+●​   Amazon CloudWatch tracks metrics and triggers alarms on thresholds
+●​   Amazon GuardDuty analyses logs for threats using machine learning
+●​   Alerts feed incident response so unusual activity gets investigated fast
+
+Visual Guidance: Diagram: CloudTrail logs feeding GuardDuty and CloudWatch metrics
+feeding alarms, with both alert arrows pointing to an incident-response icon.
+
+Speaker Notes: "Stress that monitoring does not prevent an attack but shortens how long it
+goes unnoticed. Point to the CloudTrail event history and GuardDuty findings screens. Exam
+hook: CloudTrail logs API activity, CloudWatch handles metrics and alarms."
+
+
+
+Slide 20: Mapping Five Security Layers
+Heading: Five Layers Mapped
+
+Subheading: Controls And Purpose
+
+Content:
+
+Each layer answers a different question — what traffic, who, what data, what code and what
+happened — and each service is placed in the layer where it mainly acts.
+
+Layer                          Stops / Protects               AWS Example
+Network                        Unwanted traffic and floods    WAF, Shield, Security
+                                                              Groups
+Identity                     Unauthorised actions             IAM policies, MFA
+Data                         Exposed   information            KMS, TLS
+Application                  Exploitable code paths           Systems Manager Patch
+                                                              Manager, Amazon Inspector
+Monitoring                   Undetected activity              CloudTrail, CloudWatch,
+                                                              GuardDuty
+Visual Guidance: Five-row table, one row per layer, with its AWS example alongside.
+
+Speaker Notes: "Use this table to show each layer is distinct in purpose, though a few
+services touch more than one layer. Point to the AWS Example column as where each service
+is actually used. Exam hook: expect a question asking which layer a given service belongs
+to."
+
+
+
+Slide 21: Layered Security Summary
+Heading: Layered Security Recap
+Subheading: Bridging Forward
+
+Content:
+
+Defense in depth succeeds when a failure in one layer still leaves four others standing
+between an attacker and the resource. No single control is assumed to be perfect.
+
+●​ Layers are designed to be independent: one failed layer should not disable another
+●​ Coverage must span prevention, such as network and identity, and detection
+●​ Identity-layer decisions are often the hardest to get right, and stolen credentials are a
+   common attack path
+
+Visual Guidance: Return to the five-ring fort diagram, highlighting the identity ring.
+
+Speaker Notes: "Close by noting identity decisions are often the hardest layer to get right in
+practice, setting up the detailed access rules that follow. Exam hook: identity is frequently
+the layer attackers target first, via stolen credentials."
+
+
+
+Key Takeaways
+       1. Security Goals: Confidentiality, integrity & availability in the cloud
+       2. Shared Responsibility Model: Security of the cloud vs security in the cloud
+       3. Responsibility by Service Model: Boundary shifts across IaaS, PaaS & SaaS
+       4. Common Misunderstandings: Provider vs customer duties; incidents caused by
+       wrong assumptions
+       5. Defense in Depth: Layered controls: network, identity, data, application &
+       monitoring
+
+
+
+Upcoming Session : IAM Fundamentals
+
+                              Thank You | All the Best
+

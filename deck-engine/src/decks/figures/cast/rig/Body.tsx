@@ -15,6 +15,8 @@
 import type { JSX, ReactNode } from 'react'
 import type { Pose } from '../rig/channels'
 import type { Skin } from '../skins/types'
+import { shoulderJoint, webPath } from '../rig/shoulder'
+import { UpperArm } from '../rig/Arm'
 
 export const GROUND = 580
 export const HIP = 360
@@ -147,6 +149,27 @@ export function Body({ pose, skin, nod, url, behind, children }: { pose: Pose; s
             <g filter={clay ? url('clayBody') : flat ? undefined : url('litBig')}>
               <path d={torso} fill={flat ? p.top : url('top')} />
               {skin.top}
+              {/* The armpits (shoulder.ts): as an arm rises, the torso's side runs on up its outer
+                  edge. Drawn here, inside the torso's own group, so torso and armpit are one form.
+                  They are placed in the ARM's frame (the shoulder group's offset, undone from the
+                  chest's breath and bow scale), so they meet the arm exactly. */}
+              {(['L', 'R'] as const).map((side) => {
+                const a = pose[`shoulder${side}`], d = webPath(a)
+                if (!d) return null
+                const [jx, jy] = shoulderJoint(sh, SHOULDER_Y, a)
+                const sx = 1 + b * 0.015, sy = sx * (1 - (pose.bow * 26) / TORSO_H)
+                const toArm = `translate(200 ${HIP}) scale(${1 / sx} ${1 / sy}) translate(-200 ${-HIP}) translate(${pose.twist} ${-b * 2 + pose.bow * 26})`
+                return (
+                  <g key={side} transform={toArm}>
+                    <g transform={side === 'R' ? 'translate(400 0) scale(-1 1)' : undefined}>
+                      <path d={d} transform={`translate(${jx} ${jy})`} fill={skin.sleeve === 'long' ? (flat ? p.sleeve : url('top')) : flat ? p.top : url('top')} />
+                      <g transform={`translate(${jx} ${jy}) rotate(${a})`}>
+                        <UpperArm shoulder={a} skin={skin} url={url} side={side} />
+                      </g>
+                    </g>
+                  </g>
+                )
+              })}
             </g>
             {clay ? null : flat ? (
               /* The arms shade the cloth beside them: one flat shape a tone

@@ -8,7 +8,8 @@ description: Build rules and the running feedback log for every session of the C
 
 | | |
 |---|---|
-| Course | `Outputs/cloudcomputing/`, one folder per session |
+| Course | `Outputs/cloudcomputing/`, one folder per session, for every deck built before 2026-11-13 |
+| **New decks (user, 2026-11-13)** | **the whole deck project goes in `/home/nxtwave/Desktop/webslides/Outputdecks/cloudcomputing/<session>/`, outside this repo. Never start a new one under `Outputs/cloudcomputing/`.** Plans, this skill, reviews and captures stay here. Full text: root `CLAUDE.md`, "Where a NEW deck project goes" |
 | Sessions | `cloud_computing_fundamentals` (session 1, port 5270), `deployment_and_service_models` (session 2, port 5271), `setting_up_your_aws_account` (session 3, port 5272), `virtualization_and_hypervisors` (port 5273), `containers_vs_virtual_machines` (session 4, port 5274) |
 | Plans | `Outputs/cloudcomputing/session_plans/<session>/plan.md` |
 | Start a new session from | the latest cloud computing session, not the kit: the player options below live in session-local kit files |
@@ -76,6 +77,19 @@ explains the visual. Keep only the visual and the tags inside it."*
 - `IsoAnalogy` takes `bare` for exactly this, and `h` for a taller stage so the pictures use the freed space.
 
 Why: the sentence and captions described what the pictures already show, and the room read instead of looking.
+
+**Lighter labels (user, 2026-11-06, Session 7 Block, File & Object Storage review; asked and confirmed as a standing
+rule):** an analogy stage is a full scene (a real room or place) that reads on its own, so it carries few labels.
+- No tags along the TOP of either stage. A tag is kept only where the part it names would not read without it.
+- Kept tags pair up across the two stages with the same number badge and a thin leader to the part; number the
+  remaining pairs from 1. A stage may carry no tags at all (Session 7 slides 19 and 36).
+- Where the review asks, a small `Technical` tag at the foot of the concept stage, or one TR sentence (verbatim,
+  sentence case, no final stop) in a rounded box under the concept visual (Session 7 slide 27).
+- This narrows lesson 2 below ("every analogy clause gets a label") and standing correction 9's "every clause a
+  Title Case tag": the TR's full analogy sentence still goes in the slide's `notes`.
+
+Why: Session 7's rebuilt analogy rooms carried a tag for every clause plus top-row tags, and the user removed them on
+all five analogy slides (7, 19, 27, 34, 36): the scene explains itself, the tags crowded it.
 
 ## R4. Screenshot highlights are orange, and screenshots are served sharp
 
@@ -189,6 +203,83 @@ slide, mandate that for every session title slide is must."*
 Why: sessions 1, 2, 3 and Virtualization & Hypervisors have it. Session 4 was built from `spec.json`, whose card list
 starts welcome, recap, agenda with no title card, and session 5 was copied from session 4 (R2), so both shipped
 without it.
+
+## R10. Session 9 global rules: animated icon visuals, text-free 3D analogies (every slide, every session)
+
+**Feedback, 2026-11-10, on Session 9 (Elastic Compute Instances), the user's "GLOBAL RULES (apply to every slide in this
+deck AND to all future sessions)"; recorded with the user's yes.** The full list is generate-slides standing correction
+13. In short: loops and micro-animations on every visual; icons instead of text in technical visuals (no chips, number
+badges, connector labels or explanations, 1-3 word labels only where needed); analogies as real-time 3D scenes
+(three.js, people as Character Lab characters per R11, never isometric or clay), no text on either card, at most one small tag above a visual;
+equal padding on all four sides of every inner card; screenshot rings inside the capture and on their line only;
+straight arrows.
+
+This **supersedes R3 "Lighter labels"** (numbered tag pairs with leaders) and the isometric analogy rooms of Sessions 7
+and 9's first build. The TR analogy sentence stays in `notes`.
+
+Why: the first Session 9 build carried chips, numbered tag pairs and isometric clay rooms; the user found the visuals
+too wordy and too static and asked for icons, motion and real 3D scenes.
+
+## R11. Session 9 craft rules: 3D people, loop timing, icons, controls (every slide, every session)
+
+**Feedback, 2026-11-10, rounds 2 and 3 of the Session 9 review, then the user: "save all the inputs I have given, like
+animation about the 3D visuals and icons and animation timing, for the future slides; these need to be implemented
+too."** The full list is generate-slides standing correction 14. In short:
+
+- 3D analogy scenes use the engine's `@/engine/three-stage` (`ThreeStage`, one shared renderer).
+- People in them are Character Lab characters via `castSprite`, each an individual, with role clothing and detailed
+  facial expressions synced to the action; minimal joint movement for standing roles; the asset illustration where the
+  rig has no pose (a seated user with a laptop is `assets/icons/Icons/Boy with a laptop.png`).
+- Enclosures checked against the people in them (no heads through roofs), people never overlapping, no props without a
+  job.
+- Analogy loops restart within 0.3 s, 3-9 s long, seamless, 60 fps in headed Chrome.
+- Icons micro-animated; key objects may be 3D icons; continuous flip where a card has two faces.
+- No wrapper card around a card pair; inner padding matching the parent; TR text inside one-card-per-item visuals.
+- Sliders: no overshoot ease, clamped handles that never cross, verified by dragging in Chrome.
+- A correction round is verified by a Chrome pixel diff against the previous round.
+
+This **supersedes R10's "modelled 3D people"** (the user's round 2 answer), which round 3 replaced slide by slide with
+Character Lab characters.
+
+Why: Session 9 shipped round 2 with modelled primitive people, a 4 s rest between loops, heads poking through a car
+roof, overlapping bakers, purposeless rods and a slider whose Desired marker overshot into Max; each came back as a
+round 3 correction.
+
+## R12. Session 10 global rules: animated table icons, 4K-crisp analogies, no overlaps, uncropped screenshots
+
+**Feedback, 2026-11-10, on Session 10 (Serverless Computing), the user's "GLOBAL RULES"; recorded with the user's yes.**
+The full list is generate-slides standing correction 15. In short: every table icon carries one consistent micro-animation;
+3D analogy scenes render sharp at 4K (DPR-scaled, supersampled canvases, high-resolution sprite textures); nothing
+overlaps anything; TR screenshots are shown whole at their own aspect ratio, never cropped, with rings only on their
+target and inside the image.
+
+Why: the first Session 10 build had static table icons, soft 3D scenes, overlapping icons and people, and cropped captures.
+
+## R13. Session 9 round 4: one-word icon tags, looping highlights, rings only where the TR points
+
+**Feedback, 2026-11-10, Session 9 round 4 "Global changes (all slides)"**, recorded under the user's standing word to save
+every input for future slides. The full list is generate-slides standing correction 16. In short: every untagged icon in
+a right-side technical visual gets a single-word Title Case tag (amends R10's icons-over-text; analogy cards stay
+text-free); an orange sequential highlight loops first → last → first and never stops on the last item; screenshot rings
+only on what the TR caption names; a visual repeating the previous slide is dropped; deletions in a correction list
+happen last. Table icons and uncropped screenshots are R12.
+
+Why: Session 9 round 3 had untagged icons (slide 16's balance scale), highlights parked on the last stage, a ring on a
+banner the TR never mentioned and a slide repeating its predecessor.
+
+## R14. Session 13 visual standard: 3D icons on plinth cards, equal padding, right-angle connectors
+
+**Feedback, 2026-11-16, at the start of Session 16 (Cloud Threats & Attacks):** *"don't repeat the mistakes in session
+13 like padding and plain visuals ... session 13 has improved the icon style and card style for some slides so I need
+the same improved version for this session and further sessions"*; recorded with the user's yes. The full text is
+generate-slides standing correction 17. In short: glossy vector 3D icons from `@/engine/icons3d` on white plinth tiles
+(`@/engine/figkit`), at least 20 design px of equal padding inside every stage and card, orthogonal elbow connectors
+computed from the box constants, micro-animations and flow dots on every visual, and the TR's named things drawn rather
+than words in boxes.
+
+Why: Session 13 (IAM Fundamentals) was first built with flat icons, cards against their stage edges, diagonal
+connectors and plain boxes; its 2026-11-16 correction round (G1-G6) rebuilt 20 slides, and the user asked for that
+result to be the starting point of every later deck.
 
 ## Lessons carried from session 1's reviews (so they are not repeated)
 

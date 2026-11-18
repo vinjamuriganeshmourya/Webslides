@@ -17,7 +17,7 @@ import { VisualTable } from '@/decks/figures/net/vtable'
 import { IsoAnalogy } from '@/decks/figures/iso/frames'
 import { css as CUSTOM_CSS, slides as customSlides } from '@custom'
 import deckData, { dims } from 'virtual:deck'
-import { Icon, Rich } from './icon'
+import { Icon, Rich, cellNode, cellTone } from './icon'
 import { FigureView, figureSteps } from './figures'
 import { DIAGRAM_CSS } from './Diagram'
 import type { DeckData, Figure, Point, Slide } from './types'
@@ -63,11 +63,15 @@ export const meta: DeckMeta = {
   player: { autoHideControls: true, smooth: true, thumbnails: true, hideModeSwitch: true },
 }
 
-const AGENDA = M.agenda.map((title) => ({ title }))
+const AGENDA = (M.agenda ?? []).map((title) => ({ title }))
 
 /* ── helpers ── */
-const pts = (points: Point[]) => points.map((p) => ({ icon: p.icon ? <Icon name={p.icon} size={18} /> : undefined, text: <Rich text={p.text} /> }))
-const litOf = (points: Point[], step: number) => points.findIndex((p, i) => (p.at ?? i + 1) === step)
+/* a point holding "\n" breaks there (Session 15 TR 23, 2026-11-18: the key ID on its own line instead of split at a
+   hyphen); points without "\n" render exactly as before */
+const pts = (points: Point[]) =>
+  points.map((p) => ({ icon: p.icon ? <Icon name={p.icon} size={18} /> : undefined, text: p.text.includes('\n') ? <span style={{ whiteSpace: 'pre-line' }}><Rich text={p.text} /></span> : <Rich text={p.text} /> }))
+/** every point whose step is the current press (a TR point split at a clause boundary shares one `at` and lights as one) */
+const litOf = (points: Point[], step: number) => points.flatMap((p, i) => ((p.at ?? i + 1) === step ? [i] : []))
 
 /* ── the content layouts ── */
 
@@ -86,6 +90,7 @@ function Points({ s }: { s: Extract<Slide, { layout: 'points' }> }) {
       pointsW={s.pointsW ?? 452}
       figH={s.figH ?? 380}
       figure={s.figure ? <Fit w={BOX_W - (s.pointsW ?? 452) - 24} h={s.figH ?? 380}><FigureView fig={s.figure} step={step} /></Fit> : null}
+      note={s.note ? <NoteBox tone={s.note.tone === 'warn' ? colors.accent : colors.brand}><Rich text={s.note.text} /></NoteBox> : undefined}
     />
   )
 }
@@ -143,9 +148,19 @@ function Table({ s }: { s: Extract<Slide, { layout: 'table' }> }) {
         <VisualTable
           size={t.size ?? 16}
           highlight={t.highlight ?? []}
-          columns={t.columns.map((c) => ({ label: c.label, weight: c.weight, icon: c.icon ? <Icon name={c.icon} size={16} /> : undefined }))}
-          rows={t.rows.map((r) => ({ icon: r.icon ? <Icon name={r.icon} size={18} /> : undefined, cells: r.cells.map((c, i) => <Rich key={i} text={c} />) }))}
+          ringCol={t.ringCol ?? []}
+          logo={!!t.logo}
+          bigIcons={t.bigIcons}
+          columns={t.columns.map((c) => ({ label: c.label, weight: c.weight, bare: t.logo === 'bare' && !!c.icon?.startsWith('img:'), icon: c.icon ? <Icon name={c.icon} size={16} /> : undefined }))}
+          rows={t.rows.map((r) => ({ icon: r.icon ? <Icon name={r.icon} size={18} /> : undefined, cells: r.cells.map((c, i) => cellNode(c, i)), tones: r.cells.map(cellTone) }))}
         />
+        {s.note && (
+          <div className="mt-4">
+            <NoteBox tone={s.note.tone === 'warn' ? colors.accent : colors.brand}>
+              <Rich text={s.note.text} />
+            </NoteBox>
+          </div>
+        )}
       </div>
     </Card>
   )
@@ -158,7 +173,27 @@ function Screenshot({ s }: { s: Extract<Slide, { layout: 'screenshot' }> }) {
   const [nw, nh] = dims[s.image] ?? [1600, 900]
   /* the content column starts under the title (~170) and must end above the player bar (~630) */
   const top = 172 + (s.lead ? 58 : 0) + (s.step ? 54 : 0)
-  const maxH = 628 - top - (s.note ? 72 : 0)
+  const estH = 628 - top - (s.note ? 72 : 0)
+  /* MEASURED, not guessed (Session 14, 2026-11-17): the column really starts near 222 under the title, lower again
+     when the lead or the step caption wraps, so the estimate let three captures run under the player bar (slides
+     43/45/47; controls-clear looks at text, not images). Once, at mount, the capture's real top is read in slide
+     units and its height capped so it (and any note under it) ends at 628. Runs before Card's centring effect, so
+     Card measures the corrected block on the re-render it never sees: the capture only ever gets smaller. */
+  const shotBox = useRef<HTMLDivElement>(null)
+  const noteBox = useRef<HTMLDivElement>(null)
+  const [fitH, setFitH] = useState<number | null>(null)
+  useLayoutEffect(() => {
+    const el = shotBox.current
+    const sec = el?.closest('section')
+    if (!el || !sec) return
+    const sr = sec.getBoundingClientRect()
+    const scale = sr.height / 720 || 1
+    const t = (el.getBoundingClientRect().top - sr.top) / scale
+    const noteH = noteBox.current ? noteBox.current.getBoundingClientRect().height / scale + 12 : 0
+    const room = Math.floor(628 - t - noteH)
+    if (room > 120 && room < estH) setFitH(room)
+  }, [])
+  const maxH = fitH ?? estH
   const k = Math.min(BOX_W / nw, maxH / nh)
   const w = Math.round(nw * k)
   const h = Math.round(nh * k)
@@ -173,21 +208,34 @@ function Screenshot({ s }: { s: Extract<Slide, { layout: 'screenshot' }> }) {
             </span>
           </StepLabel>
         )}
-        <div className="relative self-center overflow-hidden rounded-[10px] border border-line bg-white" style={{ width: w, height: h, boxShadow: '0 12px 30px -18px rgba(16,32,58,0.45)' }}>
+        <div ref={shotBox} className="relative self-center overflow-hidden rounded-[10px] border border-line bg-white" style={{ width: w, height: h, boxShadow: '0 12px 30px -18px rgba(16,32,58,0.45)' }}>
           <img src={s.image} alt="" draggable={false} className="block select-none" style={{ width: w, height: h }} />
-          {rings.map(([x, y, rw, rh], i) => (
-            <span
-              key={i}
-              aria-hidden
-              className="pointer-events-none absolute rounded-[6px]"
-              style={{ left: x * k - 4, top: y * k - 4, width: rw * k + 8, height: rh * k + 8, boxShadow: `0 0 0 3px ${colors.accent}`, opacity: i < shown ? 1 : 0, transition: 'opacity 320ms cubic-bezier(0.22,1,0.36,1)' }}
-            />
-          ))}
+          {rings.map(([x, y, rw, rh, kind], i) =>
+            kind === 'band' ? (
+              /* a highlight band laid exactly on the rect, multiplied under the text so the glyphs stay dark and
+                 crisp; nothing is drawn outside the rect, and nothing sits on a glyph */
+              <span
+                key={i}
+                aria-hidden
+                className="pointer-events-none absolute rounded-[4px]"
+                style={{ left: x * k, top: y * k, width: rw * k, height: rh * k, background: `${colors.accent}52`, mixBlendMode: 'multiply', opacity: i < shown ? 1 : 0, transition: 'opacity 320ms cubic-bezier(0.22,1,0.36,1)' }}
+              />
+            ) : (
+              <span
+                key={i}
+                aria-hidden
+                className="pointer-events-none absolute rounded-[6px]"
+                style={{ left: x * k - 4, top: y * k - 4, width: rw * k + 8, height: rh * k + 8, boxShadow: `0 0 0 3px ${colors.accent}`, opacity: i < shown ? 1 : 0, transition: 'opacity 320ms cubic-bezier(0.22,1,0.36,1)' }}
+              />
+            ),
+          )}
         </div>
         {s.note && (
-          <NoteBox tone={s.note.tone === 'info' ? colors.brand : colors.accent}>
-            <Rich text={s.note.text} />
-          </NoteBox>
+          <div ref={noteBox}>
+            <NoteBox tone={s.note.tone === 'info' ? colors.brand : colors.accent}>
+              <Rich text={s.note.text} />
+            </NoteBox>
+          </div>
         )}
       </div>
     </Card>
@@ -277,7 +325,7 @@ function element(s: Slide): ReactNode {
     case 'takeaways':
       return <Takeaways id={s.id} lesson={SESSION} items={AGENDA} />
     case 'next':
-      return <NextSessionSlide title={s.title} lesson={SESSION} />
+      return <NextSessionSlide title={s.title} lesson={SESSION} titleSize={s.size} />
     case 'thanks':
       return <ThankYouSlide title={s.title} lesson={SESSION} />
     case 'custom': {

@@ -13,6 +13,7 @@
  *   R8.3  table highlight      orange rows are listed; a highlighted LAST row FAILs
  *   R7    line limit           points beside a figure take <= 2 lines
  *   R8.5  logo aspect          <img> rendered ratio within 3% of natural
+ *   images load                every <img> on a slide has a source that loaded (a pruned library icon would not)
  *   video-safe                 nothing in the instructor video box (port of video-safe.mjs)
  *   mixed-align                no left + centred blocks on one slide (port of mixed-align-check.mjs)
  *   overflow                   no text outside its box, final state (port of box-overflow-check.mjs)
@@ -28,7 +29,7 @@ import { existsSync } from 'node:fs'
 import { capitals, titleCase, chipInParent } from './checks/text.mjs'
 import { tables } from './checks/tables.mjs'
 import { points } from './checks/points.mjs'
-import { logos } from './checks/logos.mjs'
+import { logos, emptyImages } from './checks/logos.mjs'
 import { videoSafe } from './checks/video-safe.mjs'
 import { overflow } from './checks/overflow.mjs'
 import { mixedAlign } from './checks/mixed-align.mjs'
@@ -48,7 +49,7 @@ const t0 = Date.now()
 
 const res = {} // check -> { fail: [{n,msg}], warn: [...], info: [...], note }
 const R = (k) => (res[k] ??= { fail: [], warn: [], info: [] })
-for (const k of ['R9 title slide','R8.4 capitals','R8.4 title-case (chips/labels/titles)','R8.3 table highlight','R7 line limit (<=2 lines)','R8.5 logo aspect','video-safe','mixed-align','overflow (final state)','chip inside its card']) R(k)
+for (const k of ['R9 title slide','R8.4 capitals','R8.4 title-case (chips/labels/titles)','R8.3 table highlight','R7 line limit (<=2 lines)','R8.5 logo aspect','images load','video-safe','mixed-align','overflow (final state)','chip inside its card']) R(k)
 const add = (k, lvl, n, msg) => R(k)[lvl].push({ n, msg })
 
 const browser = await chromium.launch({ executablePath: '/usr/bin/brave-browser' })
@@ -94,6 +95,9 @@ for (let n = from; n <= to; n++) {
   const lg = await page.evaluate(logos)
   R('R8.5 logo aspect').checked = (R('R8.5 logo aspect').checked ?? 0) + lg.n
   for (const s of lg.bad) add('R8.5 logo aspect', 'fail', n, s)
+  const em = await page.evaluate(emptyImages)
+  R('images load').checked = (R('images load').checked ?? 0) + em.n
+  for (const s of em.bad) add('images load', 'fail', n, s)
   for (const s of await page.evaluate(videoSafe)) add('video-safe', 'fail', n, s)
   const ma = await page.evaluate(mixedAlign)
   if (ma.mixed) add('mixed-align', 'fail', n, `left ${ma.left.join(' | ')} + centre ${ma.centre.join(' | ')}`)
@@ -149,7 +153,7 @@ const show = (list, tag) => {
   if (g.length > cap) console.log(`        ... +${g.length - cap} more slides (--verbose)`)
 }
 let fails = 0, warns = 0
-const order = ['R9 title slide', 'R8.4 capitals', 'R8.4 title-case (chips/labels/titles)', 'R8.3 table highlight', 'R7 line limit (<=2 lines)', 'R8.5 logo aspect', 'video-safe', 'mixed-align', 'overflow (final state)', 'chip inside its card', 'overflow-steps', 'controls-clear']
+const order = ['R9 title slide', 'R8.4 capitals', 'R8.4 title-case (chips/labels/titles)', 'R8.3 table highlight', 'R7 line limit (<=2 lines)', 'R8.5 logo aspect', 'images load', 'video-safe', 'mixed-align', 'overflow (final state)', 'chip inside its card', 'overflow-steps', 'controls-clear']
 console.log(`\ncheck-deck  ${file}\n${to - from + 1} slide(s)${QUICK ? ', quick' : ''}\n`)
 for (const k of order) {
   const r = res[k]; if (!r) continue

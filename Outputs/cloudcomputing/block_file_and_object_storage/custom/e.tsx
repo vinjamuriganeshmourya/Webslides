@@ -3,6 +3,8 @@ import { colors } from '@/design/tokens'
 import { BOX_W, Card, Num, STILL, useBuild } from '@/decks/figures/scene'
 import { StepLabel } from '@/decks/figures/net/frames'
 import { Icon, Rich } from '@/engine/icon'
+import { MOTION, motionHeld } from '@/motion/tokens'
+import { useInstant } from '@/motion/instant'
 import { dims } from 'virtual:deck'
 
 /**
@@ -49,7 +51,8 @@ type ShotProps = {
 }
 
 function L_Shot({ id, kicker, title, lead, leadSide, step, icon, image, rings = [], caption, maxW = 760, below, lesson }: ShotProps) {
-  const lit = useBuild(rings.length + 1)
+  const lit = useBuild(rings.length + 1, MOTION.build, MOTION.buildLead)
+  const held = motionHeld(useInstant())
   const shown = STILL ? rings.length : lit
   const [nw, nh] = (dims as Record<string, [number, number]>)[image] ?? [1600, 900]
   /* the frame's body starts at y 221 (ZONE.band.top), or at 162 under a header lead (~33 px a line + its gap), and
@@ -79,7 +82,7 @@ function L_Shot({ id, kicker, title, lead, leadSide, step, icon, image, rings = 
                 key={i}
                 aria-hidden
                 className="pointer-events-none absolute rounded-[6px]"
-                style={{ left: x * k - 4, top: y * k - 4, width: rw * k + 8, height: rh * k + 8, boxShadow: `0 0 0 3px ${colors.accent}`, opacity: i < shown ? 1 : 0, transition: 'opacity 320ms cubic-bezier(0.22,1,0.36,1)' }}
+                style={{ left: x * k - 4, top: y * k - 4, width: rw * k + 8, height: rh * k + 8, boxShadow: `0 0 0 3px ${colors.accent}`, opacity: i < shown ? 1 : 0, transform: i < shown ? 'none' : 'scale(1.06)', transition: held ? 'none' : `opacity ${MOTION.ring}ms ${MOTION.ease}, transform ${MOTION.ring}ms ${MOTION.ease}` }}
               />
             ))}
           </div>
@@ -155,4 +158,9 @@ export const slides = {
   L_Steps: L_Steps as unknown as (p: Record<string, unknown>) => ReactNode,
 }
 
-export const css = `.l-shot img { image-rendering: auto; } .l-nw code { white-space: nowrap; }`
+/* Review round 3 (user, 2026-11-06): "No decorative or looping motion" on the slides that round named. The engine
+   Arrow's marching dash (`mo-dash`) is the only loop left on them (the stage-to-stage arrow of the analogies, the
+   arrows of T07-B and T19); it is held still on those slides only, the dashes stay drawn. */
+const NO_LOOP = ['T01-AN', 'T07-AN', 'T12-AN', 'T17-AN', 'T18-AN', 'T07-B', 'T19']
+export const css = `.l-shot img { image-rendering: auto; } .l-nw code { white-space: nowrap; }
+section:has(${NO_LOOP.map((id) => `[data-spec="${id}"]`).join(', ')}) .mo { animation: none !important; }`

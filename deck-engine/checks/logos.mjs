@@ -18,3 +18,26 @@ export function logos() {
   }
   return { bad, n }
 }
+
+/*
+ * An image that shows NOTHING: no source, or a source that did not load. `scripts/prune-icons.mjs` drops the library
+ * icons a deck's script never names (2026-11-13, low-end pass); a slide that still asks for one of those would get
+ * exactly this, an <img> with an empty src, and R8.5 above skips any image with no natural size, so nothing else
+ * would say so.
+ */
+export function emptyImages() {
+  const section = [...document.querySelectorAll('section')].pop()
+  if (!section) return { bad: [], n: 0 }
+  const bad = []
+  let n = 0
+  for (const img of section.querySelectorAll('img')) {
+    if (getComputedStyle(img).display === 'none') continue
+    n++
+    const src = img.getAttribute('src') ?? ''
+    const r = img.getBoundingClientRect()
+    const where = `at ${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}x${Math.round(r.height)}`
+    if (!src) bad.push(`<img> with no source ${where}`)
+    else if (img.complete && !img.naturalWidth) bad.push(`<img> whose source did not load ${where} (${src.startsWith('data:') ? src.slice(0, 28) + '...' : src.split('/').pop()})`)
+  }
+  return { bad, n }
+}

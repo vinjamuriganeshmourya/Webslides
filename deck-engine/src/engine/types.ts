@@ -113,12 +113,25 @@ export type ImageFigure = { type: 'image'; src: string; w?: number; h?: number; 
 export type KitFigure = { type: 'kit'; name: string; props?: Record<string, unknown> }
 /** a one-off figure from the session's `custom/index.tsx`, by export name */
 export type CustomFigure = { type: 'custom'; name: string; props?: Record<string, unknown> }
+/** a table cell with more than words (Session 12): official marks before the text (`icons`, the TR's "icon beside each
+ *  service name"), and an owner tint (`tone`) where the TR asks cells to be shaded by who owns them */
+export type TableCell = { text: string; icons?: IconRef[]; tone?: 'customer' | 'provider' | 'shared' | 'risk' | 'safe' }
+/* 'risk' / 'safe' (Session 14 TR 17, 2026-11-17): a column the TR asks to mark red for risk and green for the safe
+ * choice, tinted template orange (rule 51) and success green; text stays ink */
 export type TableFigure = {
   type: 'table'
   columns: { label: string; icon?: IconRef; weight?: number }[]
-  rows: { icon?: IconRef; cells: string[] }[]
+  rows: { icon?: IconRef; cells: (string | TableCell)[] }[]
   /** rows (0-based) that carry a content meaning (R8.3); never the last row by default */
   highlight?: number[]
+  /** columns (0-based) ringed in the template orange because the TR asks for it ("circle the AWS column"); held on ?still */
+  ringCol?: number[]
+  /** row and header icons are brand logos (`img:`): drawn 26 px in a 40 px white tile so a wordmark reads (Session 11) */
+  /** `'bare'`: the same sizes, but a header `img:` logo has no tile and no border (Session 11 review, 2026-11-12) */
+  logo?: boolean | 'bare'
+  /** header and row icons drawn large and bare: no tile, no border (Session 10 correction round 2: a brand mark in a
+   *  small bordered tile did not read at presentation distance) */
+  bigIcons?: boolean
   size?: number
 }
 export type Figure = DiagramSpec | ImageFigure | KitFigure | CustomFigure | TableFigure
@@ -135,20 +148,22 @@ export type Slide = Base &
     | { layout: 'agenda' }
     | { layout: 'breaker'; index: number; lab?: boolean; kicker?: string; title?: string }
     /** points on the left, a figure on the right (the deck's main slide) */
-    | { layout: 'points'; kicker: string; title: string; lead?: string; points: Point[]; figure?: Figure; pointsW?: number; figH?: number }
+    | { layout: 'points'; kicker: string; title: string; lead?: string; points: Point[]; figure?: Figure; pointsW?: number; figH?: number; note?: { text: string; tone?: 'info' | 'warn' } }
     /** a description above a centred figure */
     | { layout: 'lead'; kicker: string; title: string; lead?: string; figure: Figure; figH?: number; figW?: number }
     /** a table, optionally under a lead */
-    | { layout: 'table'; kicker: string; title: string; lead?: string; table: TableFigure }
-    /** one enlarged screenshot with orange rings (R7.9) */
-    | { layout: 'screenshot'; kicker: string; title: string; lead?: string; step?: { text: string; icon?: IconRef }; image: string; rings?: [number, number, number, number][]; note?: { text: string; tone?: 'info' | 'warn' } }
+    | { layout: 'table'; kicker: string; title: string; lead?: string; table: TableFigure; note?: { text: string; tone?: 'info' | 'warn' } }
+    /** one enlarged screenshot with orange rings (R7.9); a ring with a fifth value 'band' is drawn as a soft orange
+     *  highlight laid behind one line of text instead, for a line whose neighbours sit too close for a ring's stroke
+     *  (Session 14 slide 46, 2026-11-18: the ring crossed the line above) */
+    | { layout: 'screenshot'; kicker: string; title: string; lead?: string; step?: { text: string; icon?: IconRef }; image: string; rings?: ([number, number, number, number] | [number, number, number, number, 'band'])[]; note?: { text: string; tone?: 'info' | 'warn' } }
     /** two pictures, the familiar scene and the concept (R3: no explaining text) */
     | { layout: 'analogy'; kicker: string; title: string; everyday: Figure; concept: Figure; h?: number }
     /** numbered or ticked steps, optionally beside a figure */
     | { layout: 'steps'; kicker: string; title: string; lead?: string; steps: Point[]; figure?: Figure; note?: { text: string; tone?: 'info' | 'warn' } }
     | { layout: 'quiz'; title?: string }
     | { layout: 'takeaways' }
-    | { layout: 'next'; title: string }
+    | { layout: 'next'; title: string; /** the name's font size (default the template's 84) */ size?: number }
     | { layout: 'thanks'; title: string }
     /** the escape hatch: a whole slide from `custom/index.tsx` */
     | { layout: 'custom'; component: string; props?: Record<string, unknown> }

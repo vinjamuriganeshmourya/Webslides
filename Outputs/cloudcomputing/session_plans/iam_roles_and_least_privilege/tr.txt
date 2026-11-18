@@ -1,0 +1,725 @@
+Session 14 : IAM Roles & Least Privilege
+
+
+RECAP: Session 13 : IAM Fundamentals
+       1. Identity in the Cloud: Root & owner account; users; groups
+       2. Authentication vs Authorization: Identity verification vs permission checking;
+       credentials: passwords, access keys & tokens
+       3. Policy Structure: Effect, action, resource & condition; identity-based vs resource-
+       based policies
+       4. Policy Evaluation Logic: Default deny; explicit allow; explicit deny precedence;
+       combining multiple policies
+       5. Reading a Denial: Access-denied messages; audit logs; tracing a denial to its
+       statement
+
+Agenda for Today's Session
+       1. Roles & Temporary Credentials: Assuming a role; session tokens; temporary vs
+       long-lived credentials
+       2. Principle of Least Privilege: Scoping actions & resources; wildcards & their risks;
+       permission boundaries; iterative tightening
+       3. Federation & Single Sign-On: Identity providers; SAML & OIDC; multi-factor
+       authentication (MFA)
+       4. Service & Machine Identity: Instance & workload identities; avoiding embedded
+       keys; non-human identity at scale
+       5. Identity for AI Agents: Scoped, short-lived & revocable credentials; excessive
+       agency as a failure mode
+
+
+
+--------------------------------------- SECTION 1: 1. Roles & Temporary Credentials:
+Assuming a role; session tokens; temporary vs long-lived credentials
+---------------------------------------
+
+Slide 1: Roles And Temporary Credentials Overview
+Heading: Roles Vs Users
+
+Subheading: Temporary Identity Map
+
+Content:
+
+IAM users hold permissions and credentials permanently. A role is a different identity type,
+assumed only for the duration a task needs, then given up.
+
+●​ Assuming a role: how a caller temporarily becomes that identity
+●​ Temporary credential set: access key, secret key, session token
+●​ Expiry window: credentials stop working after a fixed duration
+●​ Trust policy: controls who is allowed to assume the role
+
+Visual Guidance: Simple diagram: IAM user box with a padlock icon (permanent keys)
+beside a role box with a clock icon (expiring keys).
+
+Speaker Notes: "Position roles as the identity type used instead of permanent keys, distinct
+from users and groups. Point out that a role has no login of its own. Exam hook: roles are the
+standard answer to 'how do I avoid storing permanent keys'."
+
+
+
+Slide 2: What An IAM Role Is
+Heading: Defining A Role
+
+Subheading: Borrowed Permissions
+
+Content:
+
+A role is a set of permissions that any trusted caller can borrow for a while, rather than an
+identity someone logs into directly. Formally, it is an IAM identity with a permission policy
+and a trust policy, but no password or permanent keys.
+
+●​   Trust policy names which account, service or user may assume it
+●​   Permission policy defines what the role can do once assumed
+●​   Usable by people, applications, or other AWS services alike
+●​   Exists independently of any single employee or application
+
+Analogy: Borrowing a library book using a library card. You can use the book for a limited
+period and must return it afterward, just as a role provides temporary permissions that
+expire after the session.
+
+Visual Guidance: Icon of a temporary visitor badge next to the role name, contrasted with a
+permanent ID card labelled 'IAM user'.
+
+Speaker Notes: "Say the gate-pass line slowly, it is the anchor for the whole section. Point to
+the trust policy as the gatekeeper, visible on a role's Trust relationships tab in the IAM
+console. Interviewers often ask why roles beat embedding keys — this slide is the answer."
+
+
+
+Slide 3: How A Role Is Assumed
+Heading: Assuming A Role
+
+Subheading: AssumeRole Flow
+
+Content:
+Assuming a role is a request, not a login: a caller already holding some identity asks AWS
+Security Token Service (STS) to hand over the role's permissions for a limited time.
+
+●​ Caller invokes sts:AssumeRole, naming the target role's ARN
+●​ STS checks the role's trust policy allows that caller
+●​ Caller also needs its own permission to call AssumeRole
+●​ The caller uses the temporary credentials to make requests with the assumed role's
+   permissions
+●​ STS returns a fresh, time-limited credential set for the role
+
+Visual Guidance: Flow arrows: Caller identity -> sts:AssumeRole request -> trust policy
+check -> STS issues temporary credentials -> role's permissions apply.
+
+Speaker Notes: "Stress that trusting an account does not auto-grant every identity in it the
+right to assume; the caller still needs AssumeRole permission. This is exactly what a role's
+Trust relationships tab in the IAM console shows. Exam hook: trust policy versus permission
+policy is a frequent interview trap."
+
+
+
+Slide 4: Session Tokens And Duration
+Heading: Temporary Credentials
+
+Subheading: Token And Expiry
+
+Content:
+
+A successful assume-role call returns three values together, not just a key pair, because the
+session token is what marks the credentials as temporary rather than permanent.
+
+●​ Access key ID and secret access key: sign each request's authentication
+●​ Session token: must accompany every call, proves temporary origin
+●​ Role maximum session duration: configurable from 1 to 12 hours; the requested session
+   duration cannot exceed this limit
+●​ After expiry, the caller must assume the role again for new credentials
+
+Visual Guidance: Three labelled boxes (access key, secret key, session token) feeding into
+one 'signed API request' arrow, with a countdown clock beside the set.
+
+Speaker Notes: "Clarify the session token is not optional — omitting it makes the request
+fail even with a valid key pair. Point out the duration setting is configured on the role itself.
+Likely exam question: name the three parts of a temporary credential set."
+
+
+
+Slide 5: Temporary Versus Long-Lived Credentials
+Heading: Temporary Vs Long-Lived
+Subheading: Credential Comparison
+
+Content:
+
+Long-lived access keys, created for a user, stay valid until someone deletes them; temporary
+credentials from a role expire on their own, which changes the risk a leaked credential
+carries.
+
+Aspect                        Temporary (Role)                Long-Lived (User Keys)
+Lifetime                      15 minutes to 12 hours,         Valid until manually
+                              then expires                    revoked
+Rotation                      Automatic on every              Manual, often forgotten
+                              assumption
+Leak exposure                 Limited to remaining            Open-ended until noticed
+                              session time
+Typical holder                Applications, services,         Individual IAM users
+                              federated users
+Visual Guidance: Side-by-side timeline bars: role credential bar ending at a few hours, user
+key bar extending off-screen with no end marked.
+
+Speaker Notes: "Use the table to make the exposure-window argument concrete rather
+than abstract. Point at the leak-exposure row as the practical reason cloud security teams
+push roles over keys. This comparison is a near-guaranteed interview question."
+
+
+
+
+--------------------------------------- SECTION 2: 2. Principle of Least Privilege: Scoping
+actions & resources; wildcards & their risks; permission boundaries; iterative
+tightening ---------------------------------------
+
+Slide 6: Least Privilege — Four Tightening Levers
+Heading: Least Privilege Facets
+
+Subheading: Four Tightening Levers
+
+Content:
+
+A policy written to get a job done quickly often grants far more than the job needs; least
+privilege is the discipline of trimming that grant down to exactly what is required.
+
+●​   Scoping: naming the exact actions and resources allowed
+●​   Wildcards: the asterisk symbol and the risk it hides
+●​   Permission boundaries: a hard ceiling on an identity's access
+●​   Iterative tightening: narrowing a grant as real usage is observed
+Visual Guidance: Funnel diagram: a wide circle labelled 'broad access' narrowing through
+the four labelled levers into a small circle labelled 'exact need'.
+
+Speaker Notes: "Frame this as the discipline behind every policy written in the IAM
+console. State the four levers by name before going into each one. Flag that interviewers
+often ask how to tighten an over-permissioned role — these four levers are the answer."
+
+
+
+Slide 7: Scoping Actions And Resources
+Heading: Scoping Actions Resources
+
+Subheading: Narrow The Grant
+
+Content:
+
+The Action and Resource fields of a policy statement are where scope is actually narrowed,
+turning a broad grant into one that matches only the task at hand.
+
+●​   Action field names one API call, not an entire service
+●​   Resource field names one ARN, not every resource
+●​   Separate statements per service keep each grant narrow
+●​   Narrower scope shrinks the blast radius of a leaked credential
+
+Visual Guidance: Side-by-side policy snippets: left shows a broad Action/Resource pair,
+right shows the same statement scoped to one call and one ARN, with an arrow between
+them.
+
+Speaker Notes: "Point out that Action and Resource fields are used deliberately here to
+narrow access, not merely to describe it. Ask: why scope Resource even when Action is
+already specific? Mention the IAM policy editor as where this scoping is actually written."
+
+
+
+Slide 8: Wildcards And Their Risk
+Heading: Wildcards And Risk
+
+Subheading: The Asterisk Danger
+
+Content:
+
+A wildcard, written as the asterisk (*), tells AWS to match every possible value in a field
+instead of one. Placed in Action or Resource, it grants far more access than a single task
+needs.
+
+●​ Action as asterisk can grant every AWS API action
+●​ Resource as asterisk matches every object, not a chosen ARN
+●​ Action and Resource both as asterisk grant full control of the whole AWS account
+●​ A compromised credential then exposes every resource the wildcard covers
+
+Analogy: A building-wide access card that opens every room when only one room's access
+was needed — just as a wildcard can grant access far beyond what a task requires.
+
+Visual Guidance: Policy snippet with the asterisk characters circled in red, next to a
+padlock icon unlocked against many doors.
+
+Speaker Notes: "Say plainly that the asterisk is convenient but dangerous precisely because
+it never expires or narrows on its own. Point to the circled asterisks in the snippet while
+explaining the blast radius. A favourite interview probe: what is wrong with Resource colon
+asterisk on an S3 policy?"
+
+
+
+Slide 9: Permission Boundaries As A Ceiling
+Heading: Permission Boundaries
+
+Subheading: A Hard Ceiling
+
+Content:
+
+A permission boundary sets a hard ceiling on what an identity's own policies can ever grant,
+however generously those policies are written. It is itself a managed policy, evaluated
+alongside the identity policy.
+
+●​   Boundary itself grants no permissions on its own
+●​   Boundary only limits permissions granted elsewhere
+●​   Often applied so a team lead cannot escalate their own role
+●​   Attached per user or role, not inside a policy document
+
+Analogy: A building access card allows an employee to enter only approved floors, even if
+their department's rules allow access to more floors — just as a permission boundary limits
+the maximum permissions an identity can receive.
+
+Visual Guidance: Two overlapping circles labelled 'identity policy' and 'permission
+boundary'; shade only the overlap to mark it as the effective access.
+
+Speaker Notes: "Stress that a boundary cannot add access, only subtract from what the
+identity policy already allows. Point to the overlap region in the diagram as the effective
+permission. This distinction between granting and capping is a common interview trap."
+
+
+
+Slide 10: Tracing An Iterative Tightening
+Heading: Iterative Tightening Traced
+
+Subheading: Narrowing A Grant
+Content:
+
+Iterative tightening starts an identity wide enough to work, then narrows the policy in
+passes as real usage confirms what it actually calls.
+
+Pass                 Policy statement                          Why this pass
+Start                Action: s3:*, Resource: *                 Unblocks the rollout quickly
+Observe              IAM Access Analyzer reviews 30 days Confirms only two calls are
+                     of CloudTrail activity: only              invoked
+                     s3:GetObject and s3:PutObject used
+Narrow               Action: [s3:GetObject, s3:PutObject],     Matches only the calls
+                     Resource: arn:aws:s3:::finance-           actually seen
+                     reports-2024/*
+Cap                  Permission boundary limited to            Blocks any future re-
+                     s3:GetObject and s3:PutObject             broadening
+Each pass trades early convenience for a smaller blast radius, ending with a policy that
+matches exactly what the workload does.
+
+Visual Guidance: Four-row funnel beside the table, shrinking from 'Start' to 'Cap', with an
+arrow from each row to the next.
+
+Speaker Notes: "Walk the table pass by pass, pointing out that the second pass uses real
+usage evidence, not guesswork, to decide the narrower statement. Name IAM Access
+Analyzer as the console feature that supplies this evidence. Interview angle: this four-pass
+pattern is the standard answer to right-sizing an IAM policy over time."
+
+
+
+
+--------------------------------------- SECTION 3: 3. Federation & Single Sign-On:
+Identity providers; SAML & OIDC; multi-factor authentication (MFA)
+---------------------------------------
+
+Slide 11: Identity Federation and Trust
+Heading: Why Federation Exists
+
+Subheading: Identity Providers
+
+Content:
+
+A separate password per cloud application does not scale past a handful of staff. Federation
+lets an external identity provider (IdP) verify an employee once, and the cloud trusts that
+proof instead of checking a password itself.
+
+●​ Login request redirects from AWS to the company IdP
+●​ AWS trusts the signed proof, no password stored on its side
+●​ Trust is pre-configured between AWS and the IdP beforehand
+●​ One IdP can serve AWS, other clouds and on-premise apps
+
+Analogy: A company ID card issued by the head office is accepted at every branch office
+without a fresh check — just as a federated identity, once verified by the identity provider, is
+trusted across every connected cloud application.
+
+Visual Guidance: Flow diagram: employee -> company IdP (verifies) -> signed proof ->
+AWS accepts proof, arrow back to employee logged in.
+
+Speaker Notes: "Explain the redirect as the core mechanism, not a login form on AWS itself.
+Say plainly: AWS never sees the password, only the IdP's signed proof. Interview hook: ask
+what problem federation solves versus one IAM user per employee."
+
+
+
+Slide 12: SAML OIDC and MFA Compared
+Heading: Federation Concepts
+
+Subheading: Side By Side
+
+Content:
+
+SAML and OIDC are the two standards that actually carry the IdP's signed proof to AWS;
+MFA and SSO describe what happens around that proof, before and after it is issued.
+
+Concept                                      Simple Explanation
+Identity Provider (IdP)                      A service that verifies a user's identity
+SAML                                         A standard used to exchange authentication
+                                             information
+OIDC                                         A standard used for identity verification
+                                             and authentication
+MFA                                          Requires an additional verification step
+                                             during login
+SSO                                          Allows access to multiple applications with
+                                             one login
+Visual Guidance: Render the five-row table full width; highlight SAML and OIDC rows as
+the two carrier standards.
+
+Speaker Notes: "Point out SAML is XML-based and older, OIDC is token-based and built on
+OAuth 2.0 — both do the same job of carrying proof. Mention Microsoft Entra ID as a real
+IdP that speaks either standard to AWS. Exam hook: SAML versus OIDC is a frequent
+interview comparison."
+
+
+
+Slide 13: MFA Enforcement and SSO Access
+Heading: MFA Enforcement
+Subheading: SSO In Practice
+
+Content:
+
+A policy condition can require that the current session was authenticated with multi-factor
+authentication (MFA), checked at request time rather than only at sign-in.
+
+●​   Condition key aws:MultiFactorAuthPresent is true only for sessions started with MFA
+●​   Typically guards destructive actions like delete or terminate
+●​   IAM Identity Center provides single sign-on (SSO) across many accounts
+●​   Federated users get MFA from the IdP or IAM Identity Center
+
+Visual Guidance: Policy snippet box: Condition block showing
+aws:MultiFactorAuthPresent: true, with an arrow to a TerminateInstances action marked
+Denied without MFA.
+
+Speaker Notes: "Point to the Condition block and stress that MFA presence is checked at
+request time, not at login time. Say plainly: a stolen access key without MFA still gets denied
+on the protected action. Interview hook: ask how someone would force MFA on only
+destructive actions rather than all of IAM."
+
+
+
+
+--------------------------------------- SECTION 4: 4. Service & Machine Identity: Instance
+& workload identities; avoiding embedded keys; non-human identity at scale
+---------------------------------------
+
+Slide 14: Machine Identity Landscape
+Heading: Machine Identity Map
+
+Subheading: Instances To Agents
+
+Content:
+
+Instances and applications act on AWS without a human typing credentials. Each needs its
+own identity: an instance role, a workload role, or a certificate-based identity for external
+systems.
+
+●​   Instance identity: role attached to an EC2 instance via a profile
+●​   Workload identity: role attached to a Lambda function or ECS task
+●​   Anti-pattern: long-lived access keys embedded inside application code
+●​   Scale challenge: many services each needing a distinct, revocable identity
+
+Visual Guidance: Diagram: EC2, Lambda and ECS boxes each linked to a small role icon; a
+crossed-out key icon beside a code file labelled embedded key.
+Speaker Notes: "Frame this as the non-human counterpart to a user or role held by a
+person. Point to the four landscape bullets as the map for this section. Exam hook:
+interviewers ask why a key in code is worse than a role."
+
+
+
+Slide 15: Instance & Workload Roles
+Heading: Instance Workload Roles
+
+Subheading: Role On The Machine
+
+Content:
+
+An instance profile is a container that attaches an IAM role to a running EC2 instance, so the
+instance itself becomes the identity making calls. Lambda and ECS carry the same idea
+through an execution role or task role.
+
+●​ Changing the attached role takes effect without redeploying code
+●​ Lambda execution role: permissions the function code runs under
+●​ ECS task role: scoped per task definition, not per cluster
+
+Analogy: A hotel gives a room its own access card for housekeeping services, regardless of
+which staff member performs the work — just as an instance role gives the EC2 instance its
+own identity to access AWS services.
+
+Visual Guidance: Three icons — EC2, Lambda, ECS — each with an arrow pointing to its
+own labelled role box.
+
+Speaker Notes: "Explain the instance profile as the wrapper that lets an EC2 instance hold a
+role. Contrast it with assigning a role directly to a person. Exam hook: an interviewer may
+ask what an instance profile actually contains."
+
+
+
+Slide 16: Temporary Credential Delivery
+Heading: Credential Delivery
+
+Subheading: Automatic And Local
+
+Content:
+
+Once a role is attached, the instance or function retrieves temporary credentials
+automatically, with no key typed in or stored anywhere.
+
+●​   Instance metadata service hands out short-lived credentials locally
+●​   Credentials refresh automatically well before they expire
+●​   Lambda injects temporary credentials into the execution environment automatically
+●​   No long-lived keys needed in code or config files
+Visual Guidance: Flow diagram: instance box arrow to metadata service arrow to
+temporary credentials arrow to AWS API call.
+
+Speaker Notes: "Stress that rotation is automatic and invisible to the application code.
+Point to the metadata-service arrow as where credentials originate locally. Exam hook: why
+rotation removes the need for manual key management."
+
+
+
+Slide 17: Avoiding Embedded Keys
+Heading: Avoid Embedded Keys
+
+Subheading: Key Versus Role
+
+Content:
+
+Hardcoding a long-lived access key into source code ties that credential to wherever the
+code travels — repositories, logs, container images — long past the instance's own lifetime.
+
+Dimension                      Embedded Access Key            Instance/Workload Role
+Where it ends up               Git history, build logs,       Retrieved at runtime from
+                               container images               the platform
+Changing the credential        Edit the code or config and    No code change; SDK
+                               redeploy                       retrieves refreshed
+                                                              credentials
+Leak risk                     High — may be exposed in        Lower — avoids embedding
+                              code or files.                  long-lived keys in code or
+                                                              configuration files.
+Revocation                    Must find and replace           Detach the role; access ends
+                              everywhere                      when current credentials
+                                                              expire
+Visual Guidance: Split-screen table render: left column highlighted red for risk rows, right
+column highlighted green.
+
+Speaker Notes: "Use the table to make the trade-off concrete rather than abstract. Point at
+the revocation row as the clearest practical difference. Exam hook: this comparison is a
+common interview question on IAM best practice."
+
+
+
+Slide 18: Non-Human Identity At Scale
+Heading: Identity At Scale
+
+Subheading: Governing Many Machines
+
+Content:
+Cloud environments run far more machine identities than human ones, so the same least-
+privilege discipline from earlier must apply to every service, container and external system
+calling AWS.
+
+●​   Each microservice gets its own scoped role, not a shared one
+●​   IAM Roles Anywhere issues temporary credentials to on-premises servers
+●​   Cross-account roles let one service assume identity in another account
+●​   Central governance tracks and revokes many non-human identities
+
+Visual Guidance: Diagram: many small service boxes, each with a role icon, all feeding into
+one central IAM governance box.
+
+Speaker Notes: "Close by connecting the single-instance mechanism to the organisation-
+wide governance problem. Point to IAM Roles Anywhere as the bridge for non-AWS
+machines. Exam hook: interviewers ask how identity scales once a company runs hundreds
+of services."
+
+
+
+
+--------------------------------------- SECTION 5: 5. Identity for AI Agents: Scoped,
+short-lived & revocable credentials; excessive agency as a failure mode
+---------------------------------------
+
+Slide 19: AI Agent Identity — Scoped, Short-Lived, Revocable
+Heading: AI Agent Identity
+
+Subheading: Scoped Short Lived
+
+Content:
+
+An AI agent, software that plans and carries out actions on its own, still needs an identity
+before calling any cloud API — and that identity needs the same guardrails as any machine
+identity.
+
+●​ Scoped: credentials cover only the actions the task needs
+●​ Short-lived: credentials expire automatically after a session window
+●​ Revocable: access can be withdrawn the moment the task ends
+
+Analogy: A delivery worker receives a temporary access card that opens only the assigned
+delivery area and expires after the shift — just as an AI agent receives limited, short-lived
+credentials for its assigned task.
+
+Visual Guidance: Diagram: AI agent box arrow to cloud API, token in between labelled
+Scoped / Short-lived / Revocable with a small expiry clock icon.
+Speaker Notes: "Frame this as the machine-identity principle extended to an autonomous
+caller. Say plainly: an agent is just another non-human identity, so the same three guarantees
+apply. Interview hook: ask why a long-lived key is dangerous specifically for an agent that
+plans its own next step."
+
+
+
+Slide 20: Excessive Agency as a Failure Mode
+Heading: Excessive Agency Risk
+
+Subheading: When Scope Fails
+
+Content:
+
+Excessive agency happens when an agent's granted permissions exceed what its task
+genuinely needs, so one bad instruction can cascade into an action nobody intended.
+
+●​   A broad role lets one misleading instruction delete production data
+●​   Wide permissions turn a flawed plan into a real action
+●​   Scoped, short-lived, revocable credentials bound the damage one step causes
+●​   Least privilege for agents mirrors least privilege for any IAM role
+
+Visual Guidance: Side-by-side diagram: wide-permission agent path reaching a destructive
+action versus scoped-permission agent path blocked at the same step.
+
+Speaker Notes: "Explain that excessive agency is not a bug in the model but a permissions
+design failure, same as any over-broad IAM role. Point out the parallel with the broad ec2:*
+example discussed in the practical. Interview hook: ask how scoping, short expiry and
+revocability each independently limit the blast radius of one wrong agent action."
+
+
+
+
+--------------------------------------- PRACTICAL HANDS-ON: Building and Testing a
+Least-Privilege IAM Role ---------------------------------------
+
+Slide 21: Building a Least-Privilege EC2 Role
+Heading: Practical Overview
+
+Subheading: What Gets Built
+
+Content:
+
+This practical builds one IAM role that can view and start EC2 instances but cannot
+terminate them, then proves that scope using the IAM Policy Simulator rather than a live
+EC2 action.
+       1. Explore existing IAM policies, users and roles in the console
+       2. Write a custom policy allowing only EC2 describe access
+       3. Create a role and attach that custom policy to it
+       4. Record Allowed and Denied results for all three actions first
+       5. Add the missing permission and retest to confirm the fix
+       6. Discuss an over-permissive policy, trust relationships and cleanup
+
+
+
+Slide 22: Reading an Existing Managed Policy
+Heading: Explore Existing Policy
+
+Subheading: Reading Permissions
+
+Content:
+
+Before writing a policy, it helps to read one AWS already ships, to see which services, access
+levels and resources it allows.
+
+
+
+
+             AmazonS3ReadOnlyAccess managed policy details page, Permissions tab active
+
+
+
+
+Slide 23: Writing the Custom Policy
+Heading: Create Custom Policy
+
+Subheading: Describe-Only JSON
+
+Content:
+The custom policy starts narrow: it allows only the EC2 describe action, nothing else, so the
+role begins with the smallest workable grant.
+
+
+
+
+             IAM policy editor in JSON mode, one statement allowing ec2:DescribeInstances
+
+
+
+
+Slide 24: Verifying the Attached Role
+Heading: Verify The Role
+
+Subheading: Attached Permissions
+
+Content:
+
+After the role is created and the custom policy attached, the role's own Permissions tab
+confirms exactly one policy is attached before any testing begins.
+                  IAM role Permissions tab listing one attached customer-managed policy
+
+
+
+
+Slide 25: Updating the Policy and Retesting
+Heading: Update, Retest, Discuss
+
+Subheading: Closing The Gap
+
+Content:
+
+Once the simulator shows the start action denied, the policy is edited to add exactly that
+permission, and nothing else, before testing again.
+
+Action                             Before update                      After update
+DescribeInstances                  Allowed                            Allowed
+StartInstances                     Denied                             Allowed
+TerminateInstances                 Denied                             Denied
+
+
+
+
+   Policy Simulator before the update: DescribeInstances Allowed, StartInstances and TerminateInstances
+                                           Denied (implicit deny)
+               Policy edited to add ec2:StartInstances; TerminateInstances stays absent
+
+
+
+
+●​ Broad ec2:* grant shown only for discussion, never attached to the role
+●​ Trust relationship names the trusted account and allows sts:AssumeRole
+
+
+
+Slide 26: Expected Outcome and Cleanup
+Heading: Expected Result
+
+Subheading: Scope Confirmed
+
+Content:
+The finished role lets its holder view and start EC2 instances but never terminate them, with
+every permission traceable to one explicit statement in its policy.
+
+●​ Role cleanup: delete S14-EC2-Demo-Role before the custom policy
+●​ Policy cleanup: delete S14-EC2-ReadOnly-Demo once detached
+●​ Federation (SAML, OIDC, SSO) and AI-agent scoping stay conceptual here
+
+
+
+Key Takeaways
+       1. Roles & Temporary Credentials: Assuming a role; session tokens; temporary vs
+       long-lived credentials
+       2. Principle of Least Privilege: Scoping actions & resources; wildcards & their risks;
+       permission boundaries; iterative tightening
+       3. Federation & Single Sign-On: Identity providers; SAML & OIDC; multi-factor
+       authentication (MFA)
+       4. Service & Machine Identity: Instance & workload identities; avoiding embedded
+       keys; non-human identity at scale
+       5. Identity for AI Agents: Scoped, short-lived & revocable credentials; excessive
+       agency as a failure mode
+
+
+
+Upcoming Session : Encryption & Key Management
+
+                             Thank You | All the Best
+

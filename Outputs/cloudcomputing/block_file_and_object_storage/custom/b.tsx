@@ -2,7 +2,8 @@ import type { CSSProperties, ReactNode } from 'react'
 import { colors } from '@/design/tokens'
 import { useInstant } from '@/motion/instant'
 import { TILE_SKIN } from '@/decks/figures/card'
-import { Arrow, Label, STILL } from '@/decks/figures/scene'
+import { Arrow, Label, STILL, Traveller } from '@/decks/figures/scene'
+import { MOTION, motionHeld } from '@/motion/tokens'
 import { NoMark } from '@/decks/figures/net/frames'
 import { CvIcon } from '@/decks/figures/net/fx'
 import { Diagram } from '@/engine/Diagram'
@@ -22,26 +23,71 @@ import efsLogo from '../images/aws-efs.svg'
  * Styling is inline, the Session 6 way.
  */
 
-const EASE = 'cubic-bezier(0.22,1,0.36,1)'
+const EASE = MOTION.ease
 const MONO = "'Fira Code', ui-monospace, monospace"
 const HEAD = "'DM Sans', system-ui, sans-serif"
 
 /* ------------------------------------------------------------------ shared parts */
 
-function Show({ on, children, style, delay = 0 }: { on: boolean; children: ReactNode; style?: CSSProperties; delay?: number }) {
+/**
+ * A flow dot riding an arrow once its step is shown (micro-animation pass, 2026-11-06): it says which way the
+ * request or the time goes, nothing more. Shared tokens (`MOTION.flow`); held still on `?still`, in thumbnails
+ * and under prefers-reduced-motion.
+ */
+function Flow({ on, path, k, dur = MOTION.flow.dur, tone = colors.brand }: { on: boolean; path: [number, number][]; k: string; dur?: number; tone?: string }) {
   const instant = useInstant()
+  return (
+    <div aria-hidden style={{ position: 'absolute', inset: 0, zIndex: 9, pointerEvents: 'none' }}>
+      <Traveller path={path} run={on && !motionHeld(instant)} k={k} tone={tone} size={MOTION.flow.dot} dur={dur} />
+    </div>
+  )
+}
+
+/**
+ * Shown from its step on. `dx` / `dy` is where it arrives from (default a 6px rise), so a part can drop into the
+ * bucket or dock onto its row: ONE move on the press that reveals it, then it rests. Held (no transition) on
+ * `?still`, in thumbnails and under prefers-reduced-motion, where the final frame is the only frame.
+ */
+function Show({ on, children, style, delay = 0, dx = 0, dy = 6, dur = MOTION.reveal }: { on: boolean; children: ReactNode; style?: CSSProperties; delay?: number; dx?: number; dy?: number; dur?: number }) {
+  const held = motionHeld(useInstant())
   return (
     <div
       style={{
         opacity: on ? 1 : 0,
-        transform: on ? 'none' : 'translateY(6px)',
-        transition: instant ? 'none' : `opacity 360ms ${EASE} ${on ? delay : 0}ms, transform 360ms ${EASE} ${on ? delay : 0}ms`,
+        transform: on ? 'none' : `translate(${dx}px, ${dy}px)`,
+        transition: held ? 'none' : `opacity ${dur}ms ${EASE} ${on ? delay : 0}ms, transform ${dur}ms ${EASE} ${on ? delay : 0}ms`,
         pointerEvents: on ? undefined : 'none',
         ...style,
       }}
     >
       {children}
     </div>
+  )
+}
+
+/** a string that types in left to right once (a key written into its row); held on `?still` / reduced motion */
+function TypeIn({ on, children, delay = 0, dur = 640 }: { on: boolean; children: ReactNode; delay?: number; dur?: number }) {
+  const held = motionHeld(useInstant())
+  return (
+    <span style={{ display: 'inline-block', clipPath: on ? 'inset(0 0% 0 0)' : 'inset(0 100% 0 0)', transition: held ? 'none' : `clip-path ${dur}ms steps(18, end) ${on ? delay : 0}ms` }}>{children}</span>
+  )
+}
+
+/** an svg stroke that draws itself once (`pathLength` 1); held on `?still` / reduced motion */
+function useDraw(on: boolean, delay = 0, dur = 640): CSSProperties {
+  const held = motionHeld(useInstant())
+  return { strokeDasharray: 1, strokeDashoffset: on ? 0 : 1, transition: held ? 'none' : `stroke-dashoffset ${dur}ms ${EASE} ${on ? delay : 0}ms` }
+}
+
+/** one small drawn arrow (key → value), drawn once */
+function DrawArrow({ on, w = 28, delay = 0 }: { on: boolean; w?: number; delay?: number }) {
+  const line = useDraw(on, delay, 420)
+  const held = motionHeld(useInstant())
+  return (
+    <svg aria-hidden width={w} height={12} style={{ overflow: 'visible', flexShrink: 0 }}>
+      <path d={`M 1 6 L ${w - 8} 6`} pathLength={1} stroke={colors.muted} strokeWidth={2} strokeLinecap="round" fill="none" style={line} />
+      <path d={`M ${w} 6 L ${w - 8} 1.5 L ${w - 8} 10.5 Z`} fill={colors.muted} style={{ opacity: on ? 1 : 0, transition: held ? 'none' : `opacity 200ms ${on ? delay + 400 : 0}ms` }} />
+    </svg>
   )
 }
 
@@ -110,8 +156,9 @@ function Blob({ w, h = 22 }: { w: number; h?: number }) {
 }
 
 /** a small elbow connector with a head, for paths the scene `Arrow` cannot draw (straight only) */
-function Elbow({ pts, on, tone = colors.brand, dashed = false }: { pts: [number, number][]; on: boolean; tone?: string; dashed?: boolean }) {
-  const instant = useInstant()
+function Elbow({ pts, on, tone = colors.brand, dashed = false, delay = 0 }: { pts: [number, number][]; on: boolean; tone?: string; dashed?: boolean; delay?: number }) {
+  const held = motionHeld(useInstant())
+  const draw = useDraw(on, delay, 720)
   const [ax, ay] = pts[pts.length - 2]
   const [bx, by] = pts[pts.length - 1]
   const a = Math.atan2(by - ay, bx - ax)
@@ -123,9 +170,10 @@ function Elbow({ pts, on, tone = colors.brand, dashed = false }: { pts: [number,
   const l = { x: bx - Math.cos(a) * H + Math.cos(a + Math.PI / 2) * 5, y: by - Math.sin(a) * H + Math.sin(a + Math.PI / 2) * 5 }
   const r = { x: bx - Math.cos(a) * H - Math.cos(a + Math.PI / 2) * 5, y: by - Math.sin(a) * H - Math.sin(a + Math.PI / 2) * 5 }
   return (
-    <svg aria-hidden className="pointer-events-none absolute" style={{ left: 0, top: 0, overflow: 'visible', zIndex: 3, opacity: on ? 1 : 0, transition: instant ? 'none' : `opacity 420ms ${EASE}` }} width={1} height={1}>
-      <path d={d} stroke={tone} strokeWidth={2.5} fill="none" strokeLinejoin="round" strokeLinecap="round" strokeDasharray={dashed ? '7 7' : undefined} className={dashed ? 'mo mo-dash' : undefined} />
-      <path d={`M ${bx} ${by} L ${l.x} ${l.y} L ${r.x} ${r.y} Z`} fill={tone} />
+    <svg aria-hidden className="pointer-events-none absolute" style={{ left: 0, top: 0, overflow: 'visible', zIndex: 3 }} width={1} height={1}>
+      {/* the line draws tail to head once, then the head appears (the scene Arrow's order) */}
+      <path d={d} pathLength={dashed ? undefined : 1} stroke={tone} strokeWidth={2.5} fill="none" strokeLinejoin="round" strokeLinecap="round" strokeDasharray={dashed ? '7 7' : undefined} style={dashed ? { opacity: on ? 1 : 0 } : draw} />
+      <path d={`M ${bx} ${by} L ${l.x} ${l.y} L ${r.x} ${r.y} Z`} fill={tone} style={{ opacity: on ? 1 : 0, transition: held ? 'none' : `opacity 240ms ${on ? delay + 700 : 0}ms` }} />
     </svg>
   )
 }
@@ -158,7 +206,7 @@ function B_T11({ step }: { step: number }) {
         <div style={{ ...card(litAt(step, 1)), position: 'absolute', inset: 0, padding: '16px 18px' }}>
           <BucketHead
             right={
-              <Show on={step >= 3}>
+              <Show on={step >= 3} delay={760}>
                 <Label strong tone="brand" icon={<Icon name="KeyRound" size={14} />}>
                   Unique Inside Its Bucket
                 </Label>
@@ -167,22 +215,28 @@ function B_T11({ step }: { step: number }) {
           />
           {/* what a bucket sets */}
           <div style={{ ...flex(8), marginTop: 14 }}>
-            <Label icon={<Icon name="MapPin" size={14} />}>Region</Label>
-            <Label icon={<Icon name="ShieldCheck" size={14} />}>Access</Label>
-            <Label icon={<Icon name="RefreshCw" size={14} />}>Lifecycle Rules</Label>
+            {[
+              ['MapPin', 'Region'],
+              ['ShieldCheck', 'Access'],
+              ['RefreshCw', 'Lifecycle Rules'],
+            ].map(([ic, t], i) => (
+              <Show key={t} on={step >= 1} dy={-14} delay={260 + i * 140}>
+                <Label icon={<Icon name={ic} size={14} />}>{t}</Label>
+              </Show>
+            ))}
           </div>
           {/* the objects it holds */}
           <div style={{ ...flex(10, 'column', { alignItems: 'stretch' }), marginTop: 16 }}>
             {KEYS.map((k, i) => (
-              <Show key={k} on={step >= 2} delay={i * 120}>
+              <Show key={k} on={step >= 2} dy={-22} dur={520} delay={i * 220}>
                 <div style={{ ...flex(12), height: 52, padding: '0 14px', borderRadius: 12, background: colors.white, boxShadow: `inset 0 0 0 1px ${colors.line}` }}>
                   <img src={objectLogo} alt="" aria-hidden draggable={false} style={{ width: 28, height: 'auto' }} />
                   <span style={{ width: 210, display: 'flex' }}>
-                    <Show on={step >= 3} delay={i * 120}>
+                    <TypeIn on={step >= 3} delay={i * 260}>
                       <Mono size={16} color={colors.brandDark}>
                         {k}
                       </Mono>
-                    </Show>
+                    </TypeIn>
                   </span>
                   <Blob w={120} />
                   <Label tone="muted" icon={<Icon name="Tags" size={14} />}>
@@ -240,7 +294,7 @@ function B_T11B({ step }: { step: number }) {
               </span>
               <Blob w={72} />
               <span aria-hidden style={{ width: 1, height: 30, background: colors.line }} />
-              <Show on={step >= 1} delay={i * 140}>
+              <Show on={step >= 1} dx={40} dy={0} dur={560} delay={200 + i * 220}>
                 <span style={flex(6)}>
                   <Label tone="brand">Content Type</Label>
                   <Label tone="brand">Size</Label>
@@ -266,7 +320,9 @@ function B_T11B({ step }: { step: number }) {
           </div>
         </div>
         <At x={236} y={30} z={8}>
-          <NoMark size={30} on={step >= 2} />
+          <Show on={step >= 2} dy={0} delay={1100}>
+            <NoMark size={30} on={step >= 2} />
+          </Show>
         </At>
       </Show>
       <Show on={step >= 2} delay={200} style={{ position: 'absolute', left: 280, top: 214, width: 300, height: 180 }}>
@@ -279,11 +335,14 @@ function B_T11B({ step }: { step: number }) {
             <Label tone="brand">One Level</Label>
           </span>
           <div style={{ ...flex(8, 'column', { alignItems: 'stretch' }), marginTop: 12 }}>
-            {[...rows, KEYS[2]].map((k) => (
-              <div key={k} style={{ ...flex(8), height: 32, padding: '0 10px', borderRadius: 9, background: colors.white, boxShadow: `inset 0 0 0 1px ${colors.line}` }}>
-                <img src={objectLogo} alt="" aria-hidden draggable={false} style={{ width: 18, height: 'auto' }} />
-                <Mono size={15}>{k}</Mono>
-              </div>
+            {/* each key arrives from the tree side, one after another, and lands at the one level */}
+            {[...rows, KEYS[2]].map((k, i) => (
+              <Show key={k} on={step >= 2} dx={-48} dy={0} dur={560} delay={300 + i * 220}>
+                <div style={{ ...flex(8), height: 32, padding: '0 10px', borderRadius: 9, background: colors.white, boxShadow: `inset 0 0 0 1px ${colors.line}` }}>
+                  <img src={objectLogo} alt="" aria-hidden draggable={false} style={{ width: 18, height: 'auto' }} />
+                  <Mono size={15}>{k}</Mono>
+                </div>
+              </Show>
             ))}
           </div>
         </div>
@@ -306,10 +365,13 @@ function Part({ title, icon, lit, children, h }: { title: string; icon: string; 
   )
 }
 
-const Field = ({ k, v }: { k: string; v: string }) => (
+/** a system metadata field: the name, then its value filled in once (S3 maintains it) */
+const Field = ({ k, v, on = true, delay = 0 }: { k: string; v: string; on?: boolean; delay?: number }) => (
   <div style={{ ...flex(10), height: 24 }}>
     <span style={{ width: 104, fontSize: 14, color: colors.muted, fontWeight: 500 }}>{k}</span>
-    <Mono size={14}>{v}</Mono>
+    <TypeIn on={on} delay={delay} dur={420}>
+      <Mono size={14}>{v}</Mono>
+    </TypeIn>
   </div>
 )
 
@@ -325,28 +387,32 @@ function B_T12({ step }: { step: number }) {
           </span>
         </Box>
         <Box x={16} y={54} w={266}>
+          <Show on={step >= 1} dx={-28} dy={0} dur={560} delay={240}>
           <Part title="Data" icon="Binary" lit={litAt(step, 1)} h={84}>
             <span style={flex(10)}>
               <Blob w={120} />
               <Label tone="muted">Opaque Blob</Label>
             </span>
           </Part>
+          </Show>
         </Box>
         <Box x={292} y={54} w={266}>
-          <Show on={step >= 2}>
+          <Show on={step >= 2} dx={28} dy={0} dur={560}>
             <Part title="Key" icon="KeyRound" lit={litAt(step, 2)} h={84}>
-              <Mono size={16} color={colors.brandDark}>
-                session7-object.txt
-              </Mono>
+              <TypeIn on={step >= 2} delay={360}>
+                <Mono size={16} color={colors.brandDark}>
+                  session7-object.txt
+                </Mono>
+              </TypeIn>
             </Part>
           </Show>
         </Box>
         <Box x={16} y={146} w={266}>
-          <Show on={step >= 3}>
+          <Show on={step >= 3} dx={-20} dy={20} dur={560}>
             <Part title="System Metadata" icon="Settings" lit={litAt(step, 3)} h={166}>
-              <Field k="Content Type" v="text/plain" />
-              <Field k="Size" v="68.0 B" />
-              <Field k="Last Modified" v="October 15, 2026" />
+              <Field k="Content Type" v="text/plain" on={step >= 3} delay={400} />
+              <Field k="Size" v="68.0 B" on={step >= 3} delay={620} />
+              <Field k="Last Modified" v="October 15, 2026" on={step >= 3} delay={840} />
               <div style={{ marginTop: 6 }}>
                 <Label tone="brand" icon={<Icon name="RefreshCw" size={14} />}>
                   Maintained Automatically
@@ -356,12 +422,14 @@ function B_T12({ step }: { step: number }) {
           </Show>
         </Box>
         <Box x={292} y={146} w={266}>
-          <Show on={step >= 4}>
+          <Show on={step >= 4} dx={20} dy={20} dur={560}>
             <Part title="User Metadata" icon="Tags" lit={litAt(step, 4)} h={166}>
               <div style={{ ...flex(8), height: 46, padding: '0 10px', borderRadius: 10, border: `1.5px dashed ${colors.line}` }}>
                 <Label>Key</Label>
-                <Icon name="ArrowRight" size={16} style={{ color: colors.muted }} />
-                <Label>Value</Label>
+                <DrawArrow on={step >= 4} w={22} delay={420} />
+                <Show on={step >= 4} dx={-10} dy={0} delay={820}>
+                  <Label>Value</Label>
+                </Show>
               </div>
               <div style={{ marginTop: 14 }}>
                 <Label tone="brand" icon={<Icon name="AppWindow" size={14} />}>
@@ -381,6 +449,8 @@ function B_T12({ step }: { step: number }) {
 const BUCKET = 's7-object-storage-kj-2026-5831'
 
 function B_T13({ step }: { step: number }) {
+  const held = motionHeld(useInstant())
+  const refused = step >= 1
   return (
     <Frame w={586} h={330}>
       {/* Account A owns the name */}
@@ -401,10 +471,13 @@ function B_T13({ step }: { step: number }) {
                 {BUCKET}
               </Mono>
               <span style={flex(8)}>
-                <Label mono tone="brand" icon={<Icon name="MapPin" size={14} />}>
-                  ap-south-1
-                </Label>
-                <Show on={step >= 3}>
+                {/* the region pin settles onto its region once, the press region pinning is taught */}
+                <span className={step >= 3 && !held ? 'b-pin' : undefined} style={{ display: 'inline-flex' }}>
+                  <Label mono tone="brand" icon={<Icon name="MapPin" size={14} />}>
+                    ap-south-1
+                  </Label>
+                </span>
+                <Show on={step >= 3} dx={-24} dy={0} dur={520} delay={380}>
                   <Label tone={litAt(step, 3) ? 'solid' : 'plain'} icon={<Icon name="Lock" size={14} />}>
                     Stays In Its Chosen AWS Region
                   </Label>
@@ -413,10 +486,13 @@ function B_T13({ step }: { step: number }) {
             </span>
           </div>
           {/* unlimited objects */}
-          <Show on={step >= 4} style={{ ...flex(10), marginTop: 12 }}>
+          <Show on={step >= 4} dy={0} style={{ ...flex(10), marginTop: 12 }}>
+            {/* the objects fill in left to right, once */}
             <span style={flex(4)}>
               {Array.from({ length: 6 }, (_, i) => (
-                <img key={i} src={objectLogo} alt="" aria-hidden draggable={false} style={{ width: 22, height: 'auto', opacity: 1 - i * 0.12 }} />
+                <Show key={i} on={step >= 4} dx={-8} dy={0} delay={i * 120}>
+                  <img src={objectLogo} alt="" aria-hidden draggable={false} style={{ display: 'block', width: 22, height: 'auto', opacity: 1 - i * 0.12 }} />
+                </Show>
               ))}
             </span>
             <Label tone={litAt(step, 4) ? 'solid' : 'brand'} icon={<Icon name="Infinity" size={14} />}>
@@ -428,13 +504,15 @@ function B_T13({ step }: { step: number }) {
       </Show>
 
       {/* the naming rules, under the name */}
-      <Show on={step >= 2} style={{ position: 'absolute', left: 6, top: 182, width: 574, ...flex(8, 'row', { justifyContent: 'center' }) }}>
-        {['Lowercase Letters', 'Numbers', 'Hyphens', '3 To 63 Characters'].map((t) => (
-          <Label key={t} tone={litAt(step, 2) ? 'solid' : 'brand'} strong={t.startsWith('3')}>
-            {t}
-          </Label>
+      <div style={{ position: 'absolute', left: 6, top: 182, width: 574, ...flex(8, 'row', { justifyContent: 'center' }) }}>
+        {['Lowercase Letters', 'Numbers', 'Hyphens', '3 To 63 Characters'].map((t, i) => (
+          <Show key={t} on={step >= 2} dy={-10} delay={i * 150}>
+            <Label tone={litAt(step, 2) ? 'solid' : 'brand'} strong={t.startsWith('3')}>
+              {t}
+            </Label>
+          </Show>
         ))}
-      </Show>
+      </div>
 
       {/* Account B cannot take the same name */}
       <Show on={step >= 1} delay={300} style={{ position: 'absolute', left: 6, top: 222, width: 574, height: 104 }}>
@@ -446,13 +524,23 @@ function B_T13({ step }: { step: number }) {
             <span style={{ opacity: 0.45 }}>
               <Tile src={bucketLogo} size={40} />
             </span>
-            <Mono size={17} color={colors.muted} style={{ textDecoration: 'line-through', textDecorationColor: colors.danger, textDecorationThickness: 2 }}>
-              {BUCKET}
-            </Mono>
-            <NoMark size={26} on={step >= 1} />
-            <Label tone="bad" strong>
-              Same Name
-            </Label>
+            {/* Account B asks for the same name: it travels in, is refused (struck through) and dims, once */}
+            <Show on={refused} dx={56} dy={0} dur={680} delay={420}>
+              <span style={{ position: 'relative', display: 'inline-block' }}>
+                <Mono size={17} color={colors.muted}>
+                  {BUCKET}
+                </Mono>
+                <span aria-hidden style={{ position: 'absolute', left: 0, right: 0, top: '52%', height: 2, borderRadius: 1, background: colors.danger, transformOrigin: '0 50%', transform: refused ? 'scaleX(1)' : 'scaleX(0)', transition: held ? 'none' : `transform 420ms ${EASE} ${refused ? 1180 : 0}ms` }} />
+              </span>
+            </Show>
+            <Show on={refused} dy={0} delay={1500}>
+              <NoMark size={26} on={refused} />
+            </Show>
+            <Show on={refused} dy={0} delay={1600}>
+              <Label tone="bad" strong>
+                Same Name
+              </Label>
+            </Show>
           </div>
         </div>
       </Show>
@@ -476,8 +564,25 @@ const FLAT = [
   ['photos/2025/', 'c.jpg'],
 ]
 
+/** the dashed group bracket, drawn once along its own path (a solid mask stroke uncovers the dashes) */
+function Bracket({ on, delay = 0 }: { on: boolean; delay?: number }) {
+  const draw = useDraw(on, delay, 620)
+  const d = 'M 0 1 H 4 Q 15 1 15 12 V 84 Q 15 95 4 95 H 0'
+  return (
+    <svg aria-hidden width={18} height={98} style={{ position: 'absolute', left: 0, top: 0, overflow: 'visible' }}>
+      <defs>
+        <mask id="b-t14-mask" maskUnits="userSpaceOnUse" x={-4} y={-4} width={26} height={106}>
+          <path d={d} pathLength={1} stroke="#fff" strokeWidth={6} fill="none" style={draw} />
+        </mask>
+      </defs>
+      <path d={d} stroke={colors.brand} strokeWidth={2} fill="none" strokeDasharray="6 5" mask="url(#b-t14-mask)" />
+    </svg>
+  )
+}
+
 function B_T14({ step }: { step: number }) {
   const grouped = step >= 3
+  const held = motionHeld(useInstant())
   return (
     <Frame w={1000} h={340}>
       {/* left: the hierarchical file system */}
@@ -511,18 +616,21 @@ function B_T14({ step }: { step: number }) {
             <span style={heading(18)}>Flat Object Namespace</span>
           </span>
           <div style={{ ...flex(12, 'column', { alignItems: 'flex-start' }), marginTop: 18 }}>
+            {/* the keys arrive one by one; on the group press the shared prefix lights key after key */}
             {FLAT.map(([p, f], i) => (
-              <div key={i} style={{ ...flex(10), width: 280, height: 42, padding: '0 14px', borderRadius: 11, background: colors.white, boxShadow: `inset 0 0 0 1px ${colors.line}` }}>
-                <img src={objectLogo} alt="" aria-hidden draggable={false} style={{ width: 20, height: 'auto' }} />
-                <Mono size={17}>
-                  <span style={{ color: grouped && i < 2 ? colors.brand : colors.ink, fontWeight: grouped && i < 2 ? 600 : 400, transition: `color 360ms ${EASE}` }}>{p}</span>
-                  {f}
-                </Mono>
-              </div>
+              <Show key={i} on={step >= 2} dy={10} delay={260 + i * 200}>
+                <div style={{ ...flex(10), width: 280, height: 42, padding: '0 14px', borderRadius: 11, background: colors.white, boxShadow: `inset 0 0 0 1px ${colors.line}` }}>
+                  <img src={objectLogo} alt="" aria-hidden draggable={false} style={{ width: 20, height: 'auto' }} />
+                  <Mono size={17}>
+                    <span style={{ color: grouped && i < 2 ? colors.brand : colors.ink, fontWeight: grouped && i < 2 ? 600 : 400, transition: held ? 'none' : `color ${MOTION.reveal}ms ${EASE} ${grouped ? i * 260 : 0}ms` }}>{p}</span>
+                    {f}
+                  </Mono>
+                </div>
+              </Show>
             ))}
           </div>
           {/* the console's folder view, made by splitting keys on the slash */}
-          <Show on={grouped} delay={260} style={{ ...flex(10), marginTop: 20 }}>
+          <Show on={grouped} delay={1300} style={{ ...flex(10), marginTop: 20 }}>
             <Label strong icon={<Icon name="Monitor" size={14} />}>
               Console Folder View
             </Label>
@@ -536,11 +644,11 @@ function B_T14({ step }: { step: number }) {
           </Show>
         </div>
         {/* the dashed group around the keys that share a prefix */}
-        <Show on={grouped} style={{ position: 'absolute', left: 304, top: 60, width: 30, height: 104 }}>
-          <span aria-hidden style={{ position: 'absolute', left: 0, top: 0, width: 16, height: 96, borderRadius: '0 12px 12px 0', border: `2px dashed ${colors.brand}`, borderLeft: 'none' }} />
-        </Show>
+        <div style={{ position: 'absolute', left: 304, top: 60, width: 30, height: 104 }}>
+          <Bracket on={grouped} delay={520} />
+        </div>
         <At x={404} y={108} z={7}>
-          <Show on={grouped}>
+          <Show on={grouped} dx={-12} dy={0} delay={1080}>
             <Label strong tone={litAt(step, 3) ? 'solid' : 'brand'}>
               Shared Prefix
             </Label>
@@ -655,6 +763,9 @@ function B_T17({ step }: { step: number }) {
       {/* path → the bucket and the object it names; the lines leave from the card's foot */}
       <Arrow x1={190} y1={120} x2={366} y2={150} on={lit3} />
       <Arrow x1={300} y1={120} x2={500} y2={150} on={lit3} />
+      <Flow on={step >= 1} k="t17-verb" path={[[54, 120], [54, 150]]} dur={1.6} />
+      <Flow on={lit3} k="t17-bkt" path={[[190, 120], [366, 150]]} />
+      <Flow on={lit3} k="t17-obj" path={[[300, 120], [500, 150]]} />
       <Show on={lit3} style={{ position: 'absolute', left: 308, top: 154, width: 272, height: 110 }}>
         <div style={{ ...card(litAt(step, 3), 14), position: 'absolute', inset: 0, ...flex(10, 'row', { justifyContent: 'space-around' }) }}>
           <span style={flex(8, 'column')}>
@@ -767,6 +878,8 @@ function B_T18({ step }: { step: number }) {
         </Show>
       </At>
       <Arrow x1={136} y1={254} x2={262} y2={254} on={step >= 3} both />
+      <Flow on={step >= 2} k="t18-now" path={[[T0, TRACK_Y + 17], [TEND, TRACK_Y + 17]]} dur={MOTION.flow.slow} />
+      <Flow on={step >= 3} k="t18-up" path={[[140, 254], [258, 254]]} />
       <At x={199} y={230} z={6}>
         <Show on={step >= 3}>
           <Label tone={litAt(step, 3) ? 'solid' : 'plain'}>Upload Or Download</Label>
@@ -810,7 +923,7 @@ function Version({ label, sub, tone = 'plain', current = false, dashed = false, 
   return (
     <div style={{ ...flex(10), justifyContent: 'space-between', width: SW, height: BH, padding: '0 12px', boxSizing: 'border-box', borderRadius: 11, background: bg, boxShadow: dashed ? undefined : `inset 0 0 0 ${lit || current ? 2 : 1.5}px ${ring}`, border: dashed ? `2px dashed ${colors.brand}` : undefined, transition: `box-shadow 360ms ${EASE}` }}>
       <span style={flex(8)}>
-        <Icon name={tone === 'marker' ? 'Bookmark' : 'File'} size={17} style={{ color: tone === 'marker' ? colors.danger : colors.brand }} />
+        <Icon name={tone === 'marker' ? 'Trash2' : tone === 'restored' ? 'History' : 'FileClock'} size={17} style={{ color: tone === 'marker' ? colors.danger : colors.brand }} />
         <span style={heading(15)}>{label}</span>
       </span>
       {sub && <Mono size={13} color={colors.muted}>{sub}</Mono>}
@@ -818,33 +931,44 @@ function Version({ label, sub, tone = 'plain', current = false, dashed = false, 
   )
 }
 
+/** the GET request chip, with its download mark */
+const GetChip = () => (
+  <span style={{ ...flex(6), height: 28, padding: '0 10px', borderRadius: 8, fontFamily: MONO, fontSize: 15, fontWeight: 600, background: colors.brand, color: colors.white }}>
+    <Icon name="Download" size={15} />
+    GET
+  </span>
+)
+
 function B_T19({ step }: { step: number }) {
   const getOn = step >= 1
+  const held = motionHeld(useInstant())
   return (
     <Frame w={566} h={330}>
-      {/* the stack, newest on top */}
+      {/* the stack, newest on top: each PUT slides its version onto the stack, v1 first */}
       <Box x={SX} y={ROW(2)}>
-        <Show on={step >= 1}>
+        <Show on={step >= 1} dy={-26} dur={520} delay={440}>
           <Version label="v3 (Current)" sub="Version ID" current={step < 2} lit={litAt(step, 1)} />
         </Show>
       </Box>
       <Box x={SX} y={ROW(3)}>
-        <Show on={step >= 1} delay={120}>
+        <Show on={step >= 1} dy={-26} dur={520} delay={220}>
           <Version label="v2" sub="Version ID" lit={litAt(step, 3)} />
         </Show>
       </Box>
       <Box x={SX} y={ROW(4)}>
-        <Show on={step >= 1} delay={240}>
+        <Show on={step >= 1} dy={-26} dur={520}>
           <Version label="v1" sub="Version ID" />
         </Show>
       </Box>
+      {/* deleting drops a marker on top; the versions under it stay */}
       <Box x={SX} y={ROW(1)}>
-        <Show on={step >= 2}>
+        <Show on={step >= 2} dy={-26} dur={520}>
           <Version label="Delete Marker" tone="marker" lit={litAt(step, 2)} />
         </Show>
       </Box>
+      {/* restoring: the arrow draws, then v2 lifts to the top */}
       <Box x={SX} y={ROW(0)}>
-        <Show on={step >= 3}>
+        <Show on={step >= 3} dy={24} dur={560} delay={760}>
           <Version label="v2 (Restored)" tone="restored" dashed />
         </Show>
       </Box>
@@ -860,13 +984,13 @@ function B_T19({ step }: { step: number }) {
 
       {/* a GET with no version ID reads the current version */}
       <Box x={6} y={ROW(2) + 6} z={6}>
-        <Show on={getOn} style={{ opacity: step >= 2 && !STILL ? 0.45 : 1, transition: `opacity 360ms ${EASE}` }}>
-          <Verb v="GET" solid />
+        <Show on={getOn} delay={700} style={{ opacity: getOn ? (step >= 2 && !STILL ? 0.45 : 1) : 0, transition: held ? 'none' : `opacity ${MOTION.reveal}ms ${EASE} ${step === 1 ? 700 : 0}ms` }}>
+          <GetChip />
         </Show>
       </Box>
-      <Arrow x1={86} y1={ROW(2) + 21} x2={SX - 4} y2={ROW(2) + 21} on={getOn} />
+      <Arrow x1={86} y1={ROW(2) + 21} x2={SX - 4} y2={ROW(2) + 21} on={getOn} delay={held ? 0 : 820} />
       <Box x={6} y={ROW(2) + 46} z={6}>
-        <Show on={getOn}>
+        <Show on={getOn} delay={760}>
           <Label tone="muted">No Version ID</Label>
         </Show>
       </Box>
@@ -874,7 +998,7 @@ function B_T19({ step }: { step: number }) {
       {/* restoring v2 by its version ID */}
       <Elbow pts={[[SX + SW + 4, ROW(3) + 21], [SX + SW + 40, ROW(3) + 21], [SX + SW + 40, ROW(0) + 21], [SX + SW + 4, ROW(0) + 21]]} on={step >= 3} />
       <At x={SX + SW + 98} y={(ROW(0) + ROW(3)) / 2 + 21} z={6}>
-        <Show on={step >= 3}>
+        <Show on={step >= 3} dx={-10} dy={0} delay={300}>
           <Label strong tone={litAt(step, 3) ? 'solid' : 'brand'} icon={<Icon name="RotateCcw" size={14} />}>
             Restore
           </Label>
@@ -886,7 +1010,7 @@ function B_T19({ step }: { step: number }) {
         <Show on={step >= 4}>
           <div style={{ ...card(litAt(step, 4), 14), padding: '10px 12px' }}>
             <span style={flex(8, 'column')}>
-              <IconTile name="Tag" size={30} tone={colors.accentDark} />
+              <IconTile name="Coins" size={30} tone={colors.accentDark} />
               <span style={{ fontSize: 14, fontWeight: 600, lineHeight: 1.25, color: colors.ink, textAlign: 'center' }}>Each Overwrite Billed Separately</span>
             </span>
           </div>
@@ -997,4 +1121,9 @@ export const figures: Record<string, (p: Record<string, unknown>) => ReactNode> 
   B_T22: B_T22 as (p: Record<string, unknown>) => ReactNode,
 }
 export const slides = {}
-export const css = ''
+/* one-shot keyframes (no loop): the region pin settling onto its region */
+export const css = `
+@keyframes b-pin { 0% { transform: translateY(0) } 35% { transform: translateY(-9px) } 70% { transform: translateY(1px) } 100% { transform: translateY(0) } }
+.b-pin { animation: b-pin 640ms ${MOTION.ease} 1 both; }
+@media (prefers-reduced-motion: reduce) { .b-pin { animation: none !important; } }
+`

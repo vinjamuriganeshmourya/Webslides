@@ -3,7 +3,7 @@ import { BigVpc, VpcScene } from '@/decks/figures/net/frames'
 import { VisualTable } from '@/decks/figures/net/vtable'
 import { figures as customFigures } from '@custom'
 import { Diagram, diagramSteps } from './Diagram'
-import { Icon, Rich } from './icon'
+import { Icon, cellNode, cellTone } from './icon'
 import type { Figure } from './types'
 
 /**
@@ -39,7 +39,7 @@ export function FigureView({ fig, step, w, h }: { fig: Figure; step: number; w?:
           shown={step}
           highlight={fig.highlight ?? []}
           columns={fig.columns.map((c) => ({ label: c.label, weight: c.weight, icon: c.icon ? <Icon name={c.icon} size={16} /> : undefined }))}
-          rows={fig.rows.map((r) => ({ icon: r.icon ? <Icon name={r.icon} size={18} /> : undefined, cells: r.cells.map((c, i) => <Rich key={i} text={c} />) }))}
+          rows={fig.rows.map((r) => ({ icon: r.icon ? <Icon name={r.icon} size={18} /> : undefined, cells: r.cells.map((c, i) => cellNode(c, i)), tones: r.cells.map(cellTone) }))}
         />
       )
     case 'kit': {

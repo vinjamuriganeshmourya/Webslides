@@ -6,6 +6,8 @@
  *   node deck.mjs dev   <folder> [port]                         live preview while writing (default port 5290)
  *   node deck.mjs build <folder>                                the single HTML → <folder>/dist-single/<htmlName>.html
  *   node deck.mjs check <folder> [--quick]                      the rule checks on the built HTML
+ *   node deck.mjs perf  <folder> [--quick]                      slow PCs and the other browser, on the built HTML
+ *                                                               (perf-check.mjs, pristine-check.mjs, firefox-check.mjs)
  *   node deck.mjs validate <folder>                             deck.json against the format (also run by dev/build)
  *
  * <folder> is the session folder (e.g. Outputs/cloudcomputing/load_balancing_and_cdn), relative to where
@@ -22,7 +24,7 @@ const die = (m) => {
   console.error(`deck: ${m}`)
   process.exit(1)
 }
-if (!cmd || !folderArg) die('usage: node deck.mjs new|dev|build|check|validate <folder> …')
+if (!cmd || !folderArg) die('usage: node deck.mjs new|dev|build|check|perf|validate <folder> …')
 const DIR = resolve(process.cwd(), folderArg)
 
 /* ── new ── */
@@ -70,7 +72,9 @@ async function validate() {
   }
   const errs = []
   if (d.engine !== 1) errs.push('engine must be 1')
-  for (const k of ['title', 'course', 'htmlName', 'agenda']) if (d.meta?.[k] === undefined) errs.push(`meta.${k} is missing`)
+  /* meta.labDeck: a practical session split off into its own deck (Welcome, the lab, Thank You): no agenda, no title frame */
+  const lab = d.meta?.labDeck === true
+  for (const k of lab ? ['title', 'course', 'htmlName'] : ['title', 'course', 'htmlName', 'agenda']) if (d.meta?.[k] === undefined) errs.push(`meta.${k} is missing`)
   const ids = new Set()
   ;(d.slides ?? []).forEach((s, i) => {
     const at = `slides[${i}] (${s.id ?? '?'})`
@@ -94,18 +98,25 @@ async function validate() {
       .map((f) => f.replace(/\.mjs$/, '').split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('')),
   )
   const libIcons = new Set(readdirSync(resolve(ENGINE, 'src/decks/figures/net/icons')).map((f) => f.replace(/\.png$/, '')))
+  // "i3d:<name>" = the engine's 3D icon set (src/engine/icons3d.tsx, standing correction 17): names from its type union
+  const i3dSrc = readFileSync(resolve(ENGINE, 'src/engine/icons3d.tsx'), 'utf8')
+  const i3dUnion = i3dSrc.slice(i3dSrc.indexOf('export type Ico3DName ='), i3dSrc.indexOf('export type Badge'))
+  const i3dIcons = new Set([...i3dUnion.matchAll(/'([a-z0-9-]+)'/g)].map((m) => m[1]))
   const scan = (v, at) => {
     if (Array.isArray(v)) return v.forEach((x) => scan(x, at))
     if (!v || typeof v !== 'object') return
     for (const [k, x] of Object.entries(v)) {
+      const bad = (n) => (n.startsWith('lib:') ? !libIcons.has(n.slice(4)) : n.startsWith('i3d:') ? !i3dIcons.has(n.slice(4)) : !n.startsWith('img:') && !lucide.has(n))
       if (k === 'icon' && typeof x === 'string') {
-        if (x.startsWith('lib:') ? !libIcons.has(x.slice(4)) : !x.startsWith('img:') && !lucide.has(x)) errs.push(`${at}: unknown icon "${x}"`)
+        if (bad(x)) errs.push(`${at}: unknown icon "${x}"`)
+      } else if (k === 'icons' && Array.isArray(x) && x.every((n) => typeof n === 'string')) {
+        x.forEach((n) => bad(n) && errs.push(`${at}: unknown icon "${n}"`))
       } else scan(x, at)
     }
   }
   ;(d.slides ?? []).forEach((s, i) => scan(s, `slides[${i}] (${s.id})`))
   /* R9: the title frame right after the welcome frame */
-  if (d.slides?.[0]?.layout !== 'brand' || d.slides?.[1]?.layout !== 'title') errs.push('R9: slide 1 must be the brand frame and slide 2 the title frame')
+  if (d.slides?.[0]?.layout !== 'brand' || (!lab && d.slides?.[1]?.layout !== 'title')) errs.push('R9: slide 1 must be the brand frame and slide 2 the title frame')
   if (errs.length) {
     console.error(`deck.json has ${errs.length} problem(s):\n  ` + errs.join('\n  '))
     process.exit(1)
@@ -147,4 +158,20 @@ if (cmd === 'dev') {
   if (!existsSync(html)) die(`build first: ${html} is missing`)
   if (!existsSync(resolve(ENGINE, 'check-deck.mjs'))) die('check-deck.mjs is not in the engine yet')
   run('node', ['check-deck.mjs', html, ...rest.filter((r) => r.startsWith('--'))])
+} else if (cmd === 'perf') {
+  /* does it run on a slow PC, and in the other browser: load, every arrival and every idle slide under a throttled
+     CPU, and the session's own code; the page the save buttons write; then the same file opened and walked in
+     Firefox. All three run whatever the first one says: a slow slide must not hide a slide Firefox cannot show. */
+  const html = resolve(DIR, 'dist-single', `${deck.meta.htmlName}.html`)
+  if (!existsSync(html)) die(`build first: ${html} is missing`)
+  const flags = rest.filter((r) => r.startsWith('--'))
+  const went = [
+    ['perf-check.mjs', html, `--source=${DIR}`, ...flags],
+    ['pristine-check.mjs', html],
+    ['firefox-check.mjs', html, ...flags.filter((f) => f.startsWith('--slides='))],
+  ].map((a) => {
+    console.log(`\n── ${a[0]} ──`)
+    return spawnSync('node', a, { cwd: ENGINE, env, stdio: 'inherit' }).status
+  })
+  if (went.some((st) => st !== 0)) process.exit(1)
 } else die(`unknown command ${cmd}`)

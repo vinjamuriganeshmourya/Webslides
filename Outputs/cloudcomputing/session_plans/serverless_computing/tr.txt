@@ -1,0 +1,775 @@
+Session 10 : Serverless Computing
+
+
+RECAP: Session 9 : Elastic Compute Instances
+       1. Compute in the Cloud: The instance as the unit of compute; the provisioning
+       model
+       2. Instance Families: General purpose, compute, memory & storage optimized; GPU
+       & accelerator families for AI/ML
+       3. Sizing & Selection: vCPU, memory, network & storage characteristics; right-sizing;
+       VRAM as the AI constraint
+       4. Images & Provisioning: Machine images; user data & bootstrapping; key pairs &
+       instance access
+       5. Scaling: Auto scaling groups & launch templates
+
+Agenda for Today's Session
+       1. Serverless Basics: No server management; event-driven execution; Function as a
+       Service (FaaS)
+       2. The Execution Model: Triggers & events; the handler contract; stateless execution;
+       concurrency
+       3. Cold Starts & Warm Starts: Causes of cold start; init phase vs invoke phase;
+       mitigation strategies
+       4. Limits & Constraints: Execution timeout, memory, payload size & ephemeral
+       storage
+       5. BaaS & Anti-Patterns: Backend as a Service: managed databases, auth & storage;
+       when not to use serverless: long-running jobs, heavy state, steady load
+
+
+
+--------------------------------------- SECTION 1: 1. Serverless Basics: No server
+management; event-driven execution; Function as a Service (FaaS)
+---------------------------------------
+
+Slide 1: Serverless Computing Explained
+Heading: Serverless Computing
+
+Subheading: No Server Management
+
+Content:
+
+Elastic compute instances still require choosing and managing a virtual machine; serverless
+computing removes server management from the user, letting code run without any
+provisioning or capacity planning by the user.
+●​   Covers Function as a Service (FaaS): code triggered by events
+●​   Also covers Backend as a Service: managed databases, auth, storage
+●​   Provider owns all server provisioning, patching and capacity
+●​   User supplies only code or configuration, never infrastructure
+
+Analogy: Like a taxi: you pay only for the ride, with no car, parking or servicing to manage.
+Likewise, serverless charges only for what you actually use, and there is no server to
+manage.
+
+Visual Guidance: Diagram: a 'Serverless' umbrella splitting into two boxes, FaaS (compute)
+and BaaS (managed services), with a shared label 'no server to manage' beneath both.
+
+Speaker Notes: "Stress that serverless is broader than a single compute service: it is any
+model removing server management. Note that BaaS returns later as managed databases
+and auth. Exam angle: define serverless versus FaaS precisely."
+
+
+
+Slide 2: What No Server Management Means
+Heading: No Server Management
+
+Subheading: What Disappears
+
+Content:
+
+Removing server management shifts operational work a virtual-machine user would
+normally own entirely onto the provider.
+
+●​ Provider patches the operating system and runtime automatically
+●​ Capacity is allocated per invocation, not sized in advance
+●​ No idle infrastructure cost when the function is not running​
+
+Visual Guidance: Sketch of the AWS Lambda console function page labelled 'no instance
+type, no OS to patch here'.
+
+Speaker Notes: "Point to the AWS Lambda console as the real location where this shows up
+— it has no instance-sizing field, unlike EC2. Contrast with the instance sizing decision from
+the previous session. Exam angle: list the operational tasks serverless removes."
+
+
+
+Slide 3: Event-Driven Execution Model
+Heading: Event-Driven Execution
+
+Subheading: Compute On Demand
+
+Content:
+A traditional server process runs continuously, waiting for requests even when idle; a
+serverless function stays absent until a triggering event occurs, then runs and stops.
+
+●​   No continuously running process consumes compute between events
+●​   Execution begins only when an event source fires a trigger
+●​   Resource use and cost track actual run time, not uptime
+●​   Billing covers only execution time, not idle time; the environment may be kept briefly for
+     reuse
+
+Invocation                    Duration                        Init Duration
+First call (new environment) 1.96 ms                          99.72 ms
+Later call (reused            40.98 ms                        Not present
+environment)
+Visual Guidance: Timeline sketch: an always-on server as one flat continuous bar beside a
+serverless function shown as short isolated spikes at each event.
+
+Speaker Notes: "Contrast an always-on EC2 instance with a function appearing only on
+trigger. Point out the table: initialization adds overhead only on the first call. Exam angle:
+event-driven execution versus a request-response polling loop. The Init duration column is a
+preview of the cold-start section: define it in one line here, and note that handler Duration
+varies between runs, so the Init column is what to compare."
+
+
+
+Slide 4: FaaS: The Execution Unit
+Heading: FaaS Execution Unit
+
+Subheading: Function Vs Instance
+
+Content:
+
+Function as a Service (FaaS) makes a single function invocation the unit a platform
+schedules and bills, far finer-grained than an entire virtual machine.
+
+
+
+Aspect                         Elastic Compute Instance    FaaS Function
+Execution unit                 Whole virtual machine       Single function invocation
+Scaling granularity            Per instance, configured by Per invocation, automatic
+                               the user
+Server management              User patches and configures None required
+                               OS
+Visual Guidance: Side-by-side diagram: one continuously running EC2 box beside several
+small function boxes flashing only on events.
+Speaker Notes: "Point out that this granularity difference drives cost: functions bill in
+milliseconds, an instance bills for every second it runs, busy or idle. Exam angle: why is FaaS
+billing finer-grained than instance billing."
+
+
+
+
+--------------------------------------- SECTION 2: 2. The Execution Model: Triggers &
+events; the handler contract; stateless execution; concurrency
+---------------------------------------
+
+Slide 5: The Execution Model Overview
+Heading: Execution Model Map
+
+Subheading: Four Core Pieces
+
+Content:
+
+Beyond knowing a function runs on trigger, Lambda's execution model defines exactly how
+an invocation starts, runs and ends.
+
+●​   Triggers and events: what starts an invocation and the data it carries
+●​   Handler contract: the fixed signature every function must implement
+●​   Stateless execution: no data survives reliably between separate invocations
+●​   Concurrency: how many invocations run at the same time
+
+Visual Guidance: Four labelled boxes in a row: Trigger/Event, Handler Contract, Stateless
+Execution, Concurrency, each with a one-word icon.
+
+Speaker Notes: "Set up the four pieces as one map before going into each. Ask: which of
+these four decides how many copies of the function can run together? Answer: concurrency."
+
+
+
+Slide 6: The Handler Contract Explained
+Heading: The Handler Contract
+
+Subheading: Event Context Response
+
+Content:
+
+The handler contract is the fixed shape every Lambda function must follow so the platform
+knows how to call it and read its reply.
+
+●​ event: payload carrying the trigger's data, JSON-like structure
+●​ context: runtime metadata — request ID, time remaining, memory limit
+●​ Return value becomes the response for synchronous calls (e.g., API Gateway);
+   asynchronous triggers ignore it
+●​ The configured handler setting (for example, file.function) must match the code exactly
+
+Analogy: Like a service counter: the visitor hands over a filled form (event), and the clerk
+also gets a token slip showing the token number and the time left to serve (context). The
+clerk’s written reply (return value) is what the visitor receives back, just as Lambda passes
+event and context into the handler and sends its return value back as the response.
+
+Visual Guidance: Box diagram: event and context arrows entering a 'handler' box, one
+return-value arrow leaving it labelled response.
+
+Speaker Notes: "Walk through event, context and return value as the three parts of one
+fixed contract. Point out context is metadata about the run, not the input data. Exam hook:
+ask what context exposes versus event."
+
+
+
+Slide 7: Triggers, Events And Invocation Types
+Heading: Triggers And Events
+
+Subheading: Invocation Types Explained
+
+Content:
+
+A trigger decides which service calls the function, and the invocation type decides whether
+the caller waits for a result.
+
+●​   API Gateway requests typically invoke the function synchronously
+●​   Asynchronous invocation: event is queued, caller gets acknowledgement only
+●​   Event shape varies by trigger — each service defines its own schema
+●​   Polling-based triggers batch several records into a single event
+
+Visual Guidance: Two arrows from a caller box: one labelled 'sync — waits', one labelled
+'async — queued', both feeding the handler box.
+
+Speaker Notes: "Separate the trigger source from the invocation type since both vary
+independently. Mention API Gateway as a synchronous example and S3 upload as
+asynchronous. Interviewers often ask which invocation type a given trigger uses."
+
+
+
+Slide 8: Why Execution Stays Stateless
+Heading: Stateless Execution
+
+Subheading: No Persisted State
+
+Content:
+Because an execution environment can be torn down and rebuilt at any point, a function
+cannot depend on anything it remembered from an earlier call.
+
+●​   Local variables and temporary disk space are not guaranteed to persist
+●​   Each invocation may land in a fresh or a reused environment
+●​   Durable data belongs in an external database, cache or storage service
+●​   Idempotent handler logic protects against duplicate retried events
+
+Visual Guidance: Two environment boxes side by side, each handling one invocation
+independently, with a crossed-out arrow between them labelled 'no shared memory'.
+
+Speaker Notes: "Explain statelessness as the price paid for elastic scaling, not a limitation
+by accident. Give the example of a counter variable resetting unexpectedly between calls.
+Exam hook: ask why Lambda functions should write session data externally."
+
+
+
+Slide 9: Concurrency Across Invocations
+Heading: Concurrency Model
+
+Subheading: Scaling Via Environments
+
+Content:
+
+Statelessness is what lets Lambda run many invocations in parallel, each in its own isolated
+execution environment.
+
+●​   A concurrency limit caps how many environments run at once
+●​   Reserved concurrency guarantees capacity for one function
+●​   Remaining capacity is shared across other functions in one pool
+●​   Exceeding the limit throttles invocations: sync calls get a 429 error, async events are
+     retried
+
+Visual Guidance: Three parallel environment boxes stacked, each processing one
+invocation, with a limit line capping a fourth attempted box as throttled.
+
+Speaker Notes: "Tie concurrency back to the isolated environments just described — more
+concurrent events simply means more environments spun up together. Mention throttling as
+the failure mode of exceeding limits. Common interview question: what happens when
+concurrency limit is exceeded."
+--------------------------------------- SECTION 3: 3. Cold Starts & Warm Starts: Causes of
+cold start; init phase vs invoke phase; mitigation strategies
+---------------------------------------
+
+Slide 10: Cold Start And Warm Start Lifecycle
+Heading: Execution Env Lifecycle
+
+Subheading: Cold Vs Warm
+
+Content:
+
+A serverless platform does not keep every execution environment running forever; whether
+one must be built from scratch decides if an invocation is cold or warm.
+
+●​   Cold start: a new execution environment is built before code runs
+●​   Warm start: an existing environment is reused, no setup needed
+●​   Every cold start runs two internal phases: init, then invoke
+●​   Idle environments are reclaimed after a period of inactivity
+
+Visual Guidance: Timeline: Cold path (box 'new environment' → init → invoke →
+response) above a Warm path (box 'reused environment' → invoke → response), same end
+point.
+
+Speaker Notes: "Frame this as the map before going into causes and phases individually.
+Point out that warm start skips a whole stage, not just runs faster. Exam hook: ask what
+decides cold vs warm for a given call."
+
+
+
+Slide 11: Why Cold Starts Happen
+Heading: Causes Of Cold Start
+
+Subheading: What Triggers Setup
+
+Content:
+
+A cold start, the delay from building a fresh execution environment, happens whenever no
+idle environment is available to reuse for the incoming request.
+
+●​   First-ever invocation: no environment exists yet to reuse
+●​   Scale-out: extra concurrent requests need fresh environments
+●​   Idle reclaim: an unused environment was torn down earlier
+●​   New deployment: updated code forces a fresh environment build
+
+Analogy: Like a food stall that switches off its stove when there are no customers: when an
+order comes in and the stove is off, the cook must light it and heat the pan first, so that
+customer waits longer. If the stove is still hot from the last order, cooking starts immediately,
+just as a cold start happens only when no ready environment is available.
+
+Visual Guidance: Four small icons (first call, traffic spike, idle clock, new deploy) each
+pointing into one 'new environment built' box.
+
+Speaker Notes: "Walk through the four causes as the reasons no warm environment was
+sitting ready. Everyday phrasing: nothing was 'kept on' for this request, so it had to be
+switched on. Exam hook: a deployment update is a cold-start trigger even under steady
+traffic."
+
+
+
+Slide 12: Init Phase And Invoke Phase
+Heading: Init Vs Invoke
+
+Subheading: Two Internal Phases
+
+Content:
+
+A cold start is not one delay but two stages stacked together: setting the environment up,
+then running the function logic inside it.
+
+Phase                         What Happens                    Reported As
+Init                          Download code, start the        Init duration (billed)
+                              runtime, run code outside
+                              the handler
+Invoke                        Runs the handler with the       Duration (billed)
+                              event payload
+●​ Environment freezes after invoke completes, ready for reuse
+●​ Warm invocations skip init entirely and start at invoke
+●​ Init overhead delays the handler before it even starts running
+
+Visual Guidance: Horizontal bar split into two blocks labelled Init and Invoke, with a
+dashed line marking where a warm call would start.
+
+Speaker Notes: "Point at the table while explaining that init is setup work, invoke is the
+actual code. Mention that the console reports the two separately, so they must not be
+confused. Exam hook: ask which phase a warm call skips."​
+
+
+Heading: Warm Start Reuse
+
+Subheading: What Carries Over
+
+Content:
+A warm start skips init, so anything created during init is already in memory when the handler
+runs.
+
+
+
+Reused: global variables, SDK clients, DB connections, files in /tmp
+
+Best practice: initialize clients and connections outside the handler
+
+Reuse is a performance bonus only; never rely on it for correctness
+
+Slide 13: Reducing Cold Start Latency
+Heading: Reducing Cold Starts
+
+Subheading: Mitigation Strategies
+
+Content:
+
+Because init overhead adds latency before any code runs, several practices reduce how often
+it occurs or how costly it is.
+
+●​   Provisioned concurrency: environments pre-initialized, billed even when idle
+●​   Smaller deployment package: less code to download at init
+●​   Fewer, lighter dependencies: runtime starts up faster
+●​   Scheduled warm-up calls: reduce idle reclaim, but not guaranteed
+●​   Faster-starting runtimes: interpreted languages init quicker than JVM-based ones
+
+Visual Guidance: Five small labelled boxes in a row, each under a 'lowers init time' arrow
+pointing to a shrinking latency bar.
+
+Speaker Notes: "Explain that provisioned concurrency trades idle cost for predictable
+latency, unlike pure pay-per-invocation. Everyday phrasing: keeping a few shops pre-opened
+costs rent even with no customer. Exam hook: ask why provisioned concurrency is not free
+despite serverless billing being usage-based."
+
+
+
+
+--------------------------------------- SECTION 4: 4. Limits & Constraints: Execution
+timeout, memory, payload size & ephemeral storage
+---------------------------------------
+
+Slide 14: Serverless Limits Overview
+Heading: Limits Overview
+
+Subheading: Four Operational Boundaries
+Content:
+
+Every Function as a Service (FaaS) platform bounds how long, how much memory, how
+much data, and how much local disk a function may use, since unmetered execution would
+inflate cost indefinitely.
+
+●​ Ephemeral storage: temporary local disk (/tmp), lost when the environment is torn
+   down
+●​ Memory allocation: RAM assigned, with CPU scaled proportionally
+●​ Payload size: maximum request and response body size
+●​ Ephemeral storage: temporary local disk cleared after execution
+
+Visual Guidance: Four-box diagram: Timeout, Memory, Payload, Ephemeral Storage, each
+with a limit icon.
+
+Speaker Notes: "Introduce the four limit categories before detailing each; mention the
+Lambda console's Configuration tab as where these are set. Interview hook: ask why
+serverless needs hard limits despite auto-scaling."
+
+
+
+Slide 15: Execution Timeout Explained
+Heading: Execution Timeout
+
+Subheading: Maximum Run Duration
+
+Content:
+
+A function that never finished would hold resources and billing open forever, so every
+invocation carries a maximum duration after which the platform forcibly stops it.
+
+●​   AWS Lambda timeout: configurable up to 15 minutes maximum
+●​   Default timeout is 3 seconds unless explicitly raised
+●​   Timed-out invocation returns a task timed out error
+●​   Long batch or streaming jobs need a different compute model
+
+Analogy: Like a game in a gaming zone that switches off when the booked time ends, even
+mid-level, a function is stopped at its timeout whether or not the code has finished.
+
+Visual Guidance: Timeline bar showing invocation start, running, and a red cutoff line at
+timeout.
+
+Speaker Notes: "Explain timeout caps cost and resource hold time, not just failures. Point to
+the General configuration section, where the default 3-second timeout of
+s10-serverless-demo can be viewed and changed. Exam hook: ask what happens to
+in-progress work at timeout — it is killed, not paused."
+Slide 16: Memory, CPU And Payload Limits
+Heading: Memory & Payload
+
+Subheading: Sizing And Data Caps
+
+Content:
+
+Memory is sized separately from the instance families studied earlier, because a function's
+memory setting also fixes its CPU share and its cost rate.
+
+Limit                          Range / Value                 Note
+Memory                         128 MB – 10,240 MB            CPU scales up with memory,
+                                                             to several vCPUs
+Synchronous payload           6 MB request/response          API-style calls return inline
+Asynchronous payload          1 MB                           Event-triggered invocations
+Deployment package            50 MB zipped, 250 MB           Container images allow up
+                              unzipped                       to 10 GB
+Higher memory raises per-millisecond cost, so right-sizing memory balances speed against
+spend, the same trade-off used when sizing compute instances.
+
+Visual Guidance: Render the four-row table; highlight a small bar beside Memory showing
+CPU rising with it.
+
+Speaker Notes: "Stress that payload limits differ for synchronous versus event-driven calls,
+and memory also sets CPU power. Point to the memory setting under General configuration,
+which shows 128 MB for s10-serverless-demo. Exam hook: ask why the asynchronous
+payload cap is smaller than the synchronous one."
+
+
+
+Slide 17: Ephemeral Storage Explained
+Heading: Ephemeral Storage
+
+Subheading: Temporary Local Disk
+
+Content:
+
+A function sometimes needs scratch space mid-execution — unzipping a file or caching a
+lookup — so each execution environment gets a temporary disk at /tmp, wiped when that
+environment is removed.
+
+●​   Default ephemeral storage is 512 MB per execution environment
+●​   Configurable up to 10,240 MB (10 GB) if needed
+●​   Data in /tmp does not persist across cold starts
+●​   Not durable: use managed databases or object storage instead
+Analogy: A hotel room is cleaned out after checkout, leaving nothing for the next guest —
+just as an execution environment's /tmp storage is erased once that environment is
+recycled.
+
+Visual Guidance: Diagram: execution environment box with a /tmp folder inside, arrow
+showing it wiped on teardown.
+
+Speaker Notes: "Clarify ephemeral storage is scratch space tied to the environment's
+lifecycle, not a database substitute. Point to the ephemeral storage field under Configuration,
+the same console area used for the practical function. Exam hook: ask what happens to /tmp
+data between two cold invocations — it is gone."
+
+
+
+
+--------------------------------------- SECTION 5: 5. BaaS & Anti-Patterns: Backend as a
+Service: managed databases, auth & storage; when not to use serverless:
+long-running jobs, heavy state, steady load ---------------------------------------
+
+Slide 18: BaaS and Serverless Anti-Patterns
+Heading: BaaS & Anti-Patterns
+
+Subheading: Section Landscape
+
+Content:
+
+Serverless computing covers more than functions. Backend as a Service (BaaS) supplies
+ready-made backend pieces, while certain workload shapes fit serverless poorly.
+
+●​ Backend as a Service (BaaS): managed database, authentication and storage used
+   directly
+●​ Anti-patterns: workload shapes where FaaS billing or limits cost more than they save
+●​ Three anti-pattern cases: long-running jobs, heavy state, steady load
+
+Visual Guidance: Simple map: left box 'BaaS' with three sub-icons (database, lock, disk);
+right box 'Anti-Patterns' with three labelled workload icons.
+
+Speaker Notes: "Set up the two halves of this takeaway before going into either. Mention
+that BaaS removes even the function-writing step that FaaS still needs. Exam angle:
+distinguishing BaaS from FaaS is a common interview question."
+
+
+
+Slide 19: What Backend as a Service Is
+Heading: Backend As Service
+Subheading: BaaS Defined
+
+Content:
+
+Backend as a Service (BaaS) is a managed backend component an application calls directly
+through an API, with no custom function code or server to run.
+
+●​ Provider manages scaling, patching and availability of that backend piece
+●​ Covers data storage, identity checks and file storage as ready services
+●​ Billed per request or per resource used, not per function invocation
+
+Analogy: Plugging into the power grid instead of running a generator: a household draws
+electricity through a socket without owning a power station, just as an application calls a
+managed database, login check or file store without owning or running that backend.
+
+Visual Guidance: Icon of a phone call going to hotel reception, mirrored by an API call icon
+going to a cloud database icon.
+
+Speaker Notes: "Contrast with FaaS: FaaS still runs an application's own code per trigger,
+BaaS has no custom code at all. Ask: is a managed database call BaaS or FaaS?"
+
+
+
+Slide 20: BaaS Services in AWS
+Heading: BaaS Components
+
+Subheading: DB, Auth, Storage
+
+Content:
+
+Each BaaS category maps to a specific managed AWS service that an application calls instead
+of running its own database, login or file server.
+
+BaaS Category                    AWS Service                 What It Replaces
+Managed database                 DynamoDB / Aurora           A self-managed database
+                                 Serverless                  server
+Authentication                   Cognito                     Custom login and session
+                                                             code
+Storage                       S3                             A file server the application
+                                                             would run
+The common thread: each is reached by a direct API call, with no function or server standing
+between the application and the service.
+
+Visual Guidance: Three-row diagram: application icon with arrows to DynamoDB, Cognito
+and S3 icons, each arrow labelled 'direct API call'.
+Speaker Notes: "Point to the real AWS console names so the mapping is concrete, not
+generic. Mention Cognito issues tokens, DynamoDB holds data, S3 holds files. Exam angle:
+naming the AWS service behind each BaaS category."
+
+
+
+Slide 21: Why Serverless Breaks Down (updated)
+
+Heading: Serverless Anti-Patterns​
+Subheading: When It Fails
+
+Content:​
+Function as a Service bills per invocation and duration, and does not guarantee state
+between runs. Some workloads do not fit that model, and using serverless there costs more
+or fails outright.
+
+    ●​ Cost mismatch: frequent or constant invocations add up to more than a fixed server
+       price
+    ●​ Correctness mismatch: run-time limits and lost state between runs can break the job
+       itself
+
+Analogy: A daily commuter paying per taxi ride spends more than someone owning a car
+for the same fixed route — just as a workload invoked constantly, or needing a long single
+run, is billed and bounded in a way a dedicated server is not.
+
+Visual Guidance: Two icons side by side: a taxi meter ticking versus a parked owned car,
+labelled ‘per-ride cost’ and ‘fixed cost’.
+
+Speaker Notes: “Frame anti-pattern as a cost-and-fit mismatch, not a technical failure of
+serverless itself. Link the taxi analogy to the steady-load case. Exam angle: listing workload
+types unsuited to serverless is a standard interview question.”
+
+
+
+
+Slide 22: Three Serverless Anti-Patterns
+Heading: Three Anti-Patterns
+
+Subheading: Jobs, State, Load
+
+Content:
+
+Long-running jobs, heavy state and steady load each break a different assumption FaaS
+makes, and each has a better-fitting alternative.
+
+Anti-Pattern                    Why Serverless Fails           Better Fit
+Long-running jobs             Exceeds the function's        A long-running instance or
+                              execution timeout limit       container
+Heavy state                   Execution is stateless;       A server holding state in
+                              in-memory data is not         memory or on disk
+                              guaranteed between runs
+Steady, predictable load      Per-invocation billing costs  A reserved or always-on
+                              more than a reserved          instance
+                              instance running
+                              continuously
+Reserved compute beats per-invocation pricing once load stays near continuous; the
+break-even point varies with memory size and run time, and 40% utilisation is only a rough
+guide.
+
+Visual Guidance: Three-row table matching this slide's rows, with each row's right-hand
+column in a distinct colour to mark a separate alternative.
+
+Speaker Notes: "Link timeout and stateless execution to what the execution-model and
+limits slides already defined — this is where that limit stops fitting a workload. Mention the
+utilisation threshold as the cost trigger an interviewer may probe."
+
+
+
+
+--------------------------------------- PRACTICAL HANDS-ON: Deploying a Lambda
+Function and Observing Cold and Warm Starts ---------------------------------------
+
+Slide 24: Building and Testing the Function
+Heading: Task Overview
+
+Subheading: What Gets Built
+
+Content:
+
+This practical creates one AWS Lambda function and invokes it to see a cold start and a
+warm start.
+
+        1. Create the Lambda function s10-serverless-demo in one available region
+        2. Deploy the provided Python handler
+        3. Create a test event and invoke the function
+        4. Compare the first and third invocations: Duration and Init duration
+        5. Clean up the function, execution role and log group
+
+
+Slide 25: Function Created and Code Deployed
+Heading: Create and Deploy
+Subheading: Function and Handler
+
+Content:
+
+The function is created with an automatically created execution role, and the Python handler
+is deployed.
+
+
+
+
+                             s10-serverless-demo created successfully
+
+
+
+
+                               lambda_function.py in the code editor
+
+
+
+
+Slide 26: Creating and Running the Test Event
+Heading: Invoke the Function
+
+Subheading: Test Event Run
+
+Content:
+A test event is saved and used to invoke the function once; a successful run returns
+statusCode 200.
+
+
+
+
+                               Test event s10-test-event being created
+
+
+
+
+                       Successful run: statusCode 200 and the handler message
+
+
+
+
+Slide 27: Comparing First and Later Invocations
+Heading: Cold vs Warm
+
+Subheading: Observed Summaries
+Content:
+
+The Init duration line appears only when a new execution environment is built before the
+handler runs.
+
+
+
+
+                     First invocation: Duration 1.96 ms, Init duration 99.72 ms
+
+
+
+
+                     Later invocation: Duration 40.98 ms, no Init duration line
+Cold-start cost is Init duration plus Duration, about 101.7 ms here (billed as 102 ms),
+against 40.98 ms for the warm run. Handler Duration alone varies between runs, so Init
+duration is the evidence to compare.
+
+
+
+Slide 28: Expected Result and Wrap-Up
+Heading: Expected Result
+
+Subheading: What To Check
+
+Content:
+
+Expected result: statusCode 200, an Init duration on the first invocation, and none on a later
+one. A later invocation is not guaranteed to be warm, so record exactly what the console
+shows.
+
+Clean up: delete the function, then review the IAM execution role and the CloudWatch log
+group /aws/lambda/s10-serverless-demo.
+
+Key Takeaways
+       1. Serverless Basics: No server management; event-driven execution; Function as a
+       Service (FaaS)
+       2. The Execution Model: Triggers & events; the handler contract; stateless execution;
+       concurrency
+       3. Cold Starts & Warm Starts: Causes of cold start; init phase vs invoke phase;
+       mitigation strategies
+       4. Limits & Constraints: Execution timeout, memory, payload size & ephemeral
+       storage
+       5. BaaS & Anti-Patterns: Backend as a Service: managed databases, auth & storage;
+       when not to use serverless: long-running jobs, heavy state, steady load
+
+
+
+Upcoming Session : Cloud Provider Comparison
+
+                              Thank You | All the Best
+
