@@ -33,6 +33,9 @@ Current `tech/` set, tooling and frameworks: `container-white` · `django` ·
 `makefile` · `nodejs` · `npm` · `react` · `sqlite` · `vitejs` · `vscode` ·
 `windows`.
 
+`kubernetes`, `heroku`, `redis` and `mysql` (SVG, the devicon `-original` colour marks, devicon v2.16.0) were added
+for Cloud Computing session 18, Cloud-Native Applications (2026-11-20).
+
 `github` and `jenkins` were added for Deployment session 7, from devicon at
 512px. `git` and `github` are different marks and both are needed: session 7
 names the tool and the service on the same slide.

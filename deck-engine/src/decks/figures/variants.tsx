@@ -26,9 +26,12 @@ const EASE = [0.22, 1, 0.36, 1] as const
  * ink, the line under it in ink; a thin vertical brand rule fading at both ends
  * on the left of every column but the first.
  */
-export function AgendaColumns({ lesson, kicker, items }: { lesson: string; kicker: string; items: { title: string; sub?: string }[] }) {
+export function AgendaColumns({ lesson, kicker, items, weights }: { lesson: string; kicker: string; items: { title: string; sub?: string }[]; weights?: number[] }) {
   const gap = 0
-  const w = Math.floor((BOX_W - gap * (items.length - 1)) / items.length)
+  const eq = Math.floor((BOX_W - gap * (items.length - 1)) / items.length)
+  /* equal columns unless a deck sets `meta.agendaWeights` (one weight per item); type size never changes */
+  const wsum = weights && weights.length === items.length ? weights.reduce((a, b) => a + b, 0) : 0
+  const colW = (i: number) => (wsum ? Math.floor(((BOX_W - gap * (items.length - 1)) * weights![i]) / wsum) : eq)
   return (
     <Card id="agenda-columns" kicker={kicker} title="Agenda" lesson={lesson}>
       <ol className="flex items-stretch" style={{ width: BOX_W }}>
@@ -36,7 +39,7 @@ export function AgendaColumns({ lesson, kicker, items }: { lesson: string; kicke
           <motion.li
             key={it.title}
             className="relative flex flex-col"
-            style={{ width: w, paddingLeft: i === 0 ? 0 : 20, paddingRight: 16 }}
+            style={{ width: colW(i), paddingLeft: i === 0 ? 0 : 20, paddingRight: 16 }}
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 + i * 0.12, duration: 0.7, ease: EASE }}
@@ -51,7 +54,7 @@ export function AgendaColumns({ lesson, kicker, items }: { lesson: string; kicke
             <span className="font-heading text-[40px] font-normal leading-none" style={{ color: colors.brandDark }}>
               {String(i + 1).padStart(2, '0')}
             </span>
-            <span className="mt-6 font-heading text-[22px] font-bold leading-[1.3]" style={{ color: colors.ink }}>
+            <span className="mt-6 whitespace-pre-line font-heading text-[22px] font-bold leading-[1.3]" style={{ color: colors.ink }}>
               {it.title}
             </span>
             {it.sub && (

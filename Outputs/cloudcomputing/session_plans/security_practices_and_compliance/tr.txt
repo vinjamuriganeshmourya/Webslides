@@ -1,0 +1,736 @@
+Session 17 : Security Practices & Compliance
+
+
+RECAP: Session 16 : Cloud Threats & Attacks
+        1. Denial of Service: DoS vs DDoS; volumetric, protocol & application-layer attacks;
+        mitigation: rate limiting, scrubbing & CDN absorption
+        2. Data Breaches: Exposed credentials; insecure APIs; breach cost & business impact
+        3. Misconfiguration: Public storage buckets; permissive security groups; default
+        credentials
+        4. Insider & Supply-Chain Threats: Malicious & accidental insiders; compromised
+        dependencies & images; phishing, leaked keys & token theft
+        5. AI-Specific Threats: Prompt injection; sensitive information disclosure; vector &
+        embedding weaknesses; unbounded consumption as cost-based DoS
+
+Agenda for Today's Session
+        1. Defense in Depth in Practice: Layered controls on a real deployment
+        2. Configuration Hygiene: Baseline hardening & secure defaults; cloud security
+        posture management (CSPM); automated scanning
+        3. Logging, Auditing & Detection: Audit trails; log retention; security event alerting;
+        managed threat detection
+        4. Secrets Management: Secrets outside code & images; secret stores; rotation
+        5. Compliance Frameworks: ISO 27001 & SOC 2; GDPR, HIPAA & DPDP Act 2023;
+        data residency; shared responsibility for compliance
+
+
+
+--------------------------------------- SECTION 1: 1. Defense in Depth in Practice:
+Layered controls on a real deployment ---------------------------------------
+
+Slide 1: Mapping Layers to a Deployment
+Heading: Layers On Deployment
+
+Subheading: Five Controls Mapped
+
+Content:
+
+Defense in depth spreads protection across layers; applied to one running deployment, each
+layer becomes a specific AWS control instead of an abstract category.
+
+●​   Network layer: VPC subnets and security groups filter traffic
+●​   Identity layer: IAM roles grant only required permissions
+●​   Data layer: encryption protects storage and transit paths
+●​   Application layer: input validation and web application firewall rules
+●​ Monitoring layer: logging and alerting catch what slips through
+
+Visual Guidance: Diagram: three-tier web app (load balancer, EC2, RDS, S3) with each of
+the five layers labelled beside its AWS control.
+
+Speaker Notes: "Walk through the five layers on the diagram, naming the AWS service at
+each one. Ask: which layer would still catch an attacker who already holds a stolen access
+key?"
+
+
+
+Slide 2: Tracing Layers and Containment
+Heading: Deployment Walkthrough
+
+Subheading: Controls & Containment
+
+Content:
+
+Consider a public web application: a load balancer in a public subnet forwards traffic to EC2
+instances in a private subnet, which read from an RDS database.
+
+Layer                                           Control on this deployment
+Network                                         Security group allows port 80 only from the
+                                                load balancer's security group
+Identity                                        EC2 role permits only s3:GetObject on one
+                                                bucket and rds-db:connect as one database
+                                                user on one RDS instance
+Data                                            RDS storage and S3 objects encrypted with
+                                                a customer managed KMS key (AES-256);
+                                                TLS terminates at the load balancer
+Application                                     Web application firewall rule blocks SQL-
+                                                injection patterns on path /api/*
+Monitoring                                      CloudTrail records AWS API calls; VPC Flow
+                                                Logs record IP traffic to and from network
+                                                interfaces
+A stolen EC2 credential passes the identity check, but the scoped role, encrypted data and
+flow logs still limit the damage and reveal it.
+
+●​ Scoped IAM role stops the credential reaching unrelated resources
+●​ Reading S3 objects encrypted with SSE-KMS needs kms:Decrypt permission in addition
+   to S3 permissions; RDS decrypts storage transparently for database users, but copying
+   or restoring an encrypted snapshot still needs access to the KMS key
+●​ Flow logs and CloudTrail expose the unusual access for review
+
+Visual Guidance: Highlight the request path left to right on the deployment diagram, then
+mark an X on the identity layer showing the remaining layers still containing the breach.
+Speaker Notes: "Trace the request path on the diagram while reading each table row aloud,
+then stress that one compromise never equals total compromise. Ask why a stolen
+credential alone is never enough to reach the database directly."
+
+
+
+
+--------------------------------------- SECTION 2: 2. Configuration Hygiene: Baseline
+hardening & secure defaults; cloud security posture management (CSPM);
+automated scanning ---------------------------------------
+
+Slide 3: Configuration Hygiene Overview
+Heading: Configuration Hygiene
+
+Subheading: Four Core Practices
+
+Content:
+
+A cloud resource stays only as secure as its configuration; configuration hygiene keeps every
+setting at its safest state from launch onward and keeps it that way.
+
+●​   Baseline hardening: removing unused ports, services and default accounts
+●​   Secure defaults: provider pre-set safe settings, like blocked public access
+●​   CSPM: continuous scanning of live configurations against a baseline
+●​   Automated scanning: tools flagging drift and vulnerabilities without manual checks
+
+Visual Guidance: Flow diagram: Hardened Baseline leads to Secure Defaults leads to CSPM
+Monitoring leads to Automated Scanning, looping back to baseline.
+
+Speaker Notes: "Introduce configuration hygiene as the umbrella for the next three ideas.
+Point out that most cloud breaches trace back to a misconfigured setting, not a broken
+algorithm. Ask which of these four is a one-time step versus an ongoing process."
+
+
+
+Slide 4: Baseline Hardening and Secure Defaults
+Heading: Hardening & Defaults
+
+Subheading: Closing Open Doors
+
+Content:
+
+A freshly launched server often carries extra open ports and sample logins; baseline
+hardening strips these out before the resource goes live. Secure defaults are the safe settings
+a cloud provider pre-selects, so less hardening work is left to the user.
+
+●​ Disable unused ports, protocols and default service accounts at launch
+●​ Replace default credentials and sample users before go-live
+●​ Use hardened, pre-configured machine images as the launch baseline
+●​ AWS S3 buckets default to private, blocking public access
+
+Analogy: Setting up a new phone securely by changing default passwords, disabling
+unnecessary permissions and enabling security settings before using it — just as hardening
+removes unnecessary access and applies safe settings before a server goes live.
+
+Visual Guidance: Checklist graphic: ports closed, default accounts removed, golden image
+chosen, public access blocked — four ticks forming the hardened baseline.
+
+Speaker Notes: "Explain hardening using the house-locking picture before naming the
+term. Note AWS S3's block-public-access-by-default as a concrete secure default. Interview
+hook: ask why a secure default reduces human error compared to hardening alone."
+
+
+
+Slide 5: Cloud Security Posture Management
+Heading: CSPM Explained
+
+Subheading: Continuous Config Checks
+
+Content:
+
+Hardening fixes settings once at launch, but configurations drift afterward as teams change
+them. Cloud Security Posture Management (CSPM) continuously scans live cloud resources
+against a defined secure baseline and flags any drift.
+
+●​ Flags drift: an opened port or edited bucket policy
+●​ Spans multiple accounts and services from one dashboard
+●​ AWS Security Hub CSPM (earlier called AWS Security Hub) checks settings and gathers
+   findings in one console
+●​ Prioritises findings by risk severity for faster remediation
+
+Analogy: A car's regular service inspection that checks brakes, tyres and engine condition
+every few weeks instead of only checking the car when it is purchased — just as CSPM
+continuously checks cloud configurations for security issues.
+
+Visual Guidance: Dashboard mockup: baseline rules on the left, live resource list on the
+right, a red flag icon on any resource that has drifted.
+
+Speaker Notes: "Introduce CSPM as the ongoing partner to one-time hardening. Mention
+AWS Security Hub by name as the console location. Exam hook: ask how CSPM differs from a
+one-time hardening checklist."
+Slide 6: Automated Scanning Mechanisms
+Heading: Automated Scanning
+
+Subheading: Tools And Triggers
+
+Content:
+
+Automated scanning runs checks without manual review and covers two different jobs: AWS
+Config evaluates resource configurations against rules, while Amazon Inspector scans EC2
+instances, Lambda functions and container images in Amazon ECR for known software
+vulnerabilities.
+
+●​ Pre-deployment scanning: Amazon Inspector scans container images in Amazon ECR for
+   known vulnerabilities before they run
+●​ Runtime scanning: Amazon Inspector scans running instances for known vulnerabilities
+●​ AWS Config evaluates resources against rules and records history
+●​ Scheduled or event-triggered scans catch drift faster than manual review
+●​ Findings feed back into the hardened baseline for the next build
+
+Visual Guidance: Pipeline graphic: code commit leads to static scan leads to deploy leads to
+Amazon Inspector runtime scan leads to AWS Config continuous evaluation.
+
+Speaker Notes: "Distinguish static scanning before deployment from runtime scanning
+after it, naming Amazon Inspector and AWS Config as the actual services. Point to AWS
+Config's timeline view if screen-sharing. Interview hook: ask why both pre-deploy and
+runtime scanning are needed together."
+
+
+
+
+--------------------------------------- SECTION 3: 3. Logging, Auditing & Detection: Audit
+trails; log retention; security event alerting; managed threat detection
+---------------------------------------
+
+Slide 8: The Logging and Detection Map
+Heading: Logging Detection Map
+
+Subheading: Four Pillars
+
+Content:
+
+Preventive controls still fail sometimes, so cloud security also depends on seeing what
+actually happened and reacting fast.
+
+●​ Audit trails: a timestamped record of every account action
+●​ Log retention: how long those records stay available
+●​ Security event alerting: notification when a log entry matters
+●​ Managed threat detection: provider-run scanning for attack patterns
+
+Visual Guidance: Four connected boxes left to right: Audit Trail, Retention, Alerting, Threat
+Detection, with an arrow showing logs flowing into each stage.
+
+Speaker Notes: "Frame detection as the half of defense in depth that reacts once a
+preventive control fails. Ask: why is a log nobody reads worth nothing?"
+
+
+
+Slide 9: Audit Trails and Log Retention
+Heading: Trails And Retention
+
+Subheading: Keeping Logs Longer
+
+Content:
+
+CloudTrail's console view only shows recent calls, so a separate mechanism is needed to
+keep evidence for audits months or years later.
+
+●​   CloudTrail Event History holds 90 days of management events for each AWS Region
+●​   A trail delivers events to an S3 bucket every few minutes for long-term storage
+●​   S3 lifecycle rules set the retention period to meet policy
+●​   Log file integrity validation detects tampering of stored files
+
+Visual Guidance: Timeline bar: 90-day Event History window on the left, an arrow to an S3
+bucket icon labelled Trail Storage extending to years on the right.
+
+Speaker Notes: "Point out that a trail is what turns a temporary log into durable evidence
+for compliance. Mention integrity validation as an interviewer favourite question."
+
+
+
+Slide 10: Turning Logs Into Alerts
+Heading: Security Event Alerting
+
+Subheading: Notify, Not Just Store
+
+Content:
+
+A stored log only helps if someone is told when it matters, so logs are watched and
+converted into active notifications.
+
+CloudTrail records AWS account activity and API actions; CloudWatch monitors resources
+and collects their metrics and logs — alarms and rules draw on these two different kinds of
+data.
+
+●​ Metric filters scan log data for a defined pattern
+●​   A matching pattern increments a custom numeric metric
+●​   Alarm threshold triggers on a count, e.g. 5 hits in 5 minutes
+●​   EventBridge rules react to a specific API call directly
+●​   An SNS topic delivers the alert to email or chat
+
+Visual Guidance: Pipeline diagram: Log entry → Metric filter → CloudWatch Alarm/
+EventBridge rule → SNS notification icon.
+
+Speaker Notes: "Explain the filter-to-alarm chain as the mechanism, not just the names.
+Ask: what is the difference between a metric filter and an EventBridge rule?"
+
+
+
+Slide 11: Managed Threat Detection
+Heading: Managed Threat Detection
+
+Subheading: Automated Anomaly Scan
+
+Content:
+
+Watching every log line by hand for attack patterns does not scale, so a managed service
+does that scanning continuously. Amazon GuardDuty, a managed threat detection service,
+analyses CloudTrail, network flow and DNS logs for malicious signals.
+
+●​   Learns normal account behaviour to flag anomalies
+●​   Detects compromised credentials and unusual API calls
+●​   Flags cryptomining and reconnaissance-style activity
+●​   Reports severity-rated findings, not raw log lines
+●​   Needs no agents or servers to operate
+
+Analogy: A bank's fraud system watches every transaction and flags only an unusual
+withdrawal — just as managed threat detection scans account activity and surfaces only
+what looks malicious.
+
+Visual Guidance: Three log sources (CloudTrail, flow logs, DNS logs) feeding into a
+GuardDuty icon, producing a ranked findings list.
+
+Speaker Notes: "Stress this is detection, not prevention — it flags, a human or automation
+still responds. Likely interview question: how does GuardDuty differ from CloudTrail?"
+--------------------------------------- SECTION 4: 4. Secrets Management: Secrets
+outside code & images; secret stores; rotation ---------------------------------------
+
+Slide 13: Why Secrets Need Dedicated Stores
+Heading: Why Secrets Need Stores
+
+Subheading: Secrets Outside Code
+
+Content:
+
+Hardcoding a database password or API key inside application code or a container image
+leaves it exposed to anyone who reads the repository or pulls the image. A secret is any
+credential, key or token an application needs at runtime that a human should never see in
+plain text.
+
+●​   Even after deletion, git history retains a recoverable copy
+●​   Baked-in secret exposed through image layers or docker history
+●​   Leaked key gets scanned and exploited within minutes publicly
+●​   Secret store holds the value, not the application
+●​   Application fetches the value via an API call at runtime
+
+Analogy: A bank does not print a locker's key inside the passbook anyone can read; the key
+is handed over separately on a verified request, exactly as a secret store releases a credential
+only to an authorised application at runtime.
+
+Visual Guidance: Split diagram: left shows a password string embedded in source code
+with a red cross; right shows the same application calling a locked secret-store icon via an
+arrow labelled IAM-checked request.
+
+Speaker Notes: "Stress that git history and image layers keep deleted secrets recoverable,
+which is why rotation (next slide) matters even after cleanup. Ask: why is an API key inside
+a Dockerfile worse than one in an environment variable?"
+
+
+
+Slide 14: Secret Store Mechanics
+Heading: Secret Store Mechanics
+
+Subheading: Managed Secret Services
+
+Content:
+
+A secret store is a managed service that keeps credentials encrypted at rest and releases
+them only to callers an access policy explicitly permits, separating a secret's lifecycle from
+the application's own code.
+
+Feature                         Secrets Manager                 Parameter Store
+Built-in rotation              Configurable automatic          No built-in rotation; custom
+                               rotation, using Lambda          automation is possible
+Encryption                     KMS, always on                  KMS, optional
+Typical use                    DB credentials, API keys        Config values, flags
+Pricing model                  Per secret per month, plus      Standard tier free;
+                               API calls                       Advanced tier paid
+●​ Application calls an SDK or API, never reads a plaintext file
+●​ Access is gated by IAM, same deny-by-default evaluation as any call
+●​ Each secret value is versioned after a change
+●​ The prior version stays retrievable for rollback
+
+Visual Guidance: Flow diagram: application box, arrow to secret-store icon labelled IAM
+policy check, then arrow back labelled current version returned; KMS lock icon sits beside
+the store.
+
+Speaker Notes: "Point to the table row on rotation, since manual rotation in Parameter
+Store is the gap Secrets Manager closes automatically. Mention Secrets Manager as the
+service named for this exact purpose in interviews."
+
+
+
+Slide 15: Automatic Secret Rotation
+Heading: Secret Rotation
+
+Subheading: Rotation Lifecycle
+
+Content:
+
+Rotation replaces a secret's value on a schedule so a leaked credential has a short useful life,
+without any application code change because the store always returns the current version.
+
+●​ Rotation function generates a new credential and updates the target service
+●​ Store saves the new version and marks the old one as previous
+●​ Application gets the latest version on its next fetch; a cached copy must be refreshed to
+   use it
+●​ If rotation fails, the store keeps the old version as current, but the database may already
+   use the new password, so the failure must be fixed quickly
+
+Visual Guidance: Timeline diagram: Day 0 secret version A active, rotation event triggers
+Lambda icon, Day N version B active with version A greyed out as previous.
+
+Speaker Notes: "Explain rotation as the reason a secret store beats a static .env file even
+after the secret is moved out of code. Interview hook: ask what happens to an in-flight
+request if rotation runs mid-call."
+--------------------------------------- SECTION 5: 5. Compliance Frameworks: ISO 27001
+& SOC 2; GDPR, HIPAA & DPDP Act 2023; data residency; shared responsibility
+for compliance ---------------------------------------
+
+Slide 16: Compliance Frameworks Landscape
+Heading: Compliance Landscape
+
+Subheading: Five Pillars Mapped
+
+Content:
+
+Hardened configurations and clean audit logs satisfy internal security goals, but external
+auditors and regulators — applicable equally on AWS, Azure or GCP — demand formal,
+independent proof.
+
+●​ ISO 27001 & SOC 2: independent security audits; ISO 27001 gives a certificate, SOC 2
+   gives an audit report
+●​ GDPR & HIPAA: EU personal-data rules and US health-data rules
+●​ DPDP Act 2023: India's law on digital personal data
+●​ Data residency: rules on where data is stored and processed
+●​ Shared responsibility: provider certifies infrastructure, customer proves configuration
+
+Visual Guidance: Five labelled boxes in a row — ISO 27001, SOC 2, GDPR/HIPAA, DPDP Act,
+Data Residency — converging into one box labelled Shared Responsibility for Compliance.
+
+Speaker Notes: "Frame this as the audit-and-law layer sitting on top of the technical
+controls this deployment already applies. Stress that no framework replaces good
+configuration; it only verifies it. Ask which framework applies to which region."
+
+
+
+Slide 17: ISO 27001 and SOC 2 Explained
+Heading: Security Assurance Standards
+
+Subheading: Two Audit Standards
+
+Content:
+
+Enterprises buying cloud services need independent proof a vendor truly secures data, not
+marketing claims. ISO 27001 certifies the security management system; SOC 2 audits
+controls against trust criteria.
+
+●​   ISO 27001: issued by accredited certification bodies worldwide
+●​   SOC 2 Type I: controls assessed at one point in time
+●​   SOC 2 Type II: same controls tested over a set period, usually 3 to 12 months
+●​   AWS publishes both reports through AWS Artifact for customers
+Analogy: A restaurant's hygiene certificate assures diners of safe food without them
+inspecting the kitchen themselves — just as ISO 27001 and SOC 2 assure customers of a
+cloud vendor's security practices without customers auditing every control themselves.
+
+Visual Guidance: A certificate icon labelled ISO 27001 beside a report icon labelled SOC 2,
+each with a small AWS Artifact download arrow beneath.
+
+Speaker Notes: "Explain that ISO 27001 is a pass/fail certification while SOC 2 is a detailed
+report. Point out AWS Artifact as the actual console location for downloading these. Exam
+hook: ask which one has a Type I and Type II distinction."
+
+
+
+Slide 18: ISO 27001 vs SOC 2 Compared
+Heading: ISO Vs SOC2
+
+Subheading: Standard Comparison
+
+Content:
+
+Both give independent proof of security controls, but enterprises often ask for both, since
+each answers a different audit question for a different audience.
+
+Aspect                         ISO 27001                        SOC 2
+Scope                          Information security             Trust service criteria
+                               management system
+Origin                         International (ISO/IEC)          United States (AICPA)
+Output                         Certificate after a successful   Detailed audit report
+                               audit
+Renewal                        Periodic surveillance auditsType II usually renewed
+                                                           yearly
+Visual Guidance: The comparison table rendered full-width; highlight the Output row since
+it is the most commonly confused point.
+
+Speaker Notes: "Walk through each row once, stressing that ISO 27001 is binary while SOC
+2 is descriptive. Point to the Output row when explaining why vendors often hold both.
+Exam hook: expect a direct 'ISO 27001 vs SOC 2' interview question."
+
+
+
+Slide 19: GDPR and DPDP Act 2023
+Heading: Data Privacy Laws
+
+Subheading: GDPR, HIPAA And DPDP
+
+Content:
+Storing customer data is no longer a private business choice; governments set binding rules
+on its handling. GDPR (General Data Protection Regulation) protects EU residents' data; the
+Digital Personal Data Protection (DPDP) Act 2023 is India's equivalent law. HIPAA (Health
+Insurance Portability and Accountability Act) is the US law protecting health information.
+
+●​   GDPR grants rights: access, correction, erasure and data portability
+●​   GDPR mandates breach notification within 72 hours of discovery
+●​   DPDP Act names the data handler a data fiduciary, not a controller
+●​   DPDP Act requires clear consent, except for certain legitimate uses the Act lists
+●​   HIPAA: covers US health data; on AWS it needs a signed Business Associate Addendum
+     and HIPAA-eligible services
+
+Analogy: A library allows members to access, borrow or renew books under clearly defined
+rules, while keeping their personal details secure — just as data privacy laws define how
+organisations can collect, use and protect personal information.
+
+Visual Guidance: Three flags (EU, India, US) each pointing to a short clause list — GDPR's
+rights, DPDP's consent rule.
+
+Speaker Notes: "Explain GDPR first as the globally referenced law, then introduce DPDP as
+India's version using the same consent idea. Mention the 72-hour breach window as a
+commonly tested number, and that AWS offers the HIPAA BAA through AWS Artifact. Exam
+hook: ask what DPDP calls the data controller equivalent."
+
+
+
+Slide 20: Data Residency Across Regulations
+Heading: Residency And Rules
+
+Subheading: Cross-Border Data Flow
+
+Content:
+
+Data residency sets where data is stored and processed; GDPR and the DPDP Act layer
+further rules on moving that data across borders.
+
+●​   GDPR restricts transfers outside the EU without adequate safeguards
+●​   Standard Contractual Clauses (SCCs) are a common GDPR safeguard
+●​   DPDP Act allows government to restrict transfers to specific countries
+●​   Residency rules apply alongside, not instead of, security controls
+
+Visual Guidance: A world map with a data icon inside an EU boundary and an India
+boundary, arrows crossing the boundary marked with a lock labelled SCC.
+
+Speaker Notes: "Clarify that residency is a location rule while the SCC is the legal
+paperwork that permits an exception. Note that choosing a Region does not by itself satisfy
+either law's other obligations. Exam hook: ask what an SCC is for."
+Slide 21: Shared Responsibility For Compliance
+Heading: Compliance Responsibility
+
+Subheading: Who Proves What
+
+Content:
+
+Compliance follows the same split as security: the provider proves its infrastructure, while
+the customer proves its own configuration and usage.
+
+●​ Provider holds certifications and audit reports for its data centres, hardware and in-
+   scope services
+●​ Customer must configure workloads to meet the chosen framework's controls
+●​ AWS Artifact supplies ISO 27001 and SOC 2 reports on demand
+●​ Auditors examine customer logs, encryption settings and access policies directly
+
+Visual Guidance: A split diagram: left half labelled Provider Proves (infrastructure
+certificates), right half labelled Customer Proves (configuration evidence), joined by an
+Auditor icon in the middle.
+
+Speaker Notes: "Tie this back to the earlier split between securing the cloud and securing
+in the cloud, now applied to passing an audit. Stress that holding a certified provider never
+excuses a misconfigured bucket. Exam hook: ask who is responsible if an audit fails due to a
+customer's open bucket."
+
+
+
+
+--------------------------------------- PRACTICAL HANDS-ON: Securing and Auditing an
+S3 Bucket ---------------------------------------
+
+Slide 22: Securing an S3 Bucket End to End
+Heading: The Practical Task
+
+Subheading: What Gets Built
+
+Content:
+
+This practical builds one S3 bucket and applies hygiene, encryption, access and audit
+controls across its full lifecycle, part by part.
+
+       1. Create a bucket with SSE-S3 default encryption
+       2. Upload a file and verify it inherited encryption
+       3. Attach a policy denying any non-HTTPS request
+        4. Check Object Ownership (Bucket owner enforced, ACLs disabled) and Block Public
+        Access settings
+        5. Run a security audit against a fixed checklist
+        6. Rescan every setting to confirm the secure end state
+        7. Review CloudTrail events, then clean up the demo resources
+
+
+
+Slide 23: Part 1 & 2: Create, Encrypt, Upload
+Heading: Bucket Creation
+
+Subheading: Encryption Enabled
+
+Content:
+
+The bucket is created in Mumbai with Bucket owner enforced ownership, all four Block
+Public Access settings on, and default encryption set to SSE-S3, so every new upload is
+encrypted automatically.
+
+Setting                                           Value
+Bucket                                            s17-security-lab-unique123
+Region                                            Mumbai (ap-south-1)
+Default encryption                                SSE-S3
+Object Ownership                                  Bucket owner enforced
+
+
+
+
+                        Server-side encryption settings showing SSE-S3 active
+                          Upload succeeded for security-demo.txt (102.0 B)
+
+
+
+
+Slide 24: Part 3: Enforcing HTTPS-Only Access
+Heading: HTTPS-Only Access
+
+Subheading: Deny Insecure Transport
+
+Content:
+
+A bucket policy named DenyInsecureTransport rejects any request made without TLS, the
+secure transport protocol; it only blocks insecure requests and never grants access by itself.
+
+Policy element                                   Meaning
+Effect: Deny                                     Rejects requests matching the statement
+Principal: *                                     Applies to all principals
+Action: s3:*                                     Covers S3 actions
+Resource: arn:aws:s3:::s17-security-lab-         Covers the bucket and every object in it
+unique123 and arn:aws:s3:::s17-security-lab-
+unique123/*
+aws:SecureTransport: false                       Matches requests without secure transport
+           Saved policy DenyInsecureTransport: Deny, Principal *, s3:*, aws:SecureTransport false
+
+
+
+
+Slide 25: Part 4 & 5: Audit Access and Ownership
+Heading: Access Audit
+
+Subheading: Ownership, ACL, Access
+
+Content:
+
+The audit checks Object Ownership, the access control list and Block Public Access against a
+fixed checklist, recording each as secure, an issue needing correction, or not applicable.
+
+Security check                     Where to check                       Secure configuration
+Public access                      Permissions → Block Public           All four enabled
+                                   Access
+Object ownership                   Permissions → Object                 Bucket owner enforced
+                                   Ownership
+ACL access                         Permissions → ACL                    ACLs disabled
+                Object Ownership: Bucket owner enforced (ACLs disabled)
+
+
+
+
+ACL panel: grantees are listed, but bucket owner enforced means no ACL permission applies
+
+
+
+
+                   Block all public access checked (all four settings on)
+Slide 26: Part 6: Rescan and Record Results
+Heading: Rescan And Record
+
+Subheading: Confirm The End State
+
+Content:
+
+A rescan repeats each check after remediation to confirm the final state; it can validly find a
+setting was already secure, needing no further change.
+
+
+
+
+Check                           Expected result                  Actual result
+Block Public Access             All four enabled                 Confirmed
+Default encryption              SSE-S3 enabled                   Verified
+HTTPS-only bucket polic         Deny statement present           Verified
+Object Ownership                Bucket owner enforced            Verified
+ACLs                            Disabled                         Verified
+
+
+Slide 27: Part 7: CloudTrail Review and Cleanup
+Heading: Audit Trail Check
+
+Subheading: Result And Cleanup
+
+Content:
+
+CloudTrail Event history records who performed an action, what it was and when; it is
+sufficient here, so no new trail or long-term storage needs configuring.
+
+Service                                           Main purpose
+CloudTrail                                        Records AWS account activity and API
+                                                  actions
+CloudWatch                                        Monitors resources and collects metrics
+                                                  and logs
+                   CloudTrail CreateBucket event: event name, source, user, Region
+
+This demo used the root user only for brevity; real work uses an IAM user with least
+privilege​
+Also look for PutBucketPolicy, PutBucketEncryption and PutPublicAccessBlock events if
+recorded.
+
+Cleanup: delete security-demo.txt, then the bucket; leave every other bucket and CloudTrail
+resource untouched.
+
+
+
+Key Takeaways
+       1. Defense in Depth in Practice: Layered controls on a real deployment
+       2. Configuration Hygiene: Baseline hardening & secure defaults; cloud security
+       posture management (CSPM); automated scanning
+       3. Logging, Auditing & Detection: Audit trails; log retention; security event alerting;
+       managed threat detection
+       4. Secrets Management: Secrets outside code & images; secret stores; rotation
+       5. Compliance Frameworks: ISO 27001 & SOC 2; GDPR, HIPAA & DPDP Act 2023;
+       data residency; shared responsibility for compliance
+
+
+
+Upcoming Session : Cloud-Native Application Design
+
+                              Thank You | All the Best
+

@@ -64,6 +64,8 @@ export const meta: DeckMeta = {
 }
 
 const AGENDA = (M.agenda ?? []).map((title) => ({ title }))
+/** the agenda slide's own labels, when a deck sets line breaks for them there only */
+const AGENDA_COLS = M.agendaLabels ? M.agendaLabels.map((title) => ({ title })) : AGENDA
 
 /* ── helpers ── */
 /* a point holding "\n" breaks there (Session 15 TR 23, 2026-11-18: the key ID on its own line instead of split at a
@@ -90,7 +92,7 @@ function Points({ s }: { s: Extract<Slide, { layout: 'points' }> }) {
       pointsW={s.pointsW ?? 452}
       figH={s.figH ?? 380}
       figure={s.figure ? <Fit w={BOX_W - (s.pointsW ?? 452) - 24} h={s.figH ?? 380}><FigureView fig={s.figure} step={step} /></Fit> : null}
-      note={s.note ? <NoteBox tone={s.note.tone === 'warn' ? colors.accent : colors.brand}><Rich text={s.note.text} /></NoteBox> : undefined}
+      note={s.note ? <NoteBox tone={s.note.tone === 'warn' ? colors.accent : colors.brand} bg={s.note.bg === 'blue' ? 'linear-gradient(135deg, #F0F5FF 0%, #DDE8FF 100%)' : undefined} rim={s.note.bg === 'blue' ? '#B9CEFB' : undefined} glow={s.note.bg === 'blue' ? 'rgba(45,99,251,0.45)' : undefined}><Rich text={s.note.text} /></NoteBox> : undefined}
     />
   )
 }
@@ -128,7 +130,7 @@ function Lead({ s }: { s: Extract<Slide, { layout: 'lead' }> }) {
     <Card id={s.id} kicker={s.kicker} title={s.title} lesson={SESSION}>
       <div className="flex flex-col items-center gap-5" style={{ width: BOX_W }}>
         {s.lead && (
-          <p className="whitespace-pre-line text-center text-[20px] leading-snug" style={{ color: colors.ink, maxWidth: 900 }}>
+          <p className="whitespace-pre-line text-center text-[20px] leading-snug" style={{ color: colors.ink, maxWidth: s.leadW ?? 900 }}>
             <Rich text={s.lead} />
           </p>
         )}
@@ -172,7 +174,8 @@ function Screenshot({ s }: { s: Extract<Slide, { layout: 'screenshot' }> }) {
   const shown = useBuild(rings.length + 1)
   const [nw, nh] = dims[s.image] ?? [1600, 900]
   /* the content column starts under the title (~170) and must end above the player bar (~630) */
-  const top = 172 + (s.lead ? 58 : 0) + (s.step ? 54 : 0)
+  /* a step caption stands clear of the capture: 12px read as cramped in review (2026-11-18), so +20 under it */
+  const top = 172 + (s.lead ? 58 : 0) + (s.step ? 74 : 0)
   const estH = 628 - top - (s.note ? 72 : 0)
   /* MEASURED, not guessed (Session 14, 2026-11-17): the column really starts near 222 under the title, lower again
      when the lead or the step caption wraps, so the estimate let three captures run under the player bar (slides
@@ -208,7 +211,7 @@ function Screenshot({ s }: { s: Extract<Slide, { layout: 'screenshot' }> }) {
             </span>
           </StepLabel>
         )}
-        <div ref={shotBox} className="relative self-center overflow-hidden rounded-[10px] border border-line bg-white" style={{ width: w, height: h, boxShadow: '0 12px 30px -18px rgba(16,32,58,0.45)' }}>
+        <div ref={shotBox} className={`relative self-center overflow-hidden rounded-[10px] ${s.step ? 'mt-5' : ''} border border-line bg-white`} style={{ width: w, height: h, boxShadow: '0 12px 30px -18px rgba(16,32,58,0.45)' }}>
           <img src={s.image} alt="" draggable={false} className="block select-none" style={{ width: w, height: h }} />
           {rings.map(([x, y, rw, rh, kind], i) =>
             kind === 'band' ? (
@@ -305,7 +308,7 @@ function element(s: Slide): ReactNode {
     case 'recap':
       return <Takeaways id={s.id} kicker="Recap" title={M.previous?.title ?? 'Recap'} lesson={SESSION} items={(M.previous?.items ?? []).map((title) => ({ title }))} art="/assets/takeaways/presenter.png" />
     case 'agenda':
-      return <AgendaColumns kicker={SESSION} lesson={SESSION} items={AGENDA} />
+      return <AgendaColumns kicker={SESSION} lesson={SESSION} items={AGENDA_COLS} weights={M.agendaWeights} />
     case 'breaker':
       return s.lab ? <LabBreaker kicker={s.kicker} title={s.title ?? ''} lesson={SESSION} /> : <SectionBreakerSlide index={s.index} title={s.title ?? M.agenda[s.index - 1]} lesson={SESSION} />
     case 'points':

@@ -1,8 +1,8 @@
 {
-  "name": "elastic_compute_instances",
-  "title": "Elastic Compute Instances",
-  "htmlName": "elastic-compute-instances",
-  "slideCount": 54,
+  "name": "serverless_computing",
+  "title": "Serverless Computing",
+  "htmlName": "serverless-computing",
+  "slideCount": 50,
   "devPort": 5290,
-  "deckDir": "/home/nxtwave/Desktop/webslides/Outputdecks/cloudcomputing/elastic_compute_instances"
+  "deckDir": "/home/nxtwave/Desktop/webslides/Outputdecks/cloudcomputing/serverless_computing"
 }
