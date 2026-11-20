@@ -44,6 +44,9 @@ export type Ico3DName =
   | 'chart' | 'vault' | 'pin' | 'gate' | 'hourglass' | 'scan' | 'wave'
   | 'keypair' | 'disk' | 'chip' | 'certificate' | 'digest' | 'refresh' | 'snapshot' | 'replica' | 'envelope' | 'hsm'
   | 'upload' | 'hash'
+  | 'layers' | 'report' | 'download' | 'bell' | 'calendar' | 'branch' | 'stamp' | 'health' | 'book' | 'image' | 'dashboard'
+  | 'flag-eu' | 'flag-in' | 'flag-us' | 'consent' | 'counter'
+  | 'queue' | 'breaker' | 'stopwatch' | 'terminal' | 'rocket' | 'cart' | 'api' | 'cube' | 'cubes' | 'dice' | 'power' | 'heartbeat'
 
 export type Badge = 'check' | 'cross' | 'plus' | 'minus' | 'lock' | 'clock' | 'star' | 'alert'
 
@@ -242,6 +245,71 @@ const arcArrow = (cx: number, cy: number, r: number, a0: number, a1: number, lea
   }
 }
 
+/* ------------------------------------------------ primitives added 2026-11-20 for Session 17 (Security Practices & Compliance) */
+/** a five-point star centred on (x, y), outer radius r */
+const star = (x: number, y: number, r: number) => {
+  const p: string[] = []
+  for (let i = 0; i < 10; i++) {
+    const a = (Math.PI * i) / 5 - Math.PI / 2
+    const rr = i % 2 === 0 ? r : r * 0.42
+    p.push(`${(x + Math.cos(a) * rr).toFixed(2)} ${(y + Math.sin(a) * rr).toFixed(2)}`)
+  }
+  return `M ${p.join(' L ')} Z`
+}
+
+/** a seven-segment digit (0-9) in a w x h box at (x, y), as one stroked path */
+const seg7 = (x: number, y: number, w: number, h: number, d: number) => {
+  const m = y + h / 2
+  const S: Record<string, string> = {
+    a: `M ${x} ${y} H ${x + w}`, b: `M ${x + w} ${y} V ${m}`, c: `M ${x + w} ${m} V ${y + h}`, d: `M ${x} ${y + h} H ${x + w}`,
+    e: `M ${x} ${m} V ${y + h}`, f: `M ${x} ${y} V ${m}`, g: `M ${x} ${m} H ${x + w}`,
+  }
+  const on = ['abcdef', 'bc', 'abged', 'abgcd', 'fgbc', 'afgcd', 'afgedc', 'abc', 'abcdefg', 'abcdfg'][d] ?? ''
+  return on.split('').map((k) => S[k]).join(' ')
+}
+
+/** a waving flag on a steel pole: children are drawn in a flat 50 x 44 field at x 10..60, y 0..44 and bent into the
+ *  wave by a clip; the cloth keeps an extruded edge and a soft fold shade like the other icons */
+const Flag = ({ id, k, children }: P & { k: string; children: ReactNode }) => {
+  const cloth = 'M 15 9 C 25 5.5 33 12 43 9 C 48.5 7.4 52.5 7.6 57 9 V 35 C 52.5 33.6 48.5 33.4 43 35 C 33 38 25 31.5 15 35 Z'
+  return (
+    <g>
+      <Shadow id={id} rx={16} cx={22} />
+      <Block id={id} x={10} y={4} w={5} h={53} r={2.5} t="steel" dz={1.5} />
+      <Ball id={id} cx={12.5} cy={4.5} r={3.4} t="gold" />
+      <clipPath id={`${id}fl${k}`}><path d={cloth} /></clipPath>
+      <path d={cloth} fill="#0B1F4D" opacity="0.28" transform="translate(0 2.6)" />
+      <g clipPath={`url(#${id}fl${k})`}>
+        <g transform="translate(5.2 5) scale(0.88 0.773)">{children}</g>
+        <path d="M 27 8.5 C 30 9.8 33 10.6 36 10.4 V 36.2 C 33 36.4 30 35.6 27 34.2 Z" fill="#0B1F4D" opacity="0.12" />
+        <path d="M 43 9 C 46 8 49 7.6 52 7.9 V 33.9 C 49 33.6 46 34 43 35 Z" fill="#FFFFFF" opacity="0.14" />
+      </g>
+      <path d={cloth} fill="none" stroke="#0B1F4D" strokeOpacity="0.18" strokeWidth="0.8" />
+    </g>
+  )
+}
+
+/* ------------------------------------------------ primitives added 2026-11-20 for Session 18 (Cloud-Native Applications) */
+/** an isometric cube: top face centred on (cx, cy), half width a, height h; lit top, mid left face, dark right face */
+const IsoCube = ({ id, cx, cy, a, h, t }: P & { cx: number; cy: number; a: number; h: number; t: Tone }) => {
+  const b = a / 2
+  const top = `M ${cx} ${cy - b} L ${cx + a} ${cy} L ${cx} ${cy + b} L ${cx - a} ${cy} Z`
+  const left = `M ${cx - a} ${cy} L ${cx} ${cy + b} L ${cx} ${cy + b + h} L ${cx - a} ${cy + h} Z`
+  const right = `M ${cx} ${cy + b} L ${cx + a} ${cy} L ${cx + a} ${cy + h} L ${cx} ${cy + b + h} Z`
+  const sw = Math.max(1.6, a * 0.16)
+  return (
+    <g strokeLinejoin="round" strokeWidth={sw}>
+      <path d={left} fill={T[t][1]} stroke={T[t][1]} />
+      <path d={`M ${cx - a} ${cy} L ${cx - a * 0.72} ${cy + b * 0.28} V ${cy + h * 0.9} L ${cx - a} ${cy + h * 0.76} Z`} fill="#FFFFFF" opacity="0.22" />
+      <path d={right} fill={T[t][2]} stroke={T[t][2]} />
+      <path d={top} fill={L(id, 'paper')} stroke={T[t][0]} />
+      <path d={top} fill={T[t][0]} opacity="0.85" />
+      <path d={`M ${cx - a * 0.62} ${cy - b * 0.04} L ${cx - a * 0.04} ${cy - b * 0.62} L ${cx + a * 0.16} ${cy - b * 0.5} L ${cx - a * 0.42} ${cy + b * 0.08} Z`} fill="#FFFFFF" opacity="0.5" />
+      <path d={`M ${cx - a} ${cy} L ${cx} ${cy + b} L ${cx + a} ${cy}`} fill="none" stroke="#FFFFFF" strokeOpacity="0.55" strokeWidth={Math.max(0.8, sw * 0.32)} />
+    </g>
+  )
+}
+
 /* ---------------------------------------------------------------- the drawings */
 const DRAW: Record<Ico3DName, (id: string) => ReactNode> = {
   user: (id) => (<><Shadow id={id} /><Bust id={id} t="blue" /></>),
@@ -389,7 +457,7 @@ const DRAW: Record<Ico3DName, (id: string) => ReactNode> = {
     </>
   ),
   check: (id) => (<><Shadow id={id} rx={17} /><Ball id={id} cx={32} cy={31} r={23} t="green" /><W d="M 21 31.5 L 29 39.5 L 44 24" w={6} /></>),
-  cross: (id) => (<><Shadow id={id} rx={17} /><Solid id={id} t="orange" d={octa(32, 31, 25)} gloss="M 22 10 H 42 L 47 15 C 38 13 28 13 17 16 Z" /><W d="M 23 22 L 41 40 M 41 22 L 23 40" w={6} /></>),
+  cross: (id) => (<><Shadow id={id} rx={17} /><Solid id={id} t="red" d={octa(32, 31, 25)} gloss="M 22 10 H 42 L 47 15 C 38 13 28 13 17 16 Z" /><W d="M 23 22 L 41 40 M 41 22 L 23 40" w={6} /></>),
   ban: (id) => (<><Shadow id={id} rx={17} /><Ball id={id} cx={32} cy={31} r={23} t="red" /><circle cx={32} cy={31} r={13.5} fill="none" stroke="#FFFFFF" strokeWidth="5" /><W d="M 22.5 40.5 L 41.5 21.5" w={5} /></>),
   search: (id) => (
     <>
@@ -1264,6 +1332,373 @@ const DRAW: Record<Ico3DName, (id: string) => ReactNode> = {
       <path d={gearPath(27, 41, 10.5, 8, 8)} fill={side('steel')} transform="translate(0 2)" />
       <path d={gearPath(27, 41, 10.5, 8, 8)} fill={L(id, 'steel')} />
       <circle cx={27} cy={41} r={3.6} fill={T.navy[1]} />
+    </>
+  ),
+  /* ------------------------------------------------ added 2026-11-20 for Session 17 (Security Practices & Compliance) */
+  /* defense in depth: three glossy slabs stacked, navy at the base, blue on top */
+  layers: (id) => (
+    <>
+      <Shadow id={id} rx={26} />
+      {([['navy', 44], ['sky', 32], ['blue', 20]] as [Tone, number][]).map(([t, cy]) => (
+        <Solid key={cy} id={id} t={t} dz={4.5} d={`M 6 ${cy} Q 4.5 ${cy} 7 ${cy - 1.4} L 30 ${cy - 12.4} Q 32 ${cy - 13.4} 34 ${cy - 12.4} L 57 ${cy - 1.4} Q 59.5 ${cy} 57 ${cy + 1.4} L 34 ${cy + 12.4} Q 32 ${cy + 13.4} 30 ${cy + 12.4} L 7 ${cy + 1.4} Q 4.5 ${cy} 6 ${cy} Z`} gloss={`M 12 ${cy - 1} L 31 ${cy - 10.5} L 40 ${cy - 6.5} Z`} />
+      ))}
+    </>
+  ),
+  /* an audit report: two stacked pages, the front one carrying a bar chart */
+  report: (id) => (
+    <>
+      <Shadow id={id} rx={20} />
+      <Sheet id={id} x={20} y={3} w={34} h={46} />
+      <Sheet id={id} x={9} y={10} w={36} h={48} />
+      <rect x={14} y={17} width={18} height={3.6} rx={1.8} fill={T.blue[1]} />
+      <rect x={14} y={23.5} width={12} height={3} rx={1.5} fill="#B7C6E4" />
+      <Block id={id} x={15} y={40} w={6} h={11} r={1.6} t="sky" dz={1.6} gloss={false} />
+      <Block id={id} x={24} y={35} w={6} h={16} r={1.6} t="blue" dz={1.6} gloss={false} />
+      <Block id={id} x={33} y={30} w={6} h={21} r={1.6} t="orange" dz={1.6} gloss={false} />
+      <rect x={13} y={52.5} width={28} height={1.8} rx={0.9} fill={T.paper[3]} />
+    </>
+  ),
+  /* a download: an arrow dropping into a tray (the mirror of upload) */
+  download: (id) => (
+    <>
+      <Shadow id={id} rx={25} />
+      <Solid id={id} t="sky" dz={4} d="M 6 38 Q 6 35 9 35 H 19 Q 21 35 22 37 L 24 41 H 40 L 42 37 Q 43 35 45 35 H 55 Q 58 35 58 38 V 51 Q 58 56 53 56 H 11 Q 6 56 6 51 Z" gloss="M 10 38.5 H 19 L 21 43 H 10 Z" />
+      <path d="M 32 44 L 45 31 H 38 V 7 Q 38 5 36 5 H 28 Q 26 5 26 7 V 31 H 19 Z" fill={T.paper[0]} stroke={T.paper[0]} strokeWidth="4" strokeLinejoin="round" />
+      <Solid id={id} t="blue" dz={2.6} d="M 32 44 L 45 31 H 38 V 7 Q 38 5 36 5 H 28 Q 26 5 26 7 V 31 H 19 Z" gloss="M 28 8 H 33 V 30 H 28 Z" />
+    </>
+  ),
+  /* an alert bell: a gold bell, its knob and an orange clapper */
+  bell: (id) => (
+    <>
+      <Shadow id={id} rx={22} />
+      <Ball id={id} cx={32} cy={52} r={5.5} t="orange" />
+      <Solid id={id} t="gold" dz={3.5} d="M 32 9 C 21.5 9 16 17 16 27.5 V 37 L 10.5 44 Q 9 47 12.5 47 H 51.5 Q 55 47 53.5 44 L 48 37 V 27.5 C 48 17 42.5 9 32 9 Z" gloss="M 22 20 C 24 15 28 13 32 13 C 27.5 16 25 21 24 30 H 21 C 21 26 21 23 22 20 Z" />
+      <rect x={13} y={42.5} width={38} height={2.6} rx={1.3} fill={T.gold[3]} opacity="0.55" />
+      <Ball id={id} cx={32} cy={8} r={4} t="gold" />
+    </>
+  ),
+  /* a calendar page: blue header, two binder rings, a date grid with one day marked */
+  calendar: (id) => (
+    <>
+      <Shadow id={id} rx={25} />
+      <Block id={id} x={7} y={11} w={50} h={45} r={6} t="paper" dz={4} gloss={false} />
+      <path d="M 13 11 H 51 Q 57 11 57 17 V 23 H 7 V 17 Q 7 11 13 11 Z" fill={L(id, 'blue')} />
+      <rect x={10} y={12.5} width={44} height={4} rx={2} fill={`url(#${id}gloss)`} opacity="0.7" />
+      {[19, 45].map((x) => <Block key={x} id={id} x={x - 2.6} y={4} w={5.2} h={13} r={2.6} t="steel" dz={1.5} gloss={false} />)}
+      {[0, 1, 2].map((r) => [0, 1, 2, 3].map((c) => (
+        <rect key={`${r}-${c}`} x={12.5 + c * 10.4} y={28 + r * 8.6} width={7.6} height={5.8} rx={1.6} fill={r === 1 && c === 2 ? T.orange[1] : '#C3D0EA'} />
+      )))}
+    </>
+  ),
+  /* git history: a main line of commits and a branch curving off to a third (orange) commit */
+  branch: (id) => (
+    <>
+      <Shadow id={id} rx={22} />
+      <W d="M 20 50 V 14" w={5.5} c={T.steel[3]} />
+      <W d="M 20 42 C 20 31 44 35 44 24" w={5.5} c={T.steel[3]} />
+      <W d="M 20 50 V 14" w={3} c={T.steel[1]} />
+      <W d="M 20 42 C 20 31 44 35 44 24" w={3} c={T.steel[1]} />
+      <Ball id={id} cx={20} cy={50} r={7} t="blue" />
+      <Ball id={id} cx={20} cy={14} r={7} t="blue" />
+      <Ball id={id} cx={44} cy={22} r={7.5} t="orange" />
+    </>
+  ),
+  /* a rubber stamp over its round imprint */
+  stamp: (id) => (
+    <>
+      <Shadow id={id} rx={25} cy={58} />
+      <ellipse cx={32} cy={55} rx={25} ry={6.6} fill="none" stroke={T.orange[1]} strokeWidth="2.4" />
+      <ellipse cx={32} cy={55} rx={17.5} ry={4.2} fill="none" stroke={T.orange[1]} strokeWidth="1.4" opacity="0.8" />
+      <Block id={id} x={13} y={37} w={38} h={6} r={2} t="navy" dz={2} gloss={false} />
+      <Block id={id} x={11} y={27} w={42} h={11} r={4} t="blue" dz={3} />
+      <Block id={id} x={27} y={14} w={10} h={14} r={3} t="steel" dz={2} />
+      <Ball id={id} cx={32} cy={11} r={8} t="orange" />
+    </>
+  ),
+  /* a health record: a glossy heart carrying a white medical cross */
+  health: (id) => (
+    <>
+      <Shadow id={id} rx={20} />
+      <Solid id={id} t="pink" dz={3.5} d="M 32 54 C 15 43 6 33 6 22.5 C 6 13.5 12.5 7 21 7 C 26 7 30 9.5 32 14 C 34 9.5 38 7 43 7 C 51.5 7 58 13.5 58 22.5 C 58 33 49 43 32 54 Z" gloss="M 12 16 C 14 11.5 18 10 22 10.5 C 18 13 15 16.5 14 22 Z" />
+      <path d="M 28.5 18 H 35.5 V 24.5 H 42 V 31.5 H 35.5 V 38 H 28.5 V 31.5 H 22 V 24.5 H 28.5 Z" fill={T.pink[3]} transform="translate(0 1.4)" opacity="0.5" />
+      <path d="M 28.5 18 H 35.5 V 24.5 H 42 V 31.5 H 35.5 V 38 H 28.5 V 31.5 H 22 V 24.5 H 28.5 Z" fill="#FFFFFF" />
+    </>
+  ),
+  /* a closed hardback book: blue cover, spine band, page edges, a gold ribbon */
+  book: (id) => (
+    <>
+      <Shadow id={id} rx={22} />
+      <Block id={id} x={15} y={9} w={39} h={47} r={4} t="navy" dz={3} gloss={false} />
+      <rect x={14} y={8} width={38} height={45} rx={2} fill={T.paper[1]} />
+      {[44, 47, 50].map((x) => <rect key={x} x={x} y={10} width={0.9} height={42} fill={T.paper[3]} />)}
+      <path d="M 37 48 V 60 L 40 57.5 L 43 60 V 48 Z" fill={L(id, 'gold')} />
+      <Block id={id} x={10} y={4} w={37} h={46} r={4} t="blue" dz={2.5} />
+      <rect x={10} y={4} width={7} height={46} rx={3} fill={T.blue[2]} opacity="0.75" />
+      <rect x={22} y={13} width={20} height={8} rx={2} fill={T.paper[0]} opacity="0.92" />
+      <rect x={25} y={16} width={14} height={2.2} rx={1.1} fill={T.blue[1]} />
+    </>
+  ),
+  /* a machine image ("golden image"): a gold disc in front of stacked layers */
+  image: (id) => (
+    <>
+      <Shadow id={id} rx={26} />
+      {([['steel', 30], ['sky', 21]] as [Tone, number][]).map(([t, cy]) => (
+        <Solid key={cy} id={id} t={t} dz={3.5} d={`M 26 ${cy} L 43 ${cy - 10} Q 44.5 ${cy - 11} 46 ${cy - 10} L 61 ${cy - 1.5} Q 62.5 ${cy} 61 ${cy + 1.5} L 46 ${cy + 10} Q 44.5 ${cy + 11} 43 ${cy + 10} Z`} />
+      ))}
+      <circle cx={25} cy={40.5} r={17} fill={side('gold')} />
+      <path d={annulus(25, 38, 17, 4.2)} fill={R(id, 'gold')} fillRule="evenodd" />
+      <circle cx={25} cy={38} r={10.5} fill="none" stroke={T.paper[0]} strokeOpacity="0.55" strokeWidth="1.2" />
+      <circle cx={25} cy={38} r={6.4} fill="none" stroke={T.gold[3]} strokeOpacity="0.5" strokeWidth="1.4" />
+      <ellipse cx={18.5} cy={29.5} rx={6} ry={2.6} fill={T.paper[0]} opacity="0.6" transform="rotate(-35 18.5 29.5)" />
+    </>
+  ),
+  /* a dashboard: a navy monitor whose screen holds a gauge and three bars */
+  dashboard: (id) => (
+    <>
+      <Shadow id={id} rx={22} />
+      <Block id={id} x={18} y={51} w={28} h={5} r={2.5} t="steel" dz={1.5} gloss={false} />
+      <Block id={id} x={27} y={43} w={10} h={9} r={2} t="steel" dz={1} gloss={false} />
+      <Block id={id} x={3} y={6} w={58} h={40} r={6} t="navy" dz={4} />
+      <rect x={7.5} y={10.5} width={49} height={31} rx={3} fill={L(id, 'paper')} />
+      <path d="M 12 33 A 9.5 9.5 0 0 1 31 33" fill="none" stroke="#C3D0EA" strokeWidth="4" strokeLinecap="round" />
+      <path d="M 12 33 A 9.5 9.5 0 0 1 26 25" fill="none" stroke={T.blue[1]} strokeWidth="4" strokeLinecap="round" />
+      <W d="M 21.5 33 L 27 26.5" w={2.4} c={T.orange[2]} />
+      <circle cx={21.5} cy={33} r={2.4} fill={T.navy[1]} />
+      {[[36, 9], [42.5, 15], [49, 21]].map(([x, h], i) => <rect key={x} x={x} y={37 - h} width={5} height={h} rx={1.4} fill={i === 2 ? T.orange[1] : T.blue[1]} />)}
+      <rect x={6} y={7.5} width={52} height={3} rx={1.5} fill="#FFFFFF" opacity="0.18" />
+    </>
+  ),
+  /* the EU flag: blue with a ring of twelve gold stars, on a pole */
+  'flag-eu': (id) => (
+    <Flag id={id} k="eu">
+      <rect x={10} y={0} width={50} height={44} fill="#1E44B8" />
+      {Array.from({ length: 12 }, (_, i) => {
+        const a = (Math.PI * 2 * i) / 12
+        return <path key={i} d={star(36 + Math.sin(a) * 9, 22 - Math.cos(a) * 9.6, 2.2)} fill="#FFCC00" />
+      })}
+      <rect x={10} y={0} width={50} height={20} fill={`url(#${id}gloss)`} opacity="0.3" />
+    </Flag>
+  ),
+  /* the Indian flag: saffron, white and green with the navy Ashoka chakra, on a pole */
+  'flag-in': (id) => (
+    <Flag id={id} k="in">
+      <rect x={10} y={0} width={50} height={15.8} fill="#FF9933" />
+      <rect x={10} y={15.5} width={50} height={13.2} fill="#FFFFFF" />
+      <rect x={10} y={28.5} width={50} height={15.5} fill="#138808" />
+      <circle cx={36} cy={22} r={5} fill="none" stroke="#000080" strokeWidth="1.1" />
+      {Array.from({ length: 12 }, (_, i) => {
+        const a = (Math.PI * i) / 12
+        return <path key={i} d={`M ${(36 - Math.cos(a) * 4.8).toFixed(2)} ${(22 - Math.sin(a) * 4.8).toFixed(2)} L ${(36 + Math.cos(a) * 4.8).toFixed(2)} ${(22 + Math.sin(a) * 4.8).toFixed(2)}`} stroke="#000080" strokeWidth="0.5" />
+      })}
+      <circle cx={36} cy={22} r={1.1} fill="#000080" />
+      <rect x={10} y={0} width={50} height={20} fill={`url(#${id}gloss)`} opacity="0.3" />
+    </Flag>
+  ),
+  /* the US flag: thirteen red and white stripes with a blue canton of white stars, on a pole */
+  'flag-us': (id) => (
+    <Flag id={id} k="us">
+      <rect x={10} y={0} width={50} height={44} fill="#FFFFFF" />
+      {Array.from({ length: 7 }, (_, i) => <rect key={i} x={10} y={i === 0 ? 0 : 3.2 + i * 2 * 2.94} width={50} height={i === 0 ? 6.14 : 2.94} fill="#B22234" />)}
+      <rect x={10} y={0} width={24} height={23.8} fill="#3C3B6E" />
+      {[0, 1, 2, 3, 4].map((r) => [0, 1, 2, 3].map((c) => <circle key={`${r}-${c}`} cx={16.5 + c * 4.4 + (r % 2) * 2.2} cy={6.4 + r * 3.8} r={0.95} fill="#FFFFFF" />))}
+      <rect x={10} y={0} width={50} height={20} fill={`url(#${id}gloss)`} opacity="0.3" />
+    </Flag>
+  ),
+  /* consent: a document with a green tick and an orange pen */
+  consent: (id) => (
+    <>
+      <Shadow id={id} rx={22} />
+      <Sheet id={id} x={8} y={6} w={36} h={48} />
+      {[15, 22, 29].map((y, i) => <rect key={y} x={14} y={y} width={i === 2 ? 14 : 22} height={3.4} rx={1.7} fill={i === 0 ? T.blue[1] : '#B7C6E4'} />)}
+      <Ball id={id} cx={22} cy={44} r={8} t="green" />
+      <W d="M 18 44 l 3 3 l 5.5 -5.5" w={2.8} />
+      <g transform="rotate(32 48 34)">
+        <Block id={id} x={44.5} y={12} w={8} h={30} r={3} t="orange" dz={2} />
+        <rect x={44.5} y={14} width={8} height={4} fill={T.orange[3]} opacity="0.55" />
+        <path d="M 44.5 44 H 52.5 L 48.5 52 Z" fill={L(id, 'steel')} />
+        <path d="M 47.3 49.5 H 49.7 L 48.5 52 Z" fill={T.navy[1]} />
+      </g>
+    </>
+  ),
+  /* a tally counter: a blue body, a digit window, an orange push button */
+  counter: (id) => (
+    <>
+      <Shadow id={id} rx={25} />
+      <Block id={id} x={39} y={6} w={13} h={10} r={3} t="orange" dz={2} />
+      <Block id={id} x={5} y={14} w={54} h={38} r={9} t="blue" dz={4} />
+      <rect x={10} y={21} width={44} height={20} rx={4} fill={T.navy[2]} />
+      {[[13.5, 0], [27.5, 4], [41.5, 7]].map(([x, d]) => (
+        <g key={x}>
+          <rect x={x} y={23.5} width={9} height={15} rx={1.6} fill={T.paper[1]} />
+          <path d={seg7(x + 2, 25.5, 5, 11, d)} fill="none" stroke={T.navy[1]} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+      ))}
+      <Ball id={id} cx={32} cy={47} r={2.6} t="steel" />
+    </>
+  ),
+  /* ------ added 2026-11-20 for Session 18 (Cloud-Native Applications) */
+  /* a message queue: three envelopes waiting in a navy channel, chevrons showing the one way they move */
+  queue: (id) => (
+    <>
+      <Shadow id={id} rx={27} />
+      <rect x={4} y={31} width={56} height={9} rx={4} fill={T.navy[2]} />
+      {([[6, 'sky'], [24, 'sky'], [42, 'blue']] as [number, Tone][]).map(([x, t]) => (
+        <g key={x}>
+          <Block id={id} x={x} y={20} w={16} h={18} r={3} t={t} dz={2} gloss={false} />
+          <path d={`M ${x + 2.2} 21.8 L ${x + 8} 27.6 L ${x + 13.8} 21.8`} fill="none" stroke="#FFFFFF" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" opacity="0.92" />
+          <path d={`M ${x + 2.2} 34.5 L ${x + 5.4} 31.2 M ${x + 13.8} 34.5 L ${x + 10.6} 31.2`} fill="none" stroke="#FFFFFF" strokeWidth="1.2" strokeLinecap="round" opacity="0.4" />
+        </g>
+      ))}
+      <Block id={id} x={3} y={35} w={58} h={15} r={5} t="navy" dz={3.5} />
+      {[14, 32, 50].map((x) => <W key={x} d={`M ${x - 2} 38.8 L ${x + 2.2} 42.5 L ${x - 2} 46.2`} w={2.4} c="#8DB0FF" />)}
+    </>
+  ),
+  /* a circuit breaker: a module box with terminal screws and a toggle lever (up = closed, current flows) */
+  breaker: (id) => (
+    <>
+      <Shadow id={id} rx={20} />
+      <Block id={id} x={13} y={5} w={38} h={51} r={6} t="blue" dz={4} />
+      {[[22, 11.5], [42, 11.5], [22, 49], [42, 49]].map(([x, y]) => (
+        <g key={`${x}-${y}`}>
+          <circle cx={x} cy={y + 0.6} r={3.7} fill={T.navy[2]} />
+          <Ball id={id} cx={x} cy={y} r={3} t="steel" />
+          <path d={`M ${x - 1.8} ${y + 1.6} L ${x + 1.8} ${y - 1.6}`} stroke={T.steel[3]} strokeWidth="1" strokeLinecap="round" />
+        </g>
+      ))}
+      <rect x={21} y={19} width={22} height={24} rx={4} fill={T.navy[2]} />
+      <rect x={27} y={33} width={10} height={6} rx={2} fill={T.navy[1]} />
+      <Block id={id} x={24.5} y={15} w={15} h={16} r={4} t="paper" dz={3.5} />
+      <rect x={28} y={19.5} width={8} height={2.2} rx={1.1} fill={T.paper[3]} />
+    </>
+  ),
+  /* a stopwatch: crown button on a stem, a side button, a ticked face and one orange hand */
+  stopwatch: (id) => (
+    <>
+      <Shadow id={id} rx={18} />
+      <g transform="rotate(45 32 36)"><Block id={id} x={29.5} y={10} w={5} h={7} r={1.5} t="steel" dz={1.5} gloss={false} /></g>
+      <Block id={id} x={29} y={9} w={6} h={8} r={1.5} t="steel" dz={1.5} gloss={false} />
+      <Block id={id} x={24} y={3} w={16} h={7.5} r={3.5} t="sky" dz={2} />
+      <Ball id={id} cx={32} cy={36} r={21} t="blue" />
+      <circle cx={32} cy={36} r={15.5} fill={L(id, 'paper')} />
+      {Array.from({ length: 12 }, (_, i) => {
+        const a = (Math.PI * i) / 6
+        const r0 = i % 3 === 0 ? 11 : 12.6
+        return <path key={i} d={`M ${(32 + Math.sin(a) * r0).toFixed(2)} ${(36 - Math.cos(a) * r0).toFixed(2)} L ${(32 + Math.sin(a) * 14.2).toFixed(2)} ${(36 - Math.cos(a) * 14.2).toFixed(2)}`} stroke={T.navy[0]} strokeWidth={i % 3 === 0 ? 1.8 : 1.1} strokeLinecap="round" />
+      })}
+      <W d="M 32 36 L 39.5 26.5" w={3.2} c={T.orange[2]} />
+      <circle cx={32} cy={36} r={2.8} fill={T.navy[1]} />
+    </>
+  ),
+  /* a console window: title bar, two output lines and a >_ prompt */
+  terminal: (id) => (
+    <>
+      <Shadow id={id} rx={24} />
+      <Block id={id} x={5} y={9} w={54} h={45} r={7} t="navy" dz={4} />
+      <rect x={5} y={9} width={54} height={10} rx={6} fill="#2E4A7E" />
+      <rect x={5} y={14} width={54} height={5} fill="#2E4A7E" />
+      {[12, 18, 24].map((x) => <circle key={x} cx={x} cy={14} r={1.7} fill="#FFFFFF" opacity="0.75" />)}
+      <rect x={12} y={24} width={32} height={3.2} rx={1.6} fill="#8DB0FF" />
+      <rect x={12} y={30} width={22} height={3.2} rx={1.6} fill="#5E7AAE" />
+      <W d="M 12.5 37.5 L 18.5 42 L 12.5 46.5" w={3.6} c={T.orange[1]} />
+      <rect x={22} y={44.4} width={11} height={3.6} rx={1.8} fill="#FFFFFF" />
+    </>
+  ),
+  /* a small rocket climbing to the upper right: blue body, a glass window, navy fins, an orange flame */
+  rocket: (id) => {
+    const body = 'M 32 3 C 42 10 45 24 42 44 H 22 C 19 24 22 10 32 3 Z'
+    const finL = 'M 23 29 L 13 41 Q 11.5 44.5 15 44.5 L 23 43 Z'
+    const finR = 'M 41 29 L 51 41 Q 52.5 44.5 49 44.5 L 41 43 Z'
+    return (
+      <>
+        <Shadow id={id} rx={18} cx={30} />
+        <g transform="translate(0 3) rotate(40 32 32)">
+          <path d={finL} fill={side('navy')} /><path d={finR} fill={side('navy')} /><path d={body} fill={side('blue')} />
+        </g>
+        <g transform="rotate(40 32 32)">
+          <path d="M 25.5 46 Q 32 64 38.5 46 Z" fill={L(id, 'orange')} />
+          <path d="M 28.5 46 Q 32 57 35.5 46 Z" fill={T.gold[0]} />
+          <path d={finL} fill={L(id, 'navy')} /><path d={finR} fill={L(id, 'navy')} />
+          <path d={body} fill={L(id, 'blue')} />
+          <path d="M 27 13 C 28.5 9 30.5 6.5 32 5.5 C 29 11 27.2 18 26.8 27 C 25.6 22 25.6 17 27 13 Z" fill="#FFFFFF" opacity="0.42" />
+          <rect x={23.5} y={42} width={17} height={5} rx={2} fill={L(id, 'steel')} />
+          <circle cx={32} cy={22} r={6.6} fill={T.navy[2]} />
+          <circle cx={32} cy={22} r={4.9} fill={`url(#${id}glass)`} />
+          <ellipse cx={30.4} cy={20.3} rx={2} ry={1.1} fill="#FFFFFF" opacity="0.85" />
+        </g>
+      </>
+    )
+  },
+  /* a shopping cart: a blue wire basket holding two parcels, a navy frame and handle, two wheels */
+  cart: (id) => (
+    <>
+      <Shadow id={id} rx={24} cx={34} />
+      <Block id={id} x={22} y={7} w={13} h={12} r={2.5} t="orange" dz={2} />
+      <Block id={id} x={36.5} y={10} w={11} h={10} r={2.5} t="sky" dz={2} />
+      <Solid id={id} t="blue" d="M 15 16 H 55 Q 58 16 57.2 19 L 52.5 36 Q 51.8 39 48.8 39 H 21 Z" gloss="M 18 18.5 H 54 L 53 22 C 41 20.5 30 20.5 19 22.5 Z" />
+      {[27, 35, 43].map((x) => <path key={x} d={`M ${x} 19 L ${x - 0.8} 36`} stroke="#FFFFFF" strokeOpacity="0.45" strokeWidth="1.8" strokeLinecap="round" />)}
+      <path d="M 18 27.5 H 54.5" stroke="#FFFFFF" strokeOpacity="0.45" strokeWidth="1.8" strokeLinecap="round" />
+      <W d="M 4 9 H 11 L 21 43 H 51" w={4} c={T.navy[1]} />
+      <Ball id={id} cx={25} cy={51} r={4.8} t="navy" />
+      <Ball id={id} cx={47} cy={51} r={4.8} t="navy" />
+    </>
+  ),
+  /* an API: a blue endpoint tile with { } and a plug on its right edge */
+  api: (id) => (
+    <>
+      <Shadow id={id} rx={27} />
+      <Block id={id} x={42} y={27} w={8} h={9} r={1.5} t="steel" dz={2} gloss={false} />
+      <rect x={56} y={24} width={6} height={3.6} rx={1.3} fill={L(id, 'gold')} />
+      <rect x={56} y={35.4} width={6} height={3.6} rx={1.3} fill={L(id, 'gold')} />
+      <Block id={id} x={48} y={19} w={9} h={25} r={3} t="navy" dz={3} />
+      <Block id={id} x={3} y={11} w={41} h={41} r={9} t="blue" dz={4} />
+      <W d="M 17 20 Q 12 20 12 25 V 28 Q 12 31.5 9 31.5 Q 12 31.5 12 35 V 38 Q 12 43 17 43" w={3.3} />
+      <W d="M 30 20 Q 35 20 35 25 V 28 Q 35 31.5 38 31.5 Q 35 31.5 35 35 V 38 Q 35 43 30 43" w={3.3} />
+      <Ball id={id} cx={23.5} cy={31.5} r={3.2} t="orange" />
+    </>
+  ),
+  /* one solid glossy block: a single process, a monolith */
+  cube: (id) => (<><Shadow id={id} rx={24} cy={58} /><IsoCube id={id} cx={32} cy={18} a={23} h={26} t="blue" /></>),
+  /* three smaller blocks grouped: microservices */
+  cubes: (id) => (
+    <>
+      <Shadow id={id} rx={27} cy={58} />
+      <IsoCube id={id} cx={32} cy={17} a={12.5} h={14} t="blue" />
+      <IsoCube id={id} cx={18.5} cy={34} a={12.5} h={14} t="blue" />
+      <IsoCube id={id} cx={45.5} cy={34} a={12.5} h={14} t="blue" />
+    </>
+  ),
+  /* a die: a blue cube with white pips (1 on top, 2 left, 3 right) */
+  dice: (id) => {
+    const cx = 32, cy = 19, a = 22, b = 11, h = 25
+    const M: Record<string, string> = { top: `${a} ${-b} ${a} ${b} ${cx - a} ${cy}`, left: `${a} ${b} 0 ${h} ${cx - a} ${cy}`, right: `${a} ${-b} 0 ${h} ${cx} ${cy + b}` }
+    const pips = (f: string, pts: number[][], c = '#FFFFFF', r = 0.135) => (
+      <g transform={`matrix(${M[f]})`}>{pts.map(([u, v]) => <circle key={`${u}-${v}`} cx={u} cy={v} r={r} fill={c} />)}</g>
+    )
+    return (
+      <>
+        <Shadow id={id} rx={23} cy={58} />
+        <IsoCube id={id} cx={cx} cy={cy} a={a} h={h} t="blue" />
+        {pips('top', [[0.5, 0.5]], T.orange[1], 0.17)}
+        {pips('left', [[0.28, 0.28], [0.72, 0.72]])}
+        {pips('right', [[0.26, 0.26], [0.5, 0.5], [0.74, 0.74]])}
+      </>
+    )
+  },
+  /* a power button: a blue sphere with the white power symbol */
+  power: (id) => (<><Shadow id={id} rx={17} /><Ball id={id} cx={32} cy={31} r={23} t="blue" /><W d="M 24.2 21.5 A 12.5 12.5 0 1 0 39.8 21.5" w={4.6} /><W d="M 32 15 V 30" w={4.6} /></>),
+  /* a health check: a blue monitor showing an ECG pulse line and a small pink heart */
+  heartbeat: (id) => (
+    <>
+      <Shadow id={id} rx={22} />
+      <Block id={id} x={18} y={51} w={28} h={5} r={2.5} t="steel" dz={1.5} gloss={false} />
+      <Block id={id} x={27} y={44} w={10} h={8} r={2} t="steel" dz={1} gloss={false} />
+      <Block id={id} x={3} y={7} w={58} h={40} r={7} t="blue" dz={4} />
+      <rect x={8} y={12} width={48} height={30} rx={4} fill={T.navy[2]} />
+      <path d="M 20 12 V 42 M 32 12 V 42 M 44 12 V 42 M 8 22 H 56 M 8 32 H 56" stroke="#2D63FB" strokeOpacity="0.35" strokeWidth="0.8" />
+      <W d="M 11 30 H 19.5 L 23.5 21 L 29 39 L 33.5 25 L 36.5 30 H 53" w={2.8} c={T.sky[0]} />
+      <g transform="translate(44.5 14) scale(0.2)">
+        <Solid id={id} t="pink" dz={4} d="M 32 54 C 15 43 6 33 6 22.5 C 6 13.5 12.5 7 21 7 C 26 7 30 9.5 32 14 C 34 9.5 38 7 43 7 C 51.5 7 58 13.5 58 22.5 C 58 33 49 43 32 54 Z" />
+      </g>
     </>
   ),
 }

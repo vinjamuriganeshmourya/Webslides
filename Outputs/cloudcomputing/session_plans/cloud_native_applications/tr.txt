@@ -1,0 +1,708 @@
+Session 18 : Cloud-Native Application Design
+
+
+RECAP: Session 17 : Security Practices & Compliance
+       1. Defense in Depth in Practice: Layered controls on a real deployment
+       2. Configuration Hygiene: Baseline hardening & secure defaults; cloud security
+       posture management (CSPM); automated scanning
+       3. Logging, Auditing & Detection: Audit trails; log retention; security event alerting;
+       managed threat detection
+       4. Secrets Management: Secrets outside code & images; secret stores; rotation
+       5. Compliance Frameworks: ISO 27001 & SOC 2; GDPR, HIPAA & DPDP Act 2023;
+       data residency; shared responsibility for compliance
+
+Agenda for Today's Session
+       1. Cloud-Native Principles: Designing for elasticity, failure & change
+       2. The Twelve-Factor App: Config & backing services; processes & disposability; logs
+       as event streams
+       3. Monolith vs Microservices: Trade-offs; service boundaries; inter-service
+       communication
+       4. Statelessness: Stateless vs stateful workloads; externalizing state
+       5. Scalability & Resilience Patterns: Horizontal scaling, caching & queues; retries,
+       timeouts, circuit breakers & graceful degradation
+
+
+
+--------------------------------------- SECTION 1: 1. Cloud-Native Principles: Designing
+for elasticity, failure & change ---------------------------------------
+
+Slide 1: What Cloud-Native Design Means
+Heading: Cloud-Native Design
+
+Subheading: Three Core Principles
+
+Content:
+
+Cloud-native design means building an application assuming its servers, network paths and
+traffic levels will all change constantly, rather than bolting resilience on after an outage.
+
+●​ Elasticity: capacity expands and shrinks automatically with real demand
+●​ Failure tolerance: the system keeps serving when a component dies
+●​ Ease of change: new code and configuration roll out without downtime
+Analogy:An automatic traffic signal adjusts its timing based on traffic flow, handling
+busy and quiet periods efficiently — just as cloud-native applications adjust resources
+based on demand and are designed to handle failures.
+
+Visual Guidance: Three-box diagram: Elasticity, Failure Tolerance, Ease of Change, each
+pointing into one labelled 'Cloud-Native Application'.
+
+Speaker Notes: "Frame cloud-native as a mindset, not a tool — design decisions made
+upfront because failure is routine, not exceptional. Point to the three boxes as the roadmap
+for this section. Interview angle: cloud-native versus merely 'lifted-and-shifted' legacy apps."
+
+
+
+Slide 2: Designing For Elasticity
+Heading: Designing For Elasticity
+
+Subheading: Scaling As Default
+
+Content:
+
+Designing for elasticity means building components that scale independently and
+externalizing state where possible, so capacity can be added by launching more instances
+rather than resizing one.
+
+●​   Auto Scaling Groups attach new instances to the load balancer's target group
+●​   Reactive scaling adds capacity when a CloudWatch alarm threshold is breached
+●​   Predictive scaling forecasts demand from historical traffic patterns in advance
+●​   Stateless components scale out freely
+●​   Stateful components are harder to scale because they must manage shared or persistent
+     state
+
+For variable demand, right-sized elastic fleets usually cost less than one large fixed server,
+since idle capacity is released when demand drops.
+
+Visual Guidance: Traffic-spike timeline: demand curve rising, Auto Scaling Group adding
+instance icons behind a load balancer, curve falling with instances removed.
+
+Speaker Notes: "Emphasise that elasticity is a design choice, not just an AWS feature — the
+application must tolerate instances appearing and disappearing. Point to the Auto Scaling
+Groups console as where this is configured. Exam hook: why a stateful component cannot
+scale elastically without extra work."
+
+
+
+Slide 3: Designing For Failure
+Heading: Designing For Failure
+
+Subheading: Assume It Breaks
+Content:
+
+Where the single-point-of-failure problem is solved by adding backend servers, cloud-native
+design goes further: it assumes any single component, availability zone, or dependency can
+fail without warning, and contains the damage.
+
+●​ Multi-AZ deployment runs instances in separate Availability Zones, each made of one or
+   more isolated data centers, so one zone failing does not stop the application
+●​ Bulkhead isolation confines one service's failure from spreading system-wide
+●​ Blast radius: how much of the system one failure can reach
+●​ AWS Fault Injection Service deliberately breaks components to test recovery
+
+Visual Guidance: Two availability zones side by side, one zone's server icon greyed out as
+failed, traffic arrow rerouting entirely to the healthy zone.
+
+Speaker Notes: "Explain that failure tolerance means designing the blast radius small, not
+just adding a spare server. Point to the Fault Injection Service console as where teams
+deliberately rehearse failure. Interview hook: ask the difference between redundancy and
+fault isolation."
+
+
+
+Slide 4: Designing For Change
+Heading: Designing For Change
+
+Subheading: Immutable Infrastructure
+
+Content:
+
+Cloud-native systems expect frequent deployment, so they replace running instances with a
+new machine image rather than editing a live server, keeping every environment
+reproducible.
+
+●​ Immutable infrastructure replaces running instances with newly built and tested
+   instances instead of modifying them in place
+●​ Infrastructure as Code templates recreate identical environments on demand
+●​ Loosely coupled services deploy independently without a full-system restart
+
+Together, elasticity, failure tolerance and ease of change shape how configuration, processes
+and logging are structured next.
+
+Visual Guidance: Loop diagram: old instance image retired, new image launched, load
+balancer shifting traffic across — labelled 'replace, not patch'.
+
+Speaker Notes: "Stress that immutability removes configuration drift, since no server is
+ever hand-edited after launch. Point to how an updated machine image replaces, rather than
+patches, a fleet. Exam hook: why immutable infrastructure pairs naturally with
+Infrastructure as Code."
+--------------------------------------- SECTION 2: 2. The Twelve-Factor App: Config &
+backing services; processes & disposability; logs as event streams
+---------------------------------------
+
+Slide 5: Why The Twelve-Factor App Exists
+Heading: Twelve-Factor App
+
+Subheading: A Portability Checklist
+
+Content:
+
+Cloud applications once broke when moved between environments, so a common checklist
+emerged for portable, cloud-ready design. The Twelve-Factor App is a methodology of 12
+rules, published by Heroku engineers in 2011, for software that runs reliably on any cloud
+platform.
+
+●​ The twelve factors cover codebase, dependencies, config, backing services, build-
+   release-run, processes, port binding, concurrency, disposability, dev/prod parity, logs
+   and admin processes
+●​ Five factors matter most for cloud-native design: config, backing services, processes,
+   disposability and logs
+●​ Each factor fixes one operational failure, not a style choice
+●​ Widely followed when building apps for platforms such as Heroku, AWS Elastic
+   Beanstalk and Kubernetes
+
+Analogy: A travel checklist helps people prepare for different trips by covering essentials
+like tickets, documents, luggage and transport. The Twelve-Factor App works similarly by
+providing a common set of principles for building and running applications reliably across
+different environments.
+
+Visual Guidance: Vertical list of 12 factor names in small text, with three boxes highlighted:
+Config, Processes/Disposability, Logs.
+
+Speaker Notes: "Open by noting cloud apps once broke when moved between
+environments, which is the gap this methodology closes. Mention Heroku's 2011 origin as
+an interview-relevant fact. Point out that only three of the twelve factors are covered in this
+session."
+
+
+
+Slide 6: Config And Backing Services
+Heading: Config & Services
+Subheading: Decoupling App From Env
+
+Content:
+
+The config factor keeps every environment-specific value outside the code, so one build runs
+unchanged anywhere. A backing service is any resource the application consumes over the
+network, attached only through that config.
+
+●​ Config: database URLs and feature flags live in environment variables; API keys and
+   passwords come from a secret store
+●​ Same codebase deploys to dev, staging and production by changing only config
+●​ Backing service: a network-consumed resource — database, queue, cache or SMTP
+   server
+●​ Swapping a backing service of the same type, such as a local MySQL database for
+   Amazon RDS, needs only a config change, not a code change
+●​ AWS example: RDS endpoint and SQS queue URL passed as environment variables
+
+Visual Guidance: Two-column diagram: an app-code box separate from a config/env-vars
+box, with arrows to RDS, SQS and cache icons as backing services.
+
+Speaker Notes: "Stress that config covers every environment value, including but not
+limited to secrets. Use the RDS and SQS endpoint example to show the same build moving
+across environments. Ask: why can the same image run unchanged in staging and
+production?"
+
+
+
+Slide 7: Processes And Disposability
+Heading: Disposable Processes
+
+Subheading: Stateless By Design
+
+Content:
+
+Where config makes an application portable, disposability makes it elastic: each process
+instance must start, work and terminate without any special handling or memory of its own.
+
+●​   Process: application runs as stateless, share-nothing processes
+●​   Session state lives in backing services, never in process memory
+●​   Disposability: processes start within a few seconds and shut down on signal
+●​   Graceful shutdown drains in-flight requests before the process exits
+●​   Fast startup lets autoscaling add capacity quickly, keeping idle cost low
+
+Visual Guidance: Row of identical process boxes labelled stateless, with a start-arrow and a
+stop-arrow showing fast launch and graceful shutdown.
+
+Speaker Notes: "Tie statelessness to disposability — a process with no memory of its own
+loses nothing when it is killed. Give the example of a container task starting in seconds to
+meet an autoscaling trigger. Interview hook: ask what happens to an in-flight request when
+an instance is scaled in."
+
+
+
+Slide 8: Logs As Event Streams
+Heading: Logs As Streams
+
+Subheading: No Local Log Files
+
+Content:
+
+A process that can be disposed of anytime cannot depend on a local log file, which
+disappears with it. The twelve-factor rule instead treats logs as a continuous, time-ordered
+stream of events written to standard output.
+
+●​   Application writes log events to standard output instead of managing local log files
+●​   Container runtime or host platform captures the stream in real time
+●​   A log router aggregates streams off the host for central storage
+●​   Centralised storage keeps logs accessible after the process is destroyed
+●​   AWS location: container logs land in Amazon CloudWatch Logs log groups
+
+Visual Guidance: Flow diagram: app stdout arrow feeding a log router box, which feeds a
+central log store icon.
+
+Speaker Notes: "Explain why writing to a local log file fails once the container disposes of
+itself. Point to CloudWatch Logs as the real AWS location collecting these streams. Interview
+hook: ask why twelve-factor forbids an application from managing its own log files."
+
+
+
+
+Slide 10: Twelve-Factor Sets Up Scaling
+Heading: Discipline Enables Scale
+
+Subheading: Bridge To Architecture
+
+Content:
+
+A disposable, config-driven process is the basic unit a cloud platform scales; how many such
+units make up one system, and how they communicate, decides the application's
+architecture.
+
+●​ Twelve-factor principles make horizontal scaling and resilience patterns easier to apply
+●​ Stateless, disposable processes can be replaced safely during scaling or failure
+●​ The same discipline applies whether the system is one service or many
+Visual Guidance: Single funnel diagram narrowing the three factors into one box labelled
+disposable, scalable unit.
+
+Speaker Notes: "Close by stating that twelve-factor compliance is what lets a platform scale
+and replace instances automatically. Note that this discipline holds whether the system is
+one service or many. Interview hook: ask why disposability matters for autoscaling cost."
+
+
+
+
+--------------------------------------- SECTION 3: 3. Monolith vs Microservices: Trade-
+offs; service boundaries; inter-service communication
+---------------------------------------
+
+Slide 11: Monolith vs Microservices Architecture Styles
+Heading: Monolith Vs Microservices
+
+Subheading: Two Architecture Styles
+
+Content:
+
+A monolith bundles every feature into one codebase and deployment unit. Microservices
+split that into many independent services, each owning one business capability.
+
+●​ Monolith: tightly coupled modules deployed together, usually sharing one database
+●​ Microservices: each service keeps its own datastore and API
+●​ Companies split monoliths into microservices mainly to scale parts independently
+
+Analogy: A single school office manages admissions, fees and exams together, so a rush in
+admissions slows everything. Separate offices handle each function independently, so the
+fees office can add staff during fee week without changing the others. This is similar to
+monolithic and microservices architectures.
+
+Visual Guidance: Diagram: a monolith box with all modules inside; beside it, separate
+microservice boxes connected by thin arrows, each labelled with a business capability.
+
+Speaker Notes: "Explain monolith as one big program and microservices as the same
+features split into independent small programs, using the kitchen-versus-food-court picture.
+Interviewers ask why companies migrate to microservices — independent scaling is the
+answer."
+
+
+
+Slide 12: Monolith vs Microservices Trade-offs Compared
+Heading: Architecture Trade-offs
+Subheading: Comparing The Costs
+
+Content:
+
+Splitting an application into services shifts complexity from code into the network. The right
+choice depends on team size, release frequency and how failures should be contained.
+
+Aspect                         Monolith                         Microservices
+Deployment                     One unit redeployed for any Each service deployed
+                               change                           independently
+Scaling                        Whole application scaled         Only the busy service scaled
+                               together
+Fault isolation                One crash can take down          A failing service can be
+                               everything                       isolated from the rest"
+Where it runs on AWS           Elastic Beanstalk  or a single   Separate services on ECS or
+                               EC2 fleet                        EKS
+Scaling only the busy service costs less than scaling an entire monolith to handle one
+bottleneck.
+
+Visual Guidance: Show the comparison table full-screen; highlight the Fault isolation row
+to stress containment.
+
+Speaker Notes: "Walk through each row, stressing that microservices trade simplicity for
+independent scaling and fault containment. Point to the AWS row to ground this in ECS and
+EKS. Ask when a monolith is still correct — low traffic, small team."
+
+
+
+Slide 13: Defining Service Boundaries Correctly
+Heading: Service Boundaries
+
+Subheading: Where To Split
+
+Content:
+
+Splitting a monolith helps only when each service maps to one business capability; a
+boundary drawn through the wrong seam forces services to call each other constantly.
+
+●​ Boundary follows a business capability: orders, payments, inventory separately
+●​ Each service owns its data; other services reach it through the service's API, never its
+   tables
+●​ High cohesion inside a service, loose coupling across services
+●​ This bounded-context grouping comes from domain-driven design practice
+
+Visual Guidance: Diagram: monolith box splitting along dashed lines into Orders, Payments
+and Inventory boxes, each with its own small database icon.
+Speaker Notes: "Stress that boundaries follow business capabilities, not technical layers
+like all-database-code, using orders split from payments as the example. This is the
+bounded-context idea from domain-driven design, often asked as how to size a
+microservice."
+
+
+
+Slide 14: Inter-Service Communication Patterns Explained
+Heading: Inter-Service Communication
+
+Subheading: Sync Vs Async Calls
+
+Content:
+
+Once services run as separate processes across a network, they must call each other directly
+or through an intermediary — unlike modules in a single codebase, which call each other in
+the same process.
+
+●​   Synchronous: REST or gRPC call, caller waits for the response
+●​   Asynchronous: a message queue or event bus decouples sender and receiver
+●​   API gateway gives clients one entry point to many services
+●​   AWS maps these to API Gateway and SQS or SNS
+
+These communication choices shape how a container-orchestration platform routes traffic
+between running service instances.
+
+Visual Guidance: Diagram: client arrow into an API gateway box, which fans out to several
+service boxes; a separate arrow shows one service dropping a message onto a queue for
+another to read later.
+
+Speaker Notes: "Explain synchronous calls as a phone call where the caller waits,
+asynchronous as leaving a message read later. Point to API Gateway and SQS as the concrete
+AWS services for each pattern. Ask when to choose async over sync — decoupling and
+resilience to downstream failures."
+
+
+
+
+--------------------------------------- SECTION 4: 4. Statelessness: Stateless vs stateful
+workloads; externalizing state ---------------------------------------
+
+Slide 15: Stateless Vs Stateful Workloads
+Heading: Stateless Vs Stateful
+
+Subheading: Two Workload Types
+
+Content:
+Cloud-native design treats every incoming request as independent wherever possible,
+because an elastic fleet must add or remove instances without losing anything a user needs.
+A stateless workload keeps no client-specific data between calls; a stateful workload must
+retain memory of what happened before.
+
+●​ Stateless examples: web front ends, API tiers, Lambda functions
+●​ Stateful examples: relational databases, message queues, legacy session stores
+●​ Elasticity assumes any healthy stateless instance can serve any request, so instances are
+   easy to replace
+●​ Stateful components need identity or replication to survive restarts
+
+Analogy: In one hotel, guest details are stored in a central system, so any receptionist can
+assist them (stateless). In another, each receptionist remembers guest details personally, so
+guests must return to the same receptionist (stateful).
+
+Visual Guidance: Diagram: left shows a stateless tier — any instance box serving any
+request; right shows a stateful store box labelled with persistent identity.
+
+Speaker Notes: "Stress that statelessness is an architecture-level design choice, not only
+something inside one function. Ask: why can a stateless instance be killed and replaced
+freely while a database node cannot? Interviewers often probe this distinction when asking
+how a system scales."
+
+
+
+Slide 16: Externalizing State
+Heading: Externalizing State
+
+Subheading: Where State Lives
+
+Content:
+
+Because instances disappear on scale-in or failure, anything that must outlive a single
+request moves out of the compute tier into a dedicated backing service.
+
+●​   Session and cache data: externalized to a shared cache such as Amazon ElastiCache
+●​   Durable records: externalized to a managed database such as DynamoDB or RDS
+●​   Uploaded files and binaries: externalized to object storage such as Amazon S3
+●​   Configuration and secrets: pulled from a config store, not baked into the image
+
+Visual Guidance: Diagram: compute instances with arrows pointing out to four backing-
+service boxes — cache, database, object storage, config store.
+
+Speaker Notes: "Point out this is the backing-services idea applied specifically to state
+rather than configuration. Ask: if a cache node fails, does the stateless web tier lose any
+data? Mention DynamoDB and ElastiCache as the typical real-world choices."
+Slide 17: Instance Replacement Traced
+Heading: Instance Replacement Traced
+
+Subheading: Session Survives Swap
+
+Content:
+
+An auto-scaling group terminates an unhealthy instance mid-session; because the session
+itself was externalized, the next request succeeds without the user noticing.
+
+●​   Instance i-0a1b2c3d4e5f67890 on 10.0.1.15 fails a health check on port 8080
+●​   Auto Scaling launches replacement instance i-0f9e8d7c6b5a43210 within a few minutes
+●​   Session key sess_7f3a2b stays in ElastiCache with a 30-minute TTL
+●​   New instance reads the same session key from the shared cache
+●​   The user stays logged in through the swap
+
+Visual Guidance: Timeline diagram: instance A fails, Auto Scaling launches instance B, both
+arrows pointing to one shared Redis cache box holding the session key.
+
+Speaker Notes: "Walk through the timeline as a sequence, stressing that the cache — not
+either instance — is the source of truth. Ask: what breaks here if the session lived only in the
+first instance's local memory? This is a classic interview probe on designing for failure."
+
+
+
+Slide 18: Stateless Vs Stateful Trade-offs
+Heading: Stateless Vs Stateful
+
+Subheading: Trade-offs Compared
+
+Content:
+
+Externalizing state is not free — it adds a network hop and a dependency on the backing
+service's own availability, so some workloads are stateful by necessity.
+
+Dimension                        Stateless Tier               Stateful Component
+Scaling                          Add/remove instances         Needs replication or
+                                 freely                       sharding
+Failure recovery                 Any instance can be          Requires data recovery or
+                                 replaced                     failover
+Typical services                 Web/API servers, Lambda      Databases, message brokers
+Design cost                      Extra hop to backing store   Built-in persistence
+                                                              complexity
+Removing state from compute lets every instance be treated as interchangeable, the
+assumption the scaling and resilience patterns build on directly.
+
+Visual Guidance: Two-column comparison table rendered as a simple side-by-side card
+layout, stateless left, stateful right.
+Speaker Notes: "Emphasise that stateful is not a design flaw — a database genuinely needs
+persistent identity. Ask: why can a stateless web tier scale with a simple policy while a
+database cannot scale the same way? This distinction anchors the scaling and resilience
+patterns coming up."
+
+
+
+
+--------------------------------------- SECTION 5: 5. Scalability & Resilience Patterns:
+Horizontal scaling, caching & queues; retries, timeouts, circuit breakers &
+graceful degradation ---------------------------------------
+
+Slide 19: Resilience Patterns Across A Cloud Application
+Heading: Resilience Patterns Map
+
+Subheading: Handling Failure At Scale
+
+Content:
+
+Distributed cloud systems fail in parts routinely; resilience patterns keep the rest of the
+system working when one piece does not.
+
+●​ Horizontal scaling: adding more instances to share growing load
+●​ Caching and queues: reduce load and absorb traffic bursts
+●​ Retries and timeouts: bound the wait and retry with backoff to recover from brief
+   failures
+●​ Circuit breakers: stop calls to a failing service quickly
+●​ Graceful degradation: serve a reduced response instead of none
+
+Visual Guidance: Flow diagram: client request passing through load balancer, cache, queue,
+then a service box with retry, circuit-breaker and fallback labels attached.
+
+Speaker Notes: "Frame this as the toolbox for staying available when parts fail; name all
+five, detail comes on later slides. Exam hook: list all five patterns in one line."
+
+
+
+Slide 20: Horizontal Scaling As A Resilience Tool
+Heading: Horizontal Scaling
+
+Subheading: Capacity And Resilience
+
+Content:
+
+Adding more identical instances behind a load balancer spreads load and also removes any
+single instance as a point of failure.
+●​   Replaces one large server with many smaller, interchangeable instances
+●​   A failing instance is swapped out without disrupting other requests
+●​   Needs externalized state, since any instance may handle any request
+●​   AWS: Auto Scaling Groups add instances behind a load balancer
+●​   Cost: scaling out adds instance-hour cost but buys fault isolation
+
+Visual Guidance: Three identical server icons behind a load balancer icon; one server icon
+greyed out and a new one appearing beside it.
+
+Speaker Notes: "Point out that horizontal scaling doubles as a resilience tool, not just a
+capacity one, and depends on statelessness. Exam hook: why can horizontal scaling only
+work with stateless services?"
+
+
+
+Slide 21: Caching And Queues For Load Spikes
+Heading: Caching And Queues
+
+Subheading: Absorbing Load Spikes
+
+Content:
+
+Caching keeps popular data close by so repeat reads skip the slow path; a queue holds work
+until a consumer is ready.
+
+●​   Cache-aside: application checks cache first, falls back to the database
+●​   Queue decouples producer and consumer, smoothing uneven traffic bursts
+●​   AWS: ElastiCache for caching, SQS for durable message queuing
+●​   Caching cuts repeated backend reads, while a queue lets producers continue without
+     waiting for consumers
+
+Analogy: A supermarket keeps frequently purchased items near the checkout for quick
+access (caching). During busy hours, customers wait in an orderly line instead of crowding
+the cashier (queuing).
+
+Visual Guidance: Diagram: client to cache (hit/miss branch) to queue to worker, with
+arrows showing each side moving at its own pace.
+
+Speaker Notes: "Explain cache-aside with a product-page read example. Point to
+ElastiCache and SQS as the AWS services used. Exam hook: why does a queue decouple
+producer speed from consumer speed?"
+
+
+
+Slide 22: Retries And Timeouts For Transient Failures
+Heading: Retries And Timeouts
+
+Subheading: Handling Transient Failures
+Content:
+
+A momentary glitch should not fail a request outright. A timeout bounds how long to wait
+for a reply, and a retry resends the request.
+
+●​ Exponential backoff: each retry waits longer, easing load on a struggling service
+●​ Jitter: randomizes the wait to stop retries arriving in sync
+●​ Retries need idempotent operations, such as calls with an idempotency key, or repeats
+   can duplicate effects
+●​ AWS SDKs apply backoff automatically on throttled or failed calls
+
+Visual Guidance: Timeline bar showing a request, a timeout boundary, a failed attempt,
+then a longer-spaced retry with a jitter marker.
+
+Speaker Notes: "Idempotency is the real exam trap — a retried payment call can double-
+charge. AWS SDKs retry automatically with backoff built in."
+
+
+
+Slide 23: Circuit Breakers Stop Cascading Calls
+Heading: Circuit Breaker Pattern
+
+Subheading: Stopping Cascading Failures
+
+Content:
+
+Retrying a service that is fully down wastes time and piles up requests; a circuit breaker
+stops calling it until it recovers.
+
+●​   Closed state: requests flow normally, failures are counted
+●​   Open state: calls fail fast without reaching the service
+●​   Half-open state: a few test requests check if it recovered
+●​   Prevents one failing service from exhausting callers' threads and connections
+
+Analogy: A household electrical breaker trips and cuts power the moment it senses a fault,
+instead of letting wiring keep burning — just as the software pattern trips open and stops
+calls to a failing service.
+
+Visual Guidance: State diagram: closed moves to open once failures cross a threshold, open
+moves to half-open after a wait, half-open returns to closed or open.
+
+Speaker Notes: "Name the three states clearly; half-open is the one learners forget. Service
+meshes or client libraries implement this pattern on AWS. Exam hook: what moves a
+breaker from half-open back to open?"
+Slide 24: Degrading Gracefully Instead Of Failing
+Heading: Graceful Degradation
+
+Subheading: Reduced But Working
+
+Content:
+
+When a dependency fails or slows down, a system can return a simpler response instead of
+none, keeping the core function alive.
+
+●​   Fallback response: cached or default data replaces a failed call
+●​   Feature shedding: non-critical features are disabled under heavy load
+●​   Partial results: showing some data beats showing an error page
+●​   Works together with circuit breakers, which trigger the fallback path
+
+Visual Guidance: Side-by-side screens: a full page versus a degraded page missing the
+recommendations widget but keeping core content.
+
+Speaker Notes: "Use an e-commerce example: a product page loads without the
+recommendations widget if that service is down. Exam hook: name one feature that is safe
+to shed under load."
+
+
+
+Slide 25: Tracing A Timed-Out Checkout Call
+Heading: Resilience Patterns Traced
+
+Subheading: One Request, One Failure
+
+Content:
+
+Consider an API call to a checkout service that times out under load; tracing the path shows
+how each pattern responds in order.
+
+●​ Request hits load balancer, forwarded to checkout service instance
+●​ Call exceeds the configured 3-second timeout and is abandoned
+●​ Client retries once after a 500ms backoff delay
+●​ Second attempt also times out; further calls fail the same way and the failure count
+   keeps rising
+●​ Breaker opens after 5 consecutive failures, blocking calls for 30 seconds
+●​ Fallback keeps the cart saved and shows a 'checkout busy, try again shortly' message
+   instead of a raw error
+
+Visual Guidance: Horizontal timeline with labelled steps: call, timeout, retry, breaker open,
+fallback response, each tagged with its time value.
+Speaker Notes: "Walk the timeline left to right, pausing at the breaker-open step since that
+is the one students forget. Emphasise the fallback returns stale-but-useful data, not an
+error."
+
+Key Takeaways
+       1. Cloud-Native Principles: Designing for elasticity, failure & change
+       2. The Twelve-Factor App: Config & backing services; processes & disposability; logs
+       as event streams
+       3. Monolith vs Microservices: Trade-offs; service boundaries; inter-service
+       communication
+       4. Statelessness: Stateless vs stateful workloads; externalizing state
+       5. Scalability & Resilience Patterns: Horizontal scaling, caching & queues; retries,
+       timeouts, circuit breakers & graceful degradation
+
+
+
+Upcoming Session : Building with Containers
+
+                             Thank You | All the Best
+

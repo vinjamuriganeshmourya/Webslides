@@ -176,6 +176,19 @@ Kept deliberately small. Add a file when a deck needs it, not in advance.
 | `resource/kms-external-key-store.svg` | a KMS external key store (imported / external key material) |
 | `resource/rds-instance.svg` | an RDS database instance |
 
+### Added 2026-11-20 (Cloud-Native Applications), from the Architecture Icons package 07/31/2026
+
+| File | What it is |
+|---|---|
+| `service/sqs.svg` | Amazon Simple Queue Service (SQS) |
+| `service/elasticache.svg` | Amazon ElastiCache |
+| `service/eks.svg` | Amazon Elastic Kubernetes Service (EKS) |
+| `service/fault-injection-service.svg` | AWS Fault Injection Service |
+| `resource/sqs-queue.svg` | an SQS queue |
+| `resource/elasticache-for-redis.svg` | ElastiCache for Redis |
+| `resource/elasticache-cache-node.svg` | an ElastiCache cache node |
+| `group/auto-scaling-group.svg` | the Auto Scaling group frame mark |
+
 ## Non-AWS marks
 
 GitHub, Docker, Jenkins and the rest are **not** here. They live in

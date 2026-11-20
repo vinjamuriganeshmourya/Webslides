@@ -148,9 +148,9 @@ export type Slide = Base &
     | { layout: 'agenda' }
     | { layout: 'breaker'; index: number; lab?: boolean; kicker?: string; title?: string }
     /** points on the left, a figure on the right (the deck's main slide) */
-    | { layout: 'points'; kicker: string; title: string; lead?: string; points: Point[]; figure?: Figure; pointsW?: number; figH?: number; note?: { text: string; tone?: 'info' | 'warn' } }
+    | { layout: 'points'; kicker: string; title: string; lead?: string; points: Point[]; figure?: Figure; pointsW?: number; figH?: number; note?: { text: string; tone?: 'info' | 'warn'; bg?: 'blue' } }
     /** a description above a centred figure */
-    | { layout: 'lead'; kicker: string; title: string; lead?: string; figure: Figure; figH?: number; figW?: number }
+    | { layout: 'lead'; kicker: string; title: string; lead?: string; leadW?: number; figure: Figure; figH?: number; figW?: number }
     /** a table, optionally under a lead */
     | { layout: 'table'; kicker: string; title: string; lead?: string; table: TableFigure; note?: { text: string; tone?: 'info' | 'warn' } }
     /** one enlarged screenshot with orange rings (R7.9); a ring with a fifth value 'band' is drawn as a soft orange
@@ -178,6 +178,11 @@ export type DeckData = {
     /** recap frame: the previous session's title and its section titles */
     previous?: { title: string; items: string[] }
     agenda: string[]
+    /** optional: the agenda slide's labels only ("\n" for a line break); breakers and section labels keep `agenda` */
+    agendaLabels?: string[]
+    /** optional: the agenda columns' relative widths (default equal), for a label that needs a wider column at the
+     *  same type size (Session 18, 2026-11-20: "Scalability & Resilience Patterns" ran to three lines) */
+    agendaWeights?: number[]
     next?: string
     presenter?: string
   }

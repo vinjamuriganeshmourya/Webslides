@@ -155,9 +155,9 @@ export function StepLabel({ children, n }: { children: ReactNode; n?: number }) 
 }
 
 /** A callout under a figure or a list (the TR's `Important Note`): the kit callout's look, the accent rim, one or two lines. */
-export function NoteBox({ children, w = BOX_W, tone = colors.accent, size = 17 }: { children: ReactNode; w?: number | string; tone?: string; size?: number }) {
+export function NoteBox({ children, w = BOX_W, tone = colors.accent, size = 17, bg = 'linear-gradient(135deg, #FFF7EC 0%, #FFEBD4 100%)', rim = '#F8D9B4', glow = 'rgba(229,115,42,0.45)' }: { children: ReactNode; w?: number | string; tone?: string; size?: number; bg?: string; rim?: string; glow?: string }) {
   return (
-    <div className="rounded-[16px] px-5 py-3 leading-snug" style={{ width: w, fontSize: size, color: colors.ink, background: 'linear-gradient(135deg, #FFF7EC 0%, #FFEBD4 100%)', boxShadow: `inset 5px 0 0 0 ${tone}, inset 0 0 0 1px #F8D9B4, 0 12px 24px -18px rgba(229,115,42,0.45)` }}>
+    <div className="rounded-[16px] px-5 py-3 leading-snug" style={{ width: w, fontSize: size, color: colors.ink, background: bg, boxShadow: `inset 5px 0 0 0 ${tone}, inset 0 0 0 1px ${rim}, 0 12px 24px -18px ${glow}` }}>
       {children}
     </div>
   )
